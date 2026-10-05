@@ -1,0 +1,268 @@
+[
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron is a merchant whom the party previously saved from an assassination attempt.",
+    "source_quote": "The party then paid a visit to Werz Saltbaron, the merchant they had previously saved from an assassination attempt.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron greeted the party with surprise and relief that they were still alive.",
+    "source_quote": "He greeted them with genuine surprise and relief that they were still alive.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz Saltbaron rewarded each member of the party with an obsidian gemstone.",
+    "source_quote": "He rewarded each member of the group with an obsidian gemstone",
+    "subject": "obsidian gemstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron offered to cover the party's lodging expenses at the local tavern.",
+    "source_quote": "offered to cover their lodging expenses at the local tavern.",
+    "subject": "lodging expense coverage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz perceived that Werz was buttering them up for a favor.",
+    "source_quote": "Daz perceived that Werz was buttering them up for a favor.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Werz Saltbaron claimed he was on the Empty-Scabbard Killers' list of targets.",
+    "source_quote": "Werz soon revealed that he had found himself on the Empty-Scabbard Killers' list of targets",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled an 18 on an insight check regarding Werz.",
+    "source_quote": "Daz rolled an 18 on insight and read that Werz \"knows way too much\" about working with assassins",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz theorized that Werz was not quite as innocent as he claimed.",
+    "source_quote": "which suggested he was not quite as innocent as he claimed.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz admitted he might have helped some clans sell goods secretly.",
+    "source_quote": "He admitted that he might have helped \"some clans sell some goods on the down low.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown more paranoid because of his friend Shal.",
+    "source_quote": "The Deepking had grown more paranoid because of his friend Shal",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shal is identified as the Deepking's friend, whose influence has made the Deepking more paranoid.",
+    "source_quote": "The Deepking had grown more paranoid because of his friend Shal",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "People who compete with the Deepking's trade have been disappearing.",
+    "source_quote": "people who compete with his trade had been disappearing.",
+    "subject": "disappearances",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Members of the Stone Guard have recently begun accepting bribes.",
+    "source_quote": "Members of the Stone Guard had recently begun accepting bribes",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard was known for their legendary integrity before accepting bribes.",
+    "source_quote": "a shocking departure from their legendary integrity. They \"were very boring that way.\"",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Werz describes the entire city of Gracklstugh as a tinderbox capable of igniting into war.",
+    "source_quote": "The entire city of Gracklstugh was sitting on a tinderbox that could ignite into all-out war",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states that he always likes the kind of greeting Werz gave them.",
+    "source_quote": "Gyrgum: \"I always like that kind of greeting.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks whether the reward includes the flumph and the ghost.",
+    "source_quote": "Zalthir asks whether \"each\" includes the flumph and the ghost.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph plays with its gemstone using its tentacles.",
+    "source_quote": "The flumph plays with its gem using its tentacles",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph drops its gemstone after getting bored.",
+    "source_quote": "gets bored, and drops it",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz picks up the gemstone dropped by the flumph.",
+    "source_quote": "Daz picks it up.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is unable to pick up its gemstone.",
+    "source_quote": "The ghost can't pick up its gem",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ghost is from Blingdenstone, as indicated by the request to deposit the gem in his grave there.",
+    "source_quote": "deposit it in his grave in Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's suggestion that the ghost haunt the gemstone fails.",
+    "source_quote": "Gyrgum's idea that the ghost haunt the gem fails",
+    "subject": "haunting attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost states that haunting the gemstone has already been tried and failed.",
+    "source_quote": "\"Trust me, I tried.\"",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests that Werz go to the Stone Guard for protection.",
+    "source_quote": "Thorin suggests Werz go to the Stone Guard for protection",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests that Werz attest to the guild's existence to the Stone Guard.",
+    "source_quote": "and attest to the guild's existence.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz claims the Stone Guard would never believe him regarding the assassins.",
+    "source_quote": "Werz says \"they would never believe me. They would consider it a children's tale.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Deepking decided the weaponsmithing monopoly will be held only by his family's clan.",
+    "source_quote": "The Deepking has decided the weaponsmithing monopoly will be held only by his family's clan.",
+    "subject": "monopoly decision",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Werz suggests that Clan Ironhead might be hiring the assassins.",
+    "source_quote": "Werz suggests Clan Ironhead might also be the one hiring the assassins.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz attempts to hire the party to eliminate the assassins targeting him.",
+    "source_quote": "Werz attempts to hire the party to eliminate the assassins targeting him",
+    "subject": "hiring offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests Werz hire the assassins to kill other assassins.",
+    "source_quote": "Thorin: \"Why don't you hire the assassins to kill the assassins?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz states that hiring assassins to kill assassins would be expensive.",
+    "source_quote": "Werz: \"That would be expensive.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin accuses Werz of using the party as cut-rate assassins.",
+    "source_quote": "Thorin: \"So you're just using us as cut-rate assassins.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposes using Werz as bait to catch the next assassin.",
+    "source_quote": "Gyrgum proposes using Werz as bait to catch the next assassin.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz refuses to act as bait, claiming he is not that kind of heroic individual.",
+    "source_quote": "Werz refuses: \"I'm not that kind of heroic individual.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz notes that the party arrived with gnomes.",
+    "source_quote": "Werz notes the party arrived with gnomes",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz observes that some of the party do not look like they belong in the Underdark.",
+    "source_quote": "that \"some of you don't look like you belong in the Underdark,\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Werz identifies the party's current location as the Underdark.",
+    "source_quote": "some of you don't look like you belong in the Underdark",
+    "subject": "Underdark",
+    "quote_verified": true
+  }
+]

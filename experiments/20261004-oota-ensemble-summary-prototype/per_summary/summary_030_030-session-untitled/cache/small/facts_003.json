@@ -1,0 +1,177 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir hits the fleeing Grick Alpha with an attack of opportunity for 13 damage.",
+    "source_quote": "Zalthir's attack of opportunity (with advantage) hits for 13",
+    "subject": "Grick Alpha attack of opportunity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills the Grick Alpha.",
+    "source_quote": "Thorin's attack kills it",
+    "subject": "Grick Alpha death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Grick Alpha is dead.",
+    "source_quote": "Thorin's attack kills it",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum observes the piles of \"acid soup\" left around the battlefield and pulls out his toothbrush.",
+    "source_quote": "Gyrgum observes the piles of \"acid soup\" left around the battlefield and pulls out his toothbrush",
+    "subject": "Gyrgum hygiene",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party harvests the hide of the Grick Alpha.",
+    "source_quote": "The party harvests the hide of the Grick Alpha",
+    "subject": "Grick Alpha hide",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party plans to craft the Grick Alpha hide into a cloak for stealth in rocky terrain, which will be ready after six days.",
+    "source_quote": "planning to craft it into a cloak for stealth in rocky terrain. The cloak will be ready after six days",
+    "subject": "Grick hide cloak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirms that the party only committed to killing the Grick, not the Shambling Mound.",
+    "source_quote": "Zalthir asks whether the party ever committed to killing the Shambling Mound. The GM confirms that they only committed to the Grick",
+    "subject": "Commitment check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz learns via an Arcana check that while Shambling Mounds have no treasure, their vines are valued for crafting magical items, especially ropes.",
+    "source_quote": "Daz's Arcana check reveals that their vines are valued in various communities for crafting magical items, especially ropes",
+    "subject": "Arcana check on Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is where Jimjar's crew is headed.",
+    "source_quote": "Blingdenstone, where Jimjar's crew is headed",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar's crew is headed to Blingdenstone.",
+    "source_quote": "Blingdenstone, where Jimjar's crew is headed",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to hunt the Shambling Mound motivated by the potential crafting value of its vines.",
+    "source_quote": "Motivated by the potential crafting value, the party decides to hunt the Shambling Mound",
+    "subject": "Shambling Mound hunt decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz asks \"can I restart my sunk your battleship?\" during the decision to hunt.",
+    "source_quote": "Daz asks, \"can I restart my sunk your battleship?\"",
+    "subject": "Daz question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz resumes freezing sections of the swamp in a checkerboard pattern.",
+    "source_quote": "Daz resumes freezing sections of the swamp in a checkerboard pattern",
+    "subject": "Daz freezes swamp",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hits the Shambling Mound while working his way across the lake.",
+    "source_quote": "eventually hits the creature while working his way across the lake",
+    "subject": "Daz hits Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum comments on Daz's patience during the freezing process.",
+    "source_quote": "Gyrgum comments, \"You have a lot of patience, Daz.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rolls initiative for a new engagement after locating the Shambling Mound.",
+    "source_quote": "The party locates the Shambling Mound near a pool of water and rolls initiative for a new engagement",
+    "subject": "Initiative rolled",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir is warned that the Shambling Mound likes to grab people and shove them under.",
+    "source_quote": "Zalthir closed in along the shore after being warned that the mound likes to grab people and shove them under",
+    "subject": "Zalthir warns party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir opens the combat with a critical hit.",
+    "source_quote": "He opened with a critical hit",
+    "subject": "Zalthir critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stuns the Shambling Mound with a well-placed strike.",
+    "source_quote": "stunned the massive creature with a well-placed strike",
+    "subject": "Zalthir stun",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is stunned by Zalthir.",
+    "source_quote": "stunned the massive creature with a well-placed strike",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts three scorching rays that all hit the Shambling Mound.",
+    "source_quote": "Daz followed with three scorching rays, all of which hit",
+    "subject": "Daz scorching rays",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound's resistance halved the damage from Daz's scorching rays.",
+    "source_quote": "the creature's resistance halved the damage",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum invokes Spirit Guardians.",
+    "source_quote": "Gyrgum then invoked Spirit Guardians",
+    "subject": "Gyrgum Spirit Guardians",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Spirit Guardians summons spectral platinum dragons that swirl in a 15-foot radius around Gyrgum.",
+    "source_quote": "summoning spectral platinum dragons that swirled around him in a 15-foot radius",
+    "subject": "Spirit Guardians summons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum spares Thorin and Zalthir from the effects of Spirit Guardians.",
+    "source_quote": "He spared Thorin and Zalthir from their effects",
+    "subject": "Spirit Guardians sparing",
+    "quote_verified": true
+  }
+]

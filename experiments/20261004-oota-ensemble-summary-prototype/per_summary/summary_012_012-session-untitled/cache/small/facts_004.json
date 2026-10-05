@@ -1,0 +1,289 @@
+[
+  {
+    "type": "npc",
+    "fact": "Buppido is a derro companion of the party.",
+    "source_quote": "Buppido, their erratic and murderous derro companion",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido had been present when the party found the tomb location.",
+    "source_quote": "he had been present when they found its location",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is from the area near Gracklstugh.",
+    "source_quote": "Buppido seems to be from this area",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido was previously tied up and had threatened Daz.",
+    "source_quote": "they tied Buppido up and that he threatened him",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is a murderer.",
+    "source_quote": "he is a murderer, though",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido claims his divine mission requires him to visit a personal shrine in the caverns near the city.",
+    "source_quote": "claiming his divine mission demanded he visit a personal shrine in the caverns near the city",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido expects to receive glory and praise at his shrine.",
+    "source_quote": "At the shrine he expects to \"receive the glory and the praise that is due to him.\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido calls the party \"a bunch of annoying nuisances\".",
+    "source_quote": "He calls the party \"a bunch of annoying nuisances\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido ate a Tongue of Madness mushroom.",
+    "source_quote": "Buppido ate a Tongue of Madness",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido unleashed a five-day backlog of petty insults against every member of the party.",
+    "source_quote": "unleashed a five-day backlog of petty insults against every single member of the party",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido screamed at Jimjar to stop betting.",
+    "source_quote": "Buppido screams at Jimjar to stop betting",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is currently guarded by Jimjar and his companions while the rest of the party shops.",
+    "source_quote": "Jimjar and the companions are asked to guard Buppido while the party shops",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a neutral good cleric.",
+    "source_quote": "Gyrgum, the party's neutral good cleric",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggested having Buppido eat a Tongue of Madness mushroom.",
+    "source_quote": "Gyrgum suggested they have him \"try one of these.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposed marooning Buppido from the boat.",
+    "source_quote": "Gyrgum proposes marooning him from the boat",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum floated the idea of marooning Buppido in the Underdark.",
+    "source_quote": "Gyrgum and Zalthir floated marooning him somewhere in the Underdark",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offered to check if any authorities will summon a Demogorgon.",
+    "source_quote": "Gyrgum offers: \"I could see if any of them will summon a Demogorgon.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir pointed out that Buppido knows the tomb location and could lead drow pursuers there.",
+    "source_quote": "Zalthir points out that Buppido was present when they found the tomb information: \"He knows where we're going\u2026 Which means he could point the drow, the pursuers, at the tomb.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggested the mystery contact from the list might be a legal authority.",
+    "source_quote": "Zalthir suggests that the mystery contact from the list might be a legal authority who could take Buppido off their hands",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asked if Buppido might summon another horror.",
+    "source_quote": "Zalthir asks whether Buppido might summon another horror like the one the kuo-toa raised",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggested leaving Buppido in the middle of the Underdark.",
+    "source_quote": "Zalthir: \"Just leave him in the middle of the Underdark.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir concluded the party can cut Buppido loose after finishing business in the city.",
+    "source_quote": "Zalthir was convinced they could simply cut him loose once they were done with the city",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin sees only two options for Buppido: letting him go on good terms or killing him.",
+    "source_quote": "Thorin sees only two options: let him go on good terms, or \"make sure Dead Men Tell No Tales type thing.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz wants Buppido locked up or incapacitated for a long time.",
+    "source_quote": "Daz wants Buppido locked up or unable to act \"for a very long time.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is a deep gnome with an incurable gambling habit.",
+    "source_quote": "Jimjar, the deep gnome with an incurable gambling habit",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar lamented he should have bet on Buppido's specific insult.",
+    "source_quote": "he immediately lamented that he should have wagered on whether Buppido would say exactly that",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar dismissed the idea that Buppido can summon a demon lord.",
+    "source_quote": "Jimjar dismisses the idea that Buppido has the power to summon a demon lord like Demogorgon",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar offered two possibilities for the kuo-toa's summoning: mass psychosis creating a god, or it being Demogorgon.",
+    "source_quote": "Jimjar offers two possibilities for what happened. Either the kuo-toa's mass psychosis created a god, or it was actually Demogorgon",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a supply of mushrooms including a Tongue of Madness.",
+    "source_quote": "Zalthir then remembered the party's mushrooms",
+    "subject": "Tongue of Madness",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party used a Tongue of Madness mushroom on Buppido.",
+    "source_quote": "the party has Buppido eat a Tongue of Madness mushroom to reveal his true intentions",
+    "subject": "Tongue of Madness",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Buppido claims to have a personal shrine in the caverns near the city.",
+    "source_quote": "visit a personal shrine in the caverns near the city",
+    "subject": "personal shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The location of a tomb is known to the party and Buppido.",
+    "source_quote": "he had been present when they found its location",
+    "subject": "tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido recited a list of personal failings against every member of the party.",
+    "source_quote": "reciting every personal failing he had silently tallied during their journey together",
+    "subject": "Buppido's insult",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The tirade lasted approximately 20 minutes.",
+    "source_quote": "The tirade runs about 20 minutes",
+    "subject": "Buppido's insult",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido turned to each party member in turn during the tirade.",
+    "source_quote": "with Buppido turning to each person in turn",
+    "subject": "Buppido's insult",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM warned the party about Buppido's local connections.",
+    "source_quote": "The GM warns that Buppido seems to be from this area, \"so you never know who else he knows.\"",
+    "subject": "GM warning",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is deciding between releasing, killing, turning over, or marooning Buppido.",
+    "source_quote": "The party discusses whether to release, kill, or turn Buppido over to the authorities",
+    "subject": "Buppido's fate",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Zalthir is convinced they can cut Buppido loose after dealing with the city.",
+    "source_quote": "Zalthir was convinced they could simply cut him loose once they were done with the city",
+    "subject": "Buppido's fate",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is considering using a mystery contact from a list to take Buppido off their hands.",
+    "source_quote": "Zalthir suggests that the mystery contact from the list might be a legal authority who could take Buppido off their hands",
+    "subject": "mystery contact",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Kraken was summoned by a religious ceremony and nearly ate the party.",
+    "source_quote": "we literally just ran away from a religious ceremony that summoned a Kraken and that almost ate us",
+    "subject": "Kraken",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Buppido constructed his list of insults over the last five days.",
+    "source_quote": "The GM says Buppido \"spent the last five days constructing this long list.\"",
+    "subject": "last five days",
+    "quote_verified": true
+  }
+]

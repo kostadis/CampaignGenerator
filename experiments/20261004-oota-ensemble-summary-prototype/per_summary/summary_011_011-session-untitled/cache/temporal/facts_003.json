@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "Zalthir conjures a shroud of magical darkness with a 15-foot radius around the creature.",
+    "source_quote": "conjuring a 15-foot shroud of magical darkness",
+    "subject": "magical darkness radius",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a 15-foot shroud of magical darkness.",
+    "source_quote": "Zalthir creates a 15-foot sphere of magical darkness",
+    "subject": "Zalthir darkness casting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 15 damage to the beholder zombie with Magic Missiles.",
+    "source_quote": "Daz unleashed a barrage of Magic Missiles for 15 damage",
+    "subject": "Daz Magic Missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie hits Gyrgum for 10 damage with a ray of sickly light.",
+    "source_quote": "hit Gyrgum for 10 damage",
+    "subject": "Gyrgum ray damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is poisoned by the beholder zombie's ray.",
+    "source_quote": "hit Gyrgum for 10 damage and poisoned him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is paralyzed by the beholder zombie's ray.",
+    "source_quote": "missed the save by a single point and was left paralyzed and helpless",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie bites Zalthir for 16 damage.",
+    "source_quote": "The zombie bit Zalthir for 16 damage",
+    "subject": "Zalthir bite damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is missing 16 hit points due to the beholder zombie's bite.",
+    "source_quote": "restoring 15 of the 16 hit points the monk had lost to the creature's savage bite",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Cure Wounds to restore 15 hit points to Zalthir.",
+    "source_quote": "cast Cure Wounds, restoring 15 of the 16 hit points the monk had lost to the creature's savage bite",
+    "subject": "Gyrgum Cure Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the undead creature with unarmed blows for 9 damage.",
+    "source_quote": "strikes the undead creature with unarmed blows for 9 damage",
+    "subject": "Zalthir unarmed damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's feinting attack deals 6 damage to the beholder zombie.",
+    "source_quote": "His feinting attack deals 6 damage",
+    "subject": "Thorin feint damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Hill Strike adds 4 damage to the beholder zombie.",
+    "source_quote": "his Hill Strike adds 4",
+    "subject": "Thorin Hill Strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 6 against a DC 14 Constitution save.",
+    "source_quote": "Gyrgum rolls a 6 on his DC 14 Constitution save",
+    "subject": "Gyrgum Constitution save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 13 on a saving throw and is paralyzed.",
+    "source_quote": "Daz rolls a 13 and is paralyzed",
+    "subject": "Daz Constitution save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Divine Spark deals 4 damage to the beholder zombie.",
+    "source_quote": "The zombie saves but takes 4 damage",
+    "subject": "Divine Spark damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands a critical strike with his fists for 17 damage.",
+    "source_quote": "Zalthir then lands a critical strike with his fists for 17 damage",
+    "subject": "Zalthir critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crew's first crossbow volley lands two bolts for 8 damage.",
+    "source_quote": "The crew's first crossbow volley lands two bolts for 8 damage",
+    "subject": "First crossbow volley",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is left at 24 hit points after the first crossbow volley.",
+    "source_quote": "leaving the zombie at 24 hit points",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the beholder zombie for 9 damage with advantage from being vexed.",
+    "source_quote": "Thorin hits with advantage from vex for 9",
+    "subject": "Thorin attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches the beholder zombie for 5 damage.",
+    "source_quote": "Zalthir punches it for 5",
+    "subject": "Zalthir punch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companion crew's second crossbow volley deals 12 damage to the monster.",
+    "source_quote": "The companion crew's second crossbow volley deals 12 damage",
+    "subject": "Second crossbow volley",
+    "quote_verified": true
+  }
+]

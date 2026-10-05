@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "The party discovered the remains of a drow, a dark metal mace, and scattered coins suspended inside a gelatinous cube.",
+    "source_quote": "the party discovered the remains of a drow, a dark metal mace, and scattered coins apparently hovering above the floor. The objects were suspended inside a gelatinous cube",
+    "subject": "dungeon corridor",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gelatinous cube has two visible eyes.",
+    "source_quote": "suspended inside a gelatinous cube with two visible eyes",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gelatinous cube is sentient.",
+    "source_quote": "Now, inexplicably, he could think and see.",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is the name of the sentient gelatinous cube.",
+    "source_quote": "He introduced himself as Glabbagool",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool was previously an average gelatinous cube that cleaned floors and decomposed debris.",
+    "source_quote": "until recently he had been \u201can average garden variety gelatinous cube,\u201d moving around, cleaning floors, and decomposing whatever adventurers left behind",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool recently gained the ability to think and see.",
+    "source_quote": "Now, inexplicably, he could think and see.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is fascinated by the implications of his new sentience.",
+    "source_quote": "Glabbagool was fascinated by the implications of sentience.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool admits he knows little about the world.",
+    "source_quote": "readily admitted that he knew little about the world",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool does not know which route leads upward.",
+    "source_quote": "He also had no idea which route led upward",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool spent much of his brief sentient life standing in place deciding where to go.",
+    "source_quote": "having spent much of his brief sentient life standing in place and deciding where to go",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool was surprised to learn that sentient beings differ in intelligence and awareness.",
+    "source_quote": "I thought everybody was sentient in the same way.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool claims he would never want to promote the party's demise.",
+    "source_quote": "Glabbagool insists he would never want to promote their demise.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is especially excited about talking to Thorin.",
+    "source_quote": "becomes especially excited about talking to his new friend Thorin",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is aware of the rising water and considers it awkward but has no suggestions to avoid it.",
+    "source_quote": "Glabbagool has noticed the rising water and considers it awkward, but he has no suggestion for avoiding it.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow corpse suspended inside Glabbagool is nearly digested.",
+    "source_quote": "The drow suspended inside him is nearly digested.",
+    "subject": "drow corpse",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A dark metal mace is suspended inside Glabbagool.",
+    "source_quote": "the remains of a drow, a dark metal mace, and scattered coins apparently hovering above the floor",
+    "subject": "dark metal mace",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Scattered coins are suspended inside Glabbagool.",
+    "source_quote": "the remains of a drow, a dark metal mace, and scattered coins apparently hovering above the floor",
+    "subject": "scattered coins",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum tossed a lucky foot to Glabbagool.",
+    "source_quote": "Gyrgum tossed Glabbagool a lucky foot that he had been carrying in his backpack.",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party is uncertain what creature the lucky foot came from.",
+    "source_quote": "The party admits uncertainty over what creature the foot originally came from.",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin entered the area while actively searching for oozes and probing suspicious pools.",
+    "source_quote": "Thorin enters while actively searching for more oozes and probing suspicious pools.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin introduced himself to the gelatinous cube.",
+    "source_quote": "Thorin introduces himself, and the creature replies, \u201cMy name is Glabbagool.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool accepted Thorin's invitation to join the expedition.",
+    "source_quote": "Glabbagool accepted, though he politely asked, \u201cYou won\u2019t be upset if you all die and I eat you, right?\u201d",
+    "subject": "Glabbagool joins party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agreed that Glabbagool can eat them if they die of natural causes.",
+    "source_quote": "The party agreed that once they were dead they would probably be past caring, provided Glabbagool allowed natural causes to do the killing.",
+    "subject": "cannibalism agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool absorbed the lucky foot and found it tasty.",
+    "source_quote": "The cube absorbed it and declared it tasty.",
+    "subject": "lucky foot absorbed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool offered to eat any unwanted objects the party drops on the floor.",
+    "source_quote": "Glabbagool also offered a standing service to the party: \u201cIf you ever decide you want to get rid of something, just drop it on the floor and I\u2019ll be happy to eat it.\u201d",
+    "subject": "waste disposal service",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided not to feed Glabbagool ghost bones because the associated ghost would react angrily.",
+    "source_quote": "The party decides against feeding him the ghost bones because the associated ghost reacts angrily.",
+    "subject": "ghost bones rejection",
+    "quote_verified": true
+  }
+]

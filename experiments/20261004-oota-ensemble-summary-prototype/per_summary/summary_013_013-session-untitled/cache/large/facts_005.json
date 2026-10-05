@@ -1,0 +1,275 @@
+[
+  {
+    "type": "location",
+    "fact": "The Darklake Brewery has a duergar-only sign.",
+    "source_quote": "The brewery bears a duergar-only sign",
+    "subject": "Darklake Brewery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 3 on stealth while trying to peek inside the Darklake Brewery.",
+    "source_quote": "Gyrgum tried to peek inside and rolled a 3 on stealth.",
+    "subject": "Gyrgum stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum observes quiet duergar inside the brewery drinking cheaper beer over serious conversations.",
+    "source_quote": "He still glimpsed quiet duergar drinking cheaper beer over very serious conversations.",
+    "subject": "Gyrgum observation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A halfling is drinking outside the Darklake Brewery kiosk.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow.",
+    "subject": "halfling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A human is drinking outside the Darklake Brewery kiosk.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow.",
+    "subject": "human",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A drow is drinking outside the Darklake Brewery kiosk.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow.",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum buys a round for the halfling.",
+    "source_quote": "Gyrgum bought a round for the talkative halfling",
+    "subject": "Gyrgum buys drinks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling appears to be well-informed.",
+    "source_quote": "who was grateful and apparently well-informed.",
+    "subject": "halfling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The halfling welcomes Gyrgum.",
+    "source_quote": "The halfling welcomes Gyrgum: \"You're new to this town.\"",
+    "subject": "halfling greeting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum buys the halfling a second mug.",
+    "source_quote": "Gyrgum buys the halfling a refill, and later a second mug \"out of gratitude.\"",
+    "subject": "Gyrgum buys second drink",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The halfling points out a nearby prison.",
+    "source_quote": "The halfling points out the nearby prison.",
+    "subject": "prison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling mentions a crazed giant was brought down with the help of a spellcasting dragonborn.",
+    "source_quote": "The halfling has heard of a crazed giant brought down with the help of a spellcasting dragonborn.",
+    "subject": "crazed giant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Deepking Horgar Steelshadow has reportedly gone mad.",
+    "source_quote": "The halfling reveals that Deepking Horgar Steelshadow has reportedly gone mad",
+    "subject": "Deepking Horgar Steelshadow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Deepking Horgar Steelshadow's madness manifests as paranoia and arbitrary laws.",
+    "source_quote": "This was not rampaging violence but paranoia and increasingly arbitrary laws.",
+    "subject": "Horgar's madness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling describes duergar merchants as boring, unenlightened, and ignorant traders.",
+    "source_quote": "\"They are the most boring, unenlightened, ignorant traders on the planet.\"",
+    "subject": "duergar merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are in conflict with the Gray Ghosts and the crown.",
+    "source_quote": "He said the Keepers of the Flame and Themberchaud were \"in a bit of a pickle with the Gray Ghosts and the crown\"",
+    "subject": "Keepers of the Flame",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are in conflict with the Keepers of the Flame and the crown.",
+    "source_quote": "He said the Keepers of the Flame and Themberchaud were \"in a bit of a pickle with the Gray Ghosts and the crown\"",
+    "subject": "Gray Ghosts",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Crown is in conflict with the Keepers of the Flame and the Gray Ghosts.",
+    "source_quote": "He said the Keepers of the Flame and Themberchaud were \"in a bit of a pickle with the Gray Ghosts and the crown\"",
+    "subject": "the Crown",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "All the factions in Gracklstugh are at each other's throats.",
+    "source_quote": "and that all the factions were at each other's throats.",
+    "subject": "Gracklstugh factions",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Non-duergar are considered civilians and not relevant to the city.",
+    "source_quote": "As a non-duergar who stayed uninvolved, he was a \"civilian\" free to talk.",
+    "subject": "non-duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling is classified as a civilian because he is a non-duergar who stays uninvolved.",
+    "source_quote": "As a non-duergar who stayed uninvolved, he was a \"civilian\" free to talk.",
+    "subject": "halfling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The halfling refuses to attend the faction meeting with the party.",
+    "source_quote": "He refuses: attending \"would be immediately interpreted as me joining one of the factions.",
+    "subject": "halfling refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The halfling states that his life would be extremely short if he were interpreted as joining a faction.",
+    "source_quote": "And as a non-duergar, my life would be extremely short.\"",
+    "subject": "halfling risk",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "A pending invitation for the party comes from the Keepers of the Flame.",
+    "source_quote": "He confirmed that the pending invitation came from the Keepers of the Flame.",
+    "subject": "faction meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Keepers of the Flame use Themberchaud as a dragon, who is seen flying over the city.",
+    "source_quote": "Themberchaud is seen flying over the city.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud is pampered and given a large hoard to keep him pleasant.",
+    "source_quote": "The halfling explains he is pampered and given a hoard large enough \"to keep him pleasant\"",
+    "subject": "Themberchaud treatment",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame periodically replace their red dragon by raising a new one from an egg.",
+    "source_quote": "the Keepers periodically replace their red dragon with a new one raised from a purchased egg",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Red dragon eggs can be purchased or stolen.",
+    "source_quote": "Eggs \"can be purchased or stolen\"",
+    "subject": "red dragon egg",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Keepers must raise the new dragon, deal with the old one, and keep both happy in between.",
+    "source_quote": "the Keepers must raise the new dragon, deal with the old one, and keep both happy in between.",
+    "subject": "dragon replacement process",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Attending an official meeting with a faction leader turns a civilian into a soldier in the eyes of rival groups.",
+    "source_quote": "If you go with the mob parlance, you go from being a civilian to a soldier.",
+    "subject": "faction status change",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron has been to Menzoberranzan.",
+    "source_quote": "A drow patron who has been in Menzoberranzan",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron mocks the lack of finesse in duergar conspiracies.",
+    "source_quote": "mocks the lack of 'finesse' in duergar conspiracies.",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron describes duergar politics as blunt violence.",
+    "source_quote": "He describes their politics as blunt violence compared to the dramatic artistry of Menzoberranzan",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron describes Menzoberranzan politics as having torture, burning houses, and speeches.",
+    "source_quote": "where \"we'll torture people, we'll burn their houses down, we'll make speeches.\"",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM tells the party the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame.",
+    "source_quote": "The GM tells the party the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame.",
+    "subject": "GM faction disclosure",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is a faction the party can currently attract.",
+    "source_quote": "The GM tells the party the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues for talking to everyone to get a better picture.",
+    "source_quote": "Daz argues for talking to everyone to get a better picture.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders about a job fair kind of area.",
+    "source_quote": "Gyrgum wonders about \"a job fair kind of area.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The drow patron references Menzoberranzan's political intrigues.",
+    "source_quote": "A drow patron who has been in Menzoberranzan (to the other patrons' eye-rolling) mocks the lack of 'finesse' in duergar conspiracies.",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  }
+]

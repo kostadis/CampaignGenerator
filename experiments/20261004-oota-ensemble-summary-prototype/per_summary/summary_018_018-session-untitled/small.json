@@ -1,0 +1,1689 @@
+[
+  {
+    "type": "date",
+    "fact": "The party's ordered magic items are scheduled to arrive the next morning.",
+    "source_quote": "The magic items the party had ordered would not arrive until the next morning.",
+    "subject": "magic item arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum judges himself to be in adequate physical condition for the meeting.",
+    "source_quote": "Gyrgum judged himself \"not in bad shape,\" so the party went to the Stone Guard straight away.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The area previously marked as Mind Flayer territory is actually a conflict zone between the cult of Demogorgon and the assassins.",
+    "source_quote": "One area previously marked as Mind Flayer territory is actually where the cult of Demogorgon and the assassins keep fighting each other.",
+    "subject": "Mind Flayer territory",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard has a headquarters where they conduct official business.",
+    "source_quote": "The party made their way to the Stone Guard headquarters to meet with Errde Blackskull",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the captain of the Stone Guard.",
+    "source_quote": "meet with Errde Blackskull, the captain of the Stone Guard.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party's ghost companion is currently invisible.",
+    "source_quote": "The ghost was invisible again",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph accompanying the party is impressed, concerned, and excited by its surroundings.",
+    "source_quote": "very impressed with all the things that it's seeing and very concerned, but very excited.",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull receives the party with an attempt at charm that hides her anger.",
+    "source_quote": "Errde received them with a thinly veiled attempt at charm that barely concealed her seething intensity.",
+    "subject": "Errde's reception",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde demands to know if the party has useful information.",
+    "source_quote": "She demanded to know what useful information they had brought her.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz confirms to Errde that the party has information.",
+    "source_quote": "Daz answers: \"We do have information.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde seeks documented proof of the Gray Ghosts' involvement in sinister conspiracies.",
+    "source_quote": "She was desperate for documented proof that the Gray Ghosts and the Council of Savants were involved in sinister conspiracies.",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde seeks documented proof of the Council of Savants' involvement in sinister conspiracies.",
+    "source_quote": "She was desperate for documented proof that the Gray Ghosts and the Council of Savants were involved in sinister conspiracies.",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde secretly wants evidence of the Assassin's Guild targeting her clan.",
+    "source_quote": "She secretly wanted evidence of the Assassin's Guild targeting her clan",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde wants to identify who is ordering the deaths of her clan members.",
+    "source_quote": "wanted to know who had been giving the orders to kill her clan members.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde refuses to openly admit the Assassin's Guild exists to protect her authority.",
+    "source_quote": "She refused to openly admit the guild existed, because a guild operating \"under her nose\" reflected poorly on her authority.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde wants evidence to secure the Deepking's approval for a violent pacification mission against the Derro.",
+    "source_quote": "What she really wanted was evidence she could take to the Deepking to get sign-off on a \"pacification mission\" against the Derro. When Zalthir asked which kind, the GM said \"the more violent one.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks whether the flumph's psychic images qualify as evidence.",
+    "source_quote": "Zalthir asks whether the flumph's psychic images count as evidence.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The flumph's psychic images are sufficient to gain resources from Errde but not for her primary goal.",
+    "source_quote": "The GM explains the flumph's material is enough to get resources from Errde, but not what she truly wants",
+    "subject": "flumph's psychic images",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame knew that Droki would lead the party to information within the Whorlstone Caverns.",
+    "source_quote": "They had known Droki would lead them there.",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard knew that Droki would lead the party to information within the Whorlstone Caverns.",
+    "source_quote": "The party learns that both the Keepers of the Flame and the Stone Guard knew Droki would lead them to the information they need",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro are currently on edge to an extreme, insane level.",
+    "source_quote": "The Derro \"were never sane in the best of times, but now are like on edge to a crazy level.\"",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro were formerly slaves of the Duergar.",
+    "source_quote": "The Derro, once slaves of the Duergar,",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro have learned to build traps capable of catching invisible intruders.",
+    "source_quote": "The Derro, once slaves of the Duergar, had also learned to build specialized traps that catch even invisible intruders.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The answers sought by the party, the Stone Guard, and the Keepers of the Flame are located deep within the Whorlstone Caverns.",
+    "source_quote": "both Errde and the Keepers of the Flame knew the answers they all sought lay deep within the Whorlstone Caverns",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown increasingly erratic.",
+    "source_quote": "The Deepking had grown increasingly erratic",
+    "subject": "The Deepking",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Deepking granted all weapons contracts exclusively to Clan Steelshadow.",
+    "source_quote": "His decision to grant all weapons contracts exclusively to his own clan, Clan Steelshadow",
+    "subject": "weapons contract grant",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The exclusive weapons contracts granted by the Deepking have bred deep resentment across the city.",
+    "source_quote": "had bred deep resentment across the city",
+    "subject": "Clan Steelshadow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud's fire is essential to the city's industrial output.",
+    "source_quote": "whose fire was essential to the city's industrial output",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud was convinced by his handlers that he was the real power in the city.",
+    "source_quote": "had been convinced by his handlers in the Keepers of the Flame that he was the real power in the city",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame act as handlers for Themberchaud.",
+    "source_quote": "convinced by his handlers in the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has lately started to grow up.",
+    "source_quote": "He had lately \"started to grow up\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has noticed that things might not be as they seem.",
+    "source_quote": "noticed things might not be as they seemed",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar became frantic about the dragon egg because Themberchaud noticed discrepancies.",
+    "source_quote": "That was why Gartokkar had become so frantic about the dragon egg.",
+    "subject": "Gartokkar's panic",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "If Themberchaud were absent, the Keepers of the Flame might face a layoff.",
+    "source_quote": "Without Themberchaud, the Keepers of the Flame might face \"a layoff.\"",
+    "subject": "layoff threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz points out that the party has never actually seen evidence the Derro were behind the events.",
+    "source_quote": "Daz pointed out that the party had never actually seen evidence the Derro were behind any of this.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin warns against giving Errde air cover to go on a slaughter rampage.",
+    "source_quote": "Thorin warned against giving Errde \"air cover to go on a slaughter rampage.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame formally threatened permanent hostility if betrayed.",
+    "source_quote": "the Keepers of the Flame had formally threatened permanent hostility if betrayed",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Unfinished business and unpaid contracts keep pulling the party back toward the depths.",
+    "source_quote": "Unfinished business and unpaid contracts kept pulling them back toward the depths",
+    "subject": "party contracts",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party's only truly paid job is to find out what was going on with the egg, retrieve it, and investigate the Council of Savants.",
+    "source_quote": "Their only truly paid job was to find out what was going on with the egg, retrieve it, and investigate the Council of Savants.",
+    "subject": "party mission",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is the subject of the party's paid investigative mission.",
+    "source_quote": "investigate the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg is the subject of a paid mission to retrieve it and investigate its status.",
+    "source_quote": "find out what was going on with the egg, retrieve it",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard appears inclined toward a violent pacification mission against the Derro.",
+    "source_quote": "Both factions seem inclined toward a violent 'pacification mission' against the Derro",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame appear inclined toward a violent pacification mission against the Derro.",
+    "source_quote": "Both factions seem inclined toward a violent 'pacification mission' against the Derro",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party analyzes the motivations of the Stone Guard and the Keepers of the Flame.",
+    "source_quote": "The party analyzes the motivations of the Stone Guard and the Keepers of the Flame",
+    "subject": "pacification mission analysis",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the party has not seen evidence that the Derro are behind recent events.",
+    "source_quote": "But we've not actually seen any evidence that the Derro are behind all of this",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses concern about providing air cover for a slaughter rampage.",
+    "source_quote": "No, we want to be careful that we don't give her air cover to go on a slaughter rampage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is described as politically unstable.",
+    "source_quote": "discusses the instability of the Duergar Deepking",
+    "subject": "Duergar Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party speculates that shifting power away from the Deepking would cause factions to focus on grabbing power rather than killing Derro.",
+    "source_quote": "if the Deepking were no longer in charge, the factions would be more busy trying to grab power than they would be killing Derro",
+    "subject": "power shift speculation",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests setting up the evil vizier with fabricated incriminating evidence.",
+    "source_quote": "Are you suggesting we set up the evil vizier so we just pretend we have evidence that incriminates him?",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has started to grow up and notice that things are not as they seem.",
+    "source_quote": "Themberchaud has started to grow up and noticed that maybe things aren't as they seem",
+    "subject": "Themberchaud",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar has become frantic about the dragon egg due to Themberchaud's changing awareness.",
+    "source_quote": "which is why Gartokkar has become frantic about the dragon egg",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considers that killing Themberchaud would hurt the city's ability to produce goods.",
+    "source_quote": "Killing Themberchaud is always an option, but it would hurt the city's ability to produce goods",
+    "subject": "Themberchaud killing discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses that without Themberchaud, the Deepking might decide to lay off the Keepers of the Flame.",
+    "source_quote": "Without Themberchaud, the Deepking might decide he doesn't need the current Keepers of the Flame \u2014 A layoff",
+    "subject": "Keepers layoff discussion",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin jokes that the Keepers would be laid off because they have no flame.",
+    "source_quote": "Thorin: Because they have no flame",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks the party if they want to get involved in office politics or leave town.",
+    "source_quote": "Thorin asks whether the party wants to get involved in office politics or grab what they can and leave town",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes that the Keepers of the Flame have officially threatened permanent hostility if betrayed.",
+    "source_quote": "the Keepers of the Flame have officially threatened permanent hostility if betrayed",
+    "subject": "hostility threat discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests the party could fake their death.",
+    "source_quote": "So we could fake our death",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that the party already has the Drow after them.",
+    "source_quote": "I mean, we already have the Drow after us",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that because everyone wants to kill them, they are probably safe.",
+    "source_quote": "Daz argues that since everybody wants to kill them, they are probably safe",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM remarks that Daz's argument about safety is a very Drow thing to say.",
+    "source_quote": "That's a very Drow thing to say",
+    "subject": "Drow comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes they can have Errde arm their companions and then leave.",
+    "source_quote": "Zalthir notes that at worst, they can get Errde to arm their companions, say yes, and then leave",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum feels they should carry through with the beginning of what they were paid to do.",
+    "source_quote": "I feel like we should at least carry through with the beginning of what we got paid to do",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes a philosophy of radical candor involving complete transparency.",
+    "source_quote": "Thorin proposes a new personal philosophy of 'radical candor', suggesting the party be completely transparent with everyone they encounter",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin quotes that information wants to be free.",
+    "source_quote": "I think just information wants to be free",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum says that Thorin's plan seems like a great way to get killed.",
+    "source_quote": "That seems like a great way to get killed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tells Thorin to go for it.",
+    "source_quote": "you go for it, Thorin",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he trusts the party because he does not read people well.",
+    "source_quote": "But I also trust you all because I know I don't read people well",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Thorin debate the merits of honesty versus subtle manipulation.",
+    "source_quote": "Daz and Thorin debate the merits of honesty versus subtle manipulation in the dangerous social climate of the Underdark",
+    "subject": "honesty debate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminds Daz that in Drow society, information is power and hoarding information is power.",
+    "source_quote": "in Drow society, information is power, and hoarding information is power",
+    "subject": "Drow information philosophy",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz considers staying quiet and steering things with subtle misdirection or exaggerations.",
+    "source_quote": "Daz considers staying quiet and steering things with subtle misdirection or subtle exaggerations",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz concedes he has a 19 Intelligence but only a 10 Charisma and 14 Wisdom.",
+    "source_quote": "Daz concedes he has a 19 Intelligence but only a 10 Charisma (and 14 Wisdom)",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM points out that intelligence and the ability to manipulate people are not necessarily the same thing.",
+    "source_quote": "Intelligence and being able to manipulate people are not necessarily the same thing",
+    "subject": "Intelligence vs Manipulation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reviews their contracts and identifies their paid tasks as investigating the egg and the Council of Savants.",
+    "source_quote": "The only job they've really been paid for is to figure out what's going on with the egg, retrieve it, and figure out what's going on with the Council of Savants",
+    "subject": "contract review",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses enjoyment in solving mysteries.",
+    "source_quote": "See, I'm into solving mysteries anyway",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The GM notes that the city feels like a powder keg.",
+    "source_quote": "The GM notes the city feels like a powder keg",
+    "subject": "Gracklstugh",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The party knows nothing about the Council of Savants beyond them being nominally in charge of Derro society.",
+    "source_quote": "The party still knows nothing about who the Council of Savants actually are, beyond their being nominally in charge of Derro society",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has descended into madness.",
+    "source_quote": "The group reflects on Buppido's descent into madness",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pre-asylum Buppido resented the Council of Savants for perceived subservience to the Duergar.",
+    "source_quote": "his earlier resentment of the Council of Savants for their perceived subservience to the Duergar",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "According to the ghost, pre-asylum Buppido felt the Council were a mechanism of control by the Duergar.",
+    "source_quote": "pre-asylum Buppido felt the Council weren't committed to independence and freedom of the derro Society and were simply a mechanism of control by the duergar",
+    "subject": "Buppido's ghost testimony",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido came to see himself as being on a mission from God to free the Derro.",
+    "source_quote": "He came to see himself as on a mission from God to free the Derro",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The identity of the Council of Savants remains unknown to the party.",
+    "source_quote": "The party still knows nothing about who the Council of Savants actually are",
+    "subject": "Council of Savants identity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party resumes their audience with Errde Blackskull after the previous discussion ended.",
+    "source_quote": "When the discussion ended, the party resumed their audience with Errde.",
+    "subject": "audience resumes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin practices a philosophy of radical candor during the briefing.",
+    "source_quote": "Thorin, newly committed to a philosophy of radical candor, delivered their report with disarming bluntness",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph shares its psychic impressions of the caverns below with Errde.",
+    "source_quote": "the flumph shared its psychic impressions of the caverns below",
+    "subject": "flumph reports",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph states that trauma dumping is no longer satisfying and asks the party to cause trauma on others, but not on itself.",
+    "source_quote": "the flumph complained that repeated trauma dumping had become \"no longer as satisfying\"",
+    "subject": "the flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde concludes that the Gray Ghosts and the Council of Savants are working in concert.",
+    "source_quote": "Errde concluded that the Gray Ghosts and the Council of Savants were working in concert",
+    "subject": "Errde's conclusion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz pushes back against Errde's conclusion by stating that proximity does not equal partnership.",
+    "source_quote": "Daz pushed back that being near each other does not make them partners",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde concedes that Daz presents a conundrum regarding the Gray Ghosts and Council of Savants.",
+    "source_quote": "Errde conceded \"you present a conundrum\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde demands the party return to the Whorlstone Caverns with proper documented evidence.",
+    "source_quote": "She then demanded the party return to the Whorlstone Caverns with proper documented evidence",
+    "subject": "demand for proof",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde agrees to arm the party's companions with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "armament deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is to be armed with medium armor, short swords, shortbows, and shields by Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is to be armed with medium armor, short swords, shortbows, and shields by Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is to be armed with medium armor, short swords, shortbows, and shields by Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy has disappeared for now and can wear splint mail.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy has disappeared for now and can wear splint mail.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool received no equipment from Errde.",
+    "source_quote": "Stool received nothing",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposes a cover story involving being seen talking to other factions.",
+    "source_quote": "Daz proposed a cover story: be seen talking to other factions first",
+    "subject": "cover story proposed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde calls Daz's cover story a fantastic idea.",
+    "source_quote": "Errde called it \"a fantastic idea\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde suggests the party visit Clan Ironhead and Clan Xardelvar.",
+    "source_quote": "Errde called it \"a fantastic idea\" and suggested the party visit Clan Ironhead and Clan Xardelvar",
+    "subject": "clan direction",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The cover story is intended to make it appear the party is working against the Deepking rather than for the Stone Guard.",
+    "source_quote": "so it would appear they were working against the Deepking rather than for the Stone Guard",
+    "subject": "secret mission",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party keeps the red dragon egg a secret during the meeting.",
+    "source_quote": "Throughout the meeting, the party kept the red dragon egg a secret",
+    "subject": "egg secrecy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde noticed the egg in the flumph's visions but did not realize it was the egg lost by the Keepers of the Flame.",
+    "source_quote": "Errde noticed the egg in the flumph's visions but could not imagine it was the very egg the Keepers of the Flame had lost",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a 20 on his blurt mechanic and held his tongue regarding the egg.",
+    "source_quote": "Thorin, under his new dice-driven \"blurt\" rule, rolled a 20 and held his tongue",
+    "subject": "Thorin's silence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde asks the party why they did not bring the papers despite knowing the evidence was insufficient.",
+    "source_quote": "Errde asks Daz why, knowing the evidence was insufficient, they didn't bring the papers",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz claims the caves are not as safe as they used to be, causing them to retreat for fresh air.",
+    "source_quote": "Daz: \"The caves are not as safe as they used to be\u2026 we came back up to get some fresh air, reset.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states that they are looking for reinforcements.",
+    "source_quote": "Gyrgum: \"Yeah, we're looking for some reinforcements too.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde cannot send Duergar reinforcements.",
+    "source_quote": "Errde cannot send Duergar reinforcements",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde proposes working together to solve collective problems using the party's crew and her weapons.",
+    "source_quote": "Errde cannot send Duergar reinforcements, but proposes: \"You've got a crew, and I have weapons. Perhaps we can work together to solve our collective problems.\"",
+    "subject": "partnership proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde praises Daz's thinking as needed for leading operations.",
+    "source_quote": "Errde praises Daz: \"That is the kind of thinking that is needed to lead these kinds of operations.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses uncertainty about being the leader.",
+    "source_quote": "Daz: \"I don't know that I'm the leader, but.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses not to mention that they also work for the Keepers of the Flame.",
+    "source_quote": "The party chooses not to mention that they also work for the Keepers of the Flame",
+    "subject": "non-exclusive agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if the agreement is non-exclusive.",
+    "source_quote": "Thorin: \"this is not an exclusive agreement, right?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum jokes about checking the agreement against their other agreements.",
+    "source_quote": "Gyrgum: \"Here, let me check it against my other agreements.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde emphasizes that the purpose of the mission must be kept secret.",
+    "source_quote": "She stresses that \"it is crucially important that the purpose of your mission be kept secret.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish a cover as dissidents.",
+    "source_quote": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish their cover as dissidents against the Deepking",
+    "subject": "clan visits directed",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow.",
+    "source_quote": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is openly opposed to the Deepking.",
+    "source_quote": "It is openly opposed to the Deepking",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde states that talking to Clan Ironhead will make it clear the party is working against the king.",
+    "source_quote": "Errde: \"Talking to them will make it clear that you're working against the king. Thus, no one would suspect we would be allied with each other.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over.",
+    "source_quote": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar has been chafing at new rules and regulations.",
+    "source_quote": "They have been chafing at new rules and regulations",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that Clan Xardelvar is advocating for smaller government.",
+    "source_quote": "Gyrgum: \"They're advocating for smaller government.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde marks Clan Ironhead and Clan Xardelvar on the map.",
+    "source_quote": "Errde marks both clans on the map",
+    "subject": "map marking",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Clan Xardelvar is located in the bottom left-hand corner of the map.",
+    "source_quote": "Clan Xardelvar is in the bottom left-hand corner",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Errde demands the party return to the Whorlstone Caverns for evidence.",
+    "source_quote": "She then demanded the party return to the Whorlstone Caverns with proper documented evidence",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron is a merchant whom the party previously saved from an assassination attempt.",
+    "source_quote": "The party then paid a visit to Werz Saltbaron, the merchant they had previously saved from an assassination attempt.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron greeted the party with surprise and relief that they were still alive.",
+    "source_quote": "He greeted them with genuine surprise and relief that they were still alive.",
+    "subject": "Werz greets party",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz Saltbaron rewarded each member of the group with an obsidian gemstone worth ten gold pieces.",
+    "source_quote": "rewarding each member of the group with an obsidian gemstone worth ten gold pieces.",
+    "subject": "obsidian gemstone",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir asks whether the gem reward includes the flumph and the ghost.",
+    "source_quote": "Zalthir asks whether \"each\" includes the flumph and the ghost.",
+    "subject": "Zalthir asks about gems",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph plays with its gem using its tentacles, gets bored, and drops it.",
+    "source_quote": "The flumph plays with its gem using its tentacles, gets bored, and drops it",
+    "subject": "Flumph drops gem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz picks up the gemstone dropped by the flumph.",
+    "source_quote": "Daz picks it up.",
+    "subject": "Daz picks up gem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost cannot pick up its gemstone.",
+    "source_quote": "The ghost can't pick up its gem",
+    "subject": "Ghost cannot pick up gem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost insists that Gyrgum deposit its gemstone in his grave in Blingdenstone.",
+    "source_quote": "insists that Gyrgum, who carries his bones, deposit it in his grave in Blingdenstone.",
+    "subject": "Ghost requests burial",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests the ghost haunt the gem, but this idea fails because Gyrgum claims he already tried it.",
+    "source_quote": "Gyrgum's idea that the ghost haunt the gem fails: \"Trust me, I tried.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron offers to cover the party's lodging expenses at the local tavern.",
+    "source_quote": "do not worry about those fees. They considered them covered.",
+    "subject": "Werz covers lodging",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz perceives that Werz is being overly flattering to set up a request for a favor, rolling a 17 on insight.",
+    "source_quote": "Daz perceives that Werz is being overly flattering to set up a request for a favor (Daz rolled 17 on insight",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron claims to have no idea why he is on the Empty-Scabbard Killers' list of targets.",
+    "source_quote": "claimed to have no idea why",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states that he thought the assassin's guild was a children's story until they tried to kill him.",
+    "source_quote": "\"I'd heard there was an assassin's guild, but thought it was a children's story until, well, they tried to kill me.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron reveals a suspicious depth of knowledge about how assassins operate.",
+    "source_quote": "\"assassins are not your enemy. They are professionals.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reads that Werz Saltbaron knows way too much about working with assassins.",
+    "source_quote": "Daz rolls an 18 and reads that Werz \"knows way too much about working with assassins.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz theorizes that Werz Saltbaron might be in the find out phase.",
+    "source_quote": "Daz theorizes Werz \"might be in the find out phase.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests Werz Saltbaron may have stiffed an assassin on the bill.",
+    "source_quote": "Gyrgum suggests he may have stiffed an assassin on the bill.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron claims the Stone Guard would consider the existence of the assassin's guild a children's tale.",
+    "source_quote": "He says \"they would never believe me. They would consider it a children's tale.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking has decided that the weaponsmithing monopoly will be held only by his family's clan.",
+    "source_quote": "The Deepking has decided the weaponsmithing monopoly will be held only by his family's clan.",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown more paranoid because of his friend Shal.",
+    "source_quote": "He has grown more paranoid because of his friend Shal",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "People who compete with the Deepking's trade have been disappearing.",
+    "source_quote": "\"people have been disappearing\u2026 People who compete with his trade.\"",
+    "subject": "Disappearing competitors",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron admits he might have helped some clans sell goods on the down low.",
+    "source_quote": "\"if I did help some clans sell some goods on the down low, that's no reason to kill me.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that Werz Saltbaron's admission sounds like reason enough to be killed.",
+    "source_quote": "Gyrgum: \"It sounds like it was reason enough.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Werz Saltbaron suggests Clan Ironhead might also be the one hiring the assassins.",
+    "source_quote": "Werz suggests Clan Ironhead might also be the one hiring the assassins.",
+    "subject": "Clan Ironhead suspicion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron attempts to hire the party to eliminate the assassins targeting him, offering future trade favors in Blingdenstone as compensation.",
+    "source_quote": "offering future trade favors in Blingdenstone as compensation.",
+    "subject": "Werz hires party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests Werz hire the assassins to kill other assassins.",
+    "source_quote": "Thorin: \"Why don't you hire the assassins to kill the assassins?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states that hiring assassins to kill assassins would be expensive.",
+    "source_quote": "Werz: \"That would be expensive.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin accuses Werz of using the party as cut-rate assassins.",
+    "source_quote": "Thorin: \"So you're just using us as cut-rate assassins.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposes using Werz Saltbaron as bait to catch the next assassin.",
+    "source_quote": "Gyrgum proposes using Werz as bait to catch the next assassin.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron refuses to act as bait because he claims not to be a heroic individual.",
+    "source_quote": "Werz refuses: \"I'm not that kind of heroic individual.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron notes that the party arrived with gnomes and that some members do not look like they belong in the Underdark.",
+    "source_quote": "Werz notes the party arrived with gnomes, that \"some of you don't look like you belong in the Underdark,\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron suggests the party may end up in Blingdenstone needing a favor.",
+    "source_quote": "that they may end up in Blingdenstone needing a favor.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Members of the Stone Guard have recently begun accepting bribes.",
+    "source_quote": "Werz also reveals that members of the Stone Guard have recently been taking bribes",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard was previously noted for their absolute integrity and were described as very boring.",
+    "source_quote": "\"The Stone Guards were always noted for their absolute integrity\u2026 They were very boring that way.\"",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron places the corruption of the Stone Guard in the same timeline as the rest of the city's recent craziness.",
+    "source_quote": "He places the change in the same timeline as the rest of the city's recent craziness",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron suggests the party could offer the guards money if they get into trouble.",
+    "source_quote": "suggests the party could always offer the guards money if they get into trouble.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron warns that he would not tell Errde about the bribes if he wanted to keep his head.",
+    "source_quote": "He adds that he \"wouldn't tell Errde this if I wanted to keep my head.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron clarifies that the assassins must stop being a problem for him while he remains alive.",
+    "source_quote": "the assassins must stop being a problem for him, \"But with me still alive.\"",
+    "subject": "Werz clarifies terms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron frames the arrangement as trade based on comparative advantage.",
+    "source_quote": "\"A comparative advantage, I am told, is a property that results in better outcomes for everyone.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Werz Saltbaron warns that Gracklstugh is a tinderbox where the right information could ignite all-out war.",
+    "source_quote": "Werz warns the party that the city is a tinderbox, and that providing the right information to the right people at the right time could ignite an all-out war.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if telling everybody everything would be bad.",
+    "source_quote": "Thorin: \"So telling everybody everything would be bad?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states that the party has already been paid not to tell people about the situation.",
+    "source_quote": "Gyrgum: \"We've already been paid not to tell them about it.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offers an optional NDA to Werz Saltbaron to keep their dealings secret.",
+    "source_quote": "Gyrgum offered an optional NDA \u2014 which Werz heard as a \"Non-Demonic Agreement\"",
+    "subject": "NDA negotiation start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost says \"boo\" to intimidate Werz Saltbaron into signing the NDA.",
+    "source_quote": "the ghost said \"boo.\"",
+    "subject": "ghost intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states he will gladly sign the contract because it will be enforced by a fearsome ghost.",
+    "source_quote": "Werz: \"I will gladly sign such a contract, especially if it will be enforced by a fearsome ghost like this.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum drafts a formal contract with his fancy pen.",
+    "source_quote": "Gyrgum drafts a formal contract with his fancy pen",
+    "subject": "contract drafting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposes the NDA price starts at 1,250 gold pieces but offers it for 1,000.",
+    "source_quote": "normally our NDA comes for the low, low price of 1,250 gold. But today\u2026 we'd be willing to go down to a flat thousand gold pieces.",
+    "subject": "Daz price proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he almost blurted out how much money Daz has, but failed his save.",
+    "source_quote": "Thorin: \"I almost blurted out how much money you got, but I missed the save.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party raises the NDA price from 1,000 to 1,100 gold pieces after Werz haggles.",
+    "source_quote": "The party raises the price from 1,000 to 1,100 gold pieces after he questions their initial offer.",
+    "subject": "price increase",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron calls the 1,000 gold piece price a form of highway robbery.",
+    "source_quote": "Werz attempts to haggle, \"A thousand gold pieces. This is a form of highway robbery.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron backpedals, stating he thought it would be insulting to accept the first offer.",
+    "source_quote": "Werz backpedals: \"I thought it would be insulting for me to accept your first offer.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron pays the 1,100 gold piece fee, concluding the NDA.",
+    "source_quote": "Werz pays the 1,100 gold piece fee and the NDA is concluded.",
+    "subject": "NDA concluded",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Werz Saltbaron provides information about Clan Ironhead.",
+    "source_quote": "Werz provides information about various Duergar clans, including Clan Ironhead",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a clan of armorsmiths who complain their stores have been raided recently.",
+    "source_quote": "Clan Thrazgad is another clan of armorsmiths who complain their stores have been raided recently.",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xundom will back the Deepking if there is a contest for power.",
+    "source_quote": "Clan Xundom will back the Deepking if there's any contest for power.",
+    "subject": "Clan Xundom",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party presses Werz Saltbaron on the fact that only the NDA's price was negotiated, not the job itself.",
+    "source_quote": "The party presses Werz on the fact that only the NDA's price was negotiated, never the job itself.",
+    "subject": "job clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron offers his services to Blingdenstone in exchange for the party removing the assassins targeting him.",
+    "source_quote": "Werz says the deal is that they remove the assassins and he offers his services to Blingdenstone.",
+    "subject": "assassin deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron protests that the party has bled him dry and he has to maintain his profit margins.",
+    "source_quote": "He protests, \"You've bled me dry,\" and says he has to maintain his profit margins.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states they can refund the money and expose Werz Saltbaron's activities.",
+    "source_quote": "Daz: \"Well, we can refund the money and let everybody know what you're up to.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz Saltbaron gives the party five special gems as a symbol of good faith.",
+    "source_quote": "Werz gives the party five special gems as a symbol of good faith",
+    "subject": "special gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The special gems are valued at 100 gold pieces each.",
+    "source_quote": "Daz asks their value, and it is put at 100 GP each.",
+    "subject": "special gems",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron suggests the party talk to their Gnomish friends about why the gems are special.",
+    "source_quote": "Werz: \"before you sell these gems, I suggest you talk to your Gnomish friends and ask them why these are special.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he is hoping the gems are not cursed.",
+    "source_quote": "Gyrgum: \"I'm hoping they're not cursed.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to deal with the assassins targeting Werz Saltbaron in exchange for his influence and trade favors in Blingdenstone.",
+    "source_quote": "The party agrees to deal with the assassins targeting Werz in exchange for his influence and trade favors in Blingdenstone.",
+    "subject": "party agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz hands over five unusual gems to the party as a gesture of good faith for the assassin job.",
+    "source_quote": "As a gesture of good faith, Werz handed over five unusual gems",
+    "subject": "Werz offers gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The five gems given by Werz are identified by Jimjar as empty spell gems.",
+    "source_quote": "he identified them as empty spell gems",
+    "subject": "five unusual gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The empty spell gems are of the kind used in the magical defenses of Blingdenstone.",
+    "source_quote": "the very kind used in the magical defenses of Blingdenstone",
+    "subject": "empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine is a gnomish alchemist in Blingdenstone.",
+    "source_quote": "a gnomish alchemist named Kazook Pickshine",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine would pay handsomely for the empty spell gems.",
+    "source_quote": "Kazook Pickshine would pay handsomely for them",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "To anyone other than Kazook Pickshine, the gems are considered banal and not worth their apparent value.",
+    "source_quote": "kind of banal gems",
+    "subject": "empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unknown how Werz came into possession of the empty spell gems.",
+    "source_quote": "unsettling question of how Werz had come to possess them",
+    "subject": "source of gems",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to Ghohlbrorn's Lair to collect previously ordered magical equipment.",
+    "source_quote": "the party collected the magical equipment they had previously ordered",
+    "subject": "Ghohlbrorn's Lair",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir receives two enchanted tattoos that were ordered as magical equipment.",
+    "source_quote": "two enchanted tattoos for Zalthir",
+    "subject": "two enchanted tattoos",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin acquires a +1 longsword that was ordered as magical equipment.",
+    "source_quote": "a +1 longsword for Thorin",
+    "subject": "+1 longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's original order included splint armor, a +1 longsword, and darts.",
+    "source_quote": "Thorin's order had been splint armor, a +1 longsword if possible, and darts",
+    "subject": "Thorin's gear order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical equipment was purchased at a 10% discount using pooled party funds.",
+    "source_quote": "paid for at a 10% discount out of pooled party funds",
+    "subject": "equipment purchase",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar heard Werz's name in Blingdenstone and believes Werz is honest about being worth trading with.",
+    "source_quote": "Jimjar had heard Werz's name in Blingdenstone and thinks Werz is probably honest",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum thinks the gems might be valuable to him as a cleric depending on their usage.",
+    "source_quote": "Gyrgum, as a cleric, thinks they might be valuable to him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a myconid sprout who is Stool's friend.",
+    "source_quote": "Stool recognised it as his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls seeing an unhappy myconid sprout near a group of strangely dancing myconids in the caverns.",
+    "source_quote": "Zalthir recalled an unhappy myconid sprout he had seen near a group of strangely dancing myconids",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool pleads with the party to drop everything and save Rumpadump.",
+    "source_quote": "pleaded with the party to drop everything and save him",
+    "subject": "Stool's plea",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wants to deal with the assassins before detouring to save Rumpadump.",
+    "source_quote": "Gyrgum wanted to deal with the assassins first",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to detour to save Rumpadump because his location lies along their route to the assassins.",
+    "source_quote": "since Rumpadump lay on the way, the group agreed to make the detour",
+    "subject": "route decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool describes Prince Derendil as 'very civilized'.",
+    "source_quote": "Stool contrasts the \"very civilized\" Prince Derendil",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool claims myconids do not attack people unnecessarily but will attack back if attacked.",
+    "source_quote": "Myconids don't attack people unnecessarily\u2026 But if you attack us, we attack back",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool describes most quaggoths as brutish and savage.",
+    "source_quote": "most quaggoths, which he calls brutish and savage",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool asserts that it is in the nature of quaggoths to be violent because they are bred for it.",
+    "source_quote": "It's in their nature to be violent. They are bred to be violent",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin compares Stool's view on breeding quaggoths to eugenics, noting it is wrong for sentient people.",
+    "source_quote": "Thorin: \"That's eugenics\u2026 But with sentient people, that's wrong.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares the selective breeding of quaggoths to how orange carrots came to be.",
+    "source_quote": "Daz: \"It is how we ended up with orange carrots.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool states that everyone has a purpose in the circle.",
+    "source_quote": "Stool: \"Everyone has a purpose in the circle.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool fears that other members of his circle may be where Rumpadump is.",
+    "source_quote": "He fears other members of his circle may be there too",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool promises the party that Rumpadump will ensure they don't get hurt.",
+    "source_quote": "Stool: \"I promise you, Rumpadump will make sure we don't get hurt.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sets their next goal to get Werz removed from the assassins' list.",
+    "source_quote": "the party sets its next goal: get Werz removed from the assassins' list",
+    "subject": "next goal set",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin plans to tell the assassins that radical transparency would solve the problem.",
+    "source_quote": "Thorin plans to tell the assassins radical transparency would solve everything",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests that radical transparency means threatening to kill the assassins if they kill Werz.",
+    "source_quote": "Gyrgum: \"Radically transparent would probably be: you don't kill him, or we'll kill you.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party visited Clan Ironhead under the pretense of establishing their cover as dissidents against the Deepking.",
+    "source_quote": "the party visited Clan Ironhead under the pretense of establishing their cover as dissidents against the Deepking.",
+    "subject": "Clan Ironhead visit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Clan Ironhead was pleased but confused to hear the party was sent by Errde.",
+    "source_quote": "The clan is pleased but confused to hear they were sent by Errde.",
+    "subject": "Errde referral confusion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde sent the party to Clan Ironhead.",
+    "source_quote": "hear they were sent by Errde",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thangus Ironhead is the leader of Clan Ironhead.",
+    "source_quote": "Thangus Ironhead, the clan's leader",
+    "subject": "Thangus Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thangus Ironhead is the grandfather of Grinta Ironhead.",
+    "source_quote": "Grinta Ironhead \u2014 granddaughter of Thangus",
+    "subject": "Thangus Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asks Thangus Ironhead about the dangers in the dungeons.",
+    "source_quote": "Thorin opens with: \"we heard there's some nasty things going down in the dungeons. Do you know anything about that?\"",
+    "subject": "Whorlstone danger question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thangus Ironhead publicly dismisses the dangers of the Whorlstone Tunnels as mere rumors for children.",
+    "source_quote": "Thangus Ironhead publicly dismisses the dangers of the Whorlstone Tunnels as mere rumors for children",
+    "subject": "Thangus dismissal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin responds to the dismissal by agreeing to go play there.",
+    "source_quote": "Thorin replied, \"Okay, we'll go play there.\"",
+    "subject": "Thorin response",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grinta Ironhead pulls the party aside privately as they leave Clan Ironhead.",
+    "source_quote": "As the party leaves, Grinta Ironhead \u2014 granddaughter of Thangus \u2014 pulls them aside privately",
+    "subject": "Grinta intervention",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grinta Ironhead introduces herself as the granddaughter of Thangus.",
+    "source_quote": "\"my name is Grinta Ironhead.\"",
+    "subject": "Grinta Ironhead",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Grinta Ironhead acknowledges that the city is a political tinderbox.",
+    "source_quote": "Grinta reveals she knows the city is a political tinderbox",
+    "subject": "Grinta Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead has suffered greatly under the Deepking's trade monopoly.",
+    "source_quote": "her clan had suffered greatly under the Deepking's trade monopoly",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grinta Ironhead knows there is something going on in the Whorlstone Caverns.",
+    "source_quote": "\"And I know there's something going on in the Whorlstone Caverns.\"",
+    "subject": "Grinta Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grinta Ironhead offers the party favorable trade terms from Clan Ironhead if the Deepking were unseated.",
+    "source_quote": "Grinta offers the party a lucrative merchant deal: if the Deepking were unseated, Clan Ironhead \u2014 which would become the premier clan \u2014 would offer favorable trade terms to those who helped bring about his departure.",
+    "subject": "Clan Ironhead offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grinta Ironhead states that Clan Ironhead would rise to become the premier clan if the Deepking were unseated.",
+    "source_quote": "Clan Ironhead \u2014 which would rise to become the premier clan",
+    "subject": "Clan Ironhead status prediction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The assistance required by Clan Ironhead is indirect, described as a discount on any goods.",
+    "source_quote": "The help would be \"Not directly\": in effect, a discount on any goods.",
+    "subject": "Nature of assistance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grinta states Clan Ironhead would be free to do orders advantageous to those present when the Deepking disappeared.",
+    "source_quote": "\"Clan Ironhead would be free to do orders that were advantageous to those who happened to be around when the Deepking disappeared.\"",
+    "subject": "Trade advantage clause",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests to Clan Ironhead that they stay underground and start a trade network.",
+    "source_quote": "Thorin: \"have you guys considered maybe we should just stay down here and start a trade network?\"",
+    "subject": "Thorin alternative proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar's eyes lit up upon hearing the offer.",
+    "source_quote": "Jimjar's eyes lit up",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar notes quietly that the arrangement would be enormously beneficial to the people of Blingdenstone.",
+    "source_quote": "he noted quietly that such an arrangement would be enormously beneficial to the people of Blingdenstone",
+    "subject": "Jimjar reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party prepared to descend once more into the Whorlstone Caverns.",
+    "source_quote": "the party prepared to descend once more into the darkness of the Whorlstone Caverns",
+    "subject": "Party preparation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The goal for the next session is to get Werz removed from the assassins' list.",
+    "source_quote": "The next session's goal is to get Werz removed from the assassins' list.",
+    "subject": "Werz assassination list",
+    "quote_verified": true
+  }
+]

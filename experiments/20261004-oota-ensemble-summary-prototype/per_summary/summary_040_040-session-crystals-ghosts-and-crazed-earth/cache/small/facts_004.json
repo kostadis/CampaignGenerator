@@ -1,0 +1,86 @@
+[
+  {
+    "type": "location",
+    "fact": "The Cultivation Cave is a vast complex where deep gnomes grow useful fungi for cooking and crafting.",
+    "source_quote": "Cultivation Cave, a vast complex where the deep gnomes grew useful fungi for cooking and crafting",
+    "subject": "Cultivation Cave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stoneheart Enclave manages the Cultivation Cave and supplies the party with fungi.",
+    "source_quote": "managed by the Stoneheart Enclave and devoted to fungi used by deep gnomes",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A member of the Stoneheart Enclave greeted the party, having heard they intended to cleanse the temple, and provided them with fresh fungi.",
+    "source_quote": "A member of the Stoneheart Enclave welcomed them and supplied the freshest fungi from the garden",
+    "subject": "Stoneheart Enclave member",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Rockblight can be entered through a fortified staging area with fences or through a route obstructed by dirt and gravel.",
+    "source_quote": "The Rockblight could be entered through a fortified staging area with multiple fences or through a route obstructed by dirt and gravel",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party selected the dirt and gravel route to enter the Rockblight.",
+    "source_quote": "The party selected the gravel route",
+    "subject": "route selection",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool plowed through the dirt and gravel blocking the alternate entrance to the Rockblight.",
+    "source_quote": "Glabbagool enthusiastically ate mushrooms and plowed through the dirt and gravel blocking the alternate entrance",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool sprayed debris aside like a gigantic transparent snowblower while excavating.",
+    "source_quote": "spraying debris aside like a gigantic transparent snowblower",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool consumed mushrooms along the route while clearing the path.",
+    "source_quote": "Glabbagool was delighted by the supplies and consumed mushrooms along the route while clearing a path through the cave",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool initially appeared prepared to remain behind but happily accompanied the party into the Rockblight.",
+    "source_quote": "Glabbagool initially appeared prepared to remain behind for \u201cmore important activities,\u201d but happily accompanied the party",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party excavated for several hours to reach the caverns of the Rockblight.",
+    "source_quote": "After several hours of excavation, the party reached the caverns",
+    "subject": "excavation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party briefly worried about the possibility of a hallucinating gelatinous cube.",
+    "source_quote": "The party briefly worried about the possibility of a hallucinating gelatinous cube",
+    "subject": "hallucination worry",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party intends to cleanse the temple.",
+    "source_quote": "having heard that they intended to cleanse the temple",
+    "subject": "temple cleansing",
+    "quote_verified": true
+  }
+]

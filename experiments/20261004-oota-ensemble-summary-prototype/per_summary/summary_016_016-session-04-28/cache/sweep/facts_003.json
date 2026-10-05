@@ -1,0 +1,198 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost who can slip effortlessly through stone.",
+    "source_quote": "Pelek slipped effortlessly through the stone as only a ghost could",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek scouts ahead through the stone.",
+    "source_quote": "Pelek slipped effortlessly through the stone as only a ghost could, scouting ahead",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek confirms that a tunnel continues on the other side.",
+    "source_quote": "confirming that a tunnel continued on the other side",
+    "subject": "Pelek scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rules out the cracks as a passage.",
+    "source_quote": "With the cracks ruled out as a passage, the party turned back to the dark pool",
+    "subject": "cracks ruled out",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz steps to the water's edge.",
+    "source_quote": "Daz stepped to the water's edge and began freezing successive sections of the surface",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a makeshift ice bridge across the dark pool.",
+    "source_quote": "conjuring a makeshift ice bridge that stretched all the way across",
+    "subject": "Daz freezing ice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The whole group walks safely over the black water to the far shore.",
+    "source_quote": "The whole group walked safely over the black water to the far shore",
+    "subject": "party crossing pool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum eats Pygmywort to shrink himself.",
+    "source_quote": "Gyrgum eats Pygmywort to shrink himself through the narrow rock cracks",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum cannot get small enough to pass through the cracks.",
+    "source_quote": "but cannot get small enough to pass",
+    "subject": "Gyrgum shrinking attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pygmywort works like enlarge/reduce, taking a Medium creature to Small.",
+    "source_quote": "The mushroom works like enlarge/reduce, taking a Medium creature only to Small",
+    "subject": "Pygmywort",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The rock cracks require a Tiny creature to pass.",
+    "source_quote": "while the cracks require Tiny",
+    "subject": "rock cracks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum gets the impression he might be smaller for a longer period of time if he eats more.",
+    "source_quote": "but you do get the distinct impression you might be smaller for a longer period of time",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wonders whether the mushrooms behave like Photoshop zoom.",
+    "source_quote": "Thorin wonders whether the mushrooms behave like Photoshop zoom",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares the mushrooms to adding a picture to a Word document.",
+    "source_quote": "Daz compares them to adding a picture to a Word document",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The large, dark pool is an alternate route to the one via the cracks.",
+    "source_quote": "Turning to the alternate route, the party returns to the large, dark pool",
+    "subject": "large, dark pool",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The ice bridge is temporary and formed by freezing successive sections of water.",
+    "source_quote": "Daz uses magic to freeze successive sections of the water, creating a temporary ice bridge",
+    "subject": "ice bridge",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz can freeze a five-foot cube.",
+    "source_quote": "Daz can freeze a five-foot cube",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz can have no more than two non-instantaneous effects active at once.",
+    "source_quote": "and have no more than two non-instantaneous effects active at once",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests layering five-foot chunks into a bridge.",
+    "source_quote": "Zalthir suggests layering five-foot chunks into a bridge",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "As each new slab forms, the old one melts behind the party.",
+    "source_quote": "As each new slab forms, the old one melts behind them",
+    "subject": "ice bridge melting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin makes Daz perform 'Spider-Man motions' while freezing the bridge.",
+    "source_quote": "Thorin has him making \"Spider-Man motions.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum likes the 'iceberg spell'.",
+    "source_quote": "Gyrgum: \"I like the iceberg spell.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum learns that staying small weakens his Strength attacks.",
+    "source_quote": "Once across the pool, Gyrgum learns that staying small weakens his Strength attacks",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Bigwig is the antidote to Pygmywort.",
+    "source_quote": "so he takes a Bigwig (\"the antidote\") to restore his size",
+    "subject": "Bigwig",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes a Bigwig to restore his size.",
+    "source_quote": "so he takes a Bigwig (\"the antidote\") to restore his size",
+    "subject": "Gyrgum taking Bigwig",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "More Pygmywort and Bigwig grow on the far shore.",
+    "source_quote": "More Pygmywort and Bigwig grow on the far shore",
+    "subject": "far shore",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum stocks an ample supply of the mushrooms.",
+    "source_quote": "and he makes sure to stock \"an ample supply.\"",
+    "subject": "Gyrgum stocking supplies",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pygmywort is a mushroom.",
+    "source_quote": "The mushroom works like enlarge/reduce",
+    "subject": "Pygmywort",
+    "quote_verified": true
+  }
+]

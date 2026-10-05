@@ -1,0 +1,247 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gartokkar answers the door with barely concealed surprise upon the party's return.",
+    "source_quote": "the man answered with barely concealed surprise",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar had assumed the party was caught in a crossfire between wizards and assassins.",
+    "source_quote": "quietly assumed the party had been caught in the crossfire",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar remembered Daz only as a third-level drow wizard.",
+    "source_quote": "He remembered Daz only as a third-level drow wizard",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz plays coy about which egg Gartokkar meant, recalling non-disclosure terms.",
+    "source_quote": "Daz, recalling the non-disclosure terms, played coy about which egg Gartokkar meant",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar calls Daz a fool.",
+    "source_quote": "Gartokkar called him a fool",
+    "subject": "Gartokkar calls Daz a fool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar demands someone say something coherent.",
+    "source_quote": "demanded someone \"say something coherent\"",
+    "subject": "Gartokkar demands coherence",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum answers that the egg has been obtained and is glorious.",
+    "source_quote": "Gyrgum answered that the egg had been obtained \"and it is glorious\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The party hands over the corrupted red dragon egg to Gartokkar.",
+    "source_quote": "The party handed over the corrupted red dragon egg",
+    "subject": "corrupted red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party notes the egg was recovered from a dark ritual and bears strange markings.",
+    "source_quote": "noting plainly that it had been recovered from a dark ritual and bore strange markings",
+    "subject": "egg description",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar accepts the egg without ceremony.",
+    "source_quote": "Gartokkar accepted it without ceremony",
+    "subject": "Gartokkar accepts egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a fat, blimped-out, overly pedantic red dragon.",
+    "source_quote": "The DM described Themberchaud as \"a fat, blimped-out, overly pedantic red dragon\"",
+    "subject": "Themberchaud",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The egg's purpose is to replace Themberchaud before he realizes he is not in control of Gracklstugh.",
+    "source_quote": "provide a means of replacing the dragon Themberchaud before the beast grew wise to the fact that he was not truly in control of Gracklstugh",
+    "subject": "Themberchaud's control",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM reminds the party they have separately agreed to act as Themberchaud's agents.",
+    "source_quote": "The DM also reminded the party that they had separately agreed to act as Themberchaud's agents",
+    "subject": "party agreement reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar pays the party their remaining fee.",
+    "source_quote": "Gartokkar paid the party their remaining fee",
+    "subject": "final payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The original deal was 2,000 gp with 600 gp paid up front plus a 1,000 gp confidentiality rider.",
+    "source_quote": "The original deal was 2,000 gp with 600 gp paid up front, plus a 1,000 gp confidentiality rider",
+    "subject": "payment calculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The final payment was 2,400 gp.",
+    "source_quote": "This payment was 2,400 gp",
+    "subject": "payment amount",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "After the split, the party's spreadsheet shows 1,042 gp plus one electrum each.",
+    "source_quote": "the party's spreadsheet showed 1,042 gp plus one electrum each",
+    "subject": "party wealth update",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gartokkar reminds them the arrangement is to remain between them alone.",
+    "source_quote": "He reminded them in no uncertain terms that their arrangement was to remain between them alone",
+    "subject": "confidentiality warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking's agents are rumored to be everywhere.",
+    "source_quote": "repeated the rumor that the Deepking's agents were everywhere",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking's agents are a mercenary band of four so fierce even the Stone Guard fear them.",
+    "source_quote": "They were a mercenary band of four so fierce that even the Stone Guard feared to face them",
+    "subject": "Deepking's agents",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin replies that they simply appeared small and insignificant.",
+    "source_quote": "Thorin replied that they simply appeared \"small and insignificant\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Gartokkar warns that the derro are on edge after the assassination of their leaders.",
+    "source_quote": "The derro are on edge after the assassination of their leaders",
+    "subject": "derro unrest",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard are doubling their patrols.",
+    "source_quote": "The Stone Guard were doubling their patrols, fearing something was about to erupt",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Mind flayer experiments left the derro unstable.",
+    "source_quote": "Mind flayer experiments had left them unstable",
+    "subject": "derro madness",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Blink pushed the derro into outright madness.",
+    "source_quote": "the Blink pushed them into outright madness",
+    "subject": "The Blink effect",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The derro High Council had long been co-opted leaders through whom the Deepking kept the derro in check.",
+    "source_quote": "Their High Council had long been co-opted leaders through whom the Deepking kept the derro in check",
+    "subject": "High Council history",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "After the Blink, the High Council resolved to rise against the king.",
+    "source_quote": "After the Blink, the council resolved to rise against the king",
+    "subject": "High Council rebellion",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The High Council turned to rituals of Demogorgon.",
+    "source_quote": "turned to rituals of Demogorgon",
+    "subject": "Demogorgon rituals",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Demonic bargains grant power at the cost of all restraint.",
+    "source_quote": "Such demonic bargains grant power at the cost of all restraint",
+    "subject": "demonic bargain cost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes about a new name to escape the Ember Vanguard's reputation.",
+    "source_quote": "The party jokes about a new name to escape the Ember Vanguard's reputation",
+    "subject": "new name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party is trying to escape the Ember Vanguard's reputation.",
+    "source_quote": "escape the Ember Vanguard's reputation",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's suggestion for a new name falls flat.",
+    "source_quote": "Thorin's suggestion falls flat",
+    "subject": "Thorin's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A 1,000 gp pearl item is still unsold.",
+    "source_quote": "A 1,000 gp pearl item is still unsold",
+    "subject": "1,000 gp pearl",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party prepares to sneak away toward the Darklake District.",
+    "source_quote": "The party prepares to sneak away toward the Darklake District",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wants to hear about the escalating tensions from afar.",
+    "source_quote": "And I would like to hear what happens from afar",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,247 @@
+[
+  {
+    "type": "npc",
+    "fact": "Hgraam is a Stone Giant.",
+    "source_quote": "After a long rant, long even by Stone Giant standards, about how no one takes the time to do anything anymore, Hgraam told them",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam tells the party it is time to leave because rocks need to be tended.",
+    "source_quote": "it is time for you to leave there are rocks that need to be tended.",
+    "subject": "Hgraam's farewell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam presents the party with a polished crystal.",
+    "source_quote": "he presented them with a remarkable gift: a polished crystal the length of a human forearm.",
+    "subject": "gifting the crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal is polished and the length of a human forearm.",
+    "source_quote": "a polished crystal the length of a human forearm.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal is imbued with the power to commune with animals, plants, and the dead.",
+    "source_quote": "It was imbued with the power to commune with animals, plants, and even the dead",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal sharpens the mind's eye when searching for hidden truths.",
+    "source_quote": "and to sharpen the mind's eye when searching for hidden truths.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal is referred to as the Stonespeaker Crystal.",
+    "source_quote": "The party discusses the properties of the newly acquired Stonespeaker Crystal.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal has 10 charges.",
+    "source_quote": "It has 10 charges, requires attunement, and grants advantage on Investigation.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal requires attunement.",
+    "source_quote": "It has 10 charges, requires attunement, and grants advantage on Investigation.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal grants advantage on Investigation.",
+    "source_quote": "It has 10 charges, requires attunement, and grants advantage on Investigation.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using speak with dead on the crystal costs four charges.",
+    "source_quote": "speak with dead costs four charges and speak with animals costs two.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Using speak with animals on the crystal costs two charges.",
+    "source_quote": "speak with dead costs four charges and speak with animals costs two.",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Attunement to the crystal cannot happen until tomorrow, after a long rest.",
+    "source_quote": "Attunement can't happen until tomorrow, after a long rest.",
+    "subject": "crystal attunement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM suggests the character with the highest Intelligence carry the crystal.",
+    "source_quote": "The DM suggests the character with the highest Intelligence carry it.",
+    "subject": "DM suggestion on carrier",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has an Intelligence score of 17.",
+    "source_quote": "Daz has INT 17 and Investigation +5, and Thorin has INT 14.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has Investigation +5.",
+    "source_quote": "Daz has INT 17 and Investigation +5, and Thorin has INT 14.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has an Intelligence score of 14.",
+    "source_quote": "Daz has INT 17 and Investigation +5, and Thorin has INT 14.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz is fine with someone else taking the crystal.",
+    "source_quote": "Daz is fine with someone else taking the crystal.",
+    "subject": "Daz declines crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin thinks speak with dead is the most useful power of the crystal.",
+    "source_quote": "Thorin thinks speak with dead is the most useful power",
+    "subject": "Thorin's opinion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin thinks animals and plants could say whether someone came this way.",
+    "source_quote": "animals and plants could say whether someone came this way",
+    "subject": "Thorin's opinion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is keen to meet the Deepking's advisor.",
+    "source_quote": "Gyrgum is keen to meet the Deepking's advisor.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking's advisor is referenced as a person Gyrgum wishes to meet.",
+    "source_quote": "Gyrgum is keen to meet the Deepking's advisor.",
+    "subject": "Deepking's advisor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warns Gyrgum that meeting the advisor might not have the desired effect.",
+    "source_quote": "The DM warns this \"might not have quite the effect you want,\" and it goes on the checklist for later.",
+    "subject": "DM warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro courier.",
+    "source_quote": "He is a derro courier who is linked to various factions.",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is linked to various factions.",
+    "source_quote": "He is a derro courier who is linked to various factions.",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unclear whether Droki belongs to a faction or just carries messages.",
+    "source_quote": "It is unclear whether he belongs to a faction or just carries their messages.",
+    "subject": "Droki's faction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is referenced as pointing the party toward Droki.",
+    "source_quote": "Both Errde Blackskull and Gartokkar pointed the party toward him.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is referenced as pointing the party toward Droki.",
+    "source_quote": "Both Errde Blackskull and Gartokkar pointed the party toward him.",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar are referenced as being likely slaughtered if they tried to enter the derro slum.",
+    "source_quote": "a derro living in a slum where \"any duergar that tried to get in there would probably get slaughtered\"",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is the original home of the city's derro slaves.",
+    "source_quote": "The DM describes the district as the original home of the city's derro slaves",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District remains a dark and dangerous ghetto.",
+    "source_quote": "which remains a dark and dangerous ghetto.",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The East Cleft District was settled after the derro earned their freedom.",
+    "source_quote": "The East Cleft District was settled after the derro earned their freedom.",
+    "subject": "East Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to head to the West Cleft District to track down Droki.",
+    "source_quote": "They plan to head to the West Cleft District to track down a Derro courier named Droki.",
+    "subject": "travel plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Upon reaching the entrance of the district, the party decides to consult Buppido.",
+    "source_quote": "they decide to pivot and consult Buppido for local intelligence.",
+    "subject": "pivot to Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is referenced as a source of local intelligence.",
+    "source_quote": "they decide to pivot and consult Buppido for local intelligence.",
+    "subject": "Buppido",
+    "quote_verified": true
+  }
+]

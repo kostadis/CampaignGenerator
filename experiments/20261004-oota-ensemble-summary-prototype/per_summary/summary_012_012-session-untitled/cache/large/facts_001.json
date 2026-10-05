@@ -1,0 +1,142 @@
+[
+  {
+    "type": "event",
+    "fact": "The party ties up their boat at Gracklstugh after traveling across the Darklake.",
+    "source_quote": "the party finally tied up their boat at the grim duergar city of Gracklstugh",
+    "subject": "arrival at Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a grim duergar city.",
+    "source_quote": "the grim duergar city of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A wave of acrid heat hits the party's faces upon arrival.",
+    "source_quote": "A wave of acrid heat slammed against their faces",
+    "subject": "arrival sensation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The city features countless forges reflected in the dark water.",
+    "source_quote": "the light of countless forges reflected off the dark water",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The streets are noisy with smiths, merchants, and slaves.",
+    "source_quote": "the rhythmic hammering of the city's smiths blended with the shouting of merchants and slaves",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow, svirfneblin, derro, orcs, and other races are present in the crowds.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "Gracklstugh residents",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is a duergar arms dealer.",
+    "source_quote": "Hemeth, the duergar arms dealer they had rescued",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth warns the party that non-duergar are permitted only in the Darklake district.",
+    "source_quote": "Hemeth... warned them that non-duergar were permitted only in the Darklake district",
+    "subject": "Hemeth's warning",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake district is fully enclosed by walls.",
+    "source_quote": "The district is fully enclosed by walls",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar guards can turn invisible at will.",
+    "source_quote": "Guards who could turn invisible at will enforced a code",
+    "subject": "duergar guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Theft in Gracklstugh is punishable by death on the spot without a trial.",
+    "source_quote": "theft was punishable by death on the spot, no trial required",
+    "subject": "city law",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Any duergar in sight counts as instant reinforcements.",
+    "source_quote": "any duergar in sight counted as instant reinforcements",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Corruption among the duergar is very rare.",
+    "source_quote": "Corruption among them is very rare",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "If word spreads that the party are escaped slaves, slavers might repossess them or sell them back to the drow.",
+    "source_quote": "if word got out they were escaped slaves, slavers might try to repossess them or sell them back to the drow",
+    "subject": "slave status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin objects that they were merely temporarily detained, not slaves.",
+    "source_quote": "Thorin objected that they had merely been \"temporarily detained.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party aims to resupply with better weapons and armor.",
+    "source_quote": "Their goals were clear: resupply with better weapons and armor",
+    "subject": "party goals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party aims to find information leading them out of the Underdark.",
+    "source_quote": "find information that might lead them out of the Underdark for good",
+    "subject": "party goals",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The longer route runs from Gracklstugh to the lost tomb marked on the dwarf's map.",
+    "source_quote": "The longer route ran from Gracklstugh to the lost tomb marked on the dwarf's map",
+    "subject": "lost tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is a possible exit point from the Underdark.",
+    "source_quote": "and from there to Blingdenstone, a possible exit point",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to head to the Blade Bazaar to trade and purchase supplies.",
+    "source_quote": "The party decides to head to the Blade Bazaar to trade and purchase supplies.",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  }
+]

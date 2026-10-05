@@ -1,0 +1,170 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Prayer of Healing on Thorin, Daz, Zalthir, himself, and the ghost.",
+    "source_quote": "Gyrgum casts Prayer of Healing on up to five creatures: Thorin, Daz, Zalthir, himself, and the ghost",
+    "subject": "Gyrgum's Prayer of Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prayer of Healing grants the target creatures the benefit of a short rest on the spot.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "short rest benefit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro messenger.",
+    "source_quote": "Droki, the derro messenger they were following, had fled ahead",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is characterized by the GM as a creature of ridiculous habits.",
+    "source_quote": "he was \"a creature of ridiculous habits\" who ran the same circuit",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki runs the same circuit, allowing the party to track him easily.",
+    "source_quote": "who ran the same circuit, so \"even a blind rat could follow his path.\"",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests avoiding staying in the fungus.",
+    "source_quote": "Thorin: \"I think it sounds like a good idea not to hang out in the fungus.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks if resting will cause them to lose their quarry.",
+    "source_quote": "Daz asks whether resting would lose their quarry.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is described as an ethereal ghostly companion.",
+    "source_quote": "their ethereal ghostly companion",
+    "subject": "the ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "Gyrgum casts Prayer of Healing on up to five creatures: Thorin, Daz, Zalthir, himself, and the ghost",
+    "subject": "the ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers his healing prayer as an alternative to a traditional short rest.",
+    "source_quote": "Gyrgum offers his healing prayer as an alternative, since it has the effect of a short rest",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts a spell using the first of his three 2nd-level spell slots.",
+    "source_quote": "It is the first of Gyrgum's three 2nd-level spell slots.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Prayer of Healing grants 2d8 healing to each target in addition to the benefits of a short rest.",
+    "source_quote": "Each gets a short rest's benefit plus an additional 2d8 healing.",
+    "subject": "Prayer of Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A player at the table comments that the spell is excellent.",
+    "source_quote": "boy that's a really excellent spell.",
+    "subject": "Prayer of Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows their quarry's route further southeast.",
+    "source_quote": "Restored, the group followed their quarry's route further southeast.",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural cave contains dancing myconids and two quaggoths.",
+    "source_quote": "A group of myconids was dancing frantically to a silent tune, accompanied by two hulking quaggoths covered in mushroom growths and yellow mold.",
+    "subject": "natural cave",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of myconids are dancing frantically to a silent tune.",
+    "source_quote": "A group of myconids was dancing frantically to a silent tune",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party's myconid friend previously taught them that myconids do not dance.",
+    "source_quote": "The party had learned from their myconid friend that myconids simply do not dance",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A quaggoth is covered in mushroom growths and yellow mold.",
+    "source_quote": "two hulking quaggoths covered in mushroom growths and yellow mold",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoths accompany the dancing myconids.",
+    "source_quote": "accompanied by two hulking quaggoths covered in mushroom growths and yellow mold",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The quaggoths are hulking.",
+    "source_quote": "two hulking quaggoths covered in mushroom growths and yellow mold",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to leave the strange cave scene undisturbed.",
+    "source_quote": "they chose to leave the strange scene undisturbed and move on.",
+    "subject": "decision to leave cave",
+    "quote_verified": true
+  }
+]

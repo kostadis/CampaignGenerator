@@ -1,0 +1,93 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is currently standing in the sweltering industrial heart of Gracklstugh, surrounded by forges and hammers.",
+    "source_quote": "sweltering industrial heart of Gracklstugh, surrounded by the roar of forges and the clang of hammers",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Heavy barred gates separate the industrial heart of Gracklstugh from the Darklake.",
+    "source_quote": "staring down the heavily barred gates that separated them from the Darklake",
+    "subject": "Gates of Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party debates how to bypass the gates, considering bluffing, presenting themselves openly, or other schemes.",
+    "source_quote": "They debated their options: bluffing their way through, presenting themselves openly, or some other desperate scheme.",
+    "subject": "escape planning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests pole-vaulting over the gates to avoid detection.",
+    "source_quote": "Thorin suggested pole-vaulting over the gates, and Gyrgum pointed out that sneaking is hard in a city full of invisible people.",
+    "subject": "Thorin's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum points out that sneaking is difficult because the city is full of invisible people.",
+    "source_quote": "Gyrgum pointed out that sneaking is hard in a city full of invisible people.",
+    "subject": "Gyrgum's observation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Many inhabitants of Gracklstugh possess innate invisibility.",
+    "source_quote": "a city full of invisible people",
+    "subject": "Gracklstugh inhabitants",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A young red dragon named Themberchaud, the Wyrmsmith of Gracklstugh, is diving toward the party from the cavern heights.",
+    "source_quote": "A young red dragon, voluminous and ungainly, came dive-bombing toward them out of the cavern heights. It was Themberchaud, the Wyrmsmith of Gracklstugh",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud spotted the party during their previous fight.",
+    "source_quote": "he had spotted them during their fight.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud arrives dive-bombing toward the party.",
+    "source_quote": "A young red dragon, voluminous and ungainly, came dive-bombing toward them out of the cavern heights.",
+    "subject": "Themberchaud's arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has already handed off Themberchaud's egg and possesses no other explanation for their presence.",
+    "source_quote": "The party had already handed off his egg, so they had nothing on them to explain the visit.",
+    "subject": "Themberchaud's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party reasons that if Themberchaud wanted them dead, he would have simply breathed on them from a distance rather than approaching.",
+    "source_quote": "They reasoned that if he wanted them dead he would simply breathe on them from a distance.",
+    "subject": "Themberchaud's intent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum chooses to talk to Themberchaud while standing near a market entrance to allow for a quick escape.",
+    "source_quote": "Gyrgum chose to talk to him while standing near a market entrance he could duck into.",
+    "subject": "Gyrgum's defensive positioning",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is positioned near Laduguer's Furrow.",
+    "source_quote": "The party assesses their position near Laduguer's Furrow, surrounded by factories and forges.",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  }
+]

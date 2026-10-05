@@ -1,0 +1,156 @@
+[
+  {
+    "type": "location",
+    "fact": "Thorin and Gyrgum wake up back in the Whorlstone Tunnels after the vision dissolves.",
+    "source_quote": "Thorin and Gyrgum woke up back in the Whorlstone Tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The clearing is dominated by a throne of intertwined fungal growths, ringed by twisted mushroom sentinels mottled with mold.",
+    "source_quote": "a grim clearing dominated by a throne of intertwined fungal growths, ringed by twisted mushroom sentinels mottled with mold",
+    "subject": "Zuggtmoy's clearing",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The colors in the clearing are muted, featuring sickly yellow, dull browns, and shadowed grays.",
+    "source_quote": "The colors here are muted, sickly yellow, dull browns and shadowed grays",
+    "subject": "Zuggtmoy's clearing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is a spectral figure who shifts between radiant beauty and horrifying decay.",
+    "source_quote": "a spectral figure shimmered into view at the center, shifting between radiant beauty and horrifying decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is identified as the Demon Queen of Fungi.",
+    "source_quote": "This was Zuggtmoy herself, the Demon Queen of Fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's eyes glow with an otherworldlight.",
+    "source_quote": "her eyes glowing with an otherworldly light",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy welcomes Thorin and Gyrgum as 'wanderers of flesh and bone'.",
+    "source_quote": "\"Welcome, wanderers of flesh and bone,\" she said.",
+    "subject": "Zuggtmoy's greeting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy offers the party a gift to 'bloom beyond the bounds of flesh and time' and become part of her endless mycelium forever.",
+    "source_quote": "to bloom beyond the bounds of flesh and time and become part of her endless mycelium forever",
+    "subject": "Zuggtmoy's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy describes herself as 'the pulse beneath the stone, the breath within the spore'.",
+    "source_quote": "\"I'm the pulse beneath the stone, the breath within the spore\"",
+    "subject": "Zuggtmoy's description of self",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy warns the party to 'step lightly or be consumed by the roots that thirst for your soul'.",
+    "source_quote": "\"Step lightly or be consumed by the roots that thirst for your soul.",
+    "subject": "Zuggtmoy's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy promises that joining her allows one to 'see the world through eyes unclouded by mortal fear'.",
+    "source_quote": "Join me and see the world through eyes unclouded by mortal fear.",
+    "subject": "Zuggtmoy's promise",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin greets Zuggtmoy with a reference to Andre the Giant from the Princess Bride.",
+    "source_quote": "Thorin greets her \"as Andre the Giant from the Princess Bride.\"",
+    "subject": "Thorin's greeting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player leaves the session before the interaction with Zuggtmoy resolves.",
+    "source_quote": "Gyrgum's player leaves the session here: \"I'll find out what happens with the lady next time.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM clarifies that deals with demons always grant power at great cost.",
+    "source_quote": "deals with demons always give you power at great cost.",
+    "subject": "DM clarification on demon deals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM states that Zuggtmoy could have killed the characters if she had wanted to.",
+    "source_quote": "\"If she wanted to kill you, she could have killed you.\"",
+    "subject": "DM clarification on Zuggtmoy's intent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin declines Zuggtmoy's offer, citing responsibilities in the waking world.",
+    "source_quote": "he declined, telling the Dark Lady that he had too many responsibilities in the waking world to linger with her.",
+    "subject": "Thorin's refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's deciding roll to refuse the offer was 'really close'.",
+    "source_quote": "his deciding roll was \"really close\"",
+    "subject": "Thorin's decision roll",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin felt keen temptation from Zuggtmoy's offer.",
+    "source_quote": "Thorin felt the temptation keenly.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy regards Thorin with sorrow and the vision dissolves.",
+    "source_quote": "Zuggtmoy regarded him with something like sorrow, lamenting that he could have been \"forever part of the endless mycelium,\" and then the vision dissolved.",
+    "subject": "Vision dissolution",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum are found by their companions staring at them after waking.",
+    "source_quote": "Thorin and Gyrgum woke up back in the Whorlstone Tunnels, blinking in the dim light of the caverns, with their companions staring at them.",
+    "subject": "Party awakening",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The throne is made of intertwined fungal growths.",
+    "source_quote": "a throne of intertwined fungal growths",
+    "subject": "Fungal throne",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Twisted mushroom sentinels ring the clearing and are mottled with mold.",
+    "source_quote": "ringed by twisted mushroom sentinels mottled with mold",
+    "subject": "Mushroom sentinels",
+    "quote_verified": true
+  }
+]

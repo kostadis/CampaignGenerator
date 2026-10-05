@@ -1,0 +1,100 @@
+[
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard stops to tend their wounds in the tunnels beneath Gracklstugh.",
+    "source_quote": "The Ember Vanguard stopped in the dim, oppressive tunnels beneath Gracklstugh to tend their wounds",
+    "subject": "tending wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum uses Channel Divinity to heal himself.",
+    "source_quote": "Gyrgum used Channel Divinity to heal himself",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum restores 14 hit points to himself.",
+    "source_quote": "He restores 14 hit points to himself.",
+    "subject": "Gyrgum healing self",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth Feldrun is a dwarf companion of the party.",
+    "source_quote": "their badly wounded dwarf companion, Eldeth Feldrun",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gives 6 hit points to Eldeth Feldrun.",
+    "source_quote": "He gives the remaining 6 to their badly wounded dwarf companion",
+    "subject": "Eldeth Feldrun healing",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth Feldrun was down to 14 hit points before healing.",
+    "source_quote": "who had been down to 14 hit points",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The healing brings both Gyrgum and Eldeth Feldrun to about 20 hit points.",
+    "source_quote": "bringing them both to about 20.",
+    "subject": "Eldeth Feldrun state change",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM relabels the party as \"the Ember Vanguard and Groupies.\"",
+    "source_quote": "In Roll20, the GM relabelled the party as \"the Ember Vanguard and Groupies.\"",
+    "subject": "group relabeling",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is the current name for the group, formerly \"the party and allies.\"",
+    "source_quote": "relables the group from \"the party and allies\" to \"the Ember Vanguard and Groupies.\"",
+    "subject": "the Ember Vanguard",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The tunnels beneath Gracklstugh are described as dim and oppressive.",
+    "source_quote": "dim, oppressive tunnels beneath Gracklstugh",
+    "subject": "tunnels beneath Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is referred to as the Deepking's city.",
+    "source_quote": "beneath the Deepking's city",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Deepking's city has a huge cavern system beneath it.",
+    "source_quote": "the huge cavern system beneath the Deepking's city",
+    "subject": "Deepking's city",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz advises the group to be careful at every turn in the cavern.",
+    "source_quote": "Daz insists that \"anytime there's a turn cavern, I think it's a good idea to be careful.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group moves carefully through the cavern system and slows at every turn.",
+    "source_quote": "The group moved carefully through the huge cavern system... and slowed at every turn",
+    "subject": "cautious advance",
+    "quote_verified": false
+  }
+]

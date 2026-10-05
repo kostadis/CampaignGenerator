@@ -1,0 +1,37 @@
+[
+  {
+    "type": "date",
+    "fact": "The ordered magic items are scheduled to arrive the next morning.",
+    "source_quote": "The magic items the party had ordered would not arrive until the next morning.",
+    "subject": "magic item arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party travels to the Stone Guard headquarters immediately rather than waiting for the next morning.",
+    "source_quote": "so the party went to the Stone Guard straight away.",
+    "subject": "travel to Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the captain of the Stone Guard.",
+    "source_quote": "Errde Blackskull, the captain of the Stone Guard.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is invisible during the meeting with Errde Blackskull.",
+    "source_quote": "The ghost was invisible again",
+    "subject": "Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph is very impressed, concerned, and excited during the meeting.",
+    "source_quote": "very impressed with all the things that it's seeing and very concerned, but very excited.",
+    "subject": "Flumph",
+    "quote_verified": true
+  }
+]

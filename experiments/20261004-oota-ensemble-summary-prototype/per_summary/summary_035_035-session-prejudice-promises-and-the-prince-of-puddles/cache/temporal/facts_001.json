@@ -1,0 +1,23 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is a day's journey from the outskirts of Blingdenstone.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone",
+    "subject": "Blingdenstone distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a full night's long rest to recover strength.",
+    "source_quote": "the party settled in for a full night\u2019s rest",
+    "subject": "long rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party prepares for a day-long march to Blingdenstone the next morning.",
+    "source_quote": "ready for the day-long march to Blingdenstone",
+    "subject": "travel to Blingdenstone",
+    "quote_verified": true
+  }
+]

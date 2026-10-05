@@ -1,0 +1,58 @@
+[
+  {
+    "type": "location",
+    "fact": "The ceiling in the eastern passage is 10 feet high.",
+    "source_quote": "Streams entered through cracks in the 10-foot-high ceiling",
+    "subject": "ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The water in the eastern passage is rising at a rate of approximately one foot per hour.",
+    "source_quote": "the party estimated that the water was rising by roughly one foot per hour",
+    "subject": "water rising speed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool cannot squeeze through a space as narrow as one inch.",
+    "source_quote": "squeeze through a space as narrow as one inch",
+    "subject": "glabbagool squeezing limit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceiling is only ten feet high.",
+    "source_quote": "The ceiling is only ten feet high",
+    "subject": "ceiling clearance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Shape Water spell can affect a five-foot cube.",
+    "source_quote": "Daz determines that the spell can affect a five-foot cube",
+    "subject": "shape water area",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The non-instantaneous effect of Shape Water lasts for one hour.",
+    "source_quote": "its non-instantaneous effect can last for an hour",
+    "subject": "shape water duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two Shape Water effects can be maintained at once.",
+    "source_quote": "that two such effects can be maintained at once",
+    "subject": "shape water maintenance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The plan involves creating two adjacent five-foot pockets to move through in sequence.",
+    "source_quote": "The resulting plan is to create two adjacent five-foot pockets and move through them in sequence",
+    "subject": "air pocket plan",
+    "quote_verified": true
+  }
+]

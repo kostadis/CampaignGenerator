@@ -1,0 +1,198 @@
+[
+  {
+    "type": "event",
+    "fact": "The duergar soldiers shrink back to their normal size with an audible pop.",
+    "source_quote": "the duergar soldiers shrank back to their normal size with an audible pop",
+    "subject": "duergar soldiers shrink",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia declares the operation a complete success.",
+    "source_quote": "declared the operation a complete success",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia states that future support for local militia and police will be greatly appreciated and rewarded.",
+    "source_quote": "any future support for the local militia and police would be \"greatly appreciated and rewarded.\"",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia confirms that incidents of citizens acting in erratic, self-destructive, and inexplicable ways have been increasing sharply.",
+    "source_quote": "incidents of citizens acting in erratic, self-destructive, and inexplicable ways had been increasing sharply",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia states that their clan militias are struggling with the extra work caused by the erratic behavior.",
+    "source_quote": "the clan militias were struggling with the extra work",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia knows no cause for the strange behavior and suggests the party ask a clan leader.",
+    "source_quote": "They knew no cause and suggested the party ask a clan leader",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum hangs back during the conversation because he doesn't want to be in front.",
+    "source_quote": "Gyrgum hangs back because he \"doesn't really want to be in front.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin admits to having negative charisma.",
+    "source_quote": "Thorin suggests questioning the militia but admits his negative charisma",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rephrases the party's questions into literal terms to get answers from the duergar.",
+    "source_quote": "Once the questions were phrased literally enough for the duergar to parse",
+    "subject": "literal questioning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The militia clears the area, telling citizens they can come out and clean up.",
+    "source_quote": "The militia clears the area, calling out to citizens that they can come out and clean up",
+    "subject": "militia clears area",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard duergar belonging to the second giant are from a different clan than the first group.",
+    "source_quote": "The party notices the \"Stone Guard\" duergar belong to a different clan from the first group",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorhun is a stone giant.",
+    "source_quote": "a new figure arrived: Dorhun, a stone giant",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorhun is an apprentice to Stonespeaker Hgraam.",
+    "source_quote": "Dorhun, a stone giant and fellow apprentice to the revered Stonespeaker Hgraam",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin knows that stone giants do not start conversations.",
+    "source_quote": "Thorin knows stone giants do not start conversations",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorhun says nothing for an exhausting period of time after arriving.",
+    "source_quote": "he says nothing for an exhausting period of time",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorhun tells Thorin that they do not have any connection.",
+    "source_quote": "\"No, we do not have any connection.\"",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rihuud was another apprentice to the Stonespeaker.",
+    "source_quote": "Dorhun identifies the fallen giant as Rihuud, another of the Stonespeaker's apprentices",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rihuud went mad and sprouted a second head while communing with the stone in Cairngorm Cavern.",
+    "source_quote": "Rihuud went mad and sprouted a second head while communing with the stone in Cairngorm Cavern",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rihuud stormed out of Cairngorm Cavern into the city.",
+    "source_quote": "then stormed out into the city",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar militia confirms that the party tried to spare Rihuud's life.",
+    "source_quote": "The militia honestly confirmed that the party had tried to spare Rihuud's life",
+    "subject": "militia testimony",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia heard only voices from inside a pitch of darkness that they did not recognize.",
+    "source_quote": "They say they heard only \"voices from inside of a pitch of darkness that we did not recognize\"",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia claims they acted well within their rights under the current penal code.",
+    "source_quote": "and that they acted \"well within our rights under the current penal code.\"",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorhun invites the party to visit Cairngorm Cavern before they leave the city.",
+    "source_quote": "invited them to visit Cairngorm Cavern before they left Gracklstugh",
+    "subject": "Dorhun's invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorhun orders the Stone Guard to escort the party.",
+    "source_quote": "He ordered the Stone Guard to escort them",
+    "subject": "Dorhun's order",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Stone Guard guards react with weary irritation to Dorhun's order.",
+    "source_quote": "much to the guards' weary irritation",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Stone Guard reluctantly agree to escort the party.",
+    "source_quote": "reluctantly agree",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorhun leaves with the Stone Guard after ordering the escort.",
+    "source_quote": "Dorhun then leaves with them",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Rihuud sprouted a second head while communing with the stone in Cairngorm Cavern.",
+    "source_quote": "sprouted a second head while communing with the stone deep in Cairngorm Cavern",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  }
+]

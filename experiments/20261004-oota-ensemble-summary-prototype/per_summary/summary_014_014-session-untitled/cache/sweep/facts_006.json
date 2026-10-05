@@ -1,0 +1,317 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a massive red dragon who serves as the Wyrmsmith of Gracklstugh.",
+    "source_quote": "introduced him with great reverence as Themberchaud, the Wyrmsmith of Gracklstugh",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is known as the Father of Flame.",
+    "source_quote": "introduced him with great reverence as Themberchaud, the Wyrmsmith of Gracklstugh, Father of Flame",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has scales the color of cooling lava.",
+    "source_quote": "His scales were the color of cooling lava",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has bright yellow eyes.",
+    "source_quote": "his bright yellow eyes gleamed in the shadows",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud jokes about the party being surfacers for dinner.",
+    "source_quote": "He announced himself with the joke, \"You didn't say I was having surfacers for dinner tonight.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is enormously well-fed and looks like a predator who has not hunted in a long time.",
+    "source_quote": "He was enormous, and clearly well-fed, carrying the unmistakable look of a predator who had not hunted in a very long time.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar prefer each people to keep to its own place.",
+    "source_quote": "The Duergar prefer each people to keep to its own place",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar value rule-following and directness.",
+    "source_quote": "value rule-following and directness",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar lack a sense of humor.",
+    "source_quote": "\"lack a sense of humor,\"",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar find other species confusing.",
+    "source_quote": "and find other species confusing.",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar priests introduce Themberchaud with great reverence.",
+    "source_quote": "The priests introduced him with great reverence",
+    "subject": "Duergar priests",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar priests are visibly uncomfortable leaving Themberchaud alone with strangers.",
+    "source_quote": "The priests look \"very uncomfortable\" about it.",
+    "subject": "Duergar priests",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud dismisses the Duergar priests to speak with the party in private.",
+    "source_quote": "Themberchaud dismissed the priests, who were visibly uncomfortable at leaving him alone with strangers, and led the party into his private lair.",
+    "subject": "Themberchaud dismissing priests",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests tipping Themberchaud off about a new dragon in training.",
+    "source_quote": "Thorin suggests tipping the dragon off that the Duergar have \"a new dragon in training.\"",
+    "subject": "Thorin's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric of Bahamut.",
+    "source_quote": "Gyrgum, as a cleric of Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud dismisses Gyrgum's devotion to Bahamut curtly.",
+    "source_quote": "He dismissed Gyrgum's devotion to Bahamut with a curt \"Next!\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has a brass dragonborn heritage.",
+    "source_quote": "He expressed mild disdain for Zalthir's brass dragonborn heritage.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud calls Zalthir an inferior Dragonborn.",
+    "source_quote": "Themberchaud calls Zalthir \"an inferior Dragonborn, if ever there was one.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is from Menzoberranzan.",
+    "source_quote": "He showed a flicker of approval for Daz's Drow origins, from Menzoberranzan",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud approves of Daz's capacity for secrecy.",
+    "source_quote": "and his capacity for secrecy.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz confirms his origin from Menzoberranzan to Themberchaud.",
+    "source_quote": "Daz confirms he is from Menzoberranzan.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin Giantfriend describes himself as a foundling who grew up amongst giants.",
+    "source_quote": "My name is Thorin Giantfriend, and I was a foundling and grew up amongst giants",
+    "subject": "Thorin Giantfriend",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin Giantfriend states that he likes to hit things over the head.",
+    "source_quote": "but I like to hit things over the head.\"",
+    "subject": "Thorin Giantfriend",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud summons Gartokkar to act as the liaison for the party.",
+    "source_quote": "summoned his liaison Gartokkar",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is referenced by Themberchaud as his liaison.",
+    "source_quote": "summoned his liaison Gartokkar",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud declares the party to be his personal agents without waiting for formal agreement.",
+    "source_quote": "Without waiting for the party to formally agree, Themberchaud declared them his personal agents",
+    "subject": "Themberchaud declaring agents",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud presents each party member with a golden badge bearing his profile.",
+    "source_quote": "presented each of them with a golden badge bearing his own profile.",
+    "subject": "presenting badges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud orders the party to do whatever the Keepers ask but report back to him first.",
+    "source_quote": "Their first mission is to do whatever the Keepers ask but report back to Themberchaud first.",
+    "subject": "first mission assigned",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud's lair contains a mountain of gold.",
+    "source_quote": "settling onto a mountain of gold.",
+    "subject": "Themberchaud's lair",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud thrashes his wings inside his lair.",
+    "source_quote": "thrashed his wings about",
+    "subject": "Themberchaud's lair",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The golden badge bears Themberchaud's profile.",
+    "source_quote": "presented each of them with a golden badge bearing his own profile.",
+    "subject": "golden badge",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz confirms that the badge is made of real gold.",
+    "source_quote": "Daz confirms the badge is real gold.",
+    "subject": "golden badge",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud is the Wyrmsmith of Gracklstugh.",
+    "source_quote": "Themberchaud, the Wyrmsmith of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud refers to the party as surfacers when addressing them in Gracklstugh context.",
+    "source_quote": "\"I want you to become my agents in Gracklstugh.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Daz originates from Menzoberranzan.",
+    "source_quote": "Daz confirms he is from Menzoberranzan.",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud threatens to turn anyone invisible to ash.",
+    "source_quote": "He warned, \"Anyone who's invisible will be turned to ash,\"",
+    "subject": "Themberchaud burning invisible intruders",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud breathes fire in every direction upon entering his lair.",
+    "source_quote": "breathed fire in every direction before settling onto a mountain of gold.",
+    "subject": "Themberchaud breathing fire",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ground trembles before the party arrives at Themberchaud's location.",
+    "source_quote": "The ground trembled before they arrived",
+    "subject": "party arriving",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin explains that he woke up in a jail cell surrounded by Drow and strangers.",
+    "source_quote": "When Thorin explained that he had simply been minding his own business before waking up in a jail cell surrounded by Drow and strangers",
+    "subject": "Thorin waking in jail",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow are the ones who imprisoned Thorin in the jail cell.",
+    "source_quote": "surrounded by Drow and strangers",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud expresses approval for Daz being a Drow from Menzoberranzan.",
+    "source_quote": "He showed a flicker of approval for Daz's Drow origins, from Menzoberranzan",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states his devotion to Bahamut, the platinum dragon.",
+    "source_quote": "I serve Bahamut, the platinum dragon.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bahamut is referenced by Gyrgum as the platinum dragon he serves.",
+    "source_quote": "I serve Bahamut, the platinum dragon.\"",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party reflects that they may already be triple agents due to their conflicting obligations.",
+    "source_quote": "The party reflects that they may already be \"triple agents.\"",
+    "subject": "party's dual allegiance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests that the party needs to form their own faction.",
+    "source_quote": "Thorin: \"I think we need to form our own faction.\"",
+    "subject": "Thorin suggesting new faction",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,219 @@
+[
+  {
+    "type": "npc",
+    "fact": "Hgraam is the leader of the Stone Giant clan.",
+    "source_quote": "Hgraam spoke gravely of his apprentice, the Stone Giant",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam's apprentice was a Stone Giant who was driven to madness by the stones themselves.",
+    "source_quote": "The apprentice had been driven to madness not by any enemy blade, but by the very stones themselves.",
+    "subject": "Hgraam's apprentice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam expresses grief over his apprentice's condition.",
+    "source_quote": "Hgraam expresses grief over his apprentice, who was driven mad by the stones",
+    "subject": "Hgraam's grief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam warns that something ancient and terrible is stirring in the blackest depths of the Underdark.",
+    "source_quote": "He warned that something ancient and terrible was stirring in the blackest depths of the Underdark",
+    "subject": "Hgraam's warning",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam recites omens including a cave with two faces, rock devoured, land overgrown, and a pebble that believes itself flesh.",
+    "source_quote": "He recited a list of omens: a cave with two faces, rock devoured, land overgrown, a pebble that believes itself flesh.",
+    "subject": "Omens recited",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hgraam calls the surface world the Dreamlands, describing it as foreign and possibly mythical.",
+    "source_quote": "He called the surface the Dreamlands, a place so foreign to him it might as well be myth.",
+    "subject": "Dreamlands",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party has never been to the surface and Hgraam considers it nonexistent.",
+    "source_quote": "He has never been to the surface, and for him it doesn't exist.",
+    "subject": "Dreamlands",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam does not know the way to the surface.",
+    "source_quote": "He does not know the path himself.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Hgraam states that the deep gnomes know the way out to the surface.",
+    "source_quote": "He has only heard through trade that the deep gnomes know a way out.",
+    "subject": "Deep Gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar previously told the party that the best path back to the surface runs through the town of the deep gnomes.",
+    "source_quote": "Jimjar had told them the same, though Jimjar may have had other agendas",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hgraam describes the Whorlstone Tunnels as filled with evil.",
+    "source_quote": "There is much evil in there.",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam explains that the Deepking's attempts to enforce control cause evil to escape the city and seize control of it.",
+    "source_quote": "The more he enforces control, the more it escapes outside the city to seize control of the city.",
+    "subject": "Deepking's control",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz finds the giant's speech regarding the tunnels comical and senseless.",
+    "source_quote": "Daz finds the giant's speech comical and senseless (\"This makes absolutely no sense\")",
+    "subject": "Daz's observation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Invisible duergar patrol the city above, forcing factions to hide underground.",
+    "source_quote": "away from the invisible duergar patrolling the city above.",
+    "subject": "Duvderpatrols",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has encountered a creature of Demogorgon's power.",
+    "source_quote": "demons they have already encountered: - Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has encountered the creation worshipped by the kuo-toa.",
+    "source_quote": "the kuo-toa's worshipped creation",
+    "subject": "kuo-toa creation",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has encountered demonic manta rays in the water.",
+    "source_quote": "demonic manta rays in the water",
+    "subject": "demonic manta rays",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party saw demons fighting among themselves during the escape from Velkynvelve.",
+    "source_quote": "demons fighting among themselves during the escape from Velkynvelve",
+    "subject": "brawling demons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deduces that the increasing presence of demons is tied to the apprentice's madness.",
+    "source_quote": "Zalthir's Arcana check led him to suspect that the apprentice's madness was tied to the growing presence of demons.",
+    "subject": "Zalthir's deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The demonic presence is far more widespread than the party's previous sightings suggested.",
+    "source_quote": "That presence was far more widespread than the party's scattered sightings of Demogorgon, the creation the kuo-toa worshipped, the demonic manta rays and the brawling demons at Velkynvelve had suggested.",
+    "subject": "Scope of demonic threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking was once a measured and reasonable leader.",
+    "source_quote": "The ruler of Gracklstugh had once been a measured and reasonable leader",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown paranoid, erratic, and increasingly isolated from his oldest allies.",
+    "source_quote": "but in recent times had grown paranoid, erratic, and increasingly isolated from his oldest allies.",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shal is a new favored advisor to the Deepking.",
+    "source_quote": "The change, Hgraam believed, had begun when a new favored advisor named Shal had wormed his way into the king's confidence.",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shal has never come to visit the Stone Giant clan leader.",
+    "source_quote": "Even the Stone Giant clan leader had never been permitted to meet this advisor.",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking has asked Hgraam about the Gray Ghosts.",
+    "source_quote": "The Deepking had asked Hgraam about the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam knows nothing about the Gray Ghosts.",
+    "source_quote": "but Hgraam knew nothing of them.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam advised the Deepking to be patient and watch the stones.",
+    "source_quote": "He has advised the Deepking to be patient and \"watch the stones.\"",
+    "subject": "Hgraam's advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam ends the audience stating that there are rocks that need to be tended.",
+    "source_quote": "it is time for you to leave there are rocks that need to be tended.",
+    "subject": "Audience ended",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hgraam presents the party with a polished crystal as a token of gratitude.",
+    "source_quote": "The Stone Giant leader presents the party with a polished crystal as a token of gratitude",
+    "subject": "polished crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam's apprentice brings out the polished crystal.",
+    "source_quote": "His apprentice brings it out.",
+    "subject": "gift presentation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is struck by how different Hgraam is from other giants he knew who mostly bellowed and hit things.",
+    "source_quote": "Gyrgum is struck by how different this giant is from the ones he knew, who mostly bellowed and hit things",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

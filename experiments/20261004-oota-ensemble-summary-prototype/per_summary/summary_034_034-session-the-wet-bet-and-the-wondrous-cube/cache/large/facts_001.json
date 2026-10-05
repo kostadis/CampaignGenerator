@@ -1,0 +1,121 @@
+[
+  {
+    "type": "npc",
+    "fact": "Jimjar is a deep gnome guide for the party.",
+    "source_quote": "Jimjar, the deep gnome guide",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar defends his navigational choices after an unexpected detour through the Underdark.",
+    "source_quote": "Jimjar, the deep gnome guide, found himself defending his navigational choices as the party emerged from yet another unexpected detour through the Underdark",
+    "subject": "navigational error defense",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar insists that his navigational mistake was not intentional.",
+    "source_quote": "He insisted that the mistake was not intentional",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims that shifting passages are to be expected in the Underdark.",
+    "source_quote": "shifting passages were to be expected",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar suggests that finding an exit through their current location is remarkably convenient and potentially a shortcut.",
+    "source_quote": "finding an exit through their current location was remarkably convenient\u2014perhaps even a shortcut",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party's destination is Blingdenstone.",
+    "source_quote": "shortcut to their destination of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin predicts that the situation will 'end in tears'.",
+    "source_quote": "Thorin immediately predicted, \u201cYeah, this will end in tears.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a wager to Thorin.",
+    "source_quote": "When Jimjar offered a wager",
+    "subject": "bet offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin clarifies that 'end in tears' means an unfortunate event will occur, not literal crying.",
+    "source_quote": "By end in tears, what I mean is not literally that somebody will cry, but rather there will be some unfortunate event before we get back on our way",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The bet is accepted once the terms are clarified.",
+    "source_quote": "With the definition settled, the bet was accepted",
+    "subject": "bet acceptance",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The alternate passage at their location is blocked by extensive rubble.",
+    "source_quote": "the alternate passage is blocked by extensive rubble",
+    "subject": "current tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a Strength score of 18.",
+    "source_quote": "Thorin points out that he has a Strength of 18",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin identifies as a dwarf who enjoys digging.",
+    "source_quote": "is a dwarf who enjoys digging",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rubble obstruction is determined to be too extensive for Thorin to clear.",
+    "source_quote": "but the obstruction is too extensive to clear",
+    "subject": "rubble clearing attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar urges Thorin to lead the party onward.",
+    "source_quote": "Jimjar urges him onward: \u201cLead on, lead on, fair Thorin.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "At the next intersection, the group briefly struggles to remember their destination.",
+    "source_quote": "At the next intersection, the group briefly struggled to remember that their destination is Blingdenstone",
+    "subject": "next intersection",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin chooses the left branch based on a random roll/flip.",
+    "source_quote": "So I rolled a D2, otherwise known as flip a coin, and it came up one. So I say we go left",
+    "subject": "directional choice",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,275 @@
+[
+  {
+    "type": "date",
+    "fact": "The session occurred on 2025-05-20.",
+    "source_quote": "Session 2025-05-20",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde requires proof that the derro are behind the chaos in the city.",
+    "source_quote": "Errde, head of the Stone Guards, wants two things: proof that the derro are behind the chaos in the city",
+    "subject": "derro chaos",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk is located in the top-right of the map.",
+    "source_quote": "the obelisk sits in the top-right of the map",
+    "subject": "obelisk map position",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two duergar sentries intercepted the party.",
+    "source_quote": "two duergar sentries stepped from the shadows",
+    "subject": "duergar sentries count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Four allies joined the party: Flumph, Pelek's ghost, Jimjar, and Spiderbait.",
+    "source_quote": "including Flumph, Pelek's ghost, Jimjar and Spiderbait",
+    "subject": "duergar allies count",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Rust and Grimgrim are members of the Empty-Scabbard Killers.",
+    "source_quote": "declaring the hallway the exclusive territory of the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers membership",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim quoted 200 gold pieces to whitelist the merchant Werz.",
+    "source_quote": "Eldgrim quoted 200 gold pieces to \"whitelist\" Werz",
+    "subject": "Werz whitelist fee (no task)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim quoted 20 gold pieces to whitelist the merchant Werz if the party dealt with his Demogorgon problem.",
+    "source_quote": "or 20 gold pieces if the party dealt with his Demogorgon problem",
+    "subject": "Werz whitelist fee (task)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin calculated the 'imbued value' of handling the Demogorgon problem to save on fees as 180 gold.",
+    "source_quote": "an \"imbued value\" of 180 gold",
+    "subject": "Werz whitelist differential value",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Two duergar sentries, Rust and Bob, belong to the Empty-Scabbard Killers.",
+    "source_quote": "Rust and his quiet companion Bob, two duergar sentries belonging to the Empty-Scabbard Killers",
+    "subject": "duergar sentries",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three additional soulblades are present with Eldgrim in the chamber.",
+    "source_quote": "with three more soulblades present",
+    "subject": "Eldgrim's soulblade guard",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen document bears the royal seal of Gracklstugh and the signature of the Deepking.",
+    "source_quote": "a document bearing the royal seal of Gracklstugh and the signature of the Deepking himself",
+    "subject": "stolen document",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warns that the assassins will not realize the theft immediately, estimating it would not be figured out by the next day.",
+    "source_quote": "there's a clock... not like tomorrow",
+    "subject": "assassin discovery timeline",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir breathes fire onto the desk to destroy the remaining evidence.",
+    "source_quote": "Zalthir's cue to breathe a gout of fire directly onto the desk",
+    "subject": "fire distraction",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party passes a pair of invisible guards on their way out.",
+    "source_quote": "passing a pair of invisible guards on their way out",
+    "subject": "invisible guards count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz has a +0 modifier to Performance checks.",
+    "source_quote": "Daz is only +0 on Performance",
+    "subject": "daz performance bonus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz needed to roll a 10 on the Performance check to succeed.",
+    "source_quote": "needed to beat a 10",
+    "subject": "performance check dc",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party took a long rest before setting out.",
+    "source_quote": "The party confirms they had taken a long rest before setting out.",
+    "subject": "rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully bypassed the Council of Savants without incident.",
+    "source_quote": "slipping past the mad derro scholars without incident",
+    "subject": "Council bypass",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The black obelisk in the chamber is fifty feet tall.",
+    "source_quote": "a fifty-foot-tall obelisk of smooth black metal",
+    "subject": "Obelisk Chamber height",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg hatches a two-headed dragon, likely possessed by demonic power.",
+    "source_quote": "it would hatch a two-headed dragon, likely possessed by some demonic power",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz maneuvers to within 30 feet of the dragon egg.",
+    "source_quote": "Daz maneuvers to within 30 feet of the egg",
+    "subject": "Daz movement",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session takes place on the 6th day of the 1st Tenday of Marpenoth 1495.",
+    "source_quote": "019.06",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception score of 14.",
+    "source_quote": "With a passive perception of 14, Gyrgum notices the cultists closing in around him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The DM identified four distinct camps among Bahamut's clerics regarding the corrupted egg.",
+    "source_quote": "The DM asks Gemini and relays four camps among Bahamut's clerics",
+    "subject": "Bahamut's clerics",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tiers in the chamber are 10 feet high.",
+    "source_quote": "The tiers are 10 feet high",
+    "subject": "Chamber tiers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir maneuvers across the high tiers to stand directly next to Plinki.",
+    "source_quote": "Zalthir maneuvers himself across the high tiers to stand directly next to Plinki",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The allied crew is set to act on initiative count 10.",
+    "source_quote": "The allied crew is set to act on initiative 10",
+    "subject": "Allied crew",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled 14 on his initiative.",
+    "source_quote": "Gyrgum rolled 14 initiative",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum acts after Zalthir in the initiative order.",
+    "source_quote": "and acts after Zalthir",
+    "subject": "Initiative sequence",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session takes place on the date 019.07.",
+    "source_quote": "Ambush at the Mesa 019.07",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first attack totals 27 against Plinki's AC 13.",
+    "source_quote": "His first attack totalled 27 against her AC 13",
+    "subject": "Zalthir first attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends one focus point for a strike dealing 11 damage.",
+    "source_quote": "he spent a focus point for another strike, dealing 11 damage",
+    "subject": "Zalthir focus point strike",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Bless spell adds a d4 to the attack roll.",
+    "source_quote": "He adds Bless's d4 to his second attack",
+    "subject": "Bless die size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM and Zalthir determine that Flurry of Blows grants one extra attack in this instance.",
+    "source_quote": "They leave it at one.",
+    "subject": "Flurry of Blows attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum casts a 2nd-level Inflict Wounds spell.",
+    "source_quote": "This was a 2nd-level Inflict Wounds",
+    "subject": "Inflict Wounds spell level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki takes 12 damage from the Inflict Wounds spell.",
+    "source_quote": "she succeeded on a Constitution save and still took 12 damage",
+    "subject": "Plinki damage from Inflict Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki succeeds on a DC 14 Constitution saving throw against the spell.",
+    "source_quote": "She made the DC 14 Constitution save",
+    "subject": "Plinki Constitution save",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The next session is skipped, with Thorin absent for one week.",
+    "source_quote": "Thorin will be out next week, and the next session is skipped.",
+    "subject": "next session date",
+    "quote_verified": true
+  }
+]

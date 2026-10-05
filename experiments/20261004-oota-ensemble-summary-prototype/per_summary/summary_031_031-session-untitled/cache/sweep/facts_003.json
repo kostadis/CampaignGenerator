@@ -1,0 +1,163 @@
+[
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is located on a plateau higher than the rest of the grove.",
+    "source_quote": "The Garden of Welcome was a nightmare made real. The plateau rose high above the rest of the grove",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is screened by towering zurkhwood stalks.",
+    "source_quote": "screened by towering zurkhwood stalks",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome emits a chorus of muffled moans, cries, and hisses.",
+    "source_quote": "from within came a chorus of muffled moans and cries",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is illuminated only by a few glowing mushrooms.",
+    "source_quote": "Only a few glowing mushrooms illuminated the gloom",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome contains the heads of creatures from a dozen Underdark races peeking from the soil.",
+    "source_quote": "the heads of creatures from a dozen different Underdark races peeked from the soil",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is a drow woman with a face half-rotted and blooming with tiny fungi.",
+    "source_quote": "a drow woman named Xinaya, her face half-rotted and blooming with tiny fungi",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Xinaya raises a spider medallion embedded in the fungal mass that was once her hand.",
+    "source_quote": "raised a spider medallion embedded in the fungal mass that had once been her hand",
+    "subject": "spider medallion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya begs the party to end her suffering.",
+    "source_quote": "She begged the party in desperate, broken words to end her suffering",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya warns that Zuggtmoy, the Lady of Decay, is present.",
+    "source_quote": "warned that Zuggtmoy, the Lady of Decay, was present",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya was sent by Ilvara to search for and capture the party near the grove.",
+    "source_quote": "she had been sent by Ilvara to search for and capture them near the grove",
+    "subject": "Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ilvara reserved the privilege of killing the fugitives for herself.",
+    "source_quote": "Ilvara had reserved the privilege of killing the fugitives for herself",
+    "subject": "Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya and her patrol accepted Phylo's invitation to visit the Garden of Welcome.",
+    "source_quote": "She and her patrol had made the fatal mistake of accepting Phylo's invitation to visit the Garden of Welcome",
+    "subject": "Xinaya's patrol accepting invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo invited Xinaya and her patrol to visit the Garden of Welcome.",
+    "source_quote": "accepting Phylo's invitation to visit the Garden of Welcome",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya recognizes Daz as being from Menzoberranzan.",
+    "source_quote": "Xinaya recognizes Daz as being from Menzoberranzan",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya urges Daz to warn the other Drow that the Demon Queen of Fungi has entered the Underdark.",
+    "source_quote": "She urged Daz... to warn the other Drow that the Demon Queen of Fungi had entered the Underdark",
+    "subject": "warning to Drow",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is a larval creature with vestigial fungal growths suggesting it might once have been a myconid.",
+    "source_quote": "A disgusting larval creature named Yestabrod rises from the ground, its vestigial fungal growths suggesting that it might once have been a myconid",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod speaks both aloud and inside the party's minds.",
+    "source_quote": "It welcomed the party to a wedding rehearsal in a gurgling voice heard both aloud and inside their minds",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod welcomes the party to a wedding rehearsal.",
+    "source_quote": "It welcomed the party to a wedding rehearsal",
+    "subject": "wedding rehearsal announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two adult myconids emerge to join Yestabrod.",
+    "source_quote": "Two adult myconids and drow spore servants from Xinaya's former patrol emerged to join it",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow spore servants from Xinaya's former patrol emerge to join Yestabrod.",
+    "source_quote": "drow spore servants from Xinaya's former patrol emerged to join it",
+    "subject": "drow spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod rejects the party's attempt to use their audit ploy, stating there will be no audit.",
+    "source_quote": "Yestabrod rejected the ploy: there would be no audit, only incorporation into the \u201ccoworkers of pain.\u201d",
+    "subject": "audit refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party enters the Garden of Welcome through Rumpadump's secret route.",
+    "source_quote": "The party enters through Rumpadump's secret route before Phylo can conduct his planned tour the following morning",
+    "subject": "secret entry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump has a secret route into the Garden of Welcome.",
+    "source_quote": "The party enters through Rumpadump's secret route",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "type": "location",
+    "fact": "Blingdenstone is located deep within the caverns.",
+    "source_quote": "The party arrived at a gate deep within the caverns of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard has a squeaky voice.",
+    "source_quote": "One squeaky-voiced guard asked",
+    "subject": "guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock is in control of the territory near Blingdenstone, having taken it from the Drow.",
+    "source_quote": "Clan Diggermattock had taken this territory from the Drow",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  }
+]

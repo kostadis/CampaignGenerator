@@ -1,0 +1,107 @@
+[
+  {
+    "type": "location",
+    "fact": "The approach to the city ends at a long, tedious staircase.",
+    "source_quote": "The approach to the city ended at a long, tedious staircase built for three-foot-tall people.",
+    "subject": "staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The staircase is built for three-foot-tall people.",
+    "source_quote": "built for three-foot-tall people",
+    "subject": "staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar climbs the stairs comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait climbs the stairs comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar declares the party's arrival at Blingdenstone from the top of the stairs.",
+    "source_quote": "At the top, Jimjar happily declared, \u201cWe've arrived at Blingdenstone!\u201d",
+    "subject": "Jimjar declares arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone belongs to the gnomes.",
+    "source_quote": "the city had belonged to the gnomes",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The gnomes own Blingdenstone.",
+    "source_quote": "belonged to the gnomes, then the drow, and then the gnomes again",
+    "subject": "gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow previously owned Blingdenstone.",
+    "source_quote": "the city had belonged to the gnomes, then the drow",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is currently a mess.",
+    "source_quote": "Blingdenstone was now \u201ca little bit of a mess,\u201d",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The inhabitants of Blingdenstone know routes out of the Underdark.",
+    "source_quote": "its inhabitants knew routes out of the Underdark",
+    "subject": "inhabitants of Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a wager that no one wants to know what is happening because they prefer surprises.",
+    "source_quote": "Jimjar tries to turn the party\u2019s request for information into another wager, offering to bet that no one wants to know what is happening because they prefer surprises.",
+    "subject": "Jimjar's wager",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The main gate is built from steel and mithril.",
+    "source_quote": "The party reaches the main gate, built from steel and mithril,",
+    "subject": "main gate",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The main gate is reinforced with magical and magic-resistant alloys.",
+    "source_quote": "reinforced with magical and magic-resistant alloys,",
+    "subject": "main gate",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The main gate is plated with adamantine.",
+    "source_quote": "and plated with adamantine.",
+    "subject": "main gate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "There are eight gnomes guarding the passage beyond the main gate.",
+    "source_quote": "the party can see through it to the eight gnomes guarding the passage beyond.",
+    "subject": "gnomes at the gate",
+    "quote_verified": true
+  }
+]

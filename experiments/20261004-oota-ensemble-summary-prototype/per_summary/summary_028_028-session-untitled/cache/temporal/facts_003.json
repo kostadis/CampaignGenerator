@@ -1,0 +1,44 @@
+[
+  {
+    "type": "date",
+    "fact": "The group spends several days traveling through the Underdark, with significant events occurring on the first and sixth days.",
+    "source_quote": "Days of travel followed.",
+    "subject": "session duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crystal is thrown at shrieker fungi from a distance of 10 feet, but has no effect.",
+    "source_quote": "A crystal is thrown at the shriekers from a safe distance... The crystal lands 10 feet away",
+    "subject": "crystal throw range",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth must pass a DC 16 Survival check to cover the party's tracks through the fungus cavern.",
+    "source_quote": "It takes a DC 16 Survival check.",
+    "subject": "survival check difficulty",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a survival skill modifier of +6 and rolled a 12 on his check.",
+    "source_quote": "Gyrgum's own roll is a 12... Eldeth, who has the party's best Survival at +6.",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party encounters another crystal cluster on approximately the sixth day of their journey.",
+    "source_quote": "On about the sixth day the party passes another crystal cluster",
+    "subject": "crystal cluster discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The drow pursuit level is currently at one.",
+    "source_quote": "the pursuit level is now one",
+    "subject": "pursuit status",
+    "quote_verified": true
+  }
+]

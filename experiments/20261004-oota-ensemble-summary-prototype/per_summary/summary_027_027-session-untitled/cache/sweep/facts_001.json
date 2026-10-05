@@ -1,0 +1,79 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is standing in the industrial heart of Gracklstugh, surrounded by forges and hammers.",
+    "source_quote": "The party stood in the sweltering industrial heart of Gracklstugh, surrounded by the roar of forges and the clang of hammers",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Heavily barred gates separate the party from the Darklake.",
+    "source_quote": "staring down the heavily barred gates that separated them from the Darklake and their freedom",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party identifies three gates they could use to leave Gracklstugh.",
+    "source_quote": "They had to find a way through one of three gates.",
+    "subject": "gate assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is positioned near Laduguer's Furrow, surrounded by factories and forges.",
+    "source_quote": "The party assess their position near Laduguer's Furrow, surrounded by factories and forges.",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests pole-vaulting over the gates.",
+    "source_quote": "Thorin suggested pole-vaulting over the gates",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum points out the difficulty of sneaking in a city with invisible inhabitants.",
+    "source_quote": "Gyrgum pointed out that sneaking is hard in a city full of invisible people",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A young red dragon dive-bombs toward the party from the cavern heights.",
+    "source_quote": "A young red dragon, voluminous and ungainly, came dive-bombing toward them out of the cavern heights.",
+    "subject": "dragon approach",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud is the Wyrmsmith of Gracklstugh.",
+    "source_quote": "It was Themberchaud, the Wyrmsmith of Gracklstugh",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud spotted the party during their fight.",
+    "source_quote": "he had spotted them during their fight",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party had already handed off Themberchaud's egg.",
+    "source_quote": "The party had already handed off his egg",
+    "subject": "egg handoff",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum positions himself near a market entrance to have a place to duck into.",
+    "source_quote": "Gyrgum chose to talk to him while standing near a market entrance he could duck into",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

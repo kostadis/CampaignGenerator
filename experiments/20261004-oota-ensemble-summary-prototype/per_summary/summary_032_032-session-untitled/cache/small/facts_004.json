@@ -1,0 +1,380 @@
+[
+  {
+    "type": "event",
+    "fact": "The party returns to find Basidia and Rasharoo conversing and chewing mycelium.",
+    "source_quote": "The party returns to find Basidia and Rasharoo conversing and chewing mycelium",
+    "subject": "party returns to Basidia and Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is chewing mycelium when the party returns.",
+    "source_quote": "find Basidia and Rasharoo conversing and chewing mycelium",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo is chewing mycelium when the party returns.",
+    "source_quote": "find Basidia and Rasharoo conversing and chewing mycelium",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo asks what the party discovered, and Thorin replies that it is a bad scene and they should leave.",
+    "source_quote": "Rasharoo asks what they discovered. Thorin replies, \u201cIt\u2019s a bad scene. We should get out of here.\u201d",
+    "subject": "Thorin reports bad scene",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gives Basidia and Rasharoo the complete account of the wedding rehearsal, the Majestic Mushroom, and Zuggtmoy\u2019s plans.",
+    "source_quote": "The party gives Basidia and Rasharoo the complete account of the wedding rehearsal, the Majestic Mushroom, and Zuggtmoy\u2019s plans",
+    "subject": "party shares account",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is horrified by the account of Zuggtmoy's plans.",
+    "source_quote": "Basidia and Rasharoo are horrified",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo is horrified by the account of Zuggtmoy's plans.",
+    "source_quote": "Basidia and Rasharoo are horrified",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia insists that they must warn Phylo.",
+    "source_quote": "Basidia insists that they must warn Phylo",
+    "subject": "Basidia argues to warn Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo argues that they should run.",
+    "source_quote": "Rasharoo argues that they should run",
+    "subject": "Rasharoo argues to flee",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party identifies Stool and Rumpadump as its priority for rescue.",
+    "source_quote": "The party identifies Stool and Rumpadump as its priority",
+    "subject": "rescue priority",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin summarizes the decision to prioritize Stool and Rumpadump with the phrase 'Bros before toadstools.'",
+    "source_quote": "Thorin summarizes the decision with, \u201cBros before toadstools.\u201d",
+    "subject": "Thorin summarizes decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir worries that Stool and Rumpadump have been left with the infected Phylo for too long.",
+    "source_quote": "Zalthir worries that Stool and Rumpadump have been left with the infected Phylo for too long",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests having Basidia examine Stool and Rumpadump before committing to the rescue.",
+    "source_quote": "suggests having Basidia examine them before committing to the rescue",
+    "subject": "Zalthir suggests exam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to hide in plain sight and act as though nothing has changed, because Phylo expects them to attend the next day\u2019s celebration and be slaughtered.",
+    "source_quote": "Because Phylo expects the party to attend the next day\u2019s celebration and be slaughtered, the party decides to hide in plain sight and act as though nothing has changed",
+    "subject": "decision to hide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo greets Basidia as his fellow sovereign.",
+    "source_quote": "Phylo greets Basidia as his fellow sovereign",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo asks whether the guests enjoyed the tour and all the grove\u2019s changes.",
+    "source_quote": "asks whether their guests enjoyed the tour and all the grove\u2019s changes",
+    "subject": "Phylo asks about guests",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz answers that the changes seem to be causing problems for some people and others are unaware of them.",
+    "source_quote": "Daz answers, \u201cThe changes seem to be causing problems for some people and others are unaware of them.\u201d",
+    "subject": "Daz answers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum signals danger with such agitation that subtlety becomes nearly impossible.",
+    "source_quote": "Gyrgum simultaneously signals danger with such agitation that subtlety becomes nearly impossible",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer insists on emitting light, making the surrounding myconids visibly uncomfortable.",
+    "source_quote": "Dawnbringer insists on emitting light, making the surrounding myconids visibly uncomfortable",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The surrounding myconids are visibly uncomfortable due to Dawnbringer emitting light.",
+    "source_quote": "Dawnbringer insists on emitting light, making the surrounding myconids visibly uncomfortable",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer emitting light draws further attention.",
+    "source_quote": "making the surrounding myconids visibly uncomfortable and drawing further attention",
+    "subject": "Dawnbringer draws attention",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia confronts Phylo, accusing him of betraying the circle and allying himself with corruption.",
+    "source_quote": "Basidia confronts Phylo, accusing him of betraying the circle and allying himself with corruption",
+    "subject": "Basidia confronts Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recognizes that the confrontation is about to become a fight among the myconids.",
+    "source_quote": "The party recognizes that the confrontation is about to become a fight among the myconids",
+    "subject": "imminent fight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A group effort to persuade Basidia to flee initially fails.",
+    "source_quote": "A group effort to persuade Basidia to flee initially fails",
+    "subject": "persuade Basidia fails",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia resolves to remain during the initial failed persuasion.",
+    "source_quote": "she resolves to remain",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum successfully persuades Stool and Rumpadump that the grove is no longer safe and that they must leave immediately.",
+    "source_quote": "Gyrgum then successfully persuades Stool and Rumpadump that the grove is no longer safe and that they must leave immediately",
+    "subject": "Gyrgum persuades Stool and Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is saddened by the need to leave.",
+    "source_quote": "Stool and Rumpadump are saddened",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is saddened by the need to leave.",
+    "source_quote": "Stool and Rumpadump are saddened",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Phylo and Basidia\u2019s escalating conflict makes the end of the old Neverlight Grove unmistakable.",
+    "source_quote": "Phylo and Basidia\u2019s escalating conflict makes the end of the old Neverlight Grove unmistakable",
+    "subject": "end of old Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The grove\u2019s trees begin moving to attack Basidia.",
+    "source_quote": "The grove\u2019s trees begin moving to attack Basidia",
+    "subject": "trees attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo shouts to come with him, directing the survivors toward his escape route.",
+    "source_quote": "Rasharoo shouts, \u201cIf you want to live, come with me,\u201d directing the survivors toward his escape route",
+    "subject": "Rasharoo directs survivors",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub chooses to follow Rasharoo with his circle.",
+    "source_quote": "Loobamub chooses to follow with his circle",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub's circle follows him.",
+    "source_quote": "Loobamub chooses to follow with his circle",
+    "subject": "Loobamub's circle",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir realizes Basidia is about to attack Phylo.",
+    "source_quote": "Zalthir realizes Basidia is about to attack Phylo",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir decides to seize Basidia by punching her, as he explains mechanically.",
+    "source_quote": "Zalthir realizes Basidia is about to attack Phylo and decides to seize her, explaining, \u201cWell, mechanically, I do that through punching.\u201d",
+    "subject": "Zalthir grabs Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir successfully grabs and pulls Basidia away from the confrontation.",
+    "source_quote": "Zalthir successfully grabs and pulls Basidia away from the confrontation",
+    "subject": "Zalthir pulls Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia sees Stool, Rumpadump, Rasharoo, and everyone she still cares about leaving.",
+    "source_quote": "Basidia sees Stool, Rumpadump, Rasharoo, and everyone she still cares about leaving",
+    "subject": "Basidia sees friends leave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia accepts that remaining would only mean dying alone.",
+    "source_quote": "She accepts that remaining would only mean dying alone",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully retreats from Neverlight Grove.",
+    "source_quote": "The party successfully retreats from Neverlight Grove",
+    "subject": "party retreats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo rants about the Great Cedar and the glorious future of the grove as the party retreats.",
+    "source_quote": "as Phylo rants about the Great Cedar and the glorious future of the grove",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo calls after the party that it will all be well and the Neverlight Grove will be better than ever.",
+    "source_quote": "Phylo calls after them, \u201cIt will all be well. The Neverlight Grove will be better than ever.",
+    "subject": "Phylo calls after party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo says the great cedar will make them all happy.",
+    "source_quote": "And the great cedar will make us all so happy",
+    "subject": "Phylo mentions cedar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo calls to Basidia to stay.",
+    "source_quote": "Basidia, don\u2019t go. Stay",
+    "subject": "Phylo addresses Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo laments that the party refused to remain at the Circle of Welcome.",
+    "source_quote": "Phylo also laments that the party refused to remain at the Circle of Welcome",
+    "subject": "Phylo laments",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The 'welcome' at the Circle of Welcome meant being transformed into heads rooted in the ground.",
+    "source_quote": "this welcome meant being transformed into heads rooted in the ground",
+    "subject": "Circle of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party continues fleeing after remembering the nature of the welcome.",
+    "source_quote": "and continues fleeing",
+    "subject": "party continues fleeing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Looking back, the party sees that Zuggtmoy\u2019s evil has fully consumed the former beauty and glory of Neverlight Grove.",
+    "source_quote": "Looking back, they see that Zuggtmoy\u2019s evil has fully consumed the former beauty and glory of Neverlight Grove",
+    "subject": "looking back",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia apologizes for not completing work on the party\u2019s pet grick.",
+    "source_quote": "Basidia apologizes for not completing work on the party\u2019s pet grick",
+    "subject": "Basidia apologizes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia explains that events overtook her regarding the grick work.",
+    "source_quote": "explaining that events overtook her",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Basidia promises that after a few days, she should be able to provide the party with additional potions.",
+    "source_quote": "She promises that, after a few days, she should be able to provide the party with additional potions",
+    "subject": "future potions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia provides potions of greater healing to the party.",
+    "source_quote": "Basidia provides potions of greater healing",
+    "subject": "potions of greater healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia provides a box of treasure to the party as a reward for saving members of her circle.",
+    "source_quote": "and a box of treasure as a reward for saving members of her circle",
+    "subject": "box of treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The potions and treasure were provided as a reward for saving members of Basidia's circle.",
+    "source_quote": "as a reward for saving members of her circle",
+    "subject": "reward for saving circle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The recovered monetary treasure totals 975 gold pieces.",
+    "source_quote": "The recovered monetary treasure totals 975 gold pieces",
+    "subject": "monetary treasure",
+    "quote_verified": true
+  }
+]

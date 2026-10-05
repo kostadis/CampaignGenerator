@@ -1,0 +1,226 @@
+[
+  {
+    "type": "thread",
+    "fact": "The party debates between returning to Neverlight Grove and visiting the Lost Tomb of Khaem.",
+    "source_quote": "the party debates whether to head toward the Neverlight Grove to return Stool and Rumpadump home, or seek out the Lost Tomb of Khaem",
+    "subject": "route decision",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is the gnome rescued in the spider webs who mentioned the Lost Tomb of Khaem.",
+    "source_quote": "Lost Tomb of Khaem mentioned by Fargas Rumblefoot, the gnome they rescued in the spider webs",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith feels a compulsion to go to the Neverlight Grove.",
+    "source_quote": "Sarith feels a compulsion to go to the Grove",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar bets that the 'circle of joy' at the Myconid grove will turn out to be something sinister.",
+    "source_quote": "Jimjar bets the party that the 'circle of joy' at the Myconid grove will turn out to be something far more sinister",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes Jimjar's bet.",
+    "source_quote": "Gyrgum took the bet",
+    "subject": "Gyrgum accepts bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to prioritize visiting the Lost Tomb of Khaem.",
+    "source_quote": "The party decides to prioritize the tomb",
+    "subject": "route chosen",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The tomb is four days' travel by boat.",
+    "source_quote": "the tomb was four days' travel by boat",
+    "subject": "tomb travel time",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is dead.",
+    "source_quote": "Buppido is dead",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir shrouds the boat in darkness.",
+    "source_quote": "Zalthir offers to shroud the boat in darkness",
+    "subject": "Zalthir casts darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 on a stealth check with disadvantage in chain mail.",
+    "source_quote": "Thorin rolls with disadvantage in chain mail and gets 15",
+    "subject": "Thorin stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz makes noise during a stealth check despite rolling with advantage.",
+    "source_quote": "Daz rolls with advantage for his drow paranoia but slips and makes noise",
+    "subject": "Daz stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm of stirges ambushes the party on the third day of travel.",
+    "source_quote": "On the third day of travel, a swarm of blood-sucking stirges descends upon the boat",
+    "subject": "stirge ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stirges have AC 14, 2 hit points each, and a 1d4+3 piercing bite.",
+    "source_quote": "AC 14, 2 hit points each, and a 1d4+3 piercing bite",
+    "subject": "stirges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts a 15-foot cone of fire, incinerating three stirges.",
+    "source_quote": "Zalthir unleashes a 15-foot cone of searing fire that incinerated three of the creatures mid-air",
+    "subject": "Zalthir fire cone",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches down a stirge that was not incinerated by the fire.",
+    "source_quote": "then punched down another",
+    "subject": "Zalthir punch",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 1 was incinerated by Zalthir's fire.",
+    "source_quote": "incinerated three of the creatures mid-air",
+    "subject": "stirge 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 2 was incinerated by Zalthir's fire.",
+    "source_quote": "incinerated three of the creatures mid-air",
+    "subject": "stirge 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 3 was incinerated by Zalthir's fire.",
+    "source_quote": "incinerated three of the creatures mid-air",
+    "subject": "stirge 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 4 was knocked down by Zalthir's punch.",
+    "source_quote": "punched down another",
+    "subject": "stirge 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a shimmering barrier of force to deflect a stirge.",
+    "source_quote": "Daz conjured a shimmering barrier of force to deflect one that dove straight at him",
+    "subject": "Daz shield",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 5 was deflected by Daz's force barrier.",
+    "source_quote": "deflect one that dove straight at him",
+    "subject": "stirge 5",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down two stirges with his longsword.",
+    "source_quote": "Thorin drew his longsword and cut down two more in rapid succession",
+    "subject": "Thorin cuts stirges",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 6 was killed by Thorin's longsword.",
+    "source_quote": "cut down two more in rapid succession",
+    "subject": "stirge 6",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 7 was killed by Thorin's longsword.",
+    "source_quote": "cut down two more in rapid succession",
+    "subject": "stirge 7",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A stirge latches onto Gyrgum and begins to drain his blood.",
+    "source_quote": "Gyrgum struggled to pry one loose that had latched onto him and begun to drain his blood",
+    "subject": "Gyrgum latched",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 8 is attached to Gyrgum.",
+    "source_quote": "latched onto him and begun to drain his blood",
+    "subject": "stirge 8",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts True Strike but misses with his hand axe.",
+    "source_quote": "Gyrgum casts True Strike and attempts to strike the creature attached to him with a hand axe but misses",
+    "subject": "Gyrgum misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz considers a crowd-control spell but holds off because it would hit the party.",
+    "source_quote": "He considers a crowd-control spell ... but holds off",
+    "subject": "Daz holds off",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires magical bolts that strike the last stirge, killing it.",
+    "source_quote": "Daz finally ended the encounter by firing a volley of unerring magical bolts that struck the last of the creatures",
+    "subject": "Daz finishes fight",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 9 was killed by Daz's magical bolts.",
+    "source_quote": "striking the last of the creatures, leaving a bloody mess across the deck",
+    "subject": "stirge 9",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is immune to stirges because he has no blood.",
+    "source_quote": "Stool and Rumpadump are safe from the stirges because they have no blood",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is immune to stirges because he has no blood.",
+    "source_quote": "Stool and Rumpadump are safe from the stirges because they have no blood",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  }
+]

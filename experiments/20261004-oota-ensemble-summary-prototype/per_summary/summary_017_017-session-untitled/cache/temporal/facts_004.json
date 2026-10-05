@@ -1,0 +1,44 @@
+[
+  {
+    "type": "event",
+    "fact": "About ten derro soldiers are guarding the obelisk chamber.",
+    "source_quote": "about ten derro guarded the obelisk chamber",
+    "subject": "derro guard count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zubrisca is always accompanied by four bodyguards.",
+    "source_quote": "leader-type figure named Zubriska, always surrounded by four bodyguards",
+    "subject": "Zubrisca bodyguard count",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The faerzress stopped working approximately six or seven months prior to the session.",
+    "source_quote": "Some six or seven months ago the faerzress blinked out",
+    "subject": "faerzress blink timing",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The flumph's home has been corrupted over the past year.",
+    "source_quote": "corrupted over the past year",
+    "subject": "corruption duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides not to face roughly ten derro without taking a long rest first.",
+    "source_quote": "decides against facing roughly ten derro without a long rest",
+    "subject": "derro confrontation decision",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The group of derro guarding the obelisk consists of about ten creatures.",
+    "source_quote": "About ten derro are in the obelisk area",
+    "subject": "derro",
+    "quote_verified": true
+  }
+]

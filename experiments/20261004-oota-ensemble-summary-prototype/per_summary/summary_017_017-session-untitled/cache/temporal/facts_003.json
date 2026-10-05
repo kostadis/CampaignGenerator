@@ -1,0 +1,37 @@
+[
+  {
+    "type": "monster",
+    "fact": "Three myconid adults are present in the cave.",
+    "source_quote": "Three myconid adults stand five feet tall",
+    "subject": "myconid adults",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The myconid adults are five feet tall.",
+    "source_quote": "Three myconid adults stand five feet tall",
+    "subject": "myconid adult height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The myconid sprouts are half the height of the adults (2.5 feet).",
+    "source_quote": "and the sprouts are half that height",
+    "subject": "myconid sprout height",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoth spore servants are identified in the cave.",
+    "source_quote": "The scouts identify two larger ape-like creatures as quaggoth spore servants",
+    "subject": "quaggoth spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir succeeds on a Stealth check with a roll of 26 while scouting ahead.",
+    "source_quote": "Zalthir stealthily scouts ahead with a Stealth roll of 26",
+    "subject": "Zalthir stealth check",
+    "quote_verified": true
+  }
+]

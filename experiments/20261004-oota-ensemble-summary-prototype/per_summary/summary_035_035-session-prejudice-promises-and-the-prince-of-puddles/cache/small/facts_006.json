@@ -1,0 +1,114 @@
+[
+  {
+    "type": "event",
+    "fact": "The guards open the gate and admit the entire company, including Glabbagool, into Blingdenstone.",
+    "source_quote": "the guards agree to open the gate and admit the entire company, including Glabbagool",
+    "subject": "gate opening",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo Diggermattock is the city official the party is recommended to see for full permission regarding Glabbagool.",
+    "source_quote": "recommend that the party report to Chief Dorbo Diggermattock and Quartermaster Senni",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Quartermaster Senni is the city official the party is recommended to see for an explanation of Blingdenstone\u2019s ooze crisis.",
+    "source_quote": "report to Chief Dorbo Diggermattock and Quartermaster Senni",
+    "subject": "Quartermaster Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Maze is a defensive network of twisting, trapped tunnels intended to slow and kill invading armies.",
+    "source_quote": "the Maze, a defensive network of twisting, trapped tunnels intended to slow and kill invading armies",
+    "subject": "The Maze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A gnome explains that the Maze forces attackers through twisty tunnels with deadly traps.",
+    "source_quote": "it's important to make them go through lots of twisty tunnels with deadly traps that you can kill them in",
+    "subject": "Maze description",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the city's powerful fortifications make him feel safer.",
+    "source_quote": "I mean, actually, I feel safer hanging out with you guys because of your powerful defenses",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz thanks the gnomes for hosting the group.",
+    "source_quote": "Thank you for hosting us",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gnomes are delighted by Daz's compliment and recognize him for handling the exchange well.",
+    "source_quote": "The compliment pleases the gnomes and earns Daz recognition for handling the exchange particularly well",
+    "subject": "gnome reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes compete with dwarves for finite underground resources.",
+    "source_quote": "The two peoples competed for the same finite underground resources",
+    "subject": "Gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes can become allies with dwarves against deeper Underdark threats.",
+    "source_quote": "could become allies against deeper Underdark threats",
+    "subject": "Gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth considers gnomes clever with magic and gems but not particularly formidable fighters.",
+    "source_quote": "Eldeth admitted that she considered gnomes clever with magic and gems but not particularly formidable fighters",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth tells Daz that she has learned to understand that not every drow is evil.",
+    "source_quote": "Eldeth says, \u201cDaz, I want you to know that I have learned to understand that not every drow is evil.\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth admits she was raised with the prejudice that \u201cThe only good drow is a dead drow.\u201d",
+    "source_quote": "\u201cThe only good drow is a dead drow.\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth believes the true enemy is the cult of Lolth rather than every individual drow.",
+    "source_quote": "believed the true enemy was the fanatical cult of Lolth rather than every individual drow",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that those raised in the cult of Lolth might be redeemable people shaped by a terrible environment.",
+    "source_quote": "Daz cautioned that even those raised knowing nothing but that cult might be redeemable people shaped by a terrible environment",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth acknowledges that Daz's example convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil needs to be rethought.",
+    "source_quote": "Eldeth acknowledged that his example had convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil and worthy of massacre was something she needed to rethink",
+    "subject": "Eldeth",
+    "quote_verified": true
+  }
+]

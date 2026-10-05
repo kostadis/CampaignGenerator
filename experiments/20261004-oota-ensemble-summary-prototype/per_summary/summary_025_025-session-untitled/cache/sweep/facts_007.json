@@ -1,0 +1,128 @@
+[
+  {
+    "type": "location",
+    "fact": "The clearing is dominated by a throne of intertwined fungal growths.",
+    "source_quote": "dominated by a throne of intertwined fungal growths",
+    "subject": "grim clearing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Twisted mushroom sentinels ring the clearing and are mottled with mold.",
+    "source_quote": "ringed by twisted mushroom sentinels mottled with mold",
+    "subject": "twisted mushroom sentinels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi.",
+    "source_quote": "This was Zuggtmoy herself, the Demon Queen of Fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A spectral figure of Zuggtmoy shimmers into view at the center of the clearing.",
+    "source_quote": "Then a spectral figure shimmered into view at the center, shifting between radiant beauty and horrifying decay",
+    "subject": "Zuggtmoy manifestation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy offers Thorin and Gyrgum the gift of becoming part of her endless mycelium forever.",
+    "source_quote": "offered her gift: to bloom beyond the bounds of flesh and time and become part of her endless mycelium forever",
+    "subject": "Zuggtmoy's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin declines Zuggtmoy's offer.",
+    "source_quote": "But in the end he declined, telling the Dark Lady that he had too many responsibilities in the waking world to linger with her",
+    "subject": "Thorin's refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin references Andre the Giant from The Princess Bride when greeting Zuggtmoy.",
+    "source_quote": "Thorin greets her \"as Andre the Giant from the Princess Bride.\"",
+    "subject": "Andre the Giant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Princess Bride is cited as the source of Andre the Giant.",
+    "source_quote": "as Andre the Giant from the Princess Bride",
+    "subject": "The Princess Bride",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's player leaves the session.",
+    "source_quote": "Gyrgum's player leaves the session here",
+    "subject": "Gyrgum's player leaves",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thorin and Gyrgum wake up back in the Whorlstone Tunnels.",
+    "source_quote": "Thorin and Gyrgum woke up back in the Whorlstone Tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin feels the temptation of Zuggtmoy's offer keenly.",
+    "source_quote": "Thorin felt the temptation keenly",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy regards Thorin with something like sorrow after his refusal.",
+    "source_quote": "Zuggtmoy regarded him with something like sorrow",
+    "subject": "Zuggtmoy's sorrow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vision of Zuggtmoy dissolves after Thorin's refusal.",
+    "source_quote": "and then the vision dissolved",
+    "subject": "vision dissolves",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Companions are staring at Thorin and Gyrgum when they wake up.",
+    "source_quote": "with their companions staring at them",
+    "subject": "companions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM states that if Zuggtmoy wanted to kill Thorin, she could have.",
+    "source_quote": "The DM: \"If she wanted to kill you, she could have killed you.\"",
+    "subject": "DM ruling on safety",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM states that deals with demons give power at great cost.",
+    "source_quote": "deals with demons always give you power at great cost",
+    "subject": "DM ruling on demon deals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's deciding roll to resist Zuggtmoy was really close.",
+    "source_quote": "his deciding roll was \"really close\"",
+    "subject": "Thorin's roll",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wakes up alongside Thorin in the Whorlstone Tunnels.",
+    "source_quote": "Thorin and Gyrgum woke up back in the Whorlstone Tunnels",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

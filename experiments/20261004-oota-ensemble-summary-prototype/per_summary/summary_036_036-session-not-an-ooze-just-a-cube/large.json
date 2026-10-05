@@ -1,0 +1,506 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is inside the caverns of Blingdenstone.",
+    "source_quote": "The party arrived at a gate deep within the caverns of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Deep gnome guards who had previously admitted the party catch up to them at the gate.",
+    "source_quote": "where the deep gnome guards who had previously admitted them came huffing and puffing after them",
+    "subject": "deep gnome guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard with a squeaky voice asks the party to confirm their escape from Velkynvelve and the Drow.",
+    "source_quote": "One squeaky-voiced guard asked, \u201cSo you escaped from Velkynvelve from the Drow. Is this correct?\u201d",
+    "subject": "squeaky-voiced guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant failed to read the latest report all the way through.",
+    "source_quote": "the visibly embarrassed sergeant had not read the latest report all the way through",
+    "subject": "sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The officer publicly admonishes the sergeant with 'Shame on you' and states the importance of reading orders thoroughly.",
+    "source_quote": "The officer publicly admonishes the sergeant: \u201cShame on you,\u201d then stresses, \u201cIt\u2019s very important in any military operation that people read the orders thoroughly.\u201d",
+    "subject": "admonishment of sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The officer appears increasingly pleased with his own handling of the situation.",
+    "source_quote": "while the officer appears increasingly pleased with his own handling of the situation",
+    "subject": "officer",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock took their current territory from the Drow.",
+    "source_quote": "Clan Diggermattock had taken this territory from the Drow",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Standing orders require escapees from the Drow to be escorted immediately to Chief Dorbo of Clan Diggermattock.",
+    "source_quote": "Standing orders required any escapees from the Drow to be escorted immediately to Chief Dorbo of Clan Diggermattock",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo wants to question the party to help the deep gnomes better prepare their defenses.",
+    "source_quote": "Chief Dorbo wanted to question the party so the deep gnomes could better prepare their defenses",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check determines that the guards' request is sincere and contains no malevolence.",
+    "source_quote": "An insight check established that the request was sincere and contained no malevolence",
+    "subject": "insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Svirfneblin routinely seek intelligence from anyone who has escaped the Drow.",
+    "source_quote": "the deep gnomes routinely sought intelligence from anyone who had escaped the Drow",
+    "subject": "Svirfneblin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A party member jokes that going to the meeting is preferable to trying to kill all the guards.",
+    "source_quote": "One party member joked that this was preferable to \u201ctrying to kill all the guards, which was the other thing I was considering.\u201d",
+    "subject": "party member",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A party member remarks that there were so many conspiracies they previously encountered that they needed a spreadsheet to keep track of them.",
+    "source_quote": "There were so many conspiracies. I needed a friggin\u2019 spreadsheet to keep track of the conspiracies.",
+    "subject": "party member",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to accompany the guards to Diggermattock Hall.",
+    "source_quote": "The party agrees to accompany the guards to Diggermattock Hall",
+    "subject": "agreement to go to Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is the destination the party agrees to accompany the guards to.",
+    "source_quote": "The party agrees to accompany the guards to Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party consults Jimjar, reasoning that he repeatedly demonstrates he knows more than he openly reveals.",
+    "source_quote": "the party consulted Jimjar, reasoning that he had repeatedly demonstrated that he knew more than he openly revealed",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar tends to know a lot of stuff, prompting the party to discuss finding more reliable ways to draw information out of him.",
+    "source_quote": "tends to know a lot of stuff",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers to bet five empty spell gems that meeting with the clan leaders is the right thing to do.",
+    "source_quote": "I\u2019ll bet you five empty spell gems that meeting with them is the right thing to do",
+    "subject": "Jimjar's bet offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar states that the party will have to figure out how to get rid of the oozes.",
+    "source_quote": "But you\u2019re going to have to figure out how to get rid of the oozes",
+    "subject": "Jimjar's ooze condition",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool corrects the terminology regarding his form, stating he is not an ooze but a cube.",
+    "source_quote": "It\u2019s not an ooze, it\u2019s a cube",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The deep gnomes of Blingdenstone are suffering from an extensive ooze infestation with many oozes present.",
+    "source_quote": "the deep gnomes are suffering from an ooze infestation and that there\u2019s tons of them around",
+    "subject": "Deep gnomes",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar confirms that receiving the empty spell gems is dependent on the party being sent on the anticipated quest.",
+    "source_quote": "You get gems, yes. That\u2019s how you should read it",
+    "subject": "Bet clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party accepts the bet and proceeds, interpreting Jimjar\u2019s wager as support for meeting the clan leaders and a warning about the task.",
+    "source_quote": "The party accepts the bet and proceeds, interpreting Jimjar\u2019s wager as support for meeting the clan leaders and a warning about the task awaiting them",
+    "subject": "Bet acceptance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Jimjar promises the party will get some spell gems if they go talk to the clan leaders.",
+    "source_quote": "You\u2019ll get some spell gems, but you\u2019ll have to go talk to them",
+    "subject": "Empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is being taken to meet a person named Dorbo, whose identity and the nature of the meeting are uncertain.",
+    "source_quote": "They ask Jimjar whether he knows the person they are being taken to meet",
+    "subject": "Dorbo meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party interprets Jimjar's bet as a prediction that the clan will send them on a quest.",
+    "source_quote": "Yeah, you\u2019re betting we\u2019re going to be sent on a quest, is what I\u2019m hearing",
+    "subject": "Quest implication",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guards escort the party through Blingdenstone's reception hall.",
+    "source_quote": "The guards escorted the party through Blingdenstone\u2019s reception hall",
+    "subject": "Blingdenstone Reception Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A cart is parked in the reception hall.",
+    "source_quote": "On seeing a cart there",
+    "subject": "reception hall cart",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member jokes that the cart is a \"medieval pickup truck.\"",
+    "source_quote": "where a cart was jokingly described as a \u201cmedieval pickup truck,\u201d",
+    "subject": "cart joke",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The group moves through the Traders\u2019 Grotto on their way to Diggermattock Hall.",
+    "source_quote": "The group continues through the Traders\u2019 Grotto on the way to Diggermattock Hall.",
+    "subject": "Traders\u2019 Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool follows the party slightly behind the others.",
+    "source_quote": "Glabbagool remains with the party and follows slightly behind the others.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Less adventurous deep gnomes react nervously upon seeing Glabbagool.",
+    "source_quote": "less adventurous deep gnomes reacted nervously when they saw a sentient gelatinous cube",
+    "subject": "deep gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The deep gnome community is currently troubled by an ooze infestation.",
+    "source_quote": "a settlement already troubled by oozes",
+    "subject": "deep gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is a sentient gelatinous cube.",
+    "source_quote": "when they saw a sentient gelatinous cube",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party has previously explained Glabbagool's friendly nature to the locals.",
+    "source_quote": "Although the party had explained his friendly nature",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Deep gnomes display visible uncertainty, reacting with \"huh?\" upon seeing the party and Glabbagool.",
+    "source_quote": "Other people, as they see you, are kind of like, huh?\u201d",
+    "subject": "deep gnome reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guards bring the party to Diggermattock Hall.",
+    "source_quote": "The guards ultimately bring the party to Diggermattock Hall.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is being escorted to meet the clan leaders.",
+    "source_quote": "on their way to meet the clan leaders",
+    "subject": "meeting clan leaders",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party notes the oddity of being asked to fight an ooze infestation while traveling with a friendly ooze.",
+    "source_quote": "The party notes the oddity of being asked to fight an ooze infestation while openly traveling with a friendly, sentient gelatinous cube.",
+    "subject": "ooze infestation irony",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrives at Diggermattock Hall.",
+    "source_quote": "The party was eventually brought to Diggermattock Hall.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is a well-lit cavern.",
+    "source_quote": "Diggermattock Hall is a well-lit cavern",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is occupied by roughly two dozen Svirfneblin.",
+    "source_quote": "Roughly two dozen Svirfneblin occupied the well-lit cavern.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo Diggermattock is a male Svirfneblin.",
+    "source_quote": "A male and female Svirfneblin sat there conferring",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo Diggermattock sits at a stone desk on a rock-carved dais.",
+    "source_quote": "At the back stood a rock-carved dais bearing two stone desks.",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni Diggermattock is the assistant to Dorbo Diggermattock.",
+    "source_quote": "over here is my assistant, Senni",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni Diggermattock holds the title of Quartermaster.",
+    "source_quote": "Quartermaster Senni Diggermattock responded with muttering",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni Diggermattock sits at a stone desk on a rock-carved dais.",
+    "source_quote": "At the back stood a rock-carved dais bearing two stone desks.",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo introduces himself and his assistant Senni as the leaders in charge.",
+    "source_quote": "My name is Dorbo. And over here is my assistant, Senni. And we are in charge here.",
+    "subject": "Dorbo introduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member initially introduces the group as the Emerald Vanguard.",
+    "source_quote": "The party initially blurted out \u201cthe Emerald Vanguard,\u201d",
+    "subject": "party name confusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses the names Emerald Vanguard, Ember Vanguard, and Emerald Enclave.",
+    "source_quote": "became tangled in a discussion of the Emerald Vanguard, Ember Vanguard, and Emerald Enclave.",
+    "subject": "party name confusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides not to use a name associated with destroying a capital city.",
+    "source_quote": "remembered that one of those names was associated with a faction blamed for destroying a capital city and decided against using it.",
+    "subject": "party name decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party introduces themselves as adventurers trying to reach the Overbright.",
+    "source_quote": "they introduced themselves simply as adventurers trying to find their way home and reach the Overbright.",
+    "subject": "party introduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo and Senni engage in muttering and finger-pointing.",
+    "source_quote": "Dorbo and Quartermaster Senni Diggermattock responded with muttering, finger-pointing",
+    "subject": "leaders' argument",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo and Senni appear to have a heated private argument.",
+    "source_quote": "an apparently heated private argument.",
+    "subject": "leaders' argument",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party anticipated a warning from Jimjar regarding oozes.",
+    "source_quote": "Anticipating Jimjar\u2019s warning, the party openly asked",
+    "subject": "Jimjar's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member asks if the clan has a side quest involving oozes.",
+    "source_quote": "the party openly asked whether the clan had a side quest involving oozes and volunteered their interest.",
+    "subject": "ooze quest offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni informs the party that Blingdenstone is suffering from an ooze problem.",
+    "source_quote": "our community is suffering from an ooze problem.",
+    "subject": "Senni's task assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni assigns the party to look at the ooze problem before helping them reach the Overbright.",
+    "source_quote": "we won\u2019t feel at all encumbered or guilty about asking you to do that before we help you.\u201d",
+    "subject": "Senni's task assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool asserts that he is a gelatinous cube, not an ooze.",
+    "source_quote": "Well, I\u2019m not an ooze. I\u2019m a gelatinous cube. A totally different species.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool identifies himself as the friendly type.",
+    "source_quote": "I am the friendly type.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool claims he is better than oozes because he is a cube.",
+    "source_quote": "I knew there was a reason I was just better than them.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party argues that gelatinous cubes have higher viscosity than oozes.",
+    "source_quote": "party supported his argument by noting that gelatinous cubes have much higher viscosity than oozes",
+    "subject": "viscosity argument",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party notes that gelatinous cubes can maintain a square form.",
+    "source_quote": "can maintain a square form: \u201cHave you ever seen a square ooze? I don\u2019t think so.\u201d",
+    "subject": "shape argument",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A party member describes a shambling mound from previous encounters.",
+    "source_quote": "party member described the creature from both study and the group\u2019s previous encounter.",
+    "subject": "shambling mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party explains that shambling mounds do not retain objects like gelatinous cubes.",
+    "source_quote": "shambling mounds did not sweep up and retain objects the way gelatinous cubes did.",
+    "subject": "shambling mound description",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he does not eat oozes.",
+    "source_quote": "No, no, I don\u2019t eat oozes.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he punches oozes.",
+    "source_quote": "I do punch them sometimes, but no, I don\u2019t eat oozes.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool extends a pseudopod to demonstrate his ability to strike.",
+    "source_quote": "extended a pseudopod to demonstrate that he could strike things as well as absorb them.",
+    "subject": "Glabbagool demonstration",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party seeks to reach the Overbright.",
+    "source_quote": "adventurers trying to find their way home and reach the Overbright.",
+    "subject": "Overbright journey",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The clan has a side quest involving oozes that must be resolved.",
+    "source_quote": "our community is suffering from an ooze problem.",
+    "subject": "Blingdenstone ooze problem",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party intends to travel to the Overbright.",
+    "source_quote": "reach the Overbright.",
+    "subject": "Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Emerald Enclave is associated with a faction blamed for destroying a capital city.",
+    "source_quote": "one of those names was associated with a faction blamed for destroying a capital city",
+    "subject": "Emerald Enclave",
+    "quote_verified": true
+  }
+]

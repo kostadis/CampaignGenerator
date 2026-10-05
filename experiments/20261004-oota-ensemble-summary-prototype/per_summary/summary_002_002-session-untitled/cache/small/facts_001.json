@@ -1,0 +1,156 @@
+[
+  {
+    "type": "faction",
+    "fact": "The drow overseers of Velkynvelve put their prisoners to work immediately.",
+    "source_quote": "The drow overseers of Velkynvelve wasted no time putting their prisoners to work",
+    "subject": "drow overseers",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The drow overseers drag prisoners from the slave pen.",
+    "source_quote": "dragging them from the slave pen",
+    "subject": "slave pen",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow overseers divide the prisoners into labor groups.",
+    "source_quote": "dividing them into labor groups",
+    "subject": "labor assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Three drow at the guard post sneer at the prisoners as they pass.",
+    "source_quote": "the prisoners spotted three drow who sneered at them",
+    "subject": "drow sneering guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is sent to clean and operate the outpost's lift.",
+    "source_quote": "Zalthir was sent to clean and operate the outpost's lift",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The outpost's lift is a creaking contraption of zurkhwood and spider silk suspended high above the cavern floor.",
+    "source_quote": "a creaking contraption of zurkhwood and spider silk suspended high above the cavern floor",
+    "subject": "outpost lift",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoth guards startle Zalthir by dropping the lift basket suddenly and yanking it back up.",
+    "source_quote": "two quaggoth guards amused themselves by dropping the basket suddenly and yanking it back up to startle him",
+    "subject": "quaggoth guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is marched to the waterfall to haul small barrels of water.",
+    "source_quote": "Thorin, Ront, and Prince Derendil were marched to the waterfall to haul small barrels of water",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is marched to the waterfall to haul small barrels of water.",
+    "source_quote": "Thorin, Ront, and Prince Derendil were marched to the waterfall to haul small barrels of water",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil is marched to the waterfall to haul small barrels of water.",
+    "source_quote": "Thorin, Ront, and Prince Derendil were marched to the waterfall to haul small barrels of water",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is put to work in the drow dining hall preparing meals.",
+    "source_quote": "Gyrgum was put to work in the drow dining hall, tasked with preparing meals",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Drow warriors lounge at circular zurkhwood tables in the dining hall.",
+    "source_quote": "sneering warriors who lounged at circular zurkhwood tables",
+    "subject": "drow dining hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is assigned to clean chamber pots.",
+    "source_quote": "Daz, along with Stool the Myconid and one other drow prisoner, was assigned the least glamorous duty of all\u2014cleaning chamber pots",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a Myconid assigned to clean chamber pots.",
+    "source_quote": "Stool the Myconid",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is unconcerned by the filth of chamber pot cleaning due to his fungal nature.",
+    "source_quote": "Stool's fungal nature makes him unconcerned by the filth",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One other drow prisoner is assigned to clean chamber pots alongside Daz and Stool.",
+    "source_quote": "Daz, along with Stool the Myconid and one other drow prisoner, was assigned the least glamorous duty of all\u2014cleaning chamber pots",
+    "subject": "drow prisoner",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Attacking the captors openly is deemed suicidal.",
+    "source_quote": "an immediate reminder that attacking their captors openly would be suicidal",
+    "subject": "attack feasibility",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party observes the confusing vertical layout of Velkynvelve, including hanging chambers and webbing.",
+    "source_quote": "The party takes in the confusing vertical layout of Velkynvelve: hanging chambers, webbing",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party observes rope bridges in the outpost.",
+    "source_quote": "rope bridges",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party observes the lower pool and river tunnel in the outpost.",
+    "source_quote": "the lower pool, the river tunnel",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The underground river flows from the pool below the outpost.",
+    "source_quote": "the underground river flowing from the pool below",
+    "subject": "underground river",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Ominous creatures exist in the area below the outpost.",
+    "source_quote": "ominous creatures below",
+    "subject": "ominous creatures",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "type": "event",
+    "fact": "The party selected the Rockblight cleansing as the next immediate expedition.",
+    "source_quote": "The session ended with the Rockblight cleansing selected as the next immediate expedition.",
+    "subject": "Rockblight cleansing selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session concluded with plans for the next session focused on cleansing the Rockblight and preparing the Steadfast Stone.",
+    "source_quote": "The Dungeon Master confirmed that the next session would begin with the effort to cleanse the Rockblight and prepare the Steadfast Stone.",
+    "subject": "session conclusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided not to travel to Gracklstugh.",
+    "source_quote": "The party would not travel to Gracklstugh.",
+    "subject": "Gracklstugh avoidance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool, Eldeth, and Jimjar are assigned to handle the Burrow Warden matter.",
+    "source_quote": "Glabbagool, Eldeth, and Jimjar handling the Burrow Warden matter",
+    "subject": "party division",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The principal characters are assigned to pursue elemental and acid-resistance objectives.",
+    "source_quote": "the principal characters pursued the elemental and acid-resistance objectives",
+    "subject": "principal characters objective",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz insisted he is not the decision maker, stating he only refused to tolerate political doublespeak.",
+    "source_quote": "I'm not the decision maker. I just couldn't put up with the BS anymore.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz claimed to be a true leader.",
+    "source_quote": "Daz replied, \"I'm a true leader.\"",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz seized command when political doublespeak made action impossible but deferred to the group for meaningful decisions.",
+    "source_quote": "Daz had seized command when political doublespeak made action impossible, yet deferred to the group once meaningful decisions had to be made.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A player noted that Daz demonstrated a desire to take charge but deferred to the committee when decisions became crucial.",
+    "source_quote": "Daz kind of demonstrated that I want to take charge. And then when the decisions become crucial, he's deferring to committee.",
+    "subject": "player",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone's competing factions supported the party's plan.",
+    "source_quote": "the party finally had a plan\u2014long in coming, but supported by Blingdenstone's competing factions",
+    "subject": "Blingdenstone's competing factions",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Steadfast Stone is to be prepared in the next session.",
+    "source_quote": "prepare the Steadfast Stone",
+    "subject": "Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Glabbagool, Eldeth, and Jimjar are handling the Burrow Warden matter.",
+    "source_quote": "Glabbagool, Eldeth, and Jimjar handling the Burrow Warden matter",
+    "subject": "Burrow Warden matter",
+    "quote_verified": true
+  }
+]

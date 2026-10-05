@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "Faerzress is a strange magical radiation that warps tunnels and makes teleportation nearly impossible.",
+    "source_quote": "a region thick with Faerzress, the strange magical radiation that warps the tunnels and makes teleportation all but impossible.",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party believes the Faerzress 'blink' caused the recent demonic incursions.",
+    "source_quote": "The party's working hypothesis is that the blink somehow caused the demons to show up.",
+    "subject": "Faerzress blink hypothesis",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith explains that the quartz crystals burst into a blinding flash when hurled against a hard surface.",
+    "source_quote": "Sarith explained that these crystals, when hurled against a hard surface, burst into a blinding flash in a 10-foot radius.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The quartz crystals shed a dim light in a 10-foot radius and force a DC 10 Constitution save on creatures caught in their thrown flash or be blinded for a minute.",
+    "source_quote": "scattered through the area were fist-sized chunks of quartz that shed a dim light in a 10-foot radius... Any creature caught in the flash must make a DC 10 Constitution save or be blinded for a minute",
+    "subject": "Quartz crystals",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party harvests twelve of the glowing quartz crystals.",
+    "source_quote": "The party set about harvesting what they could, pocketing twelve of the glowing stones",
+    "subject": "crystal harvesting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 19 on Arcana to recall that magical darkness blocks all light, including magical light.",
+    "source_quote": "Daz rolled a 19 on Arcana and recalled Zalthir's earlier explanation: magical darkness blocks all light, even magical light.",
+    "subject": "Daz Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is a wretched human and former slave of the Drow.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is a wretched human and former slave of the Drow.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow.",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 22 on Investigation and spots the telltale Drow prisoner markings on the survivors.",
+    "source_quote": "Daz rolls a 22 on Investigation and spots the telltale Drow prisoner markings.",
+    "subject": "Daz Investigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm holds up a crystal and declares they are not going back when he sees Daz is a drow.",
+    "source_quote": "Seeing that Daz is a drow, Fuurm holds up a crystal and declares they are not going back.",
+    "subject": "Fuurm warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 24 on Insight and determines Fuurm and Baedora are driven by desperation rather than malice.",
+    "source_quote": "Daz rolls a 24 on Insight and reads it as pure desperation: two hungry people in dilapidated clothes who see a big armed group as their way out, not agents sent to follow the party.",
+    "subject": "Daz Insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm entered the Underdark to save his sister but was captured, escaping recently during a demonic attack on his captors.",
+    "source_quote": "Fuurm explains he entered the Underdark to save his sister but was captured, only recently escaping during a demonic attack on his captors.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Fuurm's sister was stolen from the Overbright by the Drow.",
+    "source_quote": "The GM adds that the sister was stolen from the Overbright by the Drow",
+    "subject": "Fuurm's sister",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is described as 'just a farmer' with no special skills, though his survival seems unusual.",
+    "source_quote": "Fuurm is \"just a farmer\" with no special skills, whose survival \"strikes you as very odd.\"",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to let Fuurm and Baedora travel along after Daz offers them food and water.",
+    "source_quote": "Daz invites the survivors to share food and water and tell their story; the party agrees to let them travel along",
+    "subject": "party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir urges the party to keep an eye on the new survivors.",
+    "source_quote": "with Zalthir urging everyone to keep an eye on them.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The last stray character the party picked up turned out to be a psychotic believer.",
+    "source_quote": "the GM notes that the last stray the party picked up turned out to be a psychotic believer",
+    "subject": "previous stray",
+    "quote_verified": false
+  }
+]

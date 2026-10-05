@@ -1,0 +1,212 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is currently located in Diggermattock Hall.",
+    "source_quote": "The party found themselves in Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is the leader of the mining coalition.",
+    "source_quote": "Chief Dorbo, leader of the mining coalition",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni represents the non-mining population.",
+    "source_quote": "Senni, representing the non-mining population",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party reaffirmed themselves as the Ember Vanguard.",
+    "source_quote": "The party reaffirmed themselves as the Ember Vanguard",
+    "subject": "Ember Vanguard",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Pale Enclave was a suggested name for the party.",
+    "source_quote": "Suggestions include the Pale Enclave",
+    "subject": "Pale Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Cool Enclave was a suggested name for the party.",
+    "source_quote": "Cool Enclave",
+    "subject": "Cool Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party settled on the name Ash Enclave.",
+    "source_quote": "they settled for the moment on the Ash Enclave",
+    "subject": "Ash Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to adopt the name Ash Enclave, possibly connecting it to phoenix imagery.",
+    "source_quote": "settled for the moment on the Ash Enclave, with possible phoenix imagery",
+    "subject": "naming the party",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party questioned whether the gnomes were productive or merely busy.",
+    "source_quote": "questioned whether the bustling gnomes around them were productive or merely busy",
+    "subject": "productivity of gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled that the gnomes themselves cannot confidently resolve whether they are productive or busy.",
+    "source_quote": "a distinction the gnomes themselves might not have known",
+    "subject": "DM ruling on gnome productivity",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard provided travel directions to the party.",
+    "source_quote": "A guard explained that the party should travel through the Traders' Grotto",
+    "subject": "Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guard instructed the party to travel through the Traders' Grotto.",
+    "source_quote": "travel through the Traders' Grotto",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guard indicated a stone wall near the area where oozes were coming from.",
+    "source_quote": "investigate beyond a stone wall near the area from which the oozes seemed to be coming",
+    "subject": "stone wall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard initially indicated the wrong place on the map.",
+    "source_quote": "The guard initially indicates the wrong place on the map",
+    "subject": "guard pointing out wrong place",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard corrected the map location to the right spot.",
+    "source_quote": "My apologies. This is where it is.\u201d",
+    "subject": "guard correcting map location",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhisker Clan is a group of gnomes rumored to be wererats.",
+    "source_quote": "rumored to be wererats",
+    "subject": "Goldwhisker Clan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo's faction drove out the Drow from the area.",
+    "source_quote": "before Dorbo's faction returned and drove out the Drow",
+    "subject": "Drow removal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The newcomers excluded the Goldwhisker Clan from its former territory.",
+    "source_quote": "the newcomers effectively excluded the clan from its former territory",
+    "subject": "exclusion of Goldwhiskers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo refused to cooperate with the Goldwhiskers.",
+    "source_quote": "Chief Dorbo refused to cooperate with them",
+    "subject": "Dorbo's refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni appeared more open to reconciliation with the Goldwhisker Clan.",
+    "source_quote": "Senni appeared more open to reconciliation",
+    "subject": "Senni's openness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party characterized the situation as colonization.",
+    "source_quote": "The party dryly characterized the situation as colonization",
+    "subject": "party characterization of conflict",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum argued sarcastically that the wererats failed to make efficient use of prime real estate.",
+    "source_quote": "Gyrgum sarcastically argues that the wererats had occupied \u201csome prime real estate\u201d without making ideal use of it",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo's representative agreed with Gyrgum's argument.",
+    "source_quote": "Dorbo's representative calls this \u201cwell put\u201d and says it captures Chief Dorbo's position exactly",
+    "subject": "Dorbo's representative",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Ooze infestations are hindering mining operations and housing construction.",
+    "source_quote": "ooze infestations were hindering both mining operations and the construction of housing",
+    "subject": "ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Drow were driven out of the area by Dorbo's faction.",
+    "source_quote": "Dorbo's faction returned and drove out the Drow",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Members of the Goldwhisker Clan are rumored to be wererats.",
+    "source_quote": "rumored to be wererats",
+    "subject": "wererat",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The discussion concerns the future of Blingdenstone.",
+    "source_quote": "discussion about the future of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Dorbo's faction returned to the area and drove out the Drow.",
+    "source_quote": "Dorbo's faction returned and drove out the Drow",
+    "subject": "Dorbo's faction",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The civilian community of Blingdenstone is led by Senni.",
+    "source_quote": "civilian community led by Senni",
+    "subject": "civilian community",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The mining coalition is led by Chief Dorbo.",
+    "source_quote": "business consortium led by Dorbo",
+    "subject": "mining coalition",
+    "quote_verified": true
+  }
+]

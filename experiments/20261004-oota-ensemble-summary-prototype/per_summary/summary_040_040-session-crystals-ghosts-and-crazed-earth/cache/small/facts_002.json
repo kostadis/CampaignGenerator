@@ -1,0 +1,261 @@
+[
+  {
+    "type": "location",
+    "fact": "The Foaming Mug Tavern is a staggeringly large cave converted into an inn specifically built to house visitors to Blingdenstone.",
+    "source_quote": "Foaming Mug Tavern, a staggeringly large cave converted into an inn specifically built to house visitors to Blingdenstone",
+    "subject": "Foaming Mug Tavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tavern's rooms have beds large enough for dwarves, elves, dragonborn, and ogres, not just deep gnomes.",
+    "source_quote": "Its rooms had beds large enough for dwarves, elves, dragonborn, ogres, and other \u201cnormal-sized\u201d guests",
+    "subject": "Foaming Mug Tavern rooms",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Foaming Mug Tavern serves Darklake Stout imported through Mantol-Derith.",
+    "source_quote": "The tavern served Darklake Stout imported through Mantol-Derith",
+    "subject": "Darklake Stout",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy Foamstrap is the proprietor of the Foaming Mug Tavern and is a bored deep gnome.",
+    "source_quote": "Its proprietor, Tappy Foamstrap, was a bored deep gnome",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy Foamstrap is desperate for new stories after hearing every local\u2019s troubles dozens of times.",
+    "source_quote": "desperate for new stories after hearing every local\u2019s troubles dozens of times",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost problem in Blingdenstone is worsening with spirits haunting the catacombs.",
+    "source_quote": "The ghost problem was worsening, with spirits now haunting Blingdenstone\u2019s catacombs",
+    "subject": "Blingdenstone ghost problem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Scouts saw a crazy gnome from the first days of the reclamation skulking through unrecovered portions of Blingdenstone.",
+    "source_quote": "Scouts had reportedly seen a crazy gnome from the first days of the reclamation skulking through unrecovered portions of the settlement",
+    "subject": "Crazy Gnome Scout sighting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party suspects the crazy gnome sighted in Blingdenstone is the Pudding King.",
+    "source_quote": "whom the party suspected was the Pudding King",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stoneheart Enclave is reportedly closing in on a solution to Ogr\u00e9moch\u2019s Bane.",
+    "source_quote": "The Stoneheart Enclave was said to be \u201cclosing in on a solution\u201d to Ogr\u00e9moch\u2019s Bane",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party believes the Stoneheart Enclave's solution to Ogr\u00e9moch\u2019s Bane is to send the party to deal with it.",
+    "source_quote": "since the solution was evidently to send them to deal with it",
+    "subject": "Stoneheart Enclave solution",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Debate continues in Blingdenstone over whether the wererats should be considered gnomes.",
+    "source_quote": "Debate also continued over the wererats and whether they should be considered gnomes at all",
+    "subject": "Wererat debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A merchant recently returned from Gracklstugh described the duergar city as outwardly calm but deeply on edge.",
+    "source_quote": "A merchant recently returned from Gracklstugh described the duergar city as outwardly calm but deeply on edge",
+    "subject": "Merchant from Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gracklstugh's authorities imposed controls and blamed the Ember Vanguard for recent chaos.",
+    "source_quote": "The authorities had imposed controls while blaming the Ember Vanguard for recent chaos",
+    "subject": "Gracklstugh Authorities",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is being blamed by Gracklstugh authorities for recent chaos.",
+    "source_quote": "blaming the Ember Vanguard for recent chaos",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The merchant from Gracklstugh carried a wanted poster that misspells \"alive\" as \"a-live\" or similar.",
+    "source_quote": "the merchant carried a wanted poster reading \u201cwanted dead or alive,\u201d with \u201calive\u201d misspelled",
+    "subject": "Wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wanted poster depicts a red dragonborn rather than a gold one.",
+    "source_quote": "the poster depicted a red rather than gold dragonborn",
+    "subject": "Wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wanted poster depicts the drow, orc, and dwarf as older and more fearsome than the party members.",
+    "source_quote": "as well as an older and more fearsome drow, orc, and dwarf",
+    "subject": "Wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The merchant from Gracklstugh mentioned rumors that the Assassin\u2019s Guild had returned.",
+    "source_quote": "He also mentioned rumors that the Assassin\u2019s Guild had returned",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "There is an influx of unexplained surface coins in Gracklstugh.",
+    "source_quote": "an influx of unexplained surface coins",
+    "subject": "Surface coins in Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Summary executions, decapitations, and derro heads displayed on pikes occurred in Gracklstugh.",
+    "source_quote": "summary executions, decapitations, and derro heads displayed on pikes",
+    "subject": "Gracklstugh executions",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar in Gracklstugh have been emphatic about the derro needing to \"learn their place.\"",
+    "source_quote": "the duergar had been emphatic about the derro needing to \u201clearn their place.\u201d",
+    "subject": "Gracklstugh Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There is a peculiarly portly red dragon in Gracklstugh used as an extravagant matchlighter.",
+    "source_quote": "Gracklstugh\u2019s peculiarly portly red dragon, used as an extravagant matchlighter",
+    "subject": "Gracklstugh Dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The red dragon in Gracklstugh has a double chin and two bellies.",
+    "source_quote": "distinguished by a double chin and two bellies",
+    "subject": "Gracklstugh Dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gracklstugh has not collapsed into open war despite its internal conflicts.",
+    "source_quote": "Despite the city\u2019s murders, assassinations, political struggles, and controlled chaos, it had not collapsed into open war",
+    "subject": "Gracklstugh stability",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is relieved that Gracklstugh did not burn down during their stay.",
+    "source_quote": "The party was relieved that its goal of leaving Gracklstugh without causing the city to burn down had been achieved",
+    "subject": "Party relief",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A deep gnome returning from the Whiteshell Mine reported encountering dancing myconids.",
+    "source_quote": "A deep gnome returning from the Whiteshell Mine offered another strange report: he had encountered a parade of dancing myconids",
+    "subject": "Deep Gnome Miner",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids were seen communicating through Rapport Spores and announcing they were going to a wedding celebration.",
+    "source_quote": "communicating through Rapport Spores and announcing that they were on their way to a wedding celebration",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party suspects Neverlight Grove might be emptying or its inhabitants have gone insane due to the myconid behavior.",
+    "source_quote": "The dancing myconids might mean Neverlight Grove was emptying\u2014or that its inhabitants had gone completely insane",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool cleaned the tavern floor by absorbing spilled drinks and became intoxicated.",
+    "source_quote": "Glabbagool cleaned the tavern floor by absorbing spilled drinks and became increasingly intoxicated",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool began singing traditional gelatinous cube sea shanties while intoxicated.",
+    "source_quote": "The gelatinous cube grew loopier than usual and began singing traditional gelatinous cube sea shanties",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is considering using alcohol against hostile oozes and puddings.",
+    "source_quote": "inspired the party to consider using alcohol against hostile oozes and puddings",
+    "subject": "Alcohol against oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Tappy Foamstrap agreed to provide barrels of old or spoiled booze if no one attributed its quality to the tavern.",
+    "source_quote": "He was willing to provide it only if no one attributed its questionable quality to the Foaming Mug",
+    "subject": "Tappy's deal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggested Tappy could advertise himself as the hero whose alcohol saved the city.",
+    "source_quote": "The party countered that he might instead advertise himself as the hero whose alcohol saved the city",
+    "subject": "Tappy's counter-offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Tappy agreed to provide the alcohol if Blingdenstone\u2019s leaders provide an official notice for him to display.",
+    "source_quote": "Tappy agreed if Blingdenstone\u2019s leaders would provide an official notice he could display behind the bar",
+    "subject": "Tappy's condition",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party discussed using a seltzer bottle as a delivery mechanism for the alcohol.",
+    "source_quote": "The party also discussed using Shape Water, a seltzer bottle, mugs, or some other improvised delivery mechanism to spray the alcohol",
+    "subject": "Seltzer bottle",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A deep gnome returned from the Whiteshell Mine.",
+    "source_quote": "A deep gnome returning from the Whiteshell Mine offered another strange report",
+    "subject": "Whiteshell Mine",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Darklake Stout is imported through Mantol-Derith.",
+    "source_quote": "The tavern served Darklake Stout imported through Mantol-Derith",
+    "subject": "Mantol-Derith",
+    "quote_verified": true
+  }
+]

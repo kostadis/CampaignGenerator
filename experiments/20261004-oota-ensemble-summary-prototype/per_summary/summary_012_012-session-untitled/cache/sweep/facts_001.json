@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a duergar city located across the Darklake.",
+    "source_quote": "tied up their boat at the grim duergar city of Gracklstugh, which loomed before them",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake reflects the light of countless forges in Gracklstugh.",
+    "source_quote": "the light of countless forges reflected off the dark water",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party ties up their boat at Gracklstugh after traveling across the Darklake.",
+    "source_quote": "the party finally tied up their boat at the grim duergar city of Gracklstugh",
+    "subject": "Arrival in Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar enforce swift and merciless laws in Gracklstugh.",
+    "source_quote": "the city's laws were swift and merciless",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar are described as grim, austere, and methodical.",
+    "source_quote": "Duergar are described as grim, austere and methodical",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Svirfneblin are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "svirfneblin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Derro are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Orcs are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "orcs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is a duergar arms dealer who was previously rescued by the party.",
+    "source_quote": "Hemeth, the duergar arms dealer they had rescued",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth warns the party that non-duergar are permitted only in the Darklake district.",
+    "source_quote": "Hemeth, the duergar arms dealer they had rescued, warned them that non-duergar were permitted only in the Darklake district",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin objects to being labeled as escaped slaves, stating they were merely 'temporarily detained'.",
+    "source_quote": "Thorin objected that they had merely been \"temporarily detained.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar guards can turn invisible at will.",
+    "source_quote": "Guards who could turn invisible at will enforced a code",
+    "subject": "duergar guards",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Any duergar in sight within Gracklstugh counts as instant reinforcements.",
+    "source_quote": "any duergar in sight counted as instant reinforcements",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Theft in Gracklstugh is punishable by immediate death without trial.",
+    "source_quote": "theft was punishable by death on the spot, no trial required",
+    "subject": "Theft punishment law",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Slavers in the Underdark might try to repossess the party if word spreads that they are escaped slaves.",
+    "source_quote": "slavers might try to repossess them or sell them back to the drow",
+    "subject": "Slavers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Slavers might sell escaped slaves back to the drow.",
+    "source_quote": "sell them back to the drow",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party's goal is to find information that might lead them out of the Underdark.",
+    "source_quote": "find information that might lead them out of the Underdark for good",
+    "subject": "Escape from Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A lost tomb is marked on the dwarf's map.",
+    "source_quote": "the lost tomb marked on the dwarf's map",
+    "subject": "lost tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is a possible exit point from the Underdark.",
+    "source_quote": "from there to Blingdenstone, a possible exit point",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to travel from Gracklstugh to the lost tomb and then to Blingdenstone.",
+    "source_quote": "The longer route ran from Gracklstugh to the lost tomb marked on the dwarf's map, and from there to Blingdenstone, a possible exit point.",
+    "subject": "Travel route determination",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party decides to head to the Blade Bazaar to trade and purchase supplies.",
+    "source_quote": "The party decides to head to the Blade Bazaar to trade and purchase supplies.",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake district of Gracklstugh is fully enclosed by walls.",
+    "source_quote": "The district is fully enclosed by walls.",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is level 3 and close to leveling up.",
+    "source_quote": "The party is level 3 and \"close, but not quite\" to leveling up.",
+    "subject": "Party level status",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The forges in Gracklstugh burn within hollowed-out columns and stalagmites.",
+    "source_quote": "light of countless fires burning within hollowed-out columns and stalagmites",
+    "subject": "Gracklstugh forges",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Slaves are present in the crowds and streets of Gracklstugh.",
+    "source_quote": "The streets are crowded with buyers, merchants and slaves.",
+    "subject": "Slaves",
+    "quote_verified": true
+  }
+]

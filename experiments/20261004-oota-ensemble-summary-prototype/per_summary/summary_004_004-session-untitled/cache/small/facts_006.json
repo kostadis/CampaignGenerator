@@ -1,0 +1,107 @@
+[
+  {
+    "type": "event",
+    "fact": "The tunnel ceiling gave way and heavy stone crashed onto the travelers.",
+    "source_quote": "the ceiling gave way and heavy stone crashed onto the travelers",
+    "subject": "tunnel ceiling collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was knocked unconscious beneath the rubble.",
+    "source_quote": "Daz was knocked unconscious beneath the rubble",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is at zero hit points.",
+    "source_quote": "Daz is reduced to zero hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's first death saving throw succeeds.",
+    "source_quote": "Daz's first death saving throw succeeds",
+    "subject": "Daz's death saving throw",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was reduced to the brink of death.",
+    "source_quote": "Gyrgum was reduced to the brink of death",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remained conscious through his orcish Relentless Endurance.",
+    "source_quote": "remained conscious through his orcish Relentless Endurance",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is at one hit point.",
+    "source_quote": "allows him to remain conscious with one hit point",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido was pinned beneath the fallen stone.",
+    "source_quote": "Buppido and several other companions were also pinned",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir avoided the worst of the collapse and was left free.",
+    "source_quote": "Zalthir and Thorin avoided the worst of the collapse",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin avoided the worst of the collapse and was left free.",
+    "source_quote": "Zalthir and Thorin avoided the worst of the collapse",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir and Thorin were left to organize a rescue.",
+    "source_quote": "Zalthir and Thorin avoided the worst of the collapse and were left to organize a rescue",
+    "subject": "rescue organization",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Every trapped victim faces further crushing injuries if left buried for another round.",
+    "source_quote": "Every trapped victim faced further crushing injuries if left buried for another round",
+    "subject": "crushing damage risk",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The survivors must rapidly decide which companions to rescue first.",
+    "source_quote": "forcing the uninjured survivors to decide whom to dig out first",
+    "subject": "rescue priority",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The rockfall occurred as the day drew to a close.",
+    "source_quote": "As the day drew to a close",
+    "subject": "time of day",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is expected to reach second level after surviving the encounter.",
+    "source_quote": "The party is expected to reach second level after surviving the encounter",
+    "subject": "level progression",
+    "quote_verified": true
+  }
+]

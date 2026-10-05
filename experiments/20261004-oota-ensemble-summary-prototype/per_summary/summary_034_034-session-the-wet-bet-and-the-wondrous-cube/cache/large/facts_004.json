@@ -1,0 +1,107 @@
+[
+  {
+    "type": "event",
+    "fact": "The party continues into another water-filled passage.",
+    "source_quote": "The enlarged company continued into another water-filled passage.",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A gray ooze was present in a pool in the passage.",
+    "source_quote": "Thorin, expecting more oozes, threw darts into the pools before approaching.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin struck the gray ooze twice with darts.",
+    "source_quote": "Thorin struck a gray ooze twice with darts",
+    "subject": "Thorin's dart attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze suffered 16 damage from Thorin's darts.",
+    "source_quote": "His first dart hits a gray ooze for 8 damage, and a second hit inflicts another 8.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin withdrew from the gray ooze before it could reach his armor.",
+    "source_quote": "and withdrew before it could reach his armor.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool's body completely blocked the narrow corridor behind Thorin.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body completely blocked the narrow corridor behind him",
+    "subject": "Glabbagool blocks corridor",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool's physical presence separated Thorin from the rest of the party.",
+    "source_quote": "separating Thorin from the rest of the party.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cast Toll the Dead on the gray ooze.",
+    "source_quote": "Daz then cast Toll the Dead, inflicting 18 points of necrotic damage and destroying it.",
+    "subject": "Daz casts Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gray ooze was destroyed by Daz's spell.",
+    "source_quote": "inflicting 18 points of necrotic damage and destroying it.",
+    "subject": "gray ooze destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is dead.",
+    "source_quote": "and destroying it.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool stated that he should be in the back.",
+    "source_quote": "\u201cPerhaps I should be in the back.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party agreed that Glabbagool placing himself in the back was a good idea.",
+    "source_quote": "The group readily agrees that rear placement is probably a good idea.",
+    "subject": "The party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asked if the bet regarding tears could be declared a mulligan.",
+    "source_quote": "Jimjar asked whether the \u201ctears\u201d wager might be declared a mulligan",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin offered to call the bet a draw because of Glabbagool's company.",
+    "source_quote": "Thorin was willing to call it a draw on account of Glabbagool\u2019s company",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The temple passage is continuing to fill with water.",
+    "source_quote": "the temple continued filling \u201csort of like a bathtub that doesn\u2019t drain well.\u201d",
+    "subject": "temple passage",
+    "quote_verified": true
+  }
+]

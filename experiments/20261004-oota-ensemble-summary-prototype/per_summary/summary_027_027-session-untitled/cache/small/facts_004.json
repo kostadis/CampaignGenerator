@@ -1,0 +1,163 @@
+[
+  {
+    "type": "event",
+    "fact": "Themberchaud deposits the party at the docks with a thunderous, ungainly landing.",
+    "source_quote": "Themberchaud deposited the party at the docks with a thunderous, ungainly landing.",
+    "subject": "Themberchaud arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud uses his frightful presence to terrify the locals.",
+    "source_quote": "He roared for good measure and used his frightful presence to terrify the locals.",
+    "subject": "Themberchaud scare",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud flaps off toward his lair convinced his agents are on a vital mission.",
+    "source_quote": "the dragon flapped off toward his lair, convinced his agents were on a vital mission",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A lone Duergar guard steps forward, trembling but dutiful.",
+    "source_quote": "A lone Duergar guard stepped forward, trembling but dutiful",
+    "subject": "Duergar guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Duergar guard raises his hand to halt the party in the name of the Deepking.",
+    "source_quote": "raised his hand to halt them in the name of the Deepking",
+    "subject": "guard halt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's attempt to pass in the name of Themberchaud fails with a roll of 8 and worse.",
+    "source_quote": "Gyrgum's attempt to pass \"in the name of Themberchaud\" failed, rolling an 8 and then worse",
+    "subject": "failed bluff",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard pulls out a wanted poster and recognizes the party's faces as those of the Ember Vanguard.",
+    "source_quote": "The guard pulled out a wanted poster and recognized the party's faces as those of the Ember Vanguard",
+    "subject": "wanted poster identification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party claims they are undercover agents impersonating the Ember Vanguard to lure out the real threat.",
+    "source_quote": "the party leaned into the deception, claiming they were undercover agents impersonating the Ember Vanguard to lure out the real threat",
+    "subject": "undercover deception",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum produces a caltrop from his pack.",
+    "source_quote": "Gyrgum solemnly produced a caltrop from his pack",
+    "subject": "caltrop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum presses the caltrop into the guard's hand as a secret symbol of the conspiracy, officially deputizing him.",
+    "source_quote": "pressed it into the guard's hand as a secret symbol of the conspiracy, officially \"deputizing\" him",
+    "subject": "guard deputization",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum advises the guard to file down the sharp points of the caltrop.",
+    "source_quote": "He then helpfully advised him to file down the sharp points",
+    "subject": "caltrop advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard rushes off to inform Captain Errde, relieved that he will not have to fight anyone.",
+    "source_quote": "The guard, enormously relieved that he would not have to fight anyone, rushed off to inform Captain Errde",
+    "subject": "guard relief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party seizes a boat and pushes off into the Darklake.",
+    "source_quote": "That gave the party just enough time to seize the boat and push off into the Darklake",
+    "subject": "boat seizure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the one person the party has not betrayed.",
+    "source_quote": "Hgraam is the one person they have not betrayed",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Giants are good with the party.",
+    "source_quote": "the Stone Giants are good with them",
+    "subject": "Stone Giants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro High Council probably wants the party dead.",
+    "source_quote": "The Derro High Council and the Gray Ghosts probably want them dead",
+    "subject": "Derro High Council",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts probably want the party dead.",
+    "source_quote": "The Derro High Council and the Gray Ghosts probably want them dead",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking hates the Ember Vanguard.",
+    "source_quote": "The Deepking hates the Ember Vanguard",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests that the party better be as powerful as they are thought to be if they return.",
+    "source_quote": "Thorin concluded, \"We better be as powerful as they think we are if we come back.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tells the guard that the dragon ride was meant to draw the real Vanguard to the spot.",
+    "source_quote": "Gyrgum explains the dragon ride was meant to draw the real Vanguard to this spot",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir considers silencing the guard.",
+    "source_quote": "Zalthir considers silencing him",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin quips, \"And to save the village, we had to destroy the village.\"",
+    "source_quote": "Thorin quips, \"And to save the village, we had to destroy the village.\"",
+    "subject": "Thorin quip",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM suggests the party could pose as \"junior varsity\" Vanguard.",
+    "source_quote": "The DM suggests the party could pose as \"junior varsity\" Vanguard",
+    "subject": "junior varsity bluff",
+    "quote_verified": true
+  }
+]

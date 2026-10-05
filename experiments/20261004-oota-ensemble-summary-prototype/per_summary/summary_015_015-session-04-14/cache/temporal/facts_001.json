@@ -1,0 +1,16 @@
+[
+  {
+    "type": "date",
+    "fact": "The session occurred on April 14, 2025.",
+    "source_quote": "Session 2025-04-14",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The long tunnel at the entrance of Cairngorm Cavern runs several hundred feet into the home of Clan Cairngorm.",
+    "source_quote": "A long tunnel runs several hundred feet into the home of Clan Cairngorm",
+    "subject": "Cairngorm Cavern tunnel length",
+    "quote_verified": true
+  }
+]

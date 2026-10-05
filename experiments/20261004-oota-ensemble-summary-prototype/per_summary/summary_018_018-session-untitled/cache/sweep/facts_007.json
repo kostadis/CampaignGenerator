@@ -1,0 +1,191 @@
+[
+  {
+    "type": "faction",
+    "fact": "The party visits Clan Ironhead as a final stop before descending into the depths.",
+    "source_quote": "the party visited Clan Ironhead under the pretense of establishing their cover as dissidents against the Deepking",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thangus Ironhead is the leader of Clan Ironhead.",
+    "source_quote": "Thangus Ironhead, the clan's leader",
+    "subject": "Thangus Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thangus Ironhead publicly dismisses the dangers of the Whorlstone Tunnels as stories to frighten children.",
+    "source_quote": "Thangus Ironhead, the clan's leader, publicly dismissed the dangers of the Whorlstone Tunnels as nothing more than stories told to frighten children",
+    "subject": "Thangus's dismissal",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thangus claims the Whorlstone Tunnels are a place for children to play with nothing going on.",
+    "source_quote": "those are but rumors for children\u2026 it's a place for children to go play. There's nothing going on.",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin responds to Thangus's dismissal by saying they will go play there.",
+    "source_quote": "Thorin replied, \"Okay, we'll go play there.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks the clan if they know about nasty things happening in the dungeons.",
+    "source_quote": "Thorin opens with: \"we heard there's some nasty things going down in the dungeons. Do you know anything about that?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The clan is confused to learn the party was sent by Errde.",
+    "source_quote": "The clan is pleased but confused to hear they were sent by Errde.",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grinta Ironhead is the granddaughter of Thangus Ironhead.",
+    "source_quote": "his granddaughter Grinta Ironhead",
+    "subject": "Grinta Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grinta Ironhead is referenced as the source of a clandestine political proposal.",
+    "source_quote": "the party receives a clandestine political proposal from the clan leader's granddaughter.",
+    "subject": "Grinta Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grinta Ironhead pulls the party aside to speak candidly as they leave.",
+    "source_quote": "As the party turned to leave, his granddaughter Grinta Ironhead pulled them aside and spoke far more candidly.",
+    "subject": "Grinta's intervention",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grinta acknowledges that the city is a political tinderbox largely due to the Deepking's trade monopoly.",
+    "source_quote": "She acknowledged that the city was a powder keg and that her clan had suffered greatly under the Deepking's trade monopoly.",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grinta knows there is something going on in the Whorlstone Caverns.",
+    "source_quote": "\"And I know there's something going on in the Whorlstone Caverns.\"",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grinta proposes a deal where Clan Ironhead offers generous trade terms to those who help bring about the Deepking's departure.",
+    "source_quote": "She said that if the Deepking were unseated, Clan Ironhead \u2014 which would rise to become the premier clan \u2014 would offer generous trade terms to those who had helped bring about his departure.",
+    "subject": "Clan Ironhead proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead would rise to become the premier clan if the Deepking were unseated.",
+    "source_quote": "Clan Ironhead \u2014 which would rise to become the premier clan \u2014 would offer generous trade terms",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The arrangement involves the help being indirect, effectively a discount on goods.",
+    "source_quote": "The help would be \"Not directly\": in effect, a discount on any goods.",
+    "subject": "trade discount",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Clan Ironhead would be free to fulfill orders advantageous to those present when the Deepking disappears.",
+    "source_quote": "\"Clan Ironhead would be free to do orders that were advantageous to those who happened to be around when the Deepking disappeared.\"",
+    "subject": "favorable orders",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar's eyes light up upon hearing the trade proposal.",
+    "source_quote": "Jimjar's eyes lit up, and he noted quietly that such an arrangement would be enormously beneficial to the people of Blingdenstone.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar notes that the deal would be highly beneficial for the people of Blingdenstone.",
+    "source_quote": "such a deal would be very advantageous to the folks in Blingdenstone.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is the home of the people Jimjar references.",
+    "source_quote": "people of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if the clan has considered staying down there to start a trade network.",
+    "source_quote": "Thorin: \"have you guys considered maybe we should just stay down here and start a trade network?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party prepares to descend into the darkness of the Whorlstone Caverns.",
+    "source_quote": "the party prepared to descend once more into the darkness of the Whorlstone Caverns.",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The goal for the next session is to get Werz removed from the assassins' list.",
+    "source_quote": "The next session's goal is to get Werz removed from the assassins' list.",
+    "subject": "Werz's removal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is currently on an assassins' list.",
+    "source_quote": "get Werz removed from the assassins' list",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "There is an assassins' list that Werz needs to be removed from.",
+    "source_quote": "get Werz removed from the assassins' list",
+    "subject": "assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has acquired new weapons during this visit.",
+    "source_quote": "With new weapons, new allies, new secrets",
+    "subject": "new weapons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has acquired new allies and new secrets during this visit.",
+    "source_quote": "new weapons, new allies, new secrets",
+    "subject": "party acquisition",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party has a growing web of political entanglements.",
+    "source_quote": "a growing web of political entanglements",
+    "subject": "political entanglements",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,156 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin maps the party's surroundings using cartographer's tools.",
+    "source_quote": "Thorin began mapping their surroundings with cartographer\u2019s tools",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin uses cartographer's tools to create a map.",
+    "source_quote": "Thorin began mapping their surroundings with cartographer\u2019s tools",
+    "subject": "cartographer\u2019s tools",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum uses calligrapher's supplies to ensure the chart is clearly labeled in a tasteful font.",
+    "source_quote": "Gyrgum used calligrapher\u2019s supplies to ensure that the resulting chart was clearly labeled in a tasteful font",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum uses calligrapher's supplies to label the map chart.",
+    "source_quote": "Gyrgum used calligrapher\u2019s supplies to ensure that the resulting chart was clearly labeled in a tasteful font",
+    "subject": "calligrapher\u2019s supplies",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar argues that the cave-in does not count as a failure to find Blingdenstone because an unexplored passage remains.",
+    "source_quote": "Jimjar immediately argued that the cave-in did not count as his failure to find Blingdenstone because an unexplored passage still remained",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Jimjar's goal was to guide the party to Blingdenstone.",
+    "source_quote": "Jimjar immediately argued that the cave-in did not count as his failure to find Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar proposes a bet regarding the nature of Zalthir's next emotion.",
+    "source_quote": "Jimjar attempted to deflect with an increasingly cryptic bet that Zalthir\u2019s next emotion would be \u201cas if it was made of a chipped piece of obsidian,\u201d",
+    "subject": "bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is the subject of Jimjar's bet regarding his next emotion.",
+    "source_quote": "Zalthir\u2019s next emotion would be \u201cas if it was made of a chipped piece of obsidian,\u201d",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait dismisses Jimjar's bet as weak.",
+    "source_quote": "Spiderbait dismissed the bet as weak",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits his bet is not his best work.",
+    "source_quote": "\u201cIt\u2019s not my best work.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he made the bet as a distraction because he got the party lost.",
+    "source_quote": "Jimjar admitted that the wager was a distraction from the fact that he had gotten them lost.",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to investigate the passage opening to the north.",
+    "source_quote": "With their old route sealed and a passage opening to the north, the party agreed to investigate",
+    "subject": "exploration decision",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cave-in trapped the party in an unfamiliar maze of passages with no obvious exit.",
+    "source_quote": "trapping them in an unfamiliar maze of passages",
+    "subject": "unfamiliar maze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth remains with the party.",
+    "source_quote": "Jimjar and Eldeth remain with the party.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz possesses earth-related magic.",
+    "source_quote": "The party considers whether Daz\u2019s earth-related magic could clear the cave-in",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Maximilian possesses the Earthen Grasp spell.",
+    "source_quote": "Earthbind and Maximilian\u2019s Earthen Grasp are not suited to excavation",
+    "subject": "Maximilian",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party determines that Earthbind and Earthen Grasp are not suited to clearing the cave-in.",
+    "source_quote": "Earthbind and Maximilian\u2019s Earthen Grasp are not suited to excavation",
+    "subject": "bet rejection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar wagers that the party will find something special in the nearby cavern.",
+    "source_quote": "\u201cI\u2019ll bet you will find something special.\u201d",
+    "subject": "wager",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum warns Jimjar that he loses the bet if the party dies in the maze.",
+    "source_quote": "Gyrgum warns Jimjar that if the party dies in the maze, he loses the bet.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar accepts the condition that he loses the bet if the party dies.",
+    "source_quote": "Jimjar accepts that condition as fair.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir points out his immediate emotional reaction is dubiousness.",
+    "source_quote": "Zalthir points out that his immediate emotional reaction is dubiousness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Jimjar's reputation as an infallible guide has collapsed.",
+    "source_quote": "Jimjar continued trying to recover from the awkward collapse of his reputation as their infallible guide",
+    "subject": "Jimjar's reputation",
+    "quote_verified": true
+  }
+]

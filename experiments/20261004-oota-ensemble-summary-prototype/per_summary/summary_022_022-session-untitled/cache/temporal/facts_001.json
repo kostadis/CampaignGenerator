@@ -1,0 +1,30 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum restores 14 hit points to himself using Channel Divinity.",
+    "source_quote": "Gyrgum used Channel Divinity to heal himself by 14 hit points",
+    "subject": "Channel Divinity healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gives the remaining 6 hit points from Channel Divinity to Eldeth Feldrun.",
+    "source_quote": "He gave the remaining 6 to their badly wounded dwarf companion",
+    "subject": "Channel Divinity healing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Before healing, Eldeth Feldrun was down to 14 hit points.",
+    "source_quote": "Eldeth Feldrun, who had been down to 14 hit points",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The healing brings both Gyrgum and Eldeth Feldrun to approximately 20 hit points.",
+    "source_quote": "bringing them both to about 20",
+    "subject": "Post-healing state",
+    "quote_verified": true
+  }
+]

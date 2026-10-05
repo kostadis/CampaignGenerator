@@ -1,0 +1,128 @@
+[
+  {
+    "type": "object",
+    "fact": "The Tongue of Madness is a strange edible fungus that resembles a large human tongue.",
+    "source_quote": "discovered a strange edible fungus resembling a large human tongue",
+    "subject": "Tongue of Madness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith describes the fungus as \u201cthe tastiest thing in the world.\u201d",
+    "source_quote": "Sarith praised it as \u201cthe tastiest thing in the world\u201d",
+    "subject": "Sarith",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar claims that eating the fungus allows one to connect with the gods.",
+    "source_quote": "Shuushar solemnly claimed that eating it allowed one to connect with the gods",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companions initially consider gathering the fungus without eating it.",
+    "source_quote": "The companions initially consider gathering it without eating it",
+    "subject": "initial plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin volunteers to eat the fungus first due to his strong constitution and resistance to poison.",
+    "source_quote": "Thorin, trusting his strong constitution and resistance to poison, volunteered as the guinea pig",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin resists the fungus's magical effect after sensing a strange sensation.",
+    "source_quote": "He sensed something unusual but resisted the effect",
+    "subject": "Thorin consumption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin swallows the fungus normally and finds it quite tasty.",
+    "source_quote": "swallowed normally, and found the mushroom quite tasty",
+    "subject": "Thorin reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz eats the fungus next.",
+    "source_quote": "Daz tried it next",
+    "subject": "Daz consumption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "For the following hour, Daz compulsively says every thought that enters his head.",
+    "source_quote": "For the following hour, he compulsively said every thought that entered his head",
+    "subject": "Daz affliction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group begins laughing at Daz's involuntary speech.",
+    "source_quote": "When everyone began laughing",
+    "subject": "Party reaction to Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz\u2019s thoughts settle into a loop where he wonders why everyone is laughing at him.",
+    "source_quote": "his thoughts settled into a bewildered loop: \u201cwhy are all these people laughing at me?\u201d",
+    "subject": "Daz loop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The effect is identified as a familiar, harmless practical joke among Underdark denizens.",
+    "source_quote": "The effect is revealed to be a familiar, harmless practical joke among the denizens of the Underdark",
+    "subject": "Effect nature",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rest of the party eats the fungus after realizing the effect is harmless.",
+    "source_quote": "Seeing that the effect was harmless, the rest of the party ate as well",
+    "subject": "Group consumption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The tunnels fill with involuntary chatter from the party for an hour.",
+    "source_quote": "The tunnels filled with involuntary chatter",
+    "subject": "Party chatter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir attempts to use monk's discipline to control his thoughts but fails.",
+    "source_quote": "while Zalthir attempted a monk's discipline",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir compulsively repeats, \u201cI'm meditating.\u201d",
+    "source_quote": "instead repeatedly announced, \u201cI'm meditating.\u201d",
+    "subject": "Zalthir repetition",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz retains some of the fungus in his sack.",
+    "source_quote": "Daz retained some of the fungus for possible use in future potions or tricks",
+    "subject": "fungus sample",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party encounters a sudden rockfall near the end of the day's travel.",
+    "source_quote": "The scene ends abruptly as the party encounters a sudden rockfall near the end of the day's travel",
+    "subject": "rockfall",
+    "quote_verified": true
+  }
+]

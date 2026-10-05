@@ -1,0 +1,219 @@
+[
+  {
+    "type": "location",
+    "fact": "The party enters a vast cavern reeking of brimstone and fungi, where flickering campfires illuminate a raised platform.",
+    "source_quote": "You enter a large cavern filled with the acrid stench of brimstone and fungi. Flickering campfires illuminate a raised platform at the center",
+    "subject": "ritual cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Five Derro cultists stand on the raised platform chanting in a discordant, maddening chorus.",
+    "source_quote": "where five Derro chant in a discordant, maddening chorus",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A grotesque stone giant statue barely two feet tall sits at the heart of the ritual circle.",
+    "source_quote": "At the heart of the ritual stood a grotesque stone giant statue, barely two feet tall",
+    "subject": "stone giant statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A second head sprouts from the statue's neck and reshapes itself with each verse of the ritual.",
+    "source_quote": "a lump sprouts from the statue's neck, enlarging and reshaping itself with each unholy verse to take the form of a second head",
+    "subject": "statue head sprouting",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A restless death dog paces in a cage near the platform's edge.",
+    "source_quote": "A restless death dog paced in a cage near the platform's edge",
+    "subject": "death dog",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A nervous Derro handler watches over the caged death dog.",
+    "source_quote": "watched over by a nervous Derro handler",
+    "subject": "Derro handler",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga, a massive female ettin, lurks silently in a fungal alcove observing the ritual.",
+    "source_quote": "A massive female ettin named Grula-Munga lurked silently in a fungal alcove, observing the proceedings",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "This cult is confirmed to be the same group behind the demonic infusion of the dragon egg.",
+    "source_quote": "they confirmed this was the same cult behind the demonic infusion of the dragon egg",
+    "subject": "Demogorgon cult",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 14 on an Arcana check, failing to meet the needed 16 for a full understanding of the ritual.",
+    "source_quote": "Daz's arcana check (14, against a needed 16) ... fell short of the full picture",
+    "subject": "Daz arcana check",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 10 on his first Religion check, which falls short of grasping the full ritual.",
+    "source_quote": "Gyrgum's first religion check (10) both fell short of the full picture",
+    "subject": "Gyrgum first religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is the lead spellcaster and a member of the Council of Savants.",
+    "source_quote": "Narrak, the lead spellcaster, is a member of the Council of Savants",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The heretical texts recovered by the party are evidence sufficient to bring down the entire Council of Savants.",
+    "source_quote": "The heretical texts they had already recovered were damning enough to bring down the entire Council for all time",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has already recovered a trove of heretical Demogorgon texts.",
+    "source_quote": "They had already recovered a trove of heretical Demogorgon texts",
+    "subject": "heretical texts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak chants a rhyme invoking Demogorgon and promising more heads for grafting.",
+    "source_quote": "Hear me, you two-headed fools, as madness flows, our city drools. For Demogorgon, the city will burn. More heads for grafting more for the pile",
+    "subject": "Narrak chanting",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The ritual is identified as the likely cause of the two-headed stone giant that rampaged through the market four days ago.",
+    "source_quote": "this ritual was likely the cause of the two-headed stone giant that had rampaged through the market only four days earlier in game time",
+    "subject": "market giant attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stonespeaker Hgraam sensed 'something evil is going on' regarding the giant attacks.",
+    "source_quote": "Hgraam had sensed 'something evil is going on'",
+    "subject": "Stonespeaker Hgraam",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 21 on a second Religion check, becoming inspired by Bahamut.",
+    "source_quote": "On a second religion roll of 21, Gyrgum was inspired by Bahamut",
+    "subject": "Gyrgum second religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gyrgum surmises that bringing a corrupted statue to Stonespeaker Hgraam might allow him to reverse the curse afflicting his people.",
+    "source_quote": "bringing one of the corrupted statues to Stonespeaker Hgraam might allow him to reverse the curse afflicting his people",
+    "subject": "reversing the curse",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Stonespeaker Hgraam is a location or entity associated with stone giants and potentially reversing their curse.",
+    "source_quote": "bringing one of the corrupted statues to Stonespeaker Hgraam might allow him to reverse the curse afflicting his people",
+    "subject": "Stonespeaker Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is a lover of giants who would want to stop cultists manipulating giant physiology.",
+    "source_quote": "Thorin, a lover of giants, would want to put a stop to cultists manipulating giant physiology",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum admits he is basically out of spells.",
+    "source_quote": "Gyrgum admitted he was \"basically out of spells\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is out of first-level spells.",
+    "source_quote": "Daz was out of first-level spells",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The ordinary Derro cultists have approximately 13 hit points.",
+    "source_quote": "the ordinary Derro had around 13 hit points",
+    "subject": "ordinary Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two tougher Derro cultists, marked with red dots, have 27 hit points.",
+    "source_quote": "two tougher ones (marked with red dots) have 27",
+    "subject": "tougher Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Narrak the spellcaster has 70 hit points.",
+    "source_quote": "Narrak himself had 70",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party learns the stone giant statues are two-foot tall miniatures weighing 100 pounds.",
+    "source_quote": "the DM clarified they were two-foot, 100-pound miniatures",
+    "subject": "statue size clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone giant statues serve as focal points for the curse affecting real stone giants.",
+    "source_quote": "the statue is a focal point for the curse ... serving as focal points for the curse affecting real stone giants",
+    "subject": "stone giant statues",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Locked chests are scattered about the cavern, hinting at valuable treasures.",
+    "source_quote": "The locked chests scattered about the cavern hinted at valuable treasures",
+    "subject": "locked chests",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to retreat to a safer location to recover magical strength before confronting the cultists.",
+    "source_quote": "The party decides to retreat to a safer location to recover their magical strength before confronting the cultists",
+    "subject": "party retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pins Narrak's location on their map.",
+    "source_quote": "and pins Narrak's location on the map",
+    "subject": "Narrak location pinned",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The market attack by the two-headed stone giant occurred four days prior to this encounter.",
+    "source_quote": "only four days earlier in game time",
+    "subject": "elapsed time",
+    "quote_verified": true
+  }
+]

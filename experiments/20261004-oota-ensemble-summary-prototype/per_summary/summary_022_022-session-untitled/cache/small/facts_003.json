@@ -1,0 +1,121 @@
+[
+  {
+    "type": "event",
+    "fact": "The party takes a short rest in the tunnels.",
+    "source_quote": "The party took a short rest",
+    "subject": "short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir resets his focus points during the short rest.",
+    "source_quote": "which also let Zalthir reset his focus points",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party arrives at a set of large double doors after resting.",
+    "source_quote": "the party arrives at a set of large double doors",
+    "subject": "double doors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party listens at the double doors and hears nothing loud.",
+    "source_quote": "They listen at the door and hear nothing loud",
+    "subject": "door inspection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party feels that the double doors are cool to the touch.",
+    "source_quote": "They feel that it is cool to the touch",
+    "subject": "door inspection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pushes the double doors open using their shoulders.",
+    "source_quote": "Then they put their shoulders into it and push it open",
+    "subject": "opening doors",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The passage beyond the double doors branches right and left.",
+    "source_quote": "they find a passageway branching right and left",
+    "subject": "branching passage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The eastern path leads into a chamber heavy with animal musk.",
+    "source_quote": "To the east they looked into a chamber heavy with animal musk",
+    "subject": "eastern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three enormous cave bears rest in cages of scrap iron in the eastern chamber.",
+    "source_quote": "Three enormous cave bears rested in cages of scrap iron",
+    "subject": "cave bears",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The cave bears are contained in cages of scrap iron.",
+    "source_quote": "cages of scrap iron",
+    "subject": "cage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A spiral path marked by small stone pylons winds toward a tent and a large cauldron.",
+    "source_quote": "A spiral path marked by small stone pylons wound toward a tent and a large cauldron",
+    "subject": "spiral path",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A tent is located at the center of the eastern chamber.",
+    "source_quote": "wound toward a tent",
+    "subject": "tent",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A large cauldron is located at the center of the eastern chamber.",
+    "source_quote": "wound toward a tent and a large cauldron at the center",
+    "subject": "cauldron",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two insane derro stand at the cauldron.",
+    "source_quote": "Two insane derro stood at the cauldron",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two derro are each talking while ignoring the other.",
+    "source_quote": "each talking while ignoring the other",
+    "subject": "derro behavior",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM reminds the party that the goal is to get out with the egg while facing as few encounters as possible.",
+    "source_quote": "the goal is to get out with the egg while facing as few encounters as possible",
+    "subject": "campaign goal",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session takes place at timestamp 022.03.",
+    "source_quote": "022.03",
+    "subject": "session timestamp",
+    "quote_verified": true
+  }
+]

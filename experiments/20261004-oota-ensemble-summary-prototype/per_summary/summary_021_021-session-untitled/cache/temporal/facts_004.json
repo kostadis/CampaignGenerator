@@ -1,0 +1,30 @@
+[
+  {
+    "type": "monster",
+    "fact": "Four Derro guards are stationed at a heavy double door.",
+    "source_quote": "face to face with four Derro guards stationed at a heavy double door",
+    "subject": "Derro guards count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guards have 13 hit points each.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro guards hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guards are led to believe they faced a 20th-level drow archmage.",
+    "source_quote": "convinced they faced a supremely powerful drow archmage",
+    "subject": "Derro guards rumor claim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guards believe the threat was a 20th-level drow mage.",
+    "source_quote": "They would say a 20th-level drow mage had swept through the Council's stronghold",
+    "subject": "Derro guards rumor claim level",
+    "quote_verified": true
+  }
+]

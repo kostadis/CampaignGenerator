@@ -1,0 +1,408 @@
+[
+  {
+    "type": "event",
+    "fact": "Basidia introduces the party to Hebopbe.",
+    "source_quote": "Basidia introduces the party to Hebopbe",
+    "subject": "introduction to Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe is the myconid in charge of the Circle of Growers.",
+    "source_quote": "Hebopbe, the myconid in charge of the Circle of Growers",
+    "subject": "Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids are herbivores that cultivate specific fungi for consumption.",
+    "source_quote": "myconids are herbivores cultivating specific fungi for consumption",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe objects to outsiders treating all mushrooms as interchangeable.",
+    "source_quote": "Hebopbe objects to outsiders treating all mushrooms as interchangeable",
+    "subject": "Hebopbe's objection",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids are sentient beings, not ordinary mushrooms.",
+    "source_quote": "myconids are sentient beings rather than ordinary mushrooms",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids have individual tastes, preferred fungi, cooking methods, and food-production practices.",
+    "source_quote": "myconids have individual tastes, preferred fungi, cooking methods, and food-production practices",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin compares myconid dietary habits to a mammal eating other mammals.",
+    "source_quote": "You're a fungus and you eat fungus. You eat fungi. You are a \u2014 just like I'm a mammal and I eat mammals.",
+    "subject": "Thorin's analogy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe points out the terraces and cultivation program.",
+    "source_quote": "Hebopbe proudly points out the terraces and extensive cultivation program",
+    "subject": "Hebopbe shows terraces",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe defers his explanation of farming yields upon recognizing the party's fading interest.",
+    "source_quote": "recognizing the party's fading interest and deferring the lecture",
+    "subject": "Hebopbe defers lecture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia prompts the party to ask Hebopbe about Phylo.",
+    "source_quote": "Basidia bluntly prompts the party to ask Hebopbe about Phylo",
+    "subject": "Basidia prompts question",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe expresses indifference toward Phylo's proposed organizational changes.",
+    "source_quote": "Hebopbe expresses indifference toward the organizational changes proposed by Phylo",
+    "subject": "Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The dispute involves Basidia's preference for colony-wide participation versus Phylo's proposal for specialized circles with smaller leadership.",
+    "source_quote": "Basidia's preference for colony-wide participation and Phylo's proposal for specialized circles coordinated by a smaller leadership group",
+    "subject": "Phylo vs Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe argues that specialization allows growers to discuss matters without boring other circles.",
+    "source_quote": "specialization lets growers discuss matters they care about without boring every other circle with crop projections",
+    "subject": "Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe considers Basidia's fears about Phylo's \"better day\" to be exaggerated.",
+    "source_quote": "He considers Basidia's fears exaggerated",
+    "subject": "Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi.",
+    "source_quote": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi",
+    "subject": "Hebopbe shows fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hebopbe has a prized zurkhwood specimen.",
+    "source_quote": "Hebopbe shows off his prized zurkhwood",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia reveals that Hebopbe has been infected by strange evil spores.",
+    "source_quote": "Basidia reveals that Hebopbe has been infected by strange evil spores",
+    "subject": "Hebopbe infection reveal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe has been infected by strange evil spores.",
+    "source_quote": "Hebopbe has been infected by strange evil spores",
+    "subject": "Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confirms that Hebopbe's crops do not appear corrupted.",
+    "source_quote": "the party confirms that the crops themselves do not appear corrupted",
+    "subject": "crop verification",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party travels to the central basin.",
+    "source_quote": "The party travels to the central basin",
+    "subject": "travel to central basin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The forest leading to the central basin includes awakened, sentient zurkhwood trees.",
+    "source_quote": "passing through a forest that includes awakened, sentient zurkhwood trees",
+    "subject": "forest near central basin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The zurkhwood trees near the central basin are awakened and sentient.",
+    "source_quote": "awakened, sentient zurkhwood trees",
+    "subject": "zurkhwood trees",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia explains that most zurkhwoods are not normally sentient, but these trees are special examples that have been awakened.",
+    "source_quote": "Basidia explains that most zurkhwoods are not normally sentient; the trees here are special examples that have been awakened",
+    "subject": "Basidia explains trees",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party visits the circle mound.",
+    "source_quote": "At the circle mound, Basidia shows them",
+    "subject": "circle mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Newly spored myconids at the circle mound are only a few inches tall and have no awareness yet.",
+    "source_quote": "newly spored myconids only a few inches tall. They have no awareness yet",
+    "subject": "newly spored myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The newly spored myconids will soon become myconid sprouts.",
+    "source_quote": "will soon become myconid sprouts",
+    "subject": "newly spored myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop is a circle leader.",
+    "source_quote": "The party encounters Yrberop, a circle leader",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party encounters Yrberop swaying to a discordant internal music.",
+    "source_quote": "The party encounters Yrberop, a circle leader who is swaying to a discordant internal music",
+    "subject": "Yrberop encounters party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party hears a faint, chaotic cacophony from Yrberop's mind via Basidia's rapport spores.",
+    "source_quote": "through Basidia's rapport spores hears a faint, chaotic cacophony echoing from his mind",
+    "subject": "telepathic contact",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia is responsible for the rapport spores linking the party.",
+    "source_quote": "Basidia, rather than Yrberop, is responsible for the rapport spores linking the party",
+    "subject": "rapport spores",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The telepathic contact via Basidia's spores does not expose the party to the corrupting spores.",
+    "source_quote": "the telepathic contact does not itself expose them to the corrupting spores",
+    "subject": "spore immunity check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop speaks cryptically about a \"great plan\" by a \"great cedar\" to bring happiness to all.",
+    "source_quote": "Yrberop speaks cryptically about a \u201cgreat plan\u201d by a \u201cgreat cedar\u201d to bring happiness to all",
+    "subject": "Yrberop's speech",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop asks if the party has come to see the young myconids who will join the plan.",
+    "source_quote": "He welcomes the party by asking whether they have come to see the young myconids who will soon join the plan",
+    "subject": "Yrberop welcomes party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop praises the \"great Zuggtmoy\" and mentions plans to send myconids into the Overbright.",
+    "source_quote": "Yrberop praises the \u201cgreat Zuggtmoy\u201d and mentions plans to send the myconids into the Overbright",
+    "subject": "Yrberop praises Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin connects the chaotic evil quality of Yrberop's internal noise to his earlier encounter with the demonic presence.",
+    "source_quote": "Thorin succeeds in connecting the chaotic evil quality of Yrberop's internal noise to his own earlier encounter with the demonic presence",
+    "subject": "Thorin's connection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop walks away to address the newly spored myconids.",
+    "source_quote": "Yrberop soon becomes distracted and walks away to address the newly spored myconids",
+    "subject": "Yrberop departs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop sings a lullaby praising Zuggtmoy, her wedding to the \"great body,\" and the invitation extended to every myconid.",
+    "source_quote": "His lullaby praises Zuggtmoy, her wedding to the \u201cgreat body,\u201d and the invitation extended to every myconid",
+    "subject": "Yrberop's lullaby",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo speaks of Zuggtmoy in specifically feminine terms.",
+    "source_quote": "Phylo speaks of Zuggtmoy in specifically feminine terms",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo insists that experiencing Zuggtmoy firsthand is necessary rather than being explained.",
+    "source_quote": "insists she must be experienced firsthand rather than explained",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party concludes that Phylo's planned tour of the Garden of Welcome likely involves an attempted demonic sacrifice.",
+    "source_quote": "Phylo's planned tour of the Garden of Welcome likely involves an attempted demonic sacrifice",
+    "subject": "Garden of Welcome tour",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar behaves unusually by not offering any bets.",
+    "source_quote": "Jimjar hints at a coming wedding, behaving unusually by not offering any bets",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia confirms that Jimjar is not infected by the strange spores.",
+    "source_quote": "Basidia confirms he is not infected by the strange spores",
+    "subject": "Jimjar infection check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims that nothing is wrong beyond the general truth that weddings make people unhappy.",
+    "source_quote": "Jimjar claims that nothing is wrong beyond the general truth that \u201canytime there's a wedding, you know, people get unhappy\u201d",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a wager that he was never infected by spores.",
+    "source_quote": "Jimjar finally offers a wager that he was never infected by spores",
+    "subject": "Jimjar's wager",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is the leader of the Circle of Explorers.",
+    "source_quote": "The party meets Rumpadump, leader of the Circle of Explorers",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Explorers functions as scouts, patrols, and pathfinders.",
+    "source_quote": "Rumpadump, leader of the Circle of Explorers, who describes his circle as scouts, patrols, and pathfinders",
+    "subject": "Circle of Explorers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump expresses deep distrust of Phylo.",
+    "source_quote": "Rumpadump expresses deep distrust of Phylo",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump trusts only Basidia.",
+    "source_quote": "He trusts only Basidia",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump agrees to trust the party because Basidia vouches for them.",
+    "source_quote": "and agrees to trust the party because Basidia vouches for them",
+    "subject": "Rumpadump trusts party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump has prepared escape plans and hidden nutrient caches in the exit tunnels.",
+    "source_quote": "Rumpadump has prepared several escape plans and hidden nutrient caches in the exit tunnels",
+    "subject": "Rumpadump prepares escapes",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Nutrient caches are hidden in the exit tunnels.",
+    "source_quote": "hidden nutrient caches in the exit tunnels",
+    "subject": "nutrient caches",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump advocates for a nomadic myconid lifestyle.",
+    "source_quote": "Rumpadump advocates a nomadic myconid lifestyle",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia views Rumpadump's nomadic advocacy as the position of a recurring subgroup, not all myconids.",
+    "source_quote": "Basidia treats this as the familiar position of a recurring subgroup rather than the natural preference of all myconids",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump regards moving to the Overbright as insane and perverse.",
+    "source_quote": "He regards proposals to move into the Overbright as \u201ccompletely insane and perverse\u201d",
+    "subject": "Rumpadump",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump states that a myconid is happiest in the dark.",
+    "source_quote": "declaring that a myconid is happiest in the dark",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump offers to lead the party into the Circle of Welcome through a secret passageway.",
+    "source_quote": "Rumpadump offers to lead the party into the Circle of Welcome through a secret passageway",
+    "subject": "Rumpadump offers passage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A secret passageway leads into the Circle of Welcome.",
+    "source_quote": "lead the party into the Circle of Welcome through a secret passageway",
+    "subject": "secret passageway",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party accepts Rumpadump's offer to investigate via the secret passageway.",
+    "source_quote": "The party accepts immediately",
+    "subject": "party accepts offer",
+    "quote_verified": true
+  }
+]

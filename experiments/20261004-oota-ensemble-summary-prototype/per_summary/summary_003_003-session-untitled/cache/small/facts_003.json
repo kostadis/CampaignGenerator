@@ -1,0 +1,443 @@
+[
+  {
+    "type": "location",
+    "fact": "The lower guard room contains a table, three chairs, a smaller side table, and spider-silk webbing fitted with hooks for equipment.",
+    "source_quote": "The lower guard room contains a table, three chairs, a smaller side table, and spider-silk webbing fitted with hooks for equipment.",
+    "subject": "lower guard room",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A stairway in the lower guard room leads to the armory above.",
+    "source_quote": "A stairway leads to the armory above",
+    "subject": "lower guard room",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower guard room has no useful windows or alternate exits.",
+    "source_quote": "but there are no useful windows or alternate exits",
+    "subject": "lower guard room",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The upper armory can physically hold the prisoners while they arm themselves, though it would be extremely crowded if combat moved upstairs.",
+    "source_quote": "the upper room can physically hold the prisoners while they arm themselves, though it would be extremely crowded if combat moved upstairs",
+    "subject": "upper armory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rushes into the lower guard room first.",
+    "source_quote": "Thorin rushes into the room first",
+    "subject": "Thorin enters guard room",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts an unarmed strike and shove against the Elite Warrior Imbros.",
+    "source_quote": "he attempts an unarmed strike and shove against the Elite Warrior",
+    "subject": "Thorin attacks Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's unarmed strike and shove attempt misses Imbros.",
+    "source_quote": "misses despite his confidence in the maneuver",
+    "subject": "Thorin misses attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Imbros strikes Thorin twice with his short sword for seven points of damage each, aiming to subdue rather than kill him.",
+    "source_quote": "He strikes the dwarf twice for seven points of damage each",
+    "subject": "Imbros strikes Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin invokes Second Wind to restore four hit points and keep himself on his feet.",
+    "source_quote": "Thorin invokes Second Wind retroactively as the bonus action he would have used before attacking, restoring four hit points and keeping himself on his feet",
+    "subject": "Thorin uses Second Wind",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks twice with unarmed techniques but rolls two ones and a two, failing to land a blow.",
+    "source_quote": "Zalthir attacks twice with his unarmed techniques but rolls two ones and a two, failing to land a blow",
+    "subject": "Zalthir misses attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth, Turvy, Jimjar, Sarith, Buppido, Topsy, Shuushar, and other prisoners disengage and squeeze past the combatants.",
+    "source_quote": "The other prisoners exploit the distraction. Eldeth, Turvy, Jimjar, Sarith, Buppido, Topsy, Shuushar, and others disengage, squeeze past the combatants",
+    "subject": "prisoners disengage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth, Turvy, Jimjar, Sarith, Buppido, Topsy, Shuushar, and other prisoners climb to the upper armory.",
+    "source_quote": "and climb to the upper armory",
+    "subject": "prisoners climb to armory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil does not retreat and exposes himself to an attack of opportunity.",
+    "source_quote": "Prince Derendil does not retreat. He exposes himself to an attack of opportunity",
+    "subject": "Derendil stands ground",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil suffers five points of damage from the attack of opportunity.",
+    "source_quote": "suffers five points of damage",
+    "subject": "Derendil takes damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil answers with two claw attacks that wound one of the drow.",
+    "source_quote": "answers with two claw attacks that wound one of the drow",
+    "subject": "Derendil attacks drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum disengages, squeezes through the room, and heads upstairs to claim a weapon.",
+    "source_quote": "Gyrgum disengages, squeezes through the room, and heads upstairs to claim a weapon",
+    "subject": "Gyrgum moves upstairs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A drow hits Thorin for five points and knocks him unconscious.",
+    "source_quote": "A second drow targets the visibly weakened Thorin, hits him for five points, and knocks him unconscious",
+    "subject": "Thorin knocked unconscious",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds on his first death save but fails the next.",
+    "source_quote": "Thorin succeeds on his first death save but fails the next",
+    "subject": "Thorin makes death saves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz targets a wounded guard with Mind Sliver, but the drow succeeds on the Intelligence save and takes no damage.",
+    "source_quote": "Daz targets a wounded guard with Mind Sliver, but the drow succeeds on the Intelligence save and takes no damage",
+    "subject": "Daz casts Mind Sliver",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir refuses an opportunity to disengage, stating 'Not my style', and continues trying to force the Elite Warrior away from the doorway.",
+    "source_quote": "Zalthir refuses an opportunity to disengage \u2014 \u201cNot my style\u201d \u2014 and continues trying to force the Elite Warrior away from the doorway",
+    "subject": "Zalthir refuses disengage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir redirects his attention toward one of the ordinary drow but misses twice more.",
+    "source_quote": "Zalthir redirects his attention toward one of the ordinary drow but misses twice more",
+    "subject": "Zalthir misses drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith hits one of his former captors twice for fourteen damage, killing him.",
+    "source_quote": "hits twice for fourteen damage, and kills him",
+    "subject": "Sarith kills guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth takes position at the opening and fires a hand crossbow, though her first shot misses.",
+    "source_quote": "Eldeth takes position at the opening and fires a hand crossbow, though her first shot misses",
+    "subject": "Eldeth fires crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy fire bolts; one strikes the remaining ordinary guard for five damage.",
+    "source_quote": "Topsy and Turvy fire next; one bolt strikes the remaining ordinary guard for five damage",
+    "subject": "Topsy and Turvy fire",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar fires a bolt, striking a target for five damage.",
+    "source_quote": "Jimjar follows with another accurate bolt for five damage",
+    "subject": "Jimjar fires",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido maintains he is an expert with hand crossbows, but his shot misses.",
+    "source_quote": "Buppido loudly maintains that he is an expert with hand crossbows, but his shot misses",
+    "subject": "Buppido misses shot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront squeezes into the lower room and kills the second guard with a short sword.",
+    "source_quote": "Ront squeezes into the lower room and attacks the second guard with a short sword, killing him",
+    "subject": "Ront kills second guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Shuushar the Awakened hits the Elite Warrior Imbros for five points with a hand crossbow.",
+    "source_quote": "Shuushar the Awakened uses one of the remaining hand crossbows against Imbros, hitting the Elite Warrior for five points",
+    "subject": "Shuushar hits Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners' coordinated action turns the situation from a certain defeat into a winnable fight.",
+    "source_quote": "The coordinated action of the prisoners turns what had looked like a certain defeat into a winnable fight",
+    "subject": "prisoners turn fight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Cure Wounds on Thorin, restoring sixteen hit points and bringing him back to full strength.",
+    "source_quote": "Cure Wounds restores sixteen hit points, bringing Thorin back to full strength",
+    "subject": "Gyrgum heals Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum passes Thorin a short sword.",
+    "source_quote": "Gyrgum also passes Thorin a short sword",
+    "subject": "Gyrgum gives sword",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin disengages and climbs upstairs to secure armor because the lower floor is too crowded for him to attack effectively.",
+    "source_quote": "With the lower floor too crowded for him to attack effectively, Thorin disengages and climbs upstairs to secure armor",
+    "subject": "Thorin moves upstairs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros is an Elite Warrior who uses his short sword to subdue Thorin rather than kill him, aiming to keep prisoners as valuable assets.",
+    "source_quote": "Imbros uses his short sword to subdue rather than kill Thorin, since the prisoners remain valuable assets",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is a dwarf who was knocked unconscious by a drow before being healed by Gyrgum.",
+    "source_quote": "A second drow targets the visibly weakened Thorin, hits him for five points, and knocks him unconscious",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is currently climbing upstairs to secure armor.",
+    "source_quote": "Thorin disengages and climbs upstairs to secure armor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin currently has a short sword passed to him by Gyrgum.",
+    "source_quote": "Gyrgum also passes Thorin a short sword",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses unarmed techniques in combat.",
+    "source_quote": "Zalthir attacks twice with his unarmed techniques",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is trying to force the Elite Warrior away from the doorway.",
+    "source_quote": "continues trying to force the Elite Warrior away from the doorway",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil fought back against a drow after taking an attack of opportunity.",
+    "source_quote": "Prince Derendil does not retreat. He exposes himself to an attack of opportunity, suffers five points of damage, and answers with two claw attacks that wound one of the drow",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum cast Cure Wounds on Thorin.",
+    "source_quote": "Gyrgum returns to Thorin and considers Spare the Dying, Healing Word, and Cure Wounds... he chooses the stronger touch spell",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is a prisoner who killed one of his former captors after being armed.",
+    "source_quote": "Once armed, Sarith attacks one of his former captors",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is a prisoner who fired a hand crossbow at a guard from the upper armory.",
+    "source_quote": "Eldeth takes position at the opening and fires a hand crossbow",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is a prisoner who fired a bolt from the upper armory.",
+    "source_quote": "Topsy and Turvy fire next",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a prisoner who fired a bolt from the upper armory.",
+    "source_quote": "Topsy and Turvy fire next",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is a prisoner who fired a bolt from the upper armory.",
+    "source_quote": "Jimjar follows with another accurate bolt for five damage",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is a prisoner who claimed expertise with hand crossbows but missed his shot.",
+    "source_quote": "Buppido loudly maintains that he is an expert with hand crossbows, but his shot misses",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is a prisoner who killed a guard with a short sword.",
+    "source_quote": "Ront squeezes into the lower room and attacks the second guard with a short sword, killing him",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar the Awakened is a prisoner who hit Imbros with a hand crossbow.",
+    "source_quote": "Shuushar the Awakened uses one of the remaining hand crossbows against Imbros",
+    "subject": "Shuushar the Awakened",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cast Mind Sliver at a guard.",
+    "source_quote": "Daz targets a wounded guard with Mind Sliver",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow are using nonlethal force because they want the prisoners alive.",
+    "source_quote": "The drow continue to use nonlethal force because they want the prisoners alive",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The prisoners befriended each other to prevent an inglorious end, turning the tide of the fight.",
+    "source_quote": "The Dungeon Master notes that befriending the other captives prevented an \u201cinglorious and brutal end.\u201d",
+    "subject": "prisoners",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The second drow guard in the lower room is dead, killed by Ront.",
+    "source_quote": "Ront squeezes into the lower room and attacks the second guard with a short sword, killing him",
+    "subject": "drow (second guard)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One ordinary drow is dead, killed by Sarith.",
+    "source_quote": "Once armed, Sarith attacks one of his former captors... kills him",
+    "subject": "drow (ordinary)",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Another ordinary drow was struck by Topsy and Turvy for five damage.",
+    "source_quote": "Topsy and Turvy fire next; one bolt strikes the remaining ordinary guard for five damage",
+    "subject": "drow (ordinary)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A wounded drow guard was targeted by Daz's Mind Sliver but took no damage.",
+    "source_quote": "Daz targets a wounded guard with Mind Sliver, but the drow succeeds on the Intelligence save and takes no damage",
+    "subject": "drow (wounded)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A drow who had been weakened was knocked unconscious by a second drow's attack.",
+    "source_quote": "A second drow targets the visibly weakened Thorin... Thorin succeeds on his first death save but fails the next",
+    "subject": "drow (wounded)",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "One drow was wounded by Prince Derendil's claw attacks.",
+    "source_quote": "answers with two claw attacks that wound one of the drow",
+    "subject": "drow (clawed)",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There were remaining hand crossbows in the armory that the prisoners used.",
+    "source_quote": "Shuushar the Awakened uses one of the remaining hand crossbows",
+    "subject": "hand crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Imbros uses a short sword in combat.",
+    "source_quote": "Imbros uses his short sword to subdue rather than kill Thorin",
+    "subject": "short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Ront uses a short sword to kill the second guard.",
+    "source_quote": "attacks the second guard with a short sword",
+    "subject": "short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum gave Thorin a short sword after healing him.",
+    "source_quote": "Gyrgum also passes Thorin a short sword",
+    "subject": "short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The spider-silk webbing in the lower guard room is fitted with hooks for equipment.",
+    "source_quote": "spider-silk webbing fitted with hooks for equipment",
+    "subject": "spider-silk webbing",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Thorin recognized Imbros as by far the greatest threat, prompting his risky initial attack.",
+    "source_quote": "Recognizing Imbros as by far the greatest threat, he attempts an unarmed strike and shove against the Elite Warrior",
+    "subject": "Imbros's threat",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,156 @@
+[
+  {
+    "type": "npc",
+    "fact": "Voosbur is a Myconid currently infected and dancing frantically.",
+    "source_quote": "The party approached the infected Myconid, who was deep in his frantic dance.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Voosbur speaks in a rambling, euphoric stream of consciousness about a hidden trip and the Lady of the Dreamscape.",
+    "source_quote": "He spoke in a rambling, euphoric stream of consciousness about \"a far out place, a hidden trip where the lady herself spins the vibes\"",
+    "subject": "Voosbur's speech",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur claims the infection is not an infection but a gift from the Lady of the Dreamscape.",
+    "source_quote": "\"this is no infection. She's the mama of the mushrooms, the queen of the dreamscape.\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Voosbur invites the party to drop in, tune out, and dance with the spores.",
+    "source_quote": "He invited them to \"drop in, tune out, and dance with the spores.\"",
+    "subject": "Voosbur's invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proposes tying a rope around whoever approaches the Myconid to be ready to pull them back if necessary.",
+    "source_quote": "The party proposes tying a rope around whoever approaches, \"ready to yank them back if bad things happen.\"",
+    "subject": "rope safety plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party compares their Charisma scores to determine who should approach.",
+    "source_quote": "They compare Charisma scores.",
+    "subject": "charisma comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that he has a Charisma score of zero.",
+    "source_quote": "Daz: \"i have a charisma of a toad.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asks Voosbur where the infection started.",
+    "source_quote": "The party asks Voosbur where the infection started.",
+    "subject": "question to Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Voosbur clarifies that the Lady's dream is deep and not a simple picnic.",
+    "source_quote": "\"this ain't no Sunday picnic. The Lady's dream is deep\"",
+    "subject": "Voosbur's clarification",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The DM clarifies that taking Voosbur's hand does not infect a character; infection requires accepting the Lady's gift.",
+    "source_quote": "The DM clarifies that simply taking Voosbur's hand does not infect you; infection requires accepting the Lady's gift.",
+    "subject": "DM clarification on infection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's player rolled dice and decided to take the mushroom.",
+    "source_quote": "His player literally rolled for it, \"Oh, shit. I take the mushroom.\"",
+    "subject": "Thorin's die roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin feels a strong impulsive pull from Voosbur.",
+    "source_quote": "Thorin felt the pull of it more strongly than he expected.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player explains that his character has a reckless streak.",
+    "source_quote": "His player explains that his character \"has a fucket streak.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reaches out and takes Voosbur's outstretched hand.",
+    "source_quote": "Thorin reached out and took Voosbur's outstretched hand.",
+    "subject": "Thorin grabs hand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if anyone wants to stop him before entering the vision.",
+    "source_quote": "He then asks, \"Nobody wants to stop me, I guess, huh?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum appoints himself the designated driver and follows Thorin.",
+    "source_quote": "Gyrgum, unwilling to let his companion go alone and appointing himself the \"designated driver,\" followed close behind.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum follows Thorin into the vision to act as a watchful companion.",
+    "source_quote": "Gyrgum follows Thorin into the vision to act as a watchful companion",
+    "subject": "Gyrgum enters vision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz declines the invitation to the vision outright.",
+    "source_quote": "Daz declined outright",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states he is not interested in the vision.",
+    "source_quote": "Daz: \"I am not interested.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir stays back holding Sarith.",
+    "source_quote": "Zalthir stayed back holding Sarith.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Observers outside see Thorin and Gyrgum become dazed for a moment.",
+    "source_quote": "Observers outside see Thorin and Gyrgum become dazed for a moment.",
+    "subject": "dazed state",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz comments on Thorin and Gyrgum's dazed state.",
+    "source_quote": "Daz: \"Oh, very Alice in Wonderland.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

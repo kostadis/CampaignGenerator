@@ -1,0 +1,268 @@
+[
+  {
+    "type": "location",
+    "fact": "Laduguer's Furrow is a wealthy district of the city.",
+    "source_quote": "Laduguer's Furrow, the wealthier district of the city",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Laduguer's Furrow is associated with the Ironhead faction.",
+    "source_quote": "It is also the district of the Ironhead faction",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bets Thorin a gold piece that Thorin will do something embarrassing.",
+    "source_quote": "Jimjar made a bet. The ever-wagering deep gnome companion bet a gold piece that Thorin would do something embarrassing before long",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lets his belt buckle loose and his pants fall to the ground.",
+    "source_quote": "Thorin, never one to let a wager go to waste, promptly let his belt buckle loose and his pants fall to the ground",
+    "subject": "Thorin's pants fall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar laughs at Thorin's embarrassment.",
+    "source_quote": "That settled the matter immediately and drew a delighted laugh from Jimjar",
+    "subject": "Jimjar's laughter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled that small wagers are not tracked unless they reach hundreds.",
+    "source_quote": "The DM ruled that such small wagers are not tracked unless they reach \"hundreds.\"",
+    "subject": "DM wager rule",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh has an industrial haze described as a 19th-century Pittsburgh vibe.",
+    "source_quote": "made their way through the industrial haze of the city, which the DM described as a 19th-century Pittsburgh vibe",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The forge contains belching furnaces and soot-streaked workers toiling beneath a sky thick with smoke.",
+    "source_quote": "passed the belching forges of Clan Thrazgad, where soot-streaked workers toiled beneath a sky thick with smoke",
+    "subject": "Clan Thrazgad forge",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a duergar armorsmith clan.",
+    "source_quote": "smoky, industrial forge of Clan Thrazgad, a duergar armorsmith clan",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A gray-skinned Duergar informant leans against the wall near the forge.",
+    "source_quote": "Near the forge, a gray-skinned Duergar informant leaned against the wall",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The informant eyes the group with cold calculation.",
+    "source_quote": "eyeing the group with cold calculation",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A perception check reveals no invisible watchers nearby.",
+    "source_quote": "A perception check found no invisible watchers nearby",
+    "subject": "perception check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A perception roll of 20 finds no invisible duergar nearby.",
+    "source_quote": "A perception roll of 20 finds no invisible duergar nearby",
+    "subject": "perception roll of 20",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir judges the informant to have nothing worth buying.",
+    "source_quote": "Zalthir judged the man to have nothing worth buying",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin senses the informant has valuable information.",
+    "source_quote": "but Thorin sensed otherwise",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin speaks to the informant.",
+    "source_quote": "Thorin opens: \"All right, what are you looking at?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The informant offers advice about navigating the city for a price.",
+    "source_quote": "I have advice about navigating the city, which I'm willing to give for a price",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the party wants to leave the city.",
+    "source_quote": "We're just looking to get out of here and be on our way",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes the city as tricky to navigate.",
+    "source_quote": "this is a tricky city to navigate",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin collects the gold piece from Jimjar for the lost wager.",
+    "source_quote": "Thorin collects on the wager: \"Jimjar, you owe me a gold piece.\"",
+    "subject": "wager payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar pays the informant the gold piece.",
+    "source_quote": "Jimjar pays the informant",
+    "subject": "payment to informant",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard has grown paranoid about strangers.",
+    "source_quote": "The Stone Guard had grown paranoid about strangers",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The informant warns that a group of four with a drow should avoid being noticed together.",
+    "source_quote": "so a group of four with a drow would do well not to be noticed together",
+    "subject": "informant warning on Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is being blamed for the assassination of several members of the derro High Council.",
+    "source_quote": "And the Ember Vanguard was being blamed throughout the city for the assassination of several members of the derro High Council",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Several members of the derro High Council were assassinated.",
+    "source_quote": "assassination of several members of the derro High Council",
+    "subject": "derro High Council",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party realizes the assassinated High Council members were the derro they killed in the caverns.",
+    "source_quote": "Those were the derro the party had killed in the caverns",
+    "subject": "derro (High Council members)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One of the killed derro made the two-headed giants.",
+    "source_quote": "one making the two-headed giants",
+    "subject": "derro (High Council members)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One of the killed derro perverted the dragon egg.",
+    "source_quote": "the other perverting the dragon egg",
+    "subject": "derro (High Council members)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz prefers to approach the informant rather than risk an ambush.",
+    "source_quote": "Daz prefers to approach rather than risk an ambush",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's insight roll of 13 was inconclusive regarding the informant.",
+    "source_quote": "Daz's roll (13) was inconclusive",
+    "subject": "Daz's roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is convinced the informant has nothing useful.",
+    "source_quote": "Zalthir was convinced he had nothing useful",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's insight roll of 16 sensed real information.",
+    "source_quote": "Thorin (16) sensed real information",
+    "subject": "Thorin's roll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The good inn in Gracklstugh is reserved for duergar.",
+    "source_quote": "The party also learned that Gracklstugh's good inn is reserved for duergar",
+    "subject": "Gracklstugh's good inn",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The good inn is described as an introvert's paradise.",
+    "source_quote": "The good inn is for duergar only, \"an introvert's paradise.\"",
+    "subject": "Gracklstugh's good inn",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The not-so-good inn serves everyone else.",
+    "source_quote": "The not-so-good inn serves everyone else",
+    "subject": "Gracklstugh's not-so-good inn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to visit the stone giants first.",
+    "source_quote": "They decide to visit the stone giants first",
+    "subject": "decision to visit stone giants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin believes the stone giants are more even-keeled than other factions.",
+    "source_quote": "the giants seem to be more even-keeled of the group of all these factions",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ironhead faction offered support in exchange for a dead Deepking.",
+    "source_quote": "which had offered support in exchange for a dead Deepking",
+    "subject": "Ironhead faction",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,93 @@
+[
+  {
+    "type": "date",
+    "fact": "The session date is indicated as 017.05.",
+    "source_quote": "Negotiations with the Keepers of the Flame 017.05",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party faces ten derro without having taken a long rest.",
+    "source_quote": "Facing ten derro without a long rest seemed unwise",
+    "subject": "derro count",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Keepers of the Flame are closer to the party than the Gray Ghost lair.",
+    "source_quote": "They went first to the Keepers of the Flame, who were closer",
+    "subject": "Gray Ghost lair distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar initially offers 2,000 gold pieces for the retrieval of the egg.",
+    "source_quote": "He offers 2,000 gold pieces",
+    "subject": "initial payment offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar sets the payment terms at 30% up front and 70% on delivery.",
+    "source_quote": "insisted on 30% up front and 70% on delivery",
+    "subject": "payment terms",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar concedes an extra 1,000 gold pieces after the party raises a confidentiality rider.",
+    "source_quote": "conceded an extra thousand",
+    "subject": "payment increase",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar's refusal of the double fee (4,000 gp) implies the original agreed fee was 2,000 gp.",
+    "source_quote": "He refuses 4,000",
+    "subject": "Themberchaud's share of the fee",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The final upfront payment settled is 1,100 gold pieces.",
+    "source_quote": "settled the upfront terms at 1,100 gold pieces",
+    "subject": "upfront payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party splits the 1,100 gp upfront payment evenly at 275 gold pieces per person.",
+    "source_quote": "which the party split evenly at 275 apiece",
+    "subject": "gold split",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 on his first Persuasion check against Gartokkar.",
+    "source_quote": "Thorin's Persuasion rolls come in at 15",
+    "subject": "Thorin's first persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 14 on his second Persuasion check against Gartokkar.",
+    "source_quote": "and 14",
+    "subject": "Thorin's second persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rolls a 7 in opposition to Thorin's Persuasion attempts.",
+    "source_quote": "against the GM's 7",
+    "subject": "Gartokkar's resistance roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 13 on his Intimidation check.",
+    "source_quote": "Thorin's Intimidation rolls a 13",
+    "subject": "Thorin's intimidation",
+    "quote_verified": true
+  }
+]

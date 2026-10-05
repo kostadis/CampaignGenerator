@@ -1,0 +1,163 @@
+[
+  {
+    "type": "object",
+    "fact": "The party has a bedroll recovered from their escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "bedroll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has rope recovered from their escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a tinderbox recovered from their escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "tinderbox",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has torches recovered from their escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "torches",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a waterskin recovered from their escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "waterskin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses 175 gold pieces in store credit.",
+    "source_quote": "The credit came to 175 gold pieces",
+    "subject": "store credit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The store credit is an advance good only at this particular store.",
+    "source_quote": "given as an advance and good only at this particular store",
+    "subject": "store credit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The store sells only common potions and scrolls, not magic weapons.",
+    "source_quote": "Only common potions and scrolls are for sale here, not magic weapons",
+    "subject": "the store",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchases a week's worth of rations.",
+    "source_quote": "The group decides to purchase a week's worth of rations",
+    "subject": "party buying rations",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin adds the rations to his gear at the GM's urging.",
+    "source_quote": "At the GM's urging, Thorin adds them to his gear",
+    "subject": "Thorin adds rations",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum learns he can only cast scrolls of spells on his own class list.",
+    "source_quote": "he learned that he could only cast scrolls of spells on his own class list",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum buys a scroll of Guiding Bolt.",
+    "source_quote": "Gyrgum buys a scroll of Guiding Bolt",
+    "subject": "Gyrgum buys scroll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum possesses a scroll of Guiding Bolt.",
+    "source_quote": "Gyrgum buys a scroll of Guiding Bolt",
+    "subject": "scroll of Guiding Bolt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum reserves the remainder of his funds for future needs.",
+    "source_quote": "reserving the remainder of his funds for future needs",
+    "subject": "Gyrgum reserves funds",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum hoped to buy scrolls of Thunderwave and Heroism.",
+    "source_quote": "Gyrgum first hoped to buy scrolls of Thunderwave and Heroism",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchases several potions of healing.",
+    "source_quote": "The party purchases several potions of healing",
+    "subject": "party buys healing potions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The potions of healing are held jointly by the party.",
+    "source_quote": "The party purchases several potions of healing, held jointly",
+    "subject": "potions of healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a total of nine potions of healing.",
+    "source_quote": "for a total of nine",
+    "subject": "potions of healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz bought two potions.",
+    "source_quote": "Daz and Thorin bought two each",
+    "subject": "Daz buys potions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin bought two potions.",
+    "source_quote": "Daz and Thorin bought two each",
+    "subject": "Thorin buys potions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was left with 105 gold after purchases.",
+    "source_quote": "Daz was left with 105 gold",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The shopkeeper is disappointed that the customers are the two who do not need magic or weapons.",
+    "source_quote": "The shopkeeper is disappointed that she got \"the two who don't need any magic, who don't need any weapons.\"",
+    "subject": "shopkeeper",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The 'Sane Magical Prices' document was shared back on February 28, 2021.",
+    "source_quote": "which the players discovered had been shared back on February 28, 2021",
+    "subject": "price guide share date",
+    "quote_verified": true
+  }
+]

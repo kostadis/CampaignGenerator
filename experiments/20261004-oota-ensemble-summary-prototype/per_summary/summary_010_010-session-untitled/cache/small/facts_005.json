@@ -1,0 +1,51 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin knocks the last remaining duergar unconscious with a non-lethal blow.",
+    "source_quote": "Thorin delivers a final, non-lethal blow to the last remaining duergar, knocking him unconscious",
+    "subject": "duergar captured",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a Feinting Attack for a straight roll, dealing 12 damage.",
+    "source_quote": "The blow is a Feinting Attack at a straight roll for 12 damage.",
+    "subject": "Thorin's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states the intention to capture the duergar and make him talk.",
+    "source_quote": "I think we want to capture him and we want to make him talk.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dispels the darkness as the combat ends.",
+    "source_quote": "Zalthir dispels the darkness as the combat ends",
+    "subject": "darkness dispelled",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is rescued.",
+    "source_quote": "revealing the defeated slavers and the rescued Spiderbait",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The slavers are defeated.",
+    "source_quote": "revealing the defeated slavers",
+    "subject": "slavers",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last remaining duergar is unconscious.",
+    "source_quote": "Thorin delivers a final, non-lethal blow to the last remaining duergar, knocking him unconscious",
+    "subject": "duergar",
+    "quote_verified": true
+  }
+]

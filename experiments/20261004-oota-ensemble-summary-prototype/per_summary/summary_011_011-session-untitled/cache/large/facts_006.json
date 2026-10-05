@@ -1,0 +1,219 @@
+[
+  {
+    "type": "date",
+    "fact": "Two more days of paddling pass.",
+    "source_quote": "Two more days of paddling brought them",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum states they are only a day away from Gracklstugh.",
+    "source_quote": "Brannum says they are only a day away",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is within a day of paddling to Gracklstugh.",
+    "source_quote": "within a day of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An enormous aquatic troll surges up alongside the boat.",
+    "source_quote": "an enormous aquatic troll surging up alongside the boat",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notices the aquatic troll just before it attacks.",
+    "source_quote": "Zalthir (22) and Daz (23) notice a large, troll-like creature",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notices the aquatic troll just before it attacks.",
+    "source_quote": "Zalthir (22) and Daz (23) notice a large, troll-like creature",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic troll speaks in the rumbling tongue of giants.",
+    "source_quote": "Speaking in the rumbling tongue of giants",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The aquatic troll demands the party hand over one of their number for a meal.",
+    "source_quote": "it demanded that the party hand over one of their number for a meal",
+    "subject": "troll demand",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM indicates the troll wants something 'live or meaty' despite food potentially satisfying it.",
+    "source_quote": "it wants something 'live or meaty'",
+    "subject": "troll preference",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz suggests giving Brannum to the troll.",
+    "source_quote": "Daz suggested giving it Brannum",
+    "subject": "Daz suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum refuses to toss Brannum to the troll, citing his Neutral Good alignment.",
+    "source_quote": "Gyrgum refused: 'I'm neutral good here. I don't think I can be tossing people to the trolls.'",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin calls for the party to run away from the troll.",
+    "source_quote": "Thorin called for them to run",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar shouts a question about whether anyone has fire.",
+    "source_quote": "Jimjar shouted 'Does anybody have fire?'",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar warns that the troll will regenerate unless burned with fire or acid.",
+    "source_quote": "warned that the creature would simply regenerate from any wound unless it was burned with fire or acid",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Scorching Ray misses the troll.",
+    "source_quote": "Daz's Scorching Ray missed",
+    "subject": "Scorching Ray miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Magic Missiles hit the troll for 9 damage.",
+    "source_quote": "his Magic Missiles hit for 9",
+    "subject": "Magic Missile hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll grabs the boat and pulls it down.",
+    "source_quote": "The troll grabbed the boat and pulled it down",
+    "subject": "troll grabs boat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll rakes Daz with a claw.",
+    "source_quote": "raking Daz with a claw",
+    "subject": "troll claw hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll's bite misses Daz.",
+    "source_quote": "though its bite missed",
+    "subject": "troll bite miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the troll hard enough that it releases the hull.",
+    "source_quote": "Zalthir struck the troll hard enough that it released the hull",
+    "subject": "Zalthir strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his class technique to shove the troll five feet back.",
+    "source_quote": "his class technique shoved it five feet back",
+    "subject": "Zalthir shove",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a Strength of only 8.",
+    "source_quote": "Gyrgum, with a Strength of only 8",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum vomits forth a wave of acid using Tasha's Caustic Brew.",
+    "source_quote": "vomited forth a wave of acid with Tasha's Caustic Brew",
+    "subject": "Tasha's Caustic Brew cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll twists away from the worst of the acid spray.",
+    "source_quote": "the troll twisted away from the worst of it",
+    "subject": "troll dodge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum offers to grow to giant size and help row if they untie him.",
+    "source_quote": "Brannum offered to grow to giant size and help row if they untied him",
+    "subject": "Brannum offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin refuses Brannum's offer to help row.",
+    "source_quote": "Thorin refused",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reasons that freeing Brannum would end with the duergar smashing the boat or killing the party.",
+    "source_quote": "reasoning that it would end with the duergar smashing the boat or killing them all",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and the others throw their backs into the oars to row.",
+    "source_quote": "Thorin and the others threw their backs into the oars",
+    "subject": "party rowing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic troll is singed and frustrated.",
+    "source_quote": "The troll, singed and frustrated",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The aquatic troll sinks back into the dark water.",
+    "source_quote": "sank back into the dark water",
+    "subject": "troll retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic troll grumbles that it had only been trying to help by reducing the number of mouths the party had to feed.",
+    "source_quote": "with a grumbling complaint that it had only been trying to help by reducing the number of mouths the party had to feed",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  }
+]

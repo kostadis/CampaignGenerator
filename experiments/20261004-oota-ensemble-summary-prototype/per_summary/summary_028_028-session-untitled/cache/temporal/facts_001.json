@@ -1,0 +1,72 @@
+[
+  {
+    "type": "object",
+    "fact": "The fist-sized quartz crystals shed a dim light in a 10-foot radius.",
+    "source_quote": "shed a dim light in a 10-foot radius",
+    "subject": "quartz light radius",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The flash created by bursting a quartz crystal covers a 10-foot radius.",
+    "source_quote": "burst into a blinding flash in a 10-foot radius",
+    "subject": "quartz flash radius",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Creatures caught in the quartz flash must make a DC 10 Constitution save to avoid being blinded.",
+    "source_quote": "must make a DC 10 Constitution save",
+    "subject": "quartz save DC",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The blindness caused by the quartz flash lasts for one minute.",
+    "source_quote": "blinded for a minute",
+    "subject": "quartz blindness duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum concludes and Sarith agrees that the crystals should be thrown at least 10 feet away.",
+    "source_quote": "throw it at least 10 feet",
+    "subject": "quartz throw distance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 19 on his Arcana check.",
+    "source_quote": "Daz rolled a 19 on Arcana",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party pocketed twelve of the glowing quartz stones.",
+    "source_quote": "pocketing twelve of the glowing stones",
+    "subject": "harvested quartz stones",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party encounters two desperate survivors, Fuurm and Baedora.",
+    "source_quote": "encounters two desperate survivors",
+    "subject": "survivor count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 22 on his Investigation check.",
+    "source_quote": "Daz rolls a 22 on Investigation",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 24 on his Insight check.",
+    "source_quote": "Daz rolls a 24 on Insight",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

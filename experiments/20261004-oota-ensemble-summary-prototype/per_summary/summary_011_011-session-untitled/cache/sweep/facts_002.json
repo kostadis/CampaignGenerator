@@ -1,0 +1,212 @@
+[
+  {
+    "type": "date",
+    "fact": "The party encounters the Bone Pyramid Islet on the fifteenth day of their voyage.",
+    "source_quote": "On the fifteenth day of their voyage, the tunnel forked around a diamond-shaped limestone islet",
+    "subject": "fifteenth day of their voyage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Blind cavefish drift mindlessly near the surface of the subterranean waterway.",
+    "source_quote": "Blind cavefish drifted mindlessly near the surface",
+    "subject": "blind cavefish",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The blind cavefish occasionally bump against the hull of the boat.",
+    "source_quote": "occasionally bumping against the hull of the boat",
+    "subject": "blind cavefish",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The limestone islet is diamond-shaped and forty feet wide.",
+    "source_quote": "a diamond-shaped limestone islet, forty feet wide",
+    "subject": "limestone islet",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The limestone islet features jagged stalagmites jutting upward from the water.",
+    "source_quote": "its jagged stalagmites jutting upward from the water like broken teeth",
+    "subject": "limestone islet",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There is a pyramid of bones at the center of the islet.",
+    "source_quote": "It was a pyramid of bones",
+    "subject": "pyramid of bones",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pyramid of bones is eight feet high.",
+    "source_quote": "eight feet high",
+    "subject": "pyramid of bones",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pyramid of bones is five feet wide at its base.",
+    "source_quote": "five feet wide at its base",
+    "subject": "pyramid of bones",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pyramid of bones is crowned with a great horned ram skull.",
+    "source_quote": "crowned with a great horned ram skull",
+    "subject": "horned ram skull",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The horned ram skull is positioned so its empty sockets stare directly at the travelers.",
+    "source_quote": "so its empty sockets stared directly at them",
+    "subject": "horned ram skull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch panics upon seeing the bone pyramid.",
+    "source_quote": "Brannum Redmarch took one look at it and panicked",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch shouts for the party to dock.",
+    "source_quote": "shouting \"shit, dock! Do something!\"",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch admits that the current direction was a mistake.",
+    "source_quote": "admitting \"this was a mistake",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch states he thought they were going the other way.",
+    "source_quote": "I thought we were going the other way",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A violent beam of lightning erupts from behind a stalactite above the islet.",
+    "source_quote": "a violent beam of lightning erupted from behind a stalactite above the islet",
+    "subject": "lightning strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The lightning tries to pierce the hull of the boat.",
+    "source_quote": "and tried to put a hole in their boat",
+    "subject": "lightning strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party makes a group check to keep the vessel from taking on water.",
+    "source_quote": "The party made a group check to keep the vessel from taking on water",
+    "subject": "group check to keep vessel seaworthy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The boat sustains damage but remains seaworthy due to quick reflexes.",
+    "source_quote": "their quick reflexes kept the boat seaworthy with only some damage",
+    "subject": "boat damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A ten-foot floating sphere of rotting flesh and dead eyes rises from behind the great stalactite.",
+    "source_quote": "rising from behind the great stalactite, a ten-foot floating sphere of rotting flesh and dead eyes",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The creature is identified as a beholder zombie.",
+    "source_quote": "a beholder zombie",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie was drawn by the commotion.",
+    "source_quote": "drawn by the commotion",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is hungry for destruction.",
+    "source_quote": "hungry for destruction",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts the spell Command.",
+    "source_quote": "Gyrgum cast Command",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum orders the beholder zombie to flee.",
+    "source_quote": "ordered the creature to flee",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum realizes the undead horror does not understand his commands.",
+    "source_quote": "realize with a sinking feeling that the undead horror understood nothing he said",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The battle between the party and the beholder zombie begins.",
+    "source_quote": "The battle was joined in earnest",
+    "subject": "battle joined",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest along the way before reaching the islet.",
+    "source_quote": "The party takes a long rest along the way",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel is illuminated by a purple glow.",
+    "source_quote": "narrow, eerie tunnel illuminated by a purple glow",
+    "subject": "narrow, eerie tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin starts rowing away from the islet.",
+    "source_quote": "Thorin starts rowing away",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin trusts that Brannum Redmarch knows what he is talking about.",
+    "source_quote": "trusting that Brannum knows what he is talking about",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

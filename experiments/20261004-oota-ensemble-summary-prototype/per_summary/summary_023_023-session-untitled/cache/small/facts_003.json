@@ -1,0 +1,226 @@
+[
+  {
+    "type": "location",
+    "fact": "The party returned to the ritual cavern.",
+    "source_quote": "the party returned to the ritual cavern",
+    "subject": "ritual cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had already completed his work on one statue.",
+    "source_quote": "Narrak had already completed his work on one statue",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak was preparing to corrupt another statue.",
+    "source_quote": "was now preparing to corrupt another",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There are now three statues in the cavern.",
+    "source_quote": "there were now three statues",
+    "subject": "stone giant statues",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak was preparing the third statue.",
+    "source_quote": "Narrak was preparing the third",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak announced that converting one more of Hgraam's giants into a double-headed beast would bring Gracklstugh to its knees.",
+    "source_quote": "Narrak announced grandly that converting one more of Hgraam's giants into a double-headed beast would bring Gracklstugh to its knees",
+    "subject": "Narrak's announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak stated, \"by golly.\"",
+    "source_quote": "\"by golly.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak stated that he does not curse, but merely invokes demonic powers.",
+    "source_quote": "I don't curse. I just invoke demonic powers.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak launched into the ritual chant.",
+    "source_quote": "Narrak launched into the ritual chant",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak included a new verse in the chant about \"Whorlstone's depths.\"",
+    "source_quote": "including a new verse about \"Whorlstone's depths.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak made his followers run the chant again as a rehearsal because they stumbled through it.",
+    "source_quote": "he made them run it again as a rehearsal",
+    "subject": "cultist rehearsal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak shouted \"Silence, you blithering half-wits!\"",
+    "source_quote": "Silence, you blithering half-wits!",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak shouted \"More vigor!\"",
+    "source_quote": "More vigor!",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak shouted \"This city's doom, a ritual!\"",
+    "source_quote": "This city's doom, a ritual!",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak shouted \"Dig it!\"",
+    "source_quote": "Dig it!",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The death dog's handler kept his head down by busily grooming the dog.",
+    "source_quote": "the death dog's handler kept his head down by busily grooming the dog",
+    "subject": "death dog's handler",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum quietly blessed his three companions.",
+    "source_quote": "Gyrgum quietly blessed his three companions",
+    "subject": "Gyrgum's blessing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party beat the cultists' passive perception of 7 on a group stealth check.",
+    "source_quote": "The party then beat the cultists' passive perception of 7 on a group stealth check",
+    "subject": "stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled a 20 on the stealth check.",
+    "source_quote": "Gyrgum rolled a 20",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party slipped forward through the shadows undetected.",
+    "source_quote": "slipped forward through the shadows, undetected",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party earned a surprise round.",
+    "source_quote": "earning a surprise round",
+    "subject": "surprise round",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak successfully grew a second head on one of the stone giant statues.",
+    "source_quote": "Narrak has successfully grown a second head on one of the stone giant statues",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak stated, \"We have successfully done one, converted one of Hgraam's giants into a double-headed beast.\"",
+    "source_quote": "We have successfully done one, converted one of Hgraam's giants into a double-headed beast.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak stated, \"Now we shall convert one more.\"",
+    "source_quote": "Now we shall convert one more.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak stated, \"And by golly, that will destroy Gracklstugh.\"",
+    "source_quote": "And by golly, that will destroy Gracklstugh.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The players piled on Narrak with the words \"Consarnet\" and \"Confounded.\"",
+    "source_quote": "The players pile on with \"Consarnet\" and \"Confounded\"",
+    "subject": "player interjection",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak asked, \"What in the Sam Hill is going on here?\"",
+    "source_quote": "\"What in the Sam Hill is going on here?\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak restarted the chant with the line, \"From Whorlstone's depths, the spirals turn.\"",
+    "source_quote": "Narrak restarts the chant with a new line, \"From Whorlstone's depths, the spirals turn.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cultists answered with the chorus: \"Two heads, two heads, a glorious sight. The Deepking falls into endless night.\"",
+    "source_quote": "The cultists answer with the chorus: \"Two heads, two heads, a glorious sight. The Deepking falls into endless night.\"",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak gathered the cultists close amid \"lots of groaning\" and walked them through their lines.",
+    "source_quote": "He gathers them close amid \"lots of groaning\" and walks them through their lines.",
+    "subject": "Narrak's coaching",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum's Bless spell grants +1d4 to attacks and saves for a minute.",
+    "source_quote": "(+1d4 to attacks and saves for a minute)",
+    "subject": "Bless spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warned that Bless will expire if the party waits out the next couplet.",
+    "source_quote": "The DM warns that Bless will expire if they wait out the next couplet.",
+    "subject": "DM warning",
+    "quote_verified": true
+  }
+]

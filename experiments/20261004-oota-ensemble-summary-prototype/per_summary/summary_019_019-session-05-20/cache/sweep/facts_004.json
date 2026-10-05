@@ -1,0 +1,156 @@
+[
+  {
+    "type": "npc",
+    "fact": "Flumph guided the party to the entrance of the obelisk chamber using his knowledge of the layout.",
+    "source_quote": "Guided by Flumph's knowledge of the layout, they arrived at last at the entrance to the obelisk chamber",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph admitted he was disappointed that no one in the party had their brains devoured.",
+    "source_quote": "I was really expecting to see at least some of you have your brains devoured",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph stated that he found no trauma when he probed the party's minds after the assassins' lair.",
+    "source_quote": "Flumph, who had probed their minds after the assassins' lair and found \"no trauma\"",
+    "subject": "Flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph added that there is still time for the party's brains to be devoured.",
+    "source_quote": "He adds: \"There's still time.\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir conjured a sphere of impenetrable magical darkness to trail behind the group.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness to trail behind the group as they moved",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asked for Zalthir's magical darkness to be centered on him because he can see through it.",
+    "source_quote": "Thorin asks to have it centered on him, since he can still see through it",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde is a character who would likely go homicidal if shown the Deepking proof.",
+    "source_quote": "the proof would most likely send her \"all homicidal on the Deepking\"",
+    "subject": "Errde",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is an entity whose actions or existence are proven by a specific proof held by the party.",
+    "source_quote": "with the Deepking proof in hand",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber has a main entrance consisting of big double doors.",
+    "source_quote": "the obelisk chamber's main entrance, a set of big double doors",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber contains the stolen dragon egg.",
+    "source_quote": "entrance to the obelisk chamber, where the stolen dragon egg awaited",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party moved northward through the tunnels of the Whorlstone Caverns.",
+    "source_quote": "the party decides to avoid the Council of Savants and sneaks northward through the tunnels of the Whorlstone Caverns",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The chambers of the Council of Savants are located along the north route past an intersection.",
+    "source_quote": "The other ran north, past the chambers of the Council of Savants",
+    "subject": "chambers of the Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Council of Savants consists of mad derro scholars.",
+    "source_quote": "slipping past the mad derro scholars",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The northwest passage was known to Flumph but was ignored because there was nothing to eat there.",
+    "source_quote": "Flumph knows nothing of the northwest passage: \"There was nothing to eat there.\"",
+    "subject": "Northwest passage",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghost is a group or entity whose people's chambers are located along the north route.",
+    "source_quote": "The north route passes the chambers of the Gray Ghost and Council of Savants people",
+    "subject": "Gray Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants consists of derro who work for the duergar.",
+    "source_quote": "The Council of Savants is described as derro who work for the duergar",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen dragon egg is awaiting retrieval in the obelisk chamber.",
+    "source_quote": "where the stolen dragon egg awaited",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party is in possession of the Deepking proof.",
+    "source_quote": "with the Deepking proof in hand",
+    "subject": "Deepking proof",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to bypass the Council of Savants entirely.",
+    "source_quote": "The party chose to bypass the Council of Savants entirely",
+    "subject": "bypassing the Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir cast a sphere of impenetrable magical darkness to cloak the party's approach.",
+    "source_quote": "cloaking their approach in shadow as they crept northward through the tunnels",
+    "subject": "casting magical darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Flumph probed the party's minds after the assassins' lair.",
+    "source_quote": "Flumph, who had probed their minds after the assassins' lair",
+    "subject": "mind probe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confirmed they had taken a long rest before setting out.",
+    "source_quote": "The party confirms they had taken a long rest before setting out",
+    "subject": "taking long rest",
+    "quote_verified": true
+  }
+]

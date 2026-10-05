@@ -1,0 +1,128 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir moved up the tiers to stand beside Plinki.",
+    "source_quote": "Zalthir moved first. He had already jumped up the tiers to stand right beside Plinki.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir seized Plinki in an iron grip, pinning her in place.",
+    "source_quote": "He seized her in an iron grip, pinning her in place before unleashing a rapid and brutal series of strikes",
+    "subject": "Zalthir ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first attack against Plinki totalled 27 against her AC 13.",
+    "source_quote": "His first attack totalled 27 against her AC 13",
+    "subject": "Zalthir first attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spent a focus point for a strike that dealt 11 damage to Plinki.",
+    "source_quote": "he spent a focus point for another strike, dealing 11 damage",
+    "subject": "Zalthir focus strike",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's earlier warmth toward the egg curdled into righteous fury at the betrayal.",
+    "source_quote": "Gyrgum, his earlier warmth toward the egg curdled into righteous fury at the betrayal",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channeled necrotic energy into Plinki using a 2nd-level Inflict Wounds spell.",
+    "source_quote": "channeled a surge of devastating necrotic energy directly into Plinki. This was a 2nd-level Inflict Wounds",
+    "subject": "Gyrgum Inflict Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki succeeded on a Constitution save against Gyrgum's spell.",
+    "source_quote": "she succeeded on a Constitution save",
+    "subject": "Plinki save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki took 12 damage from Gyrgum's Inflict Wounds despite her save.",
+    "source_quote": "and still took 12 damage",
+    "subject": "Plinki damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Plinki is badly wounded and struggling in Zalthir's grip.",
+    "source_quote": "the force of the blast still left her badly wounded and struggling in Zalthir's grip",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle for the obelisk chamber began during the session.",
+    "source_quote": "The battle for the obelisk chamber had begun in earnest",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The fate of the corrupted dragon egg hangs in the balance.",
+    "source_quote": "the fate of the corrupted dragon egg \u2014 and perhaps the city of Gracklstugh itself \u2014 hung in the balance",
+    "subject": "corrupted dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The fate of the city of Gracklstugh hangs in the balance.",
+    "source_quote": "and perhaps the city of Gracklstugh itself \u2014 hung in the balance",
+    "subject": "city of Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session paused mid-combat.",
+    "source_quote": "The session paused mid-combat.",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir added Bless's d4 to his second attack.",
+    "source_quote": "He adds Bless's d4 to his second attack",
+    "subject": "Zalthir Bless attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group ruled that Flurry of Blows grants one extra attack, not two.",
+    "source_quote": "They leave it at one.",
+    "subject": "Flurry of Blows ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group noted that Inflict Wounds now uses a Constitution save.",
+    "source_quote": "the table noting the spell now uses a save",
+    "subject": "Inflict Wounds ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin will be out next week.",
+    "source_quote": "Thorin will be out next week",
+    "subject": "Thorin absence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The next session is skipped.",
+    "source_quote": "the next session is skipped",
+    "subject": "next session skipped",
+    "quote_verified": true
+  }
+]

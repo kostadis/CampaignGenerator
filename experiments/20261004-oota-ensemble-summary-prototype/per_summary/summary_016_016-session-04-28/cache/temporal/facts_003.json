@@ -1,0 +1,51 @@
+[
+  {
+    "type": "location",
+    "fact": "The narrow rock cracks require a Tiny creature to pass through.",
+    "source_quote": "the cracks require Tiny",
+    "subject": "crack size requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pygmywort shrinks a Medium creature only to Small.",
+    "source_quote": "taking a Medium creature only to Small",
+    "subject": "Pygmywort size limit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz can freeze a five-foot cube at a time.",
+    "source_quote": "Daz can freeze a five-foot cube",
+    "subject": "Daz's freeze capacity",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz can have no more than two non-instantaneous effects active at once.",
+    "source_quote": "no more than two non-instantaneous effects active at once",
+    "subject": "Daz's active effects limit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir suggests layering five-foot chunks to form the ice bridge.",
+    "source_quote": "Zalthir suggests layering five-foot chunks",
+    "subject": "Daz's bridge method",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum remains in a Small state which weakens his Strength attacks.",
+    "source_quote": "Gyrgum learns that staying small weakens his Strength attacks",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum consumes a Bigwig mushroom to restore his size.",
+    "source_quote": "he takes a Bigwig (\"the antidote\") to restore his size",
+    "subject": "Gyrgum's reversion",
+    "quote_verified": true
+  }
+]

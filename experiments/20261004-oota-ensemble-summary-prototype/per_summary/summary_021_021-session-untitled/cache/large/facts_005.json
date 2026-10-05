@@ -1,0 +1,79 @@
+[
+  {
+    "type": "event",
+    "fact": "The party chose to skirt the assassins' territory entirely and headed west through the dark Underdark passages.",
+    "source_quote": "The party chose to skirt the assassins' territory entirely... So they headed west through the dark Underdark passages.",
+    "subject": "party route choice",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the DM that the assassins told the party not to come back.",
+    "source_quote": "Zalthir reminds the DM that the assassins told them not to come back after the desk burning.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unknown whether the south route re-enters assassin territory.",
+    "source_quote": "It is unknown whether the south route re-enters assassin territory.",
+    "subject": "assassin territory status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool's request to help his friend among the crazed Myconids was placed at the bottom of the priority list.",
+    "source_quote": "Stool's request to help his friend among the crazed Myconids is discussed but placed at the bottom of the priority list.",
+    "subject": "Stool's plea deferred",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that Stool is convinced the party will be safe despite the presence of terrifying Myconids and an ape thing.",
+    "source_quote": "Zalthir notes Stool is \"convinced that we'll be perfectly safe despite there being a bunch of terrifying Myconids and some ape thing.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin sides with Stool regarding the request to help his friend.",
+    "source_quote": "Thorin sides with Stool",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes his character as incredibly loyal and a little bit sociopathic.",
+    "source_quote": "describing his character as \"incredibly loyal and \u2026 a little bit sociopathic.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin bases his character on Amos from The Expanse.",
+    "source_quote": "He says he is basing him on Amos from *The Expanse*.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM switches the map to display a single party icon.",
+    "source_quote": "The DM switches the map to a single party icon.",
+    "subject": "map switch",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The assassins previously told the party not to return after an incident involving a sneeze and a burned desk.",
+    "source_quote": "They had been told not to return after \"sneezing\" on and burning the assassins' desk",
+    "subject": "assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The route the party used to enter the Underdark runs through assassin territory.",
+    "source_quote": "The way they came in runs through assassin territory.",
+    "subject": "assassin territory",
+    "quote_verified": true
+  }
+]

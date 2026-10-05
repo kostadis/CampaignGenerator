@@ -1,0 +1,170 @@
+[
+  {
+    "type": "npc",
+    "fact": "Rasharoo's scouts have left the area prior to the party entering the cavern.",
+    "source_quote": "After Rasharoo\u2019s scouts leave",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party enters a large cavern containing a deep depression in the floor filled with gas.",
+    "source_quote": "the party entered a large cavern where a heavy, toxic, and combustible gas had settled into a deep depression in the floor",
+    "subject": "large cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gas in the cavern is heavy, toxic, and combustible.",
+    "source_quote": "a heavy, toxic, and combustible gas had settled into a deep depression",
+    "subject": "combustible gas",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A five-foot ledge runs around either side of the gas depression in the cavern.",
+    "source_quote": "a five-foot ledge ran around either side of the depression",
+    "subject": "five-foot ledge",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A giant rocktopus waits on the ledge between the party and the exit.",
+    "source_quote": "a giant rocktopus waiting on the ledge between them and the exit",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus regards the party as convenient food.",
+    "source_quote": "The stone-like predator regarded them as convenient food",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin uses Dawnbringer to strike the rocktopus twice.",
+    "source_quote": "Thorin stepped to the front and struck the beast twice with Dawnbringer",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes the rocktopus twice with Dawnbringer, dealing nineteen points of damage.",
+    "source_quote": "Thorin strikes the rocktopus twice with Dawnbringer, dealing nineteen points of damage",
+    "subject": "Thorin's attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus is visibly wounded after Thorin's attacks.",
+    "source_quote": "dealing nineteen points of damage and leaving it visibly wounded",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rocktopus lashes out with a tentacle, striking Thorin for ten points of damage.",
+    "source_quote": "The rocktopus hits Thorin for ten points of damage",
+    "subject": "rocktopus tentacle attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rocktopus attempts to grapple Thorin with a tentacle.",
+    "source_quote": "trying to grapple him",
+    "subject": "rocktopus grapple attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds in shaking off the rocktopus's grapple.",
+    "source_quote": "but he shook off its grip",
+    "subject": "Thorin escapes grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir closes in, restrains the creature, and strikes it with a flurry of punches.",
+    "source_quote": "Zalthir closed in, restrained the creature, and battered it with a flurry of punches",
+    "subject": "Zalthir's attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missile, dealing nine points of force damage to the rocktopus.",
+    "source_quote": "Daz casts Magic Missile for nine points of force damage",
+    "subject": "Daz's Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus is left barely alive after Daz's attack.",
+    "source_quote": "leaving the monster barely alive",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum softly chants a True Strike invocation and circles into reach.",
+    "source_quote": "Gyrgum softly chanted a True Strike invocation, circled into reach",
+    "subject": "Gyrgum's True Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum attacks the monster with his mace.",
+    "source_quote": "brought his mace down on the wounded monster",
+    "subject": "Gyrgum's mace",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace attack deals seven points of damage and kills the rocktopus.",
+    "source_quote": "Gyrgum\u2019s blow deals seven points of damage and kills the rocktopus",
+    "subject": "Gyrgum's killing blow",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus is dead, killed by Gyrgum's final blow.",
+    "source_quote": "The final blow killed it",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum exalts as 'the octopus slayer' after killing the rocktopus.",
+    "source_quote": "prompting Gyrgum to exalt as \u201cthe octopus slayer\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM corrects Gyrgum's title to 'the rocktopus slayer'.",
+    "source_quote": "The DM corrects the title to \u201cthe rocktopus slayer.\u201d",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum explains that his characters are always proud, even if not always powerful.",
+    "source_quote": "Gyrgum explains, \u201cMy characters may not always be powerful, but they\u2019re always proud.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missile.",
+    "source_quote": "Daz casts Magic Missile",
+    "subject": "Magic Missile cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum completes a True Strike invocation before attacking.",
+    "source_quote": "completes a True Strike invocation",
+    "subject": "True Strike invocation",
+    "quote_verified": true
+  }
+]

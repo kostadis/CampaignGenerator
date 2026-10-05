@@ -1,0 +1,310 @@
+[
+  {
+    "type": "location",
+    "fact": "The Fungi Forest is a dense forest of giant mushrooms with stalks nearly five feet tall that fill the cavern with an eerie whispering sound.",
+    "source_quote": "a dense forest of giant mushrooms, some standing nearly five feet tall, their stalks filling the cavern with an eerie whispering sound",
+    "subject": "Fungi Forest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party followed Droki's trail into the Fungi Forest.",
+    "source_quote": "the party followed Droki's trail into a dense forest of giant mushrooms",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reassures the group that the noise from the fungi is harmless wind from the Underdark.",
+    "source_quote": "Pelek reassured the group that the noise was harmless, just the wind of the Underdark breathing through the fungi",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party begins foraging for useful mushrooms.",
+    "source_quote": "The party relaxed enough to begin foraging, gathering an assortment of useful mushrooms from the forest floor",
+    "subject": "foraging",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Swarms of centipedes erupt from the surrounding fungi in relentless waves.",
+    "source_quote": "Without warning, swarms of centipedes erupted from the surrounding fungi, skittering across the ground in relentless waves",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One mass of centipedes crawls directly onto Zalthir, covering him in biting legs.",
+    "source_quote": "One mass of insects crawled directly onto Zalthir, covering him in writhing, biting legs",
+    "subject": "Zalthir covered by swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's clothes and scales prevent the centipedes from causing the worst of the damage.",
+    "source_quote": "though his clothes and scales kept the worst of it at bay",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashes a stream of caustic acid at the nearest swarm.",
+    "source_quote": "Gyrgum unleashed a stream of caustic acid at the nearest swarm",
+    "subject": "Gyrgum's acid attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipedes twist away from Gyrgum's acid spray.",
+    "source_quote": "but the agile insects twisted away from the spray",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz attempts to drain life from the centipedes with necrotic energy.",
+    "source_quote": "Daz's attempt to drain the life from them with necrotic energy",
+    "subject": "Daz's necrotic attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipedes shrug off Daz's necrotic energy.",
+    "source_quote": "was similarly shrugged off",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes hard at a wounded swarm.",
+    "source_quote": "Thorin struck hard at a wounded swarm",
+    "subject": "Thorin's strike",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin's strike nearly disperses the wounded swarm entirely.",
+    "source_quote": "nearly dispersing it entirely",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two more swarms emerge from the depths of the fungi forest, surrounding the group.",
+    "source_quote": "two more swarms emerged from the depths of the fungi forest, surrounding the group on all sides",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir tears the centipedes from his body and crushes them.",
+    "source_quote": "Zalthir tore the centipedes from his body and crushed them",
+    "subject": "Zalthir crushing centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hacks at the insects swarming around him with his hand axe, landing a light blow.",
+    "source_quote": "Gyrgum hacked at the insects swarming around him with his hand axe, landing a light blow",
+    "subject": "Gyrgum's axe hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace swing goes wide.",
+    "source_quote": "and his mace swing went wide",
+    "subject": "Gyrgum's mace miss",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's last swing misses even with a superiority die.",
+    "source_quote": "Thorin's last swing missed even with a superiority die",
+    "subject": "Thorin's missed swing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin moves to the back of the group because his armor is loud.",
+    "source_quote": "Thorin moves to the back of the group: \"I'm like clink clank every time I step.\"",
+    "subject": "Thorin's armor noise",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The fungi forest is difficult terrain.",
+    "source_quote": "The forest is difficult terrain.",
+    "subject": "Fungi Forest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum climbs a tall mushroom and spots a tunnel heading southwest.",
+    "source_quote": "Gyrgum climbs a tall mushroom and spots a tunnel heading southwest",
+    "subject": "Gyrgum scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party forages for barrelstalks and bluecaps.",
+    "source_quote": "They begin foraging for various Underdark mushrooms, including barrelstalks and bluecaps",
+    "subject": "barrelstalks and bluecaps",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The DM mentions Nilhogg's Nose as a type of mushroom.",
+    "source_quote": "The DM also mentions Nilhogg's Nose",
+    "subject": "Nilhogg's Nose",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek hovers near Gyrgum to keep his bones safe.",
+    "source_quote": "Pelek hovers wherever Gyrgum is to keep his bones safe",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches at the swarm and hits twice.",
+    "source_quote": "he punches at the swarm and hits twice, the second for 6 damage",
+    "subject": "Zalthir's punch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead against the creatures.",
+    "source_quote": "Daz casts Toll the Dead against the creatures",
+    "subject": "Daz's Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The swarm makes its Wisdom save and resists Toll the Dead.",
+    "source_quote": "but the swarm makes its Wisdom save and resists the effect",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipede swarm crawling on Zalthir stumbles on his clothes and scales.",
+    "source_quote": "Its bite misses his AC 16 as the centipedes \"stumble on your clothes, your scales, on each other.\"",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The insects roll a 19 on the Dexterity save and dodge the brunt of Gyrgum's acid spray.",
+    "source_quote": "but the insects roll a 19 on the Dexterity save and dodge the brunt of the spray",
+    "subject": "Gyrgum's acid dodge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes a swarm for 10 damage.",
+    "source_quote": "Thorin strikes a swarm for 10 damage",
+    "subject": "Thorin's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin's strike leaves the swarm at 1 hit point.",
+    "source_quote": "leaving it at 1 hit point",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Action Surge.",
+    "source_quote": "then uses Action Surge",
+    "subject": "Thorin's Action Surge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A second swarm moves to cover Gyrgum and bites.",
+    "source_quote": "A second swarm moves to cover Gyrgum and bites",
+    "subject": "Gyrgum bitten",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The swarm's bite roll of 13 falls short of Gyrgum's AC 14.",
+    "source_quote": "but its roll of 13 falls just short of his AC 14",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two additional swarms emerge, one initially hidden under Pelek's token.",
+    "source_quote": "Two additional swarms emerge from the surrounding fungi, one of them initially hidden under Pelek's token",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A nature check establishes that the swarms are not infinite.",
+    "source_quote": "A nature check establishes, through Daz, that the swarms are not infinite",
+    "subject": "Nature check result",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek stops mid-sentence while starting to tell a ghost story.",
+    "source_quote": "Pelek starts to tell a ghost story about a group of adventurers, then stops mid-sentence",
+    "subject": "Pelek stops storytelling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes off the swarm covering him.",
+    "source_quote": "Zalthir finishes off the swarm covering him",
+    "subject": "Zalthir kills swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves at half speed through difficult terrain to engage another cluster.",
+    "source_quote": "then moves at half speed through the difficult terrain to engage another cluster",
+    "subject": "Zalthir moves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches for 10 damage.",
+    "source_quote": "punching for 10 damage",
+    "subject": "Zalthir's punch damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses Toll the Dead on a wounded swarm for 6 damage.",
+    "source_quote": "Daz uses Toll the Dead on a wounded swarm for 6 damage",
+    "subject": "Daz's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's hand axe hits for 4 damage.",
+    "source_quote": "His hand axe hits (15) for 4 damage",
+    "subject": "Gyrgum's axe hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace swing misses entirely with a roll of 7.",
+    "source_quote": "and his mace swing misses entirely (7)",
+    "subject": "Gyrgum's mace miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin adds a superiority die to an attack but still fails to land the blow.",
+    "source_quote": "Thorin attempts a tactical strike, adding a superiority die to a missed attack, but still fails to land the blow",
+    "subject": "Thorin's tactical strike",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "type": "npc",
+    "fact": "Voosbur tells Thorin that he guesses Thorin did not want to join the party.",
+    "source_quote": "Voosbur remarked, \"Hey, man, I guess you didn't want to join the party. I got to go now.\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Voosbur and the other infected Myconids step through a spore cloud and vanish.",
+    "source_quote": "He and the rest of the infected Myconids gathered at a spore cloud among the fungal growths and stepped through it, vanishing entirely.",
+    "subject": "Myconid departure",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Myconids travel through a vast fungal network connecting hidden places in the Underdark.",
+    "source_quote": "They were traveling through some vast fungal network that connected the hidden places of the Underdark.",
+    "subject": "spore network",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest and rises to fifth level.",
+    "source_quote": "The party took a long rest, recovering their strength (and losing Aid's temporary hit points) and reflecting on everything they had seen and learned. They rose to fifth level",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reaches fifth level and gains the Fireball spell.",
+    "source_quote": "They rose to fifth level, and Daz finally gained Fireball.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's longsword is now +8 to hit and he gains an extra attack.",
+    "source_quote": "Thorin's longsword is now +8 to hit, and he gains an extra attack.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin declines to follow Voosbur through the spore network.",
+    "source_quote": "Thorin declines to follow.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "If Thorin had accepted Zuggtmoy's gift, he would have gained the ability to travel the spore network but faced a Wisdom saving throw loop that could trap him in euphoric bliss.",
+    "source_quote": "the ability to travel the spore network, but at the cost of potentially falling into euphoric, uncontrollable trip states... The cost would have been a Wisdom saving throw loop, triggered after a short or long rest, that could trap him \"in a euphoric bliss\" where he refuses to do anything.",
+    "subject": "Zuggtmoy's gift",
+    "quote_verified": false
+  },
+  {
+    "type": "date",
+    "fact": "Three days pass underground before the party reaches the surface.",
+    "source_quote": "Then, after three days underground, they made their way out of the Whorlstone Caverns.",
+    "subject": "time elapsed",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gates into the rest of Gracklstugh are sealed shut and guarded by Duergar in heavy armor.",
+    "source_quote": "The gates into the rest of Gracklstugh were sealed shut, guarded by grim-faced Duergar in heavy armor.",
+    "subject": "Gracklstugh gates",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow on the other side of the gates are on edge, creating high tension.",
+    "source_quote": "The drow on the other side were even more on edge than before, and the tension felt like a spark hovering over dry tinder.",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A Duergar guard named Gorglak blocks the party's path.",
+    "source_quote": "A particularly mean-looking guard named Gorglak stepped forward and blocked their path",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak states that none of the party are allowed in the city.",
+    "source_quote": "\"You, none of you are allowed. You should not be in here.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak demands to inspect the party's possessions for contraband.",
+    "source_quote": "He demanded to inspect all of their possessions for contraband.",
+    "subject": "contraband inspection demand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz offers to share some mushrooms, suggesting they might be the contraband Gorglak is looking for.",
+    "source_quote": "Daz offers to share some mushrooms, \"Maybe that's the contraband he's looking for.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

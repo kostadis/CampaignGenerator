@@ -1,0 +1,72 @@
+[
+  {
+    "type": "date",
+    "fact": "The party arrives at Neverlight Grove on the 5th day of the 2nd Tenday of the 29th year (029.05).",
+    "source_quote": "Arrival at Neverlight Grove 029.05",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party travels for several days to reach Neverlight Grove.",
+    "source_quote": "After days of travel, the party arrives at the bioluminescent mushroom forest",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is a vast cavern with bioluminescent mushrooms covering the floor, ceiling, and surrounding surfaces.",
+    "source_quote": "bioluminescent mushrooms covered every surface, floor to ceiling",
+    "subject": "Neverlight Grove structure",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party enters Neverlight Grove through a natural tunnel that is the only passage fit for easy travel.",
+    "source_quote": "The tunnel is the only passage fit for easy travel; the others are narrow fissures.",
+    "subject": "Neverlight Grove passage",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "There are two sovereigns of the grove: Phylo and Basidia.",
+    "source_quote": "The two sovereigns of the grove, Phylo and Basidia",
+    "subject": "sovereigns count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo refers to the Great Seeder using gendered pronouns ('she', 'her'), which is unusual for myconids who have no gender.",
+    "source_quote": "He praised a figure called the 'Great Seeder' ... kept calling the entity 'she' and 'her'",
+    "subject": "Phylo",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A previous group of 'softers' was taken to the Garden of Welcome and has not been seen since.",
+    "source_quote": "A previous group of 'softers' had accepted Phylo's hospitality and been taken to the Garden of Welcome. She had not seen them since",
+    "subject": "previous softer group",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Masters cannot be visited by the party until the following day.",
+    "source_quote": "the Circle of Masters will only be visited the following day",
+    "subject": "Circle of Masters availability",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 12 on an Arcana/Nature check, which improves to 23 with help.",
+    "source_quote": "Daz's Arcana/Nature check comes to 12, and 23 with help",
+    "subject": "Daz ability check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls an 18 on an insight check, noticing Basidia's discomfort.",
+    "source_quote": "Gyrgum's insight check of 18 catches Basidia looking uncomfortable at Phylo",
+    "subject": "Gyrgum insight check",
+    "quote_verified": true
+  }
+]

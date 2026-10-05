@@ -1,0 +1,317 @@
+[
+  {
+    "type": "location",
+    "fact": "The chamber is described as more of an office space or laboratory than a treasure lair.",
+    "source_quote": "not the kind of place you store your treasure",
+    "subject": "Council Lab",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found 170 gold pieces in the chamber.",
+    "source_quote": "found 170 gold pieces",
+    "subject": "170 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a baby rattle in the chamber.",
+    "source_quote": "found 170 gold pieces and one deeply puzzling object: a baby rattle",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle is heavier than any child could comfortably hold.",
+    "source_quote": "The rattle was heavier than any child could comfortably hold",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle is crafted from materials far too durable for an infant's toy.",
+    "source_quote": "crafted from materials far too durable for an infant's toy",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle bears the name of Clan Thrazgad.",
+    "source_quote": "it did bear the name of Clan Thrazgad",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a Duergar steelsmithing clan.",
+    "source_quote": "Clan Thrazgad, a Duergar steelsmithing clan",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle was made for a dragon hatchling to gnaw on.",
+    "source_quote": "this rattle had been made for a dragon hatchling to gnaw on",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum guessed that the rattle had been commissioned.",
+    "source_quote": "Gyrgum guessed it had been commissioned",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM confirmed that asking a Duergar smithing clan to make such an item is a very odd thing.",
+    "source_quote": "The DM agreed that was a very odd thing to ask of a Duergar smithing clan",
+    "subject": "DM confirms odd commission",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The reason the rattle ended up in the chamber and who commissioned it remains a mystery.",
+    "source_quote": "by whom, and why it had ended up in this chamber, remained a mystery",
+    "subject": "Rattle origin mystery",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "As a weapon, the rattle counts as a rock doing 1d4 damage.",
+    "source_quote": "As a weapon it would count as a rock, doing 1d4 damage",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle might interest a baby dragon.",
+    "source_quote": "It might interest a baby dragon",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle might sweeten a deal with Themberchaud.",
+    "source_quote": "sweeten a deal with Themberchaud",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle might serve as a distraction for some other creature.",
+    "source_quote": "or serve as a distraction for some other creature",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party tucked the rattle away, sensing it might prove useful as leverage or evidence.",
+    "source_quote": "The party tucked it away, sensing it might prove useful as leverage or evidence",
+    "subject": "Storing the rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to return the dragon egg to Gartokkar and the Keepers of the Flame.",
+    "source_quote": "decides to return the dragon egg to Gartokkar and the Keepers of the Flame",
+    "subject": "Dragon egg decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to withhold the incriminating list of names from Errde.",
+    "source_quote": "chooses to withhold the incriminating list of names from Errde",
+    "subject": "Incineration of names",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states they will selectively respond without saying the existence of the list.",
+    "source_quote": "We will selectively respond without saying the existence of the list",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The planned story for Gartokkar is that they had a tough battle against cultists who are all dead, recovered the egg, and have no evidence of who was behind it.",
+    "source_quote": "tough battle against cultists who are all dead, the egg recovered, and \"no evidence\" of who was behind it",
+    "subject": "Story for Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes they can go tell the assassin gangster he's off the hook.",
+    "source_quote": "Thorin notes they can go tell the assassin gangster he's off the hook",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "An assassin gangster is involved with the party's current political situation.",
+    "source_quote": "tell the assassin gangster he's off the hook",
+    "subject": "Assassin gangster",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM stated that the party's resolution surprised him.",
+    "source_quote": "The DM said later that the party's resolution surprised him",
+    "subject": "DM reaction to resolution",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir describes himself as trying to play a good character this time.",
+    "source_quote": "Zalthir is \"trying to play a good character this time\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes himself as having zero filter and being chaotic neutral, out for himself.",
+    "source_quote": "Thorin has \"zero filter\" and is chaotic neutral, out for himself",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes himself as trying to be neutral good.",
+    "source_quote": "Gyrgum is \"trying to be neutral good\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir insists on looting the corpses and checking the shrine for magic items.",
+    "source_quote": "Zalthir insists on looting the corpses and checking the shrine for magic items",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks if there are TPS reports.",
+    "source_quote": "Zalthir asks whether there are \"TPS reports\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The part where the fist would grip is made of a much stronger material than any baby toy.",
+    "source_quote": "The part where the fist would grip is made of a much stronger material than any baby toy",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle has no gems and no precious-metal inlay.",
+    "source_quote": "It has no gems and no precious-metal inlay",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle could be of artistic significance to the right person.",
+    "source_quote": "It could be of artistic significance to the right person",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle could be a gift to a dragon expecting hatchlings.",
+    "source_quote": "a gift to a dragon expecting hatchlings",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party looted the area and found 170 gold pieces and a mysterious, heavy baby rattle.",
+    "source_quote": "The party loots the area, finding 170 gold pieces and a mysterious, heavy baby rattle",
+    "subject": "Looting results",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realized the rattle was crafted by Clan Thrazgad and likely intended for a dragon to chew on.",
+    "source_quote": "the party realises the rattle was crafted by Clan Thrazgad and was likely intended for a dragon to chew on",
+    "subject": "Rattle realization",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests the rattle could have been commissioned.",
+    "source_quote": "Gyrgum suggests the rattle could have been commissioned",
+    "subject": "Gyrgum's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM remarks that it is a very odd thing to commission.",
+    "source_quote": "The DM: \"it's a very odd thing to commission\"",
+    "subject": "DM's comment on commission",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses using the rattle for blackmail or political leverage.",
+    "source_quote": "The party discusses using the rattle for blackmail or political leverage",
+    "subject": "Political leverage discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to leave the city as quietly as possible.",
+    "source_quote": "ultimately decides to leave the city as quietly as possible",
+    "subject": "Decision to leave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The DM raises the idea of staging a coup against the Deepking.",
+    "source_quote": "The DM raises staging a coup against the Deepking",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM raises the idea of bringing everything to the Deepking so he goes after everyone at once.",
+    "source_quote": "or bringing everything to the Deepking so he goes after everyone at once",
+    "subject": "Deepking involvement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests they should move on from the town and leave things as ambiguous as possible.",
+    "source_quote": "Thorin: \"I think we should move on from this town and leave things as ambiguous as we can\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks whether it would be useful to plant the rattle on anybody.",
+    "source_quote": "Gyrgum asks whether it would be useful to plant the rattle on anybody",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir says to keep the rattle in their back pocket in case they ever decide to destroy the town.",
+    "source_quote": "Zalthir says to keep it \"in our back pocket\" in case they ever decide to destroy the town",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum laments that he should build a table of all the factions.",
+    "source_quote": "Gyrgum laments he should build a table of all the factions",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that the DM either has a table or the AI has captured it regarding the factions.",
+    "source_quote": "Zalthir notes that given how often the DM has repeated it, \"he either has a table or the AI has captured it\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  }
+]

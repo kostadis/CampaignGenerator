@@ -1,0 +1,128 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldeth warned that the evidence of the harvest would be plain to any Drow tracker.",
+    "source_quote": "Eldeth warned that the evidence of their harvest would be plain to any Drow tracker worth their salt",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir devised a solution to make the harvest look like a battle.",
+    "source_quote": "Zalthir devised a clever solution",
+    "subject": "crystal destruction plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses a shroud of magical darkness.",
+    "source_quote": "Under the cover of his shroud of magical darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party smashed the remaining crystals.",
+    "source_quote": "the party smashed the remaining crystals",
+    "subject": "crystal smashing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party scattered destruction to make the area look like a battle site.",
+    "source_quote": "They scattered destruction across the area so it would look like a battle had taken place rather than a careful harvest",
+    "subject": "decoy creation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth masked the party's tracks.",
+    "source_quote": "Eldeth then used her considerable skill to mask the party's tracks",
+    "subject": "track masking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Drow pursuers were left confused by the masked tracks.",
+    "source_quote": "the Drow pursuers who had been closing in were left with little more than confusion",
+    "subject": "Drow pursuit delayed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith was explaining the crystals before the party encountered the prisoners.",
+    "source_quote": "while Sarith was still explaining the crystals",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is a man found huddled in the dark with Baedora.",
+    "source_quote": "a man and a woman in tattered clothes, hollow-eyed with hunger and fear",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is a woman found huddled in the dark with Fuurm.",
+    "source_quote": "a man and a woman in tattered clothes, hollow-eyed with hunger and fear",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a drow.",
+    "source_quote": "the moment he spotted Daz, a drow",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz spotted symbols marking Fuurm and Baedora as former Drow slaves.",
+    "source_quote": "Daz rolled a 22 on Investigation and spotted the telltale symbols marking them as former prisoners (slaves) of the Drow",
+    "subject": "prisoner identification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm raised a glowing crystal as a weapon upon seeing Daz.",
+    "source_quote": "The man, Fuurm, raised a glowing crystal like a weapon the moment he spotted Daz",
+    "subject": "Fuurm's threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm declared that he and Baedora were not going back to the Drow.",
+    "source_quote": "he declared that he and his companion, Baedora, were not going back",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum thought the harvesting plan sounded like a great prank.",
+    "source_quote": "Gyrgum is eager (\"they sound like a great prank\")",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth noted that cutting crystals leaves obvious gaps and costs them mechanically.",
+    "source_quote": "Eldeth explains that cutting the crystals out leaves obvious gaps showing someone was harvesting, and that it will cost them \"because the mechanics said so\"",
+    "subject": "Eldeth",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum joined in smashing the crystals.",
+    "source_quote": "Gyrgum is allowed to join the smashing",
+    "subject": "Gyrgum's participation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collected twelve quartz crystals, referred to as light crystals.",
+    "source_quote": "The party collects twelve quartz crystals in total, which the GM tells them to just call \"light crystals\"",
+    "subject": "light crystals",
+    "quote_verified": false
+  }
+]

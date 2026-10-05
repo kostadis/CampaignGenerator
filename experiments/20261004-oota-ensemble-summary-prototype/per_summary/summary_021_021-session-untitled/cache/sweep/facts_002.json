@@ -1,0 +1,457 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a red dragon who would likely burn the city to cinders if he learned of the egg.",
+    "source_quote": "The red dragon hungered for information and would likely burn the city to cinders if he learned of the egg.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stated he is a big fan of not pissing off red dragons.",
+    "source_quote": "Gyrgum was \"a big fan of not pissing off red dragons.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the leader of the Stone Guard.",
+    "source_quote": "The Stone Guard's leader wanted proof that the Council of Savants was behind the city's corruption.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would march on the king if she learned the full truth about the king's support of the Assassin's Guild.",
+    "source_quote": "She would almost certainly march on the king himself if she learned the full truth",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would try to kill all the derro if she were told only about their demonic dealings.",
+    "source_quote": "If she were told only about the derro and their demonic dealings, she would try to kill all the derro.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are led by Gartokkar and are close to the king.",
+    "source_quote": "Led by Gartokkar and close to the king",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar leads the Keepers of the Flame.",
+    "source_quote": "Led by Gartokkar and close to the king",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame wanted their egg returned.",
+    "source_quote": "they simply wanted their egg returned",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame were looking for an excuse to go genocidal on the derro.",
+    "source_quote": "They were also looking for an excuse to go genocidal on the derro.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame stated they would pursue the party to the end of time if the egg was not returned.",
+    "source_quote": "They had made it abundantly clear they would pursue the party \"to the end of time\" if it was not returned.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The assassin gangster is a man who wanted to be scrubbed from the assassins' list and was dealt with by the party.",
+    "source_quote": "The party had already dealt with the man who wanted to be scrubbed from the assassins' list.",
+    "subject": "The assassin gangster",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM noted that the party had enough information to turn the whole city into a bloodbath.",
+    "source_quote": "The DM noted that the party had enough information to turn the whole city into a bloodbath.",
+    "subject": "DM note on information",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expressed a desire for an option where nobody goes nuts and tries to kill everybody.",
+    "source_quote": "Gyrgum wanted \"an option where nobody goes nuts and tries to kill everybody.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "New leadership in the city would be friendlier to the gnome kingdoms.",
+    "source_quote": "new leadership would be far friendlier to the gnome kingdoms",
+    "subject": "gnome kingdoms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The current king is blocking the trade of the gnome kingdoms.",
+    "source_quote": "whose trade the current king was blocking",
+    "subject": "the king",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asked which faction was most pro-gnome.",
+    "source_quote": "Zalthir asked which faction was most pro-gnome.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is identified as the faction most pro-gnome.",
+    "source_quote": "The answer was Clan Ironhead",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is a weaponsmithing clan.",
+    "source_quote": "a weaponsmithing clan",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead would happily deal with the gnomes if the Deepking were removed.",
+    "source_quote": "that would happily deal with the gnomes if the Deepking were removed.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a -1 in Nature.",
+    "source_quote": "Gyrgum had only a \u22121 in Nature",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled his dragon check with Religion instead of Nature.",
+    "source_quote": "so he rolled his dragon check with Religion instead",
+    "subject": "dragon check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled an 18 on the Religion check.",
+    "source_quote": "for an 18",
+    "subject": "Religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The DM consulted Appendix A to determine the hatching time of the egg.",
+    "source_quote": "After checking Appendix A",
+    "subject": "Appendix A",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled that the egg would hatch of its own accord in forty-four weeks.",
+    "source_quote": "the DM ruled that the egg would hatch of its own accord in forty-four weeks.",
+    "subject": "egg hatching",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stated there is plenty of time for the party to give the egg to someone else.",
+    "source_quote": "That left, in Gyrgum's words, \"plenty of time for us to pop potato it to someone else.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Lesser restoration would not lift the demonic corruption on the egg.",
+    "source_quote": "Lesser restoration would not lift the demonic corruption",
+    "subject": "lesser restoration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Removing the demonic corruption would take research.",
+    "source_quote": "and removing it would take research.",
+    "subject": "research",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a follower of Bahamut.",
+    "source_quote": "As a follower of Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum resolved to consult his superiors about demonic dragons.",
+    "source_quote": "Gyrgum resolved to consult his superiors about demonic dragons.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM warned that Gyrgum's superiors would give him 12 contradictory opinions.",
+    "source_quote": "The DM warned they would give him \"12 contradictory opinions.\"",
+    "subject": "Gyrgum's superiors",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wished aloud for a little baby dragon of their own.",
+    "source_quote": "Thorin wished aloud for a little baby dragon of their own.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a dragonborn.",
+    "source_quote": "That landed badly with Zalthir the dragonborn standing right there.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin apologised to Zalthir for the wish.",
+    "source_quote": "Thorin apologised",
+    "subject": "Thorin's apology",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin said he hadn't realised the wish came out the way it did.",
+    "source_quote": "saying he hadn't realised it came out that way.",
+    "subject": "Thorin's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose quiet pragmatism over dramatic upheaval.",
+    "source_quote": "After much deliberation, the party chose quiet pragmatism over dramatic upheaval.",
+    "subject": "party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to return the egg to Gartokkar.",
+    "source_quote": "They would return the egg to Gartokkar.",
+    "subject": "egg return plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar would probably let the party leave the city in exchange for the egg.",
+    "source_quote": "Gartokkar would probably let them leave the city in exchange",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The egg might be parlayed into rights to buy the minerals the gnomes wanted.",
+    "source_quote": "the egg might be parlayed into rights to buy the minerals the gnomes wanted.",
+    "subject": "trade negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to tell the Keepers they had found no evidence of who was behind the theft.",
+    "source_quote": "They would tell the Keepers they had found no evidence of who was behind the theft.",
+    "subject": "lie to Keepers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Telling the Keepers the egg was demonic and letting them decide was floated along the way.",
+    "source_quote": "Telling them the egg was demonic, and letting them decide, had been floated along the way.",
+    "subject": "alternative plan floated",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum admitted that in a story everybody dying is kind of fun.",
+    "source_quote": "Gyrgum admitted some disappointment (\"in a story, everybody dying is kind of fun\").",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum advocated simply giving the egg back due to too many real-world parallel tracks.",
+    "source_quote": "But with \"too many real-world parallel tracks,\" he advocated simply giving the egg back.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The incriminating list connects the Deepking to the Assassin's Guild.",
+    "source_quote": "The incriminating list connecting the Deepking to the Assassin's Guild",
+    "subject": "incriminating list",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The incriminating list would stay hidden from Errde's volatile temper.",
+    "source_quote": "would stay hidden from Errde's volatile temper.",
+    "subject": "list suppression",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stated they should meet responsibilities but not go above and beyond or light shit on fire.",
+    "source_quote": "Thorin summed up the approach: \"meet our responsibilities, but don't go above and beyond and don't, you know, light shit on fire.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Clan Ironhead was the one faction Zalthir hoped to leave in a stronger position.",
+    "source_quote": "Clan Ironhead was the one faction Zalthir hoped to leave in a stronger position.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg was corrupted by a demon that possessed it.",
+    "source_quote": "it was corrupted by a demon that possessed it",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM stated the egg might be possessed by a demon.",
+    "source_quote": "It \"might be possessed by a demon. Details.\"",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz noted they hold documentation on the Assassin's Guild that its owners don't know about.",
+    "source_quote": "Daz notes they hold documentation on the Assassin's Guild that its owners don't know about",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The owners of the Assassin's Guild documentation think it is burned because the party burned the table.",
+    "source_quote": "\"because we burn the table and they think it's burned.\"",
+    "subject": "table burning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asked how the party would benefit from regime change.",
+    "source_quote": "Gyrgum asks, \"how would we benefit?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir concluded they should not enrage the dragon.",
+    "source_quote": "Zalthir concludes they should not enrage the dragon.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM stated that enraging the dragon probably burns the city to the ground.",
+    "source_quote": "The DM agrees: \"Enraging the Dragon probably burns the city to the ground.\"",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is described as too fat and lazy.",
+    "source_quote": "Themberchaud is \"too fat and lazy.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "It would take Themberchaud years to realise the party isn't coming back.",
+    "source_quote": "It would take him years to realise the party isn't coming back.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Leaving without the Stone Guard's knowledge would likely bring the drow after them.",
+    "source_quote": "Leaving without the Stone Guard's knowledge would likely bring the drow after them.",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers wanted to hatch the egg to have a dragon of their own to take on the other dragon.",
+    "source_quote": "The Keepers wanted to hatch the egg to have a dragon of their own to take on the other dragon.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled a 12 on the Nature check.",
+    "source_quote": "He first rolled Nature (a 12, with a \u22121 modifier)",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a +5 modifier in Religion.",
+    "source_quote": "then switched to Religion (+5)",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Appendix A states the egg will hatch in 44 weeks of its own accord.",
+    "source_quote": "the DM consulted Appendix A: the egg \"will hatch in 44 weeks of its own accord.\"",
+    "subject": "Appendix A",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The DM described the Keepers of the Flame as a slightly psychotic group of people who are planning to kill a red dragon and don't know what they're about to unleash.",
+    "source_quote": "\"a slightly psychotic group of people who are planning to kill a red dragon and don't know what they're about to unleash.\"",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM stressed that the city is not a happy-go-lucky city.",
+    "source_quote": "The DM stressed that this is \"not a happy-go-lucky city\"",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The city keeps part of its population enslaved.",
+    "source_quote": "it keeps part of its population enslaved",
+    "subject": "the city",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The city captures slaves.",
+    "source_quote": "captures slaves",
+    "subject": "the city",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The city is run by a mad king.",
+    "source_quote": "\"is run by a mad king.\"",
+    "subject": "the city",
+    "quote_verified": true
+  }
+]

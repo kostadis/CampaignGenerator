@@ -1,0 +1,219 @@
+[
+  {
+    "type": "location",
+    "fact": "The group is in a chamber with a ten-foot ceiling within the flooding complex.",
+    "source_quote": "the chamber\u2019s ten-foot ceiling offered little advantage",
+    "subject": "Flooding Complex 034.08",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin mentioned his possession of a potion of spider climb.",
+    "source_quote": "Thorin mentioned his potion of spider climb",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin has a potion of spider climb.",
+    "source_quote": "Thorin mentioned his potion of spider climb",
+    "subject": "potion of spider climb",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposes a strategy using the Shape Water spell to create air pockets.",
+    "source_quote": "Daz proposed a more promising use of Shape Water: redirect the water inside five-foot cubes to create pockets containing no water",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz redirects water inside five-foot cubes to create pockets containing no water.",
+    "source_quote": "redirect the water inside five-foot cubes to create pockets containing no water",
+    "subject": "Shape Water application",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz maintains two effects at once to create a moving, ten-foot-long refuge.",
+    "source_quote": "By maintaining two effects at once, Daz could create a moving, ten-foot-long refuge",
+    "subject": "air pocket movement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he does not breathe.",
+    "source_quote": "\u201cOh, that\u2019s totally fine. I don\u2019t breathe.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool promises to grab and digest any party members who perish.",
+    "source_quote": "\u201cIf any of you were to perish, I will absolutely grab you and digest you.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool agrees to wait long enough for surviving party members to attempt a resurrection.",
+    "source_quote": "he agreed to wait long enough for the surviving party members to attempt a resurrection",
+    "subject": "resurrection negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool expresses gladness to help.",
+    "source_quote": "says, \u201cI\u2019m always glad to help.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool causes more of the ceiling to collapse.",
+    "source_quote": "Glabbagool caused more of the ceiling to collapse",
+    "subject": "ceiling collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ceiling collapse doubles the volume of water entering the complex.",
+    "source_quote": "doubling the volume of water entering the complex",
+    "subject": "water influx doubled",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The breach reveals the diverted underground river that was feeding the flood.",
+    "source_quote": "revealed the diverted underground river that was feeding the flood",
+    "subject": "diverted underground river",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party swims upward for approximately thirty feet through the opened passage.",
+    "source_quote": "swam upward for approximately thirty feet",
+    "subject": "swimming upward",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party breaks the surface in a large cavern.",
+    "source_quote": "They broke the surface in a large cavern",
+    "subject": "large cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar declares that the escape did not end in tears.",
+    "source_quote": "Jimjar immediately declared, \u201cSee, it did not end in tears.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin maintains that shenanigans occurred.",
+    "source_quote": "Thorin maintained that there had unquestionably been shenanigans",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin promises Jimjar ten silver pieces once they emerge from Glabbagool.",
+    "source_quote": "agreed to settle the wager by promising Jimjar ten of the silver pieces once they emerged from Glabbagool",
+    "subject": "wager settled",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin owes Jimjar ten silver pieces as the result of a wager.",
+    "source_quote": "promising Jimjar ten of the silver pieces once they emerged from Glabbagool",
+    "subject": "ten silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar reframes the detour as a shortcut to Blingdenstone.",
+    "source_quote": "Jimjar then reframed the entire detour as a convenient shortcut to Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asserts that he found the shortcut rather than getting the party lost.",
+    "source_quote": "\u201cJust so we\u2019re on the same page, I did not get us lost. That\u2019s the important thing is that I found us a shortcut, right?\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is currently on the route to Blingdenstone.",
+    "source_quote": "The cavern places the group conveniently on the route to Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gains a level and reaches level 6.",
+    "source_quote": "Their successful escape also brought them to level 6",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains another third-level spell slot upon reaching level 6.",
+    "source_quote": "Daz gains another third-level spell slot",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains an additional known spell upon reaching level 6.",
+    "source_quote": "Daz gains another third-level spell slot, an additional known spell",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains the Sculpt Spells feature upon reaching level 6.",
+    "source_quote": "and the Sculpt Spells feature",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group notes that Sculpt Spells permits effects such as Fireball to spare selected allies.",
+    "source_quote": "The group notes that Sculpt Spells permits effects such as Fireball to spare selected allies caught within the area",
+    "subject": "Sculpt Spells noted",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party retains Glabbagool as a new companion.",
+    "source_quote": "The party retains Glabbagool as a new companion",
+    "subject": "the party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool becomes a companion of the party.",
+    "source_quote": "The party retains Glabbagool as a new companion",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air pockets are described as a tight fit for the entire group.",
+    "source_quote": "though it is a tight fit for the entire group",
+    "subject": "air pockets",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes that the spell has effectively renamed Daz \u201cMoses.\u201d",
+    "source_quote": "The party jokes that the spell has effectively renamed Daz \u201cMoses.\u201d",
+    "subject": "Moses joke",
+    "quote_verified": true
+  }
+]

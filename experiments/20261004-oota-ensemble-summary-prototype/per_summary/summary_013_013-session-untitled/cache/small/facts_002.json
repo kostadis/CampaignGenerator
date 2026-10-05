@@ -1,0 +1,156 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin made a successful check revealing that the stone giant had gone mad.",
+    "source_quote": "Thorin drew on his deep familiarity with giant-kind and made a successful check (a 16) that revealed the terrible truth: this creature had not chosen violence but had gone mad.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Stone giants are unforgiving toward those who kill their kind but forgiving of those who spare them.",
+    "source_quote": "Stone giants are particularly unforgiving toward those who kill their kind, and particularly forgiving of those who spare them.",
+    "subject": "Stone Giants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin urged the party and the duergar militia to bring the giant down without killing him.",
+    "source_quote": "Thorin urged the party and the duergar militia alike to bring the giant down without killing him.",
+    "subject": "Thorin urges non-lethal force",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party switched to non-lethal weapon attacks.",
+    "source_quote": "The party switched to non-lethal weapon attacks",
+    "subject": "Party switches tactics",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rihuud was worn down from 34 hit points to 8 by the party's non-lethal attacks.",
+    "source_quote": "wore the giant down from 34 hit points to 8.",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacked the giant with a focus point.",
+    "source_quote": "Zalthir attacked with a focus point",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attacked with a critical hit and used Action Surge.",
+    "source_quote": "Thorin followed with his crit and Action Surge",
+    "subject": "Thorin attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum charged in with his mace.",
+    "source_quote": "Gyrgum charged in with his mace.",
+    "subject": "Gyrgum charges",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum moved out of the darkness into melee range to strike the giant.",
+    "source_quote": "He moves out of the darkness into melee range to strike with his mace.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace hit the giant for 1 damage.",
+    "source_quote": "Gyrgum's mace hits for 1 damage.",
+    "subject": "Gyrgum mace hit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum used the flat of his hand axe for two-weapon fighting.",
+    "source_quote": "He then uses two-weapon fighting with the flat of his hand axe",
+    "subject": "hand axe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum missed with his hand axe.",
+    "source_quote": "and misses.",
+    "subject": "Gyrgum axe miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum recalls Gygax's interpretation that 100 hit points on a rhinoceros differs from 100 hit points on a human fighter.",
+    "source_quote": "\"100 hit points on a rhinoceros is different from 100 hit points on a human fighter.\"",
+    "subject": "Gygax interpretation recalled",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempted to intimidate the duergar to spare the giant's life because his intimidation modifier was +1 compared to -1 on other skills.",
+    "source_quote": "He goes with intimidation because his modifier there is +1, versus -1 on the others.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin failed to persuade or intimidate the duergar militia to spare the giant.",
+    "source_quote": "Thorin attempts to intimidate or persuade the duergar to stay their hand and spare the giant's life, but rolls poorly and fails.",
+    "subject": "Thorin fails plea",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia ignored Thorin's plea and delivered the killing blow to the giant.",
+    "source_quote": "The militia, bound by their rigid code and unable to tell friend from foe inside Zalthir's magical darkness that blanketed part of the street, delivered the killing blow.",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rihuud is dead, killed by the duergar militia.",
+    "source_quote": "The giant, later identified as Rihuud, crumpled to the stone floor of the city.",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin spoke funeral words over Rihuud's body to save face with the stone giants.",
+    "source_quote": "Thorin spoke funeral words over the body to save face in case the giants took offense",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical darkness lifted after the giant was killed.",
+    "source_quote": "and the darkness lifted.",
+    "subject": "darkness lifts",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The duergar soldiers shrank back to their normal size with a popping sound as combat ended.",
+    "source_quote": "The duergar soldiers shrink back to their normal size with the \"usual popping sound\" as combat ends and the area is cleared.",
+    "subject": "duergar soldiers",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The giant's body crumpled onto the stone floor of the city.",
+    "source_quote": "crumpled to the stone floor of the city.",
+    "subject": "city",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The duergar soldiers' reversion to normal size occurred as combat ended and the area was cleared.",
+    "source_quote": "as combat ends and the area is cleared.",
+    "subject": "combat end",
+    "quote_verified": true
+  }
+]

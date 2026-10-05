@@ -1,0 +1,1136 @@
+[
+  {
+    "type": "faction",
+    "fact": "Five Derro cultists stand on a raised platform chanting a discordant chorus.",
+    "source_quote": "five Derro cultists stood upon it, chanting in a discordant, maddening chorus",
+    "subject": "Derro",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "A grotesque stone giant statue is sprouting a second head that reshapes with each verse.",
+    "source_quote": "from which a second head was visibly sprouting and reshaping itself with each unholy verse",
+    "subject": "stone giant statue",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A restless death dog paces in a cage near the platform's edge.",
+    "source_quote": "A restless death dog paced in a cage near the platform's edge",
+    "subject": "death dog",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga is a massive female ettin lurking in a fungal alcove.",
+    "source_quote": "A massive female ettin named Grula-Munga lurked silently in a fungal alcove",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Narrak is a member of the Council of Savants.",
+    "source_quote": "Narrak, the lead spellcaster, is a member of the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The heretical texts are damning enough to bring down the entire Council of Savants.",
+    "source_quote": "The heretical texts they had already recovered were damning enough to bring down the entire Council for all time",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is the lead spellcaster of the cult.",
+    "source_quote": "Narrak, the lead spellcaster, is a member of the Council of Savants",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak has 70 hit points.",
+    "source_quote": "Narrak himself had 70",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is out of first-level spells.",
+    "source_quote": "Daz was out of first-level spells",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is basically out of spells.",
+    "source_quote": "Gyrgum admitted he was \"basically out of spells\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is a lover of giants who would want to stop the manipulation of giant physiology.",
+    "source_quote": "Thorin, a lover of giants, would want to put a stop to cultists manipulating giant physiology",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A two-headed stone giant rampaged through the market four days ago in game time.",
+    "source_quote": "the two-headed stone giant that had rampaged through the market only four days earlier in game time",
+    "subject": "market rampage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cavern contains a raised platform, flickering campfires, and a fungal alcove.",
+    "source_quote": "The party crept into a vast, foul-smelling cavern reeking of brimstone and fungi, where flickering campfires cast an eerie glow over a raised platform at the center.",
+    "subject": "foul-smelling cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cavern contains locked chests scattered about it.",
+    "source_quote": "The locked chests scattered about the cavern hinted at valuable treasures",
+    "subject": "foul-smelling cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A massive female ettin lurks in a fungal alcove.",
+    "source_quote": "A massive female ettin named Grula-Munga lurked silently in a fungal alcove",
+    "subject": "fungal alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro chant around a pulsing ritual circle of sickly green light.",
+    "source_quote": "chanting in a discordant, maddening chorus around a pulsing ritual circle of sickly green light",
+    "subject": "ritual circle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party previously recovered a trove of heretical Demogorgon texts.",
+    "source_quote": "They had already recovered a trove of heretical Demogorgon texts",
+    "subject": "Demogorgon texts recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is inspired by Bahamut on a second religion roll of 21.",
+    "source_quote": "On a second religion roll of 21, Gyrgum was inspired by Bahamut",
+    "subject": "Gyrgum's inspiration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bahamut is referenced as inspiring Gyrgum's insight about the curse.",
+    "source_quote": "On a second religion roll of 21, Gyrgum was inspired by Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the Stonespeaker who could reverse the curse.",
+    "source_quote": "bringing one of the corrupted statues to Stonespeaker Hgraam might allow him to reverse the curse",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party uses a spell to realize the statues are two-foot, 100-pound miniatures.",
+    "source_quote": "The table also spent a spell convinced the statues were life-sized, until the DM clarified they were two-foot, 100-pound miniatures.",
+    "subject": "Statue size realization",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone giant statues are two feet tall and weigh about 100 pounds.",
+    "source_quote": "the statues were two-foot, 100-pound miniatures",
+    "subject": "stone giant statues",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Ordinary Derro have around 13 hit points.",
+    "source_quote": "the ordinary Derro had around 13 hit points",
+    "subject": "ordinary Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two tougher Derro have 27 hit points.",
+    "source_quote": "two tougher ones had 27",
+    "subject": "tougher Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to retreat to a safer location to recover magical strength.",
+    "source_quote": "The party decides to retreat to a safer location to recover their magical strength before confronting the cultists",
+    "subject": "retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pins Narrak's location on the map before retreating.",
+    "source_quote": "pins Narrak's location on the map",
+    "subject": "Narrak's location pinned",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party confirms the cult is the same one behind the demonic infusion of the dragon egg.",
+    "source_quote": "they confirmed this was the same cult behind the demonic infusion of the dragon egg",
+    "subject": "demonic infusion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party retreats to Buppido's former resting place, which is a secluded alcove.",
+    "source_quote": "retreated to Buppido's former resting place, a secluded alcove where Buppido had once sheltered",
+    "subject": "Buppido's former resting place",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido's former resting place is a secluded alcove where he had once sheltered without being disturbed.",
+    "source_quote": "Buppido's former resting place, a secluded alcove where Buppido had once sheltered without being disturbed",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool presses the party to go find his friend Rumpadump.",
+    "source_quote": "Stool pressed them to go find his friend Rumpadump first",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is referenced by Stool as his friend whom they should find.",
+    "source_quote": "Stool pressed them to go find his friend Rumpadump first",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Stool claims that the Myconids are friends and no one needs to be killed by them.",
+    "source_quote": "He insisted that the Myconids and their spore-zombie Quaggoths were friends and that no one needed to be killed",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stool claims that the spore-zombie Quaggoths are friends and no one needs to be killed by them.",
+    "source_quote": "He insisted that the Myconids and their spore-zombie Quaggoths were friends and that no one needed to be killed",
+    "subject": "spore-zombie Quaggoths",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests sleeping on the decision before moving on Rumpadump.",
+    "source_quote": "when Gyrgum suggested sleeping on it",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool falls asleep and is carried along by the party.",
+    "source_quote": "Stool simply fell asleep and was carried along",
+    "subject": "Stool falls asleep",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost currently inhabiting the body of an assassin.",
+    "source_quote": "Pelek is currently inhabiting the body of an assassin",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek notes that the party has completed a full circle.",
+    "source_quote": "he noted that the party had \"completed a full circle\"",
+    "subject": "Pelek",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek asks whether they will ever leave these caverns.",
+    "source_quote": "remarks that the party has \"completed a full circle\" and asks whether they will ever leave these caverns",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek requests to be tied up while he sleeps to prevent the original host's consciousness from resurfacing.",
+    "source_quote": "politely requested to be tied up while he slept, worried that the original host's consciousness might resurface and overwhelm him",
+    "subject": "Pelek requests to be tied",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek notes that he hasn't slept in a body in ages.",
+    "source_quote": "noting that he hadn't slept in a body in ages",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek specifically asks for silk rope rather than hemp rope for his restraints.",
+    "source_quote": "Pelek asked specifically for silk, noting that he hadn't slept in a body in ages",
+    "subject": "Pelek chooses silk rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek requests silk rope to be used for his restraints.",
+    "source_quote": "Pelek asked specifically for silk, noting that he hadn't slept in a body in ages",
+    "subject": "silk rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum offers hemp rope as an option for tying Pelek.",
+    "source_quote": "When Gyrgum offered hemp or silk rope",
+    "subject": "hemp rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz recalls information about possession stability from his textbook The Undead Horde.",
+    "source_quote": "Daz, drawing on his textbook The Undead Horde, recalled that the possession was actually stable unless the host was knocked unconscious",
+    "subject": "The Undead Horde",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls from his textbook that the possession is stable unless the host is knocked unconscious.",
+    "source_quote": "Daz, drawing on his textbook The Undead Horde, recalled that the possession was actually stable unless the host was knocked unconscious",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz chooses not to share the stability fact, reasoning that keeping the newcomer bound is good policy.",
+    "source_quote": "He said nothing, reasoning that keeping an untrustworthy newcomer bound was simply good policy",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cites Buppido as the source of the lesson that it is good policy to keep newcomers bound.",
+    "source_quote": "a lesson hard-learned from their time with Buppido",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir proposes that the party should always tie up new members.",
+    "source_quote": "\"Always tie up new members,\" Zalthir proposed, and the party agreed",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to the policy of always tying up new members.",
+    "source_quote": "\"Always tie up new members,\" Zalthir proposed, and the party agreed",
+    "subject": "party adopts policy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir cites Buppido as the example of a new member who killed people.",
+    "source_quote": "citing Buppido, who \"killed people\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar offers a wager on the knots tied around Pelek.",
+    "source_quote": "Jimjar, ever the opportunist, offered a wager on the knots",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum bets five gold pieces that Pelek will not escape his bonds by morning.",
+    "source_quote": "Gyrgum was confident in his work and bet five gold pieces that Pelek would not escape his bonds by morning",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum collects his winnings from Jimjar after the party wakes up and Pelek remains tied.",
+    "source_quote": "Gyrgum collects his winnings from Jimjar when Pelek remains securely tied",
+    "subject": "Gyrgum wins bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar pays Gyrgum with the phrase \"well done, well done\" after the party wakes up.",
+    "source_quote": "Jimjar was paying up with a gracious \"well done, well done\"",
+    "subject": "Jimjar pays bet",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool reminds Zalthir of a previous conversation about helping the creatures.",
+    "source_quote": "He complains, \"I thought we covered this last time, Zalthir.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool explains that the creatures were beings the Myconids had turned into zombies.",
+    "source_quote": "He explains that the creatures they saw were not monsters but beings the Myconids had turned into zombies",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool claims that Rumpadump would never let the party be turned into zombies.",
+    "source_quote": "and that Rumpadump would never let that happen to the party",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool demands to know if Zalthir is going to help the creatures, questioning why he should help the party otherwise.",
+    "source_quote": "Stool demands, \"Zalthir, I want to know if you're going to help them or not. Because if you're not, why should I help you?\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir replies that survival and a good night's sleep come first.",
+    "source_quote": "Zalthir replies that survival and a good night's sleep come first",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party travels to Buppido's former resting place via the Daz pool thing.",
+    "source_quote": "The party travels to Buppido's former resting place, via \"the Daz pool thing\"",
+    "subject": "route via Daz pool thing",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Daz pool thing is a location or landmark used as a route to Buppido's former resting place.",
+    "source_quote": "via \"the Daz pool thing\"",
+    "subject": "Daz pool thing",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir promises Stool that finding Rumpadump is on the list.",
+    "source_quote": "Zalthir promises it is \"on the list\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a route that avoids revealing how close they are to Stool's friend.",
+    "source_quote": "and the party takes a route that avoids revealing how close they are to Stool's friend",
+    "subject": "route avoids Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool anxiously reminds the party about finding his friend Rumpadump.",
+    "source_quote": "Stool anxiously reminds the party about finding his friend Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party decides to deal with the cultists before dealing with Stool's request.",
+    "source_quote": "but the party decides to deal with the cultists first",
+    "subject": "cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party completes a long rest in the secluded alcove.",
+    "source_quote": "The party completes their long rest",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak successfully completed his work on one statue and is preparing to corrupt another.",
+    "source_quote": "Narrak had already completed his work on one statue and was now preparing to corrupt another",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak announces that converting one more of Hgraam's giants into a double-headed beast will bring Gracklstugh to its knees.",
+    "source_quote": "Narrak announced grandly that converting one more of Hgraam's giants into a double-headed beast would bring Gracklstugh to its knees",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak insists he does not curse, but rather invokes demonic powers.",
+    "source_quote": "I don't curse. I just invoke demonic powers.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak grew increasingly furious at his followers' lack of passion and vigor during the rehearsal.",
+    "source_quote": "He grew increasingly furious as his followers stumbled through the chorus with all the passion of bored schoolchildren",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak berates his followers, shouting for more vigor.",
+    "source_quote": "Silence, you blithering half-wits! More vigor! This city's doom, a ritual! Dig it!",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ritual cavern contains three stone giant statues, with one having a second head and the third being prepared.",
+    "source_quote": "By the DM's map, there were now three statues, and Narrak was preparing the third",
+    "subject": "ritual cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Whorlstone's depths are referenced as the origin of the spirals turning in Narrak's new chant verse.",
+    "source_quote": "a new verse about \"Whorlstone's depths.\"",
+    "subject": "Whorlstone's depths",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city Narrak claims his ritual will bring to its knees.",
+    "source_quote": "bring Gracklstugh to its knees",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hgraam is referenced as the owner or creator of the giants Narrak is converting.",
+    "source_quote": "converting one more of Hgraam's giants",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak launches into a ritual chant that includes a new verse.",
+    "source_quote": "Narrak launched into the ritual chant, including a new verse about \"Whorlstone's depths.\"",
+    "subject": "Narrak's chant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak makes his followers run the ritual chant again as a rehearsal.",
+    "source_quote": "he made them run it again as a rehearsal",
+    "subject": "cultist rehearsal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Bless on his three companions.",
+    "source_quote": "Gyrgum quietly blessed his three companions",
+    "subject": "Gyrgum's Bless",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party beat the cultists' passive perception of 7 on a group stealth check and slipped forward undetected.",
+    "source_quote": "The party then beat the cultists' passive perception of 7 on a group stealth check",
+    "subject": "group stealth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party earns a surprise round due to their successful stealth.",
+    "source_quote": "undetected, earning a surprise round",
+    "subject": "surprise round",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak has successfully grown a second head on one of the stone giant statues.",
+    "source_quote": "Narrak has successfully grown a second head on one of the stone giant statues",
+    "subject": "second head grown",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stone giant statues are being converted into double-headed beasts by Narrak.",
+    "source_quote": "converting one more of Hgraam's giants into a double-headed beast",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A death dog is present in the ritual cavern, being groomed by its handler.",
+    "source_quote": "the death dog's handler kept his head down by busily grooming the dog",
+    "subject": "death dog",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Narrak leads a group of Derro cultists who are rehearsing his ritual.",
+    "source_quote": "Narrak and his Derro cultists rehearse their ritual chant",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The death dog's handler keeps his head down by busily grooming the dog.",
+    "source_quote": "the death dog's handler kept his head down by busily grooming the dog",
+    "subject": "death dog's handler",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Bless on his three companions to prepare for a surprise attack.",
+    "source_quote": "Gyrgum quietly casts Bless on his three companions",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One stone giant statue has had a second head grown on it.",
+    "source_quote": "Narrak has successfully grown a second head on one of the stone giant statues",
+    "subject": "stone giant statue",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A third stone giant statue is being prepared by Narrak.",
+    "source_quote": "Narrak was preparing the third",
+    "subject": "stone giant statue",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party takes advantage of the cult being distracted to launch a surprise attack.",
+    "source_quote": "With the cult distracted, Gyrgum quietly blessed his three companions",
+    "subject": "cultist distraction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM plays Narrak as a cultist who refuses to curse.",
+    "source_quote": "The DM played him as a cultist who refuses to curse",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM warns that the Bless spell will expire if the party waits out the next couplet.",
+    "source_quote": "The DM warns that Bless will expire if they wait out the next couplet",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cultists have a passive perception of 7.",
+    "source_quote": "beat the cultists' passive perception of 7",
+    "subject": "passive perception check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ambush begins with a burst of magical darkness that swallows the platform.",
+    "source_quote": "The ambush began with a burst of magical darkness that swallowed the platform whole.",
+    "subject": "ambush begins",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses his dragonborn fire breath weapon to scorch several cultists.",
+    "source_quote": "Zalthir followed it with a gout of dragonborn fire breath that scorched several of the cultists where they stood.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak shrieks in defiance from inside the magical darkness.",
+    "source_quote": "From inside the darkness, Narrak shrieked in defiance.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One Derro steps out of the darkness and stabs with a short spear but misses.",
+    "source_quote": "One Derro stepped out to stab with a short spear... but both missed.",
+    "subject": "Derro",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Another Derro strikes blindly from within the darkness but misses.",
+    "source_quote": "another struck blindly from within the dark, but both missed.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir feels the madness of the ritual circle clawing at his mind.",
+    "source_quote": "Zalthir briefly felt the madness of the ritual circle clawing at his mind",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir steadies himself with monastic focus.",
+    "source_quote": "then steadied himself with monastic focus.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Tasha's Caustic Brew, creating a stream of caustic acid.",
+    "source_quote": "Gyrgum then unleashed a stream of caustic acid",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The acid from Gyrgum's spell coats the chanters in corrosive liquid.",
+    "source_quote": "that coated the chanters in corrosive liquid.",
+    "subject": "acid coating chanters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir warns Thorin away from the maddening circle.",
+    "source_quote": "Zalthir warned Thorin away from the maddening circle",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin charges a cultist instead of entering the circle.",
+    "source_quote": "Thorin charged a cultist instead.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz hurls blazing rays at the enemies.",
+    "source_quote": "Daz hurled blazing rays",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's first ray finishes off one of the tougher Derro.",
+    "source_quote": "the first finished off one of the tougher Derro",
+    "subject": "Derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One of the tougher Derro is dead, killed by Daz's ray.",
+    "source_quote": "the first finished off one of the tougher Derro",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's last ray sears Grula-Munga.",
+    "source_quote": "and the last seared Grula-Munga.",
+    "subject": "Grula-Munga hit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga points out the intruders with an exasperated comment.",
+    "source_quote": "Grula-Munga pointed out the intruders with an exasperated \"Oh, brother!\"",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak, furious and wounded, steps out of the darkness.",
+    "source_quote": "Narrak, furious and wounded, stepped out of the darkness",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak casts a Fear spell.",
+    "source_quote": "retaliated with a Fear spell.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak's Fear spell sends Thorin, Gyrgum, and Zalthir fleeing in blind panic.",
+    "source_quote": "The wave of terror sent Thorin, Gyrgum, and Zalthir fleeing in blind panic",
+    "subject": "party frightened",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum had blessed everyone but himself before the Fear spell.",
+    "source_quote": "Gyrgum had blessed everyone but himself",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum fails his saving throw against the Fear spell.",
+    "source_quote": "and he failed his save.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga wades into the fray.",
+    "source_quote": "Grula-Munga waded into the fray;",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga's battle axe glances off Thorin.",
+    "source_quote": "her battle axe glanced off Thorin,",
+    "subject": "Grula-Munga attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga's morning star strikes Thorin hard for 14 damage.",
+    "source_quote": "but her morning star struck the frightened warrior hard for 14 damage.",
+    "subject": "Grula-Munga attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir dashes away and repositions the sphere of darkness.",
+    "source_quote": "Zalthir, thinking quickly, dashed away and repositioned the sphere of darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The repositioned sphere of darkness cuts off Narrak's line of sight.",
+    "source_quote": "to cut off Narrak's line of sight.",
+    "subject": "darkness repositioned",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir empowers his tattoo with Eldritch Maul.",
+    "source_quote": "He then empowered his tattoo with Eldritch Maul.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party members shake off their fear and turn back to the fight.",
+    "source_quote": "One by one, the party members shook off their fear and turned back to the fight.",
+    "subject": "party recovers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Guiding Bolt, emitting a flash of radiant light.",
+    "source_quote": "A flash of radiant light from Gyrgum's Guiding Bolt",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Guiding Bolt marks Grula-Munga for Thorin's follow-up blow.",
+    "source_quote": "marked Grula-Munga for Thorin's follow-up blow,",
+    "subject": "Grula-Munga marked",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin delivers a longsword strike with advantage to Grula-Munga.",
+    "source_quote": "a longsword strike with advantage for 16 damage,",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The longsword strike leaves Grula-Munga with 54 hit points.",
+    "source_quote": "which left her with 54 hit points.",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz calls upon the earth itself at the DM's suggestion.",
+    "source_quote": "Finally, at the DM's suggestion, Daz called upon the earth itself.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A massive hand of compacted stone erupts from the ground to seize Narrak.",
+    "source_quote": "A massive hand of compacted stone erupted from the ground to seize Narrak,",
+    "subject": "stone hand erupts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The stone hand pins Narrak in place and breaks his concentration.",
+    "source_quote": "pinning him in place and breaking his concentration,",
+    "subject": "Narrak restrained",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fear effect ends because Narrak's concentration is broken.",
+    "source_quote": "which ended the fear effect.",
+    "subject": "fear ends",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak spits out one last defiant proclamation.",
+    "source_quote": "Even restrained and battered, Narrak managed to spit out one last defiant proclamation:",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ends mid-combat, to resume after Daz's turn.",
+    "source_quote": "The session ended mid-combat, to resume after Daz's turn.",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak questions the meaning of the darkness.",
+    "source_quote": "Narrak cries, \"What's the meaning of this?\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak declares that Demogorgon's madness flows through him.",
+    "source_quote": "Narrak cries... \"Demogorgon's madness flows through me! You, whoever you are, will embrace it or break trying.\"",
+    "subject": "Narrak",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak claims his power is superior to the party's fire attack.",
+    "source_quote": "Narrak mocks the party's fire attack, claiming his power is superior.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro chants \"You shall die!\" while stabbing with a short spear.",
+    "source_quote": "chanting \"You shall die!\", and misses.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir says \"Be at peace.\" to steady himself against the madness.",
+    "source_quote": "his monk's focus lets it subside: \"Be at peace.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Four cultists are caught by Gyrgum's Tasha's Caustic Brew.",
+    "source_quote": "catches four cultists. Only one dodges, and the rest take 2d4 acid",
+    "subject": "cultists poisoned",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak cries \"Be gone, you creatures!\" after casting Fear.",
+    "source_quote": "Narrak cries, \"Be gone, you creatures!\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is unaffected by Narrak's Fear spell.",
+    "source_quote": "Daz is unaffected.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM rules that moving the darkness was a free action.",
+    "source_quote": "The DM ruled that moving the darkness was a free action.",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM jokes about the poor damage roll for Guiding Bolt.",
+    "source_quote": "the DM joked, \"it was almost like you were rolling for a first edition character.\"",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses a +1 longsword for the attack.",
+    "source_quote": "His +1 longsword with advantage hits for 10,",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a massive hand of compacted earth to restrain Narrak.",
+    "source_quote": "He conjures a massive hand of compacted earth that erupts from the ground to seize and restrain Narrak,",
+    "subject": "Narrak seized",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak fails his Strength saving throw against the stone hand.",
+    "source_quote": "Narrak fails his Strength save,",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak proclaims the inevitability of the two-headed curse and the rise of Demogorgon.",
+    "source_quote": "defiantly proclaims the inevitability of the two-headed curse and the rise of Demogorgon:",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM adds Narrak's parting couplet after calling the stop.",
+    "source_quote": "After calling the stop, the DM added Narrak's parting couplet:",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM suggests Daz target Narrak rather than Grula-Munga.",
+    "source_quote": "At the DM's suggestion, Daz targets Narrak rather than Grula-Munga.",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro cultists are distracted by their ritual rehearsal and internal bickering.",
+    "source_quote": "distracted by their ritual rehearsal and internal bickering.",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gets a surprise round because their group stealth beats a passive perception of 7.",
+    "source_quote": "Their group stealth beats a passive perception of 7, Gyrgum rolls a 20, and the party gets a surprise round.",
+    "subject": "surprise round",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The death dog's handler fails to notice the party because he is grooming the dog.",
+    "source_quote": "The death dog's handler fails to notice them because he's busy grooming the dog to avoid his screaming boss.",
+    "subject": "death dog's handler",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The screaming boss is referenced as the person the handler is trying to avoid.",
+    "source_quote": "to avoid his screaming boss.",
+    "subject": "screaming boss",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM rules that a readied action normally can't include movement.",
+    "source_quote": "The DM rules that a readied action normally can't include movement,",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM offers to allow half movement going forward for readied actions.",
+    "source_quote": "but offers to allow half movement going forward.",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir creates a sphere of magical darkness.",
+    "source_quote": "Zalthir creates a sphere of magical darkness to disorient the cultists.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses his fire breath weapon on four enemies after stepping east.",
+    "source_quote": "Zalthir, remembering he is a dragonborn, uses his fire breath weapon on four enemies after stepping east:",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM put the tougher chanter at 21 hit points.",
+    "source_quote": "which the DM put at 21 hit points,",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro who heard the magic comes out and spears at Zalthir.",
+    "source_quote": "A Derro who heard the magic comes out and spears at Zalthir.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A caustic-brewed Derro attacks Zalthir and misses, then takes acid damage.",
+    "source_quote": "A caustic-brewed Derro attacks Zalthir and misses, then takes 4 acid damage.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum passes his saving throw because he no longer sees Narrak.",
+    "source_quote": "Gyrgum, no longer seeing Narrak, passes his save and shakes off the fear.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin shakes off his fear after delivering his blow.",
+    "source_quote": "then shakes off his fear.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga has 85 hit points before taking damage from Daz.",
+    "source_quote": "He turns his third ray on Grula-Munga (85 HP),",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak speaks in a squeaky voice.",
+    "source_quote": "His squeaky voice rang through the cavern",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The ambush takes place at 023.04.",
+    "source_quote": "### Ambush at the Ritual Site 023.04",
+    "subject": "ambush at the ritual site",
+    "quote_verified": true
+  }
+]

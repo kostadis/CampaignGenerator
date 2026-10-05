@@ -1,0 +1,163 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is currently located in Diggermattock Hall.",
+    "source_quote": "The party found themselves in Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is the leader of the mining coalition in Blingdenstone.",
+    "source_quote": "Chief Dorbo, leader of the mining coalition",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni represents the non-mining population of Blingdenstone.",
+    "source_quote": "Senni, representing the non-mining population",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo explains that mining has proceeded apace since the gnomes returned.",
+    "source_quote": "mining had proceeded apace since the gnomes returned",
+    "subject": "Dorbo's mining update",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ooze infestations are hindering mining operations and housing construction.",
+    "source_quote": "ooze infestations were hindering both mining operations and the construction of housing",
+    "subject": "ooze hindrance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni gets into Chief Dorbo's face and confronts him about his failure to address the ooze problem.",
+    "source_quote": "Senni... confronted him about his failure to adequately address the problem",
+    "subject": "Senni's confrontation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo claims to be taking action by volunteering the adventurers to solve the ooze problem.",
+    "source_quote": "his solution is to volunteer the party to solve it for him",
+    "subject": "Dorbo volunteers party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party reaffirmed themselves as the Ember Vanguard.",
+    "source_quote": "the party reaffirmed themselves as the Ember Vanguard",
+    "subject": "Party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party settled on the name 'The Ash Enclave' as a cooler counterpart to their previous name.",
+    "source_quote": "they settled for the moment on the Ash Enclave",
+    "subject": "Party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party is considering connecting the Ash Enclave imagery to phoenixes.",
+    "source_quote": "with possible phoenix imagery",
+    "subject": "Party",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party questions whether the bustling gnomes are productive or merely busy, noting the gnomes themselves may not know the answer.",
+    "source_quote": "whether the bustling gnomes around them were productive or merely busy, a distinction the gnomes themselves might not have known",
+    "subject": "gnome productivity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A guard explains that the party should travel through the Traders' Grotto and investigate beyond a stone wall near the ooze source.",
+    "source_quote": "A guard explained that the party should travel through the Traders' Grotto and investigate beyond a stone wall",
+    "subject": "Guard's directions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard initially indicates the wrong place on the map before correcting himself.",
+    "source_quote": "The guard initially indicates the wrong place on the map before correcting himself",
+    "subject": "Guard's map correction",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhisker Clan is a group of gnomes rumored to be wererats.",
+    "source_quote": "a group of gnomes rumored to be wererats",
+    "subject": "Goldwhisker Clan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhiskers previously occupied part of the area before Dorbo's faction returned and drove out the Drow.",
+    "source_quote": "The Goldwhiskers had occupied part of the area before Dorbo's faction returned and drove out the Drow",
+    "subject": "Goldwhisker Clan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The newcomers effectively excluded the Goldwhisker Clan from its former territory.",
+    "source_quote": "the newcomers effectively excluded the clan from its former territory",
+    "subject": "Goldwhisker Clan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo refuses to cooperate with the Goldwhisker Clan.",
+    "source_quote": "Chief Dorbo refused to cooperate with them",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni appears more open to reconciliation with the Goldwhisker Clan.",
+    "source_quote": "Senni appeared more open to reconciliation",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party dryly characterizes the political situation as colonization.",
+    "source_quote": "The party dryly characterized the situation as colonization",
+    "subject": "Party's characterization",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum sarcastically argues that the wererats failed to use their real estate efficiently.",
+    "source_quote": "Gyrgum sarcastically argues that the wererats had occupied \u201csome prime real estate\u201d without making ideal use of it",
+    "subject": "Gyrgum's argument",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo's representative states that Gyrgum's argument captures Chief Dorbo's position exactly.",
+    "source_quote": "Dorbo's representative calls this \u201cwell put\u201d and says it captures Chief Dorbo's position exactly",
+    "subject": "Dorbo's representative",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Blingdenstone is structured as a business consortium led by Dorbo existing alongside a civilian community led by Senni.",
+    "source_quote": "The political structure is likened to a business consortium led by Dorbo existing alongside a civilian community led by Senni.",
+    "subject": "Blingdenstone political structure",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Traders' Grotto is a location the party is instructed to travel through to reach the ooze source.",
+    "source_quote": "travel through the Traders' Grotto",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  }
+]

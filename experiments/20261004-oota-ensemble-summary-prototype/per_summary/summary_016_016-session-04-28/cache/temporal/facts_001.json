@@ -1,0 +1,44 @@
+[
+  {
+    "type": "event",
+    "fact": "Before play resumed, all party members advanced to 4th level.",
+    "source_quote": "before play resumed everyone advanced to 4th level",
+    "subject": "level advancement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Intelligence reached 19 upon leveling up.",
+    "source_quote": "Daz's Intelligence reaches 19",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum bumped a score to 19, at least temporarily.",
+    "source_quote": "Gyrgum bumps a score to 19 \"at least temporarily\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Pelek has been trapped in the caverns for approximately one year.",
+    "source_quote": "trapped in the caverns ever since, which he reckoned was about a year",
+    "subject": "Pelek's time trapped",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Visitors must not carry anything marked with the number eight or divisible by eight at the gates of Blingdenstone.",
+    "source_quote": "They must carry nothing marked with the number eight, or divisible by eight",
+    "subject": "Blingdenstone gates",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One must not have 208 coins at Blingdenstone; the example given is to have 207 instead.",
+    "source_quote": "Don't have 208 coins. 207.",
+    "subject": "coins at Blingdenstone",
+    "quote_verified": true
+  }
+]

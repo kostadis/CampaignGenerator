@@ -1,0 +1,44 @@
+[
+  {
+    "type": "object",
+    "fact": "The stolen document bears the royal seal of Gracklstugh and the signature of the Deepking.",
+    "source_quote": "a document bearing the royal seal of Gracklstugh and the signature of the Deepking himself",
+    "subject": "stolen document",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warns that the assassins will not realize the theft immediately, estimating it would not be figured out by the next day.",
+    "source_quote": "there's a clock... not like tomorrow",
+    "subject": "assassin discovery timeline",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir breathes fire onto the desk to destroy the remaining evidence.",
+    "source_quote": "Zalthir's cue to breathe a gout of fire directly onto the desk",
+    "subject": "fire distraction",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party passes a pair of invisible guards on their way out.",
+    "source_quote": "passing a pair of invisible guards on their way out",
+    "subject": "invisible guards count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz has a +0 modifier to Performance checks.",
+    "source_quote": "Daz is only +0 on Performance",
+    "subject": "daz performance bonus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz needed to roll a 10 on the Performance check to succeed.",
+    "source_quote": "needed to beat a 10",
+    "subject": "performance check dc",
+    "quote_verified": true
+  }
+]

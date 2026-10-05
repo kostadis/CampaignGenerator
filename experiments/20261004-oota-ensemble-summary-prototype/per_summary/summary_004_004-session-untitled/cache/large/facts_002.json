@@ -1,0 +1,142 @@
+[
+  {
+    "type": "npc",
+    "fact": "Topsy is a deep gnome twin who was previously imprisoned alongside the party.",
+    "source_quote": "Topsy and Turvy, the deep gnome twins who had been imprisoned alongside the party",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a deep gnome twin who was previously imprisoned alongside the party.",
+    "source_quote": "Topsy and Turvy, the deep gnome twins who had been imprisoned alongside the party",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy reveal that they are wererats.",
+    "source_quote": "they were wererats",
+    "subject": "Topsy and Turvy reveal secret",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy tells the party, \u201cwe'll meet you downstairs.\u201d",
+    "source_quote": "we'll meet you downstairs",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy tells the party, \u201cwe'll meet you downstairs.\u201d",
+    "source_quote": "we'll meet you downstairs",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy transform into rats.",
+    "source_quote": "the twins transformed into rats",
+    "subject": "Topsy and Turvy transform",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy leap into the darkness below.",
+    "source_quote": "leapt into the darkness below",
+    "subject": "Topsy and Turvy leap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considers burning or otherwise sabotaging Velkynvelve while the drow are distracted.",
+    "source_quote": "The party considers burning or otherwise sabotaging Velkynvelve while the drow are distracted.",
+    "subject": "sabotage proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith advises against sabotaging the outpost, suggesting that a clean escape is better than inciting further drow vengeance.",
+    "source_quote": "Sarith advises against sabotaging the outpost, suggesting that a clean escape is better than inciting further drow vengeance.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith oscillates between sanity and madness, first insisting on immediate flight.",
+    "source_quote": "Sarith oscillates between sanity and madness, first insisting on immediate flight",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith cackles that revenge would be \u201cso tasty.\u201d",
+    "source_quote": "cackling that revenge would be \u201cso tasty.\u201d",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group agrees that setting the outpost ablaze would make the drow more determined to hunt them.",
+    "source_quote": "The group agrees that setting the outpost ablaze would make the drow more determined to hunt them.",
+    "subject": "consensus on burning outpost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses using its silk rope or the existing spider silk to descend.",
+    "source_quote": "The party discusses using its silk rope or the existing spider silk to descend.",
+    "subject": "descent discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The drow normally jump into the giant web below and use its silk to reach the lower levels.",
+    "source_quote": "The drow normally jump into the giant web below and use its silk to reach the lower levels.",
+    "subject": "giant spider webs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Remembering the giant spiders inhabiting the web, the party chooses to bypass it.",
+    "source_quote": "Remembering the giant spiders inhabiting the web, the party chooses to bypass it.",
+    "subject": "bypass web decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group descends toward the pool at the bottom of the waterfall, effectively treating the route as a water slide.",
+    "source_quote": "The group instead descends toward the pool at the bottom of the waterfall, effectively treating the route as a water slide.",
+    "subject": "waterfall descent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The demon attack remains sufficiently chaotic that the drow do not interfere with the descent.",
+    "source_quote": "The demon attack remains sufficiently chaotic that the drow do not interfere with the descent.",
+    "subject": "drow inaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party lands in the water.",
+    "source_quote": "Upon landing in the water",
+    "subject": "landing in pool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A predatory gray ooze confronts the party upon their landing in the water.",
+    "source_quote": "Upon landing in the water, the party is confronted by a predatory gray ooze.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The adventurers are not surprised by the gray ooze's appearance because they were watching for danger.",
+    "source_quote": "Because they were watching for danger, the adventurers are not surprised by its appearance.",
+    "subject": "surprise check",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,212 @@
+[
+  {
+    "type": "date",
+    "fact": "The party traveled for three days.",
+    "source_quote": "By the end of the third day",
+    "subject": "duration of travel",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to travel at a fast pace rather than covering their tracks.",
+    "source_quote": "They chose speed over covering their tracks",
+    "subject": "travel pace",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth has a +5 bonus to Wisdom (Survival).",
+    "source_quote": "Eldeth (+5 survival) was the best tracker among them",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth was judged the best choice to lead trail-covering.",
+    "source_quote": "Eldeth is judged the best choice to lead trail-covering",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar has a +4 bonus to Wisdom (Survival).",
+    "source_quote": "Among the companions, Eldeth has +5 survival, Jimjar +4",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar grumbled that no one would find food at the pace set by 'the silent one'.",
+    "source_quote": "On the fast march Jimjar grumbled that no one would find any food at the pace \"the silent one\" wanted",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar lamented that at this pace no one will find food.",
+    "source_quote": "Jimjar laments that at this pace no one will find food",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party already had rations, despite Jimjar's concerns about food.",
+    "source_quote": "The party already has rations",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party passed through caverns filled with Faerzress.",
+    "source_quote": "They passed through caverns filled with Faerzress",
+    "subject": "Faerzress tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Faerzress is a strange and unsettling dim magical light.",
+    "source_quote": "a strange and unsettling dim magical light",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Faerzress caused Shuushar visible distress.",
+    "source_quote": "caused Shuushar visible distress",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party barely escaped the worst effects of the Faerzress by moving quickly.",
+    "source_quote": "By moving quickly they barely escaped the worst of its effects",
+    "subject": "avoiding Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith has a +0 bonus to Wisdom (Survival).",
+    "source_quote": "Sarith +0",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith led the way through the twisting passages.",
+    "source_quote": "Sarith led the way through the twisting passages",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith displayed pride in his navigational abilities.",
+    "source_quote": "his pride in his navigational abilities on full display",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith nearly led the group down the wrong path.",
+    "source_quote": "he nearly led the group down the wrong path entirely",
+    "subject": "navigation error",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum noticed Sarith's navigational error.",
+    "source_quote": "Gyrgum noticed the error",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum corrected the group's course.",
+    "source_quote": "Gyrgum notices a navigational error and corrects their course",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum clarified that Thaumaturgy is sound and light effects, not destruction, so it cannot collapse a bridge.",
+    "source_quote": "Gyrgum clarifies that Thaumaturgy is sound and light effects, not destruction, so it cannot collapse a bridge behind them",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith answered Gyrgum's correction with barely concealed irritation.",
+    "source_quote": "Sarith, with barely concealed irritation, answered",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith claimed he saw the error and did not need help.",
+    "source_quote": "\"Yes, I saw that. Thank you. I didn't need your help.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith acknowledged it was good they were on the same page.",
+    "source_quote": "But it's good we're all on the same page.\"",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gained a day's lead on the Drow hunting party.",
+    "source_quote": "the party had put a meaningful lead between themselves and their pursuers, a day ahead",
+    "subject": "pursuit status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The pursuit level is currently four.",
+    "source_quote": "a day ahead at pursuit level four",
+    "subject": "pursuit level",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow hunting party is still pursuing the group from behind.",
+    "source_quote": "Somewhere behind them in the dark, the Drow hunting party was still out there",
+    "subject": "Drow hunting party",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The pursuit level is lowered by one for each day of fast travel, covering trails at normal pace with a DC 16 check, crossing obscuring features, or splitting the party.",
+    "source_quote": "The party can lower pursuit by one for: each day travelling at a fast pace; covering their trail at normal pace with a DC 16 Wisdom (Survival) check; crossing a feature that obscures the trail; splitting the party",
+    "subject": "pursuit mechanics",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "If the pursuit level reaches five, the Drow catch up to the party.",
+    "source_quote": "Level five means the drow catch up",
+    "subject": "pursuit risk",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Fast travel carries a risk of getting lost.",
+    "source_quote": "Fast travel carries a risk of getting lost",
+    "subject": "getting lost",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The best survival bonus among the PCs for assisting navigation is +3.",
+    "source_quote": "The best survival bonus among the PCs is +3",
+    "subject": "navigation skill",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully avoided getting lost and maintained their lead.",
+    "source_quote": "The party successfully avoids getting lost, maintaining their lead over their pursuers",
+    "subject": "avoiding getting lost",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,114 @@
+[
+  {
+    "type": "npc",
+    "fact": "Droki is a derro messenger the party is following.",
+    "source_quote": "Droki, the derro messenger they were following",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki ran ahead of the party.",
+    "source_quote": "Droki... had fled ahead",
+    "subject": "Droki",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Droki runs the same circuit.",
+    "source_quote": "he was 'a creature of ridiculous habits' who ran the same circuit",
+    "subject": "droki circuit",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Prayer of Healing.",
+    "source_quote": "Gyrgum instead called upon divine power with his new Prayer of Healing",
+    "subject": "prayer of healing cast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ethereal ghostly companion is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "and even their ethereal ghostly companion",
+    "subject": "Ghostly Companion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prayer of Healing grants the benefit of a short rest.",
+    "source_quote": "granted each of them the benefit of a short rest on the spot",
+    "subject": "prayer effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prayer of Healing grants 2d8 healing.",
+    "source_quote": "Each gets a short rest's benefit plus an additional 2d8 healing",
+    "subject": "prayer effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses the first of his three 2nd-level spell slots.",
+    "source_quote": "It is the first of Gyrgum's three 2nd-level spell slots",
+    "subject": "spell slot used",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party peered into a natural cave along their route.",
+    "source_quote": "Along the way they peered into a natural cave",
+    "subject": "natural cave",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of myconids is dancing frantically to a silent tune.",
+    "source_quote": "A group of myconids was dancing frantically to a silent tune",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two hulking quaggoths accompany the dancing myconids.",
+    "source_quote": "accompanied by two hulking quaggoths",
+    "subject": "quaggoths",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The quaggoths are covered in mushroom growths and yellow mold.",
+    "source_quote": "two hulking quaggoths covered in mushroom growths and yellow mold",
+    "subject": "quaggoths",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to leave the strange scene in the cave undisturbed.",
+    "source_quote": "they chose to leave the strange scene undisturbed and move on",
+    "subject": "party decision",
+    "quote_verified": true
+  }
+]

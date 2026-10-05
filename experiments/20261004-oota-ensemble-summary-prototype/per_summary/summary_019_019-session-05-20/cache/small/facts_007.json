@@ -1,0 +1,142 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir jumps up the tiers to stand beside Plinki.",
+    "source_quote": "Zalthir moved first. He had already jumped up the tiers to stand right beside Plinki.",
+    "subject": "Zalthir movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir seizes Plinki in an iron grip, pinning her in place.",
+    "source_quote": "He seized her in an iron grip, pinning her in place",
+    "subject": "Zalthir grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first attack totals 27 against Plinki's AC 13.",
+    "source_quote": "His first attack totalled 27 against her AC 13",
+    "subject": "Zalthir first strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point for another strike, dealing 11 damage.",
+    "source_quote": "and he spent a focus point for another strike, dealing 11 damage.",
+    "subject": "Zalthir focus strike",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's earlier warmth toward the egg turned into righteous fury at the betrayal.",
+    "source_quote": "Gyrgum, his earlier warmth toward the egg curdled into righteous fury at the betrayal",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels a surge of necrotic energy into Plinki using a 2nd-level Inflict Wounds.",
+    "source_quote": "channeled a surge of devastating necrotic energy directly into Plinki. This was a 2nd-level Inflict Wounds",
+    "subject": "Gyrgum spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki succeeded on a Constitution save against Inflict Wounds but took 12 damage.",
+    "source_quote": "she succeeded on a Constitution save and still took 12 damage",
+    "subject": "Plinki save",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is left badly wounded and struggling in Zalthir's grip.",
+    "source_quote": "the force of the blast still left her badly wounded and struggling in Zalthir's grip",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The fate of the corrupted dragon egg hangs in the balance.",
+    "source_quote": "and the fate of the corrupted dragon egg",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The fate of the city of Gracklstugh hangs in the balance.",
+    "source_quote": "and perhaps the city of Gracklstugh itself \u2014 hung in the balance.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session paused mid-combat.",
+    "source_quote": "The session paused mid-combat.",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The assault on Plinki takes place within Zalthir's magical darkness in the obelisk chamber.",
+    "source_quote": "The party launches a sudden assault against the derro leader, Plinki, within Zalthir's magical darkness in the obelisk chamber.",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Plinki is a derro leader.",
+    "source_quote": "the derro leader, Plinki",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks with advantage from the darkness.",
+    "source_quote": "He attacks with advantage from the darkness",
+    "subject": "Zalthir advantage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir adds Bless's d4 to his second attack.",
+    "source_quote": "He adds Bless's d4 to his second attack",
+    "subject": "Zalthir second attack",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM and Zalthir debate whether Flurry of Blows grants two extra attacks and settle on one.",
+    "source_quote": "The DM and Zalthir briefly debate whether Flurry of Blows grants two extra attacks. They leave it at one.",
+    "subject": "Flurry of Blows rules",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The table notes that Inflict Wounds now uses a Constitution save.",
+    "source_quote": "the table noting the spell now uses a save",
+    "subject": "Inflict Wounds rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM remarks that the party has been unloading on Plinki.",
+    "source_quote": "The DM: \"Damn, you guys have been unloading on this guy.\"",
+    "subject": "DM comment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin will be out next week.",
+    "source_quote": "Thorin will be out next week",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The next session is skipped.",
+    "source_quote": "and the next session is skipped.",
+    "subject": "next session",
+    "quote_verified": true
+  }
+]

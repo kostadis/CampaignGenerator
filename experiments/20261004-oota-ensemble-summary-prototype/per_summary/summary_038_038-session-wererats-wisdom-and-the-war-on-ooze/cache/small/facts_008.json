@@ -1,0 +1,219 @@
+[
+  {
+    "type": "event",
+    "fact": "The party returns to Blingdenstone much sooner than the leaders expected.",
+    "source_quote": "The party returns much sooner than Blingdenstone\u2019s leaders expected",
+    "subject": "party return",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Nearby gnomes pretend to work while listening to the meeting.",
+    "source_quote": "Nearby gnomes pretend to concentrate on their work while straining to overhear the important meeting.",
+    "subject": "gnome eavesdropping",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo asks the party if the ooze problem has been dealt with.",
+    "source_quote": "Chief Dorbo opens with a blunt question: \u201cHas my ooze problem been dealt with?\u201d",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party informs Dorbo they have a solution but need Blingdenstone's help.",
+    "source_quote": "The party answers that they have discovered a means of dealing with the oozes but need Blingdenstone\u2019s help.",
+    "subject": "party response to Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reveals the existence of the Pudding King and his controlled ooze army.",
+    "source_quote": "They reveal the Pudding King, his slime-covered throne room, and the hundreds of oozes gathered under his control.",
+    "subject": "Pudding King reveal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo reacts to the reveal with horror.",
+    "source_quote": "Dorbo reacts, \u201cThis is awful. This is terrible. This is cataclysmical. This is a catastrophe.\u201d",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposes a plan where his speech distracts the oozes while the party kills their king.",
+    "source_quote": "Gyrgum explains, \u201cThe plan is I make a motivational speech to your army, and they distract the oozes while we kill their king.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum interprets the room's silence as approval.",
+    "source_quote": "the room answers with stunned silence, prompting Gyrgum to ask, \u201cIt\u2019s that good, isn\u2019t it?\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Senni interrupts Dorbo and asks the party to detail their route to the Pudding King.",
+    "source_quote": "Senni tells Dorbo, \u201cI think you\u2019ve spoken enough,\u201d before asking the party to explain exactly how they will reach the Pudding King.",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir offers a demonstration of his mobility to prove the mission's viability.",
+    "source_quote": "To prove that the mission is not simply a suicide attack, Zalthir offers a demonstration of his mobility.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gnomes extinguish the chamber's lights to watch the demonstration.",
+    "source_quote": "they now eagerly extinguish the chamber\u2019s lights.",
+    "subject": "lights extinguished",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir Shadow Steps around the room using sixty-foot jumps and acrobatics.",
+    "source_quote": "In the dimness, Zalthir Shadow Steps around the room in sixty-foot jumps, adding flips and airborne punches for effect.",
+    "subject": "Zalthir demonstration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni describes the plan for Zalthir to kill the Pudding King while Blingdenstone's forces occupy the ooze army.",
+    "source_quote": "Senni summarizes the method: Zalthir will sneak into the throne room, seize the Pudding King, and kill or extract him while Blingdenstone\u2019s forces occupy the ooze army.",
+    "subject": "Senni summarizes plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo declares the party's plan to be the dumbest he has ever heard.",
+    "source_quote": "Dorbo declares, \u201cIt is the dumbest plan I\u2019ve heard ever.\u201d",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni challenges Dorbo to propose a better plan.",
+    "source_quote": "Senni asks, \u201cDo you have a better one?\u201d Dorbo answers only with silence.",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar unexpectedly announces he wants to make a bet.",
+    "source_quote": "Jimjar unexpectedly tells Dorbo, \u201cI want to make a bet, Chief.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar bets that the party and Blingdenstone will live happily ever after.",
+    "source_quote": "Jimjar wagers, \u201cI\u2019ll make you a bet that by the time this is all done, we\u2019re all going to be living happily ever after.\u201d",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is usually motivated by self-serving bets.",
+    "source_quote": "Because Jimjar ordinarily uses bets for his own advantage",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo argues Blingdenstone lacks the preparation to fight oozes.",
+    "source_quote": "Dorbo admits that the party may have a point but argues that Blingdenstone cannot simply march out and fight oozes; its forces lack suitable preparation, allies, and equipment.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni calls for a full clan meeting with the Stoneheart Enclave and Miners\u2019 Guild.",
+    "source_quote": "Senni calls for a full clan meeting involving the Stoneheart Enclave and the Miners\u2019 Guild.",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Chief Dorbo refuses to invite the Goldwhisker clan.",
+    "source_quote": "Dorbo tries to limit the gathering to those groups, declaring that he will not invite \u201cthose Goldwhisker\u201d because \u201cThey\u2019re not even gnomes.\u201d",
+    "subject": "Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Senni identifies the Goldwhiskers as lycanthropes who transform into rats.",
+    "source_quote": "Senni replies that they are lycanthropes who merely turn into rats and urges Dorbo to let bygones be bygones for the common good.",
+    "subject": "Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhiskers are resistant to non-silver weapons.",
+    "source_quote": "Their resistance to non-silver weapons makes the Goldwhiskers a potentially important asset in a war against oozes.",
+    "subject": "Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo conditions Goldwhisker participation on acknowledging his authority.",
+    "source_quote": "Dorbo says he might accept their participation if they acknowledge that he is in charge.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rejects the leadership structure and asserts the party's command.",
+    "source_quote": "Daz rejects the premise and announces that the party is taking command of the operation.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states the party will lead the operation.",
+    "source_quote": "Daz declares, \u201cWe figured it out, and we\u2019re going to be in charge of it.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz criticizes the current leaders for causing the situation.",
+    "source_quote": "He continues, \u201cWe\u2019re not going to have some stupid bickering amongst the people that think they\u2019re in power trying to\u2014that got us into this situation.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposes a bargain for the party to guide the party out of the Underdark in exchange for solving the ooze problem.",
+    "source_quote": "Daz lays out the bargain: \u201cYou\u2019re going to get us out of the Underdark, and we\u2019re going to solve this problem for you, and we\u2019re going to do it our way. So you\u2019re on board.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The chamber falls silent after Daz's declaration of command.",
+    "source_quote": "The chamber falls silent at the abrupt \u201cmanagement coup.\u201d",
+    "subject": "chamber silence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni accepts the new command structure and assigns the party to recruit Clan Goldwhisker.",
+    "source_quote": "Senni accepts the new command structure and tells the adventurers, \u201cYou bring the Goldwhisker clans, and I think we could make that happen.\u201d",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sets out to recruit Clan Goldwhisker.",
+    "source_quote": "The party agrees and sets out with a new immediate objective: recruit Clan Goldwhisker into the war on ooze.",
+    "subject": "party departure",
+    "quote_verified": true
+  }
+]

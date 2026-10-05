@@ -1,0 +1,177 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is deep within the Whorlstone Caverns, located beneath the city of Gracklstugh.",
+    "source_quote": "Deep within the Whorlstone Caverns beneath the city of Gracklstugh",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Every derro in the caverns is dead.",
+    "source_quote": "With every derro in the caves dead",
+    "subject": "derro extinction",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a two-headed dragon egg tied to the cult of Demogorgon.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon",
+    "subject": "two-headed dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a ritual statue connected to the affliction causing stone giants to sprout second heads.",
+    "source_quote": "A ritual statue connected to the affliction causing stone giants to sprout second heads",
+    "subject": "ritual statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party interrupted the ritual on the second statue.",
+    "source_quote": "The party interrupted the ritual on the second",
+    "subject": "ritual disruption",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Only one ritual statue was completed before the party intervened.",
+    "source_quote": "Only one ritual statue was completed",
+    "subject": "ritual statues",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The cult of Demogorgon is linked to the two-headed dragon egg.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon",
+    "subject": "cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are aligned with demonic powers.",
+    "source_quote": "Proof that the derro were aligned with demonic powers",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is allied with assassins trying to wipe out the opposition.",
+    "source_quote": "Knowledge that the Deepking himself was allied with assassins trying to wipe out the opposition",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is actually Themberchaud the 28th.",
+    "source_quote": "Proof that Themberchaud is in fact \"Themberchaud the 28th.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares the party's political leverage to having 'Epstein level dirt on everybody.'",
+    "source_quote": "\"Epstein level dirt on everybody,\" as Daz's player put it",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a city of 10,000 duergar that is barely holding together.",
+    "source_quote": "only fourth level in a city of 10,000 duergar... the city was barely holding together",
+    "subject": "Gracklstugh",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir proposes a dead man's switch to ensure information release if the party is captured or killed.",
+    "source_quote": "Zalthir proposed a dead man's switch, some way to ensure the information would be released if the party were captured or killed",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar urges the party to hold onto the evidence for future use.",
+    "source_quote": "Jimjar urged them to hold onto everything for future use rather than hand it over too soon",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests visiting a merchant the party previously helped.",
+    "source_quote": "Thorin floated going to the merchant they had helped",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin worries that the merchant might betray them.",
+    "source_quote": "he worried the merchant might betray them",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's player rolls a die to decide if Thorin wants to burn the place down, but fails to get a 15+.",
+    "source_quote": "Thorin's player rolls a die (15+ = burn it down)... The roll comes up short",
+    "subject": "Thorin's burn roll",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool pleads with the party to find his friend Rumpadump.",
+    "source_quote": "Stool pleads with them to find his friend Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is Stool's friend.",
+    "source_quote": "find his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gartokkar is the head of the Keepers of the Flame.",
+    "source_quote": "Gartokkar, head of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party's original plan was to hand the dragon egg to Gartokkar.",
+    "source_quote": "hand the egg to Gartokkar, head of the Keepers of the Flame, and call it a day",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum agrees with Jimjar's instinct to hold onto the evidence.",
+    "source_quote": "Gyrgum's player agrees: \"Yeah, that's always my instinct.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalls owing a favor to two duergar.",
+    "source_quote": "Thorin also recalls the two duergar the party earned a favor with",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests telling the merchant 'we got the assassin's office back'.",
+    "source_quote": "He suggests telling the merchant \"we got the assassin's office back\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum summarizes the plan as handing over the egg and getting out of Gracklstugh.",
+    "source_quote": "Gyrgum summarizes the plan: hand over the egg and get out of Gracklstugh",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

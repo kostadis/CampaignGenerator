@@ -1,0 +1,65 @@
+[
+  {
+    "type": "date",
+    "fact": "The session takes place on the date 019.07.",
+    "source_quote": "Ambush at the Mesa 019.07",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first attack totals 27 against Plinki's AC 13.",
+    "source_quote": "His first attack totalled 27 against her AC 13",
+    "subject": "Zalthir first attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends one focus point for a strike dealing 11 damage.",
+    "source_quote": "he spent a focus point for another strike, dealing 11 damage",
+    "subject": "Zalthir focus point strike",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Bless spell adds a d4 to the attack roll.",
+    "source_quote": "He adds Bless's d4 to his second attack",
+    "subject": "Bless die size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM and Zalthir determine that Flurry of Blows grants one extra attack in this instance.",
+    "source_quote": "They leave it at one.",
+    "subject": "Flurry of Blows attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum casts a 2nd-level Inflict Wounds spell.",
+    "source_quote": "This was a 2nd-level Inflict Wounds",
+    "subject": "Inflict Wounds spell level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki takes 12 damage from the Inflict Wounds spell.",
+    "source_quote": "she succeeded on a Constitution save and still took 12 damage",
+    "subject": "Plinki damage from Inflict Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki succeeds on a DC 14 Constitution saving throw against the spell.",
+    "source_quote": "She made the DC 14 Constitution save",
+    "subject": "Plinki Constitution save",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The next session is skipped, with Thorin absent for one week.",
+    "source_quote": "Thorin will be out next week, and the next session is skipped.",
+    "subject": "next session date",
+    "quote_verified": true
+  }
+]

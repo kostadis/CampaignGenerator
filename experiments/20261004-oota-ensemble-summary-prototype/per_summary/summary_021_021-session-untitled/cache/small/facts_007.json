@@ -1,0 +1,149 @@
+[
+  {
+    "type": "monster",
+    "fact": "A Trapper is a massive, manta-ray-shaped predator.",
+    "source_quote": "A massive, manta-ray-shaped predator known as a Trapper",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is ambushed by a Trapper in the western passages.",
+    "source_quote": "navigating the western passages, the party is ambushed by a large subterranean predator",
+    "subject": "ambush start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper achieves surprise because no one has a passive Perception over 18.",
+    "source_quote": "No one has a passive Perception over 18, so the creature achieves surprise",
+    "subject": "surprise round",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper wraps its wings around Gyrgum and grapples him.",
+    "source_quote": "wrapping its wings around Gyrgum and smothering him",
+    "subject": "Gyrgum grappled",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is grappled by the Trapper and suffers damage from acidic secretions.",
+    "source_quote": "Gyrgum fails a DC 13 Dexterity save and is grappled ... Gyrgum suffers severe damage from the creature's acidic secretions",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum drops to 1 hit point due to his orc ability.",
+    "source_quote": "He uses his orc ability to drop to 1 hit point instead of 0",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum fails to break free from the grapple.",
+    "source_quote": "Gyrgum tries to break free and fails with a 9",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz casts magic missile at the Trapper.",
+    "source_quote": "Daz scrambles to find a spell that can target the creature without harming his enveloped ally, firing magic missiles into the beast",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz attempts to cast Silvery Barbs but notes it requires an attack, check, or save to trigger.",
+    "source_quote": "Daz first tries Silvery Barbs but realises it needs an attack, check, or save to trigger",
+    "subject": "Silvery Barbs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz uses Silvery Barbs to force a reroll, which the Trapper succeeds against.",
+    "source_quote": "Daz forces a reroll with Silvery Barbs, but it succeeds again",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz casts Toll the Dead, which the Trapper saves against.",
+    "source_quote": "The Trapper saves against Toll the Dead",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attacks the Trapper with his longsword.",
+    "source_quote": "Thorin hacked at the beast with his longsword, landing heavy blows",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolls a natural 1 on initiative.",
+    "source_quote": "Thorin rolls a natural 1 for a 0 initiative",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir engages the Trapper in a counter-grapple.",
+    "source_quote": "Zalthir rushes forward, striking the monstrosity with an unarmed blow and locking it in a counter-grapple",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir repeatedly strikes the Trapper until it dies.",
+    "source_quote": "beat the enormous predator into the ground with a relentless series of strikes until it collapsed, dead",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper collapses dead and releases Gyrgum.",
+    "source_quote": "Zalthir delivers a final, powerful series of strikes that causes the creature to collapse dead, releasing a battered and acid-covered Gyrgum",
+    "subject": "Trapper defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper is dead.",
+    "source_quote": "The party is very relieved to see the dead creature flop to the ground",
+    "subject": "Trapper",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum scrapes acidic residue off himself.",
+    "source_quote": "Gyrgum scraped the caustic residue off himself",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is covered in acid.",
+    "source_quote": "Gyrgum suffers severe damage from the creature's acidic secretions ... Gyrgum scraped the caustic residue off himself",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard moves deeper into the tunnels after the fight.",
+    "source_quote": "the Ember Vanguard pressed on into the dark",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session ends with the party moving into the dark.",
+    "source_quote": "The session ends here",
+    "subject": "session end",
+    "quote_verified": true
+  }
+]

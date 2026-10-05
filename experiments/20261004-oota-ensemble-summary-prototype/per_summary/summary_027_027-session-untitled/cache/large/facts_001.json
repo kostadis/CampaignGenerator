@@ -1,0 +1,86 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is currently in the sweltering industrial heart of Gracklstugh, surrounded by forges and hammers.",
+    "source_quote": "The party stood in the sweltering industrial heart of Gracklstugh, surrounded by the roar of forges and the clang of hammers",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party assesses their position near Laduguer's Furrow.",
+    "source_quote": "The party assesses their position near Laduguer's Furrow",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Heavily barred gates separate the party from the Darklake.",
+    "source_quote": "staring down the heavily barred gates that separated them from the Darklake and their freedom",
+    "subject": "Darklake gates",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM marks three specific gates the party could use to leave Gracklstugh.",
+    "source_quote": "The DM marks three gates the party could use to leave Gracklstugh.",
+    "subject": "gate selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses methods to bypass the barred gates, including bluffing and presenting themselves openly.",
+    "source_quote": "The group discusses various methods to bypass the barred gates: bluffing, presenting themselves, or \"some other clever and insane scheme.\"",
+    "subject": "gate strategy discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests pole-vaulting over the gates where nobody can see.",
+    "source_quote": "Thorin asks whether they can pole-vault over the gates where nobody can see.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum points out that sneaking is difficult due to the many invisible inhabitants of the city.",
+    "source_quote": "The party notes the difficulty of remaining stealthy in a city where many inhabitants possess innate invisibility. Gyrgum: \"That might be hard with all these invisible people around.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A young red dragon comes dive-bombing toward the party out of the cavern heights.",
+    "source_quote": "A young red dragon, voluminous and ungainly, came dive-bombing toward them out of the cavern heights.",
+    "subject": "Themberchaud arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is identified as the Wyrmsmith of Gracklstugh.",
+    "source_quote": "It was Themberchaud, the Wyrmsmith of Gracklstugh, and he had spotted them during their fight.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud spots the party during their fight.",
+    "source_quote": "he had spotted them during their fight",
+    "subject": "Themberchaud encounter start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has already handed off Themberchaud's egg, leaving them with no explanation for his visit.",
+    "source_quote": "The party had already handed off his egg, so they had nothing on them to explain the visit.",
+    "subject": "egg handoff",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum chooses to speak to Themberchaud while standing near a market entrance he can duck into.",
+    "source_quote": "Gyrgum chose to talk to him while standing near a market entrance he could duck into.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

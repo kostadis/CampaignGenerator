@@ -1,0 +1,226 @@
+[
+  {
+    "type": "npc",
+    "fact": "Voosbur is a Myconid who released strange spores in the Neverlight Grove.",
+    "source_quote": "a Myconid named Voosbur released strange spores",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party and the infected Myconids materialized in the Whorlstone Caverns after walking through fungi following Voosbur's spore release.",
+    "source_quote": "they had walked through some fungi and materialized here in the Whorlstone Caverns",
+    "subject": "fungal teleportation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump avoided infection by not eating the suspicious mushrooms.",
+    "source_quote": "I did not eat the silly mushrooms",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The growy-shrinky mushrooms the party gathered are the same mushrooms that caused infection or madness.",
+    "source_quote": "These were the same growy-shrinky mushrooms the party had gathered",
+    "subject": "growy-shrinky mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool loudly disputes the theory that the growy-shrinky mushrooms caused the madness.",
+    "source_quote": "Stool loudly disputed this theory",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur fears the infection has spread back to the rest of his kin in the Neverlight Grove.",
+    "source_quote": "He feared the infection had spread back to the rest of his kin in the Neverlight Grove",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign dwells in the Neverlight Grove.",
+    "source_quote": "The Myconid Sovereign who dwells in the Grove",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign holds the accumulated knowledge of all his predecessors.",
+    "source_quote": "holds the accumulated knowledge of all his predecessors",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign might know a way out of the Underdark.",
+    "source_quote": "might even know a way out of the Underdark entirely",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is speaking of a Dark Lady calling to him.",
+    "source_quote": "He began talking about a Dark Lady calling to him",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is experiencing visions of the Dark Lady.",
+    "source_quote": "and about visions of the Dark Lady",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith shows signs of increasing mental instability as the party nears the infected Myconids.",
+    "source_quote": "Sarith begins speaking of a 'Dark Lady' calling to him, showing signs of increasing mental instability",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz skipped the sections of his drow training regarding drow religious lore.",
+    "source_quote": "Daz had apparently skipped those sections of his drow training",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 23 on a religion check using his training as a cleric of Bahamut.",
+    "source_quote": "Gyrgum, however, drew on his training as a cleric of Bahamut and rolled a 23 on religion",
+    "subject": "Gyrgum's religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi.",
+    "source_quote": "the Dark Lady was Zuggtmoy, the Demon Queen of Fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is known as the Lady of Rot and Decay.",
+    "source_quote": "Lady of Rot and Decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy desires to infect the living with her spores and transform them into mindless servants.",
+    "source_quote": "whose sole desire is to infect the living with her spores and transform them into mindless servants",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy transforms her servants into decomposing hosts for fungi.",
+    "source_quote": "eventually into decomposing hosts for her fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz recalled that infection normally requires proximity to the demonic power itself.",
+    "source_quote": "Daz recalled that such infection normally required proximity to the demonic power itself",
+    "subject": "Daz's arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concluded that the infected dancing Myconids are not the source of the demonic power.",
+    "source_quote": "these dancing Myconids clearly were not it",
+    "subject": "infection source deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party theorized that Sarith had been touched by Zuggtmoy's influence before they met him in prison.",
+    "source_quote": "Sarith had likely been touched by Zuggtmoy's influence well before they met him in prison",
+    "subject": "Sarith's infection timing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith has never been mentally stable.",
+    "source_quote": "they noted he had never been mentally stable",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party suspects Zuggtmoy is abroad in the Underdark, similar to Demogorgon.",
+    "source_quote": "Since Demogorgon was already abroad, it seemed entirely possible Zuggtmoy was too",
+    "subject": "Zuggtmoy's whereabouts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump greets the party upon their arrival in the Whorlstone Caverns.",
+    "source_quote": "Rumpadump greets them: \"So I see you found my friend Stool.\"",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool repeats the phrase \"I found you.\"",
+    "source_quote": "Stool replies, \"I found you. I found you. I found you.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur is one of the tall Myconids.",
+    "source_quote": "He points out Voosbur, one of the tall Myconids.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is worried the infection has spread to his kin in the Neverlight Grove.",
+    "source_quote": "\"I'm worried that they might have infected the rest of my Myconids back home.\"",
+    "subject": "Rumpadump",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party observes two apes that appear dangerous, but they are far away.",
+    "source_quote": "the only dangerous-looking things are the two apes, which are far away",
+    "subject": "ape observation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The dancing Myconids carry no weapons.",
+    "source_quote": "They carry no weapons",
+    "subject": "weapon check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The dancing Myconids can still communicate.",
+    "source_quote": "Rumpadump confirms the dancers can still communicate",
+    "subject": "communication check",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Neverlight Grove is the home of the Myconids.",
+    "source_quote": "back in their home, the Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Caverns are where the party and infected Myconids materialized.",
+    "source_quote": "materialized here in the Whorlstone Caverns",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  }
+]

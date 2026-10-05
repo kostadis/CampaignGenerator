@@ -1,0 +1,128 @@
+[
+  {
+    "type": "npc",
+    "fact": "Buppido is found standing before a makeshift altar constructed of bones and skulls.",
+    "source_quote": "He stood before a makeshift altar constructed of bones and skulls",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido wipes his hands clean on his vest.",
+    "source_quote": "his hands wiped clean on his vest",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido declares that the party has been delivered to him by destiny.",
+    "source_quote": "the party had been delivered to him by destiny itself",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido demands the party worship him as their leader.",
+    "source_quote": "demands the party worship him as their leader",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido attacks the party with a hooked spear.",
+    "source_quote": "seized a hooked spear, and lunged at them",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has only 13 hit points.",
+    "source_quote": "Buppido has only 13 hit points, \"like your typical derro.\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The makeshift altar is constructed of bones and skeletons.",
+    "source_quote": "standing before a makeshift altar constructed of skeletons and bones",
+    "subject": "makeshift altar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin keeps a 15 on initiative.",
+    "source_quote": "Thorin keeps a 15 on initiative.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin engages the skeletons in melee combat.",
+    "source_quote": "Thorin engages the skeletons in melee combat as the battle begins",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin hits a skeleton with advantage for 4 damage.",
+    "source_quote": "He hits one with advantage for 4 damage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that he will tank the hits.",
+    "source_quote": "I'll tank it and take some hits",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz casts a spell to outline enemies in glowing light.",
+    "source_quote": "Daz casts a spell to outline the enemies in glowing light",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz targets a 20-foot cube and forces a Dexterity save.",
+    "source_quote": "Daz targets a 20-foot cube and forces a Dexterity save",
+    "subject": "Daz's spell casting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir conjures a sphere of darkness to disorient attackers.",
+    "source_quote": "Zalthir conjures a sphere of darkness to disorient the attackers",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of skeletons rises to defend Buppido's shrine.",
+    "source_quote": "A group of skeletons rises to defend Buppido's shrine, surrounding the party",
+    "subject": "skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three skeletons are marked by Daz's spell.",
+    "source_quote": "three skeletons are marked",
+    "subject": "skeletons marked",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin damages a skeleton for 4 points.",
+    "source_quote": "He hits one with advantage for 4 damage",
+    "subject": "skeleton damaged",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro are described as having low hit points similar to Buppido's.",
+    "source_quote": "like your typical derro",
+    "subject": "derro",
+    "quote_verified": true
+  }
+]

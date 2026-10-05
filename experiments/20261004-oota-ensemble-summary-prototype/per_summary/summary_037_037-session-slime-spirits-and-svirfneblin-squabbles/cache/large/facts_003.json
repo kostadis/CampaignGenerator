@@ -1,0 +1,170 @@
+[
+  {
+    "type": "location",
+    "fact": "The Temple of the Ruby in the Rough is dedicated to Segojan Earthcaller.",
+    "source_quote": "cemetery beside the Temple of the Ruby in the Rough, dedicated to Segojan Earthcaller",
+    "subject": "Temple of the Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glyphic Shroomlight is a priest at the cemetery.",
+    "source_quote": "met Glyphic Shroomlight, a priest",
+    "subject": "Glyphic Shroomlight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is deceased.",
+    "source_quote": "remains of someone he did not know",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum jingles a bag to prove possession of Pelek's bones.",
+    "source_quote": "Gyrgum jingled the bag to establish that he did, in fact, possess Pelek's bones",
+    "subject": "Gyrgum jingles bag",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's ghost materializes to speak with the priest.",
+    "source_quote": "When Pelek's ghost materialized",
+    "subject": "Pelek materializes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glyphic Shroomlight agrees to make an exception to the burial rules to avoid being haunted.",
+    "source_quote": "realized that refusing might leave him haunted for years and quickly made an exception",
+    "subject": "Glyphic agrees to interment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glyphic Shroomlight asks Glabbagool to remain upstairs to prevent accidents among the graves.",
+    "source_quote": "asking only that Glabbagool remain upstairs to prevent accidents among the graves",
+    "subject": "Glabbagool stays upstairs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool agrees to wait upstairs.",
+    "source_quote": "Glabbagool agreed: \u201cOkay. But if you need anything cleaned, I'm here.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The catacombs are located below the temple and contain numerous sealed tombs.",
+    "source_quote": "He directed the party to the catacombs below",
+    "subject": "catacombs",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a large skull decoration at the north end of the burial chambers.",
+    "source_quote": "burial chambers containing numerous sealed tombs and a large skull decoration at the north end",
+    "subject": "catacombs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek expresses relief at reaching the end of his journey.",
+    "source_quote": "Pelek expressed profound relief at reaching the end of his journey",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was murdered by Buppido.",
+    "source_quote": "after being murdered by \u201cBuppido, who is really an annoying person.\u201d",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek feared he was permanently lost and doomed to torment people forever.",
+    "source_quote": "He had feared that he was permanently lost and doomed to torment people forever",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek confirms he plans to go to wherever he is supposed to go next.",
+    "source_quote": "Pelek confirms, \u201cYes, I plan to go to wherever I'm supposed to go next.\u201d",
+    "subject": "Pelek confirms afterlife plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek states that putting the bones down and covering them with dirt is sufficient.",
+    "source_quote": "\u201cJust, you know, put the bones down, cover them up with some dirt, and I'll be fine.\u201d",
+    "subject": "Pelek burial request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum finds a quiet corner and scoops out a shallow resting place for the remains.",
+    "source_quote": "Gyrgum found a quiet corner where the remains would not be stepped on, scooped out a shallow resting place",
+    "subject": "Gyrgum prepares burial",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum performs a dragon-themed ritual.",
+    "source_quote": "performed an appropriate dragon-themed ritual",
+    "subject": "Gyrgum ritual",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum plants a gold coin with the bones to serve as the foundation for Pelek's word.",
+    "source_quote": "planted a gold coin with the bones as the foundation for his word",
+    "subject": "Gold coin planted",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gold coin was planted with Pelek's bones.",
+    "source_quote": "planted a gold coin with the bones",
+    "subject": "gold coin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek tells the group it has been pleasant to travel with them.",
+    "source_quote": "\u201cIt's been very pleasant to travel with all of you. But I really do want to end my journey.\u201d",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's spirit fades away after the party says their goodbyes.",
+    "source_quote": "After the party said their goodbyes, his spirit faded away",
+    "subject": "Pelek fades",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party performs rites and says farewells.",
+    "source_quote": "The party performs the appropriate rites and says its farewells",
+    "subject": "Party farewell",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is no longer present as a ghost, having faded away.",
+    "source_quote": "his spirit faded away",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Another ghost materializes shortly after Pelek disappears.",
+    "source_quote": "another ghost materializes",
+    "subject": "New ghost appears",
+    "quote_verified": true
+  }
+]

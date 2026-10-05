@@ -1,0 +1,156 @@
+[
+  {
+    "type": "event",
+    "fact": "The party's group stealth check beats the cultists' passive perception of 7.",
+    "source_quote": "Their group stealth beats a passive perception of 7",
+    "subject": "stealth check result",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 20 for stealth.",
+    "source_quote": "Gyrgum rolls a 20",
+    "subject": "Gyrgum stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his fire breath weapon on four enemies.",
+    "source_quote": "uses his fire breath weapon on four enemies",
+    "subject": "Zalthir fire breath targets",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three enemies take 6 damage each from Zalthir's fire breath, and a fourth takes 3 damage.",
+    "source_quote": "three take 6 damage each, and a fourth takes 3",
+    "subject": "Zalthir fire breath damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Tasha's Caustic Brew is a 30-by-5-foot line.",
+    "source_quote": "a 30-by-5-foot line",
+    "subject": "Gyrgum caustic brew area",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Tasha's Caustic Brew catches four cultists.",
+    "source_quote": "catches four cultists",
+    "subject": "Gyrgum caustic brew targets",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Cultists affected by Tasha's Caustic Brew take 2d4 acid at the start of each turn.",
+    "source_quote": "take 2d4 acid at the start of each turn",
+    "subject": "Gyrgum caustic brew damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's first ray does 15 damage to a tougher chanter.",
+    "source_quote": "His first ray does 15 damage to one of the tougher chanters",
+    "subject": "Daz first ray damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM established the tougher chanter at 21 hit points.",
+    "source_quote": "which the DM put at 21 hit points",
+    "subject": "Derro chanter hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz turns his third ray on Grula-Munga.",
+    "source_quote": "He turns his third ray on Grula-Munga",
+    "subject": "Daz third ray target",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga had 85 hit points before being hit by Daz's ray.",
+    "source_quote": "Grula-Munga (85 HP)",
+    "subject": "Grula-Munga hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's third ray hits Grula-Munga on a 14 for 8 damage.",
+    "source_quote": "hitting on a 14 for 8 damage",
+    "subject": "Daz third ray damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro cultist steps out and stabs at the party with a short spear and misses.",
+    "source_quote": "A Derro cultist steps out and stabs at the party with a short spear",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Narrak is struck with 14 damage from Grula-Munga's morning star.",
+    "source_quote": "her morning star struck the frightened warrior hard for 14 damage",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DC for the Fear spell cast by Narrak is 14.",
+    "source_quote": "The DC is 14",
+    "subject": "Fear save DC",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls 11 for the Fear save and fails.",
+    "source_quote": "Gyrgum rolls 11",
+    "subject": "Gyrgum fear save roll",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin is struck by Grula-Munga's morning star for 14 damage.",
+    "source_quote": "her morning star hits for 14 damage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A caustic-brewed Derro takes 4 acid damage.",
+    "source_quote": "then takes 4 acid damage",
+    "subject": "caustic brew damage to Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's Eldritch Maul empowers his tattoo so his melee attacks reach 15 feet.",
+    "source_quote": "reach 15 feet",
+    "subject": "Eldritch Maul range",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Guiding Bolt hits Grula-Munga on a 16.",
+    "source_quote": "It hits on a 16",
+    "subject": "Grula-Munga guided bolt hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's longsword strike deals 10 damage plus 6 from a special ability for 16 total.",
+    "source_quote": "hits for 10, plus 6 from a special ability, for 16 total",
+    "subject": "Thorin longsword damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga has 54 hit points remaining after Thorin's attack.",
+    "source_quote": "leaving her at 54 hit points",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  }
+]

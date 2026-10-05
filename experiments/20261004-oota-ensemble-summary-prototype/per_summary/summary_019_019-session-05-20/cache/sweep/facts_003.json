@@ -1,0 +1,205 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldgrim is the boss of the Empty-Scabbard Killers.",
+    "source_quote": "Eldgrim, the boss of the Empty-Scabbard Killers",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim has an awful passive perception.",
+    "source_quote": "Eldgrim's \"awful\" passive perception",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are assassins who carry empty scabbards.",
+    "source_quote": "group of killers who carried empty scabbards",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers have a territory that the party is banished from.",
+    "source_quote": "ordering them out of his territory under threat of death",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz persuades Eldgrim to sign his name on a piece of parchment.",
+    "source_quote": "persuaded the assassin leader to walk over to his desk and sign his name on a piece of parchment",
+    "subject": "parchment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the soulblades manifests a shimmering psionic weapon to explain the faction's name to Thorin.",
+    "source_quote": "prompting one of the soulblades to manifest a shimmering psionic weapon in wordless explanation",
+    "subject": "psionic weapon manifested",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz steals a document bearing the royal seal of Gracklstugh and the signature of the Deepking.",
+    "source_quote": "slipped away a document bearing the royal seal of Gracklstugh and the signature of the Deepking himself",
+    "subject": "contract",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The contract proves the crown of Gracklstugh is secretly in league with the assassins.",
+    "source_quote": "proof that the crown was secretly in league with the assassins",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking's signature is on the stolen contract.",
+    "source_quote": "signature of the Deepking himself",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One soulblade manifests a psionic weapon to explain the name of the Empty-Scabbard Killers.",
+    "source_quote": "prompting one of the soulblades to manifest a shimmering psionic weapon in wordless explanation",
+    "subject": "soulblades",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Invisible soulblades fist-bump the party as they exit.",
+    "source_quote": "The guards fist-bumped them as they went",
+    "subject": "soulblades",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM explains that invisible soulblades are only truly unseen when they take the Hide action.",
+    "source_quote": "invisible creatures are only truly unseen when they take the Hide action",
+    "subject": "soulblades",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz stages a violent coughing fit to create a distraction.",
+    "source_quote": "Daz staged a violent coughing fit",
+    "subject": "Daz fakes coughing fit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz thumps Zalthir hard in the chest as a cue.",
+    "source_quote": "he thumped the dragonborn hard in the chest",
+    "subject": "Daz thumps Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir breathes fire onto the desk, igniting the remaining papers.",
+    "source_quote": "Zalthir came over to help him he thumped the dragonborn hard in the chest \u2014 Zalthir's cue to breathe a gout of fire directly onto the desk",
+    "subject": "desk ignited",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim orders the party out of his territory under threat of death.",
+    "source_quote": "ordering them out of his territory under threat of death",
+    "subject": "Eldgrim banishes party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes 'Plausible deniability' as the group's name.",
+    "source_quote": "Thorin proposed \"Plausible deniability\" as the group's long-needed name",
+    "subject": "group name proposed",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM declares the Werz objective done assuming the party deals with the cultists.",
+    "source_quote": "the DM declares the Werz objective done",
+    "subject": "Werz objective",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party plans to deal with the Demogorgon cultists to fulfill the agreement.",
+    "source_quote": "Assuming the party deals with the Demogorgon cultists",
+    "subject": "Demogorgon cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party exits the lair and arrives at an intersection near the main and side entrances of the obelisk chamber.",
+    "source_quote": "arrives at an intersection near the main and side entrances of the obelisk chamber",
+    "subject": "assassin's lair",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber has main and side entrances.",
+    "source_quote": "main and side entrances of the obelisk chamber",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim is angered by the fire and banishes the party from his territory.",
+    "source_quote": "Eldgrim erupted in fury, cursing the party and ordering them out of his territory",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining papers on the desk go up in flames.",
+    "source_quote": "The remaining papers went up in flames",
+    "subject": "papers destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir breathes fire directly onto the desk.",
+    "source_quote": "breathe a gout of fire directly onto the desk",
+    "subject": "desk",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir breathes fire onto the desk at Daz's physical cue.",
+    "source_quote": "Zalthir's cue to breathe a gout of fire directly onto the desk",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for the group's name to be 'Plausible deniability'.",
+    "source_quote": "Thorin proposed \"Plausible deniability\" as the group's long-needed name",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party passes a pair of invisible guards on their way out.",
+    "source_quote": "passing a pair of invisible guards on their way out",
+    "subject": "invisible guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The invisible guards fist-bump the party as they leave.",
+    "source_quote": "The guards fist-bumped them as they went",
+    "subject": "guards fist-bump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Touching reveals the invisible soulblades.",
+    "source_quote": "touching reveals them",
+    "subject": "soulblades",
+    "quote_verified": true
+  }
+]

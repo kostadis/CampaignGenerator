@@ -1,0 +1,93 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir retrieves the spider medallion from Xinaya's hand while she is still alive.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand while she was still alive",
+    "subject": "medallion retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya warns the party that those infected by the spores have only days to find a cure.",
+    "source_quote": "The dying drow warned the party that those infected by the spores had only days to find a cure before sharing her fate",
+    "subject": "Xinaya's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya states that it is too late to cure her.",
+    "source_quote": "It is too late for me",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum determines that lesser restoration cannot cure Xinaya.",
+    "source_quote": "Gyrgum considered lesser restoration and even revivify, but she was too far gone",
+    "subject": "Gyrgum considers lesser restoration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum considers using revivify on Xinaya.",
+    "source_quote": "Gyrgum briefly considers revivify as well, though he has no third-level spell slots remaining",
+    "subject": "Gyrgum considers revivify",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Only magic on the scale of a wish might restore someone with Xinaya's level of fungal corruption.",
+    "source_quote": "only magic on the scale of a wish might have restored her",
+    "subject": "cure for spore infection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin consults with Dawnbringer regarding Xinaya's request for death.",
+    "source_quote": "Thorin consulted quietly with Dawnbringer, and together they granted her the merciful death she had begged for",
+    "subject": "Dawnbringer consultation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes his bond with Dawnbringer as a partnership or marriage.",
+    "source_quote": "Thorin described his bond with the blade as a marriage he had not requested but intended to honor",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin grants Xinaya a merciful death at her request to end her suffering.",
+    "source_quote": "Thorin, wielding Dawnbringer and consulting with the sentient blade, delivers a mercy kill to Xinaya at her own request to end her suffering",
+    "subject": "Xinaya mercy kill",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is dead, having been granted a merciful death by Thorin.",
+    "source_quote": "together they granted her the merciful death she had begged for",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party discovers the remains of their former companion Sarith.",
+    "source_quote": "The party discovers the remains of their former companion Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith's head had exploded during his transformation into a spore servant.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Sarith's death confirms the corruption that had been affecting him.",
+    "source_quote": "Sarith's fate removes any remaining uncertainty about the corruption that had been affecting him",
+    "subject": "Sarith corruption",
+    "quote_verified": true
+  }
+]

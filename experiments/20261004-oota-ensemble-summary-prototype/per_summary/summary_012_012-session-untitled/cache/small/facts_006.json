@@ -1,0 +1,135 @@
+[
+  {
+    "type": "monster",
+    "fact": "A two-headed stone giant bursts into the district plaza, howling with wild-eyed madness.",
+    "source_quote": "A two-headed stone giant, gray-skinned and howling with wild-eyed madness, burst through one of the district's gates",
+    "subject": "two-headed stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two-headed stone giant smashes through one of the district's gates.",
+    "source_quote": "burst through one of the district's gates",
+    "subject": "gate breach",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two-headed stone giant kills a duergar soldier, sending the body flying near the party.",
+    "source_quote": "A duergar soldier's broken body flew through the air and crashed near the party's feet",
+    "subject": "duergar soldier killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The duergar soldier is dead, killed by the two-headed stone giant.",
+    "source_quote": "A duergar soldier's broken body flew through the air and crashed near the party's feet",
+    "subject": "duergar soldier",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin identifies the stone giant's violent behavior as abnormal given the species' taciturn nature.",
+    "source_quote": "Thorin recognized immediately that this was deeply wrong. Stone giants were among the most taciturn and reserved creatures in existence",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum raises and brandishes his holy symbol at the approaching stone giant.",
+    "source_quote": "Gyrgum raised his holy symbol and brandished it at the giant",
+    "subject": "Gyrgum brandishes holy symbol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missile, striking the stone giant for 15 damage.",
+    "source_quote": "Daz unleashed a volley of magical force that struck the giant unerringly... Magic Missile deals 15 damage",
+    "subject": "Daz casts Magic Missile",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of magical darkness that blinds the stone giant.",
+    "source_quote": "conjured a sphere of magical darkness that swallowed the giant whole, blinding the massive creature",
+    "subject": "Zalthir casts Darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attacks the blind stone giant with his short sword for 6 damage.",
+    "source_quote": "Thorin exploited the giant's blindness to drive his blade home... deals 6 damage",
+    "subject": "Thorin attacks giant",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels radiant energy through his holy symbol, dealing 11 radiant damage to the stone giant.",
+    "source_quote": "Gyrgum channeled searing radiant energy through his holy symbol... takes 11 radiant damage",
+    "subject": "Gyrgum casts radiant energy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The stone giant blindly attacks Thorin, rolling a 25 for 10 bludgeoning damage.",
+    "source_quote": "The creature lashed out blindly at Thorin and connected... rolls a 25 (+9) for 10 bludgeoning damage",
+    "subject": "Giant attacks Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflects the stone giant's blow, reducing the damage to zero.",
+    "source_quote": "Zalthir deflected the blow with practiced precision... no damage is taken",
+    "subject": "Zalthir deflects blow",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "A squad of duergar city guards arrives at the plaza to join the battle.",
+    "source_quote": "a squad of duergar city guards came rushing into the plaza, weapons drawn, ready to join the fray",
+    "subject": "duergar city guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz repositions and hits the stone giant with Magic Missile for 9 damage.",
+    "source_quote": "Daz moves to see around the darkness and hits with Magic Missile for 9",
+    "subject": "Daz casts Magic Missile (second)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks the stone giant, dealing 11 damage and following up with a focus-point attack.",
+    "source_quote": "Zalthir hits for 11 and attacks again with a focus point",
+    "subject": "Zalthir attacks giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a feinting attack, hitting the stone giant for 16 total damage across two strikes.",
+    "source_quote": "Thorin uses a feinting attack (+1d8), hitting on a 17 for 9 and then another 7",
+    "subject": "Thorin feints and attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum moves around the darkness and hits the stone giant with a crossbow bolt for 9 damage.",
+    "source_quote": "Gyrgum moves around the darkness and hits with a crossbow bolt (17) for 9",
+    "subject": "Gyrgum shoots crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum uses his holy symbol as a focus for radiant divine energy.",
+    "source_quote": "Gyrgum channeled searing radiant energy through his holy symbol",
+    "subject": "Gyrgum's holy symbol",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin uses his short sword to attack the stone giant.",
+    "source_quote": "Thorin exploited the giant's blindness... charging in to strike with his short sword",
+    "subject": "Thorin's short sword",
+    "quote_verified": false
+  }
+]

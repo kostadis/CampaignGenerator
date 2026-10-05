@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "The party reaches a junction with four passages heading west and a fifth route to the east.",
+    "source_quote": "The party reaches a junction with four passages heading west and a fifth route to the east.",
+    "subject": "junction",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin uses a virtual d5 to select one of the western passages.",
+    "source_quote": "Thorin uses another virtual die\u2014this time a d5\u2014to select one of the western passages.",
+    "subject": "virtual die",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin throws a dart at a patch of water to test it.",
+    "source_quote": "Before proceeding, he throws a dart at another patch of water.",
+    "subject": "dart test",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's passive perception fails to detect a concealed pit trap.",
+    "source_quote": "Thorin\u2019s passive perception fails to detect a concealed pit trap.",
+    "subject": "pit trap detection failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin sees the pit a moment too late and begins to fall.",
+    "source_quote": "He sees the pit a moment too late and begins to fall",
+    "subject": "Thorin's fall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds in grabbing the edge of the pit as he falls.",
+    "source_quote": "but succeeds in grabbing its edge.",
+    "subject": "Thorin grabs edge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin scrambles out of the pit with substantial aid from his strength.",
+    "source_quote": "A second effort allows him to scramble out, aided substantially by his strength.",
+    "subject": "Thorin escapes pit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A black pudding climbs out of the pit as Thorin dusts himself off.",
+    "source_quote": "As Thorin dusts himself off, a black pudding climbs out of the pit.",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Juiblex is a demon lord associated with oozes.",
+    "source_quote": "Arcane knowledge connects the concentration of oozes to Juiblex, the demon lord associated with such creatures.",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Black puddings can split when hit with certain types of weapons.",
+    "source_quote": "The group remembers that black puddings can split when hit with certain types of weapons.",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes retreating roughly 25 feet and drawing the pudding into a larger chamber.",
+    "source_quote": "Thorin proposes retreating roughly 25 feet and drawing it into a larger chamber.",
+    "subject": "tactical retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party defeats the pudding by keeping it out of melee range and attacking while withdrawing.",
+    "source_quote": "His plan is to keep it out of melee range, attack while withdrawing, and avoid its corrosive attacks entirely.",
+    "subject": "pudding defeat",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is defeated without catching the party.",
+    "source_quote": "The group executes the strategy successfully and defeats the pudding without allowing it to catch them.",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool consumes the remains of the black pudding.",
+    "source_quote": "Glabbagool is delighted to consume the remains.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The pit trap is empty when the party later returns to it.",
+    "source_quote": "When the party later returns to the pit, it is empty.",
+    "subject": "pit trap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin elects to continue down the chosen passage because the unexplored alternatives are equally uncertain.",
+    "source_quote": "Thorin elects to continue down the passage because the unexplored alternatives are equally uncertain.",
+    "subject": "route selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin searches much more carefully for additional traps after his near fall.",
+    "source_quote": "After his near fall, he makes a point of searching much more carefully for additional traps.",
+    "subject": "Thorin's caution",
+    "quote_verified": true
+  }
+]

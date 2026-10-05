@@ -1,0 +1,1213 @@
+[
+  {
+    "type": "event",
+    "fact": "The party searches the bodies of three fallen drow guards for equipment and traps.",
+    "source_quote": "the party wasted no time in searching the bodies of the three fallen drow guards. They agreed that henceforth every fallen enemy would be searched carefully for useful equipment\u2014and for traps.",
+    "subject": "looting fallen drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum claim the chain shirts worn by two of the fallen drow.",
+    "source_quote": "Two of the drow wore chain shirts, which Thorin and Gyrgum claimed",
+    "subject": "Thorin and Gyrgum take chain shirts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith claims the studded leather armor from one of the fallen drow warriors.",
+    "source_quote": "Sarith picked up the studded leather armor from one of the fallen warriors",
+    "subject": "Sarith takes studded leather",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin puts away his studded leather armor after upgrading to a chain shirt.",
+    "source_quote": "Thorin puts away his studded leather armor after upgrading to a chain shirt.",
+    "subject": "Thorin upgrades armor",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a shield on the fallen drow.",
+    "source_quote": "The bodies also yielded three short swords, three hand crossbows, and a shield",
+    "subject": "shield",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds three short swords on the fallen drow.",
+    "source_quote": "The bodies also yielded three short swords, three hand crossbows, and a shield",
+    "subject": "short swords",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds three hand crossbows on the fallen drow.",
+    "source_quote": "The bodies also yielded three short swords, three hand crossbows, and a shield",
+    "subject": "hand crossbows",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes one of the hand crossbows.",
+    "source_quote": "Gyrgum took one of the hand crossbows",
+    "subject": "Gyrgum takes hand crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Three poisoned crossbow bolts are found on the body of Imbros.",
+    "source_quote": "along with the three poisoned bolts found on the elite warrior Imbros",
+    "subject": "poisoned bolts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros is a fallen drow elite warrior.",
+    "source_quote": "found on the elite warrior Imbros",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A vial of poison is found on Imbros.",
+    "source_quote": "Imbros also carried a vial of poison that could be applied to a weapon to inflict additional harm",
+    "subject": "vial of poison",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes the three poisoned bolts.",
+    "source_quote": "Gyrgum takes the three poisoned bolts.",
+    "subject": "Gyrgum takes poisoned bolts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz declines wearing armor because he lacks proficiency and wants to retain his spellcasting ability.",
+    "source_quote": "Daz briefly considered armor but discovered that wearing it without proficiency would hinder his physical abilities and prevent him from casting spells, so he wisely declined.",
+    "subject": "Daz declines armor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses divine magic to restore Zalthir to full health.",
+    "source_quote": "Gyrgum called upon divine power to mend Zalthir's grievous wounds, restoring him to full health",
+    "subject": "Gyrgum heals Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's available magic is exhausted after healing Zalthir.",
+    "source_quote": "restoring him to full health but exhausting Gyrgum's available magic",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is restored to full health by Gyrgum's magic.",
+    "source_quote": "mend Zalthir's grievous wounds, restoring him to full health",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three vrocks appear in the sky above Velkynvelve, fighting among themselves.",
+    "source_quote": "Three winged demons\u2014vrocks\u2014came screaming out of the darkness, fighting among themselves above the outpost",
+    "subject": "vrocks appear",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three vrocks are present, screaming and fighting each other.",
+    "source_quote": "Three winged demons\u2014vrocks\u2014came screaming out of the darkness, fighting among themselves",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recognizes the winged creatures as demons.",
+    "source_quote": "Daz recognized the creatures as demons",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow and their quaggoth servants rush to defensive positions, ignoring the prisoners.",
+    "source_quote": "The drow and their quaggoth servants scrambled to their defensive positions, no longer concerned with their prisoners in the slightest.",
+    "subject": "drow abandon prisoners",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Quaggoths appear amidst the confusion.",
+    "source_quote": "Quaggoths also begin appearing amid the confusion",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to escape using the distraction caused by the demons.",
+    "source_quote": "The companions recognized that they could not survive a fight against the creatures and decided to use the confusion to escape.",
+    "subject": "escape plan",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party's confiscated equipment is located in another tower.",
+    "source_quote": "doing so would have required crossing to another tower while the demons attacked",
+    "subject": "confiscated gear",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin possesses a pendant carved from a giant's tooth, which was small enough to not be confiscated.",
+    "source_quote": "Thorin cared chiefly about a sentimental pendant carved from a giant's tooth, only to learn that an object small enough to have remained around his neck would not have been taken",
+    "subject": "Thorin's pendant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to abandon the rest of their former gear.",
+    "source_quote": "With nothing else worth dying for, the group abandoned the rest of its former gear.",
+    "subject": "abandoning gear",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith insists on leaving quickly rather than setting fire to the outpost.",
+    "source_quote": "Sarith\u2014flickering between lucidity and madness\u2014insisted that the quicker they left, the better",
+    "subject": "Sarith's refusal to burn outpost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith flickers between lucidity and madness.",
+    "source_quote": "Sarith\u2014flickering between lucidity and madness\u2014insisted",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy transform into rats.",
+    "source_quote": "Topsy and Turvy reveal their nature as wererats by transforming into rats",
+    "subject": "Topsy and Turvy transform",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy and Turvy are revealed to be wererats.",
+    "source_quote": "Topsy and Turvy reveal their nature as wererats",
+    "subject": "Topsy and Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle with the vrocks takes place above Velkynvelve.",
+    "source_quote": "the sky above Velkynvelve erupted into madness",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is a deep gnome twin who was imprisoned alongside the party.",
+    "source_quote": "Topsy and Turvy, the deep gnome twins who had been imprisoned alongside the party",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a deep gnome twin who was imprisoned alongside the party.",
+    "source_quote": "Topsy and Turvy, the deep gnome twins who had been imprisoned alongside the party",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy revealed to the party that they are wererats.",
+    "source_quote": "revealed a startling secret: they were wererats",
+    "subject": "wererat reveal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy told the party they would meet them downstairs.",
+    "source_quote": "Telling the party, \u201cwe'll meet you downstairs,\u201d",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy told the party they would meet them downstairs.",
+    "source_quote": "Telling the party, \u201cwe'll meet you downstairs,\u201d",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy transformed into a rat.",
+    "source_quote": "the twins transformed into rats",
+    "subject": "Topsy transform",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Turvy transformed into a rat.",
+    "source_quote": "the twins transformed into rats",
+    "subject": "Turvy transform",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy leapt into the darkness below.",
+    "source_quote": "leapt into the darkness below",
+    "subject": "Topsy leap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Turvy leapt into the darkness below.",
+    "source_quote": "leapt into the darkness below",
+    "subject": "Turvy leap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith advised against sabotaging the outpost.",
+    "source_quote": "Sarith advises against sabotaging the outpost",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith suggested a clean escape is better than inciting further drow vengeance.",
+    "source_quote": "suggesting that a clean escape is better than inciting further drow vengeance",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith insisted on immediate flight.",
+    "source_quote": "first insisting on immediate flight",
+    "subject": "Sarith flight insistence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith cackled that revenge would be \u201cso tasty.\u201d",
+    "source_quote": "and then cackling that revenge would be \u201cso tasty.\u201d",
+    "subject": "Sarith revenge comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered burning or otherwise sabotaging Velkynvelve.",
+    "source_quote": "The party considers burning or otherwise sabotaging Velkynvelve while the drow are distracted",
+    "subject": "sabotage debate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group agreed that setting the outpost ablaze would make the drow more determined to hunt them.",
+    "source_quote": "The group agrees that setting the outpost ablaze would make the drow more determined to hunt them",
+    "subject": "abandon sabotage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discussed using its silk rope or existing spider silk to descend.",
+    "source_quote": "The party discusses using its silk rope or the existing spider silk to descend",
+    "subject": "descent discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Giant spiders lurk among the giant spider webs.",
+    "source_quote": "Remembering the giant spiders lurking among the webs",
+    "subject": "giant spider webs",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow normally jump into the giant web below and use its silk to reach the lower levels.",
+    "source_quote": "The drow normally jump into the giant web below and use its silk to reach the lower levels",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to bypass the giant spider webs.",
+    "source_quote": "the party chooses to bypass it",
+    "subject": "bypass web",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group descended toward the pool at the bottom of the waterfall.",
+    "source_quote": "The group instead descends toward the pool at the bottom of the waterfall",
+    "subject": "waterfall descent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group treated the waterfall route as a water slide.",
+    "source_quote": "effectively treating the route as a water slide",
+    "subject": "water slide route",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow did not interfere with the party's descent due to the demon attack.",
+    "source_quote": "The demon attack remains sufficiently chaotic that the drow do not interfere with the descent",
+    "subject": "drow non-interference",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party landed in the water.",
+    "source_quote": "Upon landing in the water",
+    "subject": "landing in water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party was confronted by a predatory gray ooze.",
+    "source_quote": "the party is confronted by a predatory gray ooze",
+    "subject": "gray ooze confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The adventurers were not surprised by the gray ooze's appearance because they were watching for danger.",
+    "source_quote": "Because they were watching for danger, the adventurers are not surprised by its appearance",
+    "subject": "surprise avoidance",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A predatory gray ooze is present in the water.",
+    "source_quote": "the party is confronted by a predatory gray ooze",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A gray ooze emerges from the water near the escape route.",
+    "source_quote": "A gray ooze emerged near the escape route",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze strikes Thorin for a punishing blow.",
+    "source_quote": "The creature struck Thorin for a punishing blow",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze moves far more slowly than the party.",
+    "source_quote": "the companions realized that the ooze moved far more slowly than they did",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is left thrashing futilely behind the fleeing party.",
+    "source_quote": "leaving it thrashing futilely behind them",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gray ooze attacks Thorin and deals twelve points of damage.",
+    "source_quote": "The gray ooze attacks Thorin first and deals twelve points of damage.",
+    "subject": "gray ooze damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is struck by the gray ooze.",
+    "source_quote": "The creature struck Thorin for a punishing blow",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth warns Thorin that the gray ooze's corrosive body can devour his armor.",
+    "source_quote": "Eldeth warned that its corrosive body could devour his newly acquired armor",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth warns Thorin that gray oozes eat armor.",
+    "source_quote": "Eldeth warns Thorin that gray oozes eat armor, strengthening his desire to preserve his newly acquired chain shirt.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin possesses a newly acquired chain shirt.",
+    "source_quote": "strengthening his desire to preserve his newly acquired chain shirt",
+    "subject": "chain shirt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wants to fight back against the ooze.",
+    "source_quote": "Although Thorin wanted to fight back",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin chooses to flee after recognizing the ooze is slower than the party.",
+    "source_quote": "Thorin wants to strike back but chooses to flee after recognizing that the ooze is much slower than the party.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum disengages and runs rather than fighting the ooze.",
+    "source_quote": "Gyrgum disengages and runs rather than attempting to fight the ooze.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith favors fleeing toward the Darklake.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar favors fleeing toward the Darklake.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz follows the fleeing party after confirming there is no need to fight the giant spiders.",
+    "source_quote": "Daz follows after confirming that there is no need to fight the giant spiders overhead.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Giant spiders are overhead during the escape.",
+    "source_quote": "no need to fight the giant spiders overhead.",
+    "subject": "giant spiders",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companions disengage and run, leaving the gray ooze behind.",
+    "source_quote": "One after another they disengaged and ran, leaving it thrashing futilely behind them.",
+    "subject": "party disengagement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A badly wounded vrock descends from the battle above.",
+    "source_quote": "A badly wounded vrock descended from the battle above",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vrock lands directly beside the fleeing prisoners.",
+    "source_quote": "landed directly beside the fleeing prisoners",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vrock is badly wounded.",
+    "source_quote": "A badly wounded vrock descended from the battle above",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront refuses to run from the vrock.",
+    "source_quote": "Ront refused to run",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is motivated by humiliation from imprisonment and a desire to prove himself.",
+    "source_quote": "Humiliated by his imprisonment and determined to prove himself a powerful warrior",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront attacks the vrock with his great axe.",
+    "source_quote": "the orc attacked with his great axe",
+    "subject": "Ront attacks vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront deals a solid blow to the demon.",
+    "source_quote": "dealt the demon a solid blow",
+    "subject": "Ront damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront's blow deals nine points of damage.",
+    "source_quote": "Ront's blow deals nine points of damage",
+    "subject": "Ront damage count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vrock is left looking even more wounded after Ront's attack.",
+    "source_quote": "leaves the vrock looking even more wounded.",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar refuses to follow Ront into the battle.",
+    "source_quote": "Shuushar refused to follow him into the suicidal battle.",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool follows Shuushar away from the danger.",
+    "source_quote": "Stool follows Shuushar away from the danger.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock kills Ront with its talons.",
+    "source_quote": "The vrock answered with its talons and killed Ront.",
+    "subject": "vrock kills Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is dead.",
+    "source_quote": "killed Ront.",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock menaces Daz with its beak.",
+    "source_quote": "It then menaced Daz with its beak",
+    "subject": "vrock menaces Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock takes flight and flies away.",
+    "source_quote": "before taking flight",
+    "subject": "vrock departs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock decides Daz is not worth the effort of killing.",
+    "source_quote": "apparently deciding that the wizard was not worth the effort of killing.",
+    "subject": "vrock decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The survivors sprint into the tunnels and become free.",
+    "source_quote": "The survivors sprinted into the tunnels, and just like that, they were free.",
+    "subject": "escape completion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realizes they are stranded deep in the Underdark without food, water, money, or a map.",
+    "source_quote": "they were stranded deep in the Underdark without food, water, money, or a map",
+    "subject": "stranded status",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is uncertain whether the former prisoners accompanying the party will remain allies.",
+    "source_quote": "accompanied by former prisoners who might or might not remain allies",
+    "subject": "former prisoner loyalty",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has the ability to see through darkness for 120 feet.",
+    "source_quote": "Daz took what comfort he could from his ability to see through darkness for 120 feet.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that his darkvision lets him see many threats before they kill him.",
+    "source_quote": "Daz notes that his 120-foot darkvision should at least let him see many threats before they kill him.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A rock tumbles nearby as the fugitives bunch together.",
+    "source_quote": "A rock tumbles nearby as the fugitives bunch together along their chosen escape route.",
+    "subject": "rock tumble",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party flees into the tunnels of the Underdark.",
+    "source_quote": "The party successfully flees into the tunnels of the Underdark.",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party considers fleeing toward the Darklake.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The route toward Menzoberranzan is one of the options considered during the escape.",
+    "source_quote": "rather than heading along the route toward Menzoberranzan.",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party navigates a battlefield filled with drow.",
+    "source_quote": "The party navigates a chaotic battlefield filled with demons and drow",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party completed a long rest, restoring lost health and expended spells.",
+    "source_quote": "After an exhausted rest... completes a long rest, restoring lost health and expended spells.",
+    "subject": "party rest",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Underdark travel is reduced to eight miles per day at a fast pace.",
+    "source_quote": "eight miles per day at a fast pace",
+    "subject": "underdark travel rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Underdark travel is reduced to six miles per day at a normal pace.",
+    "source_quote": "six at a normal pace",
+    "subject": "underdark travel rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Underdark travel is reduced to four miles per day at a slow pace.",
+    "source_quote": "or four while moving slowly.",
+    "subject": "underdark travel rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fast travel prevents foraging and makes danger harder to notice.",
+    "source_quote": "Fast travel prevented foraging and made danger harder to notice",
+    "subject": "fast travel effects",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Slow travel allows stealth and improves the group's chances of finding food.",
+    "source_quote": "slow travel allowed stealth and improved the group's chances of finding food.",
+    "subject": "slow travel effects",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith stepped forward as the party's navigator.",
+    "source_quote": "Sarith stepped forward as navigator",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith appeared to be telling the truth about his knowledge of the passages.",
+    "source_quote": "appeared to be telling the truth about his knowledge of the passages.",
+    "subject": "Sarith's honesty",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party arranged a marching order keeping sturdier companions toward the front.",
+    "source_quote": "keeping sturdier companions toward the front",
+    "subject": "marching order arrangement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is unarmored and was placed farther back in the marching order.",
+    "source_quote": "the unarmored Daz farther back.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin offered to travel at the front of the marching order.",
+    "source_quote": "Thorin offers to travel at the front",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir volunteered for the front or second position in the marching order.",
+    "source_quote": "Zalthir volunteers for the front or second position",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz preferred the third rank in the marching order.",
+    "source_quote": "the unarmored Daz prefers the third rank.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party agreed that player characters will generally bear the brunt of danger.",
+    "source_quote": "player characters will generally bear the brunt of danger",
+    "subject": "danger assumption",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress is a strange and ancient magical energy that suffuses parts of the Underdark.",
+    "source_quote": "the Faerzress, a strange and ancient magical energy that suffused parts of the Underdark.",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress bathes affected passages in dim light.",
+    "source_quote": "It bathed affected passages in dim light",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress protects creatures from divination.",
+    "source_quote": "protected creatures from divination",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress makes teleportation unreliable and physically dangerous.",
+    "source_quote": "made teleportation both unreliable and physically dangerous.",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Waterdeep is the party's distant ideal destination.",
+    "source_quote": "Waterdeep remained the distant ideal",
+    "subject": "Waterdeep",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy does not want to return to Blingdenstone due to a disagreement with its inhabitants.",
+    "source_quote": "Topsy and Turvy did not want to return to Blingdenstone after a disagreement with its inhabitants",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy does not want to return to Blingdenstone due to a disagreement with its inhabitants.",
+    "source_quote": "Topsy and Turvy did not want to return to Blingdenstone after a disagreement with its inhabitants",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy has an apparent reputation as a thief.",
+    "source_quote": "reinforcing the widespread suspicion that the twins were thieves.",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy has an apparent reputation as a thief.",
+    "source_quote": "reinforcing the widespread suspicion that the twins were thieves.",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh lies roughly twenty-eight days away from the party's current location.",
+    "source_quote": "Gracklstugh lay roughly twenty-eight days away",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sloobludop is the home sought by Shuushar.",
+    "source_quote": "Sloobludop\u2014the home sought by Shuushar",
+    "subject": "Sloobludop",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sloobludop is only eight days distant from the party's current location.",
+    "source_quote": "was only eight days distant.",
+    "subject": "Sloobludop",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake is an enormous network of underground rivers, canals, natural tunnels, and flooded caverns.",
+    "source_quote": "the Darklake was not a single lake but an enormous network of underground rivers, canals, natural tunnels, and flooded caverns",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake extends for more than a hundred miles.",
+    "source_quote": "extending for more than a hundred miles",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake has ceilings miles high and unfathomable depths.",
+    "source_quote": "with ceilings miles high and unfathomable depths.",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith explained that reaching the Darklake would allow the party to find or steal a boat.",
+    "source_quote": "Reaching it would allow the party to find or steal a boat",
+    "subject": "Sarith's navigation advice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido approved of the route because it could eventually take him to Gracklstugh.",
+    "source_quote": "Buppido approved because the route could eventually take him to Gracklstugh.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose Sloobludop as its first destination.",
+    "source_quote": "The party therefore chose Sloobludop as its first destination",
+    "subject": "destination choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party set out at a normal pace.",
+    "source_quote": "set out at a normal pace.",
+    "subject": "travel pace choice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool chose Gyrgum as his \u201cbestest friend\u201d and protector.",
+    "source_quote": "Stool... chose Gyrgum as his \u201cbestest friend\u201d and protector.",
+    "subject": "Stool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is too small to hold Gyrgum's hand comfortably.",
+    "source_quote": "Too small to hold the orc's hand comfortably",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool walked as close beside Gyrgum as possible.",
+    "source_quote": "Stool instead walked as close beside him as possible",
+    "subject": "Stool's movement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool hopes Gyrgum will keep him safe and eventually take him home.",
+    "source_quote": "hoping Gyrgum would keep him safe and eventually take him home.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum did not know what responsibility he had accepted by becoming Stool's protector.",
+    "source_quote": "Gyrgum did not know what responsibility he had accepted",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was unwilling to reject Stool.",
+    "source_quote": "he was unwilling to reject a terrified childlike creature.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar seeks Sloobludop.",
+    "source_quote": "Sloobludop\u2014the home sought by Shuushar",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party considered Blingdenstone as a practical Underdark settlement choice.",
+    "source_quote": "their practical choices were Underdark settlements... Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The Tongue of Madness is a strange edible fungus that resembles a large human tongue.",
+    "source_quote": "discovered a strange edible fungus resembling a large human tongue",
+    "subject": "Tongue of Madness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith describes the fungus as \u201cthe tastiest thing in the world.\u201d",
+    "source_quote": "Sarith praised it as \u201cthe tastiest thing in the world\u201d",
+    "subject": "Sarith",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar claims that eating the fungus allows one to connect with the gods.",
+    "source_quote": "Shuushar solemnly claimed that eating it allowed one to connect with the gods",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companions initially consider gathering the fungus without eating it.",
+    "source_quote": "The companions initially consider gathering it without eating it",
+    "subject": "initial plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin volunteers to eat the fungus first due to his strong constitution and resistance to poison.",
+    "source_quote": "Thorin, trusting his strong constitution and resistance to poison, volunteered as the guinea pig",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin resists the fungus's magical effect after sensing a strange sensation.",
+    "source_quote": "He sensed something unusual but resisted the effect",
+    "subject": "Thorin consumption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin swallows the fungus normally and finds it quite tasty.",
+    "source_quote": "swallowed normally, and found the mushroom quite tasty",
+    "subject": "Thorin reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz eats the fungus next.",
+    "source_quote": "Daz tried it next",
+    "subject": "Daz consumption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "For the following hour, Daz compulsively says every thought that enters his head.",
+    "source_quote": "For the following hour, he compulsively said every thought that entered his head",
+    "subject": "Daz affliction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group begins laughing at Daz's involuntary speech.",
+    "source_quote": "When everyone began laughing",
+    "subject": "Party reaction to Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz\u2019s thoughts settle into a loop where he wonders why everyone is laughing at him.",
+    "source_quote": "his thoughts settled into a bewildered loop: \u201cwhy are all these people laughing at me?\u201d",
+    "subject": "Daz loop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The effect is identified as a familiar, harmless practical joke among Underdark denizens.",
+    "source_quote": "The effect is revealed to be a familiar, harmless practical joke among the denizens of the Underdark",
+    "subject": "Effect nature",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rest of the party eats the fungus after realizing the effect is harmless.",
+    "source_quote": "Seeing that the effect was harmless, the rest of the party ate as well",
+    "subject": "Group consumption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The tunnels fill with involuntary chatter from the party for an hour.",
+    "source_quote": "The tunnels filled with involuntary chatter",
+    "subject": "Party chatter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir attempts to use monk's discipline to control his thoughts but fails.",
+    "source_quote": "while Zalthir attempted a monk's discipline",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir compulsively repeats, \u201cI'm meditating.\u201d",
+    "source_quote": "instead repeatedly announced, \u201cI'm meditating.\u201d",
+    "subject": "Zalthir repetition",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz retains some of the fungus in his sack.",
+    "source_quote": "Daz retained some of the fungus for possible use in future potions or tricks",
+    "subject": "fungus sample",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party encounters a sudden rockfall near the end of the day's travel.",
+    "source_quote": "The scene ends abruptly as the party encounters a sudden rockfall near the end of the day's travel",
+    "subject": "rockfall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The tunnel ceiling gave way and heavy stone crashed onto the travelers.",
+    "source_quote": "the ceiling gave way and heavy stone crashed onto the travelers",
+    "subject": "tunnel ceiling collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was knocked unconscious beneath the rubble.",
+    "source_quote": "Daz was knocked unconscious beneath the rubble",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is at zero hit points.",
+    "source_quote": "Daz is reduced to zero hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's first death saving throw succeeds.",
+    "source_quote": "Daz's first death saving throw succeeds",
+    "subject": "Daz's death saving throw",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was reduced to the brink of death.",
+    "source_quote": "Gyrgum was reduced to the brink of death",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remained conscious through his orcish Relentless Endurance.",
+    "source_quote": "remained conscious through his orcish Relentless Endurance",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is at one hit point.",
+    "source_quote": "allows him to remain conscious with one hit point",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido was pinned beneath the fallen stone.",
+    "source_quote": "Buppido and several other companions were also pinned",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir avoided the worst of the collapse and was left free.",
+    "source_quote": "Zalthir and Thorin avoided the worst of the collapse",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin avoided the worst of the collapse and was left free.",
+    "source_quote": "Zalthir and Thorin avoided the worst of the collapse",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir and Thorin were left to organize a rescue.",
+    "source_quote": "Zalthir and Thorin avoided the worst of the collapse and were left to organize a rescue",
+    "subject": "rescue organization",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Every trapped victim faces further crushing injuries if left buried for another round.",
+    "source_quote": "Every trapped victim faced further crushing injuries if left buried for another round",
+    "subject": "crushing damage risk",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The survivors must rapidly decide which companions to rescue first.",
+    "source_quote": "forcing the uninjured survivors to decide whom to dig out first",
+    "subject": "rescue priority",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The rockfall occurred as the day drew to a close.",
+    "source_quote": "As the day drew to a close",
+    "subject": "time of day",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is expected to reach second level after surviving the encounter.",
+    "source_quote": "The party is expected to reach second level after surviving the encounter",
+    "subject": "level progression",
+    "quote_verified": true
+  }
+]

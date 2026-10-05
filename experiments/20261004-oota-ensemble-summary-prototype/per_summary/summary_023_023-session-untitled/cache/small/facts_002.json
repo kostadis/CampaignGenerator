@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "The party travels to Buppido's former resting place to set up camp for a long rest.",
+    "source_quote": "retreated to Buppido's former resting place, a secluded alcove where Buppido had once sheltered",
+    "subject": "Buppido's former resting place",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool presses the party to go help his friend Rumpadump.",
+    "source_quote": "Stool pressed them to go find his friend Rumpadump first",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool asserts that the Myconids and their spore-zombie Quaggoths are friends and should not be killed.",
+    "source_quote": "He insisted that the Myconids and their spore-zombie Quaggoths were friends and that no one needed to be killed",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool falls asleep and is carried by the party.",
+    "source_quote": "Stool simply fell asleep and was carried along",
+    "subject": "Stool falls asleep",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost currently inhabiting the body of an assassin.",
+    "source_quote": "Pelek is currently inhabiting the body of an assassin",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek remarks that the party has completed a full circle.",
+    "source_quote": "he noted that the party had \"completed a full circle\"",
+    "subject": "Pelek's observation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Pelek politely requests to be tied up while he sleeps.",
+    "source_quote": "politely requested to be tied up while he slept",
+    "subject": "Pelek's request",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is worried that the original host's consciousness might resurface and overwhelm him.",
+    "source_quote": "worried that the original host's consciousness might resurface and overwhelm him",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek asks specifically for silk rope rather than the offered hemp rope.",
+    "source_quote": "Pelek asked specifically for silk, noting that he hadn't slept in a body in ages",
+    "subject": "Rope selection",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz possesses a textbook titled *The Undead Horde*.",
+    "source_quote": "drawing on his textbook *The Undead Horde*",
+    "subject": "The Undead Horde",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz recalls from *The Undead Horde* that the possession is stable unless the host is knocked unconscious.",
+    "source_quote": "the possession was actually stable unless the host was knocked unconscious",
+    "subject": "Daz's knowledge check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz chooses not to share his knowledge about possession stability to keep Pelek restrained as a precaution.",
+    "source_quote": "He said nothing, reasoning that keeping an untrustworthy newcomer bound was simply good policy",
+    "subject": "Daz's silence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to always tie up new members, citing their experience with Buppido.",
+    "source_quote": "\"Always tie up new members,\" Zalthir proposed, and the party agreed",
+    "subject": "New policy adopted",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is cited by the party as having 'killed people' during previous interactions.",
+    "source_quote": "citing Buppido, who \"killed people\"",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a wager on the strength of the knots.",
+    "source_quote": "Jimjar, ever the opportunist, offered a wager on the knots",
+    "subject": "Jimjar's wager",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum bets five gold pieces that Pelek will not escape his bonds by morning.",
+    "source_quote": "Gyrgum was confident in his work and bet five gold pieces that Pelek would not escape his bonds by morning",
+    "subject": "Gyrgum's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek remains securely tied throughout the night.",
+    "source_quote": "Gyrgum collects his winnings from Jimjar when Pelek remains securely tied",
+    "subject": "Wager resolution",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar pays Gyrgum his winnings.",
+    "source_quote": "Jimjar was paying up with a gracious \"well done, well done\"",
+    "subject": "Jimjar pays",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to deal with the cultists before finding Rumpadump.",
+    "source_quote": "the party decides to deal with the cultists first",
+    "subject": "Priority decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir promises Stool that finding Rumpadump is 'on the list'.",
+    "source_quote": "Zalthir promises it is \"on the list\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a route that avoids revealing their proximity to Rumpadump.",
+    "source_quote": "the party takes a route that avoids revealing how close they are to Stool's friend",
+    "subject": "Route selection",
+    "quote_verified": true
+  }
+]

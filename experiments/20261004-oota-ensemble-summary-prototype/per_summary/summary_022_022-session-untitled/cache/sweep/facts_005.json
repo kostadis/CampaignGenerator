@@ -1,0 +1,219 @@
+[
+  {
+    "type": "event",
+    "fact": "A derro patrol spots the party 100 feet down a path in the western tunnels.",
+    "source_quote": "About 100 feet down that path, a derro patrol spotted them.",
+    "subject": "derro patrol encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party attempts to bypass the derro patrol with a casual stroll, aided by a deception roll of 21.",
+    "source_quote": "The party tried a casual, confident stroll past, helped by the derros' wretched wisdom and a deception roll of 21.",
+    "subject": "deception attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro have an intelligence and wisdom score of 3 and a perception score of 7.",
+    "source_quote": "the derro have intelligence and wisdom of 3 and a perception of 7",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro attack immediately after Gyrgum declares his devotion to Bahamut.",
+    "source_quote": "Gyrgum declared his devotion to Bahamut, and the derro attacked at once.",
+    "subject": "combat start",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bahamut is the deity worshipped by Gyrgum.",
+    "source_quote": "Gyrgum declared his devotion to Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wins initiative with a roll of 19.",
+    "source_quote": "Thorin won initiative with a 19",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits a derro with his longsword for 6 damage.",
+    "source_quote": "His longsword hits (13) for 6 damage",
+    "subject": "Thorin attacks derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Sap mastery leaves his target at disadvantage on its next attack.",
+    "source_quote": "his Sap mastery leaves his target at disadvantage",
+    "subject": "Thorin uses Sap",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves his magical darkness over two of the enemies.",
+    "source_quote": "Zalthir moved his magical darkness over two of the enemies",
+    "subject": "Zalthir uses darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir scores a critical unarmed strike from inside the darkness for 12 damage.",
+    "source_quote": "scored a critical unarmed strike from inside it",
+    "subject": "Zalthir attacks derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The critical strike leaves the targeted derro at a single hit point.",
+    "source_quote": "leaving one at a single hit point",
+    "subject": "Derro weakened",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz splits magic missiles across the patrol.",
+    "source_quote": "Daz split magic missiles across the patrol",
+    "subject": "Daz attacks patrol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits the derro with Tasha's Caustic Brew.",
+    "source_quote": "Gyrgum hit them with Tasha's Caustic Brew",
+    "subject": "Gyrgum casts Brew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down a derro that tries to go after Zalthir using a Guardian stance.",
+    "source_quote": "Thorin took up a Guardian stance and cut down a derro that tried to go after Zalthir",
+    "subject": "Thorin guards Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum parries a hooked spear while debating theology with his attacker.",
+    "source_quote": "Gyrgum parried a hooked spear while calmly debating theology with his attacker",
+    "subject": "Gyrgum parries",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts True Strike on his mace.",
+    "source_quote": "He then cast True Strike",
+    "subject": "Gyrgum casts True Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum kills the last standing derro with a bone-crushing blow of his mace.",
+    "source_quote": "killed the last standing derro with a bone-crushing blow of his mace",
+    "subject": "Last derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party continues down the underground corridor after the patrol is defeated.",
+    "source_quote": "With the patrol defeated, the party continues down the underground corridor",
+    "subject": "Patrol defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The allied crew attacks twice for 8 and 4 damage, leaving one derro at 1 hit point.",
+    "source_quote": "The allied crew attacks twice, for 8 and 4 damage, leaving one derro at 1 hit point",
+    "subject": "Derro wounded by allies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro swing back with hooked spears at Zalthir and miss.",
+    "source_quote": "The derro swing back with hooked spears at Zalthir and miss",
+    "subject": "Derro misses Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Derro number four fails its save against Tasha's Caustic Brew and is coated in acid that burns each turn.",
+    "source_quote": "derro number four fails and is coated in acid that burns each turn until scraped off",
+    "subject": "Derro covered in acid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro charges Gyrgum screaming about death to Bahamut.",
+    "source_quote": "A derro charges Gyrgum screaming about death to Bahamut",
+    "subject": "Derro charges Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills his opponent with 7 damage.",
+    "source_quote": "Thorin kills his opponent with another 7 damage",
+    "subject": "Thorin kills derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack deals 7 damage and cuts down derro number four.",
+    "source_quote": "Thorin's opportunity attack deals 7 and cuts it down",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires magic missiles that drop a derro to 3 hit points.",
+    "source_quote": "Daz fires more magic missiles: two at the derro with 6 hit points and one at the derro with 8, dropping it to 3",
+    "subject": "Daz finishes derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's attacks all miss due to low rolls.",
+    "source_quote": "Zalthir's attacks all miss (the GM rolls a 2 and a 1)",
+    "subject": "Zalthir misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last derro goes splattering across the ground with broken vertebrae.",
+    "source_quote": "goes splattering across the ground with a couple of broken vertebrae",
+    "subject": "Final derro dies",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The patrol consists of four derro guards.",
+    "source_quote": "The party encounters a patrol of four derro guards",
+    "subject": "derro patrol",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro are fanatical cultists of the dual-headed master.",
+    "source_quote": "The fanatical cultists attack at once",
+    "subject": "derro",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin leads the attack in the first round of combat.",
+    "source_quote": "Thorin leads the attack",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks with quiet arrogance that one head is better than two while standing over the fallen patrol.",
+    "source_quote": "Standing over the fallen patrol, he remarked with quiet arrogance that one head was indeed better than two",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

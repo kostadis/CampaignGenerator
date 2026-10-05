@@ -1,0 +1,191 @@
+[
+  {
+    "type": "event",
+    "fact": "Gartokkar reveals the true political landscape of Gracklstugh to the party.",
+    "source_quote": "Gartokkar then drew the party aside and revealed the true political landscape of Gracklstugh",
+    "subject": "Keepers' political landscape reveal",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers' power derives in equal measure from psionic abilities, the leadership of the Deepking, and influence over Themberchaud.",
+    "source_quote": "in equal measure from our psionic abilities, the leadership of the Deepking, and our influence over Themberchaud",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud does not know that the Keepers are planning to replace him.",
+    "source_quote": "The dragon had no idea that they were already planning to replace him",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A red dragon egg intended to hatch Themberchaud's successor was stolen.",
+    "source_quote": "A red dragon egg, intended to hatch his successor, had been stolen",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are a shadowy organization that stole the red dragon egg.",
+    "source_quote": "had been stolen by a shadowy organization known as the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers have been waging a quiet war against the Thieves Guild since the theft.",
+    "source_quote": "the Keepers had been waging a quiet war against the Thieves Guild ever since",
+    "subject": "Thieves Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reveals that Themberchaud wants the party to report directly to him.",
+    "source_quote": "When Thorin revealed that Themberchaud wanted the party to report directly to him",
+    "subject": "direct reporting to dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar expresses gratitude for the tip regarding direct reporting.",
+    "source_quote": "Gartokkar was grateful for the tip",
+    "subject": "Gartokkar's gratitude",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar insists that the old dragon would not be disposed of but set free.",
+    "source_quote": "Gartokkar insisted that the old dragon would not be disposed of but \"set free\"",
+    "subject": "Gartokkar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar describes a great psionic disturbance rippling through the Underdark.",
+    "source_quote": "Gartokkar also described a great psionic disturbance rippling through the Underdark",
+    "subject": "psionic disturbance description",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gartokkar believes the Gray Ghosts are responsible for the psionic disturbance.",
+    "source_quote": "which he believed the Gray Ghosts were responsible for",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's lore checks fail to turn up further clues about the disturbance.",
+    "source_quote": "The party's lore checks failed to turn up any further clue about it",
+    "subject": "lore check failure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro messenger who carries messages and supplies for the Gray Ghosts.",
+    "source_quote": "a derro messenger named Droki, who carried messages and supplies for the Gray Ghosts",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar tasks the party with tracking down Droki.",
+    "source_quote": "He tasked the party with tracking down a derro messenger named Droki",
+    "subject": "party task assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar tasks the party with recovering powerful magic that caused the disturbance.",
+    "source_quote": "and with recovering whatever powerful magic had caused the disturbance",
+    "subject": "party task assignment 2",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar gives the party a holy symbol of Laduguer.",
+    "source_quote": "he gave the party a holy symbol of Laduguer",
+    "subject": "holy symbol of Laduguer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar gives the party gold pins bearing Themberchaud's profile.",
+    "source_quote": "and gold pins bearing Themberchaud's profile",
+    "subject": "gold pins",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The holy symbol and gold pins grant passage beyond the Darklake District.",
+    "source_quote": "granting them passage beyond the Darklake District",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar threatens that refusal will result in the Stone Guards inventing a crime to charge the party with.",
+    "source_quote": "refusal would result in the Stone Guards inventing an appropriate crime to charge them with",
+    "subject": "Gartokkar's threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party accepts the mission.",
+    "source_quote": "The party accepted the mission",
+    "subject": "party accepts mission",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests that the Stone Guards ought to know about the stolen egg.",
+    "source_quote": "Thorin provocatively suggested that perhaps the Stone Guards ought to know about the stolen egg",
+    "subject": "Thorin's provocation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is thrown into barely concealed alarm by Thorin's suggestion.",
+    "source_quote": "sending Gartokkar into barely concealed alarm",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin states that the party will decide what to do with the egg when the time comes.",
+    "source_quote": "Thorin simply replied that they would decide what to do with it when the time came",
+    "subject": "Thorin's ambiguity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar calls the party \"funny\" through gritted teeth.",
+    "source_quote": "left Gartokkar calling them \"funny\" through gritted teeth",
+    "subject": "Gartokkar's reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group has a brief exchange about everyone's height.",
+    "source_quote": "led to a brief exchange about everyone's height",
+    "subject": "height exchange",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin floats the idea of escaping on the back of a dragon.",
+    "source_quote": "Thorin was already floating the idea of escaping \"in a blaze of glory on the back of a dragon\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party operates as agents of the dragon, servants of the Keepers, and investigators for a Stone Guard captain simultaneously.",
+    "source_quote": "as agents of the dragon who didn't know he was being replaced, as servants of the faction that was replacing him, and as investigators for a Stone Guard captain",
+    "subject": "multiple fronts",
+    "quote_verified": false
+  }
+]

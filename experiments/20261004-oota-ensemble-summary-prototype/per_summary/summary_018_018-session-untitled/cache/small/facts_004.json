@@ -1,0 +1,303 @@
+[
+  {
+    "type": "event",
+    "fact": "The party resumes their audience with Errde Blackskull after the previous discussion ended.",
+    "source_quote": "When the discussion ended, the party resumed their audience with Errde.",
+    "subject": "audience resumes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin practices a philosophy of radical candor during the briefing.",
+    "source_quote": "Thorin, newly committed to a philosophy of radical candor, delivered their report with disarming bluntness",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph shares its psychic impressions of the caverns below with Errde.",
+    "source_quote": "the flumph shared its psychic impressions of the caverns below",
+    "subject": "flumph reports",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph states that trauma dumping is no longer satisfying and asks the party to cause trauma on others, but not on itself.",
+    "source_quote": "the flumph complained that repeated trauma dumping had become \"no longer as satisfying\"",
+    "subject": "the flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde concludes that the Gray Ghosts and the Council of Savants are working in concert.",
+    "source_quote": "Errde concluded that the Gray Ghosts and the Council of Savants were working in concert",
+    "subject": "Errde's conclusion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz pushes back against Errde's conclusion by stating that proximity does not equal partnership.",
+    "source_quote": "Daz pushed back that being near each other does not make them partners",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde concedes that Daz presents a conundrum regarding the Gray Ghosts and Council of Savants.",
+    "source_quote": "Errde conceded \"you present a conundrum\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde demands the party return to the Whorlstone Caverns with proper documented evidence.",
+    "source_quote": "She then demanded the party return to the Whorlstone Caverns with proper documented evidence",
+    "subject": "demand for proof",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde agrees to arm the party's companions with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "armament deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is to be armed with medium armor, short swords, shortbows, and shields by Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is to be armed with medium armor, short swords, shortbows, and shields by Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is to be armed with medium armor, short swords, shortbows, and shields by Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy has disappeared for now and can wear splint mail.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy has disappeared for now and can wear splint mail.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool received no equipment from Errde.",
+    "source_quote": "Stool received nothing",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposes a cover story involving being seen talking to other factions.",
+    "source_quote": "Daz proposed a cover story: be seen talking to other factions first",
+    "subject": "cover story proposed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde calls Daz's cover story a fantastic idea.",
+    "source_quote": "Errde called it \"a fantastic idea\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde suggests the party visit Clan Ironhead and Clan Xardelvar.",
+    "source_quote": "Errde called it \"a fantastic idea\" and suggested the party visit Clan Ironhead and Clan Xardelvar",
+    "subject": "clan direction",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The cover story is intended to make it appear the party is working against the Deepking rather than for the Stone Guard.",
+    "source_quote": "so it would appear they were working against the Deepking rather than for the Stone Guard",
+    "subject": "secret mission",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party keeps the red dragon egg a secret during the meeting.",
+    "source_quote": "Throughout the meeting, the party kept the red dragon egg a secret",
+    "subject": "egg secrecy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde noticed the egg in the flumph's visions but did not realize it was the egg lost by the Keepers of the Flame.",
+    "source_quote": "Errde noticed the egg in the flumph's visions but could not imagine it was the very egg the Keepers of the Flame had lost",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a 20 on his blurt mechanic and held his tongue regarding the egg.",
+    "source_quote": "Thorin, under his new dice-driven \"blurt\" rule, rolled a 20 and held his tongue",
+    "subject": "Thorin's silence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde asks the party why they did not bring the papers despite knowing the evidence was insufficient.",
+    "source_quote": "Errde asks Daz why, knowing the evidence was insufficient, they didn't bring the papers",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz claims the caves are not as safe as they used to be, causing them to retreat for fresh air.",
+    "source_quote": "Daz: \"The caves are not as safe as they used to be\u2026 we came back up to get some fresh air, reset.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states that they are looking for reinforcements.",
+    "source_quote": "Gyrgum: \"Yeah, we're looking for some reinforcements too.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde cannot send Duergar reinforcements.",
+    "source_quote": "Errde cannot send Duergar reinforcements",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde proposes working together to solve collective problems using the party's crew and her weapons.",
+    "source_quote": "Errde cannot send Duergar reinforcements, but proposes: \"You've got a crew, and I have weapons. Perhaps we can work together to solve our collective problems.\"",
+    "subject": "partnership proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde praises Daz's thinking as needed for leading operations.",
+    "source_quote": "Errde praises Daz: \"That is the kind of thinking that is needed to lead these kinds of operations.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses uncertainty about being the leader.",
+    "source_quote": "Daz: \"I don't know that I'm the leader, but.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses not to mention that they also work for the Keepers of the Flame.",
+    "source_quote": "The party chooses not to mention that they also work for the Keepers of the Flame",
+    "subject": "non-exclusive agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if the agreement is non-exclusive.",
+    "source_quote": "Thorin: \"this is not an exclusive agreement, right?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum jokes about checking the agreement against their other agreements.",
+    "source_quote": "Gyrgum: \"Here, let me check it against my other agreements.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde emphasizes that the purpose of the mission must be kept secret.",
+    "source_quote": "She stresses that \"it is crucially important that the purpose of your mission be kept secret.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish a cover as dissidents.",
+    "source_quote": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish their cover as dissidents against the Deepking",
+    "subject": "clan visits directed",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow.",
+    "source_quote": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is openly opposed to the Deepking.",
+    "source_quote": "It is openly opposed to the Deepking",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde states that talking to Clan Ironhead will make it clear the party is working against the king.",
+    "source_quote": "Errde: \"Talking to them will make it clear that you're working against the king. Thus, no one would suspect we would be allied with each other.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over.",
+    "source_quote": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar has been chafing at new rules and regulations.",
+    "source_quote": "They have been chafing at new rules and regulations",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that Clan Xardelvar is advocating for smaller government.",
+    "source_quote": "Gyrgum: \"They're advocating for smaller government.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde marks Clan Ironhead and Clan Xardelvar on the map.",
+    "source_quote": "Errde marks both clans on the map",
+    "subject": "map marking",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Clan Xardelvar is located in the bottom left-hand corner of the map.",
+    "source_quote": "Clan Xardelvar is in the bottom left-hand corner",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Errde demands the party return to the Whorlstone Caverns for evidence.",
+    "source_quote": "She then demanded the party return to the Whorlstone Caverns with proper documented evidence",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  }
+]

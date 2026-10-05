@@ -1,0 +1,51 @@
+[
+  {
+    "type": "location",
+    "fact": "The ceiling of the chamber where the escape plan was devised is ten feet high.",
+    "source_quote": "the chamber\u2019s ten-foot ceiling offered little advantage",
+    "subject": "Chamber ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Daz redirects water inside five-foot cubes to create air pockets.",
+    "source_quote": "redirect the water inside five-foot cubes to create pockets containing no water",
+    "subject": "Shape Water pocket dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The moving refuge created by maintaining two Shape Water effects is ten feet long.",
+    "source_quote": "Daz could create a moving, ten-foot-long refuge",
+    "subject": "Air pocket length",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party swam upward for approximately thirty feet through the opened passage to reach the surface.",
+    "source_quote": "swam upward for approximately thirty feet",
+    "subject": "escape ascent distance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin promised Jimjar ten silver pieces as the settlement of a wager.",
+    "source_quote": "settle the wager by promising Jimjar ten of the silver pieces",
+    "subject": "Thorin's wager payout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party advanced to level 6 after successfully escaping the flooding complex.",
+    "source_quote": "Their successful escape also brought them to level 6",
+    "subject": "party level advancement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz gained another third-level spell slot upon leveling up.",
+    "source_quote": "Daz gains another third-level spell slot",
+    "subject": "Daz spell slot advancement",
+    "quote_verified": true
+  }
+]

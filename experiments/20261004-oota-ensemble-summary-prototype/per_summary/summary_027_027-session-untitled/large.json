@@ -1,0 +1,968 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is currently in the sweltering industrial heart of Gracklstugh, surrounded by forges and hammers.",
+    "source_quote": "The party stood in the sweltering industrial heart of Gracklstugh, surrounded by the roar of forges and the clang of hammers",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party assesses their position near Laduguer's Furrow.",
+    "source_quote": "The party assesses their position near Laduguer's Furrow",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Heavily barred gates separate the party from the Darklake.",
+    "source_quote": "staring down the heavily barred gates that separated them from the Darklake and their freedom",
+    "subject": "Darklake gates",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM marks three specific gates the party could use to leave Gracklstugh.",
+    "source_quote": "The DM marks three gates the party could use to leave Gracklstugh.",
+    "subject": "gate selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses methods to bypass the barred gates, including bluffing and presenting themselves openly.",
+    "source_quote": "The group discusses various methods to bypass the barred gates: bluffing, presenting themselves, or \"some other clever and insane scheme.\"",
+    "subject": "gate strategy discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests pole-vaulting over the gates where nobody can see.",
+    "source_quote": "Thorin asks whether they can pole-vault over the gates where nobody can see.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum points out that sneaking is difficult due to the many invisible inhabitants of the city.",
+    "source_quote": "The party notes the difficulty of remaining stealthy in a city where many inhabitants possess innate invisibility. Gyrgum: \"That might be hard with all these invisible people around.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A young red dragon comes dive-bombing toward the party out of the cavern heights.",
+    "source_quote": "A young red dragon, voluminous and ungainly, came dive-bombing toward them out of the cavern heights.",
+    "subject": "Themberchaud arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is identified as the Wyrmsmith of Gracklstugh.",
+    "source_quote": "It was Themberchaud, the Wyrmsmith of Gracklstugh, and he had spotted them during their fight.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud spots the party during their fight.",
+    "source_quote": "he had spotted them during their fight",
+    "subject": "Themberchaud encounter start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has already handed off Themberchaud's egg, leaving them with no explanation for his visit.",
+    "source_quote": "The party had already handed off his egg, so they had nothing on them to explain the visit.",
+    "subject": "egg handoff",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum chooses to speak to Themberchaud while standing near a market entrance he can duck into.",
+    "source_quote": "Gyrgum chose to talk to him while standing near a market entrance he could duck into.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a red dragon of Gracklstugh.",
+    "source_quote": "Themberchaud, the red dragon of Gracklstugh",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud dives toward the party and lands with a shuddering, ungraceful impact due to his size.",
+    "source_quote": "Themberchaud dive-bombs toward the party, landing with a shuddering, ungraceful impact due to his voluminous size.",
+    "subject": "Themberchaud's landing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud addresses the party as his personal agents.",
+    "source_quote": "Themberchaud addressed the party as his personal agents",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud expresses frustration with the inefficiency of the Keepers of the Flame.",
+    "source_quote": "expressing grand frustration with the inefficiency of the Keepers of the Flame",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud complains about the Keepers of the Flame's petty checkpoints.",
+    "source_quote": "their petty checkpoints",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame maintain checkpoints and patrols that Themberchaud considers inefficient and petty.",
+    "source_quote": "frustration with the inefficiency of the Keepers of the Flame and their checkpoints and patrols",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud offers the party an 'express service' flight to their next destination.",
+    "source_quote": "the dragon offers the party 'express service' to their next destination",
+    "subject": "offer of express service",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud invites the party to climb onto his back.",
+    "source_quote": "invited them to climb aboard, as though it were the greatest honor he could bestow",
+    "subject": "climbing aboard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party climbs onto Themberchaud's back.",
+    "source_quote": "the party scrambled onto his back",
+    "subject": "party boarding",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes the ride as 'dangerous and stupid' but agrees to participate because it is a dragon ride.",
+    "source_quote": "Gyrgum called the ride \"dangerous and stupid\" but agreed because it was a dragon ride.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recalls they have already handed off Themberchaud's egg and do not have it on them.",
+    "source_quote": "The party recalls they have already handed off his egg, so they have none on them.",
+    "subject": "Themberchaud's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that not everyone was inside the sphere of darkness and that the dragon spotted them during the fight.",
+    "source_quote": "The DM rules that not everyone was inside it, and that the dragon spotted them during the fight.",
+    "subject": "DM ruling on hiding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party briefly considers hiding in a nearby market before deciding to stand their ground.",
+    "source_quote": "The party briefly considers hiding in a nearby market but decides to stand their ground",
+    "subject": "market consideration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum positions himself near an entrance he can duck into.",
+    "source_quote": "Gyrgum positions himself near an entrance he can duck into.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Themberchaud mistakes the party for his loyal agents.",
+    "source_quote": "mistaking them for his loyal agents",
+    "subject": "Themberchaud's misidentification",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM frames Themberchaud as a 'glorified lighter' who believes the party are his agents.",
+    "source_quote": "The DM frames Themberchaud as a \"glorified lighter\" who believes the party are his agents",
+    "subject": "Themberchaud's perception",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is flying the party over Gracklstugh.",
+    "source_quote": "The party climbs onto the voluminous back of the dragon as he takes flight within the massive cavern.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh sits in a huge cavern, surrounded by small tunnels that prevent Themberchaud from leaving.",
+    "source_quote": "The DM explains the city sits in a huge cavern, but beyond it are only small tunnels, so Themberchaud cannot really leave.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 13 on a Persuasion check to convince Themberchaud to drop the party at the docks.",
+    "source_quote": "Gyrgum rolls a 13 on Persuasion, and a helped reroll comes out worse.",
+    "subject": "persuasion attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud admits he does not know where to investigate.",
+    "source_quote": "Asked where to investigate, Themberchaud reveals he has no clue.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud concedes that the docks might be a district his agents missed.",
+    "source_quote": "Themberchaud asks, \"Are you suggesting that I've missed a crucial district\u2026?\" He concedes, \"Hmm, that's a good point.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud makes an inelegant turn to bank toward the docks.",
+    "source_quote": "As the dragon makes an inelegant turn, the party makes DC 13 Athletics or Acrobatics checks.",
+    "subject": "dragon turn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolls a 12 on an Athletics or Acrobatics check during the dragon's turn.",
+    "source_quote": "Gyrgum gets 12.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin fails his Athletics or Acrobatics check, rolling a natural 3 plus 4.",
+    "source_quote": "Thorin rolls a natural 3 +4, then uses a 1d10 boost and still fails.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls an 8 on an Athletics or Acrobatics check during the dragon's turn.",
+    "source_quote": "Daz gets 8.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Several party members lose their footing and begin to fall off Themberchaud's back.",
+    "source_quote": "Several party members lose their footing and begin to fall.",
+    "subject": "falling party members",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir sprouts wings.",
+    "source_quote": "Zalthir sprouts wings and catches the falling Thorin.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir catches the falling Thorin while flying.",
+    "source_quote": "Zalthir sprouts wings and catches the falling Thorin.",
+    "subject": "Zalthir catch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is level five.",
+    "source_quote": "Zalthir, newly level five, sprouted wings and caught the falling Thorin",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Misty Step and teleports in a silvery mist to a spot next to Zalthir.",
+    "source_quote": "Daz casts Misty Step and teleports in a silvery mist to a spot right next to the flying Zalthir.",
+    "subject": "Daz teleport",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum cries out to Bahamut while falling.",
+    "source_quote": "As Gyrgum falls, he cries out to Bahamut.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar throws a rope to the falling Gyrgum.",
+    "source_quote": "Jimjar saves the falling Gyrgum by tossing a rope to him mid-air.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum catches the rope with a 19 on Acrobatics.",
+    "source_quote": "Gyrgum catches it with a 19 on Acrobatics.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party hauls Gyrgum back up onto the dragon's back.",
+    "source_quote": "The whole party hauls him back up.",
+    "subject": "party rescue",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud flaps harder in distress after seeing the party fall.",
+    "source_quote": "Themberchaud, distraught, flaps harder. \"If dragons could sweat, there would be lots of sweat.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air above Gracklstugh is foul with forge smoke.",
+    "source_quote": "The air is foul with forge smoke.",
+    "subject": "Gracklstugh air",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party ties themselves together with rope.",
+    "source_quote": "The party ties themselves together with rope.",
+    "subject": "rope",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud performs a fly-by of the Forge of Thrazgad.",
+    "source_quote": "Themberchaud performs a fly-by of the Forge of Thrazgad",
+    "subject": "Forge of Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud breathes fire to light the Forge of Thrazgad.",
+    "source_quote": "Themberchaud performs a fly-by of the Forge of Thrazgad, breathing fire to light it while boasting of his own greatness.",
+    "subject": "forge lighting",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar roll their eyes at Themberchaud's ego.",
+    "source_quote": "sees the duergar rolling their eyes at his ego.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The citizens of Gracklstugh see the party riding the dragon.",
+    "source_quote": "Citizens of Gracklstugh witness the party riding the dragon",
+    "subject": "citizen witness",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The citizens mistake the party for the Ember Vanguard.",
+    "source_quote": "mistake them for the legendary and powerful Ember Vanguard, which Daz confirms with a natural 20.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls a natural 20 on Insight.",
+    "source_quote": "which Daz confirms with a natural 20.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The city of Gracklstugh is thrown into hysterics.",
+    "source_quote": "The city is thrown into hysterics.",
+    "subject": "city panic",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "In rumor, Daz is an 18th-level mage able to cast Meteor Swarm.",
+    "source_quote": "with Daz rumored as an 18th-level mage.",
+    "subject": "Daz rumor",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud lands heavily at the docks of the Darklake.",
+    "source_quote": "Themberchaud lands heavily at the docks.",
+    "subject": "docks of the Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud uses his frightful presence to frighten the local populace.",
+    "source_quote": "He roars and uses his frightful presence to frighten the local populace.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum promises to search the docks.",
+    "source_quote": "Gyrgum answers, \"Aye aye, we will search the docks far and wide,\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud departs for his lair.",
+    "source_quote": "before the dragon departs for his lair.",
+    "subject": "dragon departure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud deposited the party at the docks with a thunderous landing.",
+    "source_quote": "Themberchaud deposited the party at the docks with a thunderous, ungainly landing.",
+    "subject": "Themberchaud's arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud roared and used his frightful presence to terrify the locals.",
+    "source_quote": "He roared for good measure and used his frightful presence to terrify the locals.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum promised Themberchaud they would search the docks far and wide.",
+    "source_quote": "Gyrgum promised to \"search the docks far and wide\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud flew off toward his lair.",
+    "source_quote": "the dragon flapped off toward his lair",
+    "subject": "Themberchaud departs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A lone Duergar guard stepped forward and raised his hand to halt the party.",
+    "source_quote": "A lone Duergar guard stepped forward, trembling but dutiful, and raised his hand to halt them",
+    "subject": "Duergar guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Duergar guard halted the party in the name of the Deepking.",
+    "source_quote": "halt them in the name of the Deepking.",
+    "subject": "guard halts party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum attempted to pass the guard in the name of Themberchaud.",
+    "source_quote": "Gyrgum's attempt to pass \"in the name of Themberchaud\" failed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum failed his deception or intimidation roll with an 8 and a worse second attempt.",
+    "source_quote": "rolling an 8 and then worse.",
+    "subject": "Gyrgum's failed check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard countered that Themberchaud is a servant of the Deepking.",
+    "source_quote": "The guard counters that Themberchaud is a servant of the Deepking.",
+    "subject": "Duergar guard",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The guard carried a wanted poster.",
+    "source_quote": "The guard pulled out a wanted poster",
+    "subject": "wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard recognized the party's faces as those of the Ember Vanguard.",
+    "source_quote": "recognized the party's faces as those of the Ember Vanguard.",
+    "subject": "guard recognition",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party claimed they were undercover agents impersonating the Ember Vanguard to lure out the real threat.",
+    "source_quote": "claiming they were undercover agents impersonating the Ember Vanguard to lure out the real threat.",
+    "subject": "undercover lie",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggested deputizing the guard.",
+    "source_quote": "When Thorin suggested deputizing him",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum produced a caltrop from his pack.",
+    "source_quote": "Gyrgum solemnly produced a caltrop from his pack",
+    "subject": "caltrop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum pressed the caltrop into the guard's hand, officially deputizing him.",
+    "source_quote": "pressed it into the guard's hand as a secret symbol of the conspiracy, officially \"deputizing\" him.",
+    "subject": "deputizing guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum advised the guard to file down the sharp points of the caltrop.",
+    "source_quote": "He then helpfully advised him to file down the sharp points.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard suggested the party wait there to meet the real Ember Vanguard.",
+    "source_quote": "The guard suggested the party wait there to meet the real Vanguard",
+    "subject": "Duergar guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum claimed the party would hide on the boat to spring the trap.",
+    "source_quote": "Gyrgum said they would hide on the boat to spring the trap.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard was relieved that he would not have to fight anyone.",
+    "source_quote": "The guard, enormously relieved that he would not have to fight anyone",
+    "subject": "Duergar guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard rushed off to inform Captain Errde.",
+    "source_quote": "rushed off to inform Captain Errde.",
+    "subject": "Captain Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party seized the boat and pushed off into the Darklake.",
+    "source_quote": "seize the boat and push off into the Darklake.",
+    "subject": "boat seizure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the one person the party has not betrayed.",
+    "source_quote": "Hgraam is the one person they have not betrayed",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Giants are currently friendly with the party.",
+    "source_quote": "the Stone Giants are good with them.",
+    "subject": "Stone Giants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro High Council probably wants the party dead.",
+    "source_quote": "The Derro High Council and the Gray Ghosts probably want them dead.",
+    "subject": "Derro High Council",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts probably want the party dead.",
+    "source_quote": "The Derro High Council and the Gray Ghosts probably want them dead.",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking hates the Ember Vanguard.",
+    "source_quote": "The Deepking hates the Ember Vanguard",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin concluded that the party must be as powerful as they think they are if they return.",
+    "source_quote": "Thorin concluded, \"We better be as powerful as they think we are if we come back.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir considered silencing the guard.",
+    "source_quote": "Zalthir considers silencing him.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin quipped about destroying the village to save it.",
+    "source_quote": "Thorin quips, \"And to save the village, we had to destroy the village.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party debates between returning to Neverlight Grove and visiting the Lost Tomb of Khaem.",
+    "source_quote": "the party debates whether to head toward the Neverlight Grove to return Stool and Rumpadump home, or seek out the Lost Tomb of Khaem",
+    "subject": "route decision",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is the gnome rescued in the spider webs who mentioned the Lost Tomb of Khaem.",
+    "source_quote": "Lost Tomb of Khaem mentioned by Fargas Rumblefoot, the gnome they rescued in the spider webs",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith feels a compulsion to go to the Neverlight Grove.",
+    "source_quote": "Sarith feels a compulsion to go to the Grove",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar bets that the 'circle of joy' at the Myconid grove will turn out to be something sinister.",
+    "source_quote": "Jimjar bets the party that the 'circle of joy' at the Myconid grove will turn out to be something far more sinister",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes Jimjar's bet.",
+    "source_quote": "Gyrgum took the bet",
+    "subject": "Gyrgum accepts bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to prioritize visiting the Lost Tomb of Khaem.",
+    "source_quote": "The party decides to prioritize the tomb",
+    "subject": "route chosen",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The tomb is four days' travel by boat.",
+    "source_quote": "the tomb was four days' travel by boat",
+    "subject": "tomb travel time",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is dead.",
+    "source_quote": "Buppido is dead",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir shrouds the boat in darkness.",
+    "source_quote": "Zalthir offers to shroud the boat in darkness",
+    "subject": "Zalthir casts darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 on a stealth check with disadvantage in chain mail.",
+    "source_quote": "Thorin rolls with disadvantage in chain mail and gets 15",
+    "subject": "Thorin stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz makes noise during a stealth check despite rolling with advantage.",
+    "source_quote": "Daz rolls with advantage for his drow paranoia but slips and makes noise",
+    "subject": "Daz stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm of stirges ambushes the party on the third day of travel.",
+    "source_quote": "On the third day of travel, a swarm of blood-sucking stirges descends upon the boat",
+    "subject": "stirge ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stirges have AC 14, 2 hit points each, and a 1d4+3 piercing bite.",
+    "source_quote": "AC 14, 2 hit points each, and a 1d4+3 piercing bite",
+    "subject": "stirges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts a 15-foot cone of fire, incinerating three stirges.",
+    "source_quote": "Zalthir unleashes a 15-foot cone of searing fire that incinerated three of the creatures mid-air",
+    "subject": "Zalthir fire cone",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches down a stirge that was not incinerated by the fire.",
+    "source_quote": "then punched down another",
+    "subject": "Zalthir punch",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 1 was incinerated by Zalthir's fire.",
+    "source_quote": "incinerated three of the creatures mid-air",
+    "subject": "stirge 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 2 was incinerated by Zalthir's fire.",
+    "source_quote": "incinerated three of the creatures mid-air",
+    "subject": "stirge 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 3 was incinerated by Zalthir's fire.",
+    "source_quote": "incinerated three of the creatures mid-air",
+    "subject": "stirge 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 4 was knocked down by Zalthir's punch.",
+    "source_quote": "punched down another",
+    "subject": "stirge 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a shimmering barrier of force to deflect a stirge.",
+    "source_quote": "Daz conjured a shimmering barrier of force to deflect one that dove straight at him",
+    "subject": "Daz shield",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 5 was deflected by Daz's force barrier.",
+    "source_quote": "deflect one that dove straight at him",
+    "subject": "stirge 5",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down two stirges with his longsword.",
+    "source_quote": "Thorin drew his longsword and cut down two more in rapid succession",
+    "subject": "Thorin cuts stirges",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 6 was killed by Thorin's longsword.",
+    "source_quote": "cut down two more in rapid succession",
+    "subject": "stirge 6",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 7 was killed by Thorin's longsword.",
+    "source_quote": "cut down two more in rapid succession",
+    "subject": "stirge 7",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A stirge latches onto Gyrgum and begins to drain his blood.",
+    "source_quote": "Gyrgum struggled to pry one loose that had latched onto him and begun to drain his blood",
+    "subject": "Gyrgum latched",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 8 is attached to Gyrgum.",
+    "source_quote": "latched onto him and begun to drain his blood",
+    "subject": "stirge 8",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts True Strike but misses with his hand axe.",
+    "source_quote": "Gyrgum casts True Strike and attempts to strike the creature attached to him with a hand axe but misses",
+    "subject": "Gyrgum misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz considers a crowd-control spell but holds off because it would hit the party.",
+    "source_quote": "He considers a crowd-control spell ... but holds off",
+    "subject": "Daz holds off",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires magical bolts that strike the last stirge, killing it.",
+    "source_quote": "Daz finally ended the encounter by firing a volley of unerring magical bolts that struck the last of the creatures",
+    "subject": "Daz finishes fight",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirge 9 was killed by Daz's magical bolts.",
+    "source_quote": "striking the last of the creatures, leaving a bloody mess across the deck",
+    "subject": "stirge 9",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is immune to stirges because he has no blood.",
+    "source_quote": "Stool and Rumpadump are safe from the stirges because they have no blood",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is immune to stirges because he has no blood.",
+    "source_quote": "Stool and Rumpadump are safe from the stirges because they have no blood",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Hidden Shore is a desolate, lonely beach.",
+    "source_quote": "arrived at a desolate, lonely beach",
+    "subject": "Hidden Shore",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sarith identifies the Hidden Shore as the path toward the Lost Tomb of Khaem.",
+    "source_quote": "Sarith identified as the path toward the Lost Tomb of Khaem",
+    "subject": "Hidden Shore",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Lost Tomb of Khaem is the destination the party is heading toward.",
+    "source_quote": "path toward the Lost Tomb of Khaem",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith identifies the beach as the path toward the Lost Tomb of Khaem.",
+    "source_quote": "Sarith identified as the path toward the Lost Tomb of Khaem",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is a gnome the party rescued from spider webs long ago.",
+    "source_quote": "Fargas Rumblefoot, the gnome they rescued in the spider webs long ago",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party learned about the Lost Tomb of Khaem from Fargas Rumblefoot.",
+    "source_quote": "They had heard about the tomb from Fargas Rumblefoot",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith points out there is no one on the beach to sell the boat to.",
+    "source_quote": "Sarith looked at the empty beach and said no",
+    "subject": "boat disposal decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith proposes sinking the boat to hide their arrival.",
+    "source_quote": "proposed sinking it",
+    "subject": "boat disposal proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sinks their own boat beneath the dark waters.",
+    "source_quote": "The party scuttled their own boat, letting it sink beneath the dark waters",
+    "subject": "boat sinking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to use the spell Mending to repair the boat upon their return.",
+    "source_quote": "with the plan to use magic to repair it upon their return",
+    "subject": "boat repair plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum punches a hole in the boat to sink it.",
+    "source_quote": "Gyrgum happily punches the hole",
+    "subject": "Gyrgum punches boat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith leads the group away from the shore into the Underdark tunnels.",
+    "source_quote": "Sarith led the group away from the shore and back into the winding, lightless tunnels of the Underdark",
+    "subject": "departure from shore",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM notes that the Drow will eventually come looking for the party.",
+    "source_quote": "The DM notes the Drow will eventually come looking",
+    "subject": "Drow tracking",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is concerned about being tracked by the Gray Ghosts.",
+    "source_quote": "Concerned about being tracked by the Drow or the Gray Ghosts",
+    "subject": "Gray Ghosts tracking",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The journey to the Hidden Shore took four days.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "journey duration",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stirge swarm was encountered during the journey, though the text states the rest of the journey passed without incident, implying the swarm was resolved or avoided prior to this specific arrival scene.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "stirge swarm",
+    "quote_verified": true
+  }
+]

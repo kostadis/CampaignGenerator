@@ -1,0 +1,205 @@
+[
+  {
+    "type": "npc",
+    "fact": "Droki is a Derro courier whom Errde Blackskull and Gartokkar pointed the party toward.",
+    "source_quote": "mysterious Derro courier named Droki. Both Errde Blackskull and Gartokkar had pointed them toward him",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Ghohlbrorn's Lair is the party's current lodgings where Buppido is imprisoned.",
+    "source_quote": "The party returns to Ghohlbrorn's Lair to find Jimjar gambling with the local residents.",
+    "subject": "Ghohlbrorn's Lair",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is gambling with the local residents when the party arrives at Ghohlbrorn's Lair.",
+    "source_quote": "The party returns to Ghohlbrorn's Lair to find Jimjar gambling with the local residents.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar leads the party upstairs to find Buppido.",
+    "source_quote": "He leads the party upstairs to a forlorn Buppido.",
+    "subject": "Jimjar leads party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is currently imprisoned at the party's lodgings.",
+    "source_quote": "consult their imprisoned companion, Buppido",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is described as a Derro courier.",
+    "source_quote": "mysterious Derro courier named Droki",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido laughs heartily at the party's questions.",
+    "source_quote": "The Derro laughed heartily at their questions",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido reveals that the entrance to the Whorlstone Tunnels is hidden within the heart of the Derro slums.",
+    "source_quote": "revealed that the entrance to the Whorlstone Tunnels was hidden within the very heart of the Derro slums",
+    "subject": "Buppido reveals tunnel entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido offers to guide the party to the tunnel entrance.",
+    "source_quote": "He offered to guide them through",
+    "subject": "Buppido offers guide",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to bring Buppido along.",
+    "source_quote": "the party, armed with a spare Stone Guard pass, agreed to bring him along",
+    "subject": "Party agrees to free Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin warns Buppido that a double-cross would end with him sliced up.",
+    "source_quote": "Thorin warned him that a double-cross would end with him sliced up",
+    "subject": "Thorin warns Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a spare Stone Guard pass.",
+    "source_quote": "armed with a spare Stone Guard pass",
+    "subject": "Spare Stone Guard pass",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if it is insulting to assume all derro know each other.",
+    "source_quote": "Thorin asks: \"is it insulting to assume all derro know each other?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido states he will show the party the tunnel entrance if they let him go.",
+    "source_quote": "He offered: \"I'll even show you where it is if you let me go.\"",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that Buppido killed one of their party members.",
+    "source_quote": "Thorin, the most paranoid about it, notes that \"he did kill one of our party members.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is the governing body of the derro in Gracklstugh.",
+    "source_quote": "Buppido explains the Council of Savants, the derro governing body in Gracklstugh",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is made up of more powerful derro with special abilities.",
+    "source_quote": "which is made up of more powerful derro with special abilities",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido rants about the corrupt Council of Savants promising freedom and failing.",
+    "source_quote": "Buppido delivers a manic rant about the corrupt Council of Savants, which he says has always promised to lead the derro to freedom and has always failed.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido claims to have a divine mission to free his people.",
+    "source_quote": "He claims he has a divine mission to free his people.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is convinced that Buppido is mad.",
+    "source_quote": "The party is quite convinced that Buppido is mad.",
+    "subject": "Party assesses Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suspects that demons may have affected Buppido.",
+    "source_quote": "Gyrgum suspects the demons may have affected him.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The derro control the entrance to the Whorlstone Tunnels.",
+    "source_quote": "The party sees the key insight: the derro control the entrance to the Whorlstone Tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The derro control of the tunnel entrance possibly explains why the Deepking cannot crush the factions there.",
+    "source_quote": "which is possibly why the Deepking cannot crush the factions there",
+    "subject": "Deepking inability to crush factions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull stated that marching in would cause a riot and a war.",
+    "source_quote": "Errde Blackskull had said that marching in would cause a riot and a war.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests waiting to free Buppido until they leave the city.",
+    "source_quote": "Zalthir wanted to wait and free him when they left the city.",
+    "subject": "Zalthir's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests taking Buppido along to vouch for them with Droki.",
+    "source_quote": "Thorin suggests taking him along to vouch for them with Droki.",
+    "subject": "Thorin's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gives Buppido a spare Stone Guard pass so he can accompany them.",
+    "source_quote": "The party agrees to give Buppido a spare Stone Guard pass so he can accompany them",
+    "subject": "Party gives Buppido pass",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An Insight check leaves the party convinced Buppido will gladly help.",
+    "source_quote": "An Insight check leaves the party convinced Buppido will gladly help.",
+    "subject": "Insight check on Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido assures the party that he knows what to do.",
+    "source_quote": "Buppido: \"don't you worry, I know what to do.\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  }
+]

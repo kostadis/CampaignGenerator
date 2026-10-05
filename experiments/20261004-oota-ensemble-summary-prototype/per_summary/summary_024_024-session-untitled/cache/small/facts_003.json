@@ -1,0 +1,254 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin kills Narrak.",
+    "source_quote": "Thorin delivered the killing blow.",
+    "subject": "narrak killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is dead.",
+    "source_quote": "As Narrak crumpled to the ground",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak was a member of the Council of Savants.",
+    "source_quote": "a member of the Council of Savants",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak practiced occult spells to turn stone giants into two-headed beasts.",
+    "source_quote": "practicing occult spells to turn stone giants into two-headed beasts",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacle strikes slay Grula-Munga.",
+    "source_quote": "finally slay the two-headed beast",
+    "subject": "grula-munga killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is dead.",
+    "source_quote": "finally slay the two-headed beast",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is an ettin.",
+    "source_quote": "the ettin Grula-Munga",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro cultist dies without a word after taking acid damage.",
+    "source_quote": "dies without a word",
+    "subject": "derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro hits Gyrgum with a spear.",
+    "source_quote": "A derro hits Gyrgum with a spear",
+    "subject": "derro hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz dispatches a derro cultist with bolts of magical force.",
+    "source_quote": "Daz had also dispatched a derro cultist with bolts of magical force",
+    "subject": "derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits a derro with his mace.",
+    "source_quote": "hits a derro with his mace",
+    "subject": "derro hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last derro cultist dies in combat.",
+    "source_quote": "the last one dies in combat",
+    "subject": "derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "All derro cultists are defeated.",
+    "source_quote": "The remaining derro cultists are defeated",
+    "subject": "derro cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses the magical earthen hand to restrain Narrak.",
+    "source_quote": "Daz uses the magical earthen hand to restrain and crush Narrak",
+    "subject": "narrak restraint",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The earthen hand crushes the breath from Narrak.",
+    "source_quote": "the earthen hand crushed the breath from him",
+    "subject": "narrak crush",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak fails the Strength save against the earthen hand.",
+    "source_quote": "Narrak fails the Strength save",
+    "subject": "narrak save fail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak remains restrained by the earthen hand.",
+    "source_quote": "remains restrained",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak tries to break free of the earthen hand but fails.",
+    "source_quote": "Narrak tries to break free of the earthen hand but fails against Daz's DC 14",
+    "subject": "narrak attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Second Wind as a bonus action to heal.",
+    "source_quote": "uses Second Wind as a bonus action to heal",
+    "subject": "thorin heal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak attempts to strike Thorin with a spear at disadvantage and fails to get past Thorin's defenses.",
+    "source_quote": "Narrak attempts to strike Thorin with a spear at disadvantage and fails to get past the warrior's defenses",
+    "subject": "narrak attack fail",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacles strike Narrak.",
+    "source_quote": "Zalthir turns his tentacles on Narrak",
+    "subject": "narrak damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules Narrak can be grappled by both Zalthir and Daz's spell as separate sources.",
+    "source_quote": "The GM rules Narrak can be grappled by both Zalthir and Daz's spell, since they are two separate sources",
+    "subject": "grapple ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The acid-coated derro takes acid damage from Gyrgum's brew.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga lands a battle-axe blow on Thorin.",
+    "source_quote": "Grula-Munga lands a battle-axe blow on Thorin",
+    "subject": "thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga misses her second swing.",
+    "source_quote": "misses her second swing on a 16",
+    "subject": "grula-munga miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak declares that the ritual cannot be undone.",
+    "source_quote": "the ritual could not be undone",
+    "subject": "narrak final words",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak gasps that someone was 'sacrificed.'",
+    "source_quote": "gasps that someone was \"sacrificed.\"",
+    "subject": "narrak final words",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak's silence spell ends.",
+    "source_quote": "Narrak's silence spell ends",
+    "subject": "silence end",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A figure in the background is trying not to be noticed.",
+    "source_quote": "trying very hard not to be noticed",
+    "subject": "unnoticed figure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum shrugs off a spear hit.",
+    "source_quote": "Gyrgum shrugs it off: \"I shrug it off.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the battle-axe blow hurts a little.",
+    "source_quote": "\"Ouch. That hurts a little. Won't lie.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir considers dragging the blinded, grappled ettin so that Narrak stands between it and Thorin.",
+    "source_quote": "Zalthir considers dragging the blinded, grappled ettin so that Narrak stands between it and Thorin",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir decides it is simpler to just kill the ettin.",
+    "source_quote": "He decides it is simpler to just kill it",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends a focus point to attack Narrak again.",
+    "source_quote": "spends another focus point to attack again",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had tried spells and everything else before attempting to strike Thorin.",
+    "source_quote": "Having \"tried spells\u2026 tried everything,\" Narrak attempts to strike Thorin",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is described as the derro savant.",
+    "source_quote": "the derro savant Narrak",
+    "subject": "Narrak",
+    "quote_verified": true
+  }
+]

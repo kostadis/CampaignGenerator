@@ -1,0 +1,296 @@
+[
+  {
+    "type": "date",
+    "fact": "The session occurred on April 14, 2025.",
+    "source_quote": "Session 2025-04-14",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The long tunnel at the entrance of Cairngorm Cavern runs several hundred feet into the home of Clan Cairngorm.",
+    "source_quote": "A long tunnel runs several hundred feet into the home of Clan Cairngorm",
+    "subject": "Cairngorm Cavern tunnel length",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Stonespeaker Crystal has 10 charges.",
+    "source_quote": "It has 10 charges",
+    "subject": "Stonespeaker Crystal charges",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using the Speak with Dead ability on the crystal costs four charges.",
+    "source_quote": "Speak with dead costs four charges",
+    "subject": "Stonespeaker Crystal speak with dead cost",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using the Speak with Animals ability on the crystal costs two charges.",
+    "source_quote": "speak with animals costs two",
+    "subject": "Stonespeaker Crystal speak with animals cost",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Attunement to the crystal cannot happen until tomorrow, after a long rest.",
+    "source_quote": "Attunement can't happen until tomorrow, after a long rest.",
+    "subject": "crystal attunement delay",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has an Intelligence score of 17.",
+    "source_quote": "Daz has INT 17",
+    "subject": "Daz Intelligence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has an Intelligence score of 14.",
+    "source_quote": "Thorin has INT 14",
+    "subject": "Thorin Intelligence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is currently imprisoned in Ghohlbrorn's Lair.",
+    "source_quote": "The party returns to Ghohlbrorn's Lair... leads the party upstairs to a forlorn Buppido.",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Buppido killed one member of the party's group in the past.",
+    "source_quote": "he did kill one of our party members.",
+    "subject": "Buppido's killing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Hundreds of Derro inhabit the West Cleft District.",
+    "source_quote": "muttering, screaming, and raving of hundreds of Derro filled the air",
+    "subject": "derro population",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceilings in the Whorlstone Tunnels rise about 50 feet.",
+    "source_quote": "The ceilings in the tunnels rise about 50 feet",
+    "subject": "Whorlstone Tunnels ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceilings in the narrow tunnels drop to 25 feet.",
+    "source_quote": "and drop to 25 in the narrow tunnels",
+    "subject": "Narrow tunnel ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party acquires one bigwig and one pygmywort each.",
+    "source_quote": "The party took one of each",
+    "subject": "bigwigs and pygmyworts acquired",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Droki moves with an unnatural, almost magical speed.",
+    "source_quote": "moved with an unnatural, almost magical speed",
+    "subject": "droki movement speed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido stands at an intersection in the tunnels.",
+    "source_quote": "At an intersection, the party encounters Buppido standing before a makeshift altar",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 for initiative.",
+    "source_quote": "Thorin keeps a 15 on initiative.",
+    "subject": "Thorin initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Daz casts a spell targeting a 20-foot cube area.",
+    "source_quote": "Daz targets a 20-foot cube",
+    "subject": "Daz spell area",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three skeletons are marked by Daz's spell.",
+    "source_quote": "and three skeletons are marked",
+    "subject": "marked skeletons count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has 13 hit points.",
+    "source_quote": "Buppido has only 13 hit points",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 4 damage to a skeleton with advantage on the first melee attack.",
+    "source_quote": "He hits one with advantage for 4 damage",
+    "subject": "Thorin first hit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Buppido had 13 hit points before the final blow.",
+    "source_quote": "struck Buppido squarely for 15 damage against his 13 hit points",
+    "subject": "Buppido hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido takes 15 damage from Daz's Magic Missile, ending his life.",
+    "source_quote": "struck Buppido squarely for 15 damage",
+    "subject": "Buppido final damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido dies from the damage dealt by Daz.",
+    "source_quote": "The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Buppido is dead, killed by Daz's Magic Missile.",
+    "source_quote": "The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party reaches fourth level.",
+    "source_quote": "The party reached fourth level",
+    "subject": "party level",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party reaches fourth level after the battle with Buppido.",
+    "source_quote": "The party reached fourth level",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Only three skeletons could see Gyrgum's holy symbol during the Turn Undead attempt.",
+    "source_quote": "only three skeletons can see the symbol",
+    "subject": "skeleton turn attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three skeletons flee during the Turn Undead effect.",
+    "source_quote": "three flee",
+    "subject": "skeleton flee count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three skeletons flee.",
+    "source_quote": "three flee",
+    "subject": "skeleton flee count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The skeletons make a DC 13 Wisdom save at a -1 penalty to flee or not.",
+    "source_quote": "The skeletons make a DC 13 Wisdom save at -1",
+    "subject": "skeleton saving throw",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills a fleeing skeleton with an opportunity attack dealing 8 damage.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One skeleton is killed by Thorin's opportunity attack.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "skeleton killed by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills a skeleton that had 4 hit points remaining.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "Thorin kills 4hp skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A skeleton with 4 hit points remaining is killed by Thorin.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "skeleton killed by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflects 5 piercing damage from a skeleton completely, taking no damage.",
+    "source_quote": "A skeleton hits Zalthir for 5 piercing damage, and Zalthir deflects it completely",
+    "subject": "Zalthir damage deflection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes 5 damage from a short sword.",
+    "source_quote": "A short sword hits for 5 damage",
+    "subject": "Gyrgum damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes 5 damage from a crossbow.",
+    "source_quote": "hits Gyrgum for 5 damage",
+    "subject": "Gyrgum damage 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits a skeleton for 5 damage.",
+    "source_quote": "Zalthir hits a skeleton for 5 damage",
+    "subject": "Zalthir damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits a skeleton with a crossbow for 8 damage.",
+    "source_quote": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage",
+    "subject": "Gyrgum damage 3",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 8 damage to a skeleton.",
+    "source_quote": "8 damage to one skeleton",
+    "subject": "Daz damage split 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 1 damage to a neighboring skeleton.",
+    "source_quote": "and 1 to its neighbor",
+    "subject": "Daz damage split 2",
+    "quote_verified": true
+  }
+]

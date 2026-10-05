@@ -1,0 +1,170 @@
+[
+  {
+    "type": "location",
+    "fact": "The party stands before the stone sarcophagus of Brysis within the Lost Tomb of Khaem.",
+    "source_quote": "The party stood before the stone sarcophagus of Brysis, its heavy lid finally pried open to reveal the withered, mummified remains within.",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends his action to pry open the heavy lid of Brysis's stone sarcophagus.",
+    "source_quote": "Zalthir had spent his action opening it so that Brysis could no longer hide inside.",
+    "subject": "opening sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis is a mummified undead entity hidden inside the stone sarcophagus.",
+    "source_quote": "The party stood before the stone sarcophagus of Brysis, its heavy lid finally pried open to reveal the withered, mummified remains within.",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A sentient magic sword rests atop the ancient corpse inside the sarcophagus and pleads to be rescued.",
+    "source_quote": "Resting atop the ancient corpse was a sword that immediately made its presence known, pleading desperately to be rescued from its long imprisonment: \"You can't leave me here. Please.\"",
+    "subject": "sentient magic sword",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses annoyance at encountering another talking magic sword.",
+    "source_quote": "Gyrgum groaned at yet another talking magic sword",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes she is a monk with no use for bladed weapons.",
+    "source_quote": "Zalthir, a monk with no use for bladed weapons, said she could at least have been a glove.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sentient sword demands that Thorin, the fighter, be brought to her.",
+    "source_quote": "she demanded, \"wait, you're a monk. Get the fighter over here.\"",
+    "subject": "sentient magic sword",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts an orb of magical darkness over Thorin.",
+    "source_quote": "Zalthir moved his orb of darkness over Thorin",
+    "subject": "darkness spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends focus points to strike Brysis twice with advantage from inside the darkness.",
+    "source_quote": "Zalthir moved his orb of darkness over Thorin and spent focus points to strike twice with advantage from inside it.",
+    "subject": "monk flurry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum decides to hold his ability to turn undead as an escape tactic.",
+    "source_quote": "Gyrgum weighed turning the undead. He held back on the GM's advice, saving his last use in case the party needed a quick getaway.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Tasha's Caustic Brew as a five-foot stream that hits Brysis.",
+    "source_quote": "Instead he threaded a five-foot stream of Tasha's Caustic Brew past Zalthir. Brysis blew the saving throw, and acid clung to her and kept eating away at her.",
+    "subject": "caustic brew cast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz fires three scorching rays into the magical darkness at Brysis.",
+    "source_quote": "Daz, unable to see his target, fired three scorching rays into the darkness anyway.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis rages and vows not to be defeated after a millennium of imprisonment.",
+    "source_quote": "Brysis raged that she would not be defeated after a millennium of imprisonment.",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz retreats up the tunnel to avoid being turned into a specter by Brysis.",
+    "source_quote": "Daz retreated up the tunnel so the creature could not turn him into a specter out of revenge.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis is destroyed by lingering acid damage before she can act again.",
+    "source_quote": "The lingering acid proved merciless all the same. Brysis was resistant to acid, but she had only three hit points left, and she was destroyed before she could make good on his threat.",
+    "subject": "Brysis destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis is destroyed by acid damage.",
+    "source_quote": "Brysis was resistant to acid, but she had only three hit points left, and she was destroyed before she could make good on his threat.",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reaches into the sarcophagus and pulls out the sentient sword.",
+    "source_quote": "Rather than pressing the attack, he reached into the sarcophagus and pulled free the sentient sword.",
+    "subject": "sword retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sentient sword is named Dawnbringer and manifests as a blade of pure radiance when wielded.",
+    "source_quote": "The moment he grasped the hilt, a blade of pure radiance blazed to life... The sword announced herself with \"Dawnbringer here! Let me show you what I can do!\" and \"Finally, light!\"",
+    "subject": "Dawnbringer",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a +2 sword that deals radiant damage instead of slashing.",
+    "source_quote": "She is a +2 sword that deals radiant damage instead of slashing",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer adds 1d8 damage against undead.",
+    "source_quote": "adds 1d8 against undead",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer grants lesser restoration.",
+    "source_quote": "and grants lesser restoration",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is capable of reading.",
+    "source_quote": "She could even read, which prompted Gyrgum to marvel, \"Wow, a sword that can read.\"",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is amazed that the sword can read.",
+    "source_quote": "which prompted Gyrgum to marvel, \"Wow, a sword that can read.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is described as legendary and impossible to shut up.",
+    "source_quote": "The sword was powerful, she was legendary, and she was, the party would soon discover, absolutely impossible to shut up.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  }
+]

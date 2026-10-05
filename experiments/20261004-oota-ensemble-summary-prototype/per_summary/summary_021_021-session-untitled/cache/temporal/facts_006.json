@@ -1,0 +1,93 @@
+[
+  {
+    "type": "location",
+    "fact": "No party member has a passive Perception score higher than 18.",
+    "source_quote": "No one's passive Perception beat 18.",
+    "subject": "party awareness range",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A random encounter roll of 16 triggers the ambush.",
+    "source_quote": "A random encounter roll of 16 triggers the ambush.",
+    "subject": "ambush trigger",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper has 85 hit points.",
+    "source_quote": "The Trapper has 85 hit points",
+    "subject": "Trapper hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a natural 1, resulting in an initiative score of 0.",
+    "source_quote": "Thorin rolls a natural 1 for a 0 initiative",
+    "subject": "Thorin initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fails a DC 13 Dexterity save.",
+    "source_quote": "Gyrgum fails a DC 13 Dexterity save",
+    "subject": "Gyrgum Dex save",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The first instance of smothering damage dealt to Gyrgum is 15 points.",
+    "source_quote": "the DM called 15, then 20 points",
+    "subject": "smothering damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The second instance of smothering damage dealt to Gyrgum is 20 points.",
+    "source_quote": "the DM called 15, then 20 points",
+    "subject": "smothering damage 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fails his attempt to break free with a roll of 9.",
+    "source_quote": "Gyrgum tries to break free and fails with a 9.",
+    "subject": "Gyrgum escape attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party is confirmed to be at level 4.",
+    "source_quote": "The party is confirmed to be at level 4.",
+    "subject": "party level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's longsword attack deals 12 damage.",
+    "source_quote": "The longsword hits for 12.",
+    "subject": "Thorin weapon damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Hill Strike feature adds 4 damage.",
+    "source_quote": "His Hill Strike adds 4 damage",
+    "subject": "Thorin hill strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Hill Strike forces a DC 14 Strength save against falling prone.",
+    "source_quote": "DC 14 Strength save against falling prone",
+    "subject": "Thorin hill strike save",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The group spent 40 minutes discussing networking devices in the previous session.",
+    "source_quote": "next week, we will not spend 40 minutes discussing Ubiquiti networking devices",
+    "subject": "session duration",
+    "quote_verified": true
+  }
+]

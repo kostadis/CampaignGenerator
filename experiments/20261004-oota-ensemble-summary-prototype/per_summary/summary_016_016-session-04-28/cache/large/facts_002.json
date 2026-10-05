@@ -1,0 +1,170 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek told the party that Droki passes through the tunnels once a day.",
+    "source_quote": "Pelek told them that Droki passed through once a day",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki leaves behind a messy trail of food scraps.",
+    "source_quote": "Following the messy trail of food scraps Droki left behind",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM describes Droki as a litter bug.",
+    "source_quote": "a litter bug",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests Droki may just be obsessive-compulsive.",
+    "source_quote": "Gyrgum suggests Droki may just be obsessive-compulsive",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM states that Droki's obsessive-compulsive behavior is only a piece of his madness.",
+    "source_quote": "that's only a piece of his madness",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party reached a massive cavern filled with a deep, black pool of water.",
+    "source_quote": "a massive cavern filled with a deep, black pool of water",
+    "subject": "massive cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The black pool stretches nearly a hundred feet across.",
+    "source_quote": "stretching nearly a hundred feet across",
+    "subject": "black pool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Nothing can be seen beneath the surface of the black water.",
+    "source_quote": "nothing can be seen beneath the surface of the black water",
+    "subject": "black pool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz sees the black pool as his chance to shine with Shape Water.",
+    "source_quote": "Daz sees it as his chance to shine with Shape Water",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests continuing on Droki's path first and circling back to the pool if needed.",
+    "source_quote": "Zalthir suggests continuing on Droki's path first and circling back if needed",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrived at a solid rock wall riddled with narrow cracks.",
+    "source_quote": "a solid rock wall riddled with narrow cracks",
+    "subject": "solid rock wall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Gyrgum rolled low Investigation checks (11 and 10), revealing no secret doors in the wall.",
+    "source_quote": "Investigation rolls: Daz 11, Gyrgum 10. There are no secret doors",
+    "subject": "investigation of wall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Through the cracks, the party can see a tunnel running about 30 feet.",
+    "source_quote": "Through the cracks the party can see a tunnel running about 30 feet",
+    "subject": "cracks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes growing large and smashing through the wall.",
+    "source_quote": "Thorin proposes growing large and \"Hulk smash[ing]\" through",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wants to cast mending to seal the cracks instead.",
+    "source_quote": "Gyrgum's contrarian streak wants to cast mending to seal the cracks instead",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The caverns are now held by people plotting against the Deepking.",
+    "source_quote": "the caverns are now held by people plotting against the Deepking",
+    "subject": "anti-Deepking groups",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Drawing attention in the caverns is unwise because the inhabitants are committed to overthrowing the Deepking.",
+    "source_quote": "the caverns, once \"a hippie place,\" are now held by groups committed to overthrowing the Deepking, so drawing attention would be unwise",
+    "subject": "anti-Deepking groups",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Magical shrinking mushrooms are growing nearby the rock wall.",
+    "source_quote": "Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "shrinking mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum ate one of the magical shrinking mushrooms.",
+    "source_quote": "Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek slipped through the narrow stone cracks to scout ahead.",
+    "source_quote": "Pelek slipped through the narrow stone cracks to scout ahead",
+    "subject": "Pelek",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reported that the tunnel continues for some distance with nobody there.",
+    "source_quote": "He reports that the tunnel continues for some distance with nobody there",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek cannot go far because he is tied to his bones.",
+    "source_quote": "Tied to his bones, he cannot go far",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum ate a shrinking mushroom, but the cracks were still too small for him to squeeze through.",
+    "source_quote": "The cracks were far too small for any of them to squeeze through, even after Gyrgum ate one of the magical shrinking mushrooms",
+    "subject": "shrinking mushroom usage",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is debating using magical shrinking mushrooms to bypass the barrier.",
+    "source_quote": "The party debates using magical shrinking mushrooms to bypass the barrier",
+    "subject": "bypassing barrier",
+    "quote_verified": true
+  }
+]

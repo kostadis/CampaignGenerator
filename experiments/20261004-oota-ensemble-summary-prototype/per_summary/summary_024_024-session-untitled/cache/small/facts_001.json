@@ -1,0 +1,79 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir conjured a sphere of impenetrable shadow in the ritual chamber.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro cultists abandoned their chanting.",
+    "source_quote": "Having abandoned their chanting for cries of \"die, die, die\"",
+    "subject": "derro chanting halted",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Some derro cultists charged blindly outward from the darkness to find the source of the magical acid.",
+    "source_quote": "some charged blindly outward to find the source of the magical acid burning their flesh",
+    "subject": "derro movement",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro cultists are attempting a ritual to create a two-headed giant.",
+    "source_quote": "derro cultists who were attempting a ritual to create a two-headed giant",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro cultist takes 5 damage from Gyrgum's acidic spell before moving.",
+    "source_quote": "One takes 5 damage before moving",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro cultist struck Gyrgum with a hooked spear, dealing 2 points of damage.",
+    "source_quote": "One of them found Gyrgum and drove a hooked spear into the cleric",
+    "subject": "Gyrgum struck",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The force of the spear blow sent Gyrgum crashing to the ground, knocking him prone.",
+    "source_quote": "the force of the blow sent him crashing to the ground",
+    "subject": "Gyrgum knocked prone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The trauma from the spear blow shattered Gyrgum's concentration, ending his corrosive magic.",
+    "source_quote": "The trauma shattered Gyrgum's concentration, and the corrosive magic he had been sustaining over the cultists flickered and died",
+    "subject": "Gyrgum concentration break",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric currently engaged in combat against derro cultists.",
+    "source_quote": "drove a hooked spear into the cleric",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists are engaged in battle with the party in a zone of magical darkness.",
+    "source_quote": "The party engages in combat with derro cultists who were attempting a ritual to create a two-headed giant",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ritual chamber is currently filled with a sphere of impenetrable shadow conjured by Zalthir.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "ritual chamber",
+    "quote_verified": true
+  }
+]

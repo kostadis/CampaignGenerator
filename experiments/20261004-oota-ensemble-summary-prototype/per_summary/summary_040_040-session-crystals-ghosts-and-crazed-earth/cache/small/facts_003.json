@@ -1,0 +1,212 @@
+[
+  {
+    "type": "event",
+    "fact": "The party concealed their knowledge to encourage the merchant to reveal more.",
+    "source_quote": "The party concealed how much it knew and encouraged the merchant to believe he was the most knowledgeable person in the room",
+    "subject": "party deception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant described rumors of a foreign adventuring group that arrived, made deals, and disappeared.",
+    "source_quote": "The merchant described rumors that a foreign adventuring group had arrived, made deals with numerous factions, and disappeared.",
+    "subject": "merchant's rumors",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blame for the adventuring group's actions settled on the Ember Vanguard.",
+    "source_quote": "Blame subsequently settled on the Ember Vanguard.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Rumors claimed that the Assassin\u2019s Guild had returned.",
+    "source_quote": "Rumors also claimed that the Assassin\u2019s Guild had returned.",
+    "subject": "Assassin\u2019s Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Assassin\u2019s Guild maintains the ethic of only assassinating those paid for.",
+    "source_quote": "the guild at least maintained the ethic of not assassinating anyone unless someone paid for it",
+    "subject": "Assassin\u2019s Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant survived by staying in areas where foreigners were permitted and avoiding duergar affairs.",
+    "source_quote": "The merchant\u2019s survival strategy had been to remain in areas where foreigners were permitted, treat political conspiracies as idle gossip, and avoid involvement in duergar affairs.",
+    "subject": "merchant survival strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "There have been summary executions and hangings of derro.",
+    "source_quote": "The merchant noted that there had been summary executions and hangings of derro.",
+    "subject": "derro executions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Murders, assassinations, decapitations, and heads placed on pikes occurred.",
+    "source_quote": "murders, assassinations, decapitations, and heads placed on pikes",
+    "subject": "derro atrocities",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar claim the derro needed to \"learn their place.\"",
+    "source_quote": "with the duergar insisting that the derro needed to \u201clearn their place.\u201d",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant described the party's concerns about Gracklstugh's power struggles as ordinary duergar behavior.",
+    "source_quote": "the merchant treated them as ordinary duergar behavior",
+    "subject": "merchant on duergar conflict",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A portly red dragon with a double chin and two bellies is used as a matchlighter in Gracklstugh.",
+    "source_quote": "The merchant described a portly red dragon used as a matchlighter in Gracklstugh, noting its unusual double chin and two bellies.",
+    "subject": "portly red dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gracklstugh remained operational and had not imploded.",
+    "source_quote": "Despite the unrest, Gracklstugh remained operational and had not imploded.",
+    "subject": "Gracklstugh status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party succeeded in leaving Gracklstugh in controlled chaos rather than outright civil war.",
+    "source_quote": "The party\u2019s goal of leaving it in controlled chaos rather than outright civil war had succeeded.",
+    "subject": "party goal achieved",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A deep gnome returned from the Whiteshell Mine.",
+    "source_quote": "A deep gnome returning from the Whiteshell Mine",
+    "subject": "deep gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The deep gnome encountered a parade of dancing myconids communicating through Rapport Spores.",
+    "source_quote": "recounted encountering a parade of dancing myconids communicating through Rapport Spores",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The myconids said they were traveling to a \"wedding celebration.\"",
+    "source_quote": "The myconids said they were traveling to a \u201cwedding celebration\u201d",
+    "subject": "myconids",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The gnome initially phrased the myconids' destination as a \"sweating celebration\" due to drunkenness.",
+    "source_quote": "after the gnome corrected his drunken initial phrasing of \u201csweating celebration.\u201d",
+    "subject": "gnome's misstatement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids do not normally marry and are not known for holding celebrations.",
+    "source_quote": "the scout explained that myconids do not normally marry and are not known for holding celebrations at all",
+    "subject": "myconids",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party connected the myconid procession to Zuggtmoy\u2019s intended wedding.",
+    "source_quote": "The party connected the procession to Zuggtmoy\u2019s intended wedding.",
+    "subject": "myconid wedding",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The dancing procession suggested Neverlight Grove was being emptied or its inhabitants had succumbed to madness.",
+    "source_quote": "The dancing procession suggested either that the Neverlight Grove was being emptied or that its inhabitants had succumbed completely to madness.",
+    "subject": "Neverlight Grove state",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool cleaned the tavern floor by absorbing spilled drinks.",
+    "source_quote": "Glabbagool cleaned the tavern floor by absorbing spilled drinks",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool became drunk and started singing gelatinous cube sea shanties.",
+    "source_quote": "became drunk, and started singing gelatinous cube sea shanties.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realized alcohol could intoxicate a gelatinous cube.",
+    "source_quote": "The party realized alcohol could intoxicate a gelatinous cube",
+    "subject": "alcohol discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party considered using ethanol or spoiled booze against the Pudding King\u2019s ooze forces.",
+    "source_quote": "considered bringing barrels of ethanol or spoiled booze against the Pudding King\u2019s ooze forces.",
+    "subject": "anti-ooze tactics",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group considered carrying barrels in the Bag of Holding or obtaining a \"keg of holding.\"",
+    "source_quote": "The group briefly considered carrying barrels in the Bag of Holding, obtaining a \u201ckeg of holding\u201d",
+    "subject": "storage brainstorming",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The group considered using mugs, a seltzer bottle, or Shape Water to spray alcohol.",
+    "source_quote": "using mugs, a seltzer bottle, or Shape Water to spray alcohol.",
+    "subject": "spraying brainstorming",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party negotiated with Tappy Foamstrap to acquire barrels of spoiled booze.",
+    "source_quote": "The party negotiated with Tappy Foamstrap to acquire barrels of spoiled booze",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The condition of the negotiation was that the Foaming Mug\u2019s reputation would be protected.",
+    "source_quote": "with the condition that the Foaming Mug\u2019s reputation would be protected.",
+    "subject": "The Foaming Mug",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy became more cooperative when the party suggested he could advertise himself as the hero who helped save the city.",
+    "source_quote": "Tappy became more cooperative when the party suggested he could advertise himself as the hero who helped save the city.",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy requested an official signed notice to display in the tavern.",
+    "source_quote": "He requested an official signed notice to display in the tavern.",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  }
+]

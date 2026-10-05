@@ -1,0 +1,219 @@
+[
+  {
+    "type": "event",
+    "fact": "The party travels deeper into the Underdark through a region thick with Faerzress.",
+    "source_quote": "The party pressed deeper into the Underdark, passing through a region thick with Faerzress",
+    "subject": "travel through Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Faerzress is a strange magical radiation that warps tunnels and makes teleportation all but impossible.",
+    "source_quote": "the strange magical radiation that warps the tunnels and makes teleportation all but impossible",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party hypothesizes that the Faerzress 'went blink' causing madness and the appearance of demons.",
+    "source_quote": "Faerzress is also the thing that \"went blink and caused everybody to go mad.\" The party's working hypothesis is that the blink somehow caused the demons to show up",
+    "subject": "Faerzress origin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled out the theory that Plinki caused the Faerzress event by experimenting with the obelisk.",
+    "source_quote": "Out of character, the GM ruled out the theory that Plinki caused it experimenting with the obelisk",
+    "subject": "GM ruling on obelisk theory",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There are fist-sized chunks of quartz scattered in the area that shed a dim light in a 10-foot radius.",
+    "source_quote": "Scattered through the area were fist-sized chunks of quartz that shed a dim light in a 10-foot radius",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "When hurled against a hard surface, the quartz chunks burst into a blinding flash in a 10-foot radius.",
+    "source_quote": "Sarith explained that these crystals, when hurled against a hard surface, burst into a blinding flash in a 10-foot radius",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Creatures caught in the quartz flash must make a DC 10 Constitution save or be blinded for a minute.",
+    "source_quote": "Any creature caught in the flash must make a DC 10 Constitution save or be blinded for a minute",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The blindness effect from the quartz chunks can be repeated by the blinded creature at the end of each of its turns.",
+    "source_quote": "repeating the save at the end of each of its turns",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum advises throwing the quartz crystals at least 10 feet away.",
+    "source_quote": "Gyrgum concluded that you should throw it at least 10 feet",
+    "subject": "Gyrgum's advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 19 on Arcana.",
+    "source_quote": "Daz rolled a 19 on Arcana",
+    "subject": "Daz's Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz recalls Zalthir's earlier explanation that magical darkness blocks all light, including magical light.",
+    "source_quote": "recalled Zalthir's earlier explanation: magical darkness blocks all light, even magical light",
+    "subject": "Daz recalls Zalthir's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party harvests twelve of the glowing stones.",
+    "source_quote": "pocketing twelve of the glowing stones",
+    "subject": "harvesting crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is a wretched human former slave of the Drow.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is a wretched human former slave of the Drow.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 22 on Investigation.",
+    "source_quote": "Daz rolls a 22 on Investigation",
+    "subject": "Daz's Investigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz spots the telltale Drow prisoner markings on the humans.",
+    "source_quote": "spots the telltale Drow prisoner markings",
+    "subject": "spotting markings",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cautiously approaches the humans and introduces himself without giving much away.",
+    "source_quote": "He approaches cautiously and introduces himself without giving much away",
+    "subject": "Daz's introduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm holds up a crystal and declares they are not going back upon seeing Daz is a drow.",
+    "source_quote": "Seeing that Daz is a drow, Fuurm holds up a crystal and declares they are not going back",
+    "subject": "Fuurm's threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reassures Fuurm and Baedora that the party is also escaping.",
+    "source_quote": "Daz reassures them the party is escaping too",
+    "subject": "Daz's reassurance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm suggests that the survivors could be of some help.",
+    "source_quote": "Fuurm suggests \"we could be of some help\"",
+    "subject": "Fuurm's offer",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 24 on Insight.",
+    "source_quote": "Daz rolls a 24 on Insight",
+    "subject": "Daz's Insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reads the survivors' demeanor as pure desperation rather than being agents sent to follow the party.",
+    "source_quote": "reads it as pure desperation... see a big armed group as their way out, not agents sent to follow the party",
+    "subject": "Daz's interpretation",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm entered the Underdark to save his sister.",
+    "source_quote": "Fuurm explains he entered the Underdark to save his sister",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm was captured but recently escaped during a demonic attack on his captors.",
+    "source_quote": "captured, only recently escaping during a demonic attack on his captors",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm's sister was stolen from the Overbright by the Drow.",
+    "source_quote": "the GM adds that the sister was stolen from the Overbright by the Drow",
+    "subject": "Fuurm's sister",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is described as a farmer with no special skills.",
+    "source_quote": "Fuurm is \"just a farmer\" with no special skills",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party finds it odd that Fuurm, a farmer with no special skills, managed to survive.",
+    "source_quote": "whose survival \"strikes you as very odd\"",
+    "subject": "Fuurm",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to let Fuurm and Baedora travel along with them.",
+    "source_quote": "the party agrees to let them travel along",
+    "subject": "party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir urges the party to keep an eye on the survivors.",
+    "source_quote": "Zalthir urging everyone to keep an eye on them",
+    "subject": "Zalthir's advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reasons that the cost is just food and water and they can be left behind if needed.",
+    "source_quote": "Daz reasons it's \"just food and water,\" and they can be left behind if they can't keep up",
+    "subject": "Daz's reasoning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes the last stray the party picked up was a psychotic believer, but these two do not give off those vibes.",
+    "source_quote": "The GM notes that the last stray the party picked up turned out to be a psychotic believer, but these two give off none of those vibes",
+    "subject": "GM comparison",
+    "quote_verified": true
+  }
+]

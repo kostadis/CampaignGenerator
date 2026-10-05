@@ -1,0 +1,170 @@
+[
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is a plateau situated higher than the surrounding terraces of the grove.",
+    "source_quote": "The Garden of Welcome stands on a plateau higher than the surrounding terraces",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is screened by a natural fence of towering zurkhwood stalks.",
+    "source_quote": "screened by towering zurkhwood stalks",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is illuminated only by a few glowing mushrooms along the edge.",
+    "source_quote": "Only a few glowing mushrooms along the edge provide light.",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party enters the Garden of Welcome through Rumpadump's secret route.",
+    "source_quote": "The party enters through Rumpadump's secret route",
+    "subject": "party entry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party enters before Phylo can conduct his planned tour the following morning.",
+    "source_quote": "before Phylo can conduct his planned tour the following morning",
+    "subject": "party timing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "As the party climbs, the muffled murmuring from the plateau swells into a symphony of moans, cries, and hisses.",
+    "source_quote": "it swells into \u201ca symphony of moans and cries and hisses.\u201d",
+    "subject": "sound of the garden",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discovers humanoid heads from a dozen different Underdark races peeking from the ground, covered in mold and sprouting mushrooms.",
+    "source_quote": "They discover humanoid heads from a dozen Underdark races peeking from the ground, covered in mold and sprouting mushrooms.",
+    "subject": "discovery of victims",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is a dying drow whose face has rotted into a bed for scores of tiny mushrooms.",
+    "source_quote": "Half of Xinaya's face has rotted into a bed for scores of tiny mushrooms.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya raises a spider medallion that is half-embedded in the bloated fungal growth of her hand.",
+    "source_quote": "She manages to raise a spider medallion half-embedded in the bloated fungal growth that used to be her hand.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya warns the party that the Lady of Decay, Zuggtmoy, has set a trap.",
+    "source_quote": "warning the party that the Lady of Decay, Zuggtmoy, has set a trap",
+    "subject": "Xinaya's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya recognizes the party and laughs hysterically at the irony of begging them for salvation.",
+    "source_quote": "Xinaya recognizes the party and laughs hysterically at the fact that she must beg them for salvation.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya was part of a patrol sent by Ilvara to search near the grove and capture the party.",
+    "source_quote": "She reveals she was part of a patrol sent by Ilvara to search near the grove and capture the party.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ilvara reserved the privilege of killing the fugitives for herself.",
+    "source_quote": "Ilvara had reserved the privilege of killing the fugitives for herself.",
+    "subject": "Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya and her patrol fell victim to the garden after accepting Phylo's invitation to visit the Garden of Welcome.",
+    "source_quote": "They fell victim after accepting Phylo's invitation to visit the Garden of Welcome.",
+    "subject": "patrol's fate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya recognizes Daz as being from Menzoberranzan.",
+    "source_quote": "Xinaya recognizes Daz as being from Menzoberranzan",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya implores Daz to warn the other Drow about the Demon Queen of Fungi.",
+    "source_quote": "implores him to warn the other Drow about the Demon Queen of Fungi",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is recognized by Xinaya as being from Menzoberranzan.",
+    "source_quote": "Xinaya recognizes Daz as being from Menzoberranzan",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is a larval creature with vestigial fungal growths suggesting it was once a myconid.",
+    "source_quote": "A disgusting larval creature named Yestabrod rises from the ground, its vestigial fungal growths suggesting that it might once have been a myconid.",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod speaks both aloud and inside the party's minds in a gurgling voice.",
+    "source_quote": "Yestabrod speaks both aloud and in the party's minds, gurgling and spitting as it welcomes them.",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod welcomes the party to a wedding rehearsal.",
+    "source_quote": "It welcomed the party to a wedding rehearsal in a gurgling voice heard both aloud and inside their minds.",
+    "subject": "wedding rehearsal announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two adult myconids emerge to join Yestabrod in attacking the party.",
+    "source_quote": "Two adult myconids and drow spore servants from Xinaya's former patrol emerged to join it.",
+    "subject": "myconid adults",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Drow spore servants from Xinaya's former patrol emerge to join Yestabrod in attacking the party.",
+    "source_quote": "Two adult myconids and drow spore servants from Xinaya's former patrol emerged to join it.",
+    "subject": "drow spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod refuses the party's request for an audit.",
+    "source_quote": "Yestabrod refused the ploy: there would be no audit",
+    "subject": "audit refusal",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Xinaya warns that Zuggtmoy, the Lady of Decay, is present in the Garden of Welcome.",
+    "source_quote": "warned that Zuggtmoy, the Lady of Decay, was present",
+    "subject": "Zuggtmoy's presence",
+    "quote_verified": true
+  }
+]

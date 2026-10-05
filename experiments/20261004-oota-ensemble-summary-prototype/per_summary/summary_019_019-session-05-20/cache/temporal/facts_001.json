@@ -1,0 +1,44 @@
+[
+  {
+    "type": "date",
+    "fact": "The session occurred on 2025-05-20.",
+    "source_quote": "Session 2025-05-20",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde requires proof that the derro are behind the chaos in the city.",
+    "source_quote": "Errde, head of the Stone Guards, wants two things: proof that the derro are behind the chaos in the city",
+    "subject": "derro chaos",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk is located in the top-right of the map.",
+    "source_quote": "the obelisk sits in the top-right of the map",
+    "subject": "obelisk map position",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two duergar sentries intercepted the party.",
+    "source_quote": "two duergar sentries stepped from the shadows",
+    "subject": "duergar sentries count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Four allies joined the party: Flumph, Pelek's ghost, Jimjar, and Spiderbait.",
+    "source_quote": "including Flumph, Pelek's ghost, Jimjar and Spiderbait",
+    "subject": "duergar allies count",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Rust and Grimgrim are members of the Empty-Scabbard Killers.",
+    "source_quote": "declaring the hallway the exclusive territory of the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers membership",
+    "quote_verified": true
+  }
+]

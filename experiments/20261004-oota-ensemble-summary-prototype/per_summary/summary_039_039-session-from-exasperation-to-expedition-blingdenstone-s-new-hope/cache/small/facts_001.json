@@ -1,0 +1,93 @@
+[
+  {
+    "type": "npc",
+    "fact": "Daz's takeover of leadership came from exhaustion with political maneuvering rather than ambition.",
+    "source_quote": "Daz\u2014whose takeover had come from exhaustion with political maneuvering rather than ambition",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recognized that Dorbo's accommodation was a political play to use Daz as a fall guy.",
+    "source_quote": "The chief had found a convenient fall guy: if the operation failed, he could blame the drow who had seized control; if it succeeded, he could claim that supporting Daz had been his own design.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz remained determined to involve Clan Goldwhisker in the operation.",
+    "source_quote": "Daz remained determined to involve the Goldwhiskers",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argued that involving Clan Goldwhisker ensured warning if the Pudding King operation failed.",
+    "source_quote": "Daz remained determined to involve the Goldwhiskers so everyone would have warning if the Pudding King operation failed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argued that Clan Goldwhisker's political status could be settled only if they survived the operation.",
+    "source_quote": "as he argued, their political status could be settled only if they survived",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni supported Daz's appeal to common purpose.",
+    "source_quote": "Senni supported the appeal to common purpose",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz stated, \"It's important for us to have a common outcome and a common drive to that outcome. The rest of the commonality would be a nice-to-have.\"",
+    "source_quote": "It's important for us to have a common outcome and a common drive to that outcome. The rest of the commonality would be a nice-to-have.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compared Dorbo's conduct to a classic vice president move.",
+    "source_quote": "Daz compared Dorbo's conduct to \u201ca classic vice president move.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo became accommodating to Daz to position himself to blame Daz if the operation failed or claim credit if it succeeded.",
+    "source_quote": "if the operation failed, he could blame the drow who had seized control; if it succeeded, he could claim that supporting Daz had been his own design",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party confirmed they would recruit Clan Goldwhisker directly.",
+    "source_quote": "The party confirmed that they would recruit Clan Goldwhisker directly.",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gnome bureaucrats began taking notes on Daz's pronouncements.",
+    "source_quote": "The bureaucrats began taking notes on Daz's pronouncements",
+    "subject": "bureaucrats note-taking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Papers shuffled around the chamber as officials prepared to justify their implementation of Daz's leadership.",
+    "source_quote": "papers shuffled around the chamber, each official seemingly preparing to explain how faithfully implementing Daz's leadership had produced any eventual success",
+    "subject": "paper shuffling",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz's leadership aphorisms inspired jokes about a future airport business book titled along the lines of Everything I Needed to Know About Business, I Learned from Playing D&D.",
+    "source_quote": "inspiring jokes about a future airport business book titled along the lines of Everything I Needed to Know About Business, I Learned from Playing D&D",
+    "subject": "Daz business book joke",
+    "quote_verified": false
+  }
+]

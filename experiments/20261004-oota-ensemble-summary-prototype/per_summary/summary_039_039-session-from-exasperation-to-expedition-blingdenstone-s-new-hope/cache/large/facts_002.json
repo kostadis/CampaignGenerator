@@ -1,0 +1,149 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin opens the eastern door in the bureaucratic hub and discovers a kitchen or break room.",
+    "source_quote": "The eastern door opened into a kitchen or break room",
+    "subject": "kitchen exploration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A gnome chef in the kitchen mistakes the party for the newly hired heroes.",
+    "source_quote": "a gnome chef mistook the group for the newly hired heroes",
+    "subject": "gnome chef",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The chef agrees to provide a snack for the party.",
+    "source_quote": "The chef eventually agreed to provide a snack.",
+    "subject": "snack agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asserts that their agreement with Chief Dorbo includes board and unlimited access to the snack room.",
+    "source_quote": "Thorin asserted that their agreement included board and \u201cunlimited access to the snack room.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thorin claims the snack room provides unlimited access as part of the party's agreement.",
+    "source_quote": "unlimited access to the snack room",
+    "subject": "the snack room",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party jokingly describes the kitchen as a \"micro kitchen.\"",
+    "source_quote": "The party jokingly described the space as a \u201cmicro kitchen,\u201d",
+    "subject": "the kitchen",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Chief Dorbo directs the party to eat at the Foaming Mug because it has tables and chairs suitable for larger visitors.",
+    "source_quote": "at the Foaming Mug, where there were tables and chairs suitable for larger visitors.",
+    "subject": "the Foaming Mug",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo insists the party eat elsewhere, specifically at the inn.",
+    "source_quote": "Chief Dorbo then insisted that the party leave the kitchen.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo clarifies that Thorin's taller companions are the primary concern for table space, not Thorin himself.",
+    "source_quote": "After noticing Thorin's height, he clarified that Thorin's taller companions were the real concern.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The other unexplored door in the bureaucratic hub leads toward Chief Dorbo's private quarters.",
+    "source_quote": "The other unexplored door led toward Chief Dorbo's private quarters.",
+    "subject": "Chief Dorbo's private quarters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo intercepts the party near the door to his private quarters.",
+    "source_quote": "Dorbo intercepted the party and dryly explained that he had no acid-resistant armor inside",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo states his private quarters contain only a desk, a couch, and a bed.",
+    "source_quote": "No, I do not have acid-resistant armor in my private quarters. I've got a desk. I've got a couch. I've got a bed.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool volunteers to squeeze through and investigate Chief Dorbo's private quarters.",
+    "source_quote": "Glabbagool volunteered to squeeze through and investigate",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides not to investigate Chief Dorbo's private quarters to avoid antagonizing him.",
+    "source_quote": "but the party decided it was not yet time to antagonize their host that thoroughly.",
+    "subject": "decision to not investigate quarters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The chef asks Glabbagool if the gelatinous cube can clean the kitchen floor.",
+    "source_quote": "The chef then noticed the intelligent gelatinous cube and asked whether Glabbagool could clean the kitchen floor.",
+    "subject": "cleaning offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool eagerly agrees to clean the kitchen floor.",
+    "source_quote": "Glabbagool eagerly agreed.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The chef gives Glabbagool the affectionate nickname \"Roomba.\"",
+    "source_quote": "earning the affectionate nickname \u201cRoomba.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin declares he will now call Glabbagool \"Roomba.\"",
+    "source_quote": "Thorin declared, \u201cOkay, so I'm going to now call Glabbagool Roomba from now on.\u201d",
+    "subject": "naming Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party discusses the legendary origin of gelatinous cubes as dungeon-cleaning creatures created to remove abandoned corpses and treasure between expeditions.",
+    "source_quote": "a discussion of the legendary origin of gelatinous cubes as dungeon-cleaning creatures created to remove abandoned corpses and treasure between expeditions",
+    "subject": "origin of gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin identifies himself as a completionist who cannot move on from unexplored areas.",
+    "source_quote": "Thorin admitted he was a completionist who could not move on while unexplored areas remained on the map.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party causes a misunderstanding by calling the chef's chicken \"micro.\"",
+    "source_quote": "prompting a misunderstanding about calling the chef's chicken \u201cmicro.\u201d",
+    "subject": "micro chicken misunderstanding",
+    "quote_verified": true
+  }
+]

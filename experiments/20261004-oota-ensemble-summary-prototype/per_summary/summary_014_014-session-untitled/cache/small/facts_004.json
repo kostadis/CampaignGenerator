@@ -1,0 +1,177 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is currently at the Darklake Docks, specifically at the end of a pier.",
+    "source_quote": "At the end of a pier on the Darklake Docks",
+    "subject": "Darklake Docks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party names themselves \"Firefly Tactics\" during the charge.",
+    "source_quote": "dubbed themselves \"Firefly Tactics\" on the way in",
+    "subject": "party naming",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is a Duergar merchant.",
+    "source_quote": "a Duergar merchant named Werz",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two masked, hooded assassins become visible beside Werz.",
+    "source_quote": "Two figures suddenly shimmered into visibility beside him",
+    "subject": "assassins reveal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The assassins stab Werz with glowing blades.",
+    "source_quote": "masked, hooded assassins who drove glowing blades into the merchant with vicious precision",
+    "subject": "Werz attacked",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses a desire to claim the glowing weapons.",
+    "source_quote": "Thorin immediately coveted the glowing weapons",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to shove an assassin into the water but fails.",
+    "source_quote": "Gyrgum rushed forward and tried to shove one of the killers into the water, but the assassin held his ground",
+    "subject": "Gyrgum shove attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals nine points of damage to an assassin with magical energy.",
+    "source_quote": "Daz unleashed a torrent of magical energy that tore into one of the attackers for nine damage",
+    "subject": "Daz first attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of magical darkness over the pier.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness over the pier",
+    "subject": "Zalthir darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz screams for help, disengages, and runs away.",
+    "source_quote": "The merchant screams for help, disengages, and runs",
+    "subject": "Werz retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An assassin attacks Gyrgum with a glowing blade but misses on a natural 1.",
+    "source_quote": "One assassin retaliates against Gyrgum with a glowing blade but misses on a natural 1",
+    "subject": "Assassin retaliation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first strike misses on a natural 1.",
+    "source_quote": "His first strike missed on a natural 1",
+    "subject": "Zalthir first miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point and kills one assassin.",
+    "source_quote": "but he spent a focus point to strike again and killed one assassin outright",
+    "subject": "Assassin 1 killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Assassin 1 is dead.",
+    "source_quote": "killed one assassin outright",
+    "subject": "Assassin 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a Precision Attack to deal six damage to the remaining assassin.",
+    "source_quote": "Thorin salvaged a miss with a Precision Attack and landed a precise blow for six damage",
+    "subject": "Thorin attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum strikes the remaining assassin with radiant energy for two points of damage.",
+    "source_quote": "Gyrgum channeled radiant holy energy through his mace",
+    "subject": "Gyrgum radiant strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires three rays of fire that deal four and six damage, killing the final assassin.",
+    "source_quote": "Daz hurled three searing rays of fire into the black void",
+    "subject": "Daz final attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Assassin 2 is dead.",
+    "source_quote": "incinerating the final assassin",
+    "subject": "Assassin 2",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The assassins' glowing blades dissolve into psychic energy after the assassins die.",
+    "source_quote": "The glowing blades they had wielded had vanished entirely, dissolving back into the psychic energy",
+    "subject": "glowing blades",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum heals Werz's wounds with a prayer.",
+    "source_quote": "Gyrgum knelt beside the wounded merchant and spoke a quick prayer, closing the man's wounds",
+    "subject": "Werz healed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin cautions that the party did not know who the villain was before attacking.",
+    "source_quote": "Thorin cautioned that the party had gone in \"guns blazing\" without knowing who the villain really was",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz claims he does not know why he was targeted.",
+    "source_quote": "The merchant, Werz, claimed to have no idea why he had been targeted",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz invites the party to the Shattered Spire for a reward.",
+    "source_quote": "He thanked them profusely and invited them to meet him at the Shattered Spire to receive a proper reward",
+    "subject": "Werz invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Shattered Spire is the location where Werz promises a reward.",
+    "source_quote": "invited them to meet him at the Shattered Spire to receive a proper reward",
+    "subject": "Shattered Spire",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Werz's clan affiliation remains unknown to the party.",
+    "source_quote": "Werz's clan affiliation remains unknown",
+    "subject": "Werz clan affiliation",
+    "quote_verified": true
+  }
+]

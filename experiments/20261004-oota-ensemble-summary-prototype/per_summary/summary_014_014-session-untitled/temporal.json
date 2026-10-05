@@ -1,0 +1,263 @@
+[
+  {
+    "type": "object",
+    "fact": "The store credit provided to the party for shopping is 175 gold pieces.",
+    "source_quote": "The credit came to 175 gold pieces",
+    "subject": "store credit",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The \"Sane Magical Prices\" document was shared on the shared Google Drive folder on February 28, 2021.",
+    "source_quote": "shared back on February 28, 2021",
+    "subject": "document sharing date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchased a week's worth of rations.",
+    "source_quote": "purchase a week's worth of rations",
+    "subject": "ration duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party possesses a total of nine healing potions after purchases and GM additions.",
+    "source_quote": "the GM added three more, for a total of nine",
+    "subject": "potion count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was left with 105 gold after his purchases.",
+    "source_quote": "Daz was left with 105 gold",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Two members of Captain Errde Blackskull's clan have died under mysterious circumstances.",
+    "source_quote": "two members of her own clan had died",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The clan victim was in the prime of his health before dying.",
+    "source_quote": "The victim was in the prime of his health",
+    "subject": "clan victim health status",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party spent the night sleeping, constituting a long rest.",
+    "source_quote": "a night spent crammed into a shared room with bunk beds",
+    "subject": "rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The Topsy-Turvy twins left the party during the night.",
+    "source_quote": "had quietly slipped away during the night",
+    "subject": "Topsy-Turvy twins disappearance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The lodging house charged five copper pieces per person for the night.",
+    "source_quote": "spends the night in a shared room with bunk beds for five copper pieces per person",
+    "subject": "lodging cost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is currently at five hit points.",
+    "source_quote": "Daz is down to five hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The assassination takes place approximately 30 feet away from the party.",
+    "source_quote": "The attack happens about 30 feet away.",
+    "subject": "assassination distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals nine damage to an assassin with a magical energy attack.",
+    "source_quote": "tore into one of the attackers for nine damage",
+    "subject": "Daz magical strike",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir conjures a sphere of magical darkness with a 15-foot radius or diameter.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness",
+    "source_quote_alt": "Zalthir conjures a 15-foot sphere of magical darkness",
+    "subject": "Zalthir darkness sphere size",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two masked, hooded assassins attack the merchant.",
+    "source_quote": "Two figures suddenly shimmered into visibility beside him: masked, hooded assassins",
+    "subject": "assassin count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lands a precise blow dealing six damage using a Precision Attack.",
+    "source_quote": "Thorin salvaged a miss with a Precision Attack and landed a precise blow for six damage.",
+    "subject": "Thorin precision attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant takes six damage from an assassin's attack.",
+    "source_quote": "the other continues to wound the merchant for six damage",
+    "subject": "merchant injury",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals two points of radiant damage with his mace.",
+    "source_quote": "dealing two points of radiant damage",
+    "subject": "Gyrgum radiant strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires three rays of fire dealing four and six damage respectively.",
+    "source_quote": "Daz fires three rays of fire into the magical darkness",
+    "source_quote_alt": "Rays for four and six damage finish the assassin",
+    "subject": "Daz scorching rays",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found eighteen silver pieces on the bodies of the assassins.",
+    "source_quote": "finding eighteen silver pieces",
+    "subject": "silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a pair of bloodstained gloves on the bodies of the assassins.",
+    "source_quote": "a pair of bloodstained gloves",
+    "subject": "bloodstained gloves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses Arcane Recovery to regain one second-level spell slot.",
+    "source_quote": "Daz used Arcane Recovery to regain a second-level spell slot",
+    "subject": "Daz Arcane Recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is described as an enormous and overweight red dragon.",
+    "source_quote": "He was enormous, and clearly well-fed, carrying the unmistakable look of a predator who had not hunted in a very long time.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud's scales are the color of cooling lava.",
+    "source_quote": "His scales were the color of cooling lava",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has bright yellow eyes.",
+    "source_quote": "his bright yellow eyes gleamed in the shadows",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has not hunted in a very long time.",
+    "source_quote": "carrying the unmistakable look of a predator who had not hunted in a very long time",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud rests on a mountain of gold in his private lair.",
+    "source_quote": "settling onto a mountain of gold",
+    "subject": "Themberchaud's lair treasury",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Themberchaud presents each member of the party with a golden badge.",
+    "source_quote": "presented each of them with a golden badge",
+    "subject": "golden badge",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The golden badges are confirmed to be real gold.",
+    "source_quote": "Daz confirms the badge is real gold.",
+    "subject": "golden badge",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session is identified as The Keepers' Secret Mission 014.07.",
+    "source_quote": "The Keepers' Secret Mission 014.07",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A red dragon egg intended to hatch Themberchaud's successor was stolen by the Gray Ghosts.",
+    "source_quote": "A red dragon egg, intended to hatch his successor, had been stolen by a shadowy organization known as the Gray Ghosts",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud is a red dragon.",
+    "source_quote": "A red dragon egg, intended to hatch his successor",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro messenger who carries messages and supplies for the Gray Ghosts.",
+    "source_quote": "tracking down a derro messenger named Droki, who carried messages and supplies for the Gray Ghosts",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are described as a shadowy organization and a Thieves Guild.",
+    "source_quote": "a shadowy organization known as the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gold pins and holy symbol of Laduguer grant passage beyond the Darklake District.",
+    "source_quote": "granting them passage beyond the Darklake District",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde is a captain of the Stone Guard.",
+    "source_quote": "Captain Errde of the Stone Guard",
+    "subject": "Captain Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is operating on three fronts at once.",
+    "source_quote": "operating on three fronts at once",
+    "subject": "three fronts",
+    "quote_verified": true
+  }
+]

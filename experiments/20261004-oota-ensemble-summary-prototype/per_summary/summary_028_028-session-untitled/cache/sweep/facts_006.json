@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "The lower chamber is decorated with rich pigments and inlays of semi-precious stone.",
+    "source_quote": "walls were decorated with rich pigments and inlays of semi-precious stone",
+    "subject": "lower chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A gilded sarcophagus rests atop a stone bier along one wall of the lower chamber.",
+    "source_quote": "A gilded sarcophagus rested atop a stone bier along one wall",
+    "subject": "gilded sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "An invisible stone chest sits at the foot of the stone bier.",
+    "source_quote": "with an invisible stone chest sitting silently at its foot",
+    "subject": "invisible stone chest",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A wraith materializes before the party upon their entry to the lower chamber.",
+    "source_quote": "the moment they entered, a wraith materialized before them",
+    "subject": "wraith",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The wraith declares that the party's deaths will free her from her prison.",
+    "source_quote": "declaring that their deaths would free her from her prison",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The wraith declares that her victims will serve her even in death.",
+    "source_quote": "and that her victims would serve her even in death",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz moves to hurl a fireball at the creature but then stops.",
+    "source_quote": "Daz moved to hurl a fireball at the creature, then recalled",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls that the wraith is resistant to fire.",
+    "source_quote": "that she was resistant to fire",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that fire is the foundation of his entire magical repertoire.",
+    "source_quote": "fire was essentially the foundation of his entire magical repertoire",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz briefly considers binding the wraith with Maximilian's Earthen Grasp.",
+    "source_quote": "He briefly considered binding her with Maximilian's Earthen Grasp",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz casts a third-level magic missile against the wraith.",
+    "source_quote": "He then pivoted to a third-level magic missile",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's magic missile hits the wraith for 20 damage, causing her to reel.",
+    "source_quote": "five darts of pure force for 20 damage, and the wraith reeled",
+    "subject": "Daz casts Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The wraith screams about dwarves and Drow defeating her once before.",
+    "source_quote": "She screamed something incoherent about dwarves and Drow defeating her once before",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The wraith lashes out at Thorin with a life-draining touch that misses.",
+    "source_quote": "lashed out at Thorin with a life-draining touch that missed entirely",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith slips into her gilded sarcophagus to hide.",
+    "source_quote": "then slipped into her gilded sarcophagus to hide",
+    "subject": "wraith enters sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir shifts his shroud of darkness into the lower chamber.",
+    "source_quote": "Zalthir shifted his shroud of darkness into the lower chamber",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends his action to open the gilded sarcophagus.",
+    "source_quote": "He then spent his action to open the gilded sarcophagus",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A mysterious feminine voice speaks from within the sarcophagus offering help.",
+    "source_quote": "the mysterious feminine voice ... spoke again, this time from within the sarcophagus itself: 'in the sarcophagus, I can help you.'",
+    "subject": "mysterious feminine voice",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "A magical sword rests atop a withered, mummified corpse inside the sarcophagus.",
+    "source_quote": "resting atop a withered, mummified corpse surrounded by treasure, lay a magical sword",
+    "subject": "magical sword",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis of Khaem is the entity who left things behind in this place.",
+    "source_quote": "Whatever Brysis of Khaem had left behind in this place",
+    "subject": "Brysis of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Maximilian is the creator or owner of the spell Earthen Grasp referenced by Daz.",
+    "source_quote": "binding her with Maximilian's Earthen Grasp",
+    "subject": "Maximilian",
+    "quote_verified": true
+  }
+]

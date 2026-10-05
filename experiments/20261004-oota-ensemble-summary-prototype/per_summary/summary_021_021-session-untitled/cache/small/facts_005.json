@@ -1,0 +1,205 @@
+[
+  {
+    "type": "npc",
+    "fact": "A Derro guard stands at a heavy double door with a hand hovering near an alarm mechanism.",
+    "source_quote": "four Derro guards stationed at a heavy double door, hands hovering near an alarm mechanism",
+    "subject": "Derro guard 1",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A Derro guard stands at a heavy double door with a hand hovering near an alarm mechanism.",
+    "source_quote": "four Derro guards stationed at a heavy double door, hands hovering near an alarm mechanism",
+    "subject": "Derro guard 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A Derro guard stands at a heavy double door with a hand hovering near an alarm mechanism.",
+    "source_quote": "four Derro guards stationed at a heavy double door, hands hovering near an alarm mechanism",
+    "subject": "Derro guard 3",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A Derro guard stands at a heavy double door with a hand hovering near an alarm mechanism.",
+    "source_quote": "four Derro guards stationed at a heavy double door, hands hovering near an alarm mechanism",
+    "subject": "Derro guard 4",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each",
+    "subject": "Derro guard 1",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each",
+    "subject": "Derro guard 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each",
+    "subject": "Derro guard 3",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each",
+    "subject": "Derro guard 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a die to decide between killing the guards and intimidating them, and the result dictates intimidation.",
+    "source_quote": "Thorin let a die roll decide between killing and intimidation. It came up intimidation",
+    "subject": "die roll for approach",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes that if the guards press the alarm, nobody will come, and this is where the party starts spreading their lore.",
+    "source_quote": "Thorin proposes telling them that nobody is coming if they press the alarm, \"and this is where we start spreading our lore\"",
+    "subject": "Thorin's roll",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offers to use little earthquakes and a booming voice to intimidate the guards.",
+    "source_quote": "Gyrgum offers \"little earthquakes\" and a booming voice",
+    "subject": "Gyrgum's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir floats posing as the \"baby rattle repair crew\" and offers a sphere of darkness if it comes to a fight.",
+    "source_quote": "Zalthir floats posing as the \"baby rattle repair crew\" and offers a sphere of darkness if it comes to a fight",
+    "subject": "Zalthir's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hands the final decision on killing or intimidating to \"the chaotic one,\" which is Thorin.",
+    "source_quote": "Zalthir hands the call to \"the chaotic one.\" Thorin rolls",
+    "subject": "Delegation of command",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "On the group Intimidation check, Thorin failed but Daz rolled a 20.",
+    "source_quote": "On the group Intimidation check, Thorin failed but Daz rolled a 20",
+    "subject": "Intimidation check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a swirling display of floating lights that drift and spin around the group like orbiting stars.",
+    "source_quote": "Daz conjured a swirling display of floating lights that drifted and spun around the group like orbiting stars",
+    "subject": "Daz's visual display",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses his connection to the earth to send tremors rippling through the stone beneath the guards' feet.",
+    "source_quote": "Gyrgum used his connection to the earth to send tremors rippling through the stone beneath the guards' feet",
+    "subject": "Gyrgum's earth tremors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro guards are wide-eyed, trembling, and ask who the party is.",
+    "source_quote": "The Derro, wide-eyed and trembling, demanded to know who these people were",
+    "subject": "Guards' confusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz steps forward into the shimmering light and tells the guards, \"You do not know who we are.\"",
+    "source_quote": "Daz stepped forward into the shimmering light and told them, with absolute conviction, \"You do not know who we are\"",
+    "subject": "Daz's declaration",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin tells the guards to make sure they tell everybody what happened there.",
+    "source_quote": "Thorin added that they should make sure to tell everybody what had happened here",
+    "subject": "Thorin's instruction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party declares itself the Ember Vanguard after a hasty committee vote.",
+    "source_quote": "It was hammered out in a hasty committee vote... and the party declared itself the Ember Vanguard",
+    "subject": "Naming the party",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin likes the words \"Vanguard\" and \"Ember.\"",
+    "source_quote": "Thorin likes \"Vanguard\" and \"Ember\"",
+    "subject": "Thorin's input on name",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum notes that nobody will stop them from changing the name later.",
+    "source_quote": "Gyrgum notes \"nobody's going to stop us from changing it later\"",
+    "subject": "Gyrgum's input on name",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz states he does not have anything better than the proposed name.",
+    "source_quote": "Daz: \"I don't have anything better\"",
+    "subject": "Daz's input on name",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir retcons Daz's floating lights into floating embers, and Daz agrees.",
+    "source_quote": "Zalthir retcons Daz's lights into floating embers, and Daz agrees",
+    "subject": "Zalthir's retcon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro mistook the ember-like lights for a meteor swarm.",
+    "source_quote": "The Derro mistook the ember-like lights for a meteor swarm",
+    "subject": "Guards' misconception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party lets the guards go to spread their reputation.",
+    "source_quote": "The Ember Vanguard let them go, satisfied that their reputation would now travel faster than they could",
+    "subject": "Release of guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warns that declaring themselves may have added the drow to the list of factions who hate them.",
+    "source_quote": "The DM warned that the drow might now count among the factions who hated them",
+    "subject": "DM warning",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Ember Vanguard's reputation is expected to travel faster than they can.",
+    "source_quote": "satisfied that their reputation would now travel faster than they could",
+    "subject": "Ember Vanguard reputation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party exits the dungeon and encounters guards at a heavy double door.",
+    "source_quote": "Their exit from the dungeon brought them face to face with four Derro guards stationed at a heavy double door",
+    "subject": "dungeon exit",
+    "quote_verified": true
+  }
+]

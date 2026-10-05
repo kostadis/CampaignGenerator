@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "The Traders' Grotto suffered damage to part of the market and is filled with rubble.",
+    "source_quote": "destroying part of the market",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone's guards failed to protect the citizens during the crisis.",
+    "source_quote": "outsiders had handled the crisis more effectively than Blingdenstone\u2019s own guards",
+    "subject": "Blingdenstone's guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A sergeant attempts to control the narrative for the public.",
+    "source_quote": "a sergeant attempted to control the narrative",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo Diggermattock is the Chief of Blingdenstone.",
+    "source_quote": "Chief Dorbo Diggermattock hired these adventurers",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo Diggermattock hired the adventurers to solve the settlement's problems.",
+    "source_quote": "Chief Dorbo Diggermattock hired these adventurers to solve our problems",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sergeant claims that Chief Dorbo Diggermattock is on top of everything.",
+    "source_quote": "Chief Dorbo Diggermattock is on top of everything",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni Diggermattock is praised by a citizen as an advocate for ordinary people.",
+    "source_quote": "A citizen praised Senni Diggermattock as an advocate for ordinary people",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A citizen accuses Chief Dorbo of caring only for gold from the gems.",
+    "source_quote": "accusing Chief Dorbo of caring only for \u201cthe gold from the gems from the mines.\u201d",
+    "subject": "political tension exposure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests that Chief Dorbo use wealth to rebuild damaged businesses.",
+    "source_quote": "When the party suggested that Dorbo use some of that wealth to rebuild the damaged businesses",
+    "subject": "rebuilding suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant calls the rebuilding suggestion an excellent suggestion before urging the party to leave.",
+    "source_quote": "the increasingly nervous sergeant called it an excellent suggestion\u2014then strongly encouraged them to leave the market",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Blingdenstone\u2019s political class attempts to claim credit for the adventurers' victory.",
+    "source_quote": "Blingdenstone\u2019s political class was trying to claim credit for their victory",
+    "subject": "credit claiming attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sergeant strongly encourages the party to leave the market and pursue their assigned mission.",
+    "source_quote": "strongly encouraged them to leave the market and pursue their assigned mission",
+    "subject": "mission redirection",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool is an intelligent gelatinous cube traveling with the party.",
+    "source_quote": "Glabbagool, the intelligent gelatinous cube traveling with the party",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool wonders whether he was hired and whether he would be paid.",
+    "source_quote": "Glabbagool, the intelligent gelatinous cube traveling with the party, wondered whether he had also been hired and whether he would be paid",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool decides that friends are what he wants.",
+    "source_quote": "he decided that the answer was friends",
+    "subject": "Glabbagool's decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party assures Glabbagool that he can come with them.",
+    "source_quote": "The party assured him that he could come with them",
+    "subject": "Glabbagool joining",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A magical short sword was recovered amid the wreckage.",
+    "source_quote": "they also recovered a magical short sword",
+    "subject": "magical short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz claims the magical short sword as an upgrade.",
+    "source_quote": "which Daz ultimately claimed as an upgrade",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group discusses weapon proficiencies and whether anyone else needs a magical weapon.",
+    "source_quote": "after the group discussed weapon proficiencies and whether anyone else needed a magical weapon",
+    "subject": "weapon discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The group discusses whether anyone besides Daz lacks magical arms.",
+    "source_quote": "discussed who can use the weapon and who lacks magical arms",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The party discovers a Short Sword +1 amid the aftermath.",
+    "source_quote": "The party discovers a Short Sword +1 amid the aftermath",
+    "subject": "Short Sword +1",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The sergeant points toward a rubble-choked route for the party to take.",
+    "source_quote": "The sergeant points toward a rubble-choked route",
+    "subject": "rubble-choked route",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sergeant states that Blingdenstone has a serious ooze problem.",
+    "source_quote": "He restates the mission: Blingdenstone has a serious ooze problem",
+    "subject": "mission restatement",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone's leaders will not help the party leave while the settlement is at risk.",
+    "source_quote": "its leaders cannot help the party leave while the settlement remains at risk of being overrun",
+    "subject": "Blingdenstone's leaders",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to stop waiting for oozes and seek the source instead.",
+    "source_quote": "The party agrees to stop waiting for more oozes to attack the market and seek the source instead",
+    "subject": "strategy change",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party recently battled gelatinous cubes in the Traders' Grotto.",
+    "source_quote": "Aftermath of the battle with the gelatinous cubes in the Traders' Grotto",
+    "subject": "gelatinous cubes",
+    "quote_verified": false
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "type": "location",
+    "fact": "The black obelisk in the chamber is fifty feet tall.",
+    "source_quote": "a fifty-foot-tall obelisk of smooth black metal",
+    "subject": "Obelisk Chamber height",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg hatches a two-headed dragon, likely possessed by demonic power.",
+    "source_quote": "it would hatch a two-headed dragon, likely possessed by some demonic power",
+    "subject": "dragon egg",
+    "quote_verified": true
+  }
+]

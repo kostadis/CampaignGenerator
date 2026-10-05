@@ -1,0 +1,226 @@
+[
+  {
+    "type": "event",
+    "fact": "The party debated using potions, spells, ice barriers, and air bubbles to escape the flooding complex.",
+    "source_quote": "the group debated potions, spells, ice barriers, and air bubbles",
+    "subject": "escape plan discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin mentioned he possessed a potion of spider climb.",
+    "source_quote": "Thorin mentioned his potion of spider climb",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber has a ten-foot ceiling.",
+    "source_quote": "the chamber\u2019s ten-foot ceiling",
+    "subject": "flooded chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin determined the ten-foot ceiling offered little advantage for his spider climb potion.",
+    "source_quote": "the chamber\u2019s ten-foot ceiling offered little advantage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposed using the Shape Water spell to redirect water inside five-foot cubes to create water-free pockets.",
+    "source_quote": "Daz proposed a more promising use of Shape Water: redirect the water inside five-foot cubes to create pockets containing no water",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz maintains two effects at once to create a moving, ten-foot-long refuge.",
+    "source_quote": "By maintaining two effects at once, Daz could create a moving, ten-foot-long refuge",
+    "subject": "air pocket mechanism",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to crowd into one air pocket, create another ahead, and advance through the passage in stages.",
+    "source_quote": "The party would crowd into one pocket, create another ahead of it, and advance through the flooding passage in stages",
+    "subject": "movement through water",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin prepared to use his considerable strength to break through the stone.",
+    "source_quote": "Thorin prepared to use his considerable strength to break through the stone",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool cannot fit inside the cramped air pockets.",
+    "source_quote": "Glabbagool could not fit inside the cramped air pockets",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool stated that he does not breathe.",
+    "source_quote": "Oh, that\u2019s totally fine. I don\u2019t breathe",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool promised to grab and digest any party members who perish.",
+    "source_quote": "If any of you were to perish, I will absolutely grab you and digest you",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool agreed to wait long enough for surviving party members to attempt a resurrection before eating casualties.",
+    "source_quote": "After negotiation, he agreed to wait long enough for the surviving party members to attempt a resurrection",
+    "subject": "resurrection negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool caused part of the ceiling to collapse.",
+    "source_quote": "Glabbagool caused more of the ceiling to collapse",
+    "subject": "ceiling collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ceiling collapse doubled the volume of water entering the complex.",
+    "source_quote": "doubling the volume of water entering the complex",
+    "subject": "water volume increase",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceiling collapse revealed the diverted underground river feeding the flood.",
+    "source_quote": "The breach nevertheless revealed the diverted underground river that was feeding the flood",
+    "subject": "underground river",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party endured the rising water using Daz\u2019s progression of air pockets.",
+    "source_quote": "Protected by Daz\u2019s progression of air pockets, the party endured the rising water",
+    "subject": "enduring flood",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party swam upward for approximately thirty feet.",
+    "source_quote": "and then swam upward for approximately thirty feet",
+    "subject": "upward swim",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party broke the surface in a large cavern.",
+    "source_quote": "They broke the surface in a large cavern",
+    "subject": "large cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party resumed their journey after emerging into the large cavern.",
+    "source_quote": "and resumed their journey",
+    "subject": "journey resumed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar declared that the situation did not end in tears.",
+    "source_quote": "See, it did not end in tears",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stated that there had unquestionably been shenanigans.",
+    "source_quote": "Thorin maintained that there had unquestionably been shenanigans",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin promised Jimjar ten silver pieces once they emerged from Glabbagool.",
+    "source_quote": "agreed to settle the wager by promising Jimjar ten of the silver pieces once they emerged from Glabbagool",
+    "subject": "wager settlement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin warned that the silver pieces might be slimy.",
+    "source_quote": "even if they were \u201ca little slimy\u201d",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar reframed the detour as finding a shortcut to Blingdenstone rather than getting lost.",
+    "source_quote": "Just so we\u2019re on the same page, I did not get us lost. That\u2019s the important thing is that I found us a shortcut, right?",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is now on a shortcut route to Blingdenstone.",
+    "source_quote": "Jimjar then reframed the entire detour as a convenient shortcut to Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party noted that they had gained a friend during the escapade.",
+    "source_quote": "they had gained a friend",
+    "subject": "party friendship",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reached level 6 after successfully escaping the complex.",
+    "source_quote": "Their successful escape also brought them to level 6",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gained another third-level spell slot at level 6.",
+    "source_quote": "Daz gains another third-level spell slot",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gained an additional known spell at level 6.",
+    "source_quote": "an additional known spell",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gained the Sculpt Spells feature at level 6.",
+    "source_quote": "and the Sculpt Spells feature",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Sculpt Spells feature permits effects like Fireball to spare selected allies caught within the area.",
+    "source_quote": "Sculpt Spells permits effects such as Fireball to spare selected allies caught within the area",
+    "subject": "Sculpt Spells",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party joked that the Shape Water spell renamed Daz \u201cMoses.\u201d",
+    "source_quote": "The party jokes that the spell has effectively renamed Daz \u201cMoses.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

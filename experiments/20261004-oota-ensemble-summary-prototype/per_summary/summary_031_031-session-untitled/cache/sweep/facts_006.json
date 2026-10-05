@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome stands before the Circle of the Masters.",
+    "source_quote": "Beyond the Garden of Welcome stands the Circle of the Masters",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of the Masters is dominated by a towering mushroom.",
+    "source_quote": "Circle of the Masters, dominated by a towering mushroom",
+    "subject": "Circle of the Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recognizes a musical connection between the victims' groaning and the sound he sensed in Yrberop's mind.",
+    "source_quote": "Thorin recognized the same musical quality he had sensed in Yrberop's mind",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin compares the party's reluctance to approach to an audience shouting at horror film characters not to continue.",
+    "source_quote": "Thorin observing that an audience watching a horror film would be shouting at them not to continue",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop is referenced as a being whose mind contained a discordant cacophony.",
+    "source_quote": "the discordant cacophony he perceived in Yrberop's mind",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A parade of vaguely humanoid creatures with decaying flesh covered in luminescent lichen and tumescent growths emerges from the mist.",
+    "source_quote": "a parade of vaguely humanoid creatures, their decaying flesh covered in luminescent lichen and tumescent growths",
+    "subject": "vaguely humanoid creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Infected myconids are identified as being connected to the discordant music emanating from the cavern.",
+    "source_quote": "confirming the connection between the infected myconids and whatever waited ahead",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi and the Lady of Decay.",
+    "source_quote": "Zuggtmoy herself \u2014 the Demon Queen of Fungi, the Lady of Decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy leads the wedding procession.",
+    "source_quote": "leading the procession, came Zuggtmoy herself",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the same demon lord Thorin had encountered previously.",
+    "source_quote": "the same demon lord Thorin had encountered before",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's bridesmaids walk with her in the procession.",
+    "source_quote": "walking toward the party with her bridesmaids",
+    "subject": "Zuggtmoy's bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Araumycos is the groom in the wedding hymn celebrating the union with Zuggtmoy.",
+    "source_quote": "a wedding hymn celebrating the union of Zuggtmoy and Araumycos",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wedding hymn promises that Zuggtmoy's joyous spores will spread to all the world below and above.",
+    "source_quote": "promising that her joyous spores would spread to all the world below and above",
+    "subject": "wedding hymn",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wedding hymn states that Araumycos and Zuggtmoy will become one till death do part.",
+    "source_quote": "Araumycos and Zuggtmoy joined together heart to heart, becoming one till death do part",
+    "subject": "wedding hymn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wedding procession for Zuggtmoy and Araumycos emerges from the mist.",
+    "source_quote": "leading the procession, came Zuggtmoy herself",
+    "subject": "wedding procession begins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The victims planted in the soil begin to groan and croak in horrible unison.",
+    "source_quote": "the remaining victims in the soil began to groan and croak in horrible unison",
+    "subject": "victims begin to sing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes about whether they are wedding crashers, gifts, guests, or the feast.",
+    "source_quote": "The party jokes about whether they are wedding crashers, wedding gifts, guests, or the feast",
+    "subject": "party joking",
+    "quote_verified": true
+  }
+]

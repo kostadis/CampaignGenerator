@@ -1,0 +1,44 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum's Aid spell grants temporary hit points that last for eight hours.",
+    "source_quote": "granting five temporary hit points for eight hours",
+    "subject": "Aid duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Aid spell grants 5 temporary hit points to each of three companions.",
+    "source_quote": "granting five temporary hit points",
+    "subject": "Aid effect",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconid spores stun creatures within 5 feet.",
+    "source_quote": "Their spores stun within 5 feet",
+    "subject": "myconid spore range",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids can communicate with creatures within 20 feet.",
+    "source_quote": "they communicate within 20 feet",
+    "subject": "myconid speech range",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids can only calm a creature three times.",
+    "source_quote": "Myconids can only \"calm you down three times\"",
+    "subject": "myconid speech limit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool suggests staying more than 30 feet away to avoid Myconid spores.",
+    "source_quote": "Just stay more than 30 feet away.",
+    "subject": "Stool's safety suggestion",
+    "quote_verified": true
+  }
+]

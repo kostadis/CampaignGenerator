@@ -1,0 +1,114 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz learned that Magic Missile requires a visible target.",
+    "source_quote": "Daz learned the hard way that Magic Missile needs a target he can see",
+    "subject": "Daz spell failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cast Scorching Ray at a spot in the water.",
+    "source_quote": "He fell back on Scorching Ray aimed at a spot in the water",
+    "subject": "Daz Scorching Ray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz landed one of his three Scorching Rays.",
+    "source_quote": "landing one of three rays",
+    "subject": "Daz hit count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's successful ray dealt seven fire damage.",
+    "source_quote": "landing one of three rays for seven fire damage",
+    "subject": "Daz damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin waded into the water to engage in melee.",
+    "source_quote": "Thorin waded into the water to engage in brutal melee",
+    "subject": "Thorin enters water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin used feints and Hill Strikes to attack the gray dwarves.",
+    "source_quote": "using feints and Hill Strikes to batter the gray dwarves",
+    "subject": "Thorin combat tactics",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar grappled members of the crew.",
+    "source_quote": "The duergar grappled members of the crew",
+    "subject": "duergar grappling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is a goblin who was grappled by the duergar.",
+    "source_quote": "one of whom turned out to be the goblin Spiderbait",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Spiderbait is a goblin.",
+    "source_quote": "the goblin Spiderbait",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar began dragging the grappled prisoners away.",
+    "source_quote": "and began dragging them away",
+    "subject": "duergar dragging",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The slavers abandoned their prisoners to save themselves.",
+    "source_quote": "the slavers eventually abandoned their prisoners to save themselves",
+    "subject": "slavers flee",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum coated the slavers in Tasha's Caustic Brew.",
+    "source_quote": "Gyrgum repeatedly coated the slavers in Tasha's Caustic Brew",
+    "subject": "Gyrgum caustic brew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum finished off a wounded duergar with Tasha's Caustic Brew.",
+    "source_quote": "He finished off one wounded duergar with it",
+    "subject": "Gyrgum kill",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum left the fleeing slavers with ongoing acid damage.",
+    "source_quote": "left the fleeing ones burning with ongoing acid damage",
+    "subject": "Gyrgum burning slavers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One wounded duergar was killed by Gyrgum's Tasha's Caustic Brew.",
+    "source_quote": "He finished off one wounded duergar with it",
+    "subject": "Wounded duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The fleeing duergar are burning with ongoing acid damage.",
+    "source_quote": "left the fleeing ones burning with ongoing acid damage",
+    "subject": "Fleeing duergar",
+    "quote_verified": true
+  }
+]

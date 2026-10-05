@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "Laduguer's Furrow is the wealthier district of the city.",
+    "source_quote": "Laduguer's Furrow, the wealthier district of the city",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Laduguer's Furrow is the district of the Ironhead faction.",
+    "source_quote": "It is also the district of the Ironhead faction",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar bets a gold piece that Thorin will do something embarrassing.",
+    "source_quote": "Jimjar made a bet... bet a gold piece that Thorin would do something embarrassing before long",
+    "subject": "wager made",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin unbuckles his belt and drops his pants to win the bet.",
+    "source_quote": "Thorin... promptly let his belt buckle loose and his pants fall to the ground",
+    "subject": "wager won",
+    "quote_verified": false
+  },
+  {
+    "type": "date",
+    "fact": "The DM ruled that small wagers are not tracked unless they reach hundreds.",
+    "source_quote": "The DM ruled that such small wagers are not tracked unless they reach \"hundreds\"",
+    "subject": "wager tracking rule",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The city has a 19th-century Pittsburgh industrial vibe.",
+    "source_quote": "the DM described as a 19th-century Pittsburgh vibe",
+    "subject": "Gracklstugh atmosphere",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Clan Thrazgad operates belching forges with soot-streaked workers beneath a smoke-thick sky.",
+    "source_quote": "belching forges of Clan Thrazgad, where soot-streaked workers toiled beneath a sky thick with smoke",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a duergar armorsmith clan.",
+    "source_quote": "Clan Thrazgad, a duergar armorsmith clan",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A gray-skinned Duergar informant leans against the wall near Clan Thrazgad's forge.",
+    "source_quote": "Near the forge, a gray-skinned Duergar informant leaned against the wall",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The informant eyes the party with cold calculation.",
+    "source_quote": "eyeing the group with cold calculation",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A perception check found no invisible watchers nearby.",
+    "source_quote": "A perception check found no invisible watchers nearby",
+    "subject": "invisibility check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir judged the informant to have nothing worth buying.",
+    "source_quote": "Zalthir judged the man to have nothing worth buying",
+    "subject": "informant assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin sensed the informant had real information.",
+    "source_quote": "Thorin sensed otherwise... Thorin (16) sensed real information",
+    "subject": "informant assessment",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar pays the informant with the gold piece Thorin won from him.",
+    "source_quote": "For a single gold piece, which Thorin had Jimjar pay from his lost wager, the informant gave them two warnings",
+    "subject": "wager payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The informant warned that the Stone Guard is paranoid about strangers.",
+    "source_quote": "The Stone Guard had grown paranoid about strangers",
+    "subject": "warning issued",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The informant warned that a group of four with a drow should avoid being noticed together.",
+    "source_quote": "a group of four with a drow would do well not to be noticed together",
+    "subject": "warning issued",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The informant stated that the Ember Vanguard is being blamed for assassinating members of the derro High Council.",
+    "source_quote": "the Ember Vanguard was being blamed throughout the city for the assassination of several members of the derro High Council",
+    "subject": "warning issued",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The deceased members of the derro High Council are the derro the party killed in the caverns.",
+    "source_quote": "Those were the derro the party had killed in the caverns",
+    "subject": "Derro High Council members",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro members of the High Council created two-headed giants and perverted a dragon egg.",
+    "source_quote": "one making the two-headed giants, the other perverting the dragon egg",
+    "subject": "Derro High Council members",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The good inn in Gracklstugh is reserved for duergar.",
+    "source_quote": "Gracklstugh's good inn is reserved for duergar",
+    "subject": "Gracklstugh inn",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The not-so-good inn serves everyone else.",
+    "source_quote": "The not-so-good inn serves everyone else",
+    "subject": "Gracklstugh inn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to visit the stone giants first.",
+    "source_quote": "They decide to visit the stone giants first",
+    "subject": "party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reasoned that the stone giants are more even-keeled than the other factions.",
+    "source_quote": "Thorin's reasoning: \"the giants seem to be more even-keeled of the group of all these factions.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard has grown paranoid about strangers in the city.",
+    "source_quote": "The Stone Guard had grown paranoid about strangers",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is being blamed for the assassination of derro High Council members.",
+    "source_quote": "the Ember Vanguard was being blamed throughout the city for the assassination of several members of the derro High Council",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party realizes the assassinated derro were the ones they previously killed.",
+    "source_quote": "The party realizes the \"High Council\" members were the derro they killed",
+    "subject": "assassinations",
+    "quote_verified": true
+  }
+]

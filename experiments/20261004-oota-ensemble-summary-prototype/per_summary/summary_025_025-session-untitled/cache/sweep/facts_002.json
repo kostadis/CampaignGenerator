@@ -1,0 +1,310 @@
+[
+  {
+    "type": "npc",
+    "fact": "Stool is a young Myconid sprout.",
+    "source_quote": "The young Myconid sprout had been pleading with the party",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool throws a tantrum to persuade the party.",
+    "source_quote": "He threw what could only be described as a tantrum",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool threatens to go alone if the others refuse.",
+    "source_quote": "threatening to go alone if the others refused",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool declares Thorin to be much nicer than Zalthir.",
+    "source_quote": "declaring him \"much nicer than Zalthir.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool calls Zalthir a scaredy cat.",
+    "source_quote": "Stool calls Zalthir \"a scaredy cat.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is Stool's friend.",
+    "source_quote": "go check on his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is reportedly upset.",
+    "source_quote": "insisting the party accompany him to see Rumpadump, who is reportedly upset",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is declared by his player to be very loyal.",
+    "source_quote": "Thorin's player declares his character \"very loyal \u2026 if he's with us, we're with him.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool tries to recruit Thorin as his new friend.",
+    "source_quote": "Stool tries to recruit Thorin as his new friend.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is deeply skeptical of visiting Rumpadump.",
+    "source_quote": "Zalthir was deeply skeptical.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls frantic, infected creatures near Rumpadump's location.",
+    "source_quote": "He recalled the frantic, infected creatures they had previously scouted near Rumpadump's location",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir describes a massive ape-like beast as not particularly friendly.",
+    "source_quote": "including a massive ape-like beast that looked anything but friendly.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir calls Stool's attempt to turn Thorin against him \"splitting.\"",
+    "source_quote": "Zalthir calls it \"splitting.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir insists that any visit requires a plan for protection from spores.",
+    "source_quote": "Zalthir insists that any visit requires a clear plan for protection from the spores.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir makes a comment about the name \"stool\" after seeing images of a Myconid sprout.",
+    "source_quote": "Zalthir: \"I see why it's called stool.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz objects to the idea of ignoring Stool.",
+    "source_quote": "Daz objects to the idea of ignoring Stool",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls Myconid lore that backs up Stool's claims.",
+    "source_quote": "Daz's recollection of Myconid lore largely backed that up.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz suggests telling Stool it is bedtime again.",
+    "source_quote": "Daz suggests telling him it's bedtime again.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that Myconids are generally peaceable but can stun or bludgeon those too close.",
+    "source_quote": "Daz recalls his knowledge of Myconids (nature check with advantage), noting they are generally peaceable but capable of stunning or bludgeoning those who get too close.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz comments that the Myconid sprout is not cute.",
+    "source_quote": "Daz: \"I was going to say he's cute, but he's really not.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Aid on three party members.",
+    "source_quote": "Gyrgum bolstered three of his companions with Aid",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers Bless and Aid as protective options.",
+    "source_quote": "Gyrgum offers Bless and Aid as protective options.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum makes a joke about sitting on the Myconid sprout.",
+    "source_quote": "Gyrgum: \"I'd sit on that.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A massive ape-like beast was previously scouted near Rumpadump's location.",
+    "source_quote": "including a massive ape-like beast that looked anything but friendly.",
+    "subject": "ape-like beast",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stool describes the ape creature as looking big.",
+    "source_quote": "\"The ape thing looked so big.\"",
+    "subject": "ape-like beast",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids are anthropomorphic walking mushrooms.",
+    "source_quote": "They are anthropomorphic walking mushrooms the drow used as target practice",
+    "subject": "Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Drow have used Myconids as target practice.",
+    "source_quote": "anthropomorphic walking mushrooms the drow used as target practice",
+    "subject": "Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconid spores stun within 5 feet.",
+    "source_quote": "Their spores stun within 5 feet",
+    "subject": "Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids communicate within 20 feet.",
+    "source_quote": "they communicate within 20 feet",
+    "subject": "Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids have bludgeoning fists.",
+    "source_quote": "and they have bludgeoning fists.",
+    "subject": "Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids are dangerous only in large numbers.",
+    "source_quote": "dangerous only in large numbers.",
+    "subject": "Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Frantic, infected creatures were previously scouted near Rumpadump's location.",
+    "source_quote": "He recalled the frantic, infected creatures they had previously scouted near Rumpadump's location",
+    "subject": "infected creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow have used Myconids as target practice.",
+    "source_quote": "the drow used as target practice",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool throws a tantrum and bounces with agitation.",
+    "source_quote": "bouncing with agitation",
+    "subject": "Stool's tantrum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool threatens to go alone.",
+    "source_quote": "threatening to go alone if the others refused",
+    "subject": "Stool's tantrum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool threatens to go alone and starts walking off.",
+    "source_quote": "Stool threatens to go alone and starts walking off",
+    "subject": "Stool's tantrum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party relents and agrees to accompany Stool.",
+    "source_quote": "prompting the party to relent and agree to accompany him",
+    "subject": "Party relents",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Aid granting five temporary hit points for eight hours.",
+    "source_quote": "granting five temporary hit points for eight hours",
+    "subject": "Gyrgum casts Aid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM allows a short rest before arrival.",
+    "source_quote": "The DM allows a short rest (but not a long rest) before they arrive.",
+    "subject": "Short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's player tries to heal \"the 12 and five.\"",
+    "source_quote": "Gyrgum's player tries to heal \"the 12 and five.\"",
+    "subject": "Gyrgum's healing attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM shows images of what a Myconid sprout looks like.",
+    "source_quote": "The DM shows images of what a Myconid sprout looks like.",
+    "subject": "DM images",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The DM shows images of a Myconid sprout to the players.",
+    "source_quote": "The DM shows images of what a Myconid sprout looks like.",
+    "subject": "DM images",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Stool explains that the Myconid term for zombie is unpronounceable.",
+    "source_quote": "The Myconid term is unpronounceable",
+    "subject": "Myconid terminology",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Myconid term roughly translates to \"creature that helps after death.\"",
+    "source_quote": "roughly \"creature that helps after death.\"",
+    "subject": "Myconid terminology",
+    "quote_verified": true
+  }
+]

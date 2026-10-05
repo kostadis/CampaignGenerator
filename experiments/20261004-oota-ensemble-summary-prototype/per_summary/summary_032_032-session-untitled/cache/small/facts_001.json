@@ -1,0 +1,205 @@
+[
+  {
+    "type": "location",
+    "fact": "The Majestic Mushroom is a colossal fungal structure with a hollow trunk carved with slitted windows.",
+    "source_quote": "a colossal fungal structure that stretched from the cavern floor nearly to the ceiling, its hollow trunk carved with slitted windows",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thousands of smaller fungi cling to the vast central stalk of the Majestic Mushroom.",
+    "source_quote": "Thousands of smaller fungi clung to its vast central stalk",
+    "subject": "fungal creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A bridal procession of singing, marching fungal creatures swept through the grove.",
+    "source_quote": "A bridal procession of singing, marching fungal creatures swept through the grove",
+    "subject": "fungal creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi.",
+    "source_quote": "the Demon Queen of Fungi, Zuggtmoy herself, leading the march",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy leads the procession as though the party were invisible.",
+    "source_quote": "leading the march as though the party were invisible",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy behaves with the imperious indifference of royalty.",
+    "source_quote": "moving with the imperious indifference of royalty",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy behaves like a queen crossing a fair or Darth Vader entering the Death Star, causing others to move aside.",
+    "source_quote": "reminded the party of a queen crossing a fair or Darth Vader entering the Death Star: everyone moved aside, and no one dared attract notice",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is described as the Lady of Rot, an embodiment of death and virulence who corrupts decomposition.",
+    "source_quote": "The DM describes Zuggtmoy as the Lady of Rot, an embodiment of death and virulence who corrupts decomposition for destruction rather than renewal or rebirth",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's power is far beyond the party's reach, such that a direct confrontation would require new characters.",
+    "source_quote": "Zuggtmoy was so far beyond them that a direct confrontation would mean rolling new characters",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy intends to ritually mate with Araumycos.",
+    "source_quote": "Zuggtmoy intended to ritually mate with \u2014 and potentially possess \u2014 this entity",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy may be preparing to possess or overcome Araumycos.",
+    "source_quote": "Zuggtmoy may be preparing herself to possess or otherwise overcome an entity potentially as powerful as Araumycos",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's procession retreated into the hollow mushroom.",
+    "source_quote": "the procession eventually retreated into the hollow mushroom",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has knowledge of Bahamut\u2019s teachings and orc wedding customs.",
+    "source_quote": "Gyrgum\u2019s peculiar combination of Bahamut\u2019s teachings, orc wedding customs",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was hit over the head one too many times, which aids his recognition of rituals.",
+    "source_quote": "\u201cone too many hits over the head\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum recognizes the display as a rehearsal march rather than the true ceremony.",
+    "source_quote": "Gyrgum then combined fragments of lore... Gyrgum uses his specialized religious knowledge... to identify the march as a rehearsal demonstration",
+    "subject": "Gyrgum identifies rehearsal",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz concludes the procession resembles a pre-wedding parade.",
+    "source_quote": "Daz likewise concludes that it resembles a pre-wedding parade",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz, Thorin, and Gyrgum combined their knowledge to identify Araumycos.",
+    "source_quote": "Daz, Thorin, and Gyrgum then combined fragments of lore concerning Araumycos",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin observes that the march is 'just a tribute' and not the wedding.",
+    "source_quote": "Thorin observes, \u201cYou\u2019re saying this is not the wedding. It\u2019s just a tribute.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin combined his lore with Daz and Gyrgum to identify Araumycos.",
+    "source_quote": "Daz, Thorin, and Gyrgum then combined fragments of lore concerning Araumycos",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Araumycos is an immense sentient fungal growth.",
+    "source_quote": "an immense sentient fungal growth",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Araumycos occupies an epically large region of the Underdark.",
+    "source_quote": "occupying an epically large region of the Underdark",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Araumycos has housed myconids for centuries or perhaps millennia.",
+    "source_quote": "that has housed myconids for centuries or perhaps millennia",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon has already appeared in the Underdark.",
+    "source_quote": "Demogorgon had already appeared in the Underdark",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids have housed Araumycos for centuries or perhaps millennia.",
+    "source_quote": "that has housed myconids for centuries or perhaps millennia",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The implications of Zuggtmoy's plans are larger than Neverlight Grove.",
+    "source_quote": "The implications were far larger than Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party considers fleeing toward Blingdenstone.",
+    "source_quote": "flee toward Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The demonic procession completes its ritual march and retreats into the hollow interior of the Majestic Mushroom.",
+    "source_quote": "The demonic procession completes its ritual march and retreats into the hollow interior of the Majestic Mushroom",
+    "subject": "procession retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The intended groom for Zuggtmoy's ceremony with Araumycos is not yet present, preventing the wedding from beginning.",
+    "source_quote": "The intended groom, however, was nowhere to be found, and the procession eventually retreated into the hollow mushroom. For now, the wedding could not begin.",
+    "subject": "missing groom",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party debates their realistic options: warn others, rescue their friends, flee toward Blingdenstone, or remain nearby.",
+    "source_quote": "The party debates their realistic options: warn others, rescue their friends, flee toward Blingdenstone, or remain nearby",
+    "subject": "party options",
+    "quote_verified": true
+  }
+]

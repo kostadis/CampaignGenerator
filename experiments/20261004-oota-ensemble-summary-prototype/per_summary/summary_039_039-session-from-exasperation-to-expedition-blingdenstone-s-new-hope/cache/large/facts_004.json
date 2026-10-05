@@ -1,0 +1,93 @@
+[
+  {
+    "type": "monster",
+    "fact": "Four gnome guards escorting the party have stringy mustaches, pronounced noses, and rat-like features.",
+    "source_quote": "Their stringy mustaches, pronounced noses, and other subtle features appeared increasingly rat-like.",
+    "subject": "wererat guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a Wisdom score of 19.",
+    "source_quote": "Gyrgum's Wisdom of 19 prevented him from saying something so tactless.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum refrained from asking the guards if they had \"had some work done.\"",
+    "source_quote": "Gyrgum had the wisdom not to bluntly point out their appearance",
+    "subject": "Gyrgum silence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party assured the wererat guards that they are not judgmental.",
+    "source_quote": "the party openly expressed curiosity about meeting wererats and assured the guards that they were not judgmental.",
+    "subject": "party statement on judgment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A party member stated they have met fungus people and gelatinous cubes, and now wererats.",
+    "source_quote": "I mean, I've met fungus people and gelatinous cubes, and now apparently, uh, there's a chance to meet were rats.",
+    "subject": "Party member",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wererat guards were thrilled because the party did not demand their deaths.",
+    "source_quote": "The guards were thrilled to encounter visitors who had not arrived demanding the wererats' deaths.",
+    "subject": "Guards reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Wererats usually encounter visitors who demand their deaths.",
+    "source_quote": "visitors usually arrived saying, \u201ckill all the were rats.\u201d",
+    "subject": "Wererats",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party observed that rats, wererat or otherwise, occupy an important ecological niche.",
+    "source_quote": "The party observed that rats, \"were or otherwise,\" occupied an important ecological niche.",
+    "subject": "Ecological niche observation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "One guard declared \"See, I told you\" in response to the ecological observation.",
+    "source_quote": "one guard triumphantly declared, \u201cSee, I told you.\u201d",
+    "subject": "Guard declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard's declaration sparked a philosophical debate among the four guards regarding the ecological roles of rats and wererats.",
+    "source_quote": "The remark ignited a loud philosophical debate among the four guards about rats, wererats, and their respective ecological roles",
+    "subject": "Philosophical debate start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group reached Chipgrin's court.",
+    "source_quote": "which continued all the way to Chipgrin's court.",
+    "subject": "Arrival at court",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin is the Chief of the Goldwhisker Warrens.",
+    "source_quote": "reached Chief Chipgrin's court.",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is led through the warrens to Chipgrin's court.",
+    "source_quote": "The party is led into the Goldwhisker Warrens by wererat guards",
+    "subject": "Goldwhisker Warrens",
+    "quote_verified": true
+  }
+]

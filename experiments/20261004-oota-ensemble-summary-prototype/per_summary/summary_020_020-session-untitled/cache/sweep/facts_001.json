@@ -1,0 +1,261 @@
+[
+  {
+    "type": "location",
+    "fact": "The Egg Chamber is a dark cavern in the Underdark containing a mysterious and coveted egg.",
+    "source_quote": "Deep within the Underdark, the party found themselves locked in a desperate struggle to protect a mysterious and coveted egg hidden within a dark cavern.",
+    "subject": "Egg Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Egg Chamber is blanketed in magical darkness.",
+    "source_quote": "the magical darkness that blanketed the chamber turned the fight into a fumbling, frantic melee.",
+    "subject": "Egg Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Derro cultists swarm the chamber with fanatical purpose, having minds twisted by sinister forces.",
+    "source_quote": "The Derro cultists, their minds twisted beyond reason by the manipulations of sinister forces, swarmed the chamber with fanatical purpose.",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cooperate out of necessity and when riled up by a charismatic leader.",
+    "source_quote": "they cooperate \"out of necessity and when riled up by a charismatic leader,\"",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro have a history as slaves to Mind Flayers.",
+    "source_quote": "The party discusses the madness of the Derro and their history as slaves to Mind Flayers.",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A spectator is a multi-eyed, beholder-like creature that appears from the darkness to join the assault.",
+    "source_quote": "From the shadows, hidden spies loosed crossbow bolts at the party's allies... a beholder-kin creature known as a spectator materialized from the darkness, its many eyes gleaming with malice as it joined the assault.",
+    "subject": "Spectator",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The party has previously met the spectator.",
+    "source_quote": "It spends all its movement arriving; the GM notes \"You've met it before.\"",
+    "subject": "Spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is the fanatical leader of the Derro.",
+    "source_quote": "killing the fanatical Derro leader Plinki outright and leaving the survivors blinded and reeling.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki was grappled by Zalthir at the end of the previous chapter.",
+    "source_quote": "Opening situation, carried over from chapter 19: Plinki has been grappled (by Zalthir, at the end of chapter 19)",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki attempts to attack Gyrgum but fails due to the surrounding darkness.",
+    "source_quote": "Plinki attempts to attack Gyrgum but fails to land a blow due to the surrounding darkness.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki's mind is focused solely on attacking Gyrgum.",
+    "source_quote": "GM: \"he's got only one thing on his mind. He wants to attack Gyrgum.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is struck by a crossbow bolt from a Derro spy, dropping to four hit points.",
+    "source_quote": "one bolt striking Eldeth with brutal force and dropping her to the edge of death.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth takes 12 points of damage from the crossbow bolt.",
+    "source_quote": "Eldeth takes 12 points of damage and is down to four hit points.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz conjures a massive hand of compacted earth that seizes the spectator.",
+    "source_quote": "Daz conjured a massive hand of compacted earth that surged up from the ground and seized the spectator, pinning it in place",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz deals 16 damage to the spectator with the earthen hand.",
+    "source_quote": "16 damage; the spectator is restrained",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz retreats into the darkness after conjuring the hand.",
+    "source_quote": "Daz then retreats into the darkness so he can't be targeted.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a plan to steal the egg.",
+    "source_quote": "GM: Daz already has a plan to steal the egg.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir can perceive through supernatural darkness.",
+    "source_quote": "Zalthir, gifted with the ability to perceive through the supernatural darkness, moved with deadly precision, striking at enemies that could not even see him coming.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir maneuvers through his own magical darkness to strike at the Derro.",
+    "source_quote": "Zalthir maneuvers through his own magical darkness to strike at the Derro.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir unleashes a breath attack in a cone, killing Plinki and blinding others.",
+    "source_quote": "Zalthir unleashed a terrifying breath that swept across the chamber in a wide cone, killing the fanatical Derro leader Plinki outright and leaving the survivors blinded and reeling.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was sitting over the eggs at the start of the scene.",
+    "source_quote": "Gyrgum was sitting over the eggs",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is willing to steal the egg to protect it.",
+    "source_quote": "Gyrgum's player: \"So I want to protect this egg, but I'm willing to steal it if that's the best way to do that.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum calls upon a ghostly ally to defend the egg.",
+    "source_quote": "Gyrgum called upon his ghostly ally to defend the egg",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's ghostly ally acts on his turn because he 'has the bones'.",
+    "source_quote": "it acts on Gyrgum's turn \"because you have the bones.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin engages a Derro warrior using his longsword to impose disadvantage on the enemy's next attack.",
+    "source_quote": "Thorin engages a Derro warrior, utilizing his longsword to impose disadvantage on the enemy's next attack.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is learning the Sentinel feat.",
+    "source_quote": "Thorin's player is learning his new Sentinel feat (\"defend other people. People can't disengage\").",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin hits derro #6 for 9 damage with Blindsight giving him advantage.",
+    "source_quote": "Blindsight in the darkness gives him advantage; he hits derro #6 for 9",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Derro spy emerges from the shadows and severely wounds Eldeth with a crossbow bolt.",
+    "source_quote": "A Derro spy emerges from the shadows and severely wounds Eldeth with a crossbow bolt.",
+    "subject": "Derro spy ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A second spy attempts to shoot Daz but misses.",
+    "source_quote": "A second spy attempts to shoot Daz but misses.",
+    "subject": "Second spy miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Derro marches up and swings at Zalthir with disadvantage, rolling a 15 against AC 16 for a miss.",
+    "source_quote": "A Derro marches up and swings at Zalthir with disadvantage, rolling a 15 against AC 16 \u2014 a miss.",
+    "subject": "Derro miss vs Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's longsword's Sap mastery gives the target disadvantage on its next attack.",
+    "source_quote": "and his longsword's Sap mastery gives the target disadvantage on its next attack.",
+    "subject": "Thorin's Sap mastery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the party helpers hits the spectator for 10 damage.",
+    "source_quote": "One of the helpers hits the spectator for 10.",
+    "subject": "Helper attacks spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Enemy crossbowmen fire blindly, with one hitting Gyrgum for six damage.",
+    "source_quote": "Enemy crossbowmen fire blindly: one hits Gyrgum for six",
+    "subject": "Crossbowmen blind fire",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki is killed by Zalthir's breath attack.",
+    "source_quote": "Zalthir unleashed a terrifying breath that swept across the chamber in a wide cone, killing the fanatical Derro leader Plinki outright",
+    "subject": "Plinki's death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's breath attack inflicts the blinded condition on the surviving Derro.",
+    "source_quote": "it kills Plinki and inflicts the blinded condition; others take one or two points.",
+    "subject": "Blinding condition",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Plinki is dead, killed by Zalthir's breath attack.",
+    "source_quote": "killing the fanatical Derro leader Plinki outright",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Spectator is restrained by Daz's conjured earthen hand.",
+    "source_quote": "Daz conjured a massive hand of compacted earth that surged up from the ground and seized the spectator, pinning it in place",
+    "subject": "Spectator",
+    "quote_verified": true
+  }
+]

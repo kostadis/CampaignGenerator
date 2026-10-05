@@ -1,0 +1,44 @@
+[
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a legendary sentient gilded longsword.",
+    "source_quote": "Dawnbringer, a gilded longsword",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer was trapped in the dark for millennia.",
+    "source_quote": "trapped for millennia",
+    "subject": "Dawnbringer trap duration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a plus-two weapon.",
+    "source_quote": "Dawnbringer is a plus-two weapon",
+    "subject": "Dawnbringer weapon bonus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A bonus action causes a blade of pure radiance to spring from or disappear into Dawnbringer's hilt.",
+    "source_quote": "a bonus action causes a blade of pure radiance to spring from it or disappear",
+    "subject": "Dawnbringer activation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer deals an additional 1d8 damage against undead.",
+    "source_quote": "deals an additional 1d8 damage against undead",
+    "subject": "Dawnbringer undead damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer can cast lesser restoration once each day.",
+    "source_quote": "cast lesser restoration once each day",
+    "subject": "Dawnbringer spell casting",
+    "quote_verified": true
+  }
+]

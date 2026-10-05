@@ -1,0 +1,1374 @@
+[
+  {
+    "type": "location",
+    "fact": "Cairngorm Cavern is a massive underground home located in the Southfurrow District.",
+    "source_quote": "The party made their way to the Cairngorm Cavern, a massive and imposing underground home carved deep into the Southfurrow District",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Cairngorm is a group of Stone Giants dwelling in the Cairngorm Cavern.",
+    "source_quote": "where the Stone Giants of Clan Cairngorm dwelled",
+    "subject": "Clan Cairngorm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the clan leader of the Stone Giants.",
+    "source_quote": "At the entrance sat Hgraam, the clan leader",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam sits at the entrance of the cavern waiting for the party.",
+    "source_quote": "At the entrance sat Hgraam... his stony expression unreadable as he waited with the infinite patience of his kind",
+    "subject": "Hgraam waits",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam stands up when the party arrives.",
+    "source_quote": "when they arrived, he simply raised an eyebrow and stood",
+    "subject": "Hgraam stands",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is nervous about meeting the giants due to a poor past relationship with them.",
+    "source_quote": "Gyrgum was a little nervous about meeting giants, since he had not had a good relationship with them before",
+    "subject": "Gyrgum's nervousness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to visit the Stone Giants to seek information and hear their perspective.",
+    "source_quote": "the party decides to visit the Stone Giants, the one group they have not yet spoken with",
+    "subject": "Party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's player advocates gathering all offers or assignments before taking action.",
+    "source_quote": "we should get all the offers or assignments before we really do anything",
+    "subject": "Gyrgum's strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's previous character was a famous writer, hero, publisher of fiction and art, involved in a significant battle.",
+    "source_quote": "was a famous writer, a hero of the realms, involved in a significant battle, and a well-known publisher of fiction and art",
+    "subject": "Daz's previous character",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A long tunnel runs several hundred feet from the entrance into the home of Clan Cairngorm.",
+    "source_quote": "A long tunnel runs several hundred feet into the home of Clan Cairngorm",
+    "subject": "Cairngorm Cavern tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asks if the clan leaders are just chilling by the entrance.",
+    "source_quote": "Thorin asks: \"What, like the clan leaders just chilling by the entrance?\"",
+    "subject": "Thorin's question",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Stone giants value patience and deliberate speech, waiting a long time to initiate conversation.",
+    "source_quote": "can wait a very long time before they initiate a conversation because they don't want to rush anything",
+    "subject": "Stone giant conversation etiquette",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the leader of the Stone Giant clan.",
+    "source_quote": "Hgraam spoke gravely of his apprentice, the Stone Giant",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam's apprentice was a Stone Giant who was driven to madness by the stones themselves.",
+    "source_quote": "The apprentice had been driven to madness not by any enemy blade, but by the very stones themselves.",
+    "subject": "Hgraam's apprentice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam expresses grief over his apprentice's condition.",
+    "source_quote": "Hgraam expresses grief over his apprentice, who was driven mad by the stones",
+    "subject": "Hgraam's grief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam warns that something ancient and terrible is stirring in the blackest depths of the Underdark.",
+    "source_quote": "He warned that something ancient and terrible was stirring in the blackest depths of the Underdark",
+    "subject": "Hgraam's warning",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam recites omens including a cave with two faces, rock devoured, land overgrown, and a pebble that believes itself flesh.",
+    "source_quote": "He recited a list of omens: a cave with two faces, rock devoured, land overgrown, a pebble that believes itself flesh.",
+    "subject": "Omens recited",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hgraam calls the surface world the Dreamlands, describing it as foreign and possibly mythical.",
+    "source_quote": "He called the surface the Dreamlands, a place so foreign to him it might as well be myth.",
+    "subject": "Dreamlands",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party has never been to the surface and Hgraam considers it nonexistent.",
+    "source_quote": "He has never been to the surface, and for him it doesn't exist.",
+    "subject": "Dreamlands",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam does not know the way to the surface.",
+    "source_quote": "He does not know the path himself.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Hgraam states that the deep gnomes know the way out to the surface.",
+    "source_quote": "He has only heard through trade that the deep gnomes know a way out.",
+    "subject": "Deep Gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar previously told the party that the best path back to the surface runs through the town of the deep gnomes.",
+    "source_quote": "Jimjar had told them the same, though Jimjar may have had other agendas",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hgraam describes the Whorlstone Tunnels as filled with evil.",
+    "source_quote": "There is much evil in there.",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam explains that the Deepking's attempts to enforce control cause evil to escape the city and seize control of it.",
+    "source_quote": "The more he enforces control, the more it escapes outside the city to seize control of the city.",
+    "subject": "Deepking's control",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz finds the giant's speech regarding the tunnels comical and senseless.",
+    "source_quote": "Daz finds the giant's speech comical and senseless (\"This makes absolutely no sense\")",
+    "subject": "Daz's observation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Invisible duergar patrol the city above, forcing factions to hide underground.",
+    "source_quote": "away from the invisible duergar patrolling the city above.",
+    "subject": "Duvderpatrols",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has encountered a creature of Demogorgon's power.",
+    "source_quote": "demons they have already encountered: - Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has encountered the creation worshipped by the kuo-toa.",
+    "source_quote": "the kuo-toa's worshipped creation",
+    "subject": "kuo-toa creation",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has encountered demonic manta rays in the water.",
+    "source_quote": "demonic manta rays in the water",
+    "subject": "demonic manta rays",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party saw demons fighting among themselves during the escape from Velkynvelve.",
+    "source_quote": "demons fighting among themselves during the escape from Velkynvelve",
+    "subject": "brawling demons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deduces that the increasing presence of demons is tied to the apprentice's madness.",
+    "source_quote": "Zalthir's Arcana check led him to suspect that the apprentice's madness was tied to the growing presence of demons.",
+    "subject": "Zalthir's deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The demonic presence is far more widespread than the party's previous sightings suggested.",
+    "source_quote": "That presence was far more widespread than the party's scattered sightings of Demogorgon, the creation the kuo-toa worshipped, the demonic manta rays and the brawling demons at Velkynvelve had suggested.",
+    "subject": "Scope of demonic threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking was once a measured and reasonable leader.",
+    "source_quote": "The ruler of Gracklstugh had once been a measured and reasonable leader",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown paranoid, erratic, and increasingly isolated from his oldest allies.",
+    "source_quote": "but in recent times had grown paranoid, erratic, and increasingly isolated from his oldest allies.",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shal is a new favored advisor to the Deepking.",
+    "source_quote": "The change, Hgraam believed, had begun when a new favored advisor named Shal had wormed his way into the king's confidence.",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shal has never come to visit the Stone Giant clan leader.",
+    "source_quote": "Even the Stone Giant clan leader had never been permitted to meet this advisor.",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking has asked Hgraam about the Gray Ghosts.",
+    "source_quote": "The Deepking had asked Hgraam about the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam knows nothing about the Gray Ghosts.",
+    "source_quote": "but Hgraam knew nothing of them.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam advised the Deepking to be patient and watch the stones.",
+    "source_quote": "He has advised the Deepking to be patient and \"watch the stones.\"",
+    "subject": "Hgraam's advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam ends the audience stating that there are rocks that need to be tended.",
+    "source_quote": "it is time for you to leave there are rocks that need to be tended.",
+    "subject": "Audience ended",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hgraam presents the party with a polished crystal as a token of gratitude.",
+    "source_quote": "The Stone Giant leader presents the party with a polished crystal as a token of gratitude",
+    "subject": "polished crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam's apprentice brings out the polished crystal.",
+    "source_quote": "His apprentice brings it out.",
+    "subject": "gift presentation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is struck by how different Hgraam is from other giants he knew who mostly bellowed and hit things.",
+    "source_quote": "Gyrgum is struck by how different this giant is from the ones he knew, who mostly bellowed and hit things",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam told the party it was time to leave to tend rocks.",
+    "source_quote": "it is time for you to leave there are rocks that need to be tended",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam presented the party with a polished crystal the length of a human forearm.",
+    "source_quote": "he presented them with a remarkable gift: a polished crystal the length of a human forearm",
+    "subject": "gift presentation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal is a polished crystal the length of a human forearm.",
+    "source_quote": "a polished crystal the length of a human forearm",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal has 10 charges.",
+    "source_quote": "It has 10 charges",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal requires attunement.",
+    "source_quote": "requires attunement",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal grants advantage on Investigation checks.",
+    "source_quote": "grants advantage on Investigation",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using speak with dead costs four charges on the crystal.",
+    "source_quote": "Speak with dead costs four charges",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using speak with animals costs two charges on the crystal.",
+    "source_quote": "speak with animals costs two",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Attunement to the crystal cannot happen until tomorrow, after a long rest.",
+    "source_quote": "Attunement can't happen until tomorrow, after a long rest",
+    "subject": "attunement restriction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has an Intelligence score of 17 and an Investigation bonus of +5.",
+    "source_quote": "Daz has INT 17 and Investigation +5",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has an Intelligence score of 14.",
+    "source_quote": "Thorin has INT 14",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz is fine with someone else taking the crystal.",
+    "source_quote": "Daz is fine with someone else taking the crystal",
+    "subject": "crystal allocation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin thinks speak with dead is the most useful power of the crystal.",
+    "source_quote": "Thorin thinks speak with dead is the most useful power",
+    "subject": "Thorin's opinion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is keen to meet the Deepking's advisor.",
+    "source_quote": "Gyrgum is keen to meet the Deepking's advisor",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warned Gyrgum that meeting the advisor might not have the desired effect.",
+    "source_quote": "The DM warns this \"might not have quite the effect you want\"",
+    "subject": "advisor warning",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The meeting with the Deepking's advisor is placed on the checklist for later.",
+    "source_quote": "it goes on the checklist for later",
+    "subject": "Deepking's advisor meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro courier.",
+    "source_quote": "He is a derro courier",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is linked to various factions.",
+    "source_quote": "linked to various factions",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unclear whether Droki belongs to a faction or just carries their messages.",
+    "source_quote": "It is unclear whether he belongs to a faction or just carries their messages",
+    "subject": "Droki's affiliation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull pointed the party toward Droki.",
+    "source_quote": "Both Errde Blackskull and Gartokkar pointed the party toward him",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar pointed the party toward Droki.",
+    "source_quote": "Both Errde Blackskull and Gartokkar pointed the party toward him",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party deduced that a derro living in a slum where duergar would be slaughtered is the ideal messenger.",
+    "source_quote": "a derro living in a slum where \"any duergar that tried to get in there would probably get slaughtered\" would be the ideal messenger",
+    "subject": "Droki deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to head to the West Cleft District to track down Droki.",
+    "source_quote": "plan to head to the West Cleft District to track down a Derro courier named Droki",
+    "subject": "travel plan",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is the original home of the city's derro slaves.",
+    "source_quote": "the original home of the city's derro slaves",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is a dark and dangerous ghetto.",
+    "source_quote": "remains a dark and dangerous ghetto",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The East Cleft District was settled after the derro earned their freedom.",
+    "source_quote": "The East Cleft District was settled after the derro earned their freedom",
+    "subject": "East Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Upon reaching the entrance of the West Cleft District, the party decided to consult Buppido for local intelligence.",
+    "source_quote": "Upon reaching the entrance of the squalid district, they decide to pivot and consult Buppido for local intelligence",
+    "subject": "pivoting to Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a Derro courier whom Errde Blackskull and Gartokkar pointed the party toward.",
+    "source_quote": "mysterious Derro courier named Droki. Both Errde Blackskull and Gartokkar had pointed them toward him",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Ghohlbrorn's Lair is the party's current lodgings where Buppido is imprisoned.",
+    "source_quote": "The party returns to Ghohlbrorn's Lair to find Jimjar gambling with the local residents.",
+    "subject": "Ghohlbrorn's Lair",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is gambling with the local residents when the party arrives at Ghohlbrorn's Lair.",
+    "source_quote": "The party returns to Ghohlbrorn's Lair to find Jimjar gambling with the local residents.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar leads the party upstairs to find Buppido.",
+    "source_quote": "He leads the party upstairs to a forlorn Buppido.",
+    "subject": "Jimjar leads party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is currently imprisoned at the party's lodgings.",
+    "source_quote": "consult their imprisoned companion, Buppido",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is described as a Derro courier.",
+    "source_quote": "mysterious Derro courier named Droki",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido laughs heartily at the party's questions.",
+    "source_quote": "The Derro laughed heartily at their questions",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido reveals that the entrance to the Whorlstone Tunnels is hidden within the heart of the Derro slums.",
+    "source_quote": "revealed that the entrance to the Whorlstone Tunnels was hidden within the very heart of the Derro slums",
+    "subject": "Buppido reveals tunnel entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido offers to guide the party to the tunnel entrance.",
+    "source_quote": "He offered to guide them through",
+    "subject": "Buppido offers guide",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to bring Buppido along.",
+    "source_quote": "the party, armed with a spare Stone Guard pass, agreed to bring him along",
+    "subject": "Party agrees to free Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin warns Buppido that a double-cross would end with him sliced up.",
+    "source_quote": "Thorin warned him that a double-cross would end with him sliced up",
+    "subject": "Thorin warns Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a spare Stone Guard pass.",
+    "source_quote": "armed with a spare Stone Guard pass",
+    "subject": "Spare Stone Guard pass",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if it is insulting to assume all derro know each other.",
+    "source_quote": "Thorin asks: \"is it insulting to assume all derro know each other?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido states he will show the party the tunnel entrance if they let him go.",
+    "source_quote": "He offered: \"I'll even show you where it is if you let me go.\"",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that Buppido killed one of their party members.",
+    "source_quote": "Thorin, the most paranoid about it, notes that \"he did kill one of our party members.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is the governing body of the derro in Gracklstugh.",
+    "source_quote": "Buppido explains the Council of Savants, the derro governing body in Gracklstugh",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is made up of more powerful derro with special abilities.",
+    "source_quote": "which is made up of more powerful derro with special abilities",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido rants about the corrupt Council of Savants promising freedom and failing.",
+    "source_quote": "Buppido delivers a manic rant about the corrupt Council of Savants, which he says has always promised to lead the derro to freedom and has always failed.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido claims to have a divine mission to free his people.",
+    "source_quote": "He claims he has a divine mission to free his people.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is convinced that Buppido is mad.",
+    "source_quote": "The party is quite convinced that Buppido is mad.",
+    "subject": "Party assesses Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suspects that demons may have affected Buppido.",
+    "source_quote": "Gyrgum suspects the demons may have affected him.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The derro control the entrance to the Whorlstone Tunnels.",
+    "source_quote": "The party sees the key insight: the derro control the entrance to the Whorlstone Tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The derro control of the tunnel entrance possibly explains why the Deepking cannot crush the factions there.",
+    "source_quote": "which is possibly why the Deepking cannot crush the factions there",
+    "subject": "Deepking inability to crush factions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull stated that marching in would cause a riot and a war.",
+    "source_quote": "Errde Blackskull had said that marching in would cause a riot and a war.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests waiting to free Buppido until they leave the city.",
+    "source_quote": "Zalthir wanted to wait and free him when they left the city.",
+    "subject": "Zalthir's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests taking Buppido along to vouch for them with Droki.",
+    "source_quote": "Thorin suggests taking him along to vouch for them with Droki.",
+    "subject": "Thorin's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gives Buppido a spare Stone Guard pass so he can accompany them.",
+    "source_quote": "The party agrees to give Buppido a spare Stone Guard pass so he can accompany them",
+    "subject": "Party gives Buppido pass",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An Insight check leaves the party convinced Buppido will gladly help.",
+    "source_quote": "An Insight check leaves the party convinced Buppido will gladly help.",
+    "subject": "Insight check on Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido assures the party that he knows what to do.",
+    "source_quote": "Buppido: \"don't you worry, I know what to do.\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is a wretched place with homes that are burrows clawed into the cavern walls.",
+    "source_quote": "The West Cleft District was a wretched place. Its homes were nothing more than burrows clawed into the cavern walls",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The streets of the West Cleft District are a chaotic tangle of structures piled atop one another with no plan or order.",
+    "source_quote": "its streets were a chaotic tangle of structures piled atop one another with no plan or order",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District smells overwhelming.",
+    "source_quote": "The stench was overwhelming",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is filled with the muttering, screaming, and raving of hundreds of Derro.",
+    "source_quote": "the muttering, screaming, and raving of hundreds of Derro filled the air",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party uses their Stone Guard passes to enter the West Cleft District.",
+    "source_quote": "The party uses their Stone Guard passes to enter the West Cleft District",
+    "subject": "entry to West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido enters the West Cleft District with the party.",
+    "source_quote": "The party uses their Stone Guard passes to enter the West Cleft District, accompanied by Buppido",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido gleefully shows his pass to the gate guards.",
+    "source_quote": "Buppido gleefully shows his pass",
+    "subject": "Buppido shows pass",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gate guards meet Buppido with the usual set of contempt.",
+    "source_quote": "the gate guards meet him with \"the usual set of contempt.\"",
+    "subject": "gate guards reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The stench in the West Cleft District changes from metallic to repugnant inside.",
+    "source_quote": "the stench turns from metallic to repugnant",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro in the West Cleft District mutter and scream at each other.",
+    "source_quote": "hundreds of derro muttering, screaming at each other",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Derro who spot the party look at them with burning hatred.",
+    "source_quote": "Those who spot the party look at them \"with a burning hatred.\"",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes yelling for Droki.",
+    "source_quote": "Thorin proposes yelling for Droki",
+    "subject": "Thorin's proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido tells the party they should stay on the down low.",
+    "source_quote": "Buppido makes clear they should stay on the down low",
+    "subject": "Buppido's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to find Droki before the cave entrance to learn what is in the caves.",
+    "source_quote": "The party chooses to find Droki before the cave entrance, reasoning that Droki may know what is in the caves",
+    "subject": "party strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin states that once you go in the dungeon, you're in the dungeon.",
+    "source_quote": "Thorin: \"once you go in the dungeon, you're in the dungeon.\"",
+    "subject": "Thorin's comment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a pale-faced Derro courier wearing a floppy hat adorned with two tentacle-like protrusions.",
+    "source_quote": "Droki. He was a pale-faced Derro in a floppy hat adorned with two tentacle-like protrusions",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki's hat protrusions bob with his every frantic step.",
+    "source_quote": "two tentacle-like protrusions that bobbed with his every frantic step",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki mutters urgently to himself about being late.",
+    "source_quote": "He muttered urgently to himself about being late",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki moves with an unnatural, almost magical speed.",
+    "source_quote": "moved with an unnatural, almost magical speed",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Droki vanishes down a narrow fissure hidden behind scraps of canvas and moldy boxes.",
+    "source_quote": "he vanished down a narrow fissure hidden behind scraps of canvas and moldy boxes",
+    "subject": "Droki vanishes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido immediately bolts after Droki.",
+    "source_quote": "Buppido immediately bolted after him",
+    "subject": "Buppido chases Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido states that Droki is going into stone tunnels and that they are one of the entrances.",
+    "source_quote": "Buppido says \"he's going into stone tunnels. That's one of the entrances\"",
+    "subject": "Buppido identifies tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party lets Buppido go rather than causing a scene.",
+    "source_quote": "Rather than cause a scene restraining him in a place full of Derro, the party let him go",
+    "subject": "Party decision on Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin states they cannot coerce Buppido without a fuss, which could go bad.",
+    "source_quote": "Thorin: \"At this point, we can't coerce him without a fuss, and that could go bad.\"",
+    "subject": "Thorin's justification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party squeezes through a gap into the tunnels beyond, following Droki and Buppido.",
+    "source_quote": "squeezed through the gap into the tunnels beyond",
+    "subject": "Party enters Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are unlike anything the party has encountered before.",
+    "source_quote": "The Whorlstone Tunnels were unlike anything they had encountered before",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air in the Whorlstone Tunnels tastes faintly of metal.",
+    "source_quote": "The air tasted faintly of metal",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sound is strangely muted in the Whorlstone Tunnels, as though the cavern swallowed every echo.",
+    "source_quote": "all sound was strangely muted, as though the cavern itself had swallowed every echo",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Swirling patterns of faerzress cast dancing spirals of soft light across the jagged stone pillars in the Whorlstone Tunnels.",
+    "source_quote": "Swirling patterns of faerzress, the wild, unpredictable magical energy of the Underdark, cast dancing spirals of soft light across the jagged stone pillars lining the walls",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Bigwigs are peculiar mushrooms found in the Whorlstone Tunnels that are said to swell or shrink whoever consumes them.",
+    "source_quote": "peculiar mushrooms the locals called bigwigs and pygmyworts, which were said to swell or shrink whoever consumed them",
+    "subject": "bigwigs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pygmyworts are peculiar mushrooms found in the Whorlstone Tunnels that are said to swell or shrink whoever consumes them.",
+    "source_quote": "peculiar mushrooms the locals called bigwigs and pygmyworts, which were said to swell or shrink whoever consumed them",
+    "subject": "pygmyworts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes one bigwig and one pygmywort.",
+    "source_quote": "The party took one of each",
+    "subject": "Party takes fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum worries about eating too much bigwig because only a medium creature fits through the fissure.",
+    "source_quote": "Gyrgum worries about eating too much bigwig, since only a medium creature fits through the fissure",
+    "subject": "Gyrgum's worry",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceilings in the Whorlstone Tunnels rise about 50 feet and drop to 25 feet in the narrow tunnels.",
+    "source_quote": "The ceilings in the tunnels rise about 50 feet and drop to 25 in the narrow tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Edible fungi grow everywhere in the Whorlstone Tunnels.",
+    "source_quote": "Edible fungi grow everywhere",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin enters the Whorlstone Tunnels warily, ready for traps or the unexpected.",
+    "source_quote": "Thorin enters \"Warily, ready for traps or the unexpected.\"",
+    "subject": "Thorin enters tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Droki heads north in the Whorlstone Tunnels, oblivious to the party.",
+    "source_quote": "Droki heads north, oblivious to the party",
+    "subject": "Droki heads north",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows Droki openly because he does not seem alert to being followed.",
+    "source_quote": "The party follows openly, reasoning that Droki \"doesn't seem alert to being followed.\"",
+    "subject": "Party follows openly",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party reasons that following Droki might lead them to every faction he serves.",
+    "source_quote": "They realized that following the courier might lead them to every faction he served",
+    "subject": "Droki's employers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is a derro who has succumbed to madness.",
+    "source_quote": "the Derro they found was not the one they had known",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido declares that his faithful have arrived to receive his divine truth and that the party was delivered to him by destiny.",
+    "source_quote": "He declared that his faithful had finally arrived to receive his divine truth",
+    "subject": "Buppido's declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Buppido constructed a makeshift altar out of bones and skulls.",
+    "source_quote": "a makeshift altar constructed of bones and skulls",
+    "subject": "makeshift altar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido wipes his hands clean on his vest before attacking.",
+    "source_quote": "his hands wiped clean on his vest",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido's eyes are gleaming with terrifying and absolute conviction.",
+    "source_quote": "his eyes gleaming with a terrifying and absolute conviction",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido demands the party worship him as their leader.",
+    "source_quote": "demands the party worship him as their leader",
+    "subject": "demand for worship",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for clarification on whether the party can fight Buppido if needed.",
+    "source_quote": "Just to be clear, we can take him if we need to, right?",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido flies into a psychotic rage and attacks the party with a hooked spear.",
+    "source_quote": "Buppido flies into a psychotic rage and attacks with a hooked spear",
+    "subject": "Buppido's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of skeletons rises to defend Buppido's shrine and surrounds the party.",
+    "source_quote": "A group of skeletons rises to defend Buppido's shrine, surrounding the party",
+    "subject": "skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has 13 hit points.",
+    "source_quote": "Buppido has only 13 hit points",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled a 15 on initiative.",
+    "source_quote": "Thorin keeps a 15 on initiative",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a spell to outline enemies in glowing light.",
+    "source_quote": "Daz casts a spell to outline the enemies in glowing light",
+    "subject": "Daz's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of darkness to disorient the attackers.",
+    "source_quote": "Zalthir conjures a sphere of darkness to disorient the attackers",
+    "subject": "Zalthir's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz targets a 20-foot cube, forcing a Dexterity save that marks three skeletons.",
+    "source_quote": "Daz targets a 20-foot cube and forces a Dexterity save, and three skeletons are marked",
+    "subject": "skeletons marked",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin engages the skeletons in melee combat.",
+    "source_quote": "Thorin engages the skeletons in melee combat",
+    "subject": "Thorin's melee engagement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits a skeleton with advantage for 4 damage.",
+    "source_quote": "He hits one with advantage for 4 damage",
+    "subject": "Thorin's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states his intent to tank the encounter and take hits.",
+    "source_quote": "I'll tank it and take some hits",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz outlined three of the skeletons in pale, shimmering light.",
+    "source_quote": "Daz outlined three of the skeletons in pale, shimmering light that marked them for advantage",
+    "subject": "Daz marks skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjured a sphere of absolute darkness.",
+    "source_quote": "Zalthir conjured a sphere of absolute darkness to blind and confuse them",
+    "subject": "Zalthir casts darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin traded blows with the skeletons in the melee.",
+    "source_quote": "Thorin waded into the melee, trading blows with the rattling undead",
+    "subject": "Thorin engages skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz struck Buppido with magical force, dealing 15 damage and killing him.",
+    "source_quote": "Daz unleashed a volley of unerring magical force that struck Buppido squarely for 15 damage",
+    "subject": "Daz kills Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is dead, killed by Daz's magical force.",
+    "source_quote": "The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channeled the power of Bahamut to make the remaining skeletons flee.",
+    "source_quote": "Gyrgum raised the holy symbol and channeled the divine power of Bahamut, sending the remaining skeletons fleeing in blind panic",
+    "subject": "Gyrgum turns undead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remaining skeletons fled in blind panic after Gyrgum's turning attempt.",
+    "source_quote": "sending the remaining skeletons fleeing in blind panic",
+    "subject": "skeletons (remaining)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party cut down the fleeing skeletons one by one.",
+    "source_quote": "the party cut them down one by one",
+    "subject": "party clears cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The skeletons are dead, cut down by the party.",
+    "source_quote": "the party cut them down one by one",
+    "subject": "skeletons (fleeing)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido was formerly the party's companion and guide through the Underdark.",
+    "source_quote": "He had been their companion once, a guide through the horrors of the Underdark",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yuk Yuk was a goblin guide who was killed by Buppido.",
+    "source_quote": "He had also killed Yuk Yuk, the party's goblin guide",
+    "subject": "Yuk Yuk",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reflected that Buppido was \"crazy, but he was our crazy.\"",
+    "source_quote": "\"He was crazy, but he was our crazy,\" Thorin reflected",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reached fourth level.",
+    "source_quote": "The party reached fourth level",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Droki is still somewhere ahead in the tunnels.",
+    "source_quote": "Droki was still somewhere ahead in the tunnels",
+    "subject": "Droki's location",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels contain deeper mysteries and the evil Hgraam warned about.",
+    "source_quote": "the deeper mysteries of the Whorlstone Tunnels, and the evil that Hgraam had warned them about, still lay waiting in the dark",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hit a skeleton for 5 damage.",
+    "source_quote": "Zalthir hits a skeleton for 5 damage",
+    "subject": "Zalthir attack 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir missed a second attack on a skeleton.",
+    "source_quote": "spends a focus point on a second attack, which misses",
+    "subject": "Zalthir attack 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido lunged at Thorin with a hooked spear but failed to land a blow.",
+    "source_quote": "Buppido lunges at Thorin with a hooked spear but fails to land a blow",
+    "subject": "Buppido attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A skeleton missed Gyrgum with a short bow.",
+    "source_quote": "A short bow misses Gyrgum",
+    "subject": "skeleton bow miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A skeleton hit a party member with a short sword for 5 damage.",
+    "source_quote": "A short sword hits for 5 damage",
+    "subject": "skeleton sword hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crossbow-wielding skeleton stepped out of darkness and hit Gyrgum for 5 damage.",
+    "source_quote": "A crossbow skeleton steps out of the darkness and hits Gyrgum for 5 damage",
+    "subject": "crossbow skeleton hit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum uses a chessboard holy symbol.",
+    "source_quote": "Gyrgum readied his chessboard holy symbol",
+    "subject": "holy symbol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir offered to move his darkness spell so all skeletons could see Gyrgum's holy symbol.",
+    "source_quote": "Zalthir offers to move his darkness so all of them can see it",
+    "subject": "darkness adjustment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM fixed a Roll20 label clutter problem using the \"Hover to Show Token Nameplate and Bar Overlay\" graphics setting.",
+    "source_quote": "The DM fixes it with the \"Hover to Show Token Nameplate and Bar Overlay\" graphics setting",
+    "subject": "roll20 fix",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz used Magic Missile to strike Buppido.",
+    "source_quote": "The Magic Missile deals 15 damage",
+    "subject": "Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finished a skeleton with 4 hit points.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "Thorin kills skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The 4-hp skeleton is dead, killed by Thorin.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "skeleton (4hp)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflected a skeleton's 5 piercing damage attack completely.",
+    "source_quote": "A skeleton hits Zalthir for 5 piercing damage, and Zalthir deflects it completely",
+    "subject": "Zalthir deflect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum brandished his holy symbol to strike terror into the remaining skeletons, causing them to flee.",
+    "source_quote": "Gyrgum brandishes his holy symbol, channeling divine power to strike terror into the remaining skeletons and forcing them to flee",
+    "subject": "Gyrgum turns undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The skeletons made a DC 13 Wisdom save at -1 and three fled.",
+    "source_quote": "The skeletons make a DC 13 Wisdom save at -1, and three flee",
+    "subject": "skeletons save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin killed a fleeing skeleton with an 8-damage opportunity attack.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One fleeing skeleton is dead, killed by Thorin's opportunity attack.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "skeleton (fleeing 1)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir missed twice, prompting the DM to say the universe does not like him.",
+    "source_quote": "Zalthir misses twice. DM: \"The universe does not like you.\"",
+    "subject": "Zalthir misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflected another blow later in the combat.",
+    "source_quote": "He deflects another blow later",
+    "subject": "Zalthir deflect 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hit a faerie-fired skeleton with his crossbow for 8 damage.",
+    "source_quote": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage",
+    "subject": "Gyrgum crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz split a second Magic Missile, dealing 8 damage to one skeleton and 1 to its neighbor.",
+    "source_quote": "Daz splits a second Magic Missile, 8 damage to one skeleton and 1 to its neighbor",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The faerie-fired skeleton was hit for 8 damage by Gyrgum.",
+    "source_quote": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage",
+    "subject": "faerie-fired skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The skeleton next to the faerie-fired skeleton took 1 damage from Daz's split missile.",
+    "source_quote": "8 damage to one skeleton and 1 to its neighbor",
+    "subject": "skeleton (neighbor)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir killed the last skeleton next to Thorin.",
+    "source_quote": "Zalthir kills the last skeleton next to Thorin",
+    "subject": "Zalthir kills skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last skeleton is dead, killed by Zalthir.",
+    "source_quote": "Zalthir kills the last skeleton next to Thorin",
+    "subject": "skeleton (last)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM declared the combat over and the party fourth level.",
+    "source_quote": "The DM declares the skeletons dead: \"you are now fourth level.\"",
+    "subject": "combat end",
+    "quote_verified": true
+  }
+]

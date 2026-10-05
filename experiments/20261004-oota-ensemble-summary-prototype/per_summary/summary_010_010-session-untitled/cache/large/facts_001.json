@@ -1,0 +1,114 @@
+[
+  {
+    "type": "npc",
+    "fact": "Shuushar left the party to pursue his own fate.",
+    "source_quote": "Shuushar, who had gone off to pursue his fate",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith warned the party that Shuushar's map is imperfect.",
+    "source_quote": "Sarith had warned them of the map's flaws",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party previously met the kuo-toa before their current journey.",
+    "source_quote": "They then met the kuo-toa",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is currently navigating the Darklake.",
+    "source_quote": "The party continued their perilous journey across the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses an imperfect map left behind by Shuushar.",
+    "source_quote": "They had only an imperfect map left behind by their departed kuo-toa companion, Shuushar",
+    "subject": "imperfect map",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that survival checks would be replaced by foraging from companions, treating the crew as a dice pool.",
+    "source_quote": "this could change if people started dying off, since the crew was effectively the party's dice pool",
+    "subject": "survival check ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's boat was grounded on a submerged sandbar beneath the lake's surface.",
+    "source_quote": "the boat lurched to a sudden halt, grounded on a submerged sandbar hidden beneath the black surface of the lake",
+    "subject": "boat grounding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The boat lacks oars or poles for propulsion.",
+    "source_quote": "The boat carried no oars or poles",
+    "subject": "boat equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin quoted the line \"Never get out of the boat\" from Apocalypse Now.",
+    "source_quote": "Thorin quoted *Apocalypse Now*: \"Never get out of the boat.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz possesses a water-shaping cantrip.",
+    "source_quote": "Daz had long been teased by his companions for carrying a water-shaping cantrip",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz used his water-shaping cantrip to create a wave from behind the boat.",
+    "source_quote": "conjuring a surging wave from behind the boat",
+    "subject": "wave creation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wave created by Daz shoved the boat over the sandbar and back into open water.",
+    "source_quote": "shoved it clean over the sandbar and back into open water",
+    "subject": "boat freeing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admitted he should have bet on Daz using his cantrip for practical purposes.",
+    "source_quote": "Jimjar wryly admitted he should have placed a bet on whether Daz would ever use the trick for something practical",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin successfully navigated the vessel through the dark waters using survival instincts.",
+    "source_quote": "Thorin proved himself a surprisingly capable navigator, guiding the vessel with an almost uncanny confidence",
+    "subject": "Thorin navigation success",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's successful navigation roll waived the need for a survival check the following day.",
+    "source_quote": "His roll was good enough to spare the party the next day's check as well",
+    "subject": "next day check waiver",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin claimed he was simply following the vibes when asked about his navigation.",
+    "source_quote": "Thorin claimed he was simply following the vibes",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

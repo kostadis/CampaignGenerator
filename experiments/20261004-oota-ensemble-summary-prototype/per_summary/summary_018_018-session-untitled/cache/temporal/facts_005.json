@@ -1,0 +1,44 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz sets the initial list price for the Non-Demonic Agreement at 1,250 gold pieces.",
+    "source_quote": "Daz set a \"list price\" of 1,250 gold pieces",
+    "subject": "NDA initial price setting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz offers the Non-Demonic Agreement at a discounted flat price of 1,000 gold pieces.",
+    "source_quote": "offered it at a flat thousand",
+    "subject": "NDA discounted price offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The price of the Non-Demonic Agreement is raised to 1,100 gold pieces after Werz attempts to haggle.",
+    "source_quote": "the price was immediately raised to eleven hundred",
+    "subject": "NDA price increase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz pays the final agreed fee of 1,100 gold pieces for the Non-Demonic Agreement.",
+    "source_quote": "Werz pays the 1,100 gold piece fee",
+    "subject": "NDA final payment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz gives the party five special gems as a symbol of good faith.",
+    "source_quote": "Werz gives the party five special gems",
+    "subject": "gem count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The five special gems are valued at 100 GP each.",
+    "source_quote": "Daz asks their value, and it is put at 100 GP each",
+    "subject": "gem value",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "type": "location",
+    "fact": "The party entered a large cavern containing a deep floor depression filled with gas.",
+    "source_quote": "the party entered a large cavern where a heavy, toxic, and combustible gas had settled into a deep depression in the floor",
+    "subject": "large cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A heavy, toxic, and combustible gas has settled into a deep depression in the cavern floor.",
+    "source_quote": "a heavy, toxic, and combustible gas had settled into a deep depression in the floor",
+    "subject": "gas depression",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A five-foot ledge runs around either side of the gas depression.",
+    "source_quote": "a five-foot ledge ran around either side of the depression",
+    "subject": "five-foot ledge",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A giant rocktopus is waiting on the ledge between the party and the exit.",
+    "source_quote": "a giant rocktopus waiting on the ledge between them and the exit",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus regards the party as convenient food.",
+    "source_quote": "The stone-like predator regarded them as convenient food.",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stepped to the front to act as the party's tank.",
+    "source_quote": "Thorin stepped to the front as the party\u2019s tank",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin struck the rocktopus twice with Dawnbringer.",
+    "source_quote": "Thorin stepped to the front and struck the beast twice with Dawnbringer",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin dealt nineteen points of damage to the rocktopus.",
+    "source_quote": "Thorin strikes the rocktopus twice with Dawnbringer, dealing nineteen points of damage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin shook off the rocktopus's grapple.",
+    "source_quote": "Thorin succeeds in shaking off the grapple",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin used Dawnbringer to strike the rocktopus.",
+    "source_quote": "Thorin stepped to the front and struck the beast twice with Dawnbringer",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rocktopus struck Thorin hard with a tentacle.",
+    "source_quote": "The rocktopus lashed out with a tentacle, striking Thorin hard",
+    "subject": "rocktopus attack on Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rocktopus dealt ten points of damage to Thorin.",
+    "source_quote": "The rocktopus hits Thorin for ten points of damage",
+    "subject": "rocktopus attack on Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rocktopus attempted to grapple Thorin with a tentacle.",
+    "source_quote": "trying to grapple him with a tentacle",
+    "subject": "rocktopus grapple attempt",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir closed in and restrained the rocktopus.",
+    "source_quote": "Zalthir closed in, restrained the creature",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir battered the rocktopus with a flurry of punches.",
+    "source_quote": "battered it with a flurry of punches",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cast Magic Missile at the rocktopus.",
+    "source_quote": "Daz casts Magic Missile",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Magic Missile dealt nine points of force damage.",
+    "source_quote": "Daz casts Magic Missile for nine points of force damage",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum chanted a True Strike invocation.",
+    "source_quote": "Gyrgum softly chanted a True Strike invocation",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum circled into reach and attacked the rocktopus with his mace.",
+    "source_quote": "circled into reach, and brought his mace down on the wounded monster",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's blow dealt seven points of damage and killed the rocktopus.",
+    "source_quote": "Gyrgum\u2019s blow deals seven points of damage and kills the rocktopus",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum exalted and called himself 'the octopus slayer'.",
+    "source_quote": "prompting Gyrgum to exalt as \u201cthe octopus slayer\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stated that his characters may not always be powerful, but are always proud.",
+    "source_quote": "My characters may not always be powerful, but they\u2019re always proud",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus is dead, killed by Gyrgum's mace blow.",
+    "source_quote": "Gyrgum\u2019s blow deals seven points of damage and kills the rocktopus",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's final blow killed the rocktopus.",
+    "source_quote": "The final blow killed it",
+    "subject": "rocktopus killed",
+    "quote_verified": true
+  }
+]

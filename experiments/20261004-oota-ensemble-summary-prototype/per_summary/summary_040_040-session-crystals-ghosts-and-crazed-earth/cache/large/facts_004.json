@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "The Rockblight tunnels are dark, damp, and chill, strewn with rubble and featuring shallow streams.",
+    "source_quote": "dark, damp, and chill, with rubble, shallow streams",
+    "subject": "Rockblight tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The pools in the Rockblight constitute difficult terrain.",
+    "source_quote": "the pools constituted difficult terrain",
+    "subject": "Rockblight pools",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Rockblight connecting tunnels resemble those of Inner Blingdenstone but are empty.",
+    "source_quote": "The Rockblight\u2019s connecting tunnels resembled those of Inner Blingdenstone but were empty",
+    "subject": "Rockblight tunnels comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Crystal Cavern is illuminated by bioluminescent fungi refracting through large semi-transparent crystal formations.",
+    "source_quote": "light from bioluminescent fungi refracted through large semi-transparent crystal formations",
+    "subject": "Crystal Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The crystals cast a kaleidoscope of colors across the walls of the Crystal Cavern.",
+    "source_quote": "casting a kaleidoscope of colors across the walls",
+    "subject": "Crystal Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Images seen through the crystals appear slightly distorted.",
+    "source_quote": "Images seen through the crystals appeared slightly distorted",
+    "subject": "crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stone statue of a deep gnome cowers beside a crystal outgrowth.",
+    "source_quote": "A stone statue of a deep gnome cowered beside one outgrowth",
+    "subject": "stone statue of a deep gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone statue of the deep gnome holds a broken crystal toward its face.",
+    "source_quote": "holding a broken crystal toward its face as though trying to peer through it",
+    "subject": "broken crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystals provide protection against creatures with harmful gaze attacks when viewed through them.",
+    "source_quote": "looking through the crystals protected against creatures capable of harming or petrifying victims with their gaze",
+    "subject": "crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a natural 20 on an Arcana check, and with Daz's expertise, identified the crystals' protective properties.",
+    "source_quote": "Thorin\u2019s natural 20, combined with Daz\u2019s arcane expertise, revealed that looking through the crystals protected against creatures",
+    "subject": "crystal analysis",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystals function like magical sunglasses against a Medusa.",
+    "source_quote": "effectively making the crystals magical sunglasses against a Medusa",
+    "subject": "crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystals interfere with a creature's gaze when the bearer looks at the creature through them.",
+    "source_quote": "interfering with the creature\u2019s gaze",
+    "subject": "crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "It is deduced that the petrified gnome failed to position the crystal correctly before being turned to stone.",
+    "source_quote": "The petrified gnome had probably been trying to use the crystal but failed to position it correctly before being turned to stone",
+    "subject": "gnome petrification theory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party warned Glabbagool not to eat the crystals.",
+    "source_quote": "The party warned Glabbagool not to eat the crystals",
+    "subject": "Glabbagool warning",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collected a teal portable crystal.",
+    "source_quote": "including a teal one",
+    "subject": "teal crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collected portable crystals of several colors to use as gaze protection.",
+    "source_quote": "The party collected portable crystals in several colors",
+    "subject": "portable crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The color of the crystal does not alter its protective property against gaze attacks.",
+    "source_quote": "Although the colors did not alter this particular protective property",
+    "subject": "crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalled that a crystal's magic depends more on where and how it grew.",
+    "source_quote": "Thorin recalled that a crystal\u2019s magic depended more on where and how it grew",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz noted that different crystal colors could produce different effects when combined with particular spells.",
+    "source_quote": "Daz noted that different colors could still produce different effects when combined with particular spells",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Daz engaged in a technical discussion about crystal growth, color, and spell interactions.",
+    "source_quote": "Daz and Thorin nearly launched into a much longer discussion about crystal growth, color, and interactions with different spells",
+    "subject": "technical discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to explore the Crystal Caverns before heading to the temple, despite knowing the temple's direction.",
+    "source_quote": "The party knew the temple lay to the northeast or east but chose to explore first",
+    "subject": "route decision",
+    "quote_verified": true
+  }
+]

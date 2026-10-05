@@ -1,0 +1,128 @@
+[
+  {
+    "type": "npc",
+    "fact": "Glabbagool is a sentient gelatinous cube.",
+    "source_quote": "a sentient gelatinous cube",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool follows along with the party, staying slightly behind the others.",
+    "source_quote": "Glabbagool followed along ... Glabbagool remains with the party and follows slightly behind the others",
+    "subject": "Glabbagool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool has a friendly nature which has been explained to the party.",
+    "source_quote": "Although the party had explained his friendly nature",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Some deep gnomes react with visible uncertainty when they see Glabbagool.",
+    "source_quote": "less adventurous deep gnomes reacted nervously when they saw a sentient gelatinous cube moving through a settlement",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The less adventurous residents of Blingdenstone are particularly nervous around Glabbagool.",
+    "source_quote": "The less adventurous residents are particularly nervous around Glabbagool",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Guards escorted the party through Blingdenstone\u2019s reception hall.",
+    "source_quote": "The guards escorted the party through Blingdenstone\u2019s reception hall",
+    "subject": "escort through reception hall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member jokingly described a cart in the reception hall as a 'medieval pickup truck'.",
+    "source_quote": "where a cart was jokingly described as a \u201cmedieval pickup truck\u201d",
+    "subject": "cart observation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "It was clarified that the object described as a pickup truck is a cart.",
+    "source_quote": "It is clarified that the object is a cart",
+    "subject": "cart identification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group continued through the Traders\u2019 Grotto on the way to Diggermattock Hall.",
+    "source_quote": "The group continues through the Traders\u2019 Grotto on the way to Diggermattock Hall",
+    "subject": "escort through Traders\u2019 Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards brought the party to Diggermattock Hall.",
+    "source_quote": "The guards ultimately bring the party to Diggermattock Hall",
+    "subject": "arrival at Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The reception hall contains a cart.",
+    "source_quote": "On seeing a cart there, a party member asks",
+    "subject": "Blingdenstone reception hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The reception hall is part of Blingdenstone.",
+    "source_quote": "The guards escorted the party through Blingdenstone\u2019s reception hall",
+    "subject": "Blingdenstone reception hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Traders\u2019 Grotto is located in Blingdenstone and leads toward Diggermattock Hall.",
+    "source_quote": "The group continues through the Traders\u2019 Grotto on the way to Diggermattock Hall",
+    "subject": "Traders\u2019 Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is a destination in Blingdenstone for the party.",
+    "source_quote": "The guards ultimately bring the party to Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone is a settlement that is already troubled by oozes.",
+    "source_quote": "moving through a settlement already troubled by oozes",
+    "subject": "Blingdenstone residents",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Less adventurous deep gnomes in Blingdenstone react nervously to Glabbagool.",
+    "source_quote": "less adventurous deep gnomes reacted nervously when they saw a sentient gelatinous cube",
+    "subject": "Blingdenstone residents",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The community\u2019s existing ooze problem makes residents nervous around Glabbagool.",
+    "source_quote": "understandable response given the community\u2019s existing ooze problem",
+    "subject": "Blingdenstone residents",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is asked to fight an ooze infestation while traveling with a friendly, sentient gelatinous cube.",
+    "source_quote": "The party notes the oddity of being asked to fight an ooze infestation while openly traveling with a friendly, sentient gelatinous cube",
+    "subject": "ooze infestation conflict",
+    "quote_verified": true
+  }
+]

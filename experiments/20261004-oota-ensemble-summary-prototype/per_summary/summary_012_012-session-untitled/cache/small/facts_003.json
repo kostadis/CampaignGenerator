@@ -1,0 +1,338 @@
+[
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a crowded marketplace in Gracklstugh where people argue mostly in Dwarvish.",
+    "source_quote": "The party enters the Blade Bazaar, a crowded marketplace filled with various races and the din of commerce.",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar offers all kinds of non-magical weapons, armor, and shields.",
+    "source_quote": "All kinds of non-magical weapons, armor and shields are available.",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Healing potions can be bought in the Darklake district.",
+    "source_quote": "Healing potions can also be bought in the Darklake district, but powerful magic items are not sold at the bazaar.",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir is a duergar merchant who insults customers until they show interest in buying.",
+    "source_quote": "Gyrgum approaches a duergar merchant who insults customers until they show interest in buying, at which point he adopts an eerily posh accent.",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dulgir switches to a formal and pomp duergar accent sounding like the Queen's English upon learning Gyrgum is buying.",
+    "source_quote": "curses Gyrgum \"to the seven heavens\" until he learns Gyrgum is buying, then switches to \"a formal and pomp posh duergar accent that eerily sounds like something like the Queen's English.\"",
+    "subject": "Dulgir's accent change",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir states he has not traveled in foreign lands.",
+    "source_quote": "No, no, I've not traveled in foreign lands.",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum trades in a short sword for a ten percent discount on a new mace.",
+    "source_quote": "Gyrgum trades in a short sword he can't use effectively for a ten percent discount on a new mace.",
+    "subject": "Gyrgum's weapon trade",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum owns a short sword that he cannot use effectively.",
+    "source_quote": "Gyrgum trades in a short sword he can't use effectively",
+    "subject": "short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum buys a hand axe and a light crossbow.",
+    "source_quote": "Gyrgum also buys a hand axe with no trade-in, and picks up a light crossbow.",
+    "subject": "Gyrgum's purchases",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses interest in finding a magical light crossbow imbued with a spell to aid his accuracy.",
+    "source_quote": "Daz expresses interest in finding a magical light crossbow imbued with a spell to aid his accuracy.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz hoped to enchant his crossbow with True Strike for advantage on attacks.",
+    "source_quote": "He hoped to enchant it with True Strike for advantage on attacks.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirms that magic items like the one Daz seeks are not sold in the bazaar.",
+    "source_quote": "The GM says nothing like that is sold in the bazaar.",
+    "subject": "Magic item availability",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deduces that magic items likely exist in Gracklstugh but not in the district accessible to outsiders.",
+    "source_quote": "Zalthir reads between the lines: magic items likely exist in the city, but not in the district outsiders are allowed in.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz decides against buying anything because he needs to level up first.",
+    "source_quote": "Daz decides against buying anything: \"I'm happy with what I have and I need to level up before anything makes sense.\"",
+    "subject": "Daz's decision",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz already carries a light crossbow picked up on the road.",
+    "source_quote": "He already carries a light crossbow picked up on the road.",
+    "subject": "Daz's light crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asks for heavy armor, which the GM confirms is available in the Darklake district.",
+    "source_quote": "Thorin asks for heavy armor, which the GM confirms is available in the Darklake district.",
+    "subject": "Thorin's armor inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin settles on darts as his ranged weapon after confirming pistols are not in use.",
+    "source_quote": "Thorin later settles on darts as his ranged weapon after confirming the game isn't using pistols.",
+    "subject": "Thorin's weapon choice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls a mysterious list of names found previously.",
+    "source_quote": "Zalthir recalls a mysterious list of names found previously",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "One individual on the mysterious list is currently in Gracklstugh.",
+    "source_quote": "learning that one of these individuals is in Gracklstugh",
+    "subject": "mysterious list of names",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The people on the list may have connections to the drow slave trade.",
+    "source_quote": "that they may have connections to the drow slave trade.",
+    "subject": "mysterious list of names",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The people on the list might care about those trapped as slaves by the drow.",
+    "source_quote": "might be people that care about the people who are trapped as slaves by the drow.",
+    "subject": "mysterious list of names",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is willing to keep quiet about the party's status as former slaves.",
+    "source_quote": "Hemeth is willing to keep quiet.",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is eager to leave Gracklstugh.",
+    "source_quote": "Buppido is eager to leave.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's six traveling companions agree to wait in the district while the party shops.",
+    "source_quote": "They are happy to wait in the district.",
+    "subject": "Party's companion arrangement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is a captive held by the party.",
+    "source_quote": "The party discusses using their captive, Brannum Redmarch",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum notes that swift duergar justice provides leverage over Brannum.",
+    "source_quote": "Gyrgum notes that swift duergar justice gives them leverage over Brannum.",
+    "subject": "Leverage over Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch fears being turned into the Duergar.",
+    "source_quote": "Brannum: \"you wouldn't turn me into the Duergar.\"",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum agrees to help the party acquire uncommon magical items in exchange for freedom and debt clearance.",
+    "source_quote": "Brannum agrees to help the party acquire uncommon magical items in exchange for his freedom and the clearing of his debts.",
+    "subject": "Brannum's deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum insists that deals be conducted as a free exchange of goods and services, not under duress.",
+    "source_quote": "Brannum insists the deals be \"done within the context of a free exchange of goods and services and not under duress.\"",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tells Brannum that his position is not well understood yet.",
+    "source_quote": "Thorin replies that \"your position is not well understood quite yet\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tells Brannum that \"The quid is pro,\" implying the trade is fair.",
+    "source_quote": "Gyrgum adds, \"The quid is pro.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is the arms dealer the party previously rescued.",
+    "source_quote": "Hemeth, the arms dealer the party previously rescued",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth becomes offended by the party's negotiation with Brannum and offers a discount on his own weaponry.",
+    "source_quote": "Hemeth, the arms dealer the party previously rescued, becomes offended by the negotiation with Brannum and offers the party a discount on his own high-quality weaponry.",
+    "subject": "Hemeth's reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth criticizes the other merchants as 'crusty old fools' compared to his suppliers.",
+    "source_quote": "\"And why are you buying weapons from those crusty old fools who couldn't sell you? I have the good stuff.\"",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth examines Gyrgum's new purchases and deems them second-hand material lacking fine craftsmanship.",
+    "source_quote": "He examines Gyrgum's new purchases: \"this is second-hand material\u2026 This lacks the fine craftsmanships that my suppliers provide me.\"",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum protests that Hemeth is just a merchant of weapons and cannot get uncommon items.",
+    "source_quote": "Brannum protests: \"I thought we had a deal\u2026 I could get you things that he can't get. He is just a merchant of weapons.\"",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Hemeth can provide +1 weapons but uncommon magic items must be named specifically to be acquired.",
+    "source_quote": "A +1 weapon is something Hemeth could get himself. Uncommon magic items need to be named specifically.",
+    "subject": "Uncommon magic items",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Eldritch Claw tattoo is an uncommon magical item of interest to Zalthir.",
+    "source_quote": "Zalthir expresses interest in acquiring an Eldritch Claw tattoo, an uncommon magical item",
+    "subject": "Eldritch Claw tattoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir seeks the tattoo because monks use tattoos rather than weapons.",
+    "source_quote": "Zalthir's reasoning: \"Monks don't really get to use weapons, but we get tattoos.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum claims to know a contact who can procure the Eldritch Claw tattoo and requests two days.",
+    "source_quote": "Brannum claims he may know a contact who can procure it, requesting two days.",
+    "subject": "Brannum's tattoo contact",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Brannum's contact uses the phrase 'I may know a guy who may know a guy who may know something.'",
+    "source_quote": "The contact's answer: \"I may know a guy who may know a guy who may know something. Give me two days.\"",
+    "subject": "Eldritch Claw tattoo contact",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party can currently shake off their pursuers while in the city.",
+    "source_quote": "The party can shake its pursuers in the city for now.",
+    "subject": "Pursuers",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A merchant sells a Scroll of Detect Magic to Gyrgum.",
+    "source_quote": "Gyrgum purchases scrolls of Detect Magic and Identify from a merchant",
+    "subject": "Scroll of Detect Magic",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A merchant sells a Scroll of Identify to Gyrgum.",
+    "source_quote": "Gyrgum purchases scrolls of Detect Magic and Identify from a merchant",
+    "subject": "Scroll of Identify",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The scroll merchant punctuates his sales pitch with sudden, violent threats.",
+    "source_quote": "a merchant who punctuates his sales pitch with sudden, violent threats before continuing as if nothing happened.",
+    "subject": "Scroll merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A first-level spell scroll costs about 60 gold pieces.",
+    "source_quote": "A first-level spell scroll costs about 60 gold pieces.",
+    "subject": "Spell scroll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The scroll merchant threatens to rip Gyrgum's ear as a haggling technique.",
+    "source_quote": "In the GM's telling, he says \"I'm going to rip your ear\" mid-conversation, then carries on normally.",
+    "subject": "Scroll merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum puts his hand on his weapon in response to the merchant's threat.",
+    "source_quote": "Gyrgum puts his hand on his weapon.",
+    "subject": "Gyrgum's reaction to threat",
+    "quote_verified": true
+  }
+]

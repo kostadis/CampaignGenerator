@@ -1,0 +1,86 @@
+[
+  {
+    "type": "location",
+    "fact": "Cairngorm Cavern is a massive underground home located in the Southfurrow District.",
+    "source_quote": "The party made their way to the Cairngorm Cavern, a massive and imposing underground home carved deep into the Southfurrow District",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Cairngorm is a group of Stone Giants dwelling in the Cairngorm Cavern.",
+    "source_quote": "where the Stone Giants of Clan Cairngorm dwelled",
+    "subject": "Clan Cairngorm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the clan leader of the Stone Giants.",
+    "source_quote": "At the entrance sat Hgraam, the clan leader",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam sits at the entrance of the cavern waiting for the party.",
+    "source_quote": "At the entrance sat Hgraam... his stony expression unreadable as he waited with the infinite patience of his kind",
+    "subject": "Hgraam waits",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam stands up when the party arrives.",
+    "source_quote": "when they arrived, he simply raised an eyebrow and stood",
+    "subject": "Hgraam stands",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is nervous about meeting the giants due to a poor past relationship with them.",
+    "source_quote": "Gyrgum was a little nervous about meeting giants, since he had not had a good relationship with them before",
+    "subject": "Gyrgum's nervousness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to visit the Stone Giants to seek information and hear their perspective.",
+    "source_quote": "the party decides to visit the Stone Giants, the one group they have not yet spoken with",
+    "subject": "Party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's player advocates gathering all offers or assignments before taking action.",
+    "source_quote": "we should get all the offers or assignments before we really do anything",
+    "subject": "Gyrgum's strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's previous character was a famous writer, hero, publisher of fiction and art, involved in a significant battle.",
+    "source_quote": "was a famous writer, a hero of the realms, involved in a significant battle, and a well-known publisher of fiction and art",
+    "subject": "Daz's previous character",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A long tunnel runs several hundred feet from the entrance into the home of Clan Cairngorm.",
+    "source_quote": "A long tunnel runs several hundred feet into the home of Clan Cairngorm",
+    "subject": "Cairngorm Cavern tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asks if the clan leaders are just chilling by the entrance.",
+    "source_quote": "Thorin asks: \"What, like the clan leaders just chilling by the entrance?\"",
+    "subject": "Thorin's question",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Stone giants value patience and deliberate speech, waiting a long time to initiate conversation.",
+    "source_quote": "can wait a very long time before they initiate a conversation because they don't want to rush anything",
+    "subject": "Stone giant conversation etiquette",
+    "quote_verified": true
+  }
+]

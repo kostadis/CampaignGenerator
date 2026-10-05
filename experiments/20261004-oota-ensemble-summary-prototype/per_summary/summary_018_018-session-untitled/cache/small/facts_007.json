@@ -1,0 +1,219 @@
+[
+  {
+    "type": "event",
+    "fact": "Werz hands over five unusual gems to the party as a gesture of good faith for the assassin job.",
+    "source_quote": "As a gesture of good faith, Werz handed over five unusual gems",
+    "subject": "Werz offers gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The five gems given by Werz are identified by Jimjar as empty spell gems.",
+    "source_quote": "he identified them as empty spell gems",
+    "subject": "five unusual gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The empty spell gems are of the kind used in the magical defenses of Blingdenstone.",
+    "source_quote": "the very kind used in the magical defenses of Blingdenstone",
+    "subject": "empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine is a gnomish alchemist in Blingdenstone.",
+    "source_quote": "a gnomish alchemist named Kazook Pickshine",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine would pay handsomely for the empty spell gems.",
+    "source_quote": "Kazook Pickshine would pay handsomely for them",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "To anyone other than Kazook Pickshine, the gems are considered banal and not worth their apparent value.",
+    "source_quote": "kind of banal gems",
+    "subject": "empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unknown how Werz came into possession of the empty spell gems.",
+    "source_quote": "unsettling question of how Werz had come to possess them",
+    "subject": "source of gems",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to Ghohlbrorn's Lair to collect previously ordered magical equipment.",
+    "source_quote": "the party collected the magical equipment they had previously ordered",
+    "subject": "Ghohlbrorn's Lair",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir receives two enchanted tattoos that were ordered as magical equipment.",
+    "source_quote": "two enchanted tattoos for Zalthir",
+    "subject": "two enchanted tattoos",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin acquires a +1 longsword that was ordered as magical equipment.",
+    "source_quote": "a +1 longsword for Thorin",
+    "subject": "+1 longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's original order included splint armor, a +1 longsword, and darts.",
+    "source_quote": "Thorin's order had been splint armor, a +1 longsword if possible, and darts",
+    "subject": "Thorin's gear order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical equipment was purchased at a 10% discount using pooled party funds.",
+    "source_quote": "paid for at a 10% discount out of pooled party funds",
+    "subject": "equipment purchase",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar heard Werz's name in Blingdenstone and believes Werz is honest about being worth trading with.",
+    "source_quote": "Jimjar had heard Werz's name in Blingdenstone and thinks Werz is probably honest",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum thinks the gems might be valuable to him as a cleric depending on their usage.",
+    "source_quote": "Gyrgum, as a cleric, thinks they might be valuable to him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a myconid sprout who is Stool's friend.",
+    "source_quote": "Stool recognised it as his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls seeing an unhappy myconid sprout near a group of strangely dancing myconids in the caverns.",
+    "source_quote": "Zalthir recalled an unhappy myconid sprout he had seen near a group of strangely dancing myconids",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool pleads with the party to drop everything and save Rumpadump.",
+    "source_quote": "pleaded with the party to drop everything and save him",
+    "subject": "Stool's plea",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wants to deal with the assassins before detouring to save Rumpadump.",
+    "source_quote": "Gyrgum wanted to deal with the assassins first",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to detour to save Rumpadump because his location lies along their route to the assassins.",
+    "source_quote": "since Rumpadump lay on the way, the group agreed to make the detour",
+    "subject": "route decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool describes Prince Derendil as 'very civilized'.",
+    "source_quote": "Stool contrasts the \"very civilized\" Prince Derendil",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool claims myconids do not attack people unnecessarily but will attack back if attacked.",
+    "source_quote": "Myconids don't attack people unnecessarily\u2026 But if you attack us, we attack back",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool describes most quaggoths as brutish and savage.",
+    "source_quote": "most quaggoths, which he calls brutish and savage",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool asserts that it is in the nature of quaggoths to be violent because they are bred for it.",
+    "source_quote": "It's in their nature to be violent. They are bred to be violent",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin compares Stool's view on breeding quaggoths to eugenics, noting it is wrong for sentient people.",
+    "source_quote": "Thorin: \"That's eugenics\u2026 But with sentient people, that's wrong.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares the selective breeding of quaggoths to how orange carrots came to be.",
+    "source_quote": "Daz: \"It is how we ended up with orange carrots.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool states that everyone has a purpose in the circle.",
+    "source_quote": "Stool: \"Everyone has a purpose in the circle.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool fears that other members of his circle may be where Rumpadump is.",
+    "source_quote": "He fears other members of his circle may be there too",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool promises the party that Rumpadump will ensure they don't get hurt.",
+    "source_quote": "Stool: \"I promise you, Rumpadump will make sure we don't get hurt.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sets their next goal to get Werz removed from the assassins' list.",
+    "source_quote": "the party sets its next goal: get Werz removed from the assassins' list",
+    "subject": "next goal set",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin plans to tell the assassins that radical transparency would solve the problem.",
+    "source_quote": "Thorin plans to tell the assassins radical transparency would solve everything",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests that radical transparency means threatening to kill the assassins if they kill Werz.",
+    "source_quote": "Gyrgum: \"Radically transparent would probably be: you don't kill him, or we'll kill you.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

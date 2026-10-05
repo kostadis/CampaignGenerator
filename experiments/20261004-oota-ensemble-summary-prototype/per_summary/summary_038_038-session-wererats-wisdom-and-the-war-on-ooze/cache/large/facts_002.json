@@ -1,0 +1,177 @@
+[
+  {
+    "type": "event",
+    "fact": "The sergeant directed the party toward a rubble-choked route leading out of the Traders\u2019 Grotto.",
+    "source_quote": "The sergeant directed the party toward a rubble-choked route leading out of the Traders\u2019 Grotto",
+    "subject": "sergeant's direction",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Blingdenstone promises to provide directions out of the Underdark once the adventurers deal with the city\u2019s ooze problem.",
+    "source_quote": "Blingdenstone would provide directions out of the Underdark once the adventurers dealt with the city\u2019s ooze problem",
+    "subject": "Blingdenstone bargain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A merchant recommended the Foaming Mug for its Darklake Stout and its beds large enough for the party.",
+    "source_quote": "a merchant recommended the Foaming Mug, both for its Darklake Stout and because it had some of the only beds in town large enough for the comparatively enormous adventurers",
+    "subject": "Foaming Mug recommendation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Foaming Mug serves Darklake Stout and has beds large enough for the adventurers.",
+    "source_quote": "recommended the Foaming Mug, both for its Darklake Stout and because it had some of the only beds in town large enough",
+    "subject": "Foaming Mug",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Chamber of Commerce granted the party a ten percent discount on purchases.",
+    "source_quote": "The Chamber of Commerce also granted the party a ten percent discount on purchases",
+    "subject": "discount offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant wrote a coupon for the party when the discount offer was compared to an advertisement.",
+    "source_quote": "the merchant literally wrote them a coupon",
+    "subject": "coupon creation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum observed that saving the city from slimes is worth 10% off.",
+    "source_quote": "Gyrgum observes, \u201cSaving the city from slimes is worth 10% off.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo's promise was not money but directions out of the Underdark.",
+    "source_quote": "The party confirms that Dorbo\u2019s actual promise was not money but directions out of the Underdark",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Goldwhisker Warrens are a disputed area north of the Traders\u2019 Grotto.",
+    "source_quote": "The party reviews the local map and learns that the Goldwhisker Warrens lie north of the Traders\u2019 Grotto in contested territory.",
+    "subject": "Goldwhisker Warrens",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone\u2019s authorities describe Clan Goldwhisker as wererat squatters who are not a legitimate clan.",
+    "source_quote": "Blingdenstone\u2019s authorities described Clan Goldwhisker as wererat squatters who were not even a legitimate clan",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni holds a more favorable view of the Goldwhiskers than the general population of Blingdenstone.",
+    "source_quote": "merchants offered a more nuanced warning and noted that Senni held a more favorable view of them",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock returned to the territory after the drow left and began to gentrify the area.",
+    "source_quote": "Clan Diggermattock then returned, claimed the territory, and began to \u201cgentrify it.\u201d",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow previously conquered and later abandoned the territory now disputed by gnomish clans.",
+    "source_quote": "the drow conquered and later abandoned the area",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is a former wererat companion of the party, though not known to belong to Clan Goldwhisker.",
+    "source_quote": "The party remembers Topsy and Turvy, their former wererat companions, though the two were not known to belong to Clan Goldwhisker.",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a former wererat companion of the party, though not known to belong to Clan Goldwhisker.",
+    "source_quote": "The party remembers Topsy and Turvy, their former wererat companions, though the two were not known to belong to Clan Goldwhisker.",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proposed using Glabbagool as a living bulldozer to clear the rubble.",
+    "source_quote": "Rather than search for another route, the party proposed using Glabbagool as a living bulldozer",
+    "subject": "bulldozer proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool moved into the rubble, engulfed loose stones, and released them elsewhere to clear a passage.",
+    "source_quote": "He repeatedly moved into the rubble, engulfed loose stones, backed out, and released them elsewhere.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Glabbagool cleared a usable passage in about an hour.",
+    "source_quote": "After about an hour, he had created a usable passage.",
+    "subject": "clearing duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A deep gnome proposed hiring Glabbagool for mining operations after witnessing his work.",
+    "source_quote": "His work impressed the watching deep gnomes, one of whom proposed hiring him for mining operations.",
+    "subject": "mining offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool delights in the possibility of having a job and a role in society.",
+    "source_quote": "Glabbagool delighted in the possibility of having \u201ca job and a role in society\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool considers himself a kindred spirit to Zalthir because they are both oozes.",
+    "source_quote": "He especially identified with Zalthir, whom he considered a fellow ooze and therefore a kindred spirit.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is an ooze and is identified by Glabbagool as a kindred spirit.",
+    "source_quote": "He especially identified with Zalthir, whom he considered a fellow ooze",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir reminded Glabbagool that they already need him as part of the team.",
+    "source_quote": "Zalthir reminds Glabbagool, \u201cTo be fair, we already need you. You\u2019re part of the team.\u201d",
+    "subject": "team reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool observes that ordinary gelatinous cubes lack the intelligence to understand the word 'gender'.",
+    "source_quote": "observing that ordinary gelatinous cubes lack enough intelligence even to understand the word \u201cgender.\u201d",
+    "subject": "Gelatinous Cubes (general)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to proceed through the rubble toward the Goldwhisker side rather than the stone wall.",
+    "source_quote": "The party decides to proceed through the rubble toward the Goldwhisker side rather than attempt the stone wall.",
+    "subject": "route selection",
+    "quote_verified": true
+  }
+]

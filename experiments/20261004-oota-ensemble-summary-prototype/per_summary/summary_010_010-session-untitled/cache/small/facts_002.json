@@ -1,0 +1,191 @@
+[
+  {
+    "type": "location",
+    "fact": "The boat drifted toward a field of rocks threaded with narrow navigable passages.",
+    "source_quote": "a field of rocks threaded with narrow navigable passages",
+    "subject": "field of rocks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A seemingly abandoned duergar keelboat sits about fifty feet away from the party's boat.",
+    "source_quote": "About fifty feet away sat a duergar keelboat, seemingly abandoned",
+    "subject": "duergar keelboat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The duergar keelboat is still laden with cargo crates.",
+    "source_quote": "still laden with cargo crates",
+    "subject": "duergar keelboat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The duergar keelboat is fitted with oars.",
+    "source_quote": "fitted with oars",
+    "subject": "duergar keelboat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido claims never to have seen a duergar keelboat.",
+    "source_quote": "Buppido claimed never to have seen such a boat",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is a derro, not a duergar.",
+    "source_quote": "Buppido is a derro, not a duergar",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is a gray dwarf traveling with the group.",
+    "source_quote": "Hemeth, the gray dwarf traveling with the group",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth identified the vessel as a duergar keelboat.",
+    "source_quote": "identified it as a duergar keelboat",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth remarked that it was odd for the boat to be there with its cargo still inside.",
+    "source_quote": "remarked that it was very odd that it was there with its cargo still inside",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asked whether the crates were big enough to hide people.",
+    "source_quote": "Thorin asked whether the crates were big enough to hide people",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth reminded the party that duergar can turn invisible.",
+    "source_quote": "duergar can turn invisible",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth turned invisible.",
+    "source_quote": "and promptly did so himself",
+    "subject": "Hemeth turns invisible",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth whispered that invisibility could last half an hour or an hour.",
+    "source_quote": "He whispered that the invisibility could last half an hour or an hour",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bet that the enemy would attack while the party's duergar was still invisible.",
+    "source_quote": "Jimjar bet the enemy will attack while the party's own duergar is still invisible",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggested using water to reveal invisible figures.",
+    "source_quote": "At Zalthir's suggestion",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz used the cantrip to shower the area around the keelboat with water.",
+    "source_quote": "Daz used the cantrip again to shower the area around the keelboat",
+    "subject": "Daz casts Shape Water",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An invisible figure was revealed by the water spray.",
+    "source_quote": "the water revealed an invisible figure",
+    "subject": "invisible figure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The invisible figure plunged deeper into the lake.",
+    "source_quote": "who immediately plunged deeper into the lake",
+    "subject": "invisible figure dives",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido flopped flat onto the deck with a thud.",
+    "source_quote": "Buppido flopped flat onto the deck with a thud",
+    "subject": "Buppido flops",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido believed himself invisible after flopping down.",
+    "source_quote": "believing himself invisible",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Combat erupted across the dark water.",
+    "source_quote": "Combat erupted across the dark water",
+    "subject": "combat erupts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gray dwarf slavers materialized from the shadows.",
+    "source_quote": "gray dwarf slavers materialized from the shadows",
+    "subject": "duergar slavers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar make their living kidnapping travelers and selling them as slaves.",
+    "source_quote": "the duergar made their living kidnapping travelers and selling them as slaves",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The duergar sell slaves in the city of Gracklstugh.",
+    "source_quote": "selling them as slaves in the city of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin spent a superiority die on his initiative.",
+    "source_quote": "Thorin spent a superiority die on his initiative",
+    "subject": "Thorin initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjured a sphere of magical darkness and shifted it across the battlefield.",
+    "source_quote": "Zalthir conjured a sphere of magical darkness and shifted it across the battlefield at will",
+    "subject": "Zalthir darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir struck down enemies inside the darkness void.",
+    "source_quote": "he struck down enemies with flurries of blows",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,338 @@
+[
+  {
+    "type": "location",
+    "fact": "The Pit of Decomposed Flesh is a vast chamber reeking of death and decomposed flesh.",
+    "source_quote": "a vast chamber that reeked of death and decomposed flesh",
+    "subject": "Pit of Decomposed Flesh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The glow of faerzress drifts through the Pit of Decomposed Flesh like fog.",
+    "source_quote": "The glow of faerzress drifted through it like fog",
+    "subject": "Pit of Decomposed Flesh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is a lone derro cultist standing on a ledge above a deep pit full of zombies.",
+    "source_quote": "A lone derro cultist named Skiit stood on a ledge above a deep pit full of zombies",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit mutters to himself and tosses body parts into the darkness below.",
+    "source_quote": "He muttered to himself and tossed body parts into the darkness below",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit complains that he always gets 'the low end of the stick.'",
+    "source_quote": "complaining that he always got \"the low end of the stick.\"",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 20 on a religion check and recognizes the symbols of the Cult of Demogorgon on Skiit.",
+    "source_quote": "Daz rolled a 20 on a religion check and recognized the symbols of the Cult of Demogorgon on him",
+    "subject": "Daz recognizes symbols",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is a low-ranking true believer who needs someone else to think for him.",
+    "source_quote": "Skiit was a low-ranking true believer, the kind who needs someone else to think for him",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is insane, suffering from the mind flayers' experiments and demonic influence in the area.",
+    "source_quote": "Skiit was a low-ranking true believer... He was also insane, as many derro are, from the mind flayers' experiments and the demonic influence in the area",
+    "subject": "Skiit",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit has blue-gray skin.",
+    "source_quote": "blue-gray skin",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit has pale eyes lacking irises and pupils.",
+    "source_quote": "pale eyes lacking irises and pupils",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit has stringy, greasy white hair.",
+    "source_quote": "stringy, greasy white hair",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit wears grime-stained scraps of leather and cloth.",
+    "source_quote": "grime-stained scraps of leather and cloth",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Skiit appears to have 13 hit points.",
+    "source_quote": "He appears to have 13 hit points",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Skiit wears symbols of the Cult of Demogorgon.",
+    "source_quote": "recognized the symbols of the Cult of Demogorgon on him",
+    "subject": "Cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum steps forward in the role of a visiting supervisor.",
+    "source_quote": "Gyrgum stepped forward in the role of a visiting supervisor",
+    "subject": "Gyrgum impersonation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks coolly about the 'big project' and the work of Ulnara.",
+    "source_quote": "He asked coolly about the \"big project\" and the work of Ulnara",
+    "subject": "Gyrgum inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum presses Skiit to keep his zombies 'on plan.'",
+    "source_quote": "pressed Skiit to keep his zombies \"on plan.\"",
+    "subject": "Gyrgum command",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The bluff initially works, with Skiit being completely taken in by Gyrgum's act.",
+    "source_quote": "For a while the ruse worked: Skiit was completely taken in",
+    "subject": "Bluff success",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit asks permission to feed the party's goblin companion to the zombies.",
+    "source_quote": "even asked permission to feed the party's goblin companion to the zombies",
+    "subject": "Skiit request",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is the party's goblin companion whom Skiit offers to the zombies.",
+    "source_quote": "the party's goblin companion, Spiderbait",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stands behind Gyrgum looking threatening during the initial confrontation.",
+    "source_quote": "while Thorin stands behind him looking threatening",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The bluff collapses when Gyrgum rolls a natural one.",
+    "source_quote": "The bluff collapsed when Gyrgum rolled a natural one",
+    "subject": "Bluff collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit puffs himself up and boasts of Demogorgon and Plinki.",
+    "source_quote": "Skiit puffed himself up, boasted of Demogorgon and Plinki",
+    "subject": "Skiit boasts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit accuses the party of spying for the duergar or the mind flayers.",
+    "source_quote": "accused the party of spying for the duergar or the mind flayers",
+    "subject": "Skiit accuses party",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Skiit accuses the party of working for the duergar.",
+    "source_quote": "accused the party of spying for the duergar",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Skiit accuses the party of working for the mind flayers.",
+    "source_quote": "accused the party of spying for the duergar or the mind flayers",
+    "subject": "Mind Flayers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum shoves Skiit off the ledge into the pit.",
+    "source_quote": "Gyrgum shoved the ranting cultist off the ledge into the pit",
+    "subject": "Gyrgum shoves Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fall into the pit costs Skiit 1 hit point.",
+    "source_quote": "The fall costs him 1 hit point",
+    "subject": "Skiit falls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses minor illusion to dim the area and fill the air with floating icons of Demogorgon.",
+    "source_quote": "Daz used minor illusion to dim the area and fill the air with floating icons of Demogorgon",
+    "subject": "Daz uses minor illusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit's hysterical screaming draws Ulnara out of the back of the chamber.",
+    "source_quote": "Skiit's hysterical screaming from the pit drew a derro savant named Ulnara out of the back of the chamber",
+    "subject": "Ulnara emerges",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A hulking zombie walks beside Ulnara.",
+    "source_quote": "A hulking zombie walked beside her",
+    "subject": "Hulking Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara is a derro savant.",
+    "source_quote": "a derro savant named Ulnara",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ulnara demands to know who the strangers are.",
+    "source_quote": "She demanded to know who these strangers were",
+    "subject": "Ulnara confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party invokes the name 'Ember Vanguard' during the conversation with Ulnara.",
+    "source_quote": "They invoked the name \"Ember Vanguard\"",
+    "subject": "Party invokes Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The conversation involves a debate about inner and outer joins regarding looking up employers in a 'database'.",
+    "source_quote": "offered to look up their employers in a \"database,\" which led to a debate about inner and outer joins",
+    "subject": "Database debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara is momentarily speechless after the confusing conversation.",
+    "source_quote": "The borderline-insane cultist was left momentarily speechless",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The zombies in the pit have approximately 22 hit points.",
+    "source_quote": "Zombies here have about 22 hit points",
+    "subject": "Zombies in pit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Maximilian's Earthen Grasp on Skiit at the bottom of the pit.",
+    "source_quote": "He cast Maximilian's Earthen Grasp on Skiit at the bottom of the pit",
+    "subject": "Daz casts Maximilian's Earthen Grasp",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit is crushed by the earthen grasp, taking 8 damage.",
+    "source_quote": "crushed him for 8 damage",
+    "subject": "Skiit crushed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit rolls a 13 against a DC of 14 for the earthen grasp.",
+    "source_quote": "Skiit rolls 13 against DC 14 and takes 8 damage",
+    "subject": "Skiit check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ulnara changes her tone and calls Skiit a disappointment to 'your lordship'.",
+    "source_quote": "She changed tone, called Skiit a disappointment to \"your lordship\"",
+    "subject": "Ulnara changes tone",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Ulnara promises to raise Skiit as a zombie so he can serve the cult forever.",
+    "source_quote": "promised to raise him as a zombie so he could serve the cult forever",
+    "subject": "Ulnara promise",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit briefly escapes the earthen grasp and scrambles away.",
+    "source_quote": "When Skiit broke free and ran",
+    "subject": "Skiit escapes grasp",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz finishes Skiit with Toll the Dead.",
+    "source_quote": "Daz finished him with Toll the Dead",
+    "subject": "Daz casts Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is dead, killed by Daz's Toll the Dead.",
+    "source_quote": "Daz finished him with Toll the Dead",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara asks the party to tell Plinki what a wonderful ally she has been.",
+    "source_quote": "asked them to tell Plinki what a wonderful ally she had been",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Convinced the party are powerful allies, Ulnara lets them pass.",
+    "source_quote": "Convinced they were powerful allies, she let them pass",
+    "subject": "Party passage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "If the party had entered from the other side, past a marked line on the map, the zombies would have attacked on sight.",
+    "source_quote": "if the party had entered from the other side, past a marked line on the map, the zombies would have attacked on sight",
+    "subject": "GM trap note",
+    "quote_verified": true
+  }
+]

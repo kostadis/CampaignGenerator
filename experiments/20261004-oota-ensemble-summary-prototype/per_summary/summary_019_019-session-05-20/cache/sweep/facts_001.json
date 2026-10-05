@@ -1,0 +1,279 @@
+[
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want only the egg and want no one to learn it was ever lost.",
+    "source_quote": "The Keepers of the Flame want only the egg, and want no one, including the dragon Themberchaud, to learn it was ever lost.",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Keepers of the Flame want Themberchaud not to learn the egg was ever lost.",
+    "source_quote": "The Keepers of the Flame want only the egg, and want no one, including the dragon Themberchaud, to learn it was ever lost.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde is the head of the Stone Guards.",
+    "source_quote": "Errde, head of the Stone Guards, wants two things: proof that the derro are behind the chaos in the city, and to know who the assassins are.",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guards might tell the drow where the party was or help hunt them down if the party fled.",
+    "source_quote": "The Stone Guards might tell the drow where the party was, or even help hunt them down.",
+    "subject": "Stone Guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz wants the assassins off his back and offers better trade deals with the gnomes in return.",
+    "source_quote": "Werz wants the assassins off his back, and in return offers better trade deals with the gnomes.",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde's reward consists of support, the return of the party's weapons, and a pat on the back.",
+    "source_quote": "Errde's reward is support, the return of the party's weapons, and \"a pat on the back.\"",
+    "subject": "Errde's reward offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Keepers had promised revenge if the party fled.",
+    "source_quote": "If the party fled, the Keepers had promised revenge.",
+    "subject": "Keepers of the Flame revenge promise",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposed lying to everybody and escaping on the dragon.",
+    "source_quote": "Thorin proposed lying to everybody and escaping on the dragon.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks how dragons feel about eggs.",
+    "source_quote": "Thorin asks how dragons feel about eggs.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin insists on calling Grimgrim \"Bob,\" and later \"Dim.\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin thinks the etchings are a clever egg tattoo.",
+    "source_quote": "Thorin picks up nothing. He thinks the etchings are a clever egg tattoo",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reminisces about decorating eggs for festivals.",
+    "source_quote": "He thinks the etchings are a clever egg tattoo and reminisces about decorating eggs for festivals.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks whether the duergar are the assassins or the demon worshippers.",
+    "source_quote": "Thorin asks whether they are the assassins or the demon worshippers.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to the Whorlstone Caverns and moves northward toward the obelisk chamber.",
+    "source_quote": "Returning to the winding tunnels of the Whorlstone Caverns, the party moved northward toward the obelisk chamber where the egg was rumored to be held.",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber is located in the top-right of the map.",
+    "source_quote": "The DM clarifies that the only retcon is where the Mind Flayer assassins are located; the obelisk sits in the top-right of the map.",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The group in the obelisk room has gone full Demogorgon.",
+    "source_quote": "The DM confirms the group in the obelisk room has \"gone full Demogorgon.\"",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir chose the route north toward the egg.",
+    "source_quote": "Zalthir chose the route: the same path as before, then north toward the egg.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls that someone is mutating the egg toward a two-headed dragon.",
+    "source_quote": "Zalthir recalls that someone is mutating the egg toward a two-headed dragon.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's ghost accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are alleged to be behind the chaos in the city.",
+    "source_quote": "Errde, head of the Stone Guards, wants two things: proof that the derro are behind the chaos in the city, and to know who the assassins are.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro have allied with Demogorgon.",
+    "source_quote": "The party learns that the assassins share a common enemy: the derro who have allied with Demogorgon.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Demogorgon cultists lurk deeper in the caverns.",
+    "source_quote": "When the party mentioned their shared hatred of the Demogorgon cultists lurking deeper in the caverns, Rust's eyes lit up with sudden interest.",
+    "subject": "Demogorgon cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are a group of assassins.",
+    "source_quote": "The party discovers that these duergar are members of the Empty-Scabbard Killers, a group of assassins.",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers claim the hallway as their exclusive territory.",
+    "source_quote": "declaring the hallway the exclusive territory of the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimgrim is a duergar who is quiet and largely silent.",
+    "source_quote": "The quieter of the two, a grunting and largely silent duergar named Grimgrim, whom the party quickly nicknamed Bob, stood impassively.",
+    "subject": "Grimgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party nicknamed Grimgrim Bob.",
+    "source_quote": "The quieter of the two, a grunting and largely silent duergar named Grimgrim, whom the party quickly nicknamed Bob, stood impassively.",
+    "subject": "Grimgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin insists on calling Grimgrim \"Bob,\" and later \"Dim.\"",
+    "subject": "Grimgrim",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Brobrek is a duergar who asked to be called by his nickname Rust.",
+    "source_quote": "His partner, Brobrek, who asked to be called by his nickname Rust, did all the talking.",
+    "subject": "Brobrek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust's eyes lit up with sudden interest when the party mentioned the Demogorgon cultists.",
+    "source_quote": "When the party mentioned their shared hatred of the Demogorgon cultists lurking deeper in the caverns, Rust's eyes lit up with sudden interest.",
+    "subject": "Rust",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust says: \"Ah, you too see the enemy.\"",
+    "subject": "Rust",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum comments on Thorin's description of the etchings.",
+    "source_quote": "Gyrgum: \"Yeah, nice pastels.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a natural 20 on Arcana.",
+    "source_quote": "Daz, with a natural 20 on Arcana, recognises that the dragon egg in the obelisk chamber will become a two-headed dragon and has probably been possessed by demonic power.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg in the obelisk chamber will become a two-headed dragon.",
+    "source_quote": "Daz, with a natural 20 on Arcana, recognises that the dragon egg in the obelisk chamber will become a two-headed dragon",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg has probably been possessed by demonic power.",
+    "source_quote": "recognises that the dragon egg in the obelisk chamber will become a two-headed dragon and has probably been possessed by demonic power",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two duergar senties stepped from the shadows in the Whorlstone Caverns.",
+    "source_quote": "Their path was cut short when two duergar sentries stepped from the shadows, declaring the hallway the exclusive territory of the Empty-Scabbard Killers.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The egg exists to replace Themberchaud.",
+    "source_quote": "reminds the table that \"that egg exists to replace Themberchaud.\"",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party discusses the conflicting goals of the Keepers of the Flame and the Stone Guards.",
+    "source_quote": "The party discusses the conflicting goals of the Keepers of the Flame and the Stone Guards.",
+    "subject": "conflicting goals",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,128 @@
+[
+  {
+    "type": "event",
+    "fact": "The party chose to skirt the assassins' territory entirely by heading west.",
+    "source_quote": "The party chose to skirt the assassins' territory entirely.",
+    "subject": "party heading west",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party avoids the route they came in through because it runs through assassin territory.",
+    "source_quote": "The way they came in runs through assassin territory.",
+    "subject": "assassins' territory avoidance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the DM about the previous warning from the assassins.",
+    "source_quote": "Zalthir reminds the DM that the assassins told them not to come back after the desk burning.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party previously burned the assassins' desk by sneezing on it.",
+    "source_quote": "They had been told not to return after \"sneezing\" on and burning the assassins' desk",
+    "subject": "desk burning",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The assassins' desk was burned in a previous incident.",
+    "source_quote": "burning the assassins' desk",
+    "subject": "assassins' desk",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "It is unknown whether the south route re-enters assassin territory.",
+    "source_quote": "It is unknown whether the south route re-enters assassin territory.",
+    "subject": "south route assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool pleads for help for his Myconid friend.",
+    "source_quote": "Stool's pleas about his Myconid friend were noted but set aside for another time",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool's friend is among the crazed Myconids.",
+    "source_quote": "Stool's request to help his friend among the crazed Myconids",
+    "subject": "Myconid friend",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are terrifying Myconids in the area Stool wants to visit.",
+    "source_quote": "Zalthir notes Stool is \"convinced that we'll be perfectly safe despite there being a bunch of terrifying Myconids",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There is an ape thing mentioned as a threat in the area.",
+    "source_quote": "and some ape thing.\"",
+    "subject": "ape thing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin sides with Stool regarding the request to help his friend.",
+    "source_quote": "Thorin sides with Stool, describing his character as \"incredibly loyal and \u2026 a little bit sociopathic.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's character is modelled on Amos from The Expanse.",
+    "source_quote": "He says he is basing him on Amos from *The Expanse*.",
+    "subject": "Amos",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Expanse is a literary/media reference source for Thorin's character inspiration.",
+    "source_quote": "Amos from *The Expanse*.",
+    "subject": "The Expanse",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sets aside Stool's plea to help his Myconid friend, placing it at the bottom of the priority list.",
+    "source_quote": "Stool's request to help his friend among the crazed Myconids is discussed but placed at the bottom of the priority list.",
+    "subject": "priority setting",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party travels west through the dark Underdark passages.",
+    "source_quote": "So they headed west through the dark Underdark passages.",
+    "subject": "Underdark passages",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM switches the map to a single party icon.",
+    "source_quote": "The DM switches the map to a single party icon.",
+    "subject": "DM map change",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The matter of helping Stool's Myconid friend is deferred for another time.",
+    "source_quote": "Stool's pleas about his Myconid friend were noted but set aside for another time",
+    "subject": "Stool's Myconid friend",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session occurs during date 021.05.",
+    "source_quote": "### Choosing the Path West 021.05",
+    "subject": "021.05",
+    "quote_verified": true
+  }
+]

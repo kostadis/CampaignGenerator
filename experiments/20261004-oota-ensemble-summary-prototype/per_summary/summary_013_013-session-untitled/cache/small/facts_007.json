@@ -1,0 +1,240 @@
+[
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull is the leader of the Stone Guard.",
+    "source_quote": "Captain Errde Blackskull and her Stone Guard",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull states that she enforces the will of the city and is the law.",
+    "source_quote": "I am simply enforcing the will of the city. I am the law.",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempted to spare the stone giant's life.",
+    "source_quote": "Errde expresses particular appreciation for Thorin's attempt to spare the stone giant's life.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull publicly announces that the meeting is merely a discussion and not a recruitment into the Stone Guard.",
+    "source_quote": "they are just meeting with the stone guards because I asked them to they are not coming to a meeting.",
+    "subject": "Errde's public announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to accompany Captain Errde Blackskull to gather more information.",
+    "source_quote": "The party agrees to go to gather more information",
+    "subject": "party agreement to meet",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is taken to the Stone Guard front office for the meeting.",
+    "source_quote": "The party is taken to the Stone Guard front office rather than a back room.",
+    "subject": "Stone Guard front office",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull commends the party's initiative, clever tactics, and brutal efficiency.",
+    "source_quote": "She commends their initiative, \"clever tactics,\" and \"brutal efficiency\"",
+    "subject": "Errde commends party",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Captain Errde Blackskull claims the Keepers of the Flame have no respect for stone giants.",
+    "source_quote": "Errde expresses particular appreciation for Thorin's attempt to spare the stone giant's life. She contrasts it with the Keepers of the Flame, \"who have no respect for our stone giant brethren.\"",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is an elusive derro.",
+    "source_quote": "an elusive derro named Droki",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki lives in the West Cleft District.",
+    "source_quote": "lives in the West Cleft District",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull tasks the party with tracking down Droki.",
+    "source_quote": "Errde tasks the party with tracking down an elusive derro named Droki.",
+    "subject": "tracking Droki assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The options for the Droki assignment are to follow and report, seize for questioning, or kill and bring evidence.",
+    "source_quote": "The options are to follow and report on him, seize him for questioning, \"or kill him and bring evidence of his evil activities.\"",
+    "subject": "Droki assignment options",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz raises the question of payment for the risk.",
+    "source_quote": "Daz raises the question of payment for the risk.",
+    "subject": "Daz asks about payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin repeatedly asks whether the job is for the city or for the Stone Guard.",
+    "source_quote": "Thorin repeatedly asks whether the job is for the city or for the Stone Guard.",
+    "subject": "Thorin asks about affiliation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull confirms the job is for the city.",
+    "source_quote": "Errde finally answers: \"this would, of course, be for the city.\"",
+    "subject": "Errde confirms city job",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Captain Errde Blackskull suspects a deep conspiracy involving the Council of Savants.",
+    "source_quote": "she reveals her suspicions of a deep conspiracy involving the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Captain Errde Blackskull suspects corrupt elements among the clan lairds.",
+    "source_quote": "corrupt elements among the clan lairds",
+    "subject": "Clan Lairds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull promises safe passage out of Gracklstugh and 350 gold pieces' worth of gear.",
+    "source_quote": "Errde promises safe passage out of Gracklstugh and 350 gold pieces' worth of weapons, armor, and common potions and scrolls.",
+    "subject": "Errde's promise of payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz declares that the market is full of corruption after a passive perception check.",
+    "source_quote": "Daz's passive perception of 14 tells him the merchants' behavior fits no one's rules in this authoritarian city, and he declares \"the market's definitely full of corruption.\"",
+    "subject": "Daz checks market corruption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull describes the progression of corruption from rule-breaking to destruction.",
+    "source_quote": "First, it starts with corrupt people not behaving according to the rules. Then it proceeds to grift. Then it proceeds to chaos. Then it proceeds to destruction.",
+    "subject": "Errde explains corruption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz makes a persuasive case with a roll of 18.",
+    "source_quote": "Daz makes a persuasive case, rolling an 18.",
+    "subject": "Daz's persuasion check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull offers each party member a down payment of 175 gold pieces worth of equipment.",
+    "source_quote": "Errde offers each party member a down payment of 175 gold pieces worth of equipment from her armory",
+    "subject": "Errde offers down payment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The equipment credit must be claimed from Captain Errde Blackskull's warehouse and cannot be topped up with party gold.",
+    "source_quote": "The credit must be claimed from her warehouse, cannot be topped up with the party's own gold",
+    "subject": "Equipment Credit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum compares the equipment credit to a gift card.",
+    "source_quote": "Gyrgum: \"Oh, it's a gift card.\"",
+    "subject": "Gyrgum's comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull promises to shield the party from drow forces while they remain in Gracklstugh.",
+    "source_quote": "Errde promises to shield the party from any drow forces hunting for them while they remain in Gracklstugh.",
+    "subject": "Errde promises protection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull mentions that it is common for Drow to show up looking for missing prisoners.",
+    "source_quote": "She explains, \"it's not uncommon for Drow to show up looking for missing prisoners.\"",
+    "subject": "Errde mentions drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is convinced that Captain Errde Blackskull might be a little bit mad.",
+    "source_quote": "The party is \"quite convinced that she might be a little bit mad.\"",
+    "subject": "Party suspects Errde is mad",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin selects chain mail and twenty darts as his reward.",
+    "source_quote": "He settles on chain mail (75 gp) and twenty darts (5 cp each, about 1 gp).",
+    "subject": "Thorin selects gear",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin asks about a longsword +1.",
+    "source_quote": "Thorin asks about a longsword +1",
+    "subject": "Longsword +1",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin selects chain mail as his reward.",
+    "source_quote": "He settles on chain mail (75 gp)",
+    "subject": "Chain mail",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin selects twenty darts as his reward.",
+    "source_quote": "and twenty darts (5 cp each, about 1 gp)",
+    "subject": "Twenty darts",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The outcome of the assignment to track down Droki is unresolved.",
+    "source_quote": "Errde tasks the party with tracking down an elusive derro named Droki.",
+    "subject": "Droki assignment outcome",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The suspected conspiracy involving the Council of Savants remains unexposed.",
+    "source_quote": "she reveals her suspicions of a deep conspiracy involving the Council of Savants",
+    "subject": "Council of Savants conspiracy",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unknown how Droki evades patrols as if he knows their locations in advance.",
+    "source_quote": "He evades patrols \"as if he somehow knows in advance where the duergar patrols will be invisible or otherwise\"",
+    "subject": "Droki's evasion methods",
+    "quote_verified": true
+  }
+]

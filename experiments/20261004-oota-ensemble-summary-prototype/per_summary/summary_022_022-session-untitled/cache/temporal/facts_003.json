@@ -1,0 +1,16 @@
+[
+  {
+    "type": "monster",
+    "fact": "Three enormous cave bears are resting in cages in the chamber east of the double doors.",
+    "source_quote": "Three enormous cave bears rested in cages",
+    "subject": "cave bear count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two insane derro stand at the large cauldron in the center of the chamber.",
+    "source_quote": "Two insane derro stood at the cauldron",
+    "subject": "derro count",
+    "quote_verified": true
+  }
+]

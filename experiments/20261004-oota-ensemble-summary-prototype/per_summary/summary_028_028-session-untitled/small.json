@@ -1,0 +1,1227 @@
+[
+  {
+    "type": "event",
+    "fact": "The party travels deeper into the Underdark through a region thick with Faerzress.",
+    "source_quote": "The party pressed deeper into the Underdark, passing through a region thick with Faerzress",
+    "subject": "travel through Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Faerzress is a strange magical radiation that warps tunnels and makes teleportation all but impossible.",
+    "source_quote": "the strange magical radiation that warps the tunnels and makes teleportation all but impossible",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party hypothesizes that the Faerzress 'went blink' causing madness and the appearance of demons.",
+    "source_quote": "Faerzress is also the thing that \"went blink and caused everybody to go mad.\" The party's working hypothesis is that the blink somehow caused the demons to show up",
+    "subject": "Faerzress origin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled out the theory that Plinki caused the Faerzress event by experimenting with the obelisk.",
+    "source_quote": "Out of character, the GM ruled out the theory that Plinki caused it experimenting with the obelisk",
+    "subject": "GM ruling on obelisk theory",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There are fist-sized chunks of quartz scattered in the area that shed a dim light in a 10-foot radius.",
+    "source_quote": "Scattered through the area were fist-sized chunks of quartz that shed a dim light in a 10-foot radius",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "When hurled against a hard surface, the quartz chunks burst into a blinding flash in a 10-foot radius.",
+    "source_quote": "Sarith explained that these crystals, when hurled against a hard surface, burst into a blinding flash in a 10-foot radius",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Creatures caught in the quartz flash must make a DC 10 Constitution save or be blinded for a minute.",
+    "source_quote": "Any creature caught in the flash must make a DC 10 Constitution save or be blinded for a minute",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The blindness effect from the quartz chunks can be repeated by the blinded creature at the end of each of its turns.",
+    "source_quote": "repeating the save at the end of each of its turns",
+    "subject": "glowing quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum advises throwing the quartz crystals at least 10 feet away.",
+    "source_quote": "Gyrgum concluded that you should throw it at least 10 feet",
+    "subject": "Gyrgum's advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 19 on Arcana.",
+    "source_quote": "Daz rolled a 19 on Arcana",
+    "subject": "Daz's Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz recalls Zalthir's earlier explanation that magical darkness blocks all light, including magical light.",
+    "source_quote": "recalled Zalthir's earlier explanation: magical darkness blocks all light, even magical light",
+    "subject": "Daz recalls Zalthir's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party harvests twelve of the glowing stones.",
+    "source_quote": "pocketing twelve of the glowing stones",
+    "subject": "harvesting crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is a wretched human former slave of the Drow.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is a wretched human former slave of the Drow.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 22 on Investigation.",
+    "source_quote": "Daz rolls a 22 on Investigation",
+    "subject": "Daz's Investigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz spots the telltale Drow prisoner markings on the humans.",
+    "source_quote": "spots the telltale Drow prisoner markings",
+    "subject": "spotting markings",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cautiously approaches the humans and introduces himself without giving much away.",
+    "source_quote": "He approaches cautiously and introduces himself without giving much away",
+    "subject": "Daz's introduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm holds up a crystal and declares they are not going back upon seeing Daz is a drow.",
+    "source_quote": "Seeing that Daz is a drow, Fuurm holds up a crystal and declares they are not going back",
+    "subject": "Fuurm's threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reassures Fuurm and Baedora that the party is also escaping.",
+    "source_quote": "Daz reassures them the party is escaping too",
+    "subject": "Daz's reassurance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm suggests that the survivors could be of some help.",
+    "source_quote": "Fuurm suggests \"we could be of some help\"",
+    "subject": "Fuurm's offer",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 24 on Insight.",
+    "source_quote": "Daz rolls a 24 on Insight",
+    "subject": "Daz's Insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reads the survivors' demeanor as pure desperation rather than being agents sent to follow the party.",
+    "source_quote": "reads it as pure desperation... see a big armed group as their way out, not agents sent to follow the party",
+    "subject": "Daz's interpretation",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm entered the Underdark to save his sister.",
+    "source_quote": "Fuurm explains he entered the Underdark to save his sister",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm was captured but recently escaped during a demonic attack on his captors.",
+    "source_quote": "captured, only recently escaping during a demonic attack on his captors",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm's sister was stolen from the Overbright by the Drow.",
+    "source_quote": "the GM adds that the sister was stolen from the Overbright by the Drow",
+    "subject": "Fuurm's sister",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is described as a farmer with no special skills.",
+    "source_quote": "Fuurm is \"just a farmer\" with no special skills",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party finds it odd that Fuurm, a farmer with no special skills, managed to survive.",
+    "source_quote": "whose survival \"strikes you as very odd\"",
+    "subject": "Fuurm",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to let Fuurm and Baedora travel along with them.",
+    "source_quote": "the party agrees to let them travel along",
+    "subject": "party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir urges the party to keep an eye on the survivors.",
+    "source_quote": "Zalthir urging everyone to keep an eye on them",
+    "subject": "Zalthir's advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reasons that the cost is just food and water and they can be left behind if needed.",
+    "source_quote": "Daz reasons it's \"just food and water,\" and they can be left behind if they can't keep up",
+    "subject": "Daz's reasoning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes the last stray the party picked up was a psychotic believer, but these two do not give off those vibes.",
+    "source_quote": "The GM notes that the last stray the party picked up turned out to be a psychotic believer, but these two give off none of those vibes",
+    "subject": "GM comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth warns that the evidence of their harvest would be plain to any Drow tracker.",
+    "source_quote": "Eldeth warned that the evidence of their harvest would be plain to any Drow tracker worth their salt",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth explains that cutting the crystals out leaves obvious gaps showing someone was harvesting.",
+    "source_quote": "cutting the crystals out leaves obvious gaps showing someone was harvesting",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is eager to harvest the crystals, calling them a prank.",
+    "source_quote": "Gyrgum is eager (\"they sound like a great prank\")",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir devises a plan to gather some crystals and smash others to disguise the site as a battlefield.",
+    "source_quote": "Zalthir suggests a plan to gather some crystals and smash others to make the area look like a battlefield rather than a harvest site.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses a shroud of magical darkness to cover the party's activities.",
+    "source_quote": "Under the cover of his shroud of magical darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party smashes the remaining crystals under the cover of magical darkness.",
+    "source_quote": "the party smashed the remaining crystals",
+    "subject": "crystal smashing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The smashing scatters destruction to make the area look like a battle site.",
+    "source_quote": "They scattered destruction across the area so it would look like a battle had taken place rather than a careful harvest.",
+    "subject": "deception plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is allowed to join in smashing the crystals.",
+    "source_quote": "Gyrgum is allowed to join the smashing",
+    "subject": "Gyrgum smashing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth uses her survival skills to mask the party's tracks.",
+    "source_quote": "Eldeth then used her considerable skill to mask the party's tracks",
+    "subject": "Eldeth masking tracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Drow pursuers are left confused by the masked tracks.",
+    "source_quote": "the Drow pursuers who had been closing in were left with little more than confusion",
+    "subject": "Drow confusion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collects twelve quartz crystals, referred to as light crystals.",
+    "source_quote": "The party collects twelve quartz crystals in total, which the GM tells them to just call \"light crystals.\"",
+    "subject": "quartz crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is a former prisoner of the Drow found in the dark.",
+    "source_quote": "Daz rolled a 22 on Investigation and spotted the telltale symbols marking them as former prisoners (slaves) of the Drow.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is a former prisoner of the Drow found with Fuurm.",
+    "source_quote": "the telltale symbols marking them as former prisoners (slaves) of the Drow",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a drow.",
+    "source_quote": "raised a glowing crystal like a weapon the moment he spotted Daz, a drow",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm raises a glowing crystal like a weapon upon spotting Daz.",
+    "source_quote": "raised a glowing crystal like a weapon the moment he spotted Daz",
+    "subject": "Fuurm raises crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm declares that he and Baedora are not going back.",
+    "source_quote": "his voice cracking as he declared that he and his companion, Baedora, were not going back.",
+    "subject": "Fuurm speaks",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party gathers quartz crystals at this site.",
+    "source_quote": "The party collects twelve quartz crystals in total",
+    "subject": "crystal harvest site",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz approached Fuurm and Baedora carefully, introducing himself without giving too much away.",
+    "source_quote": "Daz approached them carefully, introducing himself without giving too much away.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the party had no interest in returning anyone to the Drow, since they were trying to escape the Underdark themselves.",
+    "source_quote": "He explained that the party had no interest in returning anyone to the Drow, since they were trying to escape the Underdark themselves.",
+    "subject": "Daz explains intent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm offered that the party could be of some help to him and Baedora.",
+    "source_quote": "Fuurm quickly offered that \"we could be of some help\"",
+    "subject": "Fuurm offers help",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A 24 on Insight confirmed that Fuurm and Baedora were simply desperate to get out, not plants.",
+    "source_quote": "a 24 on Insight confirmed the pair were simply desperate to get out, not plants.",
+    "subject": "Insight check on Fuurm and Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm's story came out haltingly over a shared meal.",
+    "source_quote": "Fuurm's story came out haltingly over a shared meal.",
+    "subject": "Fuurm tells his story",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm followed his sister into the depths after the Drow stole her from the Overbright.",
+    "source_quote": "He had followed his sister into the depths after the Drow stole her from the Overbright",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm was captured almost immediately after following his sister.",
+    "source_quote": "only to be captured almost immediately.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm spent a long and miserable stretch as a Drow slave.",
+    "source_quote": "He spent a long and miserable stretch as a Drow slave",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm fled his Drow captors due to a demonic attack.",
+    "source_quote": "until a demonic attack on his captors gave him the chance to flee.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM described Fuurm as \"just a farmer... with a perverse sense of loyalty who made some terrible life choices.\"",
+    "source_quote": "The GM described him as \"just a farmer... with a perverse sense of loyalty who made some terrible life choices,\"",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agreed to let Fuurm and Baedora travel with them.",
+    "source_quote": "The party agreed to let Fuurm and Baedora travel with them",
+    "subject": "party agrees to travel",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party entered a cavern filled with various types of mushrooms and fungi.",
+    "source_quote": "The party enters a cavern filled with various types of mushrooms and fungi.",
+    "subject": "fungus cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Shrieker fungi began to wail, threatening to alert nearby threats to the party's presence.",
+    "source_quote": "Shrieker fungi begin to wail, threatening to alert nearby threats to the party's presence.",
+    "subject": "shrieker fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crystal was thrown at the shriekers from 10 feet away.",
+    "source_quote": "A crystal is thrown at the shriekers from a safe distance.",
+    "subject": "crystal thrown at shriekers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crystal landed 10 feet away and had no effect on the shriekers.",
+    "source_quote": "The crystal lands 10 feet away and has no effect: \"It's just shrieking.\"",
+    "subject": "crystal ineffective",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth managed to cover the party's tracks as they moved through the fungus cavern.",
+    "source_quote": "Eldeth once again manages to cover the party's tracks as they move through the cavern.",
+    "subject": "Eldeth covers tracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth passed a DC 16 Survival check because Gyrgum rolled a 12 and Eldeth had the party's best Survival at +6.",
+    "source_quote": "It takes a DC 16 Survival check. Gyrgum's own roll is a 12, so the GM rolls for Eldeth, who has the party's best Survival at +6. She succeeds",
+    "subject": "Survival check in fungus cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Several uneventful days followed the fungus cavern, with the next event occurring on about the sixth day.",
+    "source_quote": "Several uneventful days follow. On about the sixth day",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party passed another crystal cluster with no one around on the sixth day.",
+    "source_quote": "On about the sixth day the party passes another crystal cluster with no one around",
+    "subject": "crystal clusters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz decided to search for a little bit more crystal at the new cluster.",
+    "source_quote": "Daz decides \"Might as well search for a little bit more.\"",
+    "subject": "Daz searches for crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth once again covered the party's trail at the crystal clusters.",
+    "source_quote": "Eldeth once again covered their trail.",
+    "subject": "Eldeth covers tracks again",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Eldeth was fairly confident she had almost shaken the Drow off their trail, and the pursuit level stood at one.",
+    "source_quote": "she had almost shaken the Drow off their trail but isn't certain, and the pursuit level is now one.",
+    "subject": "Drow pursuit",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith announced that the party had arrived at their destination.",
+    "source_quote": "Sarith announced that they had arrived.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrives at the entrance to the Lost Tomb of Khaem.",
+    "source_quote": "the party arrives at the entrance to the Lost Tomb of Khaem",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith announces their arrival at the tomb.",
+    "source_quote": "Sarith announces \"Aha, we have arrived.\"",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is pleased and has a full belly.",
+    "source_quote": "Fuurm and Baedora are pleased, with full bellies",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is pleased and has a full belly.",
+    "source_quote": "Fuurm and Baedora are pleased, with full bellies",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar demands a bet regarding the crystals.",
+    "source_quote": "Jimjar insisted on a bet",
+    "subject": "crystal bet",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wagers that the crystals will prove useful.",
+    "source_quote": "Gyrgum wagers that the crystals will prove useful",
+    "subject": "Gyrgum's wager",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar accepts Gyrgum's wager.",
+    "source_quote": "and a startled Jimjar took it",
+    "subject": "Jimjar's acceptance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a bet that no one will agree whether the crystals were useful, but nobody takes it.",
+    "source_quote": "offers a bet that no one will agree whether the crystals were useful. Nobody takes it",
+    "subject": "failed bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar expresses disappointment that no one took his bet.",
+    "source_quote": "he is \"disappointed with all of you\"",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A faint, feminine voice speaks telepathically to the party, begging for help.",
+    "source_quote": "A faint, feminine voice speaks telepathically to the party, begging to be freed",
+    "subject": "telepathic plea",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The voice indicates the direction of the tomb's entrance.",
+    "source_quote": "The voice gives the party a sense of the entrance's direction",
+    "subject": "voice guidance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proceeds cautiously towards the entrance.",
+    "source_quote": "They proceed \"cautiously\"",
+    "subject": "party caution",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The tomb entrance consists of a large set of double doors.",
+    "source_quote": "The party approaches a large set of double doors leading into the tomb",
+    "subject": "tomb entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The area is so dark that Gyrgum cannot see anything.",
+    "source_quote": "It is dark enough that Gyrgum can't see anything",
+    "subject": "Gyrgum's visibility",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that Gyrgum cannot throw a crystal and collect on his bet at this time.",
+    "source_quote": "He tries to throw a crystal and collect on his bet, but the GM rules it isn't the time",
+    "subject": "crystal throw denied",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Inside the entrance, there is a stone diorama of the sorcerer Brysis of Khaem.",
+    "source_quote": "a stone diorama of the sorcerer Brysis of Khaem",
+    "subject": "tomb interior",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb interior contains murals of floating Netherese cities.",
+    "source_quote": "murals of floating Netherese cities",
+    "subject": "tomb murals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An Arcana check with a result of 24 confirms the tomb belongs to Brysis and contains powerful magic.",
+    "source_quote": "A 24 on Arcana confirms this is Brysis's tomb and that powerful magic lies within",
+    "subject": "Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Netherese had floating cities and access to magic no longer available.",
+    "source_quote": "The Netherese had floating cities and access to magic no longer available",
+    "subject": "Netherese",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Netherese empire ended when a leader's ritual almost tore reality apart.",
+    "source_quote": "Their empire ended when a leader's ritual almost tore reality apart",
+    "subject": "Netherese",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Netherese definitions of good and evil may not align with the party's own.",
+    "source_quote": "Their definitions of good and evil may not map to the party's",
+    "subject": "Netherese",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that the Netherese morality disclaimer applies to almost anything.",
+    "source_quote": "Gyrgum remarks that the last point is \"a good disclaimer for pretty much anything\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The party descends a dusty staircase extending over a hundred feet into the earth.",
+    "source_quote": "The group descends a dusty staircase extending over a hundred feet into the earth",
+    "subject": "tomb staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A Netherese calendar stone is set into the wall of the staircase.",
+    "source_quote": "passing a Netherese calendar stone set into the wall",
+    "subject": "Netherese calendar stone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes the lead on the staircase to avoid traps.",
+    "source_quote": "Gyrgum goes first, hoping to avoid \"the stair that immediately crumbles",
+    "subject": "Gyrgum takes lead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reports a passive Perception of 15 and Investigation of 17.",
+    "source_quote": "Daz reports passive Perception 15 and Investigation 17",
+    "subject": "Daz stats",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM keeps Daz out of the front position.",
+    "source_quote": "the GM keeps the fragile magic user out of the front",
+    "subject": "GM protects Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks about notable dates on the calendar stone.",
+    "source_quote": "Asked about notable dates on the calendar",
+    "subject": "calendar question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM states the stone is just a calendar.",
+    "source_quote": "the GM says it's \"just the calendar\"",
+    "subject": "GM response",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The party enters a shrine filled with dusty tapestries and defaced friezes.",
+    "source_quote": "The party enters a shrine filled with dusty tapestries and defaced friezes",
+    "subject": "shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The shrine contains a cracked marble altar.",
+    "source_quote": "discovering a cracked marble altar",
+    "subject": "marble altar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party observes that items in the shrine have not turned to dust despite thousands of years.",
+    "source_quote": "nothing has turned to dust",
+    "subject": "intact items observation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum investigates the room and notes recent damage.",
+    "source_quote": "Gyrgum investigates the room, noting that the damage is recent",
+    "subject": "Gyrgum investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The damage is likely caused by floating undead creatures.",
+    "source_quote": "likely caused by floating undead creatures",
+    "subject": "undead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The undead leave no tracks in the thick layer of dust.",
+    "source_quote": "creatures that left no tracks in the thick layer of dust",
+    "subject": "undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolls a natural 1 on Investigation.",
+    "source_quote": "Zalthir rolls a natural 1 on Investigation",
+    "subject": "Zalthir bad roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir becomes convinced there is proof of a lower power.",
+    "source_quote": "becomes convinced there is \"proof here of a lower power\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 17 on Arcana.",
+    "source_quote": "Gyrgum rolls a 17 on Arcana",
+    "subject": "Gyrgum Arcana",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls that such undead don't rest but are driven to keep searching.",
+    "source_quote": "undead don't rest but are driven to keep searching",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls information about undead from his days with Bahamut.",
+    "source_quote": "Gyrgum recalls... from his days with Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir suggests oozes as an alternative explanation for the situation.",
+    "source_quote": "\"it's either that or the oozes\"",
+    "subject": "oozes",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "There are doors to the east and south with no sign of which way the undead went.",
+    "source_quote": "There are doors to the east and south, with no sign which way the undead went",
+    "subject": "shrine exits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz examines the altar and finds no arcane significance.",
+    "source_quote": "Daz examines the altar but finds no arcane significance",
+    "subject": "Daz altar check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 16 on Arcana while examining the altar.",
+    "source_quote": "Arcana 16",
+    "subject": "Daz Arcana",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The undead hate things they were associated with in life.",
+    "source_quote": "Gyrgum suggests the undead simply hate things they were associated with in life",
+    "subject": "undead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party recalls information from Fargas Rumblefoot regarding a secret or false tomb within the complex.",
+    "source_quote": "The party recalls information from Fargas Rumblefoot regarding a secret or false tomb",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas did not know the location of the secret room, only that other visitors were unaware of it.",
+    "source_quote": "Fargas didn't know where the secret room was, only that other visitors hadn't known about it",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas was the last of his adventuring group.",
+    "source_quote": "Fargas was the last of his own adventuring group",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Fargas's companions may have died along the way.",
+    "source_quote": "his companions may simply have died along the way",
+    "subject": "Fargas's companions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to go east through a side door based on a die roll in Thorin's honor.",
+    "source_quote": "The party pressed east through a side door, a direction chosen by die roll in Thorin's honour",
+    "subject": "path selection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player rolls an 18 to determine the path.",
+    "source_quote": "In Thorin's honour, the party lets a die decide their path (Gyrgum's player rolls an 18)",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber is dominated by four stone sarcophagi, each bearing the sculpted likeness of a robed figure in repose.",
+    "source_quote": "entered a chamber dominated by four stone sarcophagi, each bearing the sculpted likeness of a robed figure in repose",
+    "subject": "sarcophagi chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The northeast sarcophagus rests on hidden stone rollers.",
+    "source_quote": "they noticed that the northeast sarcophagus rested on hidden stone rollers",
+    "subject": "northwest sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The hangers-on stay outside the chamber while the party explores.",
+    "source_quote": "The hangers-on stayed outside",
+    "subject": "hangers-on",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts a shroud of magical darkness across the room.",
+    "source_quote": "Zalthir drew his shroud of magical darkness across the room",
+    "subject": "darkness spell cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls the sarcophagus aside.",
+    "source_quote": "Thorin rolled the sarcophagus aside",
+    "subject": "sarcophagus moved",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four specters emerge from the sarcophagi and attack the party.",
+    "source_quote": "Four specters tore free from the sarcophagi and launched themselves at the party",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A distant voice cries out, \"No, you must save me.\"",
+    "source_quote": "the distant voice cried, \"No, you must save me.\"",
+    "subject": "distant voice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes down one of the specters before it can react.",
+    "source_quote": "Zalthir moved with terrifying speed, striking one of the spirits down in a flurry of blows before it could react",
+    "subject": "specter killed by Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One specter is killed by Zalthir.",
+    "source_quote": "Zalthir moved with terrifying speed, striking one of the spirits down in a flurry of blows",
+    "subject": "specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes a volley of magical force at the remaining specters.",
+    "source_quote": "Daz unleashed a volley of magical force at the remaining specters",
+    "subject": "magical missiles cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The specters strike Daz twice with life-draining touches.",
+    "source_quote": "the specters struck him twice with life-draining touches",
+    "subject": "Daz wounded",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's hit-point maximum is reduced by 12 total.",
+    "source_quote": "His hit-point maximum fell by 2, then by 10 more",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to turn the undead using his holy symbol and Bahamut's power.",
+    "source_quote": "Gyrgum raised his holy symbol and called upon Bahamut's power to drive the undead back",
+    "subject": "turn undead attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "All remaining specters resist Gyrgum's divine energy.",
+    "source_quote": "every remaining specter shrugged off the divine energy",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders if Bahamut is displeased with him regarding the dragon egg.",
+    "source_quote": "Gyrgum to wonder, not for the first time, whether the god was still displeased about the dragon egg",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down a specter with his enchanted longsword.",
+    "source_quote": "Thorin stepped in with his enchanted longsword and cut down another specter",
+    "subject": "specter killed by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One specter is killed by Thorin.",
+    "source_quote": "Thorin stepped in with his enchanted longsword and cut down another specter",
+    "subject": "specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A specter pauses mid-fight to correct Zalthir that it is a specter, not a ghost.",
+    "source_quote": "One of them paused mid-fight to correct Zalthir that it was a specter, not a ghost",
+    "subject": "specter interaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes off the remaining specters with relentless strikes.",
+    "source_quote": "Zalthir finished the rest with a relentless series of strikes",
+    "subject": "specters destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remaining specters are destroyed.",
+    "source_quote": "Zalthir finished the rest with a relentless series of strikes",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gold bracelets are found in the sarcophagi.",
+    "source_quote": "found a respectable haul: gold bracelets",
+    "subject": "gold bracelets",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A fancy walking stick is found in the sarcophagi.",
+    "source_quote": "a fancy walking stick",
+    "subject": "fancy walking stick",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A gold censer worked with platinum filigree is found in the sarcophagi.",
+    "source_quote": "and a gold censer worked with platinum filigree",
+    "subject": "gold censer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 27 on Arcana to assess the undead.",
+    "source_quote": "Daz then rolled a 27 on Arcana and made a grim assessment",
+    "subject": "Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The undead in the tomb will reform every 24 hours.",
+    "source_quote": "they would reform every 24 hours",
+    "subject": "undead reforming",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "A four-foot square hole leading into darkness is found beneath the rolled-aside sarcophagus.",
+    "source_quote": "Beneath the sarcophagus Thorin had rolled aside lay a four-foot square hole dropping down into the darkness below",
+    "subject": "hidden hole",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum confirms he fits through the four-foot square hole.",
+    "source_quote": "Asked whether Gyrgum fits, Gyrgum answers \"I'm an orc, not a giant,\" and the GM confirms he does",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower chamber's walls are decorated with rich pigments and inlays of semi-precious stone.",
+    "source_quote": "walls were decorated with rich pigments and inlays of semi-precious stone",
+    "subject": "lower chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower chamber is located 30 feet below the room above.",
+    "source_quote": "corrects himself to 30 feet below the room above",
+    "subject": "lower chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A gilded sarcophagus rests atop a stone bier along one wall of the lower chamber.",
+    "source_quote": "A gilded sarcophagus rested atop a stone bier along one wall",
+    "subject": "gilded sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "An invisible stone chest sits silently at the foot of the gilded sarcophagus.",
+    "source_quote": "with an invisible stone chest sitting silently at its foot",
+    "subject": "invisible stone chest",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith is resistant to fire.",
+    "source_quote": "she was resistant to fire",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith hovers and can fly.",
+    "source_quote": "(it hovers and can fly)",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A wraith materializes before the party upon their entry into the lower chamber.",
+    "source_quote": "The moment they entered, a wraith materialized before them",
+    "subject": "wraith manifestation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith declares that the party's deaths will free her from her prison and that her victims will serve her even in death.",
+    "source_quote": "declaring that their deaths would free her from her prison and that her victims would serve her even in death",
+    "subject": "wraith threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Initiative falls miraculously in the right order with Daz going first.",
+    "source_quote": "Initiative falls \"miraculously in the right order,\" and Daz goes first",
+    "subject": "initiative order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz considers casting a fireball at the wraith.",
+    "source_quote": "Daz moved to hurl a fireball at the creature",
+    "subject": "Daz's fireball consideration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz recalls with an Arcana check of 17 that the wraith is resistant to fire.",
+    "source_quote": "then recalled (Arcana 17), with a sinking feeling, that she was resistant to fire",
+    "subject": "Daz's Arcana recall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz considers binding the wraith with Maximilian's Earthen Grasp.",
+    "source_quote": "He briefly considered binding her with Maximilian's Earthen Grasp",
+    "subject": "Daz's Earthen Grasp consideration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a third-level Magic Missile, dealing 20 damage to the wraith with five darts of force.",
+    "source_quote": "He then pivoted to a third-level magic missile, five darts of pure force for 20 damage",
+    "subject": "Daz's Magic Missile cast",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith reels from the damage of Daz's Magic Missile.",
+    "source_quote": "and the wraith reeled",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith screams that drow and dwarves defeated her once before.",
+    "source_quote": "the drow, the dwarves, defeated me once and they shall never defeat me again",
+    "subject": "wraith's scream",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith lashes out at Thorin with a life-draining touch that misses.",
+    "source_quote": "lashed out at Thorin with a life-draining touch that missed entirely",
+    "subject": "wraith's missed attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith slips into her gilded sarcophagus to hide.",
+    "source_quote": "and then slipped into her gilded sarcophagus to hide",
+    "subject": "wraith enters sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz steps back rather than climbing out to remain near his allies.",
+    "source_quote": "Daz steps back rather than climbing out, so he isn't too far from allies",
+    "subject": "Daz's repositioning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir shifts his shroud of darkness into the lower chamber.",
+    "source_quote": "Zalthir shifted his shroud of darkness into the lower chamber",
+    "subject": "Zalthir's shroud shift",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends his action to open the gilded sarcophagus.",
+    "source_quote": "He then spent his action to open the gilded sarcophagus",
+    "subject": "Zalthir's action",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A mysterious feminine voice speaks from within the sarcophagus, offering to help the party.",
+    "source_quote": "\"in the sarcophagus, I can help you.\"",
+    "subject": "voice speaks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The mysterious feminine voice is the same voice that called out to the party at the tomb's entrance.",
+    "source_quote": "the mysterious feminine voice that had first called out to them at the tomb's entrance",
+    "subject": "mysterious feminine voice",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A magical sword rests atop a withered, mummified corpse inside the gilded sarcophagus.",
+    "source_quote": "lay a magical sword. Inside, resting atop a withered, mummified corpse",
+    "subject": "magical sword",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "A withered, mummified corpse lies inside the gilded sarcophagus.",
+    "source_quote": "resting atop a withered, mummified corpse",
+    "subject": "withered mummified corpse",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Treasure is visible inside the gilded sarcophagus surrounding the corpse and sword.",
+    "source_quote": "surrounded by treasure",
+    "subject": "treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is beginning to uncover what Brysis of Khaem left behind in the tomb.",
+    "source_quote": "Whatever Brysis of Khaem had left behind in this place, the party was only beginning to uncover it",
+    "subject": "Brysis of Khaem",
+    "quote_verified": true
+  }
+]

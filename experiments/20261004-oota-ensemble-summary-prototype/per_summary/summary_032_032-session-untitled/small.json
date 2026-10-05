@@ -1,0 +1,1304 @@
+[
+  {
+    "type": "location",
+    "fact": "The Majestic Mushroom is a colossal fungal structure with a hollow trunk carved with slitted windows.",
+    "source_quote": "a colossal fungal structure that stretched from the cavern floor nearly to the ceiling, its hollow trunk carved with slitted windows",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thousands of smaller fungi cling to the vast central stalk of the Majestic Mushroom.",
+    "source_quote": "Thousands of smaller fungi clung to its vast central stalk",
+    "subject": "fungal creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A bridal procession of singing, marching fungal creatures swept through the grove.",
+    "source_quote": "A bridal procession of singing, marching fungal creatures swept through the grove",
+    "subject": "fungal creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi.",
+    "source_quote": "the Demon Queen of Fungi, Zuggtmoy herself, leading the march",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy leads the procession as though the party were invisible.",
+    "source_quote": "leading the march as though the party were invisible",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy behaves with the imperious indifference of royalty.",
+    "source_quote": "moving with the imperious indifference of royalty",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy behaves like a queen crossing a fair or Darth Vader entering the Death Star, causing others to move aside.",
+    "source_quote": "reminded the party of a queen crossing a fair or Darth Vader entering the Death Star: everyone moved aside, and no one dared attract notice",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is described as the Lady of Rot, an embodiment of death and virulence who corrupts decomposition.",
+    "source_quote": "The DM describes Zuggtmoy as the Lady of Rot, an embodiment of death and virulence who corrupts decomposition for destruction rather than renewal or rebirth",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's power is far beyond the party's reach, such that a direct confrontation would require new characters.",
+    "source_quote": "Zuggtmoy was so far beyond them that a direct confrontation would mean rolling new characters",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy intends to ritually mate with Araumycos.",
+    "source_quote": "Zuggtmoy intended to ritually mate with \u2014 and potentially possess \u2014 this entity",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy may be preparing to possess or overcome Araumycos.",
+    "source_quote": "Zuggtmoy may be preparing herself to possess or otherwise overcome an entity potentially as powerful as Araumycos",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's procession retreated into the hollow mushroom.",
+    "source_quote": "the procession eventually retreated into the hollow mushroom",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has knowledge of Bahamut\u2019s teachings and orc wedding customs.",
+    "source_quote": "Gyrgum\u2019s peculiar combination of Bahamut\u2019s teachings, orc wedding customs",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was hit over the head one too many times, which aids his recognition of rituals.",
+    "source_quote": "\u201cone too many hits over the head\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum recognizes the display as a rehearsal march rather than the true ceremony.",
+    "source_quote": "Gyrgum then combined fragments of lore... Gyrgum uses his specialized religious knowledge... to identify the march as a rehearsal demonstration",
+    "subject": "Gyrgum identifies rehearsal",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz concludes the procession resembles a pre-wedding parade.",
+    "source_quote": "Daz likewise concludes that it resembles a pre-wedding parade",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz, Thorin, and Gyrgum combined their knowledge to identify Araumycos.",
+    "source_quote": "Daz, Thorin, and Gyrgum then combined fragments of lore concerning Araumycos",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin observes that the march is 'just a tribute' and not the wedding.",
+    "source_quote": "Thorin observes, \u201cYou\u2019re saying this is not the wedding. It\u2019s just a tribute.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin combined his lore with Daz and Gyrgum to identify Araumycos.",
+    "source_quote": "Daz, Thorin, and Gyrgum then combined fragments of lore concerning Araumycos",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Araumycos is an immense sentient fungal growth.",
+    "source_quote": "an immense sentient fungal growth",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Araumycos occupies an epically large region of the Underdark.",
+    "source_quote": "occupying an epically large region of the Underdark",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Araumycos has housed myconids for centuries or perhaps millennia.",
+    "source_quote": "that has housed myconids for centuries or perhaps millennia",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon has already appeared in the Underdark.",
+    "source_quote": "Demogorgon had already appeared in the Underdark",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids have housed Araumycos for centuries or perhaps millennia.",
+    "source_quote": "that has housed myconids for centuries or perhaps millennia",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The implications of Zuggtmoy's plans are larger than Neverlight Grove.",
+    "source_quote": "The implications were far larger than Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party considers fleeing toward Blingdenstone.",
+    "source_quote": "flee toward Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The demonic procession completes its ritual march and retreats into the hollow interior of the Majestic Mushroom.",
+    "source_quote": "The demonic procession completes its ritual march and retreats into the hollow interior of the Majestic Mushroom",
+    "subject": "procession retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The intended groom for Zuggtmoy's ceremony with Araumycos is not yet present, preventing the wedding from beginning.",
+    "source_quote": "The intended groom, however, was nowhere to be found, and the procession eventually retreated into the hollow mushroom. For now, the wedding could not begin.",
+    "subject": "missing groom",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party debates their realistic options: warn others, rescue their friends, flee toward Blingdenstone, or remain nearby.",
+    "source_quote": "The party debates their realistic options: warn others, rescue their friends, flee toward Blingdenstone, or remain nearby",
+    "subject": "party options",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A mock wedding ceremony is performed with a chamberlain and bridesmaid standing in for Araumycos and Zuggtmoy.",
+    "source_quote": "a mock wedding ceremony played out before them, with a chamberlain and bridesmaid standing in for Araumycos and Zuggtmoy",
+    "subject": "mock wedding ceremony",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three spore servants rise from the garden and carry Yestabrod\u2019s corpse like a puppet.",
+    "source_quote": "Three spore servants rose from the garden and carried the recently slain Yestabrod\u2019s corpse like a grotesque puppet",
+    "subject": "spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is dead, having been recently slain.",
+    "source_quote": "the recently slain Yestabrod\u2019s corpse",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spore servants force Yestabrod\u2019s corpse to play the role of the priest in the mock wedding.",
+    "source_quote": "forcing it to play the priest",
+    "subject": "Yestabrod as priest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A vision overtakes the party, replacing the mock wedding with the interior of a great fungal tower.",
+    "source_quote": "a vision overtook them all. The mock wedding vanished, replaced by the interior of a great tower",
+    "subject": "shared vision",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The interior of the great tower has walls carved with spiraling stairs and balconies, covered in phosphorescent mold growing in glowing whorls.",
+    "source_quote": "walls were carved with spiraling stairs and balconies. Phosphorescent mold grew across it in glowing whorls",
+    "subject": "fungal tower interior",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A woman-like figure made entirely of fungi and mold, three times the height of the fungal bridesmaids, floats in the center of the tower.",
+    "source_quote": "At its center floated a woman-like figure made entirely of fungi and mold, three times the height of the fungal bridesmaids tending her",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The fungal bridesmaids sing a soothing song while weaving the giant figure's substance into lichen veils and a mycelium bridal train.",
+    "source_quote": "They sang a strange, soothing song while weaving her substance into delicate lichen veils and a long mycelium bridal train",
+    "subject": "fungal bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "After the vision ends, the rehearsal participants retreat into the Majestic Mushroom.",
+    "source_quote": "Once the vision ends, the rehearsal participants retreat into the Majestic Mushroom",
+    "subject": "vision ends",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Majestic Mushroom is a colossal structure reaching nearly from floor to ceiling in an enormous cavern.",
+    "source_quote": "The cavern surrounding it is enormous, yet the mushroom still reaches nearly from floor to ceiling",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thousands of lesser fungi cling to the central stalk, which divides into secondary stalks with caps large enough to top great towers.",
+    "source_quote": "Thousands of lesser fungi cling to the central stalk, which divides into secondary stalks whose caps are large enough to top great towers",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A carpet of fungi covers the cavern floor around the Majestic Mushroom, and eerie luminescence pours from slitted windows cut into its trunk.",
+    "source_quote": "A carpet of fungi covers the cavern floor around it, and eerie luminescence pours from slitted windows cut into its trunk",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A cacophony of atonal music and a stench of rotten decay emanate from within the Majestic Mushroom.",
+    "source_quote": "A cacophony of atonal music echoes from inside, accompanied by a stench of rotten decay",
+    "subject": "Majestic Mushroom hazards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party wets strips of cloth and covers their mouths and noses to protect against drifting spores.",
+    "source_quote": "they wetted strips of cloth and covered their mouths and noses against the spores drifting through the air",
+    "subject": "party protects against spores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz fails to resist the local madness caused by the environment.",
+    "source_quote": "Despite their precautions, Daz fails to resist the local madness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz experiences vivid hallucinations of happy elf families, dwarves and elves living in peace, pictures of dogs, and a drow city without spiders.",
+    "source_quote": "Daz experiences vivid hallucinations of happy elf families, dwarves and elves living in peace, many pictures of dogs, and a drow city without spiders",
+    "subject": "Daz hallucinates",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz screams, shouts \"no\", hides behind objects, and struggles to distinguish hallucinations from reality.",
+    "source_quote": "Daz responds by screaming, shouting \"no,\" hiding behind objects, and struggling to distinguish the hallucinations from reality",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party decides not to advance deeper into the Majestic Mushroom.",
+    "source_quote": "The party decides it has seen enough and chooses not to advance deeper into the Majestic Mushroom",
+    "subject": "party halts advance",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Equipment including finely crafted studded leather armor and magical scrolls is piled near Xinaya\u2019s burial place.",
+    "source_quote": "the party collected equipment piled near Xinaya\u2019s burial place, including finely crafted studded leather armor and magical scrolls",
+    "subject": "Xinaya\u2019s burial place",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds finely crafted studded leather armor near Xinaya's burial place.",
+    "source_quote": "finely crafted studded leather armor",
+    "subject": "studded leather armor",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds magical scrolls near Xinaya's burial place.",
+    "source_quote": "magical scrolls",
+    "subject": "magical scrolls",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is affected by madness caused by spores released during the battle with Yestabrod.",
+    "source_quote": "Zalthir, still affected by spores released during the battle with Yestabrod, becomes possessive of the recovered treasure",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir hoards the recovered scrolls and claims them as his own.",
+    "source_quote": "He hoarded the scrolls and snapped, \u201cThese are mine. I found them,\u201d refusing to share them with anyone",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks the party's ghostly companion for a diagnosis of Zalthir's condition.",
+    "source_quote": "When Gyrgum asks their ghostly companion for a diagnosis",
+    "subject": "Gyrgum asks ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly companion states that they are a ghost, a traitor, and a gem cutter, but not a doctor.",
+    "source_quote": "he answers, \u201cI am a ghost. I am a traitor. I am a gem cutter. I am not a doctor.\u201d",
+    "subject": "ghostly companion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Lesser Restoration through Dawnbringer to cure Zalthir's madness.",
+    "source_quote": "Thorin used Dawnbringer\u2019s restorative power on Zalthir, reasoning that the affliction might be a disease. The magic worked, breaking his madness",
+    "subject": "Zalthir cured",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is bewildered and apologetic after being cured, admitting he did not know what came over him.",
+    "source_quote": "leaving him bewildered and apologetic. He admitted that he did not know what had come over him",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "A passage beyond the Majestic Mushroom leads deeper into Zuggtmoy's realm and requires resistance to madness.",
+    "source_quote": "The party considers another passage beyond the Majestic Mushroom but learns that following it would take them deeper into Zuggtmoy\u2019s realm and require further resistance against madness",
+    "subject": "passage beyond Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin decides not to follow the passage beyond the Majestic Mushroom.",
+    "source_quote": "Thorin decides, \u201cYeah, no, let\u2019s not do that.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party refused to venture through a passage that would take them deeper into Zuggtmoy\u2019s realm.",
+    "source_quote": "The party refused to venture through a passage that would take them deeper into Zuggtmoy\u2019s realm",
+    "subject": "refusal of passage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party returned to Basidia and Rasharoo with grim news about the wedding rehearsal and the fungal demon\u2019s plans.",
+    "source_quote": "They returned to Basidia and Rasharoo with grim news, describing the \u201cwhole nine yards\u201d of the wedding rehearsal and the fungal demon\u2019s plans.",
+    "subject": "report to Basidia and Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia was horrified by the news from the party.",
+    "source_quote": "Both myconids were horrified.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo was horrified by the news from the party.",
+    "source_quote": "Both myconids were horrified.",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia insisted that Phylo had to be told the truth.",
+    "source_quote": "Basidia insisted that Phylo had to be told",
+    "subject": "Basidia's insistence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo argued that they should simply run.",
+    "source_quote": "Rasharoo argued that they should simply run.",
+    "subject": "Rasharoo's argument",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group returned to Phylo to hide in plain sight and preserve the fiction of attending the celebration.",
+    "source_quote": "When the group returned to Phylo, they tried to hide in plain sight and preserve the fiction that they would still attend the following day\u2019s celebration.",
+    "subject": "party returns to Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo cheerfully asked Basidia how the tour had gone.",
+    "source_quote": "Phylo cheerfully asked Basidia how the tour had gone and whether their guests had enjoyed all the changes.",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz answered cautiously that the changes appeared to be causing problems for some while others remained unaware.",
+    "source_quote": "Daz answered cautiously that the changes appeared to be causing problems for some while others remained unaware of them",
+    "subject": "Daz's cautious answer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum was jumping up and down to signal danger.",
+    "source_quote": "but Gyrgum was effectively jumping up and down signaling danger.",
+    "subject": "Gyrgum's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer\u2019s light made the surrounding myconids visibly uncomfortable.",
+    "source_quote": "Dawnbringer\u2019s light also made the surrounding myconids visibly uncomfortable.",
+    "subject": "Dawnbringer's effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia accused Phylo of betraying the circle and allying himself with corruption.",
+    "source_quote": "Basidia could no longer contain herself and accused Phylo of betraying the circle and allying himself with corruption.",
+    "subject": "Basidia's accusation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party failed to persuade Basidia to retreat at first.",
+    "source_quote": "The party failed to persuade Basidia to retreat at first",
+    "subject": "failed persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum convinced Stool and Rumpadump that Neverlight Grove had changed and they needed to leave.",
+    "source_quote": "Gyrgum managed to convince Stool and Rumpadump that Neverlight Grove was no longer what it had been and that they needed to leave immediately.",
+    "subject": "Gyrgum's persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool was convinced by Gyrgum to leave Neverlight Grove immediately.",
+    "source_quote": "Gyrgum managed to convince Stool and Rumpadump that Neverlight Grove was no longer what it had been and that they needed to leave immediately.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump was convinced by Gyrgum to leave Neverlight Grove immediately.",
+    "source_quote": "Gyrgum managed to convince Stool and Rumpadump that Neverlight Grove was no longer what it had been and that they needed to leave immediately.",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo and Basidia began to fight.",
+    "source_quote": "As Phylo and Basidia began to fight and the grove\u2019s trees moved to attack her",
+    "subject": "Phylo and Basidia fight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The grove\u2019s trees moved to attack Basidia.",
+    "source_quote": "and the grove\u2019s trees moved to attack her",
+    "subject": "trees attack Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo shouted for everyone who wanted to live to come with him.",
+    "source_quote": "Rasharoo shouted, \u201cIf you want to live, come with me.\u201d",
+    "subject": "Rasharoo's shout",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub followed Rasharoo toward the escape route.",
+    "source_quote": "Loobamub and his circle followed him toward the escape route.",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir physically seized Basidia before she could fight Phylo.",
+    "source_quote": "Zalthir then physically seized Basidia before she could throw herself into a hopeless fight with Phylo.",
+    "subject": "Zalthir seizes Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir dragged Basidia away.",
+    "source_quote": "he successfully dragged her away.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia was convinced to leave after seeing her friends fleeing.",
+    "source_quote": "Seeing Stool, Rumpadump, Rasharoo, and everyone she cared about fleeing finally convinced Basidia that this was not the time to stay and die.",
+    "subject": "Basidia decides to flee",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo called after the fleeing party, promising that Neverlight Grove would be better than ever.",
+    "source_quote": "The last thing the party heard from Phylo was his cheerful, deluded voice calling after them, promising that Neverlight Grove would be better than ever",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo lamented that the party refused the hospitality of the Circle of Welcome.",
+    "source_quote": "He even lamented that they had refused the hospitality of the Circle of Welcome",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Welcome would have transformed visitors into heads rooted in the ground.",
+    "source_quote": "a \u201cwelcome\u201d that would have transformed them into heads rooted in the ground.",
+    "subject": "Circle of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The grove fell fully into Zuggtmoy\u2019s rot behind the fleeing party.",
+    "source_quote": "As they fled, the once-beautiful grove fell fully into Zuggtmoy\u2019s rot behind them.",
+    "subject": "grove consumed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia apologized for never finishing work on the party\u2019s pet grick.",
+    "source_quote": "Basidia, grateful and heartbroken, apologized for never finishing work on the party\u2019s pet grick",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia promised that she could prepare additional potions given a few days.",
+    "source_quote": "promised that, given a few days, she could prepare additional potions.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia pressed potions of greater healing into the party\u2019s hands.",
+    "source_quote": "she pressed potions of greater healing and a box of treasure into the party\u2019s hands",
+    "subject": "potions of greater healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia gave the party a box of treasure as a reward.",
+    "source_quote": "she pressed potions of greater healing and a box of treasure into the party\u2019s hands",
+    "subject": "box of treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The recovered treasure totaled 975 gold pieces.",
+    "source_quote": "The recovered treasure totaled 975 gold pieces.",
+    "subject": "recovered treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is consumed by Zuggtmoy\u2019s rot.",
+    "source_quote": "Neverlight Grove is consumed by Zuggtmoy\u2019s evil.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party returns to find Basidia and Rasharoo conversing and chewing mycelium.",
+    "source_quote": "The party returns to find Basidia and Rasharoo conversing and chewing mycelium",
+    "subject": "party returns to Basidia and Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is chewing mycelium when the party returns.",
+    "source_quote": "find Basidia and Rasharoo conversing and chewing mycelium",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo is chewing mycelium when the party returns.",
+    "source_quote": "find Basidia and Rasharoo conversing and chewing mycelium",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo asks what the party discovered, and Thorin replies that it is a bad scene and they should leave.",
+    "source_quote": "Rasharoo asks what they discovered. Thorin replies, \u201cIt\u2019s a bad scene. We should get out of here.\u201d",
+    "subject": "Thorin reports bad scene",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gives Basidia and Rasharoo the complete account of the wedding rehearsal, the Majestic Mushroom, and Zuggtmoy\u2019s plans.",
+    "source_quote": "The party gives Basidia and Rasharoo the complete account of the wedding rehearsal, the Majestic Mushroom, and Zuggtmoy\u2019s plans",
+    "subject": "party shares account",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is horrified by the account of Zuggtmoy's plans.",
+    "source_quote": "Basidia and Rasharoo are horrified",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo is horrified by the account of Zuggtmoy's plans.",
+    "source_quote": "Basidia and Rasharoo are horrified",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia insists that they must warn Phylo.",
+    "source_quote": "Basidia insists that they must warn Phylo",
+    "subject": "Basidia argues to warn Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo argues that they should run.",
+    "source_quote": "Rasharoo argues that they should run",
+    "subject": "Rasharoo argues to flee",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party identifies Stool and Rumpadump as its priority for rescue.",
+    "source_quote": "The party identifies Stool and Rumpadump as its priority",
+    "subject": "rescue priority",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin summarizes the decision to prioritize Stool and Rumpadump with the phrase 'Bros before toadstools.'",
+    "source_quote": "Thorin summarizes the decision with, \u201cBros before toadstools.\u201d",
+    "subject": "Thorin summarizes decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir worries that Stool and Rumpadump have been left with the infected Phylo for too long.",
+    "source_quote": "Zalthir worries that Stool and Rumpadump have been left with the infected Phylo for too long",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests having Basidia examine Stool and Rumpadump before committing to the rescue.",
+    "source_quote": "suggests having Basidia examine them before committing to the rescue",
+    "subject": "Zalthir suggests exam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to hide in plain sight and act as though nothing has changed, because Phylo expects them to attend the next day\u2019s celebration and be slaughtered.",
+    "source_quote": "Because Phylo expects the party to attend the next day\u2019s celebration and be slaughtered, the party decides to hide in plain sight and act as though nothing has changed",
+    "subject": "decision to hide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo greets Basidia as his fellow sovereign.",
+    "source_quote": "Phylo greets Basidia as his fellow sovereign",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo asks whether the guests enjoyed the tour and all the grove\u2019s changes.",
+    "source_quote": "asks whether their guests enjoyed the tour and all the grove\u2019s changes",
+    "subject": "Phylo asks about guests",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz answers that the changes seem to be causing problems for some people and others are unaware of them.",
+    "source_quote": "Daz answers, \u201cThe changes seem to be causing problems for some people and others are unaware of them.\u201d",
+    "subject": "Daz answers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum signals danger with such agitation that subtlety becomes nearly impossible.",
+    "source_quote": "Gyrgum simultaneously signals danger with such agitation that subtlety becomes nearly impossible",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer insists on emitting light, making the surrounding myconids visibly uncomfortable.",
+    "source_quote": "Dawnbringer insists on emitting light, making the surrounding myconids visibly uncomfortable",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The surrounding myconids are visibly uncomfortable due to Dawnbringer emitting light.",
+    "source_quote": "Dawnbringer insists on emitting light, making the surrounding myconids visibly uncomfortable",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer emitting light draws further attention.",
+    "source_quote": "making the surrounding myconids visibly uncomfortable and drawing further attention",
+    "subject": "Dawnbringer draws attention",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia confronts Phylo, accusing him of betraying the circle and allying himself with corruption.",
+    "source_quote": "Basidia confronts Phylo, accusing him of betraying the circle and allying himself with corruption",
+    "subject": "Basidia confronts Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recognizes that the confrontation is about to become a fight among the myconids.",
+    "source_quote": "The party recognizes that the confrontation is about to become a fight among the myconids",
+    "subject": "imminent fight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A group effort to persuade Basidia to flee initially fails.",
+    "source_quote": "A group effort to persuade Basidia to flee initially fails",
+    "subject": "persuade Basidia fails",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia resolves to remain during the initial failed persuasion.",
+    "source_quote": "she resolves to remain",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum successfully persuades Stool and Rumpadump that the grove is no longer safe and that they must leave immediately.",
+    "source_quote": "Gyrgum then successfully persuades Stool and Rumpadump that the grove is no longer safe and that they must leave immediately",
+    "subject": "Gyrgum persuades Stool and Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is saddened by the need to leave.",
+    "source_quote": "Stool and Rumpadump are saddened",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is saddened by the need to leave.",
+    "source_quote": "Stool and Rumpadump are saddened",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Phylo and Basidia\u2019s escalating conflict makes the end of the old Neverlight Grove unmistakable.",
+    "source_quote": "Phylo and Basidia\u2019s escalating conflict makes the end of the old Neverlight Grove unmistakable",
+    "subject": "end of old Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The grove\u2019s trees begin moving to attack Basidia.",
+    "source_quote": "The grove\u2019s trees begin moving to attack Basidia",
+    "subject": "trees attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo shouts to come with him, directing the survivors toward his escape route.",
+    "source_quote": "Rasharoo shouts, \u201cIf you want to live, come with me,\u201d directing the survivors toward his escape route",
+    "subject": "Rasharoo directs survivors",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub chooses to follow Rasharoo with his circle.",
+    "source_quote": "Loobamub chooses to follow with his circle",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub's circle follows him.",
+    "source_quote": "Loobamub chooses to follow with his circle",
+    "subject": "Loobamub's circle",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir realizes Basidia is about to attack Phylo.",
+    "source_quote": "Zalthir realizes Basidia is about to attack Phylo",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir decides to seize Basidia by punching her, as he explains mechanically.",
+    "source_quote": "Zalthir realizes Basidia is about to attack Phylo and decides to seize her, explaining, \u201cWell, mechanically, I do that through punching.\u201d",
+    "subject": "Zalthir grabs Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir successfully grabs and pulls Basidia away from the confrontation.",
+    "source_quote": "Zalthir successfully grabs and pulls Basidia away from the confrontation",
+    "subject": "Zalthir pulls Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia sees Stool, Rumpadump, Rasharoo, and everyone she still cares about leaving.",
+    "source_quote": "Basidia sees Stool, Rumpadump, Rasharoo, and everyone she still cares about leaving",
+    "subject": "Basidia sees friends leave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia accepts that remaining would only mean dying alone.",
+    "source_quote": "She accepts that remaining would only mean dying alone",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully retreats from Neverlight Grove.",
+    "source_quote": "The party successfully retreats from Neverlight Grove",
+    "subject": "party retreats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo rants about the Great Cedar and the glorious future of the grove as the party retreats.",
+    "source_quote": "as Phylo rants about the Great Cedar and the glorious future of the grove",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo calls after the party that it will all be well and the Neverlight Grove will be better than ever.",
+    "source_quote": "Phylo calls after them, \u201cIt will all be well. The Neverlight Grove will be better than ever.",
+    "subject": "Phylo calls after party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo says the great cedar will make them all happy.",
+    "source_quote": "And the great cedar will make us all so happy",
+    "subject": "Phylo mentions cedar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo calls to Basidia to stay.",
+    "source_quote": "Basidia, don\u2019t go. Stay",
+    "subject": "Phylo addresses Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo laments that the party refused to remain at the Circle of Welcome.",
+    "source_quote": "Phylo also laments that the party refused to remain at the Circle of Welcome",
+    "subject": "Phylo laments",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The 'welcome' at the Circle of Welcome meant being transformed into heads rooted in the ground.",
+    "source_quote": "this welcome meant being transformed into heads rooted in the ground",
+    "subject": "Circle of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party continues fleeing after remembering the nature of the welcome.",
+    "source_quote": "and continues fleeing",
+    "subject": "party continues fleeing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Looking back, the party sees that Zuggtmoy\u2019s evil has fully consumed the former beauty and glory of Neverlight Grove.",
+    "source_quote": "Looking back, they see that Zuggtmoy\u2019s evil has fully consumed the former beauty and glory of Neverlight Grove",
+    "subject": "looking back",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia apologizes for not completing work on the party\u2019s pet grick.",
+    "source_quote": "Basidia apologizes for not completing work on the party\u2019s pet grick",
+    "subject": "Basidia apologizes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia explains that events overtook her regarding the grick work.",
+    "source_quote": "explaining that events overtook her",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Basidia promises that after a few days, she should be able to provide the party with additional potions.",
+    "source_quote": "She promises that, after a few days, she should be able to provide the party with additional potions",
+    "subject": "future potions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia provides potions of greater healing to the party.",
+    "source_quote": "Basidia provides potions of greater healing",
+    "subject": "potions of greater healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia provides a box of treasure to the party as a reward for saving members of her circle.",
+    "source_quote": "and a box of treasure as a reward for saving members of her circle",
+    "subject": "box of treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The potions and treasure were provided as a reward for saving members of Basidia's circle.",
+    "source_quote": "as a reward for saving members of her circle",
+    "subject": "reward for saving circle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The recovered monetary treasure totals 975 gold pieces.",
+    "source_quote": "The recovered monetary treasure totals 975 gold pieces",
+    "subject": "monetary treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is dead and no longer able to guide the party.",
+    "source_quote": "With Sarith dead and no longer able to guide them",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool and Rumpadump departed with Basidia and the surviving myconids to remain among their own kind.",
+    "source_quote": "Stool and Rumpadump departed with Basidia and the surviving myconids to remain among their own kind",
+    "subject": "departure of myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump delivered Zalthir an exhaustive, highly detailed, and allegedly constructive list of feedback through rapport spores.",
+    "source_quote": "Rumpadump delivered Zalthir an exhaustive, highly detailed, and allegedly constructive list of feedback through rapport spores",
+    "subject": "Rumpadump's feedback",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump's feedback remained in Zalthir\u2019s head for roughly fifteen minutes.",
+    "source_quote": "which remained in Zalthir\u2019s head for roughly fifteen minutes",
+    "subject": "feedback duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum won five gold pieces from Jimjar in a previously made bet.",
+    "source_quote": "contrary to his initial recollection, Gyrgum had won five gold pieces from him",
+    "subject": "bet settlement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar initially claimed he lacked ready cash to settle the bet with Gyrgum.",
+    "source_quote": "Jimjar first claimed he lacked ready cash",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar relented and paid Gyrgum after Gyrgum expressed disappointment.",
+    "source_quote": "then relented and paid",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party turned toward Blingdenstone as their best hope of eventually reaching the Overbright.",
+    "source_quote": "the party turned toward Blingdenstone as their best hope of eventually reaching the Overbright",
+    "subject": "turn to Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar confidently claimed he knew exactly where they were going.",
+    "source_quote": "Jimjar confidently claimed he knew exactly where they were going",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo supplied myconid scouts who could lead the party safely through the first third of the journey.",
+    "source_quote": "he supplied myconid scouts who could lead them safely through the first third",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo warned that Ilvara and her drow hunters remained at large.",
+    "source_quote": "He also warned that Ilvara and her drow hunters remained at large",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party speculated that their pursuers might be usefully diverted by Neverlight Grove, the Circle of Welcome, or even an invitation to Zuggtmoy\u2019s wedding.",
+    "source_quote": "The party speculated that their pursuers might be usefully diverted by Neverlight Grove, the Circle of Welcome, or even an invitation to Zuggtmoy\u2019s wedding",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The journey is expected to take approximately two weeks.",
+    "source_quote": "guide for the entire two-week journey",
+    "subject": "journey duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party took a long rest before setting out into the Underdark.",
+    "source_quote": "After a long rest, the party set out once more",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party set out into the deep darkness of the Underdark.",
+    "source_quote": "the party set out once more into the deep darkness of the Underdark",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party\u2019s companions were relieved to be alive and happy not to have become mushroom food.",
+    "source_quote": "Their companions were relieved to be alive, happy not to have become mushroom food",
+    "subject": "party companions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party\u2019s companions were resigned to another long journey through hostile tunnels.",
+    "source_quote": "resigned to another long journey through hostile tunnels",
+    "subject": "party companions",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Seven days of largely uneventful travel passed before the scouts departed.",
+    "source_quote": "Seven days of largely uneventful travel passed before Rasharoo\u2019s scouts bid them farewell",
+    "subject": "seven days elapsed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo\u2019s scouts bid the party farewell after seven days.",
+    "source_quote": "Rasharoo\u2019s scouts bid them farewell",
+    "subject": "scouts departure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asserted again that he knew precisely where they were going.",
+    "source_quote": "Jimjar again asserted that he knew precisely where they were going",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar offered a bet that Thorin would praise him once they arrived.",
+    "source_quote": "offered to bet that Thorin would praise him once they arrived",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A large cavern contains a heavy, toxic, and combustible gas settled into a deep depression in the floor.",
+    "source_quote": "a heavy, toxic, and combustible gas had settled into a deep depression in the floor",
+    "subject": "gas-filled cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum, Zalthir, and Daz detect the danger of the gas before walking into it due to passive awareness.",
+    "source_quote": "Gyrgum, Zalthir, and Daz possess enough passive awareness to detect the danger before walking blindly into it",
+    "subject": "gas detection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Those with dwarven or Underdark experience recognize the gas as toxic and explosive if exposed to flame.",
+    "source_quote": "recognized that the gas could poison them and explode if exposed to flame",
+    "subject": "gas hazard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A five-foot ledge runs around either side of the gas depression, offering a safe route around the hazard.",
+    "source_quote": "a five-foot ledge ran around either side of the depression",
+    "subject": "cavern ledge",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A giant rocktopus, a stone-like octopus predator, is positioned on the ledge between the party and the exit.",
+    "source_quote": "discover a giant rocktopus waiting on the ledge between them and the exit",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus regards the party as convenient food.",
+    "source_quote": "The stone-like predator regarded them as convenient food",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin steps to the front to engage the rocktopus.",
+    "source_quote": "Thorin stepped to the front",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes the rocktopus twice with Dawnbringer, dealing nineteen points of damage.",
+    "source_quote": "striking the beast twice with Dawnbringer",
+    "subject": "Thorin attacks rocktopus",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is used by Thorin to strike the rocktopus.",
+    "source_quote": "striking the beast twice with Dawnbringer",
+    "subject": "Dawnbringer",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The rocktopus lashes out with a tentacle, striking Thorin for ten points of damage and attempting to grapple him.",
+    "source_quote": "striking Thorin hard and trying to grapple him",
+    "subject": "rocktopus attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds in shaking off the rocktopus's grapple.",
+    "source_quote": "but he shook off its grip",
+    "subject": "Thorin breaks grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir closes in, restrains the creature, and attacks it with a flurry of punches.",
+    "source_quote": "Zalthir closed in, restrained the creature, and battered it with a flurry of punches",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz casts Magic Missile, dealing nine points of force damage.",
+    "source_quote": "Daz followed with a volley of magical force",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missile, leaving the monster barely alive.",
+    "source_quote": "Daz casts Magic Missile for nine points of force damage, leaving the monster barely alive",
+    "subject": "Daz casts Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum chants a True Strike invocation, circles into reach, and attacks with his mace.",
+    "source_quote": "Gyrgum softly chanted a True Strike invocation, circled into reach, and brought his mace down",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace blow deals seven points of damage and kills the rocktopus.",
+    "source_quote": "Gyrgum\u2019s blow deals seven points of damage and kills the rocktopus",
+    "subject": "Gyrgum kills rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus is dead, killed by Gyrgum's mace.",
+    "source_quote": "killed it",
+    "subject": "rocktopus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum exalts himself as \"the octopus slayer\".",
+    "source_quote": "prompting Gyrgum to exalt as \u201cthe octopus slayer\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM corrects Gyrgum's title to \"the rocktopus slayer\".",
+    "source_quote": "The DM corrects the title to \u201cthe rocktopus slayer.\u201d",
+    "subject": "DM correction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states that his characters may not always be powerful, but they are always proud.",
+    "source_quote": "Gyrgum explains, \u201cMy characters may not always be powerful, but they\u2019re always proud.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

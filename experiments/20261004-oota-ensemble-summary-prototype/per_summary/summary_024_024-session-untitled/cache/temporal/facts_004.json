@@ -1,0 +1,37 @@
+[
+  {
+    "type": "object",
+    "fact": "The iron chest contains 45 gold pieces.",
+    "source_quote": "45 gold and 15 silver pieces",
+    "subject": "gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The iron chest contains 15 silver pieces.",
+    "source_quote": "45 gold and 15 silver pieces",
+    "subject": "silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The iron chest contains five doses of Keoghtom's Ointment.",
+    "source_quote": "alongside five doses of Keoghtom's Ointment",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The statue in the chamber is two feet tall.",
+    "source_quote": "the two-foot-tall statue",
+    "subject": "stone statue height",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a couple of passes that allow them to leave with their evidence.",
+    "source_quote": "a couple of passes that would let them walk out with all of it",
+    "subject": "travel passes",
+    "quote_verified": true
+  }
+]

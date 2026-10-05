@@ -1,0 +1,30 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception score of 14.",
+    "source_quote": "Gyrgum, with a passive perception of 14",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural platform in the center of the chamber is five feet high.",
+    "source_quote": "five-foot natural platform",
+    "subject": "ritual platform height",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session pauses briefly due to a technical crash.",
+    "source_quote": "The session pauses briefly when the GM's Roll20 container crashes",
+    "subject": "session interruption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's group stealth check rolls are 18, 16, and 7, plus Zalthir.",
+    "source_quote": "The group stealth check comes in at 18, 16, and 7, plus Zalthir",
+    "subject": "party stealth checks",
+    "quote_verified": true
+  }
+]

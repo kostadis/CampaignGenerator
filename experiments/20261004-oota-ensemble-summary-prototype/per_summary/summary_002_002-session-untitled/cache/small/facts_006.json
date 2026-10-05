@@ -1,0 +1,79 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir raised the threat posed by the drow's large spools of spider silk.",
+    "source_quote": "Zalthir raised the threat posed by the drow's large spools of spider silk",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Drow warriors use large spools of spider silk to descend rapidly between levels.",
+    "source_quote": "which allowed their warriors to descend rapidly between levels",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to use careful scouting and fire to neutralize the spider-silk spools nearest the escape route.",
+    "source_quote": "careful scouting and a clever use of fire might neutralize those nearest the escape route",
+    "subject": "spool scouting plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum summarized the spool disabling idea as lighting them on fire and flinging them.",
+    "source_quote": "Gyrgum summarized the idea as, \u201clight them on fire, and fling them,\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The goal of the spool plan is to disable the equipment and deny the enemy the weapon.",
+    "source_quote": "Disable. Deny the enemy the weapon.",
+    "subject": "tactical goal setting",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The exact route, the decision to raid the armory or Ilvara's quarters, and how much of Velkynvelve to burn remain unresolved.",
+    "source_quote": "Their exact route, whether they would raid the armory or Ilvara's quarters, and how much of Velkynvelve they would burn remained unresolved",
+    "subject": "route and raid decisions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Guards use the spider-silk spools to rappel rapidly from the hanging towers to pursue escapees.",
+    "source_quote": "Guards can use them to rappel rapidly from the hanging towers and pursue escapees.",
+    "subject": "spider-silk spools",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The exact locations of the spools are uncertain and require stealth and closer observation to identify.",
+    "source_quote": "The exact locations of the spools remain uncertain, and the group intends to use stealth and closer observation to identify those nearest the planned route.",
+    "subject": "spool locations",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners accept they cannot eliminate every spool in Velkynvelve.",
+    "source_quote": "The prisoners accept that they cannot eliminate every spool in Velkynvelve.",
+    "subject": "spool elimination constraint",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's fire breath can burn the webbing, the lift rope, and the zurkhwood lift structure.",
+    "source_quote": "Zalthir's fire breath can burn the webbing, the lift rope, and potentially the zurkhwood lift structure itself.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Shape Water can freeze moisture inside the lift mechanism to interfere with it.",
+    "source_quote": "Daz's Shape Water offers a second means of interfering with the lift by freezing moisture inside its mechanism.",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

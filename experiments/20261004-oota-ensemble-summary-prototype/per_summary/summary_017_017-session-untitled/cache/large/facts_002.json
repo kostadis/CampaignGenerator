@@ -1,0 +1,107 @@
+[
+  {
+    "type": "npc",
+    "fact": "Droki is a derro messenger.",
+    "source_quote": "Droki, the derro messenger they were following",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki fled ahead of the party.",
+    "source_quote": "Droki, the derro messenger they were following, had fled ahead",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki runs the same circuit, allowing his path to be easily followed.",
+    "source_quote": "a creature of ridiculous habits\" who ran the same circuit, so \"even a blind rat could follow his path.",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Prayer of Healing.",
+    "source_quote": "Gyrgum instead called upon divine power with his new Prayer of Healing.",
+    "subject": "Prayer of Healing cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Prayer of Healing grants Thorin the benefit of a short rest.",
+    "source_quote": "healing warmth washed over Thorin... and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Healing Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Prayer of Healing grants Daz the benefit of a short rest.",
+    "source_quote": "healing warmth washed over... Daz... and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Healing Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Prayer of Healing grants Zalthir the benefit of a short rest.",
+    "source_quote": "healing warmth washed over... Zalthir... and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Healing Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Prayer of Healing grants the ethereal ghostly companion the benefit of a short rest.",
+    "source_quote": "healing warmth washed over... even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Healing Ghost",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Prayer of Healing grants Gyrgum the benefit of a short rest.",
+    "source_quote": "Gyrgum casts Prayer of Healing on up to five creatures: Thorin, Daz, Zalthir, himself",
+    "subject": "Healing Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum expends the first of his three 2nd-level spell slots to cast Prayer of Healing.",
+    "source_quote": "It is the first of Gyrgum's three 2nd-level spell slots.",
+    "subject": "Spell Slot Expended",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party peered into a natural cave located along their route.",
+    "source_quote": "Along the way they peered into a natural cave",
+    "subject": "natural cave",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of myconids was dancing frantically to a silent tune inside the natural cave.",
+    "source_quote": "A group of myconids was dancing frantically to a silent tune",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two hulking quaggoths covered in mushroom growths and yellow mold were accompanying the myconids.",
+    "source_quote": "accompanied by two hulking quaggoths covered in mushroom growths and yellow mold.",
+    "subject": "quaggoths",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to leave the strange scene in the cave undisturbed.",
+    "source_quote": "they chose to leave the strange scene undisturbed and move on.",
+    "subject": "leaving cave",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party followed their quarry's route further southeast.",
+    "source_quote": "followed their quarry's route further southeast.",
+    "subject": "southeast route",
+    "quote_verified": true
+  }
+]

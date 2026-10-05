@@ -1,0 +1,772 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir conjured a sphere of impenetrable shadow in the ritual chamber.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro cultists abandoned their chanting.",
+    "source_quote": "Having abandoned their chanting for cries of \"die, die, die\"",
+    "subject": "derro chanting halted",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Some derro cultists charged blindly outward from the darkness to find the source of the magical acid.",
+    "source_quote": "some charged blindly outward to find the source of the magical acid burning their flesh",
+    "subject": "derro movement",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro cultists are attempting a ritual to create a two-headed giant.",
+    "source_quote": "derro cultists who were attempting a ritual to create a two-headed giant",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro cultist takes 5 damage from Gyrgum's acidic spell before moving.",
+    "source_quote": "One takes 5 damage before moving",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro cultist struck Gyrgum with a hooked spear, dealing 2 points of damage.",
+    "source_quote": "One of them found Gyrgum and drove a hooked spear into the cleric",
+    "subject": "Gyrgum struck",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The force of the spear blow sent Gyrgum crashing to the ground, knocking him prone.",
+    "source_quote": "the force of the blow sent him crashing to the ground",
+    "subject": "Gyrgum knocked prone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The trauma from the spear blow shattered Gyrgum's concentration, ending his corrosive magic.",
+    "source_quote": "The trauma shattered Gyrgum's concentration, and the corrosive magic he had been sustaining over the cultists flickered and died",
+    "subject": "Gyrgum concentration break",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric currently engaged in combat against derro cultists.",
+    "source_quote": "drove a hooked spear into the cleric",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists are engaged in battle with the party in a zone of magical darkness.",
+    "source_quote": "The party engages in combat with derro cultists who were attempting a ritual to create a two-headed giant",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ritual chamber is currently filled with a sphere of impenetrable shadow conjured by Zalthir.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "ritual chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak's concentration on Zalthir breaks, causing the fear effect on Zalthir to end.",
+    "source_quote": "Narrak's concentration had since broken, so the fear no longer held him",
+    "subject": "Narrak's fear broken",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir drags his sphere of darkness back over the ettin.",
+    "source_quote": "He dragged his sphere of darkness back over the ettin",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's eldritch tattoo causes his face and arms to writh in inky tendrils.",
+    "source_quote": "his face and arms were now writhing inky tendrils",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir's tentacles coil around Grula-Munga and grapple the beast in place.",
+    "source_quote": "The tentacles coiled around the beast and grappled it in place",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum hauls himself back to his feet.",
+    "source_quote": "Gyrgum hauled himself back to his feet",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashes a torrent of caustic acid over the remaining cultists.",
+    "source_quote": "unleashed a torrent of caustic acid over the remaining cultists",
+    "subject": "Gyrgum's acid spray",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz maintains a magical earthen hand grip on Narrak that squeezes him when he struggles.",
+    "source_quote": "crushing grip of a great earthen hand that had erupted from the stone floor",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak casts a zone of silence to stop the party's magic.",
+    "source_quote": "Narrak cast silence to create a zone of dead air that would stop the party's magic",
+    "subject": "Narrak casts silence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is currently grappled by an earthen hand and cannot move.",
+    "source_quote": "Narrak, who is shown as grappled and unable to move",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz steps out of the darkness.",
+    "source_quote": "Daz stepped out of the darkness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hits a cultist with three bolts of magical force, killing him.",
+    "source_quote": "sent three bolts of magical force into one cultist, dropping him where he stood",
+    "subject": "Daz kills cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak cries out upon the cultist's death that their sacrifice is a step toward glory.",
+    "source_quote": "Fools, your sacrifice is but a step toward glory",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga hits Thorin for 13 damage.",
+    "source_quote": "Grula-Munga struck back hard, hitting Thorin for 13 damage",
+    "subject": "Grula-Munga attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin continues to hammer the ettin after taking damage.",
+    "source_quote": "Thorin kept hammering the ettin anyway",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacles finally cause Grula-Munga to drop.",
+    "source_quote": "When Zalthir's tentacles finally dropped Grula-Munga",
+    "subject": "Grula-Munga defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is dropped (defeated) by Zalthir's tentacles.",
+    "source_quote": "When Zalthir's tentacles finally dropped Grula-Munga",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak repeats his line about glory with less conviction after Grula-Munga falls.",
+    "source_quote": "Narrak repeated his line about glory \"with a little bit less conviction this time.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses blindsight to navigate the darkness.",
+    "source_quote": "Thorin guided by his blindsight despite the darkness",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga swings her battle axe twice at Thorin and fails to connect.",
+    "source_quote": "She swings her battle axe twice at Thorin... and fails to connect",
+    "subject": "Narrak's missed attacks",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A derro cultist attacks the prone Gyrgum with a hooked spear.",
+    "source_quote": "A derro cultist attacks the prone Gyrgum with a hooked spear",
+    "subject": "Derro attacks Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacles hit the ettin for 8 and 5 damage from within the darkness.",
+    "source_quote": "He attacks with advantage in the dark and hits for 8 and 5",
+    "subject": "Zalthir's tentacle attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is at 41 hit points after Zalthir's attacks.",
+    "source_quote": "The ettin is then at 41 hit points",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point to deal an additional 12 damage to the ettin.",
+    "source_quote": "Zalthir spends a focus point for a third hit of 12",
+    "subject": "Zalthir's third hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro steps out of the darkness and fires a crossbow at Gyrgum, missing.",
+    "source_quote": "A derro steps out of the darkness and fires a crossbow at Gyrgum at disadvantage. It misses",
+    "subject": "Derro crossbow attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum exhales a stream of caustic acid over all three remaining derro cultists.",
+    "source_quote": "exhales a stream of caustic acid over all three remaining derro cultists",
+    "subject": "Gyrgum's acid spray",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attacks the ettin with his longsword, dealing 8 damage with advantage.",
+    "source_quote": "Thorin presses the advantage against the massive ettin with his longsword... dealing 8 damage",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin decides to keep his longsword +1 and shield rather than dual-wield short swords.",
+    "source_quote": "Thorin decides to keep the longsword +1 for now",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz strikes down a weakened derro cultist with three Magic Missiles.",
+    "source_quote": "He unleashes all three glowing darts of Magic Missile on a single weakened derro cultist and strikes him down",
+    "subject": "Daz kills derro cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills Narrak.",
+    "source_quote": "Thorin delivered the killing blow.",
+    "subject": "narrak killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is dead.",
+    "source_quote": "As Narrak crumpled to the ground",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak was a member of the Council of Savants.",
+    "source_quote": "a member of the Council of Savants",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak practiced occult spells to turn stone giants into two-headed beasts.",
+    "source_quote": "practicing occult spells to turn stone giants into two-headed beasts",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacle strikes slay Grula-Munga.",
+    "source_quote": "finally slay the two-headed beast",
+    "subject": "grula-munga killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is dead.",
+    "source_quote": "finally slay the two-headed beast",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is an ettin.",
+    "source_quote": "the ettin Grula-Munga",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro cultist dies without a word after taking acid damage.",
+    "source_quote": "dies without a word",
+    "subject": "derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro hits Gyrgum with a spear.",
+    "source_quote": "A derro hits Gyrgum with a spear",
+    "subject": "derro hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz dispatches a derro cultist with bolts of magical force.",
+    "source_quote": "Daz had also dispatched a derro cultist with bolts of magical force",
+    "subject": "derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits a derro with his mace.",
+    "source_quote": "hits a derro with his mace",
+    "subject": "derro hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last derro cultist dies in combat.",
+    "source_quote": "the last one dies in combat",
+    "subject": "derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "All derro cultists are defeated.",
+    "source_quote": "The remaining derro cultists are defeated",
+    "subject": "derro cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses the magical earthen hand to restrain Narrak.",
+    "source_quote": "Daz uses the magical earthen hand to restrain and crush Narrak",
+    "subject": "narrak restraint",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The earthen hand crushes the breath from Narrak.",
+    "source_quote": "the earthen hand crushed the breath from him",
+    "subject": "narrak crush",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak fails the Strength save against the earthen hand.",
+    "source_quote": "Narrak fails the Strength save",
+    "subject": "narrak save fail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak remains restrained by the earthen hand.",
+    "source_quote": "remains restrained",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak tries to break free of the earthen hand but fails.",
+    "source_quote": "Narrak tries to break free of the earthen hand but fails against Daz's DC 14",
+    "subject": "narrak attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Second Wind as a bonus action to heal.",
+    "source_quote": "uses Second Wind as a bonus action to heal",
+    "subject": "thorin heal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak attempts to strike Thorin with a spear at disadvantage and fails to get past Thorin's defenses.",
+    "source_quote": "Narrak attempts to strike Thorin with a spear at disadvantage and fails to get past the warrior's defenses",
+    "subject": "narrak attack fail",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacles strike Narrak.",
+    "source_quote": "Zalthir turns his tentacles on Narrak",
+    "subject": "narrak damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules Narrak can be grappled by both Zalthir and Daz's spell as separate sources.",
+    "source_quote": "The GM rules Narrak can be grappled by both Zalthir and Daz's spell, since they are two separate sources",
+    "subject": "grapple ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The acid-coated derro takes acid damage from Gyrgum's brew.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga lands a battle-axe blow on Thorin.",
+    "source_quote": "Grula-Munga lands a battle-axe blow on Thorin",
+    "subject": "thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga misses her second swing.",
+    "source_quote": "misses her second swing on a 16",
+    "subject": "grula-munga miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak declares that the ritual cannot be undone.",
+    "source_quote": "the ritual could not be undone",
+    "subject": "narrak final words",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak gasps that someone was 'sacrificed.'",
+    "source_quote": "gasps that someone was \"sacrificed.\"",
+    "subject": "narrak final words",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak's silence spell ends.",
+    "source_quote": "Narrak's silence spell ends",
+    "subject": "silence end",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A figure in the background is trying not to be noticed.",
+    "source_quote": "trying very hard not to be noticed",
+    "subject": "unnoticed figure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum shrugs off a spear hit.",
+    "source_quote": "Gyrgum shrugs it off: \"I shrug it off.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the battle-axe blow hurts a little.",
+    "source_quote": "\"Ouch. That hurts a little. Won't lie.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir considers dragging the blinded, grappled ettin so that Narrak stands between it and Thorin.",
+    "source_quote": "Zalthir considers dragging the blinded, grappled ettin so that Narrak stands between it and Thorin",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir decides it is simpler to just kill the ettin.",
+    "source_quote": "He decides it is simpler to just kill it",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends a focus point to attack Narrak again.",
+    "source_quote": "spends another focus point to attack again",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had tried spells and everything else before attempting to strike Thorin.",
+    "source_quote": "Having \"tried spells\u2026 tried everything,\" Narrak attempts to strike Thorin",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is described as the derro savant.",
+    "source_quote": "the derro savant Narrak",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a volume called The Rituals of the Two-Headed Beast in the ritual chamber.",
+    "source_quote": "a volume called The Rituals of the Two-Headed Beast",
+    "subject": "The Rituals of the Two-Headed Beast",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Rituals of the Two-Headed Beast details methods to drive stone giants mad and warp them into two-headed monstrosities.",
+    "source_quote": "laid bare the methods the cult had used to drive stone giants mad and warp them into two-headed monstrosities",
+    "subject": "The Rituals of the Two-Headed Beast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offered a quiet prayer to Bahamut.",
+    "source_quote": "Gyrgum offered a quiet prayer to Bahamut",
+    "subject": "Gyrgum's prayer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum removed a key from around Narrak's neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Key retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The key was removed from around Narrak's neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Key",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There was an iron chest in the ritual chamber.",
+    "source_quote": "open an iron chest",
+    "subject": "Iron chest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin used the key to carefully open the iron chest.",
+    "source_quote": "Thorin used the key to carefully open an iron chest",
+    "subject": "Thorin opens chest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin stood well to the side while opening the iron chest to avoid potential traps.",
+    "source_quote": "standing well to the side, just in case",
+    "subject": "Thorin's caution",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A small leather bag was found inside the iron chest.",
+    "source_quote": "a small leather bag",
+    "subject": "Leather bag",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The leather bag contained 45 gold pieces.",
+    "source_quote": "45 gold",
+    "subject": "45 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The leather bag contained 15 silver pieces.",
+    "source_quote": "15 silver pieces",
+    "subject": "15 silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained five doses of Keoghtom's Ointment.",
+    "source_quote": "five doses of Keoghtom's Ointment",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Keoghtom's Ointment is a rare healing salve that mends wounds and purges poison.",
+    "source_quote": "rare and powerful healing salve that mends wounds and purges poison from the body",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party took stock of the texts, evidence of collusion, dragon egg, and passes.",
+    "source_quote": "The party then took stock of everything they had gathered",
+    "subject": "Party inventory review",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has evidence of the king's collusion with assassins.",
+    "source_quote": "the evidence of the king's collusion with assassins",
+    "subject": "Evidence of collusion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a red dragon egg.",
+    "source_quote": "the red dragon egg",
+    "subject": "Red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses passes that allow them to leave with their gathered items.",
+    "source_quote": "a couple of passes that would let them walk out with all of it",
+    "subject": "Passes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bet that the party would want to hold on to some of the gathered items.",
+    "source_quote": "Jimjar bet that they would want to hold on to some of it for later",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a small fungal creature.",
+    "source_quote": "the small fungal creature Stool",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool tugged at Zalthir's sleeve.",
+    "source_quote": "Stool tugged at Zalthir's sleeve",
+    "subject": "Stool reminds Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool reminded Zalthir that they still needed to go rescue Rumpadump.",
+    "source_quote": "reminded him... that they still needed to go rescue Rumpadump",
+    "subject": "Rescue reminder",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir was reminded by Stool to rescue Rumpadump.",
+    "source_quote": "reminded him... that they still needed to go rescue Rumpadump",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had a key around his neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had been reading The Rituals of the Two-Headed Beast.",
+    "source_quote": "a volume titled 'The Rituals of the Two-Headed Beast', which Narrak had been reading",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two-foot-tall statue does not come alive.",
+    "source_quote": "The GM clarifies that it does not come alive",
+    "subject": "Statue clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ritual turns a stone giant mad and gives it another head.",
+    "source_quote": "the ritual \"turns one of the stone giants mad and gives it another head\"",
+    "subject": "Ritual effect",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party killed two members of the Council of Savants.",
+    "source_quote": "political implications of having killed two members of the Council of Savants",
+    "subject": "Council members killed",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is a council whose members were killed by the party.",
+    "source_quote": "killed two members of the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The king has been working with assassins to kill members of her clan.",
+    "source_quote": "the king has been working with the assassins to kill members of her clan",
+    "subject": "King's collusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin joked about installing democracy.",
+    "source_quote": "Thorin jokes about regime change and \"installing democracy\"",
+    "subject": "Thorin's joke",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum countered Thorin's joke by noting that installing chaos would be straightforward.",
+    "source_quote": "Gyrgum counters that \"if we wanted to install some sort of system of chaos, that would be straightforward\"",
+    "subject": "Gyrgum's counter",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party members looked funny at a member who mentioned eating the egg.",
+    "source_quote": "\"everybody kind of looks at you funny\"",
+    "subject": "Party reaction to egg comment",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a friend of the party who needs to be rescued.",
+    "source_quote": "go rescue Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool asked the party to open the cell.",
+    "source_quote": "asks them to \"just open the cell\"",
+    "subject": "Stool's request",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "There is a cell that needs to be opened.",
+    "source_quote": "asks them to \"just open the cell\"",
+    "subject": "Cell",
+    "quote_verified": false
+  }
+]

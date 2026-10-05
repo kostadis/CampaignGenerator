@@ -1,0 +1,23 @@
+[
+  {
+    "type": "date",
+    "fact": "The celebration to which the party was expected to attend is scheduled for the following day.",
+    "source_quote": "the following day\u2019s celebration",
+    "subject": "celebration timing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia promises she can prepare additional potions given a few days.",
+    "source_quote": "given a few days, she could prepare additional potions",
+    "subject": "travel to Sloobludop",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The recovered treasure given to the party by Basidia totals 975 gold pieces.",
+    "source_quote": "The recovered treasure totaled 975 gold pieces",
+    "subject": "treasure value",
+    "quote_verified": true
+  }
+]

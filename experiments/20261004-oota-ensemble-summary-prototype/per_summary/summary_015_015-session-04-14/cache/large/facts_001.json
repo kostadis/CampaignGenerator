@@ -1,0 +1,163 @@
+[
+  {
+    "type": "location",
+    "fact": "Cairngorm Cavern is an underground home carved into the Southfurrow District.",
+    "source_quote": "the Cairngorm Cavern, a massive and imposing underground home carved deep into the Southfurrow District",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Cairngorm are Stone Giants who dwell in the Cairngorm Cavern.",
+    "source_quote": "where the Stone Giants of Clan Cairngorm dwelled",
+    "subject": "Clan Cairngorm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the leader of the Stone Giant Clan Cairngorm.",
+    "source_quote": "At the entrance sat Hgraam, the clan leader",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam was sitting thoughtfully at the entrance of the cavern when the party arrived.",
+    "source_quote": "At the entrance sat Hgraam, the clan leader, his stony expression unreadable as he waited",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam stood up and raised an eyebrow when the party arrived.",
+    "source_quote": "he simply raised an eyebrow and stood",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam was expecting the party's arrival.",
+    "source_quote": "He had been expecting them",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam has infinite patience.",
+    "source_quote": "as he waited with the infinite patience of his kind",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam left the initiation of conversation to the party.",
+    "source_quote": "leaving it to the party to break the silence first",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stone giants like Hgraam can wait a very long time before initiating a conversation to avoid rushing.",
+    "source_quote": "Stone giants can wait a very long time before they initiate a conversation because they don't want to rush anything",
+    "subject": "Hgraam",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is nervous about meeting giants.",
+    "source_quote": "Gyrgum was a little nervous about meeting giants",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum did not have a good relationship with giants in the past.",
+    "source_quote": "since he had not had a good relationship with them before",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player stated they should get all offers or assignments before acting.",
+    "source_quote": "we should get all the offers or assignments before we really do anything",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a fan of his previous character.",
+    "source_quote": "Daz's player enjoys the twist that Daz is a fan of his previous character",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's previous character was a famous writer and hero of the realms involved in a significant battle.",
+    "source_quote": "was a famous writer, a hero of the realms, involved in a significant battle",
+    "subject": "Daz's previous character",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's previous character was a well-known publisher of fiction and art.",
+    "source_quote": "a well-known publisher of fiction and art",
+    "subject": "Daz's previous character",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin remarked that the clan leaders were just chilling by the entrance.",
+    "source_quote": "Thorin asks: \"What, like the clan leaders just chilling by the entrance?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Cairngorm Cavern is located in the Southfurrow District.",
+    "source_quote": "carved deep into the Southfurrow District",
+    "subject": "Southfurrow District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A long tunnel runs several hundred feet from the entrance of Cairngorm Cavern into the home of Clan Cairngorm.",
+    "source_quote": "A long tunnel runs several hundred feet into the home of Clan Cairngorm",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to visit the Stone Giants to seek information.",
+    "source_quote": "the party decides to visit the Stone Giants, the one group they have not yet spoken with",
+    "subject": "visit to Stone Giants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party arrives at the entrance of Cairngorm Cavern.",
+    "source_quote": "The party arrives at the entrance of Cairngorm Cavern in the Southfurrow District",
+    "subject": "arrival at Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is met by Hgraam at the entrance of the cavern.",
+    "source_quote": "They are met by Hgraam, the Stone Giant clan leader",
+    "subject": "meeting Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Cairngorm has an open invitation for the party.",
+    "source_quote": "who have an open invitation for them",
+    "subject": "Clan Cairngorm",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session took place on April 14, 2025.",
+    "source_quote": "Session 2025-04-14",
+    "subject": "session date",
+    "quote_verified": true
+  }
+]

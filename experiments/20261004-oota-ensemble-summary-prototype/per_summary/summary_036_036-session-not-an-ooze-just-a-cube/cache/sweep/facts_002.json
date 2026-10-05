@@ -1,0 +1,100 @@
+[
+  {
+    "type": "npc",
+    "fact": "Jimjar bets five empty spell gems that meeting with the clan is the right thing to do.",
+    "source_quote": "\u201cI\u2019ll bet you five empty spell gems that meeting with them is the right thing to do.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar states that the party must figure out how to get rid of the oozes.",
+    "source_quote": "\u201cBut you\u2019re going to have to figure out how to get rid of the oozes.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar clarifies that Blingdenstone is suffering from an extensive ooze infestation.",
+    "source_quote": "Jimjar clarified that Blingdenstone was suffering from an extensive ooze infestation",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar confirms that the party will receive the empty spell gems if they are sent on the anticipated quest.",
+    "source_quote": "\u201cYou get gems, yes. That\u2019s how you should read it.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar promises the party will get some spell gems but must go talk to the clan leaders.",
+    "source_quote": "\u201cYou\u2019ll get some spell gems, but you\u2019ll have to go talk to them.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is recognized by the party as someone who tends to know a lot of stuff.",
+    "source_quote": "the party reflects that Jimjar \u201ctends to know a lot of stuff\u201d",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool corrects the terminology regarding oozes, stating it is not an ooze but a cube.",
+    "source_quote": "\u201cIt\u2019s not an ooze, it\u2019s a cube.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is suffering from an extensive ooze infestation.",
+    "source_quote": "Jimjar clarified that Blingdenstone was suffering from an extensive ooze infestation",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wager involves five empty spell gems.",
+    "source_quote": "\u201cI\u2019ll bet you five empty spell gems that meeting with them is the right thing to do.\u201d",
+    "subject": "empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Blingdenstone is suffering from an extensive ooze infestation with tons of oozes around.",
+    "source_quote": "there\u2019s tons of them around",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party accepts Jimjar's bet regarding the meeting and the ooze problem.",
+    "source_quote": "The party accepts the bet and proceeds",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party interprets Jimjar\u2019s wager as support for meeting the clan leaders.",
+    "source_quote": "recognizing that Jimjar was effectively predicting that the clan would send them on a quest",
+    "subject": "meeting with clan",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recognizes that Jimjar's bet implies they will be sent on a quest to deal with the oozes.",
+    "source_quote": "Yeah, you\u2019re betting we\u2019re going to be sent on a quest, is what I\u2019m hearing",
+    "subject": "ooze infestation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo is the person the party considers whether to meet, as asked by the party.",
+    "source_quote": "Ask Jimjar whether he knows the person they are being taken to meet",
+    "subject": "Dorbo",
+    "quote_verified": false
+  }
+]

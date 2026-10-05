@@ -1,0 +1,128 @@
+[
+  {
+    "type": "npc",
+    "fact": "Shuushar left the party to pursue his fate.",
+    "source_quote": "Shuushar, who had gone off to pursue his fate",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Shuushar left behind an imperfect map for the party to navigate the Darklake.",
+    "source_quote": "imperfect map left behind by their departed kuo-toa companion, Shuushar",
+    "subject": "Shuushar's map",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith warned the party that the map they possessed was flawed.",
+    "source_quote": "Sarith had warned them of the map's flaws",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that survival checks were required because the party lacked rangers or rogues.",
+    "source_quote": "With no rangers or rogues in the party, the GM called for survival checks",
+    "subject": "survival checks rule",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that the group would find sufficient food and water without further checks because of the large number of companions aboard.",
+    "source_quote": "with so many companions aboard, the group would eventually find the food and water they needed",
+    "subject": "foraging ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM warned that the food and water situation could worsen if party members started dying.",
+    "source_quote": "this could change if people started dying off",
+    "subject": "companions warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's boat grounded on a submerged sandbar.",
+    "source_quote": "grounded on a submerged sandbar hidden beneath the black surface of the lake",
+    "subject": "boat grounding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party's boat carries no oars or poles.",
+    "source_quote": "The boat carried no oars or poles",
+    "subject": "boat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin quoted Apocalypse Now to warn against exiting the boat.",
+    "source_quote": "Thorin quoted Apocalypse Now: \"Never get out of the boat.\"",
+    "subject": "Thorin's warning",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz carries a water-shaping cantrip.",
+    "source_quote": "Daz had long been teased by his companions for carrying a water-shaping cantrip",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz used his water-shaping cantrip to conjure a surging wave from behind the boat.",
+    "source_quote": "conjuring a surging wave from behind the boat",
+    "subject": "wave creation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wave created by Daz pushed the boat over the sandbar and back into open water.",
+    "source_quote": "shoved it clean over the sandbar and back into open water",
+    "subject": "boat freed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crew cheered after the boat was freed.",
+    "source_quote": "The whole crew cheered",
+    "subject": "crew reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar admitted he should have bet on Daz using his cantrip practically.",
+    "source_quote": "Jimjar wryly admitted he should have placed a bet on whether Daz would ever use the trick for something practical",
+    "subject": "Jimjar's comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin guided the vessel through the dark waters.",
+    "source_quote": "Thorin proved himself a surprisingly capable navigator, guiding the vessel",
+    "subject": "Thorin's navigation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's survival roll was successful enough to spare the party from a check the next day.",
+    "source_quote": "His roll was good enough to spare the party the next day's check as well",
+    "subject": "Thorin's roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith asked Thorin if he knew their destination.",
+    "source_quote": "When Sarith asked whether he knew where he was going",
+    "subject": "Sarith's question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin claimed he was simply following the vibes.",
+    "source_quote": "Thorin claimed he was simply following the vibes",
+    "subject": "Thorin's excuse",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "type": "date",
+    "fact": "Those infected by spores have only a few days to find a cure before dying.",
+    "source_quote": "had only days to find a cure",
+    "subject": "spore infection duration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has no third-level spell slots remaining.",
+    "source_quote": "he has no third-level spell slots remaining",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

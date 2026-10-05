@@ -1,0 +1,93 @@
+[
+  {
+    "type": "event",
+    "fact": "Chipgrin disclosed that he knows about the Pudding King.",
+    "source_quote": "Chipgrin disclosed, \u201cI know about the Pudding King.\u201d",
+    "subject": "Chipgrin discloses Pudding King info",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin knew the Pudding King when the gnome worked in the tunnels.",
+    "source_quote": "He had known the Pudding King when the gnome worked in the tunnels",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Goldwhisker kin had witnessed the Pudding King after his return.",
+    "source_quote": "Goldwhisker kin had witnessed him after his return.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin knows the identity, actions, and location of the Pudding King.",
+    "source_quote": "Chipgrin knew who the Pudding King was, what he was doing, and where he could be found.",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King's motives appear to combine vengeance, wounded pride, madness, and resentment at being overlooked.",
+    "source_quote": "His motives appeared to combine vengeance, wounded pride, madness, and resentment at being overlooked.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demonic power amplified the Pudding King's preexisting malice and grievances rather than replacing his personality.",
+    "source_quote": "Instead, demonic power had amplified his preexisting malice and grievances.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group jokingly described the Pudding King's empowerment as being promoted to his 'level of malice.'",
+    "source_quote": "This process was jokingly described as being promoted to one's \u201clevel of malice.\u201d",
+    "subject": "level of malice discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chipgrin asked whether the party had noticed anything odd about the other gnomes of Blingdenstone.",
+    "source_quote": "Chipgrin asked whether the party had noticed anything odd about Blingdenstone's other gnomes.",
+    "subject": "Chipgrin asks about gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gnomes of Blingdenstone have exhibited an abnormal rise in greed and aggression.",
+    "source_quote": "the party recognized an abnormal rise in greed and aggression",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo's obsession with money appeared especially unhinged given the existential danger facing the settlement.",
+    "source_quote": "Dorbo's obsession with money appeared especially unhinged given the existential danger",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party shared their theory concerning Juiblex, the demon lord of oozes.",
+    "source_quote": "The party shared its theory concerning Juiblex, the demon lord of oozes.",
+    "subject": "party shares Juiblex theory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chipgrin connected the situation to demonic effects previously witnessed in Gracklstugh, Neverlight Grove, and among the kuo-toa.",
+    "source_quote": "Chipgrin connected the situation to the demonic effects already witnessed in Gracklstugh, Neverlight Grove, and among the kuo-toa.",
+    "subject": "Chipgrin connects corruption",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The group concluded that the demonic corruption is centered on the Pudding King but is bleeding through into the broader community.",
+    "source_quote": "The group concluded that the corruption was centered on the Pudding King but \u201cbleeding through\u201d into the broader community.",
+    "subject": "demonic corruption spread",
+    "quote_verified": true
+  }
+]

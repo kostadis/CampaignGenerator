@@ -1,0 +1,51 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud is described as an enormous and overweight red dragon.",
+    "source_quote": "He was enormous, and clearly well-fed, carrying the unmistakable look of a predator who had not hunted in a very long time.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud's scales are the color of cooling lava.",
+    "source_quote": "His scales were the color of cooling lava",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has bright yellow eyes.",
+    "source_quote": "his bright yellow eyes gleamed in the shadows",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has not hunted in a very long time.",
+    "source_quote": "carrying the unmistakable look of a predator who had not hunted in a very long time",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud rests on a mountain of gold in his private lair.",
+    "source_quote": "settling onto a mountain of gold",
+    "subject": "Themberchaud's lair treasury",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Themberchaud presents each member of the party with a golden badge.",
+    "source_quote": "presented each of them with a golden badge",
+    "subject": "golden badge",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The golden badges are confirmed to be real gold.",
+    "source_quote": "Daz confirms the badge is real gold.",
+    "subject": "golden badge",
+    "quote_verified": true
+  }
+]

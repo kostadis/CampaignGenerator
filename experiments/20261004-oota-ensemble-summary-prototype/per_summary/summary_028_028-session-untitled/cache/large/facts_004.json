@@ -1,0 +1,310 @@
+[
+  {
+    "type": "location",
+    "fact": "The party arrives at the entrance to the Lost Tomb of Khaem after several days of travel.",
+    "source_quote": "After several days of travel, the party arrives at the entrance to the Lost Tomb of Khaem.",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith announces \"Aha, we have arrived.\"",
+    "source_quote": "Sarith announces \"Aha, we have arrived.\"",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is pleased with full bellies.",
+    "source_quote": "Fuurm and Baedora are pleased, with full bellies",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is pleased with full bellies.",
+    "source_quote": "Fuurm and Baedora are pleased, with full bellies",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wagers that the crystals will prove useful, and Jimjar accepts the bet.",
+    "source_quote": "Gyrgum wagers that the crystals will prove useful, and Jimjar accepts.",
+    "subject": "crystal wager",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a bet that no one will agree whether the crystals were useful, which no one takes.",
+    "source_quote": "Jimjar then wonders aloud \"Who decides?\" and offers a bet that no one will agree whether the crystals were useful. Nobody takes it",
+    "subject": "crystal utility bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is disappointed that no one took his bet but understands.",
+    "source_quote": "he is \"disappointed with all of you\" but understands.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A faint, feminine voice speaks telepathically to the party, begging to be freed from the darkness.",
+    "source_quote": "A faint, feminine voice speaks telepathically to the party, begging to be freed from the darkness.",
+    "subject": "telepathic plea",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The voice gives the party a sense of the entrance's direction, matching their current path.",
+    "source_quote": "The voice gives the party a sense of the entrance's direction, which is the way they were already going.",
+    "subject": "direction sense",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proceeds cautiously toward a large set of double doors.",
+    "source_quote": "They proceed \"cautiously.\" The party approaches a large set of double doors leading into the tomb.",
+    "subject": "approach doors",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to throw a crystal to collect on his bet, but the GM rules it is not the time.",
+    "source_quote": "He tries to throw a crystal and collect on his bet, but the GM rules it isn't the time.",
+    "subject": "crystal throw attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The double doors are the only way forward into the tomb.",
+    "source_quote": "The double doors are the only way forward",
+    "subject": "Tomb Entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Inside the entrance, the party discovers a stone diorama of the sorcerer Brysis of Khaem.",
+    "source_quote": "the party discovers a stone diorama of the sorcerer Brysis of Khaem",
+    "subject": "Brysis Diorama",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb entrance contains murals of floating Netherese cities.",
+    "source_quote": "and murals of floating Netherese cities.",
+    "subject": "Tomb Entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A 24 on Arcana confirms the location is Brysis's tomb and contains powerful magic.",
+    "source_quote": "A 24 on Arcana confirms this is Brysis's tomb and that powerful magic lies within.",
+    "subject": "arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Netherese had floating cities and access to magic no longer available.",
+    "source_quote": "The Netherese had floating cities and access to magic no longer available.",
+    "subject": "Netherese Empire",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Netherese empire ended when a leader's ritual almost tore reality apart.",
+    "source_quote": "Their empire ended when a leader's ritual almost tore reality apart.",
+    "subject": "Netherese Empire",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Netherese items are in high demand and have been heavily plundered.",
+    "source_quote": "Their items are in high demand and have been heavily plundered.",
+    "subject": "Netherese Empire",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Netherese definitions of good and evil may not map to the party's own.",
+    "source_quote": "Their definitions of good and evil may not map to the party's.",
+    "subject": "Netherese Empire",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that the disclaimer about Netherese morality applies to pretty much anything.",
+    "source_quote": "Gyrgum remarks that the last point is \"a good disclaimer for pretty much anything.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party descends a dusty staircase extending over a hundred feet into the earth.",
+    "source_quote": "The group descends a dusty staircase extending over a hundred feet into the earth",
+    "subject": "Staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A Netherese calendar stone is set into the wall along the staircase.",
+    "source_quote": "passing a Netherese calendar stone set into the wall",
+    "subject": "Netherese calendar stone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum goes first on the staircase to avoid triggering traps that might drop him into a pit.",
+    "source_quote": "Gyrgum goes first, hoping to avoid \"the stair that immediately crumbles and drops me to a pit.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reports a passive Perception of 15 and an Investigation of 17.",
+    "source_quote": "Daz reports passive Perception 15 and Investigation 17",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM keeps Daz, described as a magic user who is \"more fungible in a disaster,\" out of the front.",
+    "source_quote": "the GM keeps the fragile magic user out of the front.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The GM describes the calendar stone as containing \"just the calendar\" with no notable dates.",
+    "source_quote": "the GM says it's \"just the calendar.\"",
+    "subject": "Netherese calendar stone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses hope that the calendar is a perpetual calendar.",
+    "source_quote": "Gyrgum: \"I do hope it's a perpetual calendar.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party enters a shrine filled with dusty tapestries and defaced friezes.",
+    "source_quote": "The party enters a shrine filled with dusty tapestries and defaced friezes",
+    "subject": "Shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The shrine contains a cracked marble altar.",
+    "source_quote": "discovering a cracked marble altar.",
+    "subject": "Marble Altar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party observes that nothing in the shrine has turned to dust after several thousand years.",
+    "source_quote": "The party observes that after several thousand years, nothing has turned to dust.",
+    "subject": "Shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum concludes the damage in the shrine was likely caused by floating undead creatures.",
+    "source_quote": "damage is recent and likely caused by floating undead creatures",
+    "subject": "Floating Undead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Floating undead leave no tracks in the thick layer of dust on the floor.",
+    "source_quote": "that leave no tracks in the thick layer of dust on the floor",
+    "subject": "Floating Undead",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir rolls a natural 1 on Investigation.",
+    "source_quote": "Zalthir rolls a natural 1 on Investigation",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir becomes convinced there is \"proof here of a lower power.\"",
+    "source_quote": "becomes convinced there is \"proof here of a lower power.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolls a 17 on Arcana.",
+    "source_quote": "Gyrgum rolls a 17 on Arcana",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum recalls from his days with Bahamut that such undead don't rest but are driven to keep searching.",
+    "source_quote": "recalls from his days with Bahamut that such undead don't rest but are driven to keep searching.",
+    "subject": "Floating Undead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests the undead hate things they were associated with in life.",
+    "source_quote": "Gyrgum suggests the undead simply hate things they were associated with in life.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The shrine has doors to the east and south.",
+    "source_quote": "There are doors to the east and south",
+    "subject": "Shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is no sign indicating which way the undead went from the shrine.",
+    "source_quote": "with no sign which way the undead went.",
+    "subject": "Shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz examines the altar and finds no arcane significance with an Arcana roll of 16.",
+    "source_quote": "Daz examines the altar but finds no arcane significance (Arcana 16).",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot tipped the party that the tomb held a secret, false tomb.",
+    "source_quote": "The party also recalled Fargas Rumblefoot's tip that the tomb held a secret, false tomb.",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas did not know the location of the secret room, only that other visitors were unaware of it.",
+    "source_quote": "Fargas didn't know where the secret room was, only that other visitors hadn't known about it.",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas was the last member of his adventuring group, suggesting his companions died along the way.",
+    "source_quote": "Fargas was the last of his own adventuring group, so his companions may simply have died along the way.",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The arrival at the tomb occurred after several days of travel.",
+    "source_quote": "After several days of travel",
+    "subject": "Travel Duration",
+    "quote_verified": true
+  }
+]

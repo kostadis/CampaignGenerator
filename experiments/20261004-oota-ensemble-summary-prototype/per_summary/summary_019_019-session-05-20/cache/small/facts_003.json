@@ -1,0 +1,184 @@
+[
+  {
+    "type": "object",
+    "fact": "Papers were located on Eldgrim's desk in the assassin's chamber.",
+    "source_quote": "He had already spotted papers on Eldgrim's desk.",
+    "subject": "papers on Eldgrim's desk",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim is the leader of the Empty-Scabbard Killers.",
+    "source_quote": "Eldgrim, the boss of the Empty-Scabbard Killers",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz flattered Eldgrim with talk of writing a book to lure him to his desk.",
+    "source_quote": "Flattering Eldgrim with talk of writing a book and immortalizing the fame of the Empty-Scabbard Killers, he persuaded the assassin leader to walk over to his desk",
+    "subject": "theft distraction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim signed his name on a piece of parchment.",
+    "source_quote": "persuaded the assassin leader to walk over to his desk and sign his name on a piece of parchment",
+    "subject": "Eldgrim signs parchment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin blurted out confusion about the logic of killers carrying empty scabbards.",
+    "source_quote": "genuinely baffled by the logic of a group of killers who carried empty scabbards \u2014 blurted out his confusion aloud",
+    "subject": "Thorin's question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A soulblade manifested a shimmering psionic weapon to explain the scabbard logic.",
+    "source_quote": "prompting one of the soulblades to manifest a shimmering psionic weapon in wordless explanation",
+    "subject": "soulblade manifestation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz stole a document from Eldgrim's desk while the room's attention was diverted.",
+    "source_quote": "While the room's attention was pulled away, he rifled through the papers on Eldgrim's desk",
+    "subject": "document theft",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim's passive perception was awful, aiding the theft.",
+    "source_quote": "Aided by Eldgrim's \"awful\" passive perception",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen document bears the royal seal of Gracklstugh and the Deepking's signature.",
+    "source_quote": "slipped away a document bearing the royal seal of Gracklstugh and the signature of the Deepking himself",
+    "subject": "royal contract",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The stolen document proves the crown is secretly in league with the assassins.",
+    "source_quote": "proof that the crown was secretly in league with the assassins",
+    "subject": "crown-assassin link",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warned that a clock is ticking and the assassins will eventually notice the theft.",
+    "source_quote": "The DM warned that \"there's a clock,\" though the assassins would not work it out \"like tomorrow.\"",
+    "subject": "DM clock warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz staged a violent coughing fit.",
+    "source_quote": "Daz staged a violent coughing fit",
+    "subject": "Daz's coughing fit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz thumped Zalthir hard in the chest.",
+    "source_quote": "when Zalthir came over to help him he thumped the dragonborn hard in the chest",
+    "subject": "Daz hits Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir breathed a gout of fire onto the desk, igniting the remaining papers.",
+    "source_quote": "Zalthir's cue to breathe a gout of fire directly onto the desk. The remaining papers went up in flames.",
+    "subject": "Zalthir breathes fire",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim ordered the party out of his territory under threat of death.",
+    "source_quote": "Eldgrim erupted in fury, cursing the party and ordering them out of his territory under threat of death",
+    "subject": "Eldgrim's banishment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim was flattered by Daz's request for an autograph.",
+    "source_quote": "Eldgrim was \"actually kind of flattered.\"",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party passed a pair of invisible guards on their way out.",
+    "source_quote": "passing a pair of invisible guards on their way out",
+    "subject": "invisible guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The invisible guards fist-bumped the party as they exited.",
+    "source_quote": "The guards fist-bumped them as they went.",
+    "subject": "guards fist-bump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Touching the invisible guards reveals them.",
+    "source_quote": "The DM explains that touching reveals them",
+    "subject": "invisible guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Invisible guards are only truly unseen when they take the Hide action.",
+    "source_quote": "invisible creatures are only truly unseen when they take the Hide action",
+    "subject": "invisible guards",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Thorin proposed \"Plausible deniability\" as the group's name.",
+    "source_quote": "Thorin proposed \"Plausible deniability\" as the group's long-needed name",
+    "subject": "Plausible deniability",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM declared the Werz objective done assuming the party deals with the Demogorgon cultists.",
+    "source_quote": "Assuming the party deals with the Demogorgon cultists, the DM declares the Werz objective done",
+    "subject": "Werz objective complete",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin confirmed that the deal stands: if the cultists disappear, Eldgrim will know the party did it.",
+    "source_quote": "Thorin confirms that the deal still stands: if the cultists disappear, Eldgrim will know the party did it.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrived at an intersection near the main and side entrances of the obelisk chamber.",
+    "source_quote": "arrives at an intersection near the main and side entrances of the obelisk chamber",
+    "subject": "intersection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz told the soulblades they would be back soon, hopefully with something or not.",
+    "source_quote": "We'll be back soon. Hopefully with. Or not.",
+    "subject": "Daz's farewell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin remarked that they were told to go away but knew otherwise.",
+    "source_quote": "Thorin: \"We were told to go away, but you know.\"",
+    "subject": "Thorin's remark",
+    "quote_verified": true
+  }
+]

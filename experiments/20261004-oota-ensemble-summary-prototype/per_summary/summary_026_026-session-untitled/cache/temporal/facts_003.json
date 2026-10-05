@@ -1,0 +1,58 @@
+[
+  {
+    "type": "object",
+    "fact": "Jimjar wagered a single gold piece that Thorin would do something embarrassing.",
+    "source_quote": "Jimjar made a bet. The ever-wagering deep gnome companion bet a gold piece",
+    "subject": "wager amount",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled that small wagers are not tracked unless they reach hundreds of units.",
+    "source_quote": "small wagers are not tracked unless they reach \"hundreds.\"",
+    "subject": "DM wager ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The industrial haze of the city was described as having a 19th-century Pittsburgh vibe.",
+    "source_quote": "which the DM described as a 19th-century Pittsburgh vibe",
+    "subject": "city atmosphere",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A perception check (roll of 20) found no invisible watchers nearby.",
+    "source_quote": "A perception roll of 20 finds no invisible duergar nearby",
+    "subject": "perception check result",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The informant provided two warnings in exchange for a single gold piece.",
+    "source_quote": "For a single gold piece, which Thorin had Jimjar pay from his lost wager",
+    "subject": "informant fee",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The informant noted that the group consists of four individuals with a drow.",
+    "source_quote": "A group of four with a drow would probably want to make sure they weren't noticed walking around as a group",
+    "subject": "party group size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's perception roll resulted in a 13, which was inconclusive.",
+    "source_quote": "Daz's roll (13) was inconclusive",
+    "subject": "Zalthir's check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's perception roll resulted in a 16, allowing him to sense real information.",
+    "source_quote": "but Thorin (16) sensed real information",
+    "subject": "Thorin's check",
+    "quote_verified": true
+  }
+]

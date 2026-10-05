@@ -1,0 +1,1406 @@
+[
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want only the egg and want no one to learn it was ever lost.",
+    "source_quote": "The Keepers of the Flame want only the egg, and want no one, including the dragon Themberchaud, to learn it was ever lost.",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Keepers of the Flame want Themberchaud not to learn the egg was ever lost.",
+    "source_quote": "The Keepers of the Flame want only the egg, and want no one, including the dragon Themberchaud, to learn it was ever lost.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde is the head of the Stone Guards.",
+    "source_quote": "Errde, head of the Stone Guards, wants two things: proof that the derro are behind the chaos in the city, and to know who the assassins are.",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guards might tell the drow where the party was or help hunt them down if the party fled.",
+    "source_quote": "The Stone Guards might tell the drow where the party was, or even help hunt them down.",
+    "subject": "Stone Guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz wants the assassins off his back and offers better trade deals with the gnomes in return.",
+    "source_quote": "Werz wants the assassins off his back, and in return offers better trade deals with the gnomes.",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde's reward consists of support, the return of the party's weapons, and a pat on the back.",
+    "source_quote": "Errde's reward is support, the return of the party's weapons, and \"a pat on the back.\"",
+    "subject": "Errde's reward offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Keepers had promised revenge if the party fled.",
+    "source_quote": "If the party fled, the Keepers had promised revenge.",
+    "subject": "Keepers of the Flame revenge promise",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposed lying to everybody and escaping on the dragon.",
+    "source_quote": "Thorin proposed lying to everybody and escaping on the dragon.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks how dragons feel about eggs.",
+    "source_quote": "Thorin asks how dragons feel about eggs.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin insists on calling Grimgrim \"Bob,\" and later \"Dim.\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin thinks the etchings are a clever egg tattoo.",
+    "source_quote": "Thorin picks up nothing. He thinks the etchings are a clever egg tattoo",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reminisces about decorating eggs for festivals.",
+    "source_quote": "He thinks the etchings are a clever egg tattoo and reminisces about decorating eggs for festivals.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks whether the duergar are the assassins or the demon worshippers.",
+    "source_quote": "Thorin asks whether they are the assassins or the demon worshippers.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to the Whorlstone Caverns and moves northward toward the obelisk chamber.",
+    "source_quote": "Returning to the winding tunnels of the Whorlstone Caverns, the party moved northward toward the obelisk chamber where the egg was rumored to be held.",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber is located in the top-right of the map.",
+    "source_quote": "The DM clarifies that the only retcon is where the Mind Flayer assassins are located; the obelisk sits in the top-right of the map.",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The group in the obelisk room has gone full Demogorgon.",
+    "source_quote": "The DM confirms the group in the obelisk room has \"gone full Demogorgon.\"",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir chose the route north toward the egg.",
+    "source_quote": "Zalthir chose the route: the same path as before, then north toward the egg.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls that someone is mutating the egg toward a two-headed dragon.",
+    "source_quote": "Zalthir recalls that someone is mutating the egg toward a two-headed dragon.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's ghost accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait accompanies the party in the Whorlstone Caverns.",
+    "source_quote": "Their allies came along this time, including Flumph, Pelek's ghost, Jimjar and Spiderbait.",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are alleged to be behind the chaos in the city.",
+    "source_quote": "Errde, head of the Stone Guards, wants two things: proof that the derro are behind the chaos in the city, and to know who the assassins are.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro have allied with Demogorgon.",
+    "source_quote": "The party learns that the assassins share a common enemy: the derro who have allied with Demogorgon.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Demogorgon cultists lurk deeper in the caverns.",
+    "source_quote": "When the party mentioned their shared hatred of the Demogorgon cultists lurking deeper in the caverns, Rust's eyes lit up with sudden interest.",
+    "subject": "Demogorgon cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are a group of assassins.",
+    "source_quote": "The party discovers that these duergar are members of the Empty-Scabbard Killers, a group of assassins.",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers claim the hallway as their exclusive territory.",
+    "source_quote": "declaring the hallway the exclusive territory of the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimgrim is a duergar who is quiet and largely silent.",
+    "source_quote": "The quieter of the two, a grunting and largely silent duergar named Grimgrim, whom the party quickly nicknamed Bob, stood impassively.",
+    "subject": "Grimgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party nicknamed Grimgrim Bob.",
+    "source_quote": "The quieter of the two, a grunting and largely silent duergar named Grimgrim, whom the party quickly nicknamed Bob, stood impassively.",
+    "subject": "Grimgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin insists on calling Grimgrim \"Bob,\" and later \"Dim.\"",
+    "subject": "Grimgrim",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Brobrek is a duergar who asked to be called by his nickname Rust.",
+    "source_quote": "His partner, Brobrek, who asked to be called by his nickname Rust, did all the talking.",
+    "subject": "Brobrek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust's eyes lit up with sudden interest when the party mentioned the Demogorgon cultists.",
+    "source_quote": "When the party mentioned their shared hatred of the Demogorgon cultists lurking deeper in the caverns, Rust's eyes lit up with sudden interest.",
+    "subject": "Rust",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust says: \"Ah, you too see the enemy.\"",
+    "subject": "Rust",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum comments on Thorin's description of the etchings.",
+    "source_quote": "Gyrgum: \"Yeah, nice pastels.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a natural 20 on Arcana.",
+    "source_quote": "Daz, with a natural 20 on Arcana, recognises that the dragon egg in the obelisk chamber will become a two-headed dragon and has probably been possessed by demonic power.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg in the obelisk chamber will become a two-headed dragon.",
+    "source_quote": "Daz, with a natural 20 on Arcana, recognises that the dragon egg in the obelisk chamber will become a two-headed dragon",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg has probably been possessed by demonic power.",
+    "source_quote": "recognises that the dragon egg in the obelisk chamber will become a two-headed dragon and has probably been possessed by demonic power",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two duergar senties stepped from the shadows in the Whorlstone Caverns.",
+    "source_quote": "Their path was cut short when two duergar sentries stepped from the shadows, declaring the hallway the exclusive territory of the Empty-Scabbard Killers.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The egg exists to replace Themberchaud.",
+    "source_quote": "reminds the table that \"that egg exists to replace Themberchaud.\"",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party discusses the conflicting goals of the Keepers of the Flame and the Stone Guards.",
+    "source_quote": "The party discusses the conflicting goals of the Keepers of the Flame and the Stone Guards.",
+    "subject": "conflicting goals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim is a duergar soulblade and the boss of the Empty-Scabbard Killers.",
+    "source_quote": "a formidable duergar soulblade named Eldgrim, who presided over a chamber guarded by several more of his deadly kin",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust escorted the group to meet the assassins' boss.",
+    "source_quote": "Rust escorted the group to meet the assassins' boss",
+    "subject": "Rust",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust is a duergar sentry belonging to the Empty-Scabbard Killers.",
+    "source_quote": "Rust and his quiet companion Bob, two duergar sentries belonging to the Empty-Scabbard Killers",
+    "subject": "Rust",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bob is Rust's quiet companion and a duergar sentry.",
+    "source_quote": "Rust and his quiet companion Bob, two duergar sentries belonging to the Empty-Scabbard Killers",
+    "subject": "Bob",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimgrim stood silently while Rust went to check with his boss.",
+    "source_quote": "Rust goes off to check with his boss, leaving Grimgrim standing silently",
+    "subject": "Grimgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is a merchant currently on the assassins' list of targets.",
+    "source_quote": "if the party eliminated the Demogorgon worshippers plaguing the caverns, Eldgrim would personally see to it that a merchant named Werz was removed from the assassins' list of targets",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz wants the assassins to stop targeting him.",
+    "source_quote": "The answers: Werz wants them to stop targeting him",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde wants information from the party.",
+    "source_quote": "Errde wants information",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz pressed Eldgrim on the subject of Werz.",
+    "source_quote": "Daz then pressed him on Werz",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz floated a longer-term plan to pit power-seekers against each other.",
+    "source_quote": "Daz floats a longer-term plan: pit the power-seekers against each other, \"like that scene in Lord of the Rings.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz balks at paying to solve Eldgrim's problem.",
+    "source_quote": "Daz balks at paying to solve Eldgrim's problem",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the party can do business.",
+    "source_quote": "Daz: \"I think we can do business.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin replies sarcastically to Eldgrim's first offer.",
+    "source_quote": "Thorin replies sarcastically, which Eldgrim takes as refreshing honesty",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for a talisman of passage that could double as proof.",
+    "source_quote": "Thorin asks for a talisman of passage that could double as proof",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin mentions an 'imbued value' of 180 gold.",
+    "source_quote": "Thorin chips in with the math: an \"imbued value\" of 180 gold",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir checks the quest log to determine if the goal is to kill or identify the assassins.",
+    "source_quote": "Zalthir checks the \"quest log\": is the goal to kill the assassins, or just identify them?",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph told the party that the assassins dislike the cultists.",
+    "source_quote": "Flumph had already told them the assassins dislike the cultists",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph is thrilled at the prospect of new trauma.",
+    "source_quote": "Flumph is thrilled at the prospect of \"some kind of new trauma that I could absorb,\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph remembers there is a mind flayer inside and stays out to pick up traumatic vibes.",
+    "source_quote": "until he remembers there's a mind flayer inside. He stays out to \"pick up any traumatic vibes.\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are led by Eldgrim.",
+    "source_quote": "Rust escorted the group to meet the assassins' boss, a formidable duergar soulblade named Eldgrim",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party has obligations to satisfy regarding the Stone Guard.",
+    "source_quote": "The party discusses obtaining proof of the assassins' existence to satisfy their obligations to the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Eldgrim's chamber is guarded by several duergar soulblades.",
+    "source_quote": "who presided over a chamber guarded by several more of his deadly kin",
+    "subject": "Eldgrim's chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three duergar soulblades are present with Eldgrim.",
+    "source_quote": "The DM notes he is \"tougher than your average Soul Blade,\" with three more soulblades present",
+    "subject": "duergar soulblade",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A mind flayer is present inside the area the party is negotiating.",
+    "source_quote": "until he remembers there's a mind flayer inside",
+    "subject": "mind flayer",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party seeks to reach the derro.",
+    "source_quote": "Eldgrim was pragmatic and businesslike ... His first offer was only free passage through his territory to reach the derro",
+    "subject": "derro",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Demogorgon worshippers are plaguing the caverns.",
+    "source_quote": "if the party eliminated the Demogorgon worshippers plaguing the caverns",
+    "subject": "Demogorgon cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim agreed to remove Werz from the hit list for free if the party eliminated the Demogorgon worshippers.",
+    "source_quote": "Eldgrim agrees to remove Werz from the list for free if the party successfully eliminates the Demogorgon worshippers in the caverns",
+    "subject": "deal struck",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim initially quoted 200 gold pieces to whitelist Werz, or 20 gold if the party handled the Demogorgon problem.",
+    "source_quote": "Eldgrim quoted 200 gold pieces to \"whitelist\" Werz, or 20 gold pieces if the party dealt with his Demogorgon problem",
+    "subject": "price negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim's first offer was only free passage through his territory to reach the derro.",
+    "source_quote": "His first offer was only free passage through his territory to reach the derro",
+    "subject": "first offer rejected",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Eldgrim considers the Demogorgon worshippers his problem.",
+    "source_quote": "if the party dealt with his Demogorgon problem",
+    "subject": "Demogorgon problem",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin asks for a talisman of passage that could serve as proof of the assassins' existence.",
+    "source_quote": "Thorin asks for a talisman of passage that could double as proof",
+    "subject": "talisman of passage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Eldgrim states that a signed paper would be dismissed as a forgery.",
+    "source_quote": "he warned that even a signed paper would be dismissed as a forgery",
+    "subject": "signed paper",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM reminds the party that mind flayers communicate telepathically.",
+    "source_quote": "The DM reminds the party that mind flayers communicate telepathically",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz references a scene from Lord of the Rings when suggesting pitting enemies against each other.",
+    "source_quote": "\"like that scene in Lord of the Rings.\"",
+    "subject": "Lord of the Rings reference",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim is the boss of the Empty-Scabbard Killers.",
+    "source_quote": "Eldgrim, the boss of the Empty-Scabbard Killers",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim has an awful passive perception.",
+    "source_quote": "Eldgrim's \"awful\" passive perception",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are assassins who carry empty scabbards.",
+    "source_quote": "group of killers who carried empty scabbards",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers have a territory that the party is banished from.",
+    "source_quote": "ordering them out of his territory under threat of death",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz persuades Eldgrim to sign his name on a piece of parchment.",
+    "source_quote": "persuaded the assassin leader to walk over to his desk and sign his name on a piece of parchment",
+    "subject": "parchment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the soulblades manifests a shimmering psionic weapon to explain the faction's name to Thorin.",
+    "source_quote": "prompting one of the soulblades to manifest a shimmering psionic weapon in wordless explanation",
+    "subject": "psionic weapon manifested",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz steals a document bearing the royal seal of Gracklstugh and the signature of the Deepking.",
+    "source_quote": "slipped away a document bearing the royal seal of Gracklstugh and the signature of the Deepking himself",
+    "subject": "contract",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The contract proves the crown of Gracklstugh is secretly in league with the assassins.",
+    "source_quote": "proof that the crown was secretly in league with the assassins",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking's signature is on the stolen contract.",
+    "source_quote": "signature of the Deepking himself",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One soulblade manifests a psionic weapon to explain the name of the Empty-Scabbard Killers.",
+    "source_quote": "prompting one of the soulblades to manifest a shimmering psionic weapon in wordless explanation",
+    "subject": "soulblades",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Invisible soulblades fist-bump the party as they exit.",
+    "source_quote": "The guards fist-bumped them as they went",
+    "subject": "soulblades",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM explains that invisible soulblades are only truly unseen when they take the Hide action.",
+    "source_quote": "invisible creatures are only truly unseen when they take the Hide action",
+    "subject": "soulblades",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz stages a violent coughing fit to create a distraction.",
+    "source_quote": "Daz staged a violent coughing fit",
+    "subject": "Daz fakes coughing fit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz thumps Zalthir hard in the chest as a cue.",
+    "source_quote": "he thumped the dragonborn hard in the chest",
+    "subject": "Daz thumps Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir breathes fire onto the desk, igniting the remaining papers.",
+    "source_quote": "Zalthir came over to help him he thumped the dragonborn hard in the chest \u2014 Zalthir's cue to breathe a gout of fire directly onto the desk",
+    "subject": "desk ignited",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim orders the party out of his territory under threat of death.",
+    "source_quote": "ordering them out of his territory under threat of death",
+    "subject": "Eldgrim banishes party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes 'Plausible deniability' as the group's name.",
+    "source_quote": "Thorin proposed \"Plausible deniability\" as the group's long-needed name",
+    "subject": "group name proposed",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM declares the Werz objective done assuming the party deals with the cultists.",
+    "source_quote": "the DM declares the Werz objective done",
+    "subject": "Werz objective",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party plans to deal with the Demogorgon cultists to fulfill the agreement.",
+    "source_quote": "Assuming the party deals with the Demogorgon cultists",
+    "subject": "Demogorgon cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party exits the lair and arrives at an intersection near the main and side entrances of the obelisk chamber.",
+    "source_quote": "arrives at an intersection near the main and side entrances of the obelisk chamber",
+    "subject": "assassin's lair",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber has main and side entrances.",
+    "source_quote": "main and side entrances of the obelisk chamber",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim is angered by the fire and banishes the party from his territory.",
+    "source_quote": "Eldgrim erupted in fury, cursing the party and ordering them out of his territory",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining papers on the desk go up in flames.",
+    "source_quote": "The remaining papers went up in flames",
+    "subject": "papers destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir breathes fire directly onto the desk.",
+    "source_quote": "breathe a gout of fire directly onto the desk",
+    "subject": "desk",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir breathes fire onto the desk at Daz's physical cue.",
+    "source_quote": "Zalthir's cue to breathe a gout of fire directly onto the desk",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for the group's name to be 'Plausible deniability'.",
+    "source_quote": "Thorin proposed \"Plausible deniability\" as the group's long-needed name",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party passes a pair of invisible guards on their way out.",
+    "source_quote": "passing a pair of invisible guards on their way out",
+    "subject": "invisible guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The invisible guards fist-bump the party as they leave.",
+    "source_quote": "The guards fist-bumped them as they went",
+    "subject": "guards fist-bump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Touching reveals the invisible soulblades.",
+    "source_quote": "touching reveals them",
+    "subject": "soulblades",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph guided the party to the entrance of the obelisk chamber using his knowledge of the layout.",
+    "source_quote": "Guided by Flumph's knowledge of the layout, they arrived at last at the entrance to the obelisk chamber",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph admitted he was disappointed that no one in the party had their brains devoured.",
+    "source_quote": "I was really expecting to see at least some of you have your brains devoured",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph stated that he found no trauma when he probed the party's minds after the assassins' lair.",
+    "source_quote": "Flumph, who had probed their minds after the assassins' lair and found \"no trauma\"",
+    "subject": "Flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph added that there is still time for the party's brains to be devoured.",
+    "source_quote": "He adds: \"There's still time.\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir conjured a sphere of impenetrable magical darkness to trail behind the group.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness to trail behind the group as they moved",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asked for Zalthir's magical darkness to be centered on him because he can see through it.",
+    "source_quote": "Thorin asks to have it centered on him, since he can still see through it",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde is a character who would likely go homicidal if shown the Deepking proof.",
+    "source_quote": "the proof would most likely send her \"all homicidal on the Deepking\"",
+    "subject": "Errde",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is an entity whose actions or existence are proven by a specific proof held by the party.",
+    "source_quote": "with the Deepking proof in hand",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber has a main entrance consisting of big double doors.",
+    "source_quote": "the obelisk chamber's main entrance, a set of big double doors",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber contains the stolen dragon egg.",
+    "source_quote": "entrance to the obelisk chamber, where the stolen dragon egg awaited",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party moved northward through the tunnels of the Whorlstone Caverns.",
+    "source_quote": "the party decides to avoid the Council of Savants and sneaks northward through the tunnels of the Whorlstone Caverns",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The chambers of the Council of Savants are located along the north route past an intersection.",
+    "source_quote": "The other ran north, past the chambers of the Council of Savants",
+    "subject": "chambers of the Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Council of Savants consists of mad derro scholars.",
+    "source_quote": "slipping past the mad derro scholars",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The northwest passage was known to Flumph but was ignored because there was nothing to eat there.",
+    "source_quote": "Flumph knows nothing of the northwest passage: \"There was nothing to eat there.\"",
+    "subject": "Northwest passage",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghost is a group or entity whose people's chambers are located along the north route.",
+    "source_quote": "The north route passes the chambers of the Gray Ghost and Council of Savants people",
+    "subject": "Gray Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants consists of derro who work for the duergar.",
+    "source_quote": "The Council of Savants is described as derro who work for the duergar",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen dragon egg is awaiting retrieval in the obelisk chamber.",
+    "source_quote": "where the stolen dragon egg awaited",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party is in possession of the Deepking proof.",
+    "source_quote": "with the Deepking proof in hand",
+    "subject": "Deepking proof",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to bypass the Council of Savants entirely.",
+    "source_quote": "The party chose to bypass the Council of Savants entirely",
+    "subject": "bypassing the Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir cast a sphere of impenetrable magical darkness to cloak the party's approach.",
+    "source_quote": "cloaking their approach in shadow as they crept northward through the tunnels",
+    "subject": "casting magical darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Flumph probed the party's minds after the assassins' lair.",
+    "source_quote": "Flumph, who had probed their minds after the assassins' lair",
+    "subject": "mind probe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confirmed they had taken a long rest before setting out.",
+    "source_quote": "The party confirms they had taken a long rest before setting out",
+    "subject": "taking long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber is vast, containing a central rocky mesa with crude ramps winding upward and a bridge connecting its topmost tiers.",
+    "source_quote": "a great rocky mesa at the cavern's center. Crude ramps wound upward to the mesa's topmost tiers, which were connected by a sturdy bridge",
+    "subject": "The Obelisk Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The obelisk is a fifty-foot-tall structure of smooth black metal with a handful of imperfections as though pieces had been chipped away.",
+    "source_quote": "a fifty-foot-tall obelisk of smooth black metal, its surface marred by only a handful of imperfections, as though pieces of it had been chipped away over time",
+    "subject": "the obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A dragon egg sits atop one of the mesa's tiers.",
+    "source_quote": "Atop one tier sat the dragon egg",
+    "subject": "the dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a female derro who is stroking the obelisk's surface with reverent intensity.",
+    "source_quote": "Beside the obelisk stood a female derro named Plinki, stroking its surface with the reverent intensity of a scientist on the edge of a great discovery",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Plinki scribbles notes in a small book while observing the obelisk.",
+    "source_quote": "scribbling notes in a small book",
+    "subject": "Plinki's notebook",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Plinki has a crowd of minions, some of whom are possibly invisible or hidden.",
+    "source_quote": "She had a crowd of minions, some possibly invisible or hidden",
+    "subject": "Plinki's minions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is referenced as a contact to whom the party could report the destruction of the egg.",
+    "source_quote": "they could destroy it and report that to Themberchaud",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric of the dragon god Bahamut.",
+    "source_quote": "Gyrgum, drawn irresistibly toward the egg by his devotion to Bahamut... announced himself as a cleric of the dragon god",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum announces himself to Plinki as a cleric of Bahamut come to worship at the egg.",
+    "source_quote": "announced himself as a cleric of the dragon god come to worship at the egg",
+    "subject": "Gyrgum's bluff",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is referenced by Plinki as the entity who sent Gyrgum to acknowledge her achievement.",
+    "source_quote": "she declared that Demogorgon himself had sent this holy man to acknowledge the greatness of her achievement",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are the original owners from whom the dragon egg was stolen.",
+    "source_quote": "The egg had been stolen from the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Intricate incantations have been inscribed across the surface of the dragon egg.",
+    "source_quote": "she showed him the intricate incantations she had inscribed across the egg's surface",
+    "subject": "demonic incantations",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a natural 20 on Arcana to read the egg's etchings.",
+    "source_quote": "Earlier, Daz had rolled a natural 20 on Arcana and read the egg's etchings",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The egg's etchings indicate it will hatch a two-headed dragon, likely possessed by a demonic power.",
+    "source_quote": "it would hatch a two-headed dragon, likely possessed by some demonic power",
+    "subject": "egg's hatching prediction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin initially interpreted the egg's etchings as festival decorations.",
+    "source_quote": "Thorin had taken the same etchings for festival decorations",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Bless on his companions, claiming magnanimity.",
+    "source_quote": "Gyrgum casts Bless on his companions \"in my magnanimity.\"",
+    "subject": "Gyrgum casts Bless",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states that the dragon egg is demonic.",
+    "source_quote": "Zalthir: \"Well, it's also demonic.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki reveals that the final ingredient to complete her ritual is the beating heart of a cleric of Bahamut.",
+    "source_quote": "Plinki reveals that the final ingredient to complete her ritual is the beating heart of a cleric of Bahamut",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's cover as a fellow worshiper is instantly revealed when Plinki announces her need for a cleric's heart.",
+    "source_quote": "Gyrgum's cover evaporated in an instant",
+    "subject": "Gyrgum's cover lost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The table briefly debates what a cleric of Bahamut would do about a demon-corrupted egg.",
+    "source_quote": "The table briefly debated what a cleric of Bahamut would do about a demon-corrupted egg",
+    "subject": "Bahamut cleric debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gemini is an AI or tool consulted by the DM to identify four camps of Bahamut's clerics.",
+    "source_quote": "The DM consulted Gemini, which named four camps of Bahamut's clerics",
+    "subject": "Gemini",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gemini identifies four camps among Bahamut's clerics regarding the dragon egg: destroy it, cleanse it, study it, or seek guidance while holding it.",
+    "source_quote": "named four camps of Bahamut's clerics: destroy it, cleanse it, study it, or seek guidance while holding it",
+    "subject": "Clerics of Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wondered aloud about a dragon omelette.",
+    "source_quote": "Thorin wondered aloud about a dragon omelette",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum warns Plinki and her followers that Daz will not hesitate to smash the egg if they do not stand down.",
+    "source_quote": "Gyrgum grandstanded loudly, warning Plinki and her followers that Daz would not hesitate to smash the egg",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum justifies the threat by stating a drow could never be trusted.",
+    "source_quote": "a drow, after all, could never be trusted",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki screams for her followers to attack after her madness wins out.",
+    "source_quote": "Plinki's madness won out, and she screamed for her followers to attack",
+    "subject": "Plinki orders attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki shows Gyrgum the dragon egg and calls it her masterpiece.",
+    "source_quote": "Plinki: \"here is the egg. See my masterpiece.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki explains she is using the massive black obelisk to infuse the stolen dragon egg with demonic energy in honor of Demogorgon.",
+    "source_quote": "Plinki enthusiastically explains she is using the massive black obelisk to infuse the stolen dragon egg with demonic energy in honor of Demogorgon",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a shrine of Demogorgon near the ritual site.",
+    "source_quote": "She points out the shrine of Demogorgon and the incantations inscribed on the egg",
+    "subject": "Shrine of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg has incantations inscribed on it.",
+    "source_quote": "the incantations inscribed on the egg",
+    "subject": "Dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki points out a specific symbol on the egg that she claims was critical to the entire spell.",
+    "source_quote": "look, look at this. Look at this symbol that I found. It was critical to the entire spell",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Cultists are closing in around Gyrgum, noticed due to his passive perception of 14.",
+    "source_quote": "With a passive perception of 14, Gyrgum notices the cultists closing in around him",
+    "subject": "cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rest of the party stays as close as Plinki allows but remains away from the egg.",
+    "source_quote": "The rest of the party stays as close as Plinki allows, but not up at the egg",
+    "subject": "Party positioning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz maneuvers to within 30 feet of the egg.",
+    "source_quote": "Daz maneuvers to within 30 feet of the egg",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz plans to use Misty Step to reach the egg and hold it hostage.",
+    "source_quote": "He plans to Misty Step to it and hold it hostage",
+    "subject": "Daz's plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM comments that Gyrgum is playing a cultural bias angle by referencing Daz's drow heritage.",
+    "source_quote": "The DM: \"Playing that cultural bias angle.\"",
+    "subject": "Gyrgum's cultural bias joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum retorts that the cultural bias warning is coming from an orc.",
+    "source_quote": "Gyrgum: \"Coming from an orc.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is described as being a little bit concerned during the standoff.",
+    "source_quote": "Plinki is \"a little bit concerned.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One cultist moves closer to Gyrgum but does not yet attack.",
+    "source_quote": "One cultist moves closer but does not yet attack",
+    "subject": "cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir maneuvers himself across the high tiers to stand directly next to Plinki.",
+    "source_quote": "Zalthir maneuvers himself across the high tiers to stand directly next to Plinki",
+    "subject": "Zalthir's movement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tiers in the chamber are 10 feet high.",
+    "source_quote": "The tiers are 10 feet high",
+    "subject": "High tiers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir climbs the stairs to reach the tier beside Plinki, avoiding the square beside a cultist.",
+    "source_quote": "he climbs the stairs, avoiding the square beside a cultist",
+    "subject": "Zalthir's climb",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 14 on initiative.",
+    "source_quote": "Gyrgum rolled 14 initiative",
+    "subject": "Initiative rolled",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum acts after Zalthir, who acts on initiative 10.",
+    "source_quote": "The allied crew is set to act on initiative 10. Gyrgum rolled 14 initiative and acts after Zalthir",
+    "subject": "Initiative order",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Plinki's followers are acting in honor of Demogorgon.",
+    "source_quote": "in honor of Demogorgon",
+    "subject": "Cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "deity",
+    "fact": "Bahamut is the deity whose cleric's heart is required for Plinki's ritual.",
+    "source_quote": "the beating heart of a cleric of Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "deity",
+    "fact": "Demogorgon is the entity being honored by the ritual involving the obelisk and dragon egg.",
+    "source_quote": "in honor of Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The confrontation takes place in a chamber with tiers.",
+    "source_quote": "Gyrgum navigates the chamber tiers",
+    "subject": "Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A massive black obelisk is used to infuse the dragon egg with demonic energy.",
+    "source_quote": "using the massive black obelisk to infuse the stolen dragon egg",
+    "subject": "Massive black obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir moves first, jumping up the tiers to stand beside Plinki.",
+    "source_quote": "Zalthir moved first. He had already jumped up the tiers to stand right beside Plinki.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir seizes Plinki in an iron grip, pinning her in place.",
+    "source_quote": "He seized her in an iron grip, pinning her in place",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses magical darkness to ambush Plinki.",
+    "source_quote": "Zalthir uses the magical darkness to ambush Plinki",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir attacks with advantage from the darkness.",
+    "source_quote": "He attacks with advantage from the darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir totals 27 against Plinki's AC 13 on his first attack.",
+    "source_quote": "totals 27 against AC 13",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends one focus point for another strike.",
+    "source_quote": "he spent a focus point for another strike",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deals 11 damage with his follow-up strike.",
+    "source_quote": "for 11 points of damage.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir adds Bless's d4 to his second attack.",
+    "source_quote": "He adds Bless's d4 to his second attack",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir and the DM debate whether Flurry of Blows grants two extra attacks.",
+    "source_quote": "The DM and Zalthir briefly debate whether Flurry of Blows grants two extra attacks.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir and the DM decide Flurry of Blows grants only one extra attack.",
+    "source_quote": "They leave it at one.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a derro leader.",
+    "source_quote": "against the derro leader, Plinki",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is pinned in a tight grapple by Zalthir.",
+    "source_quote": "striking the derro leader and pinning her in a tight grapple.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki has an AC of 13.",
+    "source_quote": "totals 27 against AC 13",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki succeeds on a DC 14 Constitution save against Gyrgum's spell.",
+    "source_quote": "She made the DC 14 Constitution save",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki takes 12 points of damage from Gyrgum's Inflict Wounds.",
+    "source_quote": "still took 12 points of damage.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's warmth toward the egg curdles into righteous fury at the betrayal.",
+    "source_quote": "his earlier warmth toward the egg curdled into righteous fury at the betrayal",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum channels divine anger into a powerful necrotic spell.",
+    "source_quote": "Gyrgum channels his divine anger into a powerful necrotic spell",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts a 2nd-level Inflict Wounds on Plinki.",
+    "source_quote": "It is a 2nd-level Inflict Wounds",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin will be out next week.",
+    "source_quote": "Thorin will be out next week",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir unleashes a rapid and brutal series of strikes against Plinki.",
+    "source_quote": "unleashing a rapid and brutal series of strikes that left the derro reeling.",
+    "subject": "Zalthir's assault",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum blasts Plinki with dark necrotic energy.",
+    "source_quote": "blasting Plinki with dark energy",
+    "subject": "Gyrgum's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The battle for the obelisk chamber begins in earnest.",
+    "source_quote": "The battle for the obelisk chamber had begun in earnest",
+    "subject": "combat initiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session pauses mid-combat.",
+    "source_quote": "The session paused mid-combat.",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The next session is skipped.",
+    "source_quote": "and the next session is skipped.",
+    "subject": "next session schedule",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber contains magical darkness used for the ambush.",
+    "source_quote": "within Zalthir's magical darkness in the obelisk chamber",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The fate of the corrupted dragon egg hangs in the balance in the obelisk chamber.",
+    "source_quote": "and the fate of the corrupted dragon egg \u2014 and perhaps the city of Gracklstugh itself \u2014 hung in the balance.",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A corrupted dragon egg is present in the obelisk chamber.",
+    "source_quote": "and the fate of the corrupted dragon egg",
+    "subject": "corrupted dragon egg",
+    "quote_verified": true
+  }
+]

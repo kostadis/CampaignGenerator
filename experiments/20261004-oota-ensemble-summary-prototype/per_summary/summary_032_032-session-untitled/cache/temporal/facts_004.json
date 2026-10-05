@@ -1,0 +1,51 @@
+[
+  {
+    "type": "event",
+    "fact": "Rumpadump's telepathic feedback remained in Zalthir\u2019s head for roughly fifteen minutes.",
+    "source_quote": "remained in Zalthir\u2019s head for roughly fifteen minutes",
+    "subject": "Rumpadump feedback duration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum won five gold pieces from Jimjar via a previous bet.",
+    "source_quote": "Gyrgum had won five gold pieces from him",
+    "subject": "Gyrgum winnings",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar settled the debt by paying Gyrgum five gold pieces.",
+    "source_quote": "Gyrgum had won five gold pieces from him",
+    "subject": "Bet settlement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The journey from Neverlight Grove to Blingdenstone is expected to take approximately two weeks.",
+    "source_quote": "guide for the entire two-week journey",
+    "subject": "Journey to Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Rasharoo\u2019s scouts guide the party for the first third of the journey before bidding farewell.",
+    "source_quote": "scouts who could lead them safely through the first third",
+    "subject": "Scout duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Seven days of largely uneventful travel passed before Rasharoo\u2019s scouts departed.",
+    "source_quote": "Seven days of largely uneventful travel passed",
+    "subject": "Travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party takes a long rest before setting out from Neverlight Grove.",
+    "source_quote": "After a long rest",
+    "subject": "Rest duration",
+    "quote_verified": true
+  }
+]

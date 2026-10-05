@@ -1,0 +1,198 @@
+[
+  {
+    "type": "location",
+    "fact": "The party presses deeper into the caverns and reaches an intersection.",
+    "source_quote": "Pressing deeper into the caverns, the party reached an intersection.",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "One path from the intersection leads to the obelisk chamber's main entrance, which features a set of big double doors.",
+    "source_quote": "One way led to the obelisk chamber's main entrance, a set of big double doors",
+    "subject": "obelisk chamber main entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Flumph might not be able to open the big double doors at the main entrance.",
+    "source_quote": "Flumph might not be able to open",
+    "subject": "door opening uncertainty",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Another path from the intersection runs north, passing the chambers of the Council of Savants.",
+    "source_quote": "The other ran north, past the chambers of the Council of Savants",
+    "subject": "northern tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The northern tunnel is the only route Flumph knows.",
+    "source_quote": "was the only way Flumph knew",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to bypass the Council of Savants entirely.",
+    "source_quote": "The party chose to bypass the Council of Savants entirely",
+    "subject": "route choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party slips past the mad derro scholars without incident.",
+    "source_quote": "slipping past the mad derro scholars without incident",
+    "subject": "passing the scholars",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants consists of derro who work for the duergar.",
+    "source_quote": "The Council of Savants is described as derro who work for the duergar",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The council leader sits down a side hallway.",
+    "source_quote": "The council leader sits down a side hallway",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is able to bypass the council leader by using the main path.",
+    "source_quote": "so the party can bypass him",
+    "subject": "bypassing council leader",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The north route passes the chambers of the Gray Ghost.",
+    "source_quote": "The north route passes the chambers of the Gray Ghost",
+    "subject": "Gray Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph has only ever used the north route.",
+    "source_quote": "Flumph has only ever used the north route",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "With the Deepking proof in hand, the party no longer needs the Council of Savants.",
+    "source_quote": "with the Deepking proof in hand, the party no longer needs the Council",
+    "subject": "Deepking proof",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Flumph knows nothing of the northwest passage.",
+    "source_quote": "Flumph knows nothing of the northwest passage",
+    "subject": "northwest passage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph explains that there was nothing to eat in the northwest passage.",
+    "source_quote": "There was nothing to eat there.",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party took a long rest before setting out.",
+    "source_quote": "The party confirms they had taken a long rest before setting out.",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjured a sphere of impenetrable magical darkness to trail behind the group.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness to trail behind the group as they moved",
+    "subject": "Zalthir's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's magical darkness cloaked the party's approach in shadow as they crept northward through the tunnels.",
+    "source_quote": "cloaking their approach in shadow as they crept northward through the tunnels",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks to have the magical darkness centered on him.",
+    "source_quote": "Thorin asks to have it centered on him",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin can still see through the magical darkness.",
+    "source_quote": "since he can still see through it",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrives at the entrance to the obelisk chamber.",
+    "source_quote": "they arrived at last at the entrance to the obelisk chamber",
+    "subject": "obelisk chamber entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen dragon egg awaits at the entrance to the obelisk chamber.",
+    "source_quote": "where the stolen dragon egg awaited",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph probed the party's minds after the assassins' lair.",
+    "source_quote": "Flumph, who had probed their minds after the assassins' lair",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph found no trauma in the party's minds.",
+    "source_quote": "found \"no trauma\"",
+    "subject": "Flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph expressed disappointment at finding no trauma.",
+    "source_quote": "admitted he was disappointed",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph stated he expected to see at least some of the party have their brains devoured.",
+    "source_quote": "\"I was really expecting to see at least some of you have your brains devoured.\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph added that there is still time.",
+    "source_quote": "He adds: \"There's still time.\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully navigated the hallways stealthily, guided by Flumph's knowledge of the layout.",
+    "source_quote": "The party successfully navigates the hallways stealthily, guided by Flumph's knowledge of the layout.",
+    "subject": "stealthy navigation",
+    "quote_verified": true
+  }
+]

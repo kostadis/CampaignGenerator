@@ -1,0 +1,58 @@
+[
+  {
+    "type": "event",
+    "fact": "Jimjar bets the party five empty spell gems that meeting with the clan leaders is the right thing to do.",
+    "source_quote": "I\u2019ll bet you five empty spell gems that meeting with them is the right thing to do.",
+    "subject": "Jimjar's bet offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar tells the party they will have to figure out how to get rid of the oozes.",
+    "source_quote": "But you\u2019re going to have to figure out how to get rid of the oozes.",
+    "subject": "Jimjar's hint about oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool corrects the party, stating that it is not an ooze, but a cube.",
+    "source_quote": "It\u2019s not an ooze, it\u2019s a cube.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The deep gnomes of Blingdenstone are suffering from an extensive ooze infestation.",
+    "source_quote": "Jimjar clarified that Blingdenstone was suffering from an extensive ooze infestation.",
+    "subject": "Deep gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Jimjar states there are tons of oozes around.",
+    "source_quote": "there\u2019s tons of them around",
+    "subject": "Deep gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar confirms that the party will receive the empty spell gems if they go talk to the clan leaders.",
+    "source_quote": "You\u2019ll get some spell gems, but you\u2019ll have to go talk to them.",
+    "subject": "Bet terms clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party accepts Jimjar's bet and proceeds with the meeting.",
+    "source_quote": "The party accepts the bet and proceeds, interpreting Jimjar\u2019s wager as support for meeting the clan leaders and a warning about the task awaiting them.",
+    "subject": "Bet acceptance",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recognizes Jimjar's bet implies they will be sent on a quest to deal with the ooze infestation.",
+    "source_quote": "Yeah, you\u2019re betting we\u2019re going to be sent on a quest, is what I\u2019m hearing.",
+    "subject": "Ooze infestation",
+    "quote_verified": true
+  }
+]

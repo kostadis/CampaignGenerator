@@ -1,0 +1,184 @@
+[
+  {
+    "type": "npc",
+    "fact": "Topsy is a deep gnome twin who was imprisoned alongside the party.",
+    "source_quote": "Topsy and Turvy, the deep gnome twins who had been imprisoned alongside the party",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a deep gnome twin who was imprisoned alongside the party.",
+    "source_quote": "Topsy and Turvy, the deep gnome twins who had been imprisoned alongside the party",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy revealed to the party that they are wererats.",
+    "source_quote": "revealed a startling secret: they were wererats",
+    "subject": "wererat reveal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy told the party they would meet them downstairs.",
+    "source_quote": "Telling the party, \u201cwe'll meet you downstairs,\u201d",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy told the party they would meet them downstairs.",
+    "source_quote": "Telling the party, \u201cwe'll meet you downstairs,\u201d",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy transformed into a rat.",
+    "source_quote": "the twins transformed into rats",
+    "subject": "Topsy transform",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Turvy transformed into a rat.",
+    "source_quote": "the twins transformed into rats",
+    "subject": "Turvy transform",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy leapt into the darkness below.",
+    "source_quote": "leapt into the darkness below",
+    "subject": "Topsy leap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Turvy leapt into the darkness below.",
+    "source_quote": "leapt into the darkness below",
+    "subject": "Turvy leap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith advised against sabotaging the outpost.",
+    "source_quote": "Sarith advises against sabotaging the outpost",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith suggested a clean escape is better than inciting further drow vengeance.",
+    "source_quote": "suggesting that a clean escape is better than inciting further drow vengeance",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith insisted on immediate flight.",
+    "source_quote": "first insisting on immediate flight",
+    "subject": "Sarith flight insistence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith cackled that revenge would be \u201cso tasty.\u201d",
+    "source_quote": "and then cackling that revenge would be \u201cso tasty.\u201d",
+    "subject": "Sarith revenge comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered burning or otherwise sabotaging Velkynvelve.",
+    "source_quote": "The party considers burning or otherwise sabotaging Velkynvelve while the drow are distracted",
+    "subject": "sabotage debate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group agreed that setting the outpost ablaze would make the drow more determined to hunt them.",
+    "source_quote": "The group agrees that setting the outpost ablaze would make the drow more determined to hunt them",
+    "subject": "abandon sabotage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discussed using its silk rope or existing spider silk to descend.",
+    "source_quote": "The party discusses using its silk rope or the existing spider silk to descend",
+    "subject": "descent discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Giant spiders lurk among the giant spider webs.",
+    "source_quote": "Remembering the giant spiders lurking among the webs",
+    "subject": "giant spider webs",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow normally jump into the giant web below and use its silk to reach the lower levels.",
+    "source_quote": "The drow normally jump into the giant web below and use its silk to reach the lower levels",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to bypass the giant spider webs.",
+    "source_quote": "the party chooses to bypass it",
+    "subject": "bypass web",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group descended toward the pool at the bottom of the waterfall.",
+    "source_quote": "The group instead descends toward the pool at the bottom of the waterfall",
+    "subject": "waterfall descent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group treated the waterfall route as a water slide.",
+    "source_quote": "effectively treating the route as a water slide",
+    "subject": "water slide route",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow did not interfere with the party's descent due to the demon attack.",
+    "source_quote": "The demon attack remains sufficiently chaotic that the drow do not interfere with the descent",
+    "subject": "drow non-interference",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party landed in the water.",
+    "source_quote": "Upon landing in the water",
+    "subject": "landing in water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party was confronted by a predatory gray ooze.",
+    "source_quote": "the party is confronted by a predatory gray ooze",
+    "subject": "gray ooze confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The adventurers were not surprised by the gray ooze's appearance because they were watching for danger.",
+    "source_quote": "Because they were watching for danger, the adventurers are not surprised by its appearance",
+    "subject": "surprise avoidance",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A predatory gray ooze is present in the water.",
+    "source_quote": "the party is confronted by a predatory gray ooze",
+    "subject": "gray ooze",
+    "quote_verified": true
+  }
+]

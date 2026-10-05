@@ -1,0 +1,261 @@
+[
+  {
+    "type": "location",
+    "fact": "The Brimstone Cavern smells of brimstone and chemicals.",
+    "source_quote": "explore a large chamber that smelled of brimstone and chemicals",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The walls of the Brimstone Cavern are lit by the hellish red glow of faerzress swirling in spiral patterns.",
+    "source_quote": "The cavern was lit by the hellish red glow of faerzress swirling in spiral patterns on the walls",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Dripping water in the Brimstone Cavern makes no echo.",
+    "source_quote": "Dripping water made no echo",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thick fungi cover the floors and walls of the Brimstone Cavern.",
+    "source_quote": "thick fungi covered the floors and walls",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes that the cavern is lit by the light of campfires.",
+    "source_quote": "They investigate a large chamber smelling of brimstone and chemicals, lit by the light of campfires",
+    "subject": "campfires added",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception of 14.",
+    "source_quote": "Gyrgum, with a passive perception of 14, spotted a pit trap",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum spots a pit trap near the entrance of the cavern and warns the others.",
+    "source_quote": "spotted a pit trap near the entrance just in time and warned the others",
+    "subject": "pit trap spotted",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group creeps inside the cavern.",
+    "source_quote": "The group crept inside",
+    "subject": "party sneaks in",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses caution because someone is asking him to enter the chamber insistently.",
+    "source_quote": "the fact that you're asking so insistently makes me a little cautious",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rushes into the cavern so as not to leave anyone behind.",
+    "source_quote": "He rushes in anyway, so as not to leave anyone behind",
+    "subject": "Thorin enters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a passive perception of 12.",
+    "source_quote": "Thorin's passive 12 would also have been enough",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session pauses when the GM's Roll20 container crashes.",
+    "source_quote": "The session pauses briefly when the GM's Roll20 container crashes",
+    "subject": "GM crash",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM crash prompts a conversation detour about JavaScript.",
+    "source_quote": "prompting a detour about JavaScript",
+    "subject": "JavaScript detour",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A death dog lurks in the cavern near a group of derro.",
+    "source_quote": "A death dog lurked near a group of derro who had not noticed the intruders",
+    "subject": "death dog",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A group of derro are present in the cavern and have not noticed the intruders.",
+    "source_quote": "a group of derro who had not noticed the intruders",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party makes stealth checks resulting in 18, 16, and 7, plus Zalthir.",
+    "source_quote": "The group stealth check comes in at 18, 16, and 7, plus Zalthir",
+    "subject": "stealth checks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes his stealth roll at disadvantage.",
+    "source_quote": "Thorin rolls at disadvantage",
+    "subject": "Thorin disadvantage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A five-foot natural platform stands at the center of the chamber.",
+    "source_quote": "At the center of the chamber stood a five-foot natural platform",
+    "subject": "natural platform",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural platform holds a glowing ritual circle and several books.",
+    "source_quote": "On it were a glowing ritual circle and several books with pages made from trillimac mushroom caps",
+    "subject": "natural platform",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The books on the platform have pages made from trillimac mushroom caps.",
+    "source_quote": "several books with pages made from trillimac mushroom caps",
+    "subject": "trillimac mushroom cap books",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The books are filled with mad scribblings.",
+    "source_quote": "filled with mad scribblings",
+    "subject": "trillimac mushroom cap books",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The books are laid out almost but not quite in a line.",
+    "source_quote": "laid out almost but not quite in a line",
+    "subject": "trillimac mushroom cap books",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is a member of the Stone Guard.",
+    "source_quote": "Errde Blackskull of the Stone Guard",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull wants physical evidence of a demonic conspiracy within the Council of Savants.",
+    "source_quote": "Errde Blackskull of the Stone Guard wanted in order to expose a demonic conspiracy within the Council of Savants",
+    "subject": "evidence sought",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is suspected of containing a demonic conspiracy.",
+    "source_quote": "expose a demonic conspiracy within the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is an organization Errde Blackskull belongs to.",
+    "source_quote": "Errde Blackskull of the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is the cult leader of the derro in the cavern.",
+    "source_quote": "The cult leader Narrak picked up one of the books",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak picks up one of the books on the platform.",
+    "source_quote": "The cult leader Narrak picked up one of the books",
+    "subject": "Narrak reads",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A follower asks Narrak what they are doing.",
+    "source_quote": "When a follower asked what they were doing",
+    "subject": "follower question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak declares that their experiments serve the elevation of the derro, the triumph of Demogorgon, and the destruction of the duergar.",
+    "source_quote": "he declared that their experiments served the elevation of the derro, the triumph of Demogorgon, and the destruction of the duergar",
+    "subject": "Narrak declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Narrak seeks the destruction of the duergar.",
+    "source_quote": "the destruction of the duergar",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak seeks the triumph of Demogorgon.",
+    "source_quote": "the triumph of Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak orders his followers to stand back because none of them can read the book.",
+    "source_quote": "He ordered his crowding followers to stand back, since none of them could read the book",
+    "subject": "stand back order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak announces that he has found the spell they need.",
+    "source_quote": "announced he had found \"the spell we need\"",
+    "subject": "spell found",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard watches the scene from the shadows.",
+    "source_quote": "The Ember Vanguard watched from the shadows",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard knows that the most dangerous part of their mission is only just beginning.",
+    "source_quote": "knowing that the most dangerous part of their mission was only just beginning",
+    "subject": "mission begins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes that she would always prefer real evidence to manufactured evidence.",
+    "source_quote": "The GM notes she would always prefer real evidence to manufactured evidence",
+    "subject": "GM preference",
+    "quote_verified": true
+  }
+]

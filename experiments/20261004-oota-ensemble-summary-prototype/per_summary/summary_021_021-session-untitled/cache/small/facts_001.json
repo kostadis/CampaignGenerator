@@ -1,0 +1,93 @@
+[
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is a name for the party that has not yet been formally adopted by them.",
+    "source_quote": "the Ember Vanguard, though they did not yet know that name",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The corrupted chamber contains numerous notes linking the Council of Savants to nefarious activities and corruption.",
+    "source_quote": "teeming with evidence of corruption and foul deeds connected to the Council of Savants",
+    "subject": "corrupted chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A derro group operates the corrupted chamber.",
+    "source_quote": "The derro group running the place is \"clearly \u2026 up to nefariously no good deeds.\"",
+    "subject": "corrupted chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is currently inhabiting the body of a derro spy.",
+    "source_quote": "The ghost Pelek, who had seized the derro spy's body at the end of the last fight, lingered in that borrowed body",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party is keeping Pelek's bones.",
+    "source_quote": "while the party kept careful hold of his bones",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses the dragon's egg.",
+    "source_quote": "Most precious of all was the dragon's egg",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg is corrupted by demons.",
+    "source_quote": "its demonic corruption was a secret known only to them",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg is tough enough to be carried unnoticed in a bag.",
+    "source_quote": "It was tough enough, and could be hidden in a bag or carried unnoticed",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz carried the dragon's egg through the fight unnoticed.",
+    "source_quote": "Daz, who carried it through the fight unnoticed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is currently at full hit points.",
+    "source_quote": "Daz... is still at full hit points",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants has engaged in foul dealings and demonic entanglements.",
+    "source_quote": "documents that laid bare the Council of Savants' foul dealings and demonic entanglements",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asked if there is someone paying them to find out the information.",
+    "source_quote": "Gyrgum asks whether there is someone paying them to find all this out",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party has not yet decided which faction to deliver their gathered intelligence to.",
+    "source_quote": "who are you going to deliver the information to?",
+    "subject": "information delivery target",
+    "quote_verified": true
+  }
+]

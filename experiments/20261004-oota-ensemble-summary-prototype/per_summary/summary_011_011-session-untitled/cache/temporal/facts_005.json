@@ -1,0 +1,37 @@
+[
+  {
+    "type": "object",
+    "fact": "The sunken chest contains 120 silver pieces.",
+    "source_quote": "they found 120 silver",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken chest contains 30 gold pieces.",
+    "source_quote": "and 30 gold pieces",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken chest contains four spell scrolls.",
+    "source_quote": "four spell scrolls",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken chest contains one drifting globe of light.",
+    "source_quote": "and a drifting globe of light",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shield of Faith cast on Thorin lasts for up to 10 minutes.",
+    "source_quote": "+2 AC for up to 10 minutes",
+    "subject": "Shield of Faith duration",
+    "quote_verified": true
+  }
+]

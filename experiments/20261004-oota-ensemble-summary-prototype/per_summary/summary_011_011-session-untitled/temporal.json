@@ -1,0 +1,338 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thirteen people are surrounding the duergar prisoner Brannum Redmarch.",
+    "source_quote": "he was surrounded by thirteen people",
+    "subject": "party members surrounding prisoner",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check of 18 confirmed that Brannum Redmarch was being truthful.",
+    "source_quote": "An insight check of 18 confirmed that he was being straight with them",
+    "subject": "insight check on Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party encounters the limestone islet on the fifteenth day of their voyage.",
+    "source_quote": "On the fifteenth day of their voyage, the tunnel forked",
+    "subject": "travel duration to islet",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The diamond-shaped limestone islet is forty feet wide.",
+    "source_quote": "diamond-shaped limestone islet, forty feet wide",
+    "subject": "limestone islet width",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party spots the islet 50 feet ahead when rounding the bend.",
+    "source_quote": "spots a diamond-shaped islet 50 feet ahead",
+    "subject": "islet distance",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The bone pyramid at the center of the islet is eight feet high.",
+    "source_quote": "It was a pyramid of bones, eight feet high",
+    "subject": "bone pyramid height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The bone pyramid is five feet wide at its base.",
+    "source_quote": "five feet wide at its base",
+    "subject": "bone pyramid width",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is a ten-foot floating sphere.",
+    "source_quote": "a ten-foot floating sphere of rotting flesh",
+    "subject": "beholder zombie size",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir conjures a shroud of magical darkness with a 15-foot radius around the creature.",
+    "source_quote": "conjuring a 15-foot shroud of magical darkness",
+    "subject": "magical darkness radius",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a 15-foot shroud of magical darkness.",
+    "source_quote": "Zalthir creates a 15-foot sphere of magical darkness",
+    "subject": "Zalthir darkness casting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 15 damage to the beholder zombie with Magic Missiles.",
+    "source_quote": "Daz unleashed a barrage of Magic Missiles for 15 damage",
+    "subject": "Daz Magic Missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie hits Gyrgum for 10 damage with a ray of sickly light.",
+    "source_quote": "hit Gyrgum for 10 damage",
+    "subject": "Gyrgum ray damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is poisoned by the beholder zombie's ray.",
+    "source_quote": "hit Gyrgum for 10 damage and poisoned him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is paralyzed by the beholder zombie's ray.",
+    "source_quote": "missed the save by a single point and was left paralyzed and helpless",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie bites Zalthir for 16 damage.",
+    "source_quote": "The zombie bit Zalthir for 16 damage",
+    "subject": "Zalthir bite damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is missing 16 hit points due to the beholder zombie's bite.",
+    "source_quote": "restoring 15 of the 16 hit points the monk had lost to the creature's savage bite",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Cure Wounds to restore 15 hit points to Zalthir.",
+    "source_quote": "cast Cure Wounds, restoring 15 of the 16 hit points the monk had lost to the creature's savage bite",
+    "subject": "Gyrgum Cure Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the undead creature with unarmed blows for 9 damage.",
+    "source_quote": "strikes the undead creature with unarmed blows for 9 damage",
+    "subject": "Zalthir unarmed damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's feinting attack deals 6 damage to the beholder zombie.",
+    "source_quote": "His feinting attack deals 6 damage",
+    "subject": "Thorin feint damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Hill Strike adds 4 damage to the beholder zombie.",
+    "source_quote": "his Hill Strike adds 4",
+    "subject": "Thorin Hill Strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 6 against a DC 14 Constitution save.",
+    "source_quote": "Gyrgum rolls a 6 on his DC 14 Constitution save",
+    "subject": "Gyrgum Constitution save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 13 on a saving throw and is paralyzed.",
+    "source_quote": "Daz rolls a 13 and is paralyzed",
+    "subject": "Daz Constitution save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Divine Spark deals 4 damage to the beholder zombie.",
+    "source_quote": "The zombie saves but takes 4 damage",
+    "subject": "Divine Spark damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands a critical strike with his fists for 17 damage.",
+    "source_quote": "Zalthir then lands a critical strike with his fists for 17 damage",
+    "subject": "Zalthir critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crew's first crossbow volley lands two bolts for 8 damage.",
+    "source_quote": "The crew's first crossbow volley lands two bolts for 8 damage",
+    "subject": "First crossbow volley",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is left at 24 hit points after the first crossbow volley.",
+    "source_quote": "leaving the zombie at 24 hit points",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the beholder zombie for 9 damage with advantage from being vexed.",
+    "source_quote": "Thorin hits with advantage from vex for 9",
+    "subject": "Thorin attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches the beholder zombie for 5 damage.",
+    "source_quote": "Zalthir punches it for 5",
+    "subject": "Zalthir punch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companion crew's second crossbow volley deals 12 damage to the monster.",
+    "source_quote": "The companion crew's second crossbow volley deals 12 damage",
+    "subject": "Second crossbow volley",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum restores 15 hit points to Zalthir, who had lost 16.",
+    "source_quote": "restoring 15 of the 16 hit points lost",
+    "subject": "healing Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir had lost 16 hit points from the zombie's bite before being healed.",
+    "source_quote": "restoring 15 of the 16 hit points lost",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Two of Brannum's boats had previously vanished and never returned.",
+    "source_quote": "two of his boats had never come back",
+    "subject": "lost boats count",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The interrogation and discovery occur immediately following the battle.",
+    "source_quote": "Following the battle, the party interrogates",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken chest contains 120 silver pieces.",
+    "source_quote": "they found 120 silver",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken chest contains 30 gold pieces.",
+    "source_quote": "and 30 gold pieces",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken chest contains four spell scrolls.",
+    "source_quote": "four spell scrolls",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken chest contains one drifting globe of light.",
+    "source_quote": "and a drifting globe of light",
+    "subject": "treasure chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shield of Faith cast on Thorin lasts for up to 10 minutes.",
+    "source_quote": "+2 AC for up to 10 minutes",
+    "subject": "Shield of Faith duration",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Two more days of paddling pass before the ambush occurs.",
+    "source_quote": "Two more days of paddling brought them",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is within a day of Gracklstugh when the ambush begins.",
+    "source_quote": "within a day of Gracklstugh",
+    "subject": "travel to Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is 22 years old.",
+    "source_quote": "Zalthir (22)",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is 23 years old.",
+    "source_quote": "Daz (23)",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Magic Missiles deal 9 points of damage to the troll.",
+    "source_quote": "striking the troll with bolts of force for 9 damage",
+    "subject": "Daz Magic Missiles damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's technique shoves the troll five feet away from the boat.",
+    "source_quote": "shoved it five feet back",
+    "subject": "Zalthir shove distance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a Strength score of 8.",
+    "source_quote": "Gyrgum's Strength is 8",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party arrives at Gracklstugh on the seventh day of the first tenday of an unspecified month in a specified year, noted as 011.07.",
+    "source_quote": "Arrival at Gracklstugh 011.07",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses 27 platinum pieces.",
+    "source_quote": "27 platinum pieces",
+    "subject": "platinum pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses 1,100 gold pieces.",
+    "source_quote": "1,100 gold pieces",
+    "subject": "gold pieces",
+    "quote_verified": true
+  }
+]

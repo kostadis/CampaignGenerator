@@ -1,0 +1,226 @@
+[
+  {
+    "type": "location",
+    "fact": "The southern passage opens into a vast cavern filled with oozes.",
+    "source_quote": "The southern passage opened into an immense cavern carpeted with more oozes than the party had ever seen",
+    "subject": "southern passage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The cavern is carpeted with an overwhelming number of oozes described as an \"ooza palooza.\"",
+    "source_quote": "an \u201cooza palooza\u201d so overwhelming that a direct battle would certainly kill them",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Green slime coats the walls of the vast cavern.",
+    "source_quote": "Green slime coated the cavern walls",
+    "subject": "ooze cavern walls",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A large spherical structure stands at the center of the cavern, elevated on stone pillars.",
+    "source_quote": "a great spherical structure stood upon stone pillars at the center",
+    "subject": "central spherical structure",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Dozens of oozes crawl around the stone pillars, extending grasping pseudopods.",
+    "source_quote": "Dozens of oozes crawled around those pillars, extending grasping pseudopods",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Black, yellow, and gray slimes swirl across the central sphere in mind-straining patterns.",
+    "source_quote": "black, yellow, and gray slime swirled across the sphere in patterns that strained the eyes and tugged at the mind",
+    "subject": "slimes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A disembodied voice addresses the visitors, invoking the Faceless Lord and Blingdenstone.",
+    "source_quote": "A disembodied voice addressed the visitors and proclaimed the coming of the \u201cFaceless Lord,\u201d invoking the Faceless Lord and all of Blingdenstone",
+    "subject": "disembodied voice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The surrounding oozes urge Glabbagool to join them.",
+    "source_quote": "The surrounding oozes urged Glabbagool to join them",
+    "subject": "ooze invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool refuses to join the oozes.",
+    "source_quote": "but he refused",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool senses something unpleasant about the assembled oozes.",
+    "source_quote": "He liked the party and sensed \u201csomething not nice\u201d about the assembled oozes",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool notes that oozes do not normally talk.",
+    "source_quote": "\u201cOozes don\u2019t talk. Something\u2019s weird.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls that Juiblex is also known as the Faceless Lord.",
+    "source_quote": "Gyrgum recalled that Juiblex was also known as the Faceless Lord",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum connects the scene to a ghost's warning about demons infusing power to generate chaos.",
+    "source_quote": "connected the scene to an earlier ghost\u2019s warning: devils create contracts, while demons infuse creatures or objects with power to generate chaos and mayhem",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party concludes that Juiblex is working through a local proxy rather than appearing personally.",
+    "source_quote": "the party concluded that Juiblex was probably working through a local proxy rather than appearing personally",
+    "subject": "Juiblex's presence",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz summons a bat familiar.",
+    "source_quote": "Daz summoned a bat familiar",
+    "subject": "familiar summoning",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz names the bat familiar Batman.",
+    "source_quote": "and named him Batman",
+    "subject": "Batman",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Batman conducts a breadth-first reconnaissance of the surrounding passages.",
+    "source_quote": "Batman conducted a breadth-first reconnaissance of the surrounding passages",
+    "subject": "Batman scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds abandoned remnants of the old gnomish settlement.",
+    "source_quote": "He found abandoned remnants of the old gnomish settlement",
+    "subject": "abandoned gnomish settlement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds caves occupied by scattered oozes.",
+    "source_quote": "dripping caves occupied by scattered oozes",
+    "subject": "dripping caves",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds wreckage that has been scoured clean.",
+    "source_quote": "wreckage scoured clean",
+    "subject": "scoured wreckage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds the ruins of a fungal partition.",
+    "source_quote": "and the ruins of a fungal partition",
+    "subject": "fungal partition ruins",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Phosphorescent lichen illuminates pools and hanging drapes of green slime in a southwest cave.",
+    "source_quote": "phosphorescent lichen illuminated pools and hanging drapes of green slime",
+    "subject": "lichen cave",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A slime-covered throne faces east in the lichen cave.",
+    "source_quote": "A slime-covered throne faced east at its center",
+    "subject": "slime-covered throne",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A small gnome sits upon the slime-covered throne.",
+    "source_quote": "A small gnome sat upon that throne",
+    "subject": "small gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The small gnome holds court like an insane monarch.",
+    "source_quote": "holding court like an insane monarch",
+    "subject": "small gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome speaks of cleansing Blingdenstone of those who irritated him.",
+    "source_quote": "He spoke of cleansing Blingdenstone of everyone who had irritated him",
+    "subject": "small gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome declares that the Pudding King will become king of Blingdenstone.",
+    "source_quote": "declared that the Pudding King would become king of Blingdenstone",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party recognizes the gnome as the source of the disembodied voice in the main cavern.",
+    "source_quote": "Glabbagool and the party recognized his voice as the one projected through the great ooze cavern",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King does not appear particularly formidable himself.",
+    "source_quote": "The Pudding King himself did not appear particularly formidable",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz receives inspiration for using Batman to identify the enemy without exposure.",
+    "source_quote": "Daz\u2019s use of Batman had allowed the party to identify the enemy without exposing themselves, earning him inspiration",
+    "subject": "reconnaissance reward",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Green slime coats the walls of the main cavern.",
+    "source_quote": "Green slime coated the cavern walls",
+    "subject": "green slime",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Green slime covers pools and hangs in drapes in the lichen cave.",
+    "source_quote": "pools and hanging drapes of green slime",
+    "subject": "green slime",
+    "quote_verified": true
+  }
+]

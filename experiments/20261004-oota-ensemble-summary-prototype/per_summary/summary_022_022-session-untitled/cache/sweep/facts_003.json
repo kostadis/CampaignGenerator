@@ -1,0 +1,107 @@
+[
+  {
+    "type": "event",
+    "fact": "The party takes a short rest in the tunnels.",
+    "source_quote": "The party took a short rest",
+    "subject": "short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir resets his focus points during the short rest.",
+    "source_quote": "which also let Zalthir reset his focus points",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party pushes through a set of large double doors.",
+    "source_quote": "They then pushed through a set of large double doors",
+    "subject": "large double doors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party listens at the double doors and hears nothing loud.",
+    "source_quote": "They listen at the door and hear nothing loud",
+    "subject": "listening at doors",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The double doors are cool to the touch.",
+    "source_quote": "found cool to the touch",
+    "subject": "large double doors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party puts their shoulders into the double doors and pushes them open.",
+    "source_quote": "Then they put their shoulders into it and push it open",
+    "subject": "pushing doors",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Beyond the double doors is a passageway branching right and left.",
+    "source_quote": "Beyond the doors, they find a passageway branching right and left",
+    "subject": "branching passage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber to the east is heavy with animal musk.",
+    "source_quote": "To the east they looked into a chamber heavy with animal musk",
+    "subject": "eastern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three enormous cave bears are resting in cages.",
+    "source_quote": "Three enormous cave bears rested in cages",
+    "subject": "cave bear",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The cave bears are held in cages made of scrap iron.",
+    "source_quote": "cages of scrap iron",
+    "subject": "scrap iron cages",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A spiral path marked by small stone pylons winds through the area toward a tent and a large cauldron.",
+    "source_quote": "A spiral path marked by small stone pylons wound toward a tent and a large cauldron at the center",
+    "subject": "branching passage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A large cauldron sits at the center of the spiral path.",
+    "source_quote": "a large cauldron at the center",
+    "subject": "large cauldron",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two insane derro stand at the cauldron.",
+    "source_quote": "Two insane derro stood at the cauldron",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two derro talk while ignoring each other.",
+    "source_quote": "each talking while ignoring the other",
+    "subject": "derro talking",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM reminds the party that the goal is to get out with the egg while facing as few encounters as possible.",
+    "source_quote": "The GM reminds them that the goal is to get out with the egg while facing as few encounters as possible",
+    "subject": "escape objective",
+    "quote_verified": true
+  }
+]

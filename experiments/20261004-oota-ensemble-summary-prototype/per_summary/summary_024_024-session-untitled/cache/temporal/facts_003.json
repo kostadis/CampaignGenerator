@@ -1,0 +1,121 @@
+[
+  {
+    "type": "event",
+    "fact": "A derro hits Gyrgum with a spear for 5 damage.",
+    "source_quote": "A derro hits Gyrgum with a spear for 5 damage.",
+    "subject": "derro spear damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak fails a check against DC 14 to break free of the earthen hand.",
+    "source_quote": "Narrak tries to break free of the earthen hand but fails against Daz's DC 14.",
+    "subject": "earthen hand check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga lands a battle-axe blow on Thorin for 13 damage.",
+    "source_quote": "Grula-Munga lands a battle-axe blow on Thorin for 13 damage",
+    "subject": "Grula-Munga axe damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga misses her second swing on a 16.",
+    "source_quote": "then misses her second swing on a 16.",
+    "subject": "Grula-Munga second swing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacle strikes for 11 damage twice, slaying the ettin.",
+    "source_quote": "Zalthir's tentacle strikes, 11 and 11 damage, finally slay the two-headed beast.",
+    "subject": "Zalthir tentacle damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir turns his tentacles on Narrak for 11 damage.",
+    "source_quote": "Zalthir turns his tentacles on Narrak for 11 damage.",
+    "subject": "Zalthir tentacle damage on Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew",
+    "subject": "derro acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Second Wind as a bonus action to heal 11 hit points.",
+    "source_quote": "Thorin attacks Narrak using his blindsight and uses Second Wind as a bonus action to heal 11.",
+    "subject": "Thorin Second Wind heal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak fails the Strength save against the magical earthen hand.",
+    "source_quote": "Narrak fails the Strength save",
+    "subject": "Narrak strength save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak takes 5 damage and remains restrained by the magical earthen hand.",
+    "source_quote": "and takes 5 damage, and remains restrained.",
+    "subject": "Narrak restraint damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak attempts to strike Thorin with a spear at disadvantage.",
+    "source_quote": "Narrak attempts to strike Thorin with a spear at disadvantage",
+    "subject": "Narrak spear attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir brings Narrak down to 17 hit points.",
+    "source_quote": "Zalthir brings him down to 17 hit points",
+    "subject": "Zalthir final damage on Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits a derro with his mace for 9 damage.",
+    "source_quote": "Gyrgum casts True Strike and hits a derro with his mace for 9 damage.",
+    "subject": "Gyrgum mace damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals the fatal blow to Narrak for 9 damage.",
+    "source_quote": "Thorin deals the fatal blow for 9 damage.",
+    "subject": "Narrak final damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Narrak was hit for 11 damage by Zalthir's tentacles, 5 damage by the earthen hand, and 9 damage by Thorin's final blow.",
+    "source_quote": "Zalthir turns his tentacles on Narrak for 11 damage... Narrak fails the Strength save and takes 5 damage... Thorin deals the fatal blow for 9 damage",
+    "subject": "Narrak",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga was slain by Zalthir's tentacle strikes dealing 11 damage each.",
+    "source_quote": "Zalthir's tentacle strikes, 11 and 11 damage, finally slay the two-headed beast",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The acid-coated derro died after taking 6 more acid damage.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew and dies",
+    "subject": "acid-coated derro",
+    "quote_verified": true
+  }
+]

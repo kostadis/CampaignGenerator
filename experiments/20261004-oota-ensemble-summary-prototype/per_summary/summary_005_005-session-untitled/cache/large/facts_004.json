@@ -1,0 +1,79 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz and Zalthir freeze after realizing something is wrong behind them.",
+    "source_quote": "Daz and Zalthir both froze. Their passive perception caught something wrong in the darkness behind them.",
+    "subject": "passive perception success",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One insight roll came up a natural 20 and Daz rolled a 17.",
+    "source_quote": "On the follow-up insight rolls, one came up a natural 20 and Daz rolled a 17.",
+    "subject": "insight rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deduces the pursuers are scouts from the prison the party escaped.",
+    "source_quote": "The figures stalking them were scouts from the very prison they had escaped",
+    "subject": "scout identification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deduces that the scouts are Drow from the prison.",
+    "source_quote": "Zalthir's mind raced through what he knew of Drow tactics... The figures stalking them were scouts from the very prison they had escaped",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The Drow scouts appear to have the party's scent.",
+    "source_quote": "The scouts seemed to have their scent.",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolls a natural 20 on a history check.",
+    "source_quote": "A natural-20 history check reminded Zalthir",
+    "subject": "history check success",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls from a monastery tome that killing the scouts will not stop the main hunting party.",
+    "source_quote": "a musty tome from his monastery, which taught that killing the scouts would not stop the main force",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir owns a musty tome from his monastery regarding Drow tactics.",
+    "source_quote": "a musty tome from his monastery",
+    "subject": "musty tome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is unable to mind-control the Drow because he has only four spores.",
+    "source_quote": "Stool cannot mind-control drow, since he has only four spores.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to run rather than hide or ambush.",
+    "source_quote": "the decision was made quickly: they would run.",
+    "subject": "decision to run",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool urges the party to run.",
+    "source_quote": "Stool urged running",
+    "subject": "Stool",
+    "quote_verified": true
+  }
+]

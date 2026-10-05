@@ -1,0 +1,149 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gorglak is a Duergar captain managing a heavily guarded checkpoint.",
+    "source_quote": "a heavily guarded checkpoint managed by a suspicious Duergar captain",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak demands a bribe of twenty gold pieces to allow the party through without a full inspection.",
+    "source_quote": "The captain demands a bribe of twenty gold pieces to allow them through without a full inspection.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak warns that the Deepking fears a drow raiding party.",
+    "source_quote": "Gorglak warned that the Deepking feared a drow raiding party",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak warns that the derro believe the Deepking is behind the unrest.",
+    "source_quote": "the derro believe the Deepking is behind the unrest",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak suggests the party do their business in Gracklstugh quickly and leave.",
+    "source_quote": "Whatever your business in Gracklstugh, I suggest you do it quickly and leave.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak states that he wasn't eager to fight the party if they had taken him on.",
+    "source_quote": "Asked afterward whether they could have taken him, Gyrgum answers: \"I wasn't eager to do it.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum performs the secret Stone Guard salute to prove the party are not the Ember Vanguard.",
+    "source_quote": "To prove they are not the infamous Ember Vanguard, Gyrgum performs the secret Stone Guard salute.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stretches and does vocal exercises before performing the salute.",
+    "source_quote": "He first stretches and does vocal exercises.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum smiles showing off his charisma while ensuring no unauthorized eyes see the rite.",
+    "source_quote": "He keeps watch that no unauthorized eyes see the rite, and smiles \"showing off all that 14 charisma.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking fears a drow raiding party.",
+    "source_quote": "Gorglak warned that the Deepking feared a drow raiding party",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is an infamous faction the party is mistaken for by the guards.",
+    "source_quote": "Gorglak, satisfied that the group was not the Ember Vanguard",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is a faction whose secret salute Gyrgum performs.",
+    "source_quote": "To prove they are not the infamous Ember Vanguard, Gyrgum performs the secret Stone Guard salute.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro are convinced the Deepking is behind the troubles in the city.",
+    "source_quote": "the derro were convinced the Deepking was behind the troubles",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gorglak is identified as a Duergar captain.",
+    "source_quote": "a heavily guarded checkpoint managed by a suspicious Duergar captain",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city the party is entering.",
+    "source_quote": "Whatever your business in Gracklstugh, I suggest you do it quickly and leave.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The back gate swings open after the bribe is paid.",
+    "source_quote": "The back gate swung open",
+    "subject": "back gate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pays twenty gold pieces in total, five from each member, to Gorglak.",
+    "source_quote": "The party paid without argument... The party paid five gold each.",
+    "subject": "bribe payment",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum performs the secret Stone Guard salute to prove they are not the Ember Vanguard.",
+    "source_quote": "Gyrgum performs the secret Stone Guard salute",
+    "subject": "secret salute",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The hidden soldiers quietly stand down after the bribe is paid.",
+    "source_quote": "The party paid without argument, and the hidden soldiers quietly stood down",
+    "subject": "hidden guards stand down",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gate opens into the city proper after the bribe is paid.",
+    "source_quote": "The back gate swung open... The group passed through into the city proper",
+    "subject": "gate opens",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Twenty gold pieces are used as a bribe, with five coming from each party member.",
+    "source_quote": "twenty gold pieces, to be precise (five from each party member)",
+    "subject": "gold pieces",
+    "quote_verified": true
+  }
+]

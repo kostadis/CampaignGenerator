@@ -1,0 +1,303 @@
+[
+  {
+    "type": "monster",
+    "fact": "The crazed Derro grew more frantic with every passing moment.",
+    "source_quote": "The crazed Derro grew more frantic with every passing moment",
+    "subject": "crazed Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crazed Derro shrieked that whoever held the egg held absolute power over them all.",
+    "source_quote": "shrieking that whoever held the egg held absolute power over them all",
+    "subject": "Derro proclamation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One cultist howled for the sacrifice of Gyrgum, demanding his heart be cut out and fed to a dark entity.",
+    "source_quote": "One cultist howled for the sacrifice of Gyrgum, the cleric of Bahamut, demanding his heart be cut out and fed to some dark entity",
+    "subject": "Derro demand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost responded to the cultist's outburst with a chilling voice, causing the cultists to falter.",
+    "source_quote": "The ghost responded to this outburst with a voice that chilled the air, and the cultists faltered",
+    "subject": "ghost intervention",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashed streams of corrosive acid that coated the fumbling Derro and ate away at them.",
+    "source_quote": "Gyrgum unleashed streams of corrosive acid that coated the fumbling Derro and ate away at them with each passing moment",
+    "subject": "acid attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was knocked to the ground more than once by the swarming attackers.",
+    "source_quote": "knocked to the ground more than once by the swarming attackers",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum pulled back from the press and used restorative magic to mend his wounds.",
+    "source_quote": "he finally pulled back from the press and used restorative magic to mend his wounds",
+    "subject": "Gyrgum's healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro Master Thief stood up and struck at the ghost.",
+    "source_quote": "He stands up and strikes at the ghost",
+    "subject": "thief vs ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin took a Sentinel opportunity attack against the Master Thief for 7 damage.",
+    "source_quote": "Thorin takes a Sentinel opportunity attack for 7",
+    "subject": "Thorin's opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief hit the ghost twice, but the ghost's resistance to non-magical attacks halved the damage to 13.",
+    "source_quote": "The thief hits twice, but the ghost's resistance to non-magical attacks halves it to 13",
+    "subject": "thief's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Crazed Derro reinforcements arrived, frantically searching for the missing egg and shouting about its power.",
+    "source_quote": "Crazed Derro reinforcements arrive, frantically searching for the missing egg and shouting about its power",
+    "subject": "Derro reinforcements",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crazed Derro shouted, \"Whoever has the eggs is in charge.\"",
+    "source_quote": "Whoever has the eggs is in charge.",
+    "subject": "Derro shout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An enemy assailed Gyrgum, knocking the cleric to the ground for six damage.",
+    "source_quote": "An enemy assails Gyrgum, knocking the cleric to the ground. ... Six damage",
+    "subject": "attack on Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum failed a DC 9 Strength save and was knocked prone by the attack.",
+    "source_quote": "Gyrgum fails a DC 9 Strength save and is knocked prone",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirmed the attacker rolled with disadvantage (14 and 16, +2) when attacking Gyrgum.",
+    "source_quote": "the GM confirms the attacker rolled with disadvantage (14 and 16, +2)",
+    "subject": "Gyrgum's save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir relentlessly attacked and grappled the Master Thief to halt his movement.",
+    "source_quote": "Zalthir relentlessly attacks and grapples the Master Thief to halt his movement",
+    "subject": "Zalthir's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rerolled a 1 on a d6 damage die, resulting in 5 more damage.",
+    "source_quote": "Rerolls a 1 on a d6 damage die for 5 more",
+    "subject": "Zalthir's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grappled the Master Thief again.",
+    "source_quote": "grapples again",
+    "subject": "Zalthir's grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's two follow-up attacks missed the Master Thief's AC 16, even with Bless.",
+    "source_quote": "two follow-up attacks miss against AC 16 even with Bless",
+    "subject": "Zalthir's misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dropped the Master Thief off the ledge again for 6 damage.",
+    "source_quote": "drops him off the ledge again for 6",
+    "subject": "Zalthir's ledge drop",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Master Thief reacted to being dropped with \"what the?\"",
+    "source_quote": "GM (as the thief): \"what the?\"",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost failed to recharge its possession.",
+    "source_quote": "The ghost fails to recharge possession",
+    "subject": "ghost's possession",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The ghost's withering touch attacks missed because it is blinded.",
+    "source_quote": "its withering touch attacks miss because it is also blinded",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recovered his footing and held his ground.",
+    "source_quote": "Gyrgum recovers his footing and holds his ground",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM and Zalthir's player offered to move the darkness, but Gyrgum declined.",
+    "source_quote": "the GM and Zalthir's player offer to move the darkness, but Gyrgum declines",
+    "subject": "darkness offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum chose to cast Corrosive Acid on two specific Derro (#2 and #4) rather than an area spell.",
+    "source_quote": "Gyrgum unleashes a stream of corrosive acid upon the searching Derro. ... Caustic Brew on #2 and #4; both fail",
+    "subject": "Gyrgum's spell choice",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Derro failed their saves against the acid, and the damage was calculated as the mean of 4 and 6, resulting in five damage each.",
+    "source_quote": "he rolls 4 and 6 and takes \"the mean\" \u2014 five each",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A hidden spy became terrified by the spectral presence and attempted to flee the cavern.",
+    "source_quote": "A hidden spy becomes terrified by the spectral presence and attempts to flee the cavern",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The spy stated, \"There's a ghost \u2026 I've got better things to do.\"",
+    "source_quote": "There's a ghost \u2026 I've got better things to do.",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The spy had been revealed as a spy, which ruined his business.",
+    "source_quote": "he's been revealed as a spy, and that ruins his whole business",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Master Thief still has 30 hit points.",
+    "source_quote": "Told the thief still has 30 hit points",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin delivered a heavy blow to the Master Thief for 13 damage.",
+    "source_quote": "Thorin hits him for 13",
+    "subject": "Thorin's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin stepped forward to shield his companions.",
+    "source_quote": "Thorin delivers a heavy blow to the Master Thief before stepping forward to shield his companions",
+    "subject": "Thorin's action",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party helpers fired short crossbows and all spectacularly missed.",
+    "source_quote": "The party helpers all fire short crossbows \"and they all spectacularly\" miss",
+    "subject": "helpers' attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth hung back from the fight, stating, \"I don't want to get killed.\"",
+    "source_quote": "Eldeth hangs back: \"I don't want to get killed.\"",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz utilized teleportation magic to escape danger.",
+    "source_quote": "Daz utilizes teleportation magic to escape danger",
+    "subject": "Daz's escape",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz safely hid the mysterious egg beneath his robes.",
+    "source_quote": "safely hiding the mysterious egg beneath his robes",
+    "subject": "mysterious egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz attempted to restrain an enemy with a conjured hand of earth.",
+    "source_quote": "Daz attempts to restrain an enemy with a conjured hand of earth",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The enemy targeted by the hand of earth managed to slip free.",
+    "source_quote": "though the target manages to slip free",
+    "subject": "enemy escape",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Enemies rallied against Gyrgum, shouting to eliminate the cleric.",
+    "source_quote": "Enemies rally against Gyrgum, shouting to eliminate the cleric",
+    "subject": "rally against Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The enemies knocked Gyrgum prone once more.",
+    "source_quote": "knocking him prone once more",
+    "subject": "attack on Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum failed another DC 9 Strength save.",
+    "source_quote": "Another failed DC 9 Strength save",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Only one hit landed on Gyrgum for a single point of damage.",
+    "source_quote": "only one hit lands, for a single point",
+    "subject": "Gyrgum's damage",
+    "quote_verified": true
+  }
+]

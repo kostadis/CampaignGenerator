@@ -1,0 +1,163 @@
+[
+  {
+    "type": "event",
+    "fact": "The party moved toward the private residence of Gartokkar.",
+    "source_quote": "the party moved next toward the private residence of Gartokkar",
+    "subject": "party moving toward Gartokkar's residence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is a high-ranking member of the Keepers of the Flame.",
+    "source_quote": "a high-ranking member of the Keepers of the Flame",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are an organization of which Gartokkar is a high-ranking member.",
+    "source_quote": "high-ranking member of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir set his sphere of magical darkness low over the group.",
+    "source_quote": "Zalthir set his sphere of magical darkness low over the group",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir guided the party through the gloom with uncanny precision.",
+    "source_quote": "guided them through the gloom with uncanny precision",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses splitting up to avoid attention but decides to stay together.",
+    "source_quote": "The party discusses splitting up to avoid attention but decides to stay together",
+    "subject": "discussion about splitting up",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The idea of disguising Daz with a hood was floated during the discussion.",
+    "source_quote": "Disguising Daz with a hood was also floated",
+    "subject": "discussion about disguising Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a member of the party for whom a disguise was considered.",
+    "source_quote": "Disguising Daz with a hood was also floated",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wants the egg gone quickly.",
+    "source_quote": "Thorin and Gyrgum both want the egg gone quickly",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wants the egg gone quickly.",
+    "source_quote": "Thorin and Gyrgum both want the egg gone quickly",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM describes the city as Dickensian London.",
+    "source_quote": "The DM describes the city as Dickensian London",
+    "subject": "comparing Gracklstugh to London",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The description of Gracklstugh references the author Charles Dickens.",
+    "source_quote": "Dickensian London",
+    "subject": "Charles Dickens",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir cast a sphere of magical darkness.",
+    "source_quote": "Zalthir casts his sphere of darkness low over the group",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM described Zalthir's casting of the darkness sphere as 'an extremely clever idea.'",
+    "source_quote": "The DM called it \"an extremely clever idea.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir used specialized senses to guide the group through the magical gloom.",
+    "source_quote": "Zalthir uses his specialized senses to guide the group through the magical gloom",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir possesses Shadow Arts that allow him to see within his own Darkness.",
+    "source_quote": "Zalthir's Shadow Arts let him see within his own Darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The residence of Gartokkar is the destination where the party arrives to fulfill their contract regarding the dragon egg.",
+    "source_quote": "The party arrives at the residence of Gartokkar to fulfill their contract regarding the dragon egg",
+    "subject": "residence of Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a dragon egg they intend to deliver.",
+    "source_quote": "fulfill their contract regarding the dragon egg",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stepped back from the interaction at the door.",
+    "source_quote": "Thorin steps back",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin stepped back because he handled the giants.",
+    "source_quote": "since I handled the giants",
+    "subject": "Thorin stepping back",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party knocks on the door of the residence.",
+    "source_quote": "and the party simply knocks",
+    "subject": "knocking on door",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a polluted city with smelters dumping soot into the air.",
+    "source_quote": "smelters dumping soot into the air and poor visibility",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The streets of Gracklstugh are smog-choked and have poor visibility beyond 30 feet.",
+    "source_quote": "smog-choked streets",
+    "subject": "streets of Gracklstugh",
+    "quote_verified": true
+  }
+]

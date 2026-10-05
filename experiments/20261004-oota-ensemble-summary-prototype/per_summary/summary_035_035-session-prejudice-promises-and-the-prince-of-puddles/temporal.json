@@ -1,0 +1,58 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is a day's journey from the outskirts of Blingdenstone.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone",
+    "subject": "Blingdenstone distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a full night's long rest to recover strength.",
+    "source_quote": "the party settled in for a full night\u2019s rest",
+    "subject": "long rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party prepares for a day-long march to Blingdenstone the next morning.",
+    "source_quote": "ready for the day-long march to Blingdenstone",
+    "subject": "travel to Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The staircase approaching Blingdenstone was built to suit three-foot-tall people.",
+    "source_quote": "staircase built for three-foot-tall people",
+    "subject": "Blingdenstone staircase dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The staircase counts as difficult terrain for the party\u2019s larger members.",
+    "source_quote": "stairs were difficult terrain for the larger travelers",
+    "subject": "Blingdenstone staircase difficulty",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The main gate of Blingdenstone is built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine.",
+    "source_quote": "main gate, built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine",
+    "subject": "Blingdenstone gate construction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eight gnomes are guarding the passage beyond the gate.",
+    "source_quote": "see through it to the eight gnomes guarding the passage beyond",
+    "subject": "gnome guard count",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Eight gnome guards are waiting behind the gate at Blingdenstone.",
+    "source_quote": "Eight gnome guards waited behind it.",
+    "subject": "gnome guards",
+    "quote_verified": true
+  }
+]

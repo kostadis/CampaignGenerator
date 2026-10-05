@@ -1,0 +1,16 @@
+[
+  {
+    "type": "object",
+    "fact": "The party finds 170 gold pieces in the chamber.",
+    "source_quote": "Among its sparse loot the party found 170 gold pieces",
+    "subject": "gold loot",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "As an improvised weapon, the baby rattle deals 1d4 damage.",
+    "source_quote": "As a weapon it would count as a rock, doing 1d4 damage",
+    "subject": "baby rattle damage",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,212 @@
+[
+  {
+    "type": "event",
+    "fact": "Everyone agreed to convene a moot within a few hours after Daz used a forceful appeal.",
+    "source_quote": "everyone agreed to convene a moot within a few hours",
+    "subject": "moot convened",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo attended the moot.",
+    "source_quote": "The gathering included Chief Dorbo",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni attended the moot.",
+    "source_quote": "The gathering included ... Senni",
+    "subject": "Senni",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin attended the moot with his Goldwhiskers.",
+    "source_quote": "Chief Chipgrin and his Goldwhiskers",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Nomi Pathshutter attended the moot.",
+    "source_quote": "The gathering included ... Nomi Pathshutter",
+    "subject": "Nomi Pathshutter",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik Tapfinger attended the moot.",
+    "source_quote": "The gathering included ... Gurnik Tapfinger",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik Tapfinger is remembered as the cleric connected to the temple where Pelek had been buried.",
+    "source_quote": "Gurnik was remembered as the cleric connected to the temple where Pelek had been buried",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was buried at the temple where Gurnik Tapfinger is connected.",
+    "source_quote": "Gurnik was remembered as the cleric connected to the temple where Pelek had been buried",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine attended the moot.",
+    "source_quote": "The gathering included ... Kazook Pickshine",
+    "subject": "Kazook Pickshine",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Uth-Jadger is a ghost who attended the moot.",
+    "source_quote": "the ghostly Burrow Warden Uth-Jadger",
+    "subject": "Burrow Warden Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Chipgrin returned with his Goldwhisker entourage.",
+    "source_quote": "Chief Chipgrin returned with his Goldwhisker entourage",
+    "subject": "Chipgrin's return",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Chipgrin's return turned Dorbo's chamber into a crowded political gathering.",
+    "source_quote": "turning Dorbo's chamber into a crowded political gathering",
+    "subject": "crowded chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz used an advantaged appeal and obtained matching results of 17 to secure agreement for the moot.",
+    "source_quote": "Daz used an advantaged appeal and obtained matching results of 17, securing agreement to hold the moot within a few hours",
+    "subject": "Daz's appeal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni asked Daz to call the meeting to order because he was leading the effort.",
+    "source_quote": "Senni called the gathering together, then told Daz, \u201cSince you are leading us, why don't you call the meeting to order, Daz?\u201d",
+    "subject": "Senni asks Daz to lead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is currently leading the effort.",
+    "source_quote": "Since you are leading us",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz formally called the meeting to order.",
+    "source_quote": "Daz formally called the meeting to order",
+    "subject": "Daz calls meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz was prompted to explain what the party had discovered.",
+    "source_quote": "only to be prompted to explain what the party had discovered and what everyone was supposed to do",
+    "subject": "Daz prompted to explain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reported that an amphitheater filled with oozes and slimes lay beneath Blingdenstone.",
+    "source_quote": "Daz reported that an amphitheater filled with oozes and slimes lay beneath Blingdenstone",
+    "subject": "Daz reports oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "An amphitheater filled with oozes and slimes lies beneath Blingdenstone.",
+    "source_quote": "an amphitheater full of oozes lay beneath Blingdenstone",
+    "subject": "amphitheater",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Pudding King is located in the amphitheater beneath Blingdenstone.",
+    "source_quote": "commanded by a Pudding King",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Pudding King is heavily influenced by a demon lord of oozes.",
+    "source_quote": "commanded by a Pudding King heavily influenced by a demon lord of oozes",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A demon lord of oozes is heavily influencing the Pudding King.",
+    "source_quote": "a demon lord of oozes",
+    "subject": "Demon Lord of Oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The corruption from the demon lord of oozes is already affecting Blingdenstone's leaders.",
+    "source_quote": "whose corruption was already affecting the settlement's leaders",
+    "subject": "leaders corrupted",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses magic that might let them remove the Pudding King directly.",
+    "source_quote": "The party possessed magic that might let them remove the Pudding King directly",
+    "subject": "party magic",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposed that every able-bodied gnome stage a full-scale assault on the ooze gathering as a distraction.",
+    "source_quote": "Every able-bodied gnome would launch an apparent full-scale assault on the ooze gathering",
+    "subject": "Daz's plan proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposed that the party move covertly to snatch the Pudding King and end his control.",
+    "source_quote": "while the party moved covertly to \u201csnatch\u201d the Pudding King and end his control",
+    "subject": "Daz's plan proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Uth-Jadger rose and exclaimed, \u201cBravo, Bravo.\u201d",
+    "source_quote": "Uth-Jadger rose and exclaimed, \u201cBravo, Bravo.\u201d",
+    "subject": "Uth-Jadger praises plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Uth-Jadger praised the plan as displaying the technical brilliance once associated with the Burrow Wardens.",
+    "source_quote": "praised the plan as displaying the technical brilliance once associated with the Burrow Wardens",
+    "subject": "Uth-Jadger praises brilliance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Uth-Jadger asked whether anyone doubted that the settlement could prevail only if it fought together.",
+    "source_quote": "asking whether anyone doubted that the settlement could prevail only if it fought together",
+    "subject": "Uth-Jadger asks about unity",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Burrow Wardens were once associated with technical brilliance.",
+    "source_quote": "displaying the technical brilliance once associated with the Burrow Wardens",
+    "subject": "Burrow Wardens",
+    "quote_verified": true
+  }
+]

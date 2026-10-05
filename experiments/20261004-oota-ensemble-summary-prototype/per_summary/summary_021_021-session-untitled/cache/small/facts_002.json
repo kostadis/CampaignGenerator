@@ -1,0 +1,212 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a red dragon who is close to the King.",
+    "source_quote": "Led by Gartokkar and close to the king",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud would likely burn the city to cinders if he learned of the egg.",
+    "source_quote": "hungered for information and would likely burn the city to cinders if he learned of the egg",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a Religion check to determine Themberchaud's likely reaction, achieving an 18.",
+    "source_quote": "he rolled his dragon check with Religion instead, for an 18",
+    "subject": "Themberchaud information check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the leader of the Stone Guard.",
+    "source_quote": "Errde Blackskull. The Stone Guard's leader",
+    "subject": "Errde Blackskull",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull wants proof that the Council of Savants is behind the city's corruption.",
+    "source_quote": "wanted proof that the Council of Savants was behind the city's corruption",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would march on the King if she learned the King supports the Assassin's Guild.",
+    "source_quote": "she would almost certainly march on the king himself if she learned the full truth",
+    "subject": "Errde Blackskull",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Assassin's Guild is being supported by the King despite publicly not existing.",
+    "source_quote": "the Assassin's Guild \"that doesn't exist\" was actually being supported by the king",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would try to kill all the derro if told only about their demonic dealings.",
+    "source_quote": "she would try to kill all the derro",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are led by Gartokkar and are close to the King.",
+    "source_quote": "Led by Gartokkar and close to the king",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want their egg returned.",
+    "source_quote": "they simply wanted their egg returned",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are looking for an excuse to commit genocide against the derro.",
+    "source_quote": "looking for an excuse to go genocidal on the derro",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame warned they would pursue the party indefinitely if the egg is not returned.",
+    "source_quote": "would pursue the party \"to the end of time\" if it was not returned",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is a leader of the Keepers of the Flame.",
+    "source_quote": "Led by Gartokkar",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has already dealt with the assassin gangster who wanted to be scrubbed from the assassins' list.",
+    "source_quote": "The party had already dealt with the man who wanted to be scrubbed from the assassins' list",
+    "subject": "assassin gangster resolution",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is a weaponsmithing clan that is pro-gnome.",
+    "source_quote": "Clan Ironhead, a weaponsmithing clan that would happily deal with the gnomes",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead would deal happily with gnomes if the Deepking were removed.",
+    "source_quote": "if the Deepking were removed",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled that the dragon egg will hatch of its own accord in forty-four weeks.",
+    "source_quote": "the egg would hatch of its own accord in forty-four weeks",
+    "subject": "egg hatching timeline",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Lesser restoration does not lift the demonic corruption on the egg.",
+    "source_quote": "Lesser restoration would not lift the demonic corruption",
+    "subject": "demonic corruption status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum resolved to consult his superiors about demonic dragons.",
+    "source_quote": "Gyrgum resolved to consult his superiors about demonic dragons",
+    "subject": "Gyrgum's consultation plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin wished aloud for a little baby dragon.",
+    "source_quote": "Thorin wished aloud for a little baby dragon",
+    "subject": "Thorin's comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin apologised to Zalthir for his comment about wanting a baby dragon.",
+    "source_quote": "Thorin apologised, saying he hadn't realised it came out that way",
+    "subject": "Thorin's apology",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir felt dissed by Thorin's wish for a baby dragon.",
+    "source_quote": "Zalthir was \"feeling a little bit like, you know, dissed right now\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to return the egg to Gartokkar.",
+    "source_quote": "They would return the egg to Gartokkar",
+    "subject": "party decision on egg",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party hopes the egg might be parlayed into rights to buy minerals for the gnomes.",
+    "source_quote": "the egg might be parlayed into rights to buy the minerals the gnomes wanted",
+    "subject": "mineral trade rights",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to tell the Keepers they found no evidence of who was behind the theft.",
+    "source_quote": "They would tell the Keepers they had found no evidence of who was behind the theft",
+    "subject": "lie to Keepers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party will keep the incriminating list connecting the Deepking to the Assassin's Guild hidden from Errde Blackskull.",
+    "source_quote": "The incriminating list connecting the Deepking to the Assassin's Guild would stay hidden from Errde's volatile temper",
+    "subject": "concealing list from Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hopes to leave Clan Ironhead in a stronger position.",
+    "source_quote": "Clan Ironhead was the one faction Zalthir hoped to leave in a stronger position",
+    "subject": "Zalthir's hope",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a follower of Bahamut.",
+    "source_quote": "As a follower of Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has only a -1 modifier in Nature.",
+    "source_quote": "Gyrgum had only a \u22121 in Nature",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin summed up the party's approach as meeting responsibilities without causing unnecessary chaos.",
+    "source_quote": "meet our responsibilities, but don't go above and beyond and don't, you know, light shit on fire",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

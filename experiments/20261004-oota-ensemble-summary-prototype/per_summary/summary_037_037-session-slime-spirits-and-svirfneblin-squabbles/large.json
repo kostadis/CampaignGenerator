@@ -1,0 +1,1150 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is currently located in Diggermattock Hall.",
+    "source_quote": "The party found themselves in Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is the leader of the mining coalition.",
+    "source_quote": "Chief Dorbo, leader of the mining coalition",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is engaged in a heated discussion with Senni.",
+    "source_quote": "Chief Dorbo and Senni engaged in a heated discussion",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo states that mining has proceeded apace since the gnomes returned to Blingdenstone.",
+    "source_quote": "mining had proceeded apace since the gnomes returned",
+    "subject": "mining status report",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Ooze infestations are hindering mining operations and housing construction in Blingdenstone.",
+    "source_quote": "ooze infestations were hindering both mining operations and the construction of housing",
+    "subject": "ooze infestation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni represents the non-mining population of Blingdenstone.",
+    "source_quote": "Senni, representing the non-mining population",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni confronts Chief Dorbo about his failure to address the ooze problem.",
+    "source_quote": "Senni, representing the non-mining population, confronted him about his failure to adequately address the problem",
+    "subject": "Senni confronts Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo volunteers the adventurers to solve the ooze infestation.",
+    "source_quote": "Dorbo insisted that he was taking action\u2014by volunteering the adventurers to solve it",
+    "subject": "Dorbo volunteers party",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party settles on the name 'The Ash Enclave' as a cooler-colored counterpart to the Ember Vanguard.",
+    "source_quote": "they settled for the moment on the Ash Enclave",
+    "subject": "Ash Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ash Enclave may incorporate phoenix imagery.",
+    "source_quote": "with possible phoenix imagery",
+    "subject": "Ash Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party questions whether the busy gnomes are productive or merely busy.",
+    "source_quote": "questioned whether the bustling gnomes around them were productive or merely busy",
+    "subject": "gnome productivity",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM states that the gnomes themselves cannot confidently resolve the question of their own productivity.",
+    "source_quote": "the gnomes themselves might not have known",
+    "subject": "gnome productivity",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard advises the party to travel through the Traders' Grotto.",
+    "source_quote": "A guard explained that the party should travel through the Traders' Grotto",
+    "subject": "Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard instructs the party to investigate beyond a stone wall where the oozes originate.",
+    "source_quote": "investigate beyond a stone wall near the area from which the oozes seemed to be coming",
+    "subject": "Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard initially indicates the wrong location on the map before correcting himself.",
+    "source_quote": "The guard initially indicates the wrong place on the map before correcting himself",
+    "subject": "guard corrects map",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhisker Clan is a group of gnomes rumored to be wererats.",
+    "source_quote": "tensions regarding the Goldwhisker Clan, a group of gnomes rumored to be wererats",
+    "subject": "Goldwhisker Clan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhisker Clan previously occupied part of the area where Dorbo's faction now resides.",
+    "source_quote": "The Goldwhiskers had occupied part of the area before Dorbo's faction returned",
+    "subject": "Goldwhisker Clan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo's faction drove out the Drow and subsequently excluded the Goldwhisker Clan from their former territory.",
+    "source_quote": "drove out the Drow, after which the newcomers effectively excluded the clan from its former territory",
+    "subject": "Goldwhisker displacement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo refuses to cooperate with the Goldwhisker Clan.",
+    "source_quote": "Chief Dorbo refused to cooperate with them",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni appears open to reconciliation with the Goldwhisker Clan.",
+    "source_quote": "Senni appeared more open to reconciliation",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party characterizes the situation regarding the Goldwhiskers as colonization.",
+    "source_quote": "characterized the situation as colonization",
+    "subject": "party characterizes conflict",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum sarcastically argues that the Goldwhiskers failed to make sufficiently efficient use of prime real estate.",
+    "source_quote": "Gyrgum sarcastically argues that the wererats had occupied 'some prime real estate' without making ideal use of it",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "A representative of Chief Dorbo calls Gyrgum's sarcasm 'well put' and confirms it captures Dorbo's position.",
+    "source_quote": "Dorbo's representative calls this 'well put' and says it captures Chief Dorbo's position exactly",
+    "subject": "Dorbo's representative",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Blingdenstone's political structure is likened to a business consortium led by Dorbo existing alongside a civilian community led by Senni.",
+    "source_quote": "The political structure is likened to a business consortium led by Dorbo existing alongside a civilian community led by Senni",
+    "subject": "Blingdenstone political structure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost traveling with the party.",
+    "source_quote": "honor a promise made to Pelek, a ghost who had been traveling with them",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was killed by Buppido.",
+    "source_quote": "Buppido had killed Pelek",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek wants his remains to be properly interred.",
+    "source_quote": "Pelek came to Blingdenstone specifically so his remains could be laid to rest",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum carries a bag containing Pelek's bones.",
+    "source_quote": "Gyrgum carried a small bag of his surviving bones",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's bones are described as 'Catholic relic size' rather than a complete skeleton.",
+    "source_quote": "small bag of his surviving bones\u2014\u201cCatholic relic size,\u201d rather than a complete skeleton",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's bones fit in a pouch.",
+    "source_quote": "The remains are small enough to fit in a pouch",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's ghost addresses Gyrgum regarding the bones.",
+    "source_quote": "Pelek's ghost addresses Gyrgum about the bones",
+    "subject": "Pelek asks Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum confirms he still has Pelek's bones.",
+    "source_quote": "Gyrgum confirms that the bones are still in his bag",
+    "subject": "Gyrgum confirms possession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek impatiently asks if they can go to the cemetery now.",
+    "source_quote": "Pelek impatiently asks whether they can go to the cemetery now",
+    "subject": "Pelek's impatience",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard explains the location of the cemetery to the party.",
+    "source_quote": "A guard explains that the cemetery is beside the temple known as the Ruby in the Rough",
+    "subject": "Blingdenstone guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks a guard where the cemetery is.",
+    "source_quote": "Gyrgum asks a guard where the cemetery is",
+    "subject": "Gyrgum asks guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum announces he has a deposit to make before rephrasing it as interring bones.",
+    "source_quote": "announcing, \u201cI got a deposit to make,\u201d before acknowledging how awkward that sounds and rephrasing it as having bones to inter",
+    "subject": "Gyrgum's remark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes that Saint Pelek might have toe bones in many places or seven sternums.",
+    "source_quote": "The party jokes that Saint Pelek might have toe bones in many places or even seven sternums",
+    "subject": "party joke",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Ruby in the Rough is a temple dedicated to Segojan Earthcaller.",
+    "source_quote": "The temple is dedicated to Segojan Earthcaller, the Svirfneblin god of deep earthen nature",
+    "subject": "Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Segojan Earthcaller is the Svirfneblin god of deep earthen nature.",
+    "source_quote": "Segojan Earthcaller, the Svirfneblin god of deep earthen nature",
+    "subject": "Segojan Earthcaller",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blingdenstone cemetery is beside the temple known as the Ruby in the Rough.",
+    "source_quote": "the cemetery is beside the temple known as the Ruby in the Rough",
+    "subject": "Blingdenstone cemetery",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blingdenstone cemetery is on the way to the Traders' Grotto.",
+    "source_quote": "Because the cemetery is on the way to the Traders' Grotto",
+    "subject": "Blingdenstone cemetery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to fulfill its promise to Pelek before pursuing the ooze quest.",
+    "source_quote": "the party decides to fulfill its promise before pursuing the ooze quest",
+    "subject": "decision to honor promise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party plans to embark on an ooze hunt after visiting the cemetery.",
+    "source_quote": "Before embarking on the ooze hunt, the party decided to honor a promise made to Pelek",
+    "subject": "ooze hunt",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Temple of the Ruby in the Rough is dedicated to Segojan Earthcaller.",
+    "source_quote": "cemetery beside the Temple of the Ruby in the Rough, dedicated to Segojan Earthcaller",
+    "subject": "Temple of the Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glyphic Shroomlight is a priest at the cemetery.",
+    "source_quote": "met Glyphic Shroomlight, a priest",
+    "subject": "Glyphic Shroomlight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is deceased.",
+    "source_quote": "remains of someone he did not know",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum jingles a bag to prove possession of Pelek's bones.",
+    "source_quote": "Gyrgum jingled the bag to establish that he did, in fact, possess Pelek's bones",
+    "subject": "Gyrgum jingles bag",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's ghost materializes to speak with the priest.",
+    "source_quote": "When Pelek's ghost materialized",
+    "subject": "Pelek materializes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glyphic Shroomlight agrees to make an exception to the burial rules to avoid being haunted.",
+    "source_quote": "realized that refusing might leave him haunted for years and quickly made an exception",
+    "subject": "Glyphic agrees to interment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glyphic Shroomlight asks Glabbagool to remain upstairs to prevent accidents among the graves.",
+    "source_quote": "asking only that Glabbagool remain upstairs to prevent accidents among the graves",
+    "subject": "Glabbagool stays upstairs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool agrees to wait upstairs.",
+    "source_quote": "Glabbagool agreed: \u201cOkay. But if you need anything cleaned, I'm here.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The catacombs are located below the temple and contain numerous sealed tombs.",
+    "source_quote": "He directed the party to the catacombs below",
+    "subject": "catacombs",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a large skull decoration at the north end of the burial chambers.",
+    "source_quote": "burial chambers containing numerous sealed tombs and a large skull decoration at the north end",
+    "subject": "catacombs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek expresses relief at reaching the end of his journey.",
+    "source_quote": "Pelek expressed profound relief at reaching the end of his journey",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was murdered by Buppido.",
+    "source_quote": "after being murdered by \u201cBuppido, who is really an annoying person.\u201d",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek feared he was permanently lost and doomed to torment people forever.",
+    "source_quote": "He had feared that he was permanently lost and doomed to torment people forever",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek confirms he plans to go to wherever he is supposed to go next.",
+    "source_quote": "Pelek confirms, \u201cYes, I plan to go to wherever I'm supposed to go next.\u201d",
+    "subject": "Pelek confirms afterlife plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek states that putting the bones down and covering them with dirt is sufficient.",
+    "source_quote": "\u201cJust, you know, put the bones down, cover them up with some dirt, and I'll be fine.\u201d",
+    "subject": "Pelek burial request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum finds a quiet corner and scoops out a shallow resting place for the remains.",
+    "source_quote": "Gyrgum found a quiet corner where the remains would not be stepped on, scooped out a shallow resting place",
+    "subject": "Gyrgum prepares burial",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum performs a dragon-themed ritual.",
+    "source_quote": "performed an appropriate dragon-themed ritual",
+    "subject": "Gyrgum ritual",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum plants a gold coin with the bones to serve as the foundation for Pelek's word.",
+    "source_quote": "planted a gold coin with the bones as the foundation for his word",
+    "subject": "Gold coin planted",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gold coin was planted with Pelek's bones.",
+    "source_quote": "planted a gold coin with the bones",
+    "subject": "gold coin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek tells the group it has been pleasant to travel with them.",
+    "source_quote": "\u201cIt's been very pleasant to travel with all of you. But I really do want to end my journey.\u201d",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's spirit fades away after the party says their goodbyes.",
+    "source_quote": "After the party said their goodbyes, his spirit faded away",
+    "subject": "Pelek fades",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party performs rites and says farewells.",
+    "source_quote": "The party performs the appropriate rites and says its farewells",
+    "subject": "Party farewell",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is no longer present as a ghost, having faded away.",
+    "source_quote": "his spirit faded away",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Another ghost materializes shortly after Pelek disappears.",
+    "source_quote": "another ghost materializes",
+    "subject": "New ghost appears",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger is a three-foot-tall ghost who materializes in the catacombs.",
+    "source_quote": "Burrow Warden Jadger, a three-foot-tall spirit",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger uses he/him pronouns.",
+    "source_quote": "Jadger identifies his pronouns as he/him",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger defended Blingdenstone against the Drow, oozes, and other Underdark threats.",
+    "source_quote": "who had once defended Blingdenstone against the Drow, oozes, and countless other Underdark threats",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger has established a new generation of Wardens since Blingdenstone's recapture.",
+    "source_quote": "Since Blingdenstone's recapture, he had taken it upon himself to establish a new generation of Wardens",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger is secretly training promising young gnomes.",
+    "source_quote": "secretly training promising young gnomes",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger describes himself as an expert on the Underdark and fighting its denizens.",
+    "source_quote": "Jadger describes himself as an expert on the Underdark and its denizens, as well as on methods for fighting them",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger appears immediately after Pelek's interment.",
+    "source_quote": "Almost immediately, another ghost appeared: Burrow Warden Jadger",
+    "subject": "Jadger appears",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger identifies Zalthir as a potentially excellent asset because he carries no weapons.",
+    "source_quote": "Jadger identified Zalthir as a potentially excellent asset because the monk carried no weapons",
+    "subject": "Jadger identifies Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger floats upward to make himself more imposing while explaining the Wardens' history.",
+    "source_quote": "Jadger floats upward to make himself more imposing while explaining",
+    "subject": "Jadger floats up",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Burrow Wardens were Blingdenstone's first and last line of defense.",
+    "source_quote": "the Burrow Wardens had been Blingdenstone's first and last line of defense",
+    "subject": "Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Most Burrow Wardens died during the Drow invasion and the rest during the gnomes' flight.",
+    "source_quote": "with most dying during the Drow invasion and the rest during the gnomes' flight from the city",
+    "subject": "Burrow Wardens casualties",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger offers to answer one question for every ghost the party puts to rest.",
+    "source_quote": "Jadger offered the party a bargain: for every ghost they put to rest in the community, he would answer one question",
+    "subject": "Jadger's bargain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's interment counts as the first completed task, granting the party one question.",
+    "source_quote": "Pelek counted as their first completed task",
+    "subject": "Pelek task completion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger mentions there are two more ghosts the party can help for two additional questions.",
+    "source_quote": "Jadger knew of two more ghosts they could help if they wanted further answers",
+    "subject": "Additional ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party becomes anxious about wasting their question, comparing the deal to a genie arrangement.",
+    "source_quote": "The party immediately became anxious about accidentally wasting their lone question, treating the offer like a dangerous genie arrangement",
+    "subject": "Party anxiety",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum avoids asking a question to avoid being fooled by a 'genie situation'.",
+    "source_quote": "Gyrgum avoids asking how many mysteries there are because \u201cthis feels like a genie situation",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger rejects the genie comparison, stating his identity.",
+    "source_quote": "\u201cI'm not some trivial genie. I am Burrow Warden Jadger.\u201d",
+    "subject": "Jadger's denial",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger claims to know forgotten facts about the Underdark.",
+    "source_quote": "he knew things about the Underdark \u201cthat other people have forgotten were things.\u201d",
+    "subject": "Jadger's knowledge claim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger reveals that Chief Dorbo and Senni know how to leave the Underdark.",
+    "source_quote": "Jadger also casually reveals that Chief Dorbo and Senni know how to leave the Underdark",
+    "subject": "Exit route info",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo knows how to leave the Underdark.",
+    "source_quote": "Chief Dorbo and Senni know how to leave the Underdark",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni knows how to leave the Underdark.",
+    "source_quote": "Chief Dorbo and Senni know how to leave the Underdark",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to ask how best to deal with the ooze infestation.",
+    "source_quote": "the party decides to ask how best to deal with the oozes",
+    "subject": "Question selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger explains that ordinary oozes are solitary creatures.",
+    "source_quote": "Jadger explains that ordinary oozes are solitary",
+    "subject": "Jadger on oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A large, coordinated mass of oozes is profoundly abnormal.",
+    "source_quote": "a large, coordinated mass of them was profoundly abnormal",
+    "subject": "Ooze behavior",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger advises sending a strike force to investigate what is directing the oozes.",
+    "source_quote": "His initial advice was to send a carefully organized strike force to investigate what was directing this behavior",
+    "subject": "Jadger's initial advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir mentions a possible connection to Juiblex.",
+    "source_quote": "When Zalthir mentioned a possible connection to Juiblex",
+    "subject": "Zalthir's mention of Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger offers clarification on Juiblex in exchange for a demonstration of a monk technique.",
+    "source_quote": "Jadger offered further clarification in exchange for a demonstration of a monk technique",
+    "subject": "Demonstration bargain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir performs the monk technique for Jadger.",
+    "source_quote": "Zalthir obliged, impressing the ghost",
+    "subject": "Zalthir's demonstration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger mimics the monk movements incorrectly with his fists.",
+    "source_quote": "Jadger began mimicking the movements with his fists in all the wrong ways",
+    "subject": "Jadger mimics poorly",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger launches into a rambling demon story.",
+    "source_quote": "After an extended, rambling demon story",
+    "subject": "Jadger's demon story",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger explains that devils make deals and personally corrupt people seeking ungodly power.",
+    "source_quote": "\u201cDevils make deals,\u201d personally corrupting people who seek ungodly power",
+    "subject": "Devils explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger explains that demons imbue benighted souls with power to cause destruction.",
+    "source_quote": "while demons imbue benighted souls with terrifying power and then delight in the widespread destruction they cause",
+    "subject": "Demons explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger advises the party to search for the person or thing motivating the oozes.",
+    "source_quote": "He advised the party to search for the person or thing motivating the oozes",
+    "subject": "Jadger's recommendation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger believes Juiblex empowered a proxy or intermediate agent rather than controlling the oozes directly.",
+    "source_quote": "Jadger had probably empowered a proxy or intermediate agent",
+    "subject": "Juiblex proxy theory",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jadger recommends consulting a young gnome trainee who will become leader of the new Wardens.",
+    "source_quote": "Jadger also recommended that... speak with a young gnome he was mentoring",
+    "subject": "Mentor recommendation",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The young gnome trainee is too young for the current mission but may have insights later.",
+    "source_quote": "The trainee is too young for the present mission but may have useful insights",
+    "subject": "Young gnome trainee",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The route out of Blingdenstone is well known.",
+    "source_quote": "the route is well known",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party leaves the catacombs declaring that the ooze crew is on the march.",
+    "source_quote": "the self-appointed \u201cooze crew\u201d made their way to the Traders' Grotto",
+    "subject": "party departure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party riffs on the slogan: \u201cWhen something's oozing in the neighborhood, who are you going to call? The ooze crew.\u201d",
+    "source_quote": "When something's oozing in the neighborhood, who are you going to call? ... The ooze crew",
+    "subject": "ooze crew motto",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A sergeant guides the party through the cavern to the Traders' Grotto.",
+    "source_quote": "A sergeant guided them through the cavern",
+    "subject": "sergeant guidance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant proudly provides historical and cultural commentary throughout the tour.",
+    "source_quote": "proudly explaining that fungi had once grown in its moist environment",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Traders' Grotto is Blingdenstone's bustling central market.",
+    "source_quote": "the Traders' Grotto, Blingdenstone's bustling central market",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Fungi once grew in the Traders' Grotto's moist environment until a medusa's spell petrified them centuries ago.",
+    "source_quote": "fungi had once grown in its moist environment until a medusa's spell petrified them centuries ago",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A medusa's spell petrified the fungi in the Traders' Grotto centuries ago.",
+    "source_quote": "until a medusa's spell petrified them centuries ago",
+    "subject": "medusa petrification",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A medusa was responsible for petrifying the fungi in the Traders' Grotto centuries ago.",
+    "source_quote": "until a medusa's spell petrified them centuries ago",
+    "subject": "medusa",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Merchants operate makeshift stalls among the stone growths in the grotto.",
+    "source_quote": "Merchants now operated makeshift stalls among the stone growths",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Arriving caravans lower cargo into warehouses carved beneath the grotto.",
+    "source_quote": "arriving caravans lowered cargo into warehouses carved beneath the grotto",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Merchants hawk and barter their wares among the stone growths.",
+    "source_quote": "hawking and bartering their wares",
+    "subject": "market commerce",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Ordinary goods are available for purchase in the market.",
+    "source_quote": "Ordinary goods ... were available",
+    "subject": "Traders' Grotto",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "Common and perhaps some uncommon potions are available in the market.",
+    "source_quote": "some common\u2014and perhaps a few uncommon\u2014potions were available",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The market is not a magical-item shop and has no extraordinary items openly for sale.",
+    "source_quote": "it was not a magical-item shop ... nothing particularly extraordinary is openly for sale",
+    "subject": "Traders' Grotto",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gnome merchants regard Glabbagool with considerable suspicion.",
+    "source_quote": "The merchants eyed Glabbagool suspiciously",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party revisits its new name, shifting from the Ash Enclave to alternatives.",
+    "source_quote": "The party revisits its new name, shifting from the Ash Enclave toward \u201cAsh Vanguard\u201d",
+    "subject": "name deliberation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests the name Ash Vanguard.",
+    "source_quote": "shifting from the Ash Enclave toward \u201cAsh Vanguard\u201d",
+    "subject": "name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests the name Ash Peloton.",
+    "source_quote": "alternatives such as the Ash Vanguard, Ash Peloton",
+    "subject": "name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests the name Ash Rearguard.",
+    "source_quote": "and the unfortunately phrased Ash Rearguard",
+    "subject": "name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The name Ash Rearguard is rejected because it is unlikely to age well.",
+    "source_quote": "\u201cAsh Rearguard\u201d is rejected as particularly unlikely to age well",
+    "subject": "name rejection",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Several non-sentient gelatinous cubes emerge from the rocks in the Traders' Grotto.",
+    "source_quote": "several non-sentient gelatinous cubes oozed out of the rocks",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The appearance of the gelatinous cubes causes mass panic among the gnome merchants.",
+    "source_quote": "causing mass panic. Gnomes scattered",
+    "subject": "gnome panic",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Panicked gnomes point accusingly at Glabbagool.",
+    "source_quote": "some pointed accusingly at Glabbagool",
+    "subject": "gnomes blame Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool explains that he is not one of the attacking gelatinous cubes.",
+    "source_quote": "while he tried to explain that he was not one of the attackers",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool describes the attacking cubes as 'mindless, silly creatures' giving intelligent gelatinous cubes a bad name.",
+    "source_quote": "mindless, silly creatures\u201d giving intelligent gelatinous cubes a bad name",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool advises the party not to be engulfed by the cubes.",
+    "source_quote": "He advised the party not to be engulfed",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool advises using acid protection if available.",
+    "source_quote": "use acid protection if they had it",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool advises pulling trapped victims out as quickly as possible.",
+    "source_quote": "pull out anyone who became trapped as quickly as possible",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes one gelatinous cube with two powerful blows.",
+    "source_quote": "struck one cube with two powerful blows",
+    "subject": "Zalthir attacks cube",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dashes back before the cube's pseudopod can hit him.",
+    "source_quote": "dashed back before its pseudopod could hit him",
+    "subject": "Zalthir retreats",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first gelatinous cube misses its opportunity attack against Zalthir at disadvantage.",
+    "source_quote": "The cube's opportunity attack is made at disadvantage and misses",
+    "subject": "gelatinous cube 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hurles darts at the cubes while keeping his distance.",
+    "source_quote": "Thorin kept his distance and hurled darts",
+    "subject": "Thorin attacks with darts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Vex to gain an advantage on a follow-up attack.",
+    "source_quote": "using Vex to gain an advantage on his follow-up attack",
+    "subject": "Thorin uses Vex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer questions Thorin's performance with the question 'Is that the best you can do?'",
+    "source_quote": "Is that the best you can do?\"",
+    "subject": "Dawnbringer criticizes Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states his relationship with Dawnbringer is 'purely platonic.'",
+    "source_quote": "insists that his relationship with Dawnbringer is \u201cpurely platonic",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum raises his holy symbol and channels Divine Spark as necrotic force.",
+    "source_quote": "Gyrgum raised his holy symbol and channeled Divine Spark as necrotic force",
+    "subject": "Gyrgum casts Divine Spark",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One cube takes necrotic damage from Gyrgum's Divine Spark.",
+    "source_quote": "it still takes necrotic damage",
+    "subject": "gelatinous cube 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One cube advances and engulfs a gnome.",
+    "source_quote": "engulfing gnome merchants",
+    "subject": "gnome engulfed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One gnome dies and begins dissolving inside a cube.",
+    "source_quote": "one gnome died and began dissolving inside a cube",
+    "subject": "gnome death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The dead gnome is dissolving inside a gelatinous cube.",
+    "source_quote": "one gnome died and began dissolving inside a cube",
+    "subject": "dead gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Multiple gnomes manage to escape the cubes and flee.",
+    "source_quote": "multiple victims manage to escape and flee",
+    "subject": "escaped gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool moves toward the battle to demonstrate he is on 'team sentience.'",
+    "source_quote": "Glabbagool began making his way toward the battle to demonstrate that he was firmly on \u201cteam sentience",
+    "subject": "Glabbagool moves to combat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz places a Fireball among the cubes once civilians are clear.",
+    "source_quote": "Daz carefully placed a Fireball among the cubes",
+    "subject": "Daz casts first Fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Most gelatinous cubes are exposed to the full force of Daz's Fireball due to poor Dexterity.",
+    "source_quote": "Their abysmal agility left them badly burned",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One gelatinous cube partially avoids the first Fireball.",
+    "source_quote": "one partially avoided the blast",
+    "subject": "gelatinous cube 3",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir activates his Eldritch Claw Tattoo, causing tentacle-like extensions to grow from his hands.",
+    "source_quote": "activating his Eldritch Claw Tattoo, causing tentacle-like extensions to grow from his hands",
+    "subject": "Zalthir activates Eldritch Claw Tattoo",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool notes that Zalthir has pseudopods too.",
+    "source_quote": "Glabbagool exclaimed, \u201cYou've got pseudopods too",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool sincerely asks Zalthir if he is an ooze.",
+    "source_quote": "sincerely asked whether Zalthir was an ooze",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir responds that he is not an ooze, but an 'aspiring ooze.'",
+    "source_quote": "No, no, just an aspiring ooze. Let's say that",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Dawn is determined to be about an hour away.",
+    "source_quote": "A fortuitous time determination places dawn about an hour away",
+    "subject": "dawn time",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his extended eldritch claw to strike from range.",
+    "source_quote": "Zalthir uses his extended eldritch claw to finish the last cube just as Thorin prepares to attack",
+    "subject": "Zalthir strikes at range",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's ranged strikes destroy one cube.",
+    "source_quote": "Zalthir's ranged strikes destroy one cube",
+    "subject": "Zalthir destroys cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One gelatinous cube is destroyed by Zalthir's ranged strikes.",
+    "source_quote": "Zalthir's ranged strikes destroy one cube",
+    "subject": "gelatinous cube 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz positions and casts a second Fireball to catch the remaining cubes without hitting bystanders.",
+    "source_quote": "Daz painstakingly measures another safe blast point and casts a second Fireball, catching the remaining cubes without harming bystanders",
+    "subject": "Daz casts second Fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second Fireball dissolves one gelatinous cube.",
+    "source_quote": "The blast dissolved one cube",
+    "subject": "Cube dissolved by Fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One gelatinous cube is dissolved by the second Fireball.",
+    "source_quote": "The blast dissolved one cube",
+    "subject": "gelatinous cube 5",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The final gelatinous cube is left with a single hit point after the second Fireball.",
+    "source_quote": "left the last with a single hit point",
+    "subject": "gelatinous cube 6",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes the last cube from afar with his eldritch claw.",
+    "source_quote": "Zalthir casually finished it from afar with his eldritch claw",
+    "subject": "Zalthir finishes cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last gelatinous cube is killed by Zalthir's eldritch claw.",
+    "source_quote": "Zalthir casually finished it from afar with his eldritch claw",
+    "subject": "gelatinous cube 6",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin complains that Zalthir finished the cube before he could strike.",
+    "source_quote": "Damn it. Let me have this",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "type": "event",
+    "fact": "Jimjar wagers five empty spell gems against the party regarding the meeting with the clan leaders.",
+    "source_quote": "I\u2019ll bet you five empty spell gems that meeting with them is the right thing to do.",
+    "subject": "Jimjar bet wager",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wager involves five empty spell gems.",
+    "source_quote": "I\u2019ll bet you five empty spell gems",
+    "subject": "empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Jimjar describes the deep gnome settlement as having an extensive ooze infestation with many oozes present.",
+    "source_quote": "there\u2019s tons of them around",
+    "subject": "Blingdenstone ooze infestation",
+    "quote_verified": true
+  }
+]

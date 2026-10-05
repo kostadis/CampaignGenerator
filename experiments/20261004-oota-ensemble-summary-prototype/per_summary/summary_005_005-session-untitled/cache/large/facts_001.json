@@ -1,0 +1,177 @@
+[
+  {
+    "type": "event",
+    "fact": "The party works to free companions from rubble after a rockfall.",
+    "source_quote": "The aftermath of the rockfall left the party scrambling to pull their companions from the rubble",
+    "subject": "rockfall aftermath",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Freeing a buried companion takes one action.",
+    "source_quote": "Freeing a buried companion took an action",
+    "subject": "rescue mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Anyone left under the dirt takes damage the next round.",
+    "source_quote": "anyone left under the dirt would take damage the next round",
+    "subject": "buried damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party resolves the rescue in pseudo-initiative order by Dexterity.",
+    "source_quote": "The party resolves the rescue in pseudo-initiative order by Dexterity",
+    "subject": "initiative order",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has Dexterity 17.",
+    "source_quote": "Zalthir (DEX 17)",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir goes first in the rescue initiative order.",
+    "source_quote": "Zalthir going first",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir heaves heavy slabs of rock aside to free those buried beneath.",
+    "source_quote": "heaved heavy slabs of rock aside to free those buried beneath",
+    "subject": "Zalthir clearing rocks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin drags Gyrgum clear of the debris.",
+    "source_quote": "Thorin focused his efforts on dragging Gyrgum clear of the debris",
+    "subject": "Thorin rescuing Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that Gyrgum is 'part of our crew'.",
+    "source_quote": "because he's part of our crew",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a small, determined sentient fungus.",
+    "source_quote": "Stool, the small but determined sentient fungus",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool asks Gyrgum if he is okay.",
+    "source_quote": "Stool ... waddled through the chaos and asked Gyrgum if he was okay",
+    "subject": "Stool asking Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum states he is not doing well and got pretty badly hurt.",
+    "source_quote": "Oh, I'm not doing so well. I got pretty badly hurt",
+    "subject": "Gyrgum's injury",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is badly hurt.",
+    "source_quote": "I got pretty badly hurt",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool pulls both Shuushar and Buppido to safety.",
+    "source_quote": "Stool managed to pull both Shuushar and Buppido to safety",
+    "subject": "Stool rescuing Shuushar and Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool freed Buppido because he thought Buppido dying would be tragic.",
+    "source_quote": "He freed Buppido because he thought Buppido dying would be tragic",
+    "subject": "Stool's rescue logic",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asked Stool to pull Shuushar to safety.",
+    "source_quote": "At Gyrgum's urging, Stool managed to pull both Shuushar and Buppido to safety... Gyrgum asked for Shuushar",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir shoves the rocks off Daz.",
+    "source_quote": "Zalthir shoved the rocks off Daz",
+    "subject": "Zalthir rescuing Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is stable but unconscious.",
+    "source_quote": "Daz, who lay stable but unconscious",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is the only unconscious companion among those freed.",
+    "source_quote": "Daz is the only unconscious companion",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir treats Daz as the urgent case due to his unconsciousness.",
+    "source_quote": "Zalthir treats him as the urgent case",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is still trapped under the rocks.",
+    "source_quote": "Eldeth and Jimjar were still trapped",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is still trapped under the rocks.",
+    "source_quote": "Eldeth and Jimjar were still trapped",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is the party's guide.",
+    "source_quote": "The guide (Sarith)",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith was not trapped under the rocks.",
+    "source_quote": "Their guide had not been trapped at all",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party breathes a collective sigh of relief as most companions are freed.",
+    "source_quote": "the party breathed a collective sigh of relief as most of their companions were freed",
+    "subject": "party regrouping",
+    "quote_verified": true
+  }
+]

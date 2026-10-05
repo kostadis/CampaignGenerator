@@ -1,0 +1,191 @@
+[
+  {
+    "type": "npc",
+    "fact": "Brannum slumps down in the boat.",
+    "source_quote": "Slumping down in the boat, Brannum finally confessed.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum states that the route was a quick shortcut his crew used regularly.",
+    "source_quote": "This route had once been a quick shortcut his crew used regularly",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two of Brannum's boats previously never came back from this route.",
+    "source_quote": "but two of his boats had never come back",
+    "subject": "missing boats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A survivor from the lost crew claimed there was some kind of evil altar on the route.",
+    "source_quote": "One survivor had claimed there was some kind of evil altar here",
+    "subject": "Survivor",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum originally assumed his crew had simply abandoned him.",
+    "source_quote": "Brannum had assumed that crew had simply abandoned him",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Brannum saw the bone pyramid and realized his crew had not abandoned him.",
+    "source_quote": "until he saw the bone pyramid and realized, with dawning horror, that they had not",
+    "subject": "bone pyramid",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum asks where his crew members are if they are dead.",
+    "source_quote": "\"If they're dead, where are they?\" he asked.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The islet contains bones but no boat.",
+    "source_quote": "There were bones, but there was no boat.",
+    "subject": "islet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz peers over the side into the dark water below.",
+    "source_quote": "Daz peered over the side into the dark water below",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The sunken wrecks of Brannum's lost boats rest on the lakebed.",
+    "source_quote": "the sunken wrecks of Brannum's lost boats rested on the lakebed",
+    "subject": "lakebed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Bodies move among the sunken wrecks in the water, possibly being zombies.",
+    "source_quote": "and bodies moved among them, possibly zombies",
+    "subject": "bodies in water",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum uses his Mending cantrip on the damaged hull.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Find Traps on the islet.",
+    "source_quote": "The curious cleric also cast Find Traps on the islet",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum finds no traps on the islet.",
+    "source_quote": "found none",
+    "subject": "trap check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party hesitates to set foot on the islet.",
+    "source_quote": "but the party hesitated to set foot on it.",
+    "subject": "party hesitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts a healing spell to mend Zalthir's severe wounds from a zombie's bite.",
+    "source_quote": "Gyrgum casts a healing spell to mend Zalthir's severe wounds from the zombie's bite",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's healing spell restores 15 of the 16 hit points Zalthir lost.",
+    "source_quote": "restoring 15 of the 16 hit points lost",
+    "subject": "healing Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum claims he was only trying to go 'the fast way'.",
+    "source_quote": "Brannum first claims he was only trying to go \"the fast way\"",
+    "subject": "Brannum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Brannum dismisses other boats' reports of attacks here as rumor.",
+    "source_quote": "other boats had reported attacks here that he dismissed as rumor",
+    "subject": "rumors dismissed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is confronted by the party regarding the safety of the route.",
+    "source_quote": "The party confronts Brannum Redmarch, calling out his dishonesty regarding the safety of the route",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin calls 'bullshit' during the confrontation with Brannum.",
+    "source_quote": "Thorin calls \"bullshit\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "An insight check confirms Thorin's accusation of dishonesty.",
+    "source_quote": "and an insight check confirms it",
+    "subject": "insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum admits the presence of the bone pyramid made him realize his crew met a horrible fate.",
+    "source_quote": "but the presence of the bone pyramid and the monster made him realize they met a horrible fate",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brannum's crew met a horrible fate on this route.",
+    "source_quote": "made him realize they met a horrible fate",
+    "subject": "Brannum's crew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party makes a group investigation check.",
+    "source_quote": "After a group investigation check",
+    "subject": "group investigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM notes the attack may be a trigger rather than continuous.",
+    "source_quote": "The DM notes the attack may be a trigger rather than continuous",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Nothing has attacked the party again since the initial encounter.",
+    "source_quote": "since nothing has attacked again",
+    "subject": "lack of attacks",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "type": "monster",
+    "fact": "A carrion crawler erupts from the earth, drawn by the noise of the rescue.",
+    "source_quote": "A massive, writhing shape erupted from the earth with a snarl, drawn by the noise of the rescue.",
+    "subject": "carrion crawler",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The carrion crawler resembles a colossal maggot lined with paralyzing tentacles.",
+    "source_quote": "It was a carrion crawler, a grotesque creature resembling a colossal maggot lined with paralyzing tentacles.",
+    "subject": "carrion crawler",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir breathes a line of fire, dealing 10 damage to the carrion crawler.",
+    "source_quote": "Zalthir went first and exhaled a searing line of fire... The crawler blew its Dexterity save and took 10 damage",
+    "subject": "Zalthir's first fire blast",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir pulls back to position other creatures between himself and the carrion crawler.",
+    "source_quote": "Zalthir pulled back behind the others",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler strikes Gyrgum with a tentacle, dealing 4 damage.",
+    "source_quote": "The crawler struck Gyrgum with a tentacle for 4 damage and dropped him",
+    "subject": "Crawler attacks Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is dropped by the carrion crawler's attack.",
+    "source_quote": "The crawler struck Gyrgum with a tentacle for 4 damage and dropped him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler hits Thorin for 7 damage with its jaws.",
+    "source_quote": "then turned its snapping jaws on Thorin and hit him for 7",
+    "subject": "Crawler attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the carrion crawler with his short sword for 4 piercing damage.",
+    "source_quote": "Thorin answered with a precise thrust of his short sword for 4 piercing damage",
+    "subject": "Thorin's first attack",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's short sword possesses the Vex property, granting advantage on the next attack.",
+    "source_quote": "The weapon's Vex property gave him advantage on his next attack",
+    "subject": "Thorin's short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Shuushar, Turvy, Topsy, Sarith, and Buppido fire a volley of bolts, dealing 20 damage.",
+    "source_quote": "The party's companions, Shuushar, Turvy, Topsy, Sarith, and Buppido, raised their hand crossbows and loosed a volley of bolts into the creature's hide... dealt 20 damage.",
+    "subject": "Companion volley",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir breathes fire again, but the carrion crawler takes only 2 damage.",
+    "source_quote": "Zalthir unleashed another blast of fire, but the crawler twisted aside and took only 2 damage",
+    "subject": "Zalthir's second fire blast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses Second Wind to regain 10 hit points.",
+    "source_quote": "Thorin caught his breath with Second Wind for ten more hit points",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler's jaws miss Thorin.",
+    "source_quote": "The crawler's jaws missed Thorin by one point against his AC",
+    "subject": "Crawler misses Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler's tentacle misses Sarith spectacularly.",
+    "source_quote": "a tentacle aimed at Sarith \"misses spectacularly.\"",
+    "subject": "Crawler misses Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is nearing death.",
+    "source_quote": "Meanwhile Eldeth was nearing death",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz remains stable and keeps rolling successes on death saves.",
+    "source_quote": "Daz kept rolling successes while staying stable",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolls death saves.",
+    "source_quote": "Gyrgum rolled death saves",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin orders Topsy and Turvy to dig out Eldeth and Jimjar.",
+    "source_quote": "Thorin had Topsy and Turvy dig out Eldeth (\"dwarves stick together\") and Jimjar",
+    "subject": "Rescue order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The three remaining companions deal 15 damage, killing the carrion crawler.",
+    "source_quote": "The three companions still shooting put 15 more damage into the crawler and killed it",
+    "subject": "Killing the carrion crawler",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The carrion crawler is dead.",
+    "source_quote": "Once it was dead, everyone came round",
+    "subject": "carrion crawler",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is at one hit point.",
+    "source_quote": "Gyrgum at one hit point",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party finds no loot on the carrion crawler.",
+    "source_quote": "There was no loot, so the party harvested the carcass instead",
+    "subject": "Looting attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum harvests nine rations from the carrion crawler's corpse.",
+    "source_quote": "Gyrgum's 2d6 roll produced nine rations, about two days' food with the mushrooms",
+    "subject": "carrion crawler rations",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The harvested rations taste like chicken.",
+    "source_quote": "the meat tasted remarkably like chicken",
+    "subject": "carrion crawler rations",
+    "quote_verified": true
+  }
+]

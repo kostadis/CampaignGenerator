@@ -1,0 +1,93 @@
+[
+  {
+    "type": "location",
+    "fact": "The party travels through the winding Underdark caverns.",
+    "source_quote": "pressed onward through the winding Underdark caverns",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth brings the party welcome news that the drow pursuit has been broken.",
+    "source_quote": "Eldeth brought welcome news: the drow pursuit had finally been broken",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth uses Wisdom checks to obscure the party's trail.",
+    "source_quote": "Each successful Wisdom check she made had obscured their trail",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow pursuit has been temporarily broken.",
+    "source_quote": "the drow pursuit had finally been broken",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's pursuit rating drops to zero.",
+    "source_quote": "the party's pursuit rating dropped to zero",
+    "subject": "pursuit rating drop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM warns that the hunters will eventually pick up the trail again.",
+    "source_quote": "Don't worry, they'll eventually pick up your trail again.",
+    "subject": "GM warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses hope that their incredible actions will prevent them from being found.",
+    "source_quote": "Maybe we'll be doing something so incredible they won't be able to find us.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains all his hit points during the long rest.",
+    "source_quote": "Gyrgum regains all his hit points",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains all his spells during the long rest.",
+    "source_quote": "Gyrgum regains all his hit points, spells",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains all his Channel Divinity uses during the long rest.",
+    "source_quote": "Gyrgum regains all his hit points, spells, and Channel Divinity uses",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest in the caverns to recover their strength.",
+    "source_quote": "The party takes a long rest in the caverns to recover their strength",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Several days of careful travel pass before the pursuit is broken.",
+    "source_quote": "After several days of careful travel, Eldeth brought welcome news",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Two more days of travel pass after the pursuit is broken.",
+    "source_quote": "Two more days of travel pass",
+    "subject": "additional travel",
+    "quote_verified": true
+  }
+]

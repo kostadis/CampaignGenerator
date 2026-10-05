@@ -1,0 +1,16 @@
+[
+  {
+    "type": "date",
+    "fact": "The session occurs on the 25th day of the 6th Tenday of Hammer 1493 (025.06).",
+    "source_quote": "025.06",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum roll a group stealth check of 7.",
+    "source_quote": "their group stealth check came up a mere 7",
+    "subject": "group stealth roll",
+    "quote_verified": true
+  }
+]

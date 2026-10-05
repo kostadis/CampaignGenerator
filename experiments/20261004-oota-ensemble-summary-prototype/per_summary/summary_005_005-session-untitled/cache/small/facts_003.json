@@ -1,0 +1,51 @@
+[
+  {
+    "type": "location",
+    "fact": "The party settles into a defensible corner of the cavern for a long rest.",
+    "source_quote": "the party settled into a defensible corner of the cavern for a long rest",
+    "subject": "the cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Everyone in the party reaches 2nd level.",
+    "source_quote": "everyone reached 2nd level",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz takes expertise in Arcana.",
+    "source_quote": "Daz took expertise in Arcana",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a Wisdom score of 14.",
+    "source_quote": "With only Wisdom 14 he passed on Perception",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz chose Arcana because he has been doing all the wizardry stuff.",
+    "source_quote": "chose Arcana \"because he's been doing all the wizardry stuff.\"",
+    "subject": "Daz selects expertise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Expertise doubles the proficiency bonus.",
+    "source_quote": "Expertise doubles the proficiency bonus.",
+    "subject": "expertise mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a +3 modifier, noted in the context of Perception checks.",
+    "source_quote": "Gyrgum notes he has +3.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

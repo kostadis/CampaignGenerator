@@ -1,0 +1,37 @@
+[
+  {
+    "type": "object",
+    "fact": "The store credit provided to the party for shopping is 175 gold pieces.",
+    "source_quote": "The credit came to 175 gold pieces",
+    "subject": "store credit",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The \"Sane Magical Prices\" document was shared on the shared Google Drive folder on February 28, 2021.",
+    "source_quote": "shared back on February 28, 2021",
+    "subject": "document sharing date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchased a week's worth of rations.",
+    "source_quote": "purchase a week's worth of rations",
+    "subject": "ration duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party possesses a total of nine healing potions after purchases and GM additions.",
+    "source_quote": "the GM added three more, for a total of nine",
+    "subject": "potion count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was left with 105 gold after his purchases.",
+    "source_quote": "Daz was left with 105 gold",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

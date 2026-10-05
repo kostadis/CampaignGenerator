@@ -1,0 +1,261 @@
+[
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger is a three-foot-tall ghost who materializes in the catacombs.",
+    "source_quote": "Burrow Warden Jadger, a three-foot-tall spirit",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger uses he/him pronouns.",
+    "source_quote": "Jadger identifies his pronouns as he/him",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger defended Blingdenstone against the Drow, oozes, and other Underdark threats.",
+    "source_quote": "who had once defended Blingdenstone against the Drow, oozes, and countless other Underdark threats",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger has established a new generation of Wardens since Blingdenstone's recapture.",
+    "source_quote": "Since Blingdenstone's recapture, he had taken it upon himself to establish a new generation of Wardens",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger is secretly training promising young gnomes.",
+    "source_quote": "secretly training promising young gnomes",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger describes himself as an expert on the Underdark and fighting its denizens.",
+    "source_quote": "Jadger describes himself as an expert on the Underdark and its denizens, as well as on methods for fighting them",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger appears immediately after Pelek's interment.",
+    "source_quote": "Almost immediately, another ghost appeared: Burrow Warden Jadger",
+    "subject": "Jadger appears",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger identifies Zalthir as a potentially excellent asset because he carries no weapons.",
+    "source_quote": "Jadger identified Zalthir as a potentially excellent asset because the monk carried no weapons",
+    "subject": "Jadger identifies Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger floats upward to make himself more imposing while explaining the Wardens' history.",
+    "source_quote": "Jadger floats upward to make himself more imposing while explaining",
+    "subject": "Jadger floats up",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Burrow Wardens were Blingdenstone's first and last line of defense.",
+    "source_quote": "the Burrow Wardens had been Blingdenstone's first and last line of defense",
+    "subject": "Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Most Burrow Wardens died during the Drow invasion and the rest during the gnomes' flight.",
+    "source_quote": "with most dying during the Drow invasion and the rest during the gnomes' flight from the city",
+    "subject": "Burrow Wardens casualties",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger offers to answer one question for every ghost the party puts to rest.",
+    "source_quote": "Jadger offered the party a bargain: for every ghost they put to rest in the community, he would answer one question",
+    "subject": "Jadger's bargain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's interment counts as the first completed task, granting the party one question.",
+    "source_quote": "Pelek counted as their first completed task",
+    "subject": "Pelek task completion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger mentions there are two more ghosts the party can help for two additional questions.",
+    "source_quote": "Jadger knew of two more ghosts they could help if they wanted further answers",
+    "subject": "Additional ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party becomes anxious about wasting their question, comparing the deal to a genie arrangement.",
+    "source_quote": "The party immediately became anxious about accidentally wasting their lone question, treating the offer like a dangerous genie arrangement",
+    "subject": "Party anxiety",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum avoids asking a question to avoid being fooled by a 'genie situation'.",
+    "source_quote": "Gyrgum avoids asking how many mysteries there are because \u201cthis feels like a genie situation",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger rejects the genie comparison, stating his identity.",
+    "source_quote": "\u201cI'm not some trivial genie. I am Burrow Warden Jadger.\u201d",
+    "subject": "Jadger's denial",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger claims to know forgotten facts about the Underdark.",
+    "source_quote": "he knew things about the Underdark \u201cthat other people have forgotten were things.\u201d",
+    "subject": "Jadger's knowledge claim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger reveals that Chief Dorbo and Senni know how to leave the Underdark.",
+    "source_quote": "Jadger also casually reveals that Chief Dorbo and Senni know how to leave the Underdark",
+    "subject": "Exit route info",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo knows how to leave the Underdark.",
+    "source_quote": "Chief Dorbo and Senni know how to leave the Underdark",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni knows how to leave the Underdark.",
+    "source_quote": "Chief Dorbo and Senni know how to leave the Underdark",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to ask how best to deal with the ooze infestation.",
+    "source_quote": "the party decides to ask how best to deal with the oozes",
+    "subject": "Question selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger explains that ordinary oozes are solitary creatures.",
+    "source_quote": "Jadger explains that ordinary oozes are solitary",
+    "subject": "Jadger on oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A large, coordinated mass of oozes is profoundly abnormal.",
+    "source_quote": "a large, coordinated mass of them was profoundly abnormal",
+    "subject": "Ooze behavior",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger advises sending a strike force to investigate what is directing the oozes.",
+    "source_quote": "His initial advice was to send a carefully organized strike force to investigate what was directing this behavior",
+    "subject": "Jadger's initial advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir mentions a possible connection to Juiblex.",
+    "source_quote": "When Zalthir mentioned a possible connection to Juiblex",
+    "subject": "Zalthir's mention of Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger offers clarification on Juiblex in exchange for a demonstration of a monk technique.",
+    "source_quote": "Jadger offered further clarification in exchange for a demonstration of a monk technique",
+    "subject": "Demonstration bargain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir performs the monk technique for Jadger.",
+    "source_quote": "Zalthir obliged, impressing the ghost",
+    "subject": "Zalthir's demonstration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger mimics the monk movements incorrectly with his fists.",
+    "source_quote": "Jadger began mimicking the movements with his fists in all the wrong ways",
+    "subject": "Jadger mimics poorly",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger launches into a rambling demon story.",
+    "source_quote": "After an extended, rambling demon story",
+    "subject": "Jadger's demon story",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger explains that devils make deals and personally corrupt people seeking ungodly power.",
+    "source_quote": "\u201cDevils make deals,\u201d personally corrupting people who seek ungodly power",
+    "subject": "Devils explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger explains that demons imbue benighted souls with power to cause destruction.",
+    "source_quote": "while demons imbue benighted souls with terrifying power and then delight in the widespread destruction they cause",
+    "subject": "Demons explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger advises the party to search for the person or thing motivating the oozes.",
+    "source_quote": "He advised the party to search for the person or thing motivating the oozes",
+    "subject": "Jadger's recommendation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger believes Juiblex empowered a proxy or intermediate agent rather than controlling the oozes directly.",
+    "source_quote": "Jadger had probably empowered a proxy or intermediate agent",
+    "subject": "Juiblex proxy theory",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jadger recommends consulting a young gnome trainee who will become leader of the new Wardens.",
+    "source_quote": "Jadger also recommended that... speak with a young gnome he was mentoring",
+    "subject": "Mentor recommendation",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The young gnome trainee is too young for the current mission but may have insights later.",
+    "source_quote": "The trainee is too young for the present mission but may have useful insights",
+    "subject": "Young gnome trainee",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The route out of Blingdenstone is well known.",
+    "source_quote": "the route is well known",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  }
+]

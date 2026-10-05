@@ -1,0 +1,1164 @@
+[
+  {
+    "type": "event",
+    "fact": "The party faces a crowd of questioning merchants and citizens in the Traders' Grotto after defeating the gelatinous cubes.",
+    "source_quote": "The aftermath of the battle with the gelatinous cubes in the Traders' Grotto left the party facing a crowd of questioning merchants and citizens.",
+    "subject": "battle aftermath",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The public is disturbed that outsiders handled the crisis more effectively than Blingdenstone\u2019s guards, despite the physical destruction.",
+    "source_quote": "the public was more disturbed that outsiders had handled the crisis more effectively than Blingdenstone\u2019s own guards.",
+    "subject": "public reception",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant declares that Chief Dorbo Diggermattock hired the adventurers to solve the settlement's problems.",
+    "source_quote": "Chief Dorbo Diggermattock hired these adventurers to solve our problems.",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant asserts that Chief Dorbo Diggermattock is on top of everything.",
+    "source_quote": "Chief Dorbo Diggermattock is on top of everything.",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo Diggermattock is accused by a citizen of caring only for the gold from the gems from the mines.",
+    "source_quote": "accusing Chief Dorbo of caring only for \u201cthe gold from the gems from the mines.\u201d",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A critic claims Chief Dorbo has been obsessed with money since leading the reconquest of the area.",
+    "source_quote": "Dorbo had been obsessed with \u201cmoney, money, money, money, money\u201d since leading the reconquest of the area.",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A citizen praises Senni Diggermattock as an advocate for ordinary people.",
+    "source_quote": "A citizen praised Senni Diggermattock as an advocate for ordinary people",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The critic claims Senni Diggermattock is an advocate for Blingdenstone\u2019s people.",
+    "source_quote": "A citizen praises Senni Diggermattock as an advocate for Blingdenstone\u2019s people",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recognizes that Blingdenstone\u2019s political class is trying to claim credit for their victory.",
+    "source_quote": "Blingdenstone\u2019s political class was trying to claim credit for their victory",
+    "subject": "political maneuvering",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests that Chief Dorbo use wealth to rebuild the damaged businesses.",
+    "source_quote": "the party suggested that Dorbo use some of that wealth to rebuild the damaged businesses",
+    "subject": "suggestion made",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sergeant calls the suggestion to rebuild excellent but strongly encourages the party to leave the market.",
+    "source_quote": "the increasingly nervous sergeant called it an excellent suggestion\u2014then strongly encouraged them to leave the market",
+    "subject": "sergeant dismissal",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Traders' Grotto contains wreckage from the battle with the gelatinous cubes.",
+    "source_quote": "Amid the wreckage, they also recovered a magical short sword",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recovers a magical short sword from the wreckage.",
+    "source_quote": "they also recovered a magical short sword",
+    "subject": "short sword recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz claims the magical short sword as an upgrade after discussing weapon proficiencies.",
+    "source_quote": "Daz ultimately claimed [the magical short sword] as an upgrade",
+    "subject": "item claim",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Daz takes the Short Sword +1 as an upgrade to his weapon.",
+    "source_quote": "Daz takes the short sword as an upgrade.",
+    "subject": "Short Sword +1",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool wonders if he was hired and if he will be paid for his assistance.",
+    "source_quote": "Glabbagool... wondered whether he had also been hired and whether he would be paid.",
+    "subject": "Glabbagool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool decides that friends are what he wants, stating he could do with some friends.",
+    "source_quote": "\u201cYes, I think I could do with some friends.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party assures Glabbagool he can come with them, and the sergeant revises the adventurer count to include him.",
+    "source_quote": "the sergeant revises the official count of adventurers to include him.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant visibly becomes nervous about the party's continued presence and revolutionary tactics.",
+    "source_quote": "becoming visibly nervous about their continued presence and \u201crevolutionary tactics.\u201d",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The sergeant points toward a rubble-choked route for the party to traverse.",
+    "source_quote": "The sergeant points toward a rubble-choked route",
+    "subject": "rubble-choked route",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sergeant states that Blingdenstone has a serious ooze problem and leaders cannot help the party leave while the settlement is at risk.",
+    "source_quote": "Blingdenstone has a serious ooze problem, and its leaders cannot help the party leave while the settlement remains at risk of being overrun.",
+    "subject": "mission restatement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to stop waiting for oozes to attack the market and instead seek the source.",
+    "source_quote": "The party agrees to stop waiting for more oozes to attack the market and seek the source instead.",
+    "subject": "strategy change",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party destroyed gelatinous cubes in the Traders' Grotto, causing damage to part of the market.",
+    "source_quote": "destroying part of the market might complicate their reception",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone\u2019s guards failed to protect the citizens during the ooze crisis.",
+    "source_quote": "the public was more disturbed that outsiders had handled the crisis more effectively than Blingdenstone\u2019s own guards.",
+    "subject": "Blingdenstone guards",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The political class of Blingdenstone attempts to take credit for the adventurers' work while limiting their exposure to the public.",
+    "source_quote": "Blingdenstone\u2019s political class was trying to claim credit for their victory while keeping their \u201crevolutionary tactics\u201d away from the crowd.",
+    "subject": "Blingdenstone political class",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party will seek the source of the ooze problem instead of waiting for attacks in the market.",
+    "source_quote": "seek the source instead.",
+    "subject": "ooze source",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sergeant directed the party toward a rubble-choked route leading out of the Traders\u2019 Grotto.",
+    "source_quote": "The sergeant directed the party toward a rubble-choked route leading out of the Traders\u2019 Grotto",
+    "subject": "sergeant's direction",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Blingdenstone promises to provide directions out of the Underdark once the adventurers deal with the city\u2019s ooze problem.",
+    "source_quote": "Blingdenstone would provide directions out of the Underdark once the adventurers dealt with the city\u2019s ooze problem",
+    "subject": "Blingdenstone bargain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A merchant recommended the Foaming Mug for its Darklake Stout and its beds large enough for the party.",
+    "source_quote": "a merchant recommended the Foaming Mug, both for its Darklake Stout and because it had some of the only beds in town large enough for the comparatively enormous adventurers",
+    "subject": "Foaming Mug recommendation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Foaming Mug serves Darklake Stout and has beds large enough for the adventurers.",
+    "source_quote": "recommended the Foaming Mug, both for its Darklake Stout and because it had some of the only beds in town large enough",
+    "subject": "Foaming Mug",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Chamber of Commerce granted the party a ten percent discount on purchases.",
+    "source_quote": "The Chamber of Commerce also granted the party a ten percent discount on purchases",
+    "subject": "discount offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant wrote a coupon for the party when the discount offer was compared to an advertisement.",
+    "source_quote": "the merchant literally wrote them a coupon",
+    "subject": "coupon creation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum observed that saving the city from slimes is worth 10% off.",
+    "source_quote": "Gyrgum observes, \u201cSaving the city from slimes is worth 10% off.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo's promise was not money but directions out of the Underdark.",
+    "source_quote": "The party confirms that Dorbo\u2019s actual promise was not money but directions out of the Underdark",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Goldwhisker Warrens are a disputed area north of the Traders\u2019 Grotto.",
+    "source_quote": "The party reviews the local map and learns that the Goldwhisker Warrens lie north of the Traders\u2019 Grotto in contested territory.",
+    "subject": "Goldwhisker Warrens",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone\u2019s authorities describe Clan Goldwhisker as wererat squatters who are not a legitimate clan.",
+    "source_quote": "Blingdenstone\u2019s authorities described Clan Goldwhisker as wererat squatters who were not even a legitimate clan",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni holds a more favorable view of the Goldwhiskers than the general population of Blingdenstone.",
+    "source_quote": "merchants offered a more nuanced warning and noted that Senni held a more favorable view of them",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock returned to the territory after the drow left and began to gentrify the area.",
+    "source_quote": "Clan Diggermattock then returned, claimed the territory, and began to \u201cgentrify it.\u201d",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow previously conquered and later abandoned the territory now disputed by gnomish clans.",
+    "source_quote": "the drow conquered and later abandoned the area",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is a former wererat companion of the party, though not known to belong to Clan Goldwhisker.",
+    "source_quote": "The party remembers Topsy and Turvy, their former wererat companions, though the two were not known to belong to Clan Goldwhisker.",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a former wererat companion of the party, though not known to belong to Clan Goldwhisker.",
+    "source_quote": "The party remembers Topsy and Turvy, their former wererat companions, though the two were not known to belong to Clan Goldwhisker.",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proposed using Glabbagool as a living bulldozer to clear the rubble.",
+    "source_quote": "Rather than search for another route, the party proposed using Glabbagool as a living bulldozer",
+    "subject": "bulldozer proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool moved into the rubble, engulfed loose stones, and released them elsewhere to clear a passage.",
+    "source_quote": "He repeatedly moved into the rubble, engulfed loose stones, backed out, and released them elsewhere.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Glabbagool cleared a usable passage in about an hour.",
+    "source_quote": "After about an hour, he had created a usable passage.",
+    "subject": "clearing duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A deep gnome proposed hiring Glabbagool for mining operations after witnessing his work.",
+    "source_quote": "His work impressed the watching deep gnomes, one of whom proposed hiring him for mining operations.",
+    "subject": "mining offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool delights in the possibility of having a job and a role in society.",
+    "source_quote": "Glabbagool delighted in the possibility of having \u201ca job and a role in society\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool considers himself a kindred spirit to Zalthir because they are both oozes.",
+    "source_quote": "He especially identified with Zalthir, whom he considered a fellow ooze and therefore a kindred spirit.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is an ooze and is identified by Glabbagool as a kindred spirit.",
+    "source_quote": "He especially identified with Zalthir, whom he considered a fellow ooze",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir reminded Glabbagool that they already need him as part of the team.",
+    "source_quote": "Zalthir reminds Glabbagool, \u201cTo be fair, we already need you. You\u2019re part of the team.\u201d",
+    "subject": "team reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool observes that ordinary gelatinous cubes lack the intelligence to understand the word 'gender'.",
+    "source_quote": "observing that ordinary gelatinous cubes lack enough intelligence even to understand the word \u201cgender.\u201d",
+    "subject": "Gelatinous Cubes (general)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to proceed through the rubble toward the Goldwhisker side rather than the stone wall.",
+    "source_quote": "The party decides to proceed through the rubble toward the Goldwhisker side rather than attempt the stone wall.",
+    "subject": "route selection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party enters an abandoned residential cave beyond the rubble.",
+    "source_quote": "Beyond the rubble, the party entered an abandoned residential cave.",
+    "subject": "abandoned residential cave",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Homes were once dug into the walls of the cave at various heights.",
+    "source_quote": "Homes had once been dug into the walls at various heights",
+    "subject": "abandoned residential cave",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A foul-smelling pile of refuse now dominates the chamber.",
+    "source_quote": "a foul-smelling pile of refuse now dominated the chamber",
+    "subject": "abandoned residential cave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first inspection of the refuse reveals nothing.",
+    "source_quote": "Zalthir\u2019s first inspection revealed nothing",
+    "subject": "Zalthir's inspection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir approaches the refuse first but finds nothing useful.",
+    "source_quote": "Zalthir approaches the refuse first but finds nothing useful.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz discovers decomposing matter and two partially digested deep gnome corpses in the refuse.",
+    "source_quote": "Daz found decomposing matter and two slimy, partially digested deep gnome corpses.",
+    "subject": "Daz's investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two slimy, partially digested deep gnome corpses are found.",
+    "source_quote": "two slimy, partially digested deep gnome corpses",
+    "subject": "deep gnome corpses",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remains had unmistakably passed through an ooze.",
+    "source_quote": "The remains had unmistakably passed through an ooze.",
+    "subject": "deep gnome corpses",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz conducts a more careful investigation of the refuse.",
+    "source_quote": "Daz conducts a more careful investigation",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz discovers decomposing matter.",
+    "source_quote": "Daz found decomposing matter",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz traces an ooze trail into a hallway.",
+    "source_quote": "Daz then traced an ooze trail into a hallway.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An ooze trail leads down a hallway.",
+    "source_quote": "Daz then traced an ooze trail into a hallway.",
+    "subject": "ooze trail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool begins moving toward the trail with unusual purpose.",
+    "source_quote": "Glabbagool began moving toward the trail with unusual purpose.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool admits he can hear voices calling to him.",
+    "source_quote": "He admitted that he could hear voices calling to him",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is excited by the prospect that others of his kind might be able to speak.",
+    "source_quote": "became excited by the prospect that others of his kind might be able to speak",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool has never heard another ooze speak.",
+    "source_quote": "Glabbagool has never heard another ooze speak",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool says, \"I can hear voices calling me.\"",
+    "source_quote": "he says, \u201cI can hear voices calling me.\u201d",
+    "subject": "Glabbagool's statement",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party fears the voices represent demonic influence rather than friendly oozes.",
+    "source_quote": "The party feared that the voices represented demonic influence rather than friendly oozes.",
+    "subject": "mysterious voices",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir persuades Glabbagool to let his friends go first to protect him from corruption.",
+    "source_quote": "Zalthir persuaded Glabbagool to let his friends go first and protect him from corruption.",
+    "subject": "Zalthir's persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir advises Glabbagool to remain behind the others so friends can confront danger first.",
+    "source_quote": "Zalthir advises Glabbagool to remain behind the others so that his friends can confront the danger first",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool agrees to Zalthir's proposal.",
+    "source_quote": "Glabbagool agreed",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool declares, \"You\u2019re my friend, so we should all go together.\"",
+    "source_quote": "declaring, \u201cYou\u2019re my friend, so we should all go together,\u201d",
+    "subject": "Glabbagool's statement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool praises the party for protecting him from \"the bad oozes.\"",
+    "source_quote": "praised the party for protecting him from \u201cthe bad oozes.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool recognizes Zalthir's warning as \"a very important and thoughtful point.\"",
+    "source_quote": "He recognizes Zalthir\u2019s warning as \u201ca very important and thoughtful point\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool concludes his companions will protect him from \"the bad oozes.\"",
+    "source_quote": "concludes that his companions will protect him from \u201cthe bad oozes.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool\u2019s googly eyes bob up and down, conveying his pleasure at being protected and included.",
+    "source_quote": "Glabbagool\u2019s googly eyes bob up and down, conveying his pleasure at being protected and included.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin takes the lead in exploring the cave.",
+    "source_quote": "Thorin led the way",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has relatively poor passive perception.",
+    "source_quote": "Thorin takes the lead, despite having relatively poor passive perception",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir walks beside Thorin as they explore.",
+    "source_quote": "with Zalthir beside him",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir detects an oddly placed pit trap along the ooze trail.",
+    "source_quote": "Zalthir detected an oddly placed pit trap",
+    "subject": "pit trap detection",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pit trap is placed along the ooze trail.",
+    "source_quote": "Zalthir detects a pit trap placed along the ooze trail.",
+    "subject": "pit trap",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pit trap's location is initially strange but less surprising given the creatures moving through the area.",
+    "source_quote": "Its location is initially strange, though less surprising given the creatures moving through the area.",
+    "subject": "pit trap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party crosses the pit trap safely.",
+    "source_quote": "the party crossed it safely",
+    "subject": "trap avoidance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "At the next junction, Glabbagool indicates the voices come from the south.",
+    "source_quote": "At the next junction, Glabbagool indicated that the voices came from the south.",
+    "subject": "Glabbagool's direction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool rotates like a tank turret to indicate the source of the voices.",
+    "source_quote": "Glabbagool rotates like a tank turret",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proceeds onward and southward.",
+    "source_quote": "The party proceeds \u201conward and southward.\u201d",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The southern passage opens into a vast cavern filled with oozes.",
+    "source_quote": "The southern passage opened into an immense cavern carpeted with more oozes than the party had ever seen",
+    "subject": "southern passage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The cavern is carpeted with an overwhelming number of oozes described as an \"ooza palooza.\"",
+    "source_quote": "an \u201cooza palooza\u201d so overwhelming that a direct battle would certainly kill them",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Green slime coats the walls of the vast cavern.",
+    "source_quote": "Green slime coated the cavern walls",
+    "subject": "ooze cavern walls",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A large spherical structure stands at the center of the cavern, elevated on stone pillars.",
+    "source_quote": "a great spherical structure stood upon stone pillars at the center",
+    "subject": "central spherical structure",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Dozens of oozes crawl around the stone pillars, extending grasping pseudopods.",
+    "source_quote": "Dozens of oozes crawled around those pillars, extending grasping pseudopods",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Black, yellow, and gray slimes swirl across the central sphere in mind-straining patterns.",
+    "source_quote": "black, yellow, and gray slime swirled across the sphere in patterns that strained the eyes and tugged at the mind",
+    "subject": "slimes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A disembodied voice addresses the visitors, invoking the Faceless Lord and Blingdenstone.",
+    "source_quote": "A disembodied voice addressed the visitors and proclaimed the coming of the \u201cFaceless Lord,\u201d invoking the Faceless Lord and all of Blingdenstone",
+    "subject": "disembodied voice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The surrounding oozes urge Glabbagool to join them.",
+    "source_quote": "The surrounding oozes urged Glabbagool to join them",
+    "subject": "ooze invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool refuses to join the oozes.",
+    "source_quote": "but he refused",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool senses something unpleasant about the assembled oozes.",
+    "source_quote": "He liked the party and sensed \u201csomething not nice\u201d about the assembled oozes",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool notes that oozes do not normally talk.",
+    "source_quote": "\u201cOozes don\u2019t talk. Something\u2019s weird.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls that Juiblex is also known as the Faceless Lord.",
+    "source_quote": "Gyrgum recalled that Juiblex was also known as the Faceless Lord",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum connects the scene to a ghost's warning about demons infusing power to generate chaos.",
+    "source_quote": "connected the scene to an earlier ghost\u2019s warning: devils create contracts, while demons infuse creatures or objects with power to generate chaos and mayhem",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party concludes that Juiblex is working through a local proxy rather than appearing personally.",
+    "source_quote": "the party concluded that Juiblex was probably working through a local proxy rather than appearing personally",
+    "subject": "Juiblex's presence",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz summons a bat familiar.",
+    "source_quote": "Daz summoned a bat familiar",
+    "subject": "familiar summoning",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz names the bat familiar Batman.",
+    "source_quote": "and named him Batman",
+    "subject": "Batman",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Batman conducts a breadth-first reconnaissance of the surrounding passages.",
+    "source_quote": "Batman conducted a breadth-first reconnaissance of the surrounding passages",
+    "subject": "Batman scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds abandoned remnants of the old gnomish settlement.",
+    "source_quote": "He found abandoned remnants of the old gnomish settlement",
+    "subject": "abandoned gnomish settlement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds caves occupied by scattered oozes.",
+    "source_quote": "dripping caves occupied by scattered oozes",
+    "subject": "dripping caves",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds wreckage that has been scoured clean.",
+    "source_quote": "wreckage scoured clean",
+    "subject": "scoured wreckage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds the ruins of a fungal partition.",
+    "source_quote": "and the ruins of a fungal partition",
+    "subject": "fungal partition ruins",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Phosphorescent lichen illuminates pools and hanging drapes of green slime in a southwest cave.",
+    "source_quote": "phosphorescent lichen illuminated pools and hanging drapes of green slime",
+    "subject": "lichen cave",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A slime-covered throne faces east in the lichen cave.",
+    "source_quote": "A slime-covered throne faced east at its center",
+    "subject": "slime-covered throne",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A small gnome sits upon the slime-covered throne.",
+    "source_quote": "A small gnome sat upon that throne",
+    "subject": "small gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The small gnome holds court like an insane monarch.",
+    "source_quote": "holding court like an insane monarch",
+    "subject": "small gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome speaks of cleansing Blingdenstone of those who irritated him.",
+    "source_quote": "He spoke of cleansing Blingdenstone of everyone who had irritated him",
+    "subject": "small gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome declares that the Pudding King will become king of Blingdenstone.",
+    "source_quote": "declared that the Pudding King would become king of Blingdenstone",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party recognizes the gnome as the source of the disembodied voice in the main cavern.",
+    "source_quote": "Glabbagool and the party recognized his voice as the one projected through the great ooze cavern",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King does not appear particularly formidable himself.",
+    "source_quote": "The Pudding King himself did not appear particularly formidable",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz receives inspiration for using Batman to identify the enemy without exposure.",
+    "source_quote": "Daz\u2019s use of Batman had allowed the party to identify the enemy without exposing themselves, earning him inspiration",
+    "subject": "reconnaissance reward",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Green slime coats the walls of the main cavern.",
+    "source_quote": "Green slime coated the cavern walls",
+    "subject": "green slime",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Green slime covers pools and hangs in drapes in the lichen cave.",
+    "source_quote": "pools and hanging drapes of green slime",
+    "subject": "green slime",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir devised a plan to use Shadow Step to capture the Pudding King.",
+    "source_quote": "Zalthir nevertheless devised the core of a workable plan.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "In dim light, Zalthir can Shadow Step up to sixty feet.",
+    "source_quote": "In dim light, he could Shadow Step up to sixty feet",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir plans to teleport to the Pudding King, grapple him, and fly away.",
+    "source_quote": "reach the Pudding King, grapple him, and fly away with him",
+    "subject": "Shadow Step plan",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Green slime clings to the ceiling of the throne chamber.",
+    "source_quote": "Green slime clinging to the ceiling",
+    "subject": "green slime",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir risks green slime falling on him if he passes underneath it during an aerial escape.",
+    "source_quote": "complicated the escape because it could fall onto Zalthir as he passed underneath",
+    "subject": "slime hazard",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The oozes are currently under the control of the Pudding King.",
+    "source_quote": "under his control",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Incapacitating the Pudding King could release hundreds of uncontrolled oozes to wander through Blingdenstone.",
+    "source_quote": "the Pudding King\u2019s incapacitation could release hundreds of uncontrolled oozes to wander through Blingdenstone in search of food",
+    "subject": "ooze army release",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "A large coordinated distraction and defenders are necessary to contain the ooze army.",
+    "source_quote": "A large, coordinated distraction\u2014and defenders ready to contain the ooze army\u2014would therefore be necessary",
+    "subject": "ooze containment need",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered using fireballs, collapsing rubble, and sealing caves as distractions.",
+    "source_quote": "The party considered fireballs, collapsing rubble, and sealing the caves",
+    "subject": "distraction brainstorming",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool warned that oozes can squeeze through extremely small gaps.",
+    "source_quote": "Glabbagool warned that oozes could squeeze through extremely small gaps",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "An improvised rubble barrier is unreliable because oozes can move through extremely small spaces.",
+    "source_quote": "oozes can move through extremely small spaces, making an improvised rubble barrier unreliable",
+    "subject": "rubble barrier efficacy",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Proper containment of oozes requires sealed walls and Blingdenstone's labor and organization.",
+    "source_quote": "Proper containment would require sealed walls and therefore Blingdenstone\u2019s labor, organization, and advance knowledge of the situation",
+    "subject": "sealed walls requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offered to motivate Blingdenstone\u2019s troops with a speech.",
+    "source_quote": "Gyrgum offered to motivate Blingdenstone\u2019s troops with a speech",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum and the party improvised a rallying speech: 'We will fight them in the pudding court. We will fight them on the rubble. We will fight them by the glowing pool.'",
+    "source_quote": "\u201cWe will fight them in the pudding court. We will fight them on the rubble. We will fight them by the glowing pool.\u201d",
+    "subject": "rallying speech",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party concluded they need the city\u2019s army and possibly Clan Goldwhisker to confront the ooze army.",
+    "source_quote": "They concluded that they needed the city\u2019s army and possibly Clan Goldwhisker",
+    "subject": "allied forces need",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party considered asking Clan Goldwhisker to participate in the war against the oozes.",
+    "source_quote": "The party also considers asking Clan Goldwhisker to participate",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The common war against the oozes might provide an opportunity for reconciliation with Clan Goldwhisker.",
+    "source_quote": "The common war against the oozes might even provide \u201can opportunity for reconciliation.\u201d",
+    "subject": "reconciliation opportunity",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party decided to report to Dorbo first.",
+    "source_quote": "They decide to report to Dorbo first",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Three gelatinous cubes caused damage in the Traders\u2019 Grotto.",
+    "source_quote": "the damage caused by only three gelatinous cubes in the Traders\u2019 Grotto",
+    "subject": "Traders\u2019 Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three gelatinous cubes were previously encountered in the Traders\u2019 Grotto.",
+    "source_quote": "damage caused by only three gelatinous cubes in the Traders\u2019 Grotto",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bystanders in Blingdenstone pretended to work while listening to the party's report.",
+    "source_quote": "bystanders pretended to work while straining to overhear their report",
+    "subject": "Bystanders in Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo asked if the party had dealt with his ooze problem.",
+    "source_quote": "Chief Dorbo demanded, \u201cHas my ooze problem been dealt with?\u201d",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo reacted to the news of the Pudding King by calling the situation awful, terrible, catastrophic, and cataclysmic.",
+    "source_quote": "Dorbo called the situation awful, terrible, catastrophic, and cataclysmic",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo described the party's plan as \"the dumbest plan I\u2019ve heard ever.\"",
+    "source_quote": "Dorbo called it \u201cthe dumbest plan I\u2019ve heard ever,\u201d",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposed that his motivational speech to Blingdenstone's army would distract the oozes while the party killed their king.",
+    "source_quote": "The plan is I make a motivational speech to your army, and they distract the oozes while we kill their king",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni told Chief Dorbo that he had spoken enough during the presentation.",
+    "source_quote": "Senni told him that he had spoken enough",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni asked Chief Dorbo if he had a better plan than the party's.",
+    "source_quote": "Senni told him ... and asked whether he possessed a better one",
+    "subject": "Senni",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners' Guild.",
+    "source_quote": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners\u2019 Guild",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni accepted the party's takeover of the command structure and tasked them with securing Clan Goldwhisker's alliance.",
+    "source_quote": "Senni then accepted the arrangement and tasked the party with securing Clan Goldwhisker\u2019s alliance",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The assembled deep gnomes extinguished the lights in the chamber at Zalthir's request.",
+    "source_quote": "The assembled deep gnomes eagerly extinguished the lights",
+    "subject": "deep gnomes extinguish lights",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Pudding King controls a throne room covered in slime and commands hundreds of oozes.",
+    "source_quote": "They reveal the Pudding King, his slime-covered throne room, and the hundreds of oozes gathered under his control",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asked for dim light to demonstrate his plan's viability.",
+    "source_quote": "Zalthir asked for dim light",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir teleported around the chamber, performed flips, and threw punches in the air in the dim light.",
+    "source_quote": "teleport around the chamber, perform flips, and throw punches in the air",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni understood that Zalthir would infiltrate the throne room, seize the Pudding King, and kill or extract him while Blingdenstone's forces occupied the ooze army.",
+    "source_quote": "Senni understood immediately: Zalthir would infiltrate the throne room, seize the Pudding King, and kill or extract him while Blingdenstone\u2019s forces occupied the ooze army",
+    "subject": "Zalthir's infiltration plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar wagered with Chief Dorbo that everyone would be living happily ever after when the mission was done.",
+    "source_quote": "Jimjar then made an extraordinary wager in the party\u2019s favor, telling Dorbo, \u201cI\u2019ll make you a bet that by the time this is all done, we\u2019re all going to be living happily ever after.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar's willingness to bet on the party's success helped move the skeptical Chief Dorbo.",
+    "source_quote": "His willingness to bet on them helped move the skeptical chief",
+    "subject": "Jimjar's wager influences Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo argued that Blingdenstone's forces were not prepared to fight oozes and lacked allies and equipment.",
+    "source_quote": "Dorbo still argued that Blingdenstone\u2019s forces were not prepared to fight oozes and that they needed allies and equipment",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo attempted to exclude Clan Goldwhisker from the clan meeting.",
+    "source_quote": "Dorbo attempted to exclude Clan Goldwhisker, insisting that its members were not even gnomes",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo claimed he would accept Clan Goldwhisker's participation only if they acknowledged his authority.",
+    "source_quote": "When Dorbo suggested that the Goldwhiskers could participate only if they acknowledged his authority",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker members are lycanthropes who transform into rats.",
+    "source_quote": "they were lycanthropes who merely transformed into rats",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker members have immunity to ordinary weapons.",
+    "source_quote": "their immunity to ordinary weapons could make them invaluable against oozes",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz seized control of the meeting to declare that the adventurers would command the operation.",
+    "source_quote": "Daz seized control of the meeting. He declared that the adventurers\u2014not the rival gnome leaders\u2014would command the operation",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz stated that the adventurers figured out the solution and would be in charge.",
+    "source_quote": "\u201cWe figured it out, and we\u2019re going to be in charge of it.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz declared that the party would solve Blingdenstone's problem without the interference of the gnome leaders.",
+    "source_quote": "without the bickering of those whose political conflict had helped create the current crisis",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The room fell silent when Daz asserted the adventurers' command over the gnome leaders.",
+    "source_quote": "The room fell silent at the \u201cmanagement coup.\u201d",
+    "subject": "management coup",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stoneheart Enclave is included in the full clan meeting called by Senni.",
+    "source_quote": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners\u2019 Guild",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Miners' Guild is included in the full clan meeting called by Senni.",
+    "source_quote": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners\u2019 Guild",
+    "subject": "Miners' Guild",
+    "quote_verified": true
+  }
+]

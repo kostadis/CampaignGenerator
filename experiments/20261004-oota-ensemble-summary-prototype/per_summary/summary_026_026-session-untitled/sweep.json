@@ -1,0 +1,1647 @@
+[
+  {
+    "type": "event",
+    "fact": "The party finished leveling to 5th before play.",
+    "source_quote": "Before play, the party finished leveling to 5th.",
+    "subject": "leveling to 5th",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum gained access to third-level spells.",
+    "source_quote": "Gyrgum gained access to third-level spells.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz now has Fireball.",
+    "source_quote": "Daz now has Fireball.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin gained a second attack and Tactical Shift.",
+    "source_quote": "Thorin gained a second attack and Tactical Shift",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The DM shared an in-world wanted poster for the Ember Vanguard.",
+    "source_quote": "The DM also shared an in-world wanted poster for the Ember Vanguard",
+    "subject": "wanted poster for the Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is the name the party had given itself.",
+    "source_quote": "The Ember Vanguard is the name the party had given itself",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "In city rumors, Daz has become an old, wizened drow.",
+    "source_quote": "Daz had become an old, wizened drow",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "In city rumors, the brass dragonborn Zalthir has become a red dragonborn.",
+    "source_quote": "the brass dragonborn Zalthir had become a red dragonborn",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Among the derro, a red dragon equals an evil dragon.",
+    "source_quote": "\"red dragon equals evil dragon.\"",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft Exit is a suffocating corridor of rough-hewn stone carved from the bedrock of Gracklstugh.",
+    "source_quote": "The party arrived at the West Cleft Exit, a suffocating corridor of rough-hewn stone carved from the very bedrock of Gracklstugh.",
+    "subject": "West Cleft Exit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Flickering torchlight casts long, jittering shadows across damp walls in the West Cleft Exit.",
+    "source_quote": "Flickering torchlight cast long, jittering shadows across walls slick with damp and mineral dust.",
+    "subject": "West Cleft Exit",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar patrols fill the air of the West Cleft Exit with the sound of armor and heavy tread.",
+    "source_quote": "The low clink of armor and the heavy tread of Duergar patrols filled the air",
+    "subject": "Duergar patrols",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The checkpoint at the West Cleft Exit has been locked down.",
+    "source_quote": "The checkpoint had been locked down.",
+    "subject": "West Cleft Exit lockdown",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A first guard identified each party member's species one by one.",
+    "source_quote": "A first guard identified each party member's species one by one",
+    "subject": "first guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The first guard concluded that the party must not be the Ember Vanguard.",
+    "source_quote": "concluded that they \"must not be the Ember Vanguard.\"",
+    "subject": "first guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The first guard passed the party to Gorglak, a scarred Duergar captain.",
+    "source_quote": "He then passed them to a scarred Duergar captain named Gorglak.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gorglak wears a heavy iron chain with a crude clenched-fist pendant.",
+    "source_quote": "The captain wore a heavy iron chain with a crude clenched-fist pendant",
+    "subject": "iron chain with clenched-fist pendant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's history reading identified the pendant as a mark of loyalty to the Deepking.",
+    "source_quote": "which Zalthir's history reading identified as a mark of loyalty to the Deepking.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking is the ruler to whom the clenched-fist pendant marks loyalty.",
+    "source_quote": "a mark of loyalty to the Deepking.",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak compared the group against the wildly exaggerated rumors of the Ember Vanguard.",
+    "source_quote": "Gorglak compared the group against the wildly exaggerated rumors of the Ember Vanguard",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz saw through the captain's posturing and recognized the look of a corrupt official.",
+    "source_quote": "Daz, ever perceptive, quickly saw through the captain's posturing and recognized the familiar look of a corrupt official",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recognized that the official was angling for a bribe.",
+    "source_quote": "recognized the familiar look of a corrupt official angling for a bribe.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party feigned ignorance of the Ember Vanguard.",
+    "source_quote": "They feigned ignorance of the Ember Vanguard",
+    "subject": "feigning ignorance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party presented their Stone Guard passes.",
+    "source_quote": "presented their Stone Guard passes",
+    "subject": "Stone Guard passes",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party chose to use the Stone Guard passes over the Keeper of the Flame passes.",
+    "source_quote": "choosing them over their Keeper of the Flame passes.",
+    "subject": "Stone Guard passes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard's task was to find proof that the derro were engaged in demonic possession.",
+    "source_quote": "Their Stone Guard task had been to find proof that the derro were engaged in demonic possession.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are engaged in demonic possession.",
+    "source_quote": "proof that the derro were engaged in demonic possession.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak was unmoved by the passes and declared they mean little.",
+    "source_quote": "Gorglak was unmoved. He declared that \"passes mean little here\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak demanded proof that the party were not the Ember Vanguard.",
+    "source_quote": "demanded they prove they were not the Ember Vanguard",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak demanded the party confess and surrender.",
+    "source_quote": "or \"confess and surrender.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak ordered the party to lay down weapons and magic items for inspection.",
+    "source_quote": "He also ordered them to lay down weapons and magic items for inspection",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak ordered the party to speak the Stone Guard's secret salute.",
+    "source_quote": "and to speak the Stone Guard's secret salute.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum used years studying the rituals of Bahamut to recall the salute details.",
+    "source_quote": "Gyrgum's years studying the rituals of Bahamut helped him recall the details",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Bahamut has rituals that Gyrgum studied.",
+    "source_quote": "Gyrgum's years studying the rituals of Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum performed the faction's secret salute with conviction.",
+    "source_quote": "He then performed the faction's secret salute with enough conviction",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's salute gave Gorglak pause.",
+    "source_quote": "gave Gorglak pause.",
+    "subject": "Gorglak",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Five invisible Duergar soldiers are positioned throughout the hallway.",
+    "source_quote": "spotted five invisible Duergar soldiers positioned throughout the hallway",
+    "subject": "invisible Duergar soldiers",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The invisible Duergar soldiers are ready to strike if negotiations collapse.",
+    "source_quote": "ready to strike if negotiations collapsed.",
+    "subject": "invisible Duergar soldiers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spotted the invisible Duergar soldiers with his sharp eyes.",
+    "source_quote": "Zalthir, scanning the dim corridor with sharp eyes, spotted five invisible Duergar soldiers",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz prepared a contingency plan in case the bluff failed.",
+    "source_quote": "Daz prepared a contingency plan in case the bluff failed.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's contingency involves carrying the egg and other incriminating items.",
+    "source_quote": "He would carry the egg and other incriminating items",
+    "subject": "contingency plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's contingency involves casting Misty Step past the guards.",
+    "source_quote": "cast Misty Step past the guards",
+    "subject": "contingency plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's contingency involves claiming divine favor.",
+    "source_quote": "and claim divine favor",
+    "subject": "contingency plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offered to add a magical booming voice or tremors to the contingency plan.",
+    "source_quote": "with Gyrgum offering to add \"a magical booming voice or tremors in the ground.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guard led the party into a 30-foot passage, 20 feet wide, with a gate at each end.",
+    "source_quote": "The guard leads them into a 30-foot passage, 20 feet wide, with a gate at each end",
+    "subject": "30-foot passage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sentries are stationed on the gates of the 30-foot passage.",
+    "source_quote": "with a gate at each end and sentries on the gates.",
+    "subject": "30-foot passage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak stands alone in the middle of the passage.",
+    "source_quote": "There the captain stands alone \"very toughly\" in the middle.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak states that the area is under lockdown.",
+    "source_quote": "\"This area has been put under lockdown.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak states that no one from that side of the district will enter the city of the Duergar.",
+    "source_quote": "He also says: \"no one from that side of the district will enter the city of the Duergar.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party carries Keeper of the Flame passes.",
+    "source_quote": "They carry both Keeper of the Flame and Stone Guard passes",
+    "subject": "Keeper of the Flame passes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Neither pass mentions the Ember Vanguard because the name was invented after they were issued.",
+    "source_quote": "since that name was invented after they were issued.",
+    "subject": "naming of Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's insight roll was 15.",
+    "source_quote": "Daz's insight roll was 15.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Everything but the egg can be hidden with sleight of hand.",
+    "source_quote": "Everything but the egg could be hidden with sleight of hand.",
+    "subject": "hiding items",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes name-dropping their special mission for the Stone Guard.",
+    "source_quote": "Thorin proposes name-dropping their special mission for the Stone Guard.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The history check gives advantage on persuading, intimidating, or performing the salute.",
+    "source_quote": "The history check gives advantage on persuading, intimidating, or performing the salute.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak is a Duergar captain managing a heavily guarded checkpoint.",
+    "source_quote": "a heavily guarded checkpoint managed by a suspicious Duergar captain",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak demands a bribe of twenty gold pieces to allow the party through without a full inspection.",
+    "source_quote": "The captain demands a bribe of twenty gold pieces to allow them through without a full inspection.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak warns that the Deepking fears a drow raiding party.",
+    "source_quote": "Gorglak warned that the Deepking feared a drow raiding party",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak warns that the derro believe the Deepking is behind the unrest.",
+    "source_quote": "the derro believe the Deepking is behind the unrest",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak suggests the party do their business in Gracklstugh quickly and leave.",
+    "source_quote": "Whatever your business in Gracklstugh, I suggest you do it quickly and leave.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak states that he wasn't eager to fight the party if they had taken him on.",
+    "source_quote": "Asked afterward whether they could have taken him, Gyrgum answers: \"I wasn't eager to do it.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum performs the secret Stone Guard salute to prove the party are not the Ember Vanguard.",
+    "source_quote": "To prove they are not the infamous Ember Vanguard, Gyrgum performs the secret Stone Guard salute.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stretches and does vocal exercises before performing the salute.",
+    "source_quote": "He first stretches and does vocal exercises.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum smiles showing off his charisma while ensuring no unauthorized eyes see the rite.",
+    "source_quote": "He keeps watch that no unauthorized eyes see the rite, and smiles \"showing off all that 14 charisma.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking fears a drow raiding party.",
+    "source_quote": "Gorglak warned that the Deepking feared a drow raiding party",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is an infamous faction the party is mistaken for by the guards.",
+    "source_quote": "Gorglak, satisfied that the group was not the Ember Vanguard",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is a faction whose secret salute Gyrgum performs.",
+    "source_quote": "To prove they are not the infamous Ember Vanguard, Gyrgum performs the secret Stone Guard salute.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro are convinced the Deepking is behind the troubles in the city.",
+    "source_quote": "the derro were convinced the Deepking was behind the troubles",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gorglak is identified as a Duergar captain.",
+    "source_quote": "a heavily guarded checkpoint managed by a suspicious Duergar captain",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city the party is entering.",
+    "source_quote": "Whatever your business in Gracklstugh, I suggest you do it quickly and leave.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The back gate swings open after the bribe is paid.",
+    "source_quote": "The back gate swung open",
+    "subject": "back gate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pays twenty gold pieces in total, five from each member, to Gorglak.",
+    "source_quote": "The party paid without argument... The party paid five gold each.",
+    "subject": "bribe payment",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum performs the secret Stone Guard salute to prove they are not the Ember Vanguard.",
+    "source_quote": "Gyrgum performs the secret Stone Guard salute",
+    "subject": "secret salute",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The hidden soldiers quietly stand down after the bribe is paid.",
+    "source_quote": "The party paid without argument, and the hidden soldiers quietly stood down",
+    "subject": "hidden guards stand down",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gate opens into the city proper after the bribe is paid.",
+    "source_quote": "The back gate swung open... The group passed through into the city proper",
+    "subject": "gate opens",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Twenty gold pieces are used as a bribe, with five coming from each party member.",
+    "source_quote": "twenty gold pieces, to be precise (five from each party member)",
+    "subject": "gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Laduguer's Furrow is a wealthy district of the city.",
+    "source_quote": "Laduguer's Furrow, the wealthier district of the city",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Laduguer's Furrow is associated with the Ironhead faction.",
+    "source_quote": "It is also the district of the Ironhead faction",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bets Thorin a gold piece that Thorin will do something embarrassing.",
+    "source_quote": "Jimjar made a bet. The ever-wagering deep gnome companion bet a gold piece that Thorin would do something embarrassing before long",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lets his belt buckle loose and his pants fall to the ground.",
+    "source_quote": "Thorin, never one to let a wager go to waste, promptly let his belt buckle loose and his pants fall to the ground",
+    "subject": "Thorin's pants fall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar laughs at Thorin's embarrassment.",
+    "source_quote": "That settled the matter immediately and drew a delighted laugh from Jimjar",
+    "subject": "Jimjar's laughter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled that small wagers are not tracked unless they reach hundreds.",
+    "source_quote": "The DM ruled that such small wagers are not tracked unless they reach \"hundreds.\"",
+    "subject": "DM wager rule",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh has an industrial haze described as a 19th-century Pittsburgh vibe.",
+    "source_quote": "made their way through the industrial haze of the city, which the DM described as a 19th-century Pittsburgh vibe",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The forge contains belching furnaces and soot-streaked workers toiling beneath a sky thick with smoke.",
+    "source_quote": "passed the belching forges of Clan Thrazgad, where soot-streaked workers toiled beneath a sky thick with smoke",
+    "subject": "Clan Thrazgad forge",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a duergar armorsmith clan.",
+    "source_quote": "smoky, industrial forge of Clan Thrazgad, a duergar armorsmith clan",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A gray-skinned Duergar informant leans against the wall near the forge.",
+    "source_quote": "Near the forge, a gray-skinned Duergar informant leaned against the wall",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The informant eyes the group with cold calculation.",
+    "source_quote": "eyeing the group with cold calculation",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A perception check reveals no invisible watchers nearby.",
+    "source_quote": "A perception check found no invisible watchers nearby",
+    "subject": "perception check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A perception roll of 20 finds no invisible duergar nearby.",
+    "source_quote": "A perception roll of 20 finds no invisible duergar nearby",
+    "subject": "perception roll of 20",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir judges the informant to have nothing worth buying.",
+    "source_quote": "Zalthir judged the man to have nothing worth buying",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin senses the informant has valuable information.",
+    "source_quote": "but Thorin sensed otherwise",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin speaks to the informant.",
+    "source_quote": "Thorin opens: \"All right, what are you looking at?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The informant offers advice about navigating the city for a price.",
+    "source_quote": "I have advice about navigating the city, which I'm willing to give for a price",
+    "subject": "Duergar informant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the party wants to leave the city.",
+    "source_quote": "We're just looking to get out of here and be on our way",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes the city as tricky to navigate.",
+    "source_quote": "this is a tricky city to navigate",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin collects the gold piece from Jimjar for the lost wager.",
+    "source_quote": "Thorin collects on the wager: \"Jimjar, you owe me a gold piece.\"",
+    "subject": "wager payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar pays the informant the gold piece.",
+    "source_quote": "Jimjar pays the informant",
+    "subject": "payment to informant",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard has grown paranoid about strangers.",
+    "source_quote": "The Stone Guard had grown paranoid about strangers",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The informant warns that a group of four with a drow should avoid being noticed together.",
+    "source_quote": "so a group of four with a drow would do well not to be noticed together",
+    "subject": "informant warning on Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is being blamed for the assassination of several members of the derro High Council.",
+    "source_quote": "And the Ember Vanguard was being blamed throughout the city for the assassination of several members of the derro High Council",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Several members of the derro High Council were assassinated.",
+    "source_quote": "assassination of several members of the derro High Council",
+    "subject": "derro High Council",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party realizes the assassinated High Council members were the derro they killed in the caverns.",
+    "source_quote": "Those were the derro the party had killed in the caverns",
+    "subject": "derro (High Council members)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One of the killed derro made the two-headed giants.",
+    "source_quote": "one making the two-headed giants",
+    "subject": "derro (High Council members)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One of the killed derro perverted the dragon egg.",
+    "source_quote": "the other perverting the dragon egg",
+    "subject": "derro (High Council members)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz prefers to approach the informant rather than risk an ambush.",
+    "source_quote": "Daz prefers to approach rather than risk an ambush",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's insight roll of 13 was inconclusive regarding the informant.",
+    "source_quote": "Daz's roll (13) was inconclusive",
+    "subject": "Daz's roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is convinced the informant has nothing useful.",
+    "source_quote": "Zalthir was convinced he had nothing useful",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's insight roll of 16 sensed real information.",
+    "source_quote": "Thorin (16) sensed real information",
+    "subject": "Thorin's roll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The good inn in Gracklstugh is reserved for duergar.",
+    "source_quote": "The party also learned that Gracklstugh's good inn is reserved for duergar",
+    "subject": "Gracklstugh's good inn",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The good inn is described as an introvert's paradise.",
+    "source_quote": "The good inn is for duergar only, \"an introvert's paradise.\"",
+    "subject": "Gracklstugh's good inn",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The not-so-good inn serves everyone else.",
+    "source_quote": "The not-so-good inn serves everyone else",
+    "subject": "Gracklstugh's not-so-good inn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to visit the stone giants first.",
+    "source_quote": "They decide to visit the stone giants first",
+    "subject": "decision to visit stone giants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin believes the stone giants are more even-keeled than other factions.",
+    "source_quote": "the giants seem to be more even-keeled of the group of all these factions",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ironhead faction offered support in exchange for a dead Deepking.",
+    "source_quote": "which had offered support in exchange for a dead Deepking",
+    "subject": "Ironhead faction",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Stone Giant cavern is the location where Hgraam is contending with a cursed giant.",
+    "source_quote": "The party decided their first stop would be the cavern of the stone giants.",
+    "subject": "Stone Giant cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the leader of the stone giants.",
+    "source_quote": "Their reasoning was that Hgraam and his kin were the most level-headed of all the factions they had dealt with beneath Gracklstugh.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is contending with a brother who has succumbed to the two-headed curse.",
+    "source_quote": "They found Hgraam already contending with another of his brothers who had succumbed to the two-headed curse, his massive form twisted and confused.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A two-headed giant is physically twisted and confused by the curse.",
+    "source_quote": "his massive form twisted and confused",
+    "subject": "two-headed giant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The two-headed statue is a ritualistic item recovered from the Derro.",
+    "source_quote": "Thorin presented the stone giant leader with the ritualistic two-headed statue they had recovered.",
+    "subject": "two-headed statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin presents the two-headed statue to Hgraam.",
+    "source_quote": "Thorin presented the stone giant leader with the ritualistic two-headed statue they had recovered.",
+    "subject": "statue presentation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin explains that the Derro used dark rituals to drive the giants into a rampage.",
+    "source_quote": "He explained that the Derro had been using dark rituals to drive the giants into a rampage.",
+    "subject": "Thorin's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro are blamed by Hgraam for using rituals to cause giants to rampage.",
+    "source_quote": "Hgraam blames the derro and begins probing whether a ruling-faction member was behind it",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro ruling council is a faction that Hgraam suspects may be behind the rituals.",
+    "source_quote": "Hgraam probed whether the ritual was the work of the derro ruling council.",
+    "subject": "derro ruling council",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests the party claim they do not know who the Derro were.",
+    "source_quote": "Zalthir suggests: \"Say that these are crazy derro and they were screaming and chanting. We don't know what the deal was.\"",
+    "subject": "Zalthir's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls persuasion with advantage as a giant-friend and gets a 13.",
+    "source_quote": "Thorin rolls persuasion with advantage as a giant-friend and gets a 13.",
+    "subject": "Thorin's persuasion roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is described as a giant-friend.",
+    "source_quote": "Thorin rolls persuasion with advantage as a giant-friend and gets a 13.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam declares he can begin to cure his afflicted kin with the statue.",
+    "source_quote": "Hgraam accepted the statue gravely, declaring that with it he could begin to cure his afflicted kin.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam urges the party to be patient and let the stones speak before acting.",
+    "source_quote": "But perhaps this is a sign that we should be patient and let the stones speak before we act.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam presses five hundred gold pieces into the party's hands as a reward.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "payment of 500 gold",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Five hundred gold pieces are given to the party as a reward by Hgraam.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "five hundred gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard are growing increasingly agitated.",
+    "source_quote": "He warned them, however, that the Stone Guard was growing increasingly agitated.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam urges the party to leave the cavern while he consults the stones, closing it to outsiders.",
+    "source_quote": "He urged them to leave the cavern while he consulted the stones in silence, closing it to outsiders.",
+    "subject": "closing the cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam does not know the location of the Overbright.",
+    "source_quote": "Thorin asks whether Hgraam knows a way to the Overbright. Hgraam does not know where it is, or whether it exists",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam has been told by 'little people' that the Overbright exists.",
+    "source_quote": "Although I have been told by little people like you that it does.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam refers to dwarves as 'little people'.",
+    "source_quote": "The DM noted that dwarves who are not giant-friends take offense at being called \"little people.\"",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Dwarves who are not giant-friends take offense at being called 'little people'.",
+    "source_quote": "The DM noted that dwarves who are not giant-friends take offense at being called \"little people.\"",
+    "subject": "dwarves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam warns the party to be careful around the Stone Guard.",
+    "source_quote": "I suggest you be careful around them.",
+    "subject": "Hgraam's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Gracklstugh cavern is being closed to the outside by Hgraam.",
+    "source_quote": "I'm afraid we must close this Gracklstugh cavern to the outside while I ponder what the stones will say.",
+    "subject": "Gracklstugh cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone giants are considered the most level-headed of the factions dealt with beneath Gracklstugh.",
+    "source_quote": "Their reasoning was that Hgraam and his kin were the most level-headed of all the factions they had dealt with beneath Gracklstugh.",
+    "subject": "Stone giants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city located above the factions mentioned in the session.",
+    "source_quote": "beneath Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party moved toward the private residence of Gartokkar.",
+    "source_quote": "the party moved next toward the private residence of Gartokkar",
+    "subject": "party moving toward Gartokkar's residence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is a high-ranking member of the Keepers of the Flame.",
+    "source_quote": "a high-ranking member of the Keepers of the Flame",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are an organization of which Gartokkar is a high-ranking member.",
+    "source_quote": "high-ranking member of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir set his sphere of magical darkness low over the group.",
+    "source_quote": "Zalthir set his sphere of magical darkness low over the group",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir guided the party through the gloom with uncanny precision.",
+    "source_quote": "guided them through the gloom with uncanny precision",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses splitting up to avoid attention but decides to stay together.",
+    "source_quote": "The party discusses splitting up to avoid attention but decides to stay together",
+    "subject": "discussion about splitting up",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The idea of disguising Daz with a hood was floated during the discussion.",
+    "source_quote": "Disguising Daz with a hood was also floated",
+    "subject": "discussion about disguising Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a member of the party for whom a disguise was considered.",
+    "source_quote": "Disguising Daz with a hood was also floated",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wants the egg gone quickly.",
+    "source_quote": "Thorin and Gyrgum both want the egg gone quickly",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wants the egg gone quickly.",
+    "source_quote": "Thorin and Gyrgum both want the egg gone quickly",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM describes the city as Dickensian London.",
+    "source_quote": "The DM describes the city as Dickensian London",
+    "subject": "comparing Gracklstugh to London",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The description of Gracklstugh references the author Charles Dickens.",
+    "source_quote": "Dickensian London",
+    "subject": "Charles Dickens",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir cast a sphere of magical darkness.",
+    "source_quote": "Zalthir casts his sphere of darkness low over the group",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM described Zalthir's casting of the darkness sphere as 'an extremely clever idea.'",
+    "source_quote": "The DM called it \"an extremely clever idea.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir used specialized senses to guide the group through the magical gloom.",
+    "source_quote": "Zalthir uses his specialized senses to guide the group through the magical gloom",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir possesses Shadow Arts that allow him to see within his own Darkness.",
+    "source_quote": "Zalthir's Shadow Arts let him see within his own Darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The residence of Gartokkar is the destination where the party arrives to fulfill their contract regarding the dragon egg.",
+    "source_quote": "The party arrives at the residence of Gartokkar to fulfill their contract regarding the dragon egg",
+    "subject": "residence of Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a dragon egg they intend to deliver.",
+    "source_quote": "fulfill their contract regarding the dragon egg",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stepped back from the interaction at the door.",
+    "source_quote": "Thorin steps back",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin stepped back because he handled the giants.",
+    "source_quote": "since I handled the giants",
+    "subject": "Thorin stepping back",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party knocks on the door of the residence.",
+    "source_quote": "and the party simply knocks",
+    "subject": "knocking on door",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a polluted city with smelters dumping soot into the air.",
+    "source_quote": "smelters dumping soot into the air and poor visibility",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The streets of Gracklstugh are smog-choked and have poor visibility beyond 30 feet.",
+    "source_quote": "smog-choked streets",
+    "subject": "streets of Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar answers the door with barely concealed surprise upon the party's return.",
+    "source_quote": "the man answered with barely concealed surprise",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar had assumed the party was caught in a crossfire between wizards and assassins.",
+    "source_quote": "quietly assumed the party had been caught in the crossfire",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar remembered Daz only as a third-level drow wizard.",
+    "source_quote": "He remembered Daz only as a third-level drow wizard",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz plays coy about which egg Gartokkar meant, recalling non-disclosure terms.",
+    "source_quote": "Daz, recalling the non-disclosure terms, played coy about which egg Gartokkar meant",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar calls Daz a fool.",
+    "source_quote": "Gartokkar called him a fool",
+    "subject": "Gartokkar calls Daz a fool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar demands someone say something coherent.",
+    "source_quote": "demanded someone \"say something coherent\"",
+    "subject": "Gartokkar demands coherence",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum answers that the egg has been obtained and is glorious.",
+    "source_quote": "Gyrgum answered that the egg had been obtained \"and it is glorious\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The party hands over the corrupted red dragon egg to Gartokkar.",
+    "source_quote": "The party handed over the corrupted red dragon egg",
+    "subject": "corrupted red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party notes the egg was recovered from a dark ritual and bears strange markings.",
+    "source_quote": "noting plainly that it had been recovered from a dark ritual and bore strange markings",
+    "subject": "egg description",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar accepts the egg without ceremony.",
+    "source_quote": "Gartokkar accepted it without ceremony",
+    "subject": "Gartokkar accepts egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a fat, blimped-out, overly pedantic red dragon.",
+    "source_quote": "The DM described Themberchaud as \"a fat, blimped-out, overly pedantic red dragon\"",
+    "subject": "Themberchaud",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The egg's purpose is to replace Themberchaud before he realizes he is not in control of Gracklstugh.",
+    "source_quote": "provide a means of replacing the dragon Themberchaud before the beast grew wise to the fact that he was not truly in control of Gracklstugh",
+    "subject": "Themberchaud's control",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM reminds the party they have separately agreed to act as Themberchaud's agents.",
+    "source_quote": "The DM also reminded the party that they had separately agreed to act as Themberchaud's agents",
+    "subject": "party agreement reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar pays the party their remaining fee.",
+    "source_quote": "Gartokkar paid the party their remaining fee",
+    "subject": "final payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The original deal was 2,000 gp with 600 gp paid up front plus a 1,000 gp confidentiality rider.",
+    "source_quote": "The original deal was 2,000 gp with 600 gp paid up front, plus a 1,000 gp confidentiality rider",
+    "subject": "payment calculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The final payment was 2,400 gp.",
+    "source_quote": "This payment was 2,400 gp",
+    "subject": "payment amount",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "After the split, the party's spreadsheet shows 1,042 gp plus one electrum each.",
+    "source_quote": "the party's spreadsheet showed 1,042 gp plus one electrum each",
+    "subject": "party wealth update",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gartokkar reminds them the arrangement is to remain between them alone.",
+    "source_quote": "He reminded them in no uncertain terms that their arrangement was to remain between them alone",
+    "subject": "confidentiality warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking's agents are rumored to be everywhere.",
+    "source_quote": "repeated the rumor that the Deepking's agents were everywhere",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking's agents are a mercenary band of four so fierce even the Stone Guard fear them.",
+    "source_quote": "They were a mercenary band of four so fierce that even the Stone Guard feared to face them",
+    "subject": "Deepking's agents",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin replies that they simply appeared small and insignificant.",
+    "source_quote": "Thorin replied that they simply appeared \"small and insignificant\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Gartokkar warns that the derro are on edge after the assassination of their leaders.",
+    "source_quote": "The derro are on edge after the assassination of their leaders",
+    "subject": "derro unrest",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard are doubling their patrols.",
+    "source_quote": "The Stone Guard were doubling their patrols, fearing something was about to erupt",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Mind flayer experiments left the derro unstable.",
+    "source_quote": "Mind flayer experiments had left them unstable",
+    "subject": "derro madness",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Blink pushed the derro into outright madness.",
+    "source_quote": "the Blink pushed them into outright madness",
+    "subject": "The Blink effect",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The derro High Council had long been co-opted leaders through whom the Deepking kept the derro in check.",
+    "source_quote": "Their High Council had long been co-opted leaders through whom the Deepking kept the derro in check",
+    "subject": "High Council history",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "After the Blink, the High Council resolved to rise against the king.",
+    "source_quote": "After the Blink, the council resolved to rise against the king",
+    "subject": "High Council rebellion",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The High Council turned to rituals of Demogorgon.",
+    "source_quote": "turned to rituals of Demogorgon",
+    "subject": "Demogorgon rituals",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Demonic bargains grant power at the cost of all restraint.",
+    "source_quote": "Such demonic bargains grant power at the cost of all restraint",
+    "subject": "demonic bargain cost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes about a new name to escape the Ember Vanguard's reputation.",
+    "source_quote": "The party jokes about a new name to escape the Ember Vanguard's reputation",
+    "subject": "new name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party is trying to escape the Ember Vanguard's reputation.",
+    "source_quote": "escape the Ember Vanguard's reputation",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's suggestion for a new name falls flat.",
+    "source_quote": "Thorin's suggestion falls flat",
+    "subject": "Thorin's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A 1,000 gp pearl item is still unsold.",
+    "source_quote": "A 1,000 gp pearl item is still unsold",
+    "subject": "1,000 gp pearl",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party prepares to sneak away toward the Darklake District.",
+    "source_quote": "The party prepares to sneak away toward the Darklake District",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wants to hear about the escalating tensions from afar.",
+    "source_quote": "And I would like to hear what happens from afar",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir rolls a 24 on a stealth check.",
+    "source_quote": "Zalthir rolled a 24",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party fails the DC 14 stealth check despite the darkness granting advantage.",
+    "source_quote": "the group as a whole missed the DC 14 check",
+    "subject": "stealth failure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolls normally for stealth despite his armor normally imposing disadvantage.",
+    "source_quote": "Thorin still rolls normally, since his armor normally imposes disadvantage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum claims his stealth check is his cleverest and most secret technique.",
+    "source_quote": "This is my cleverest and most secret technique, my stealth check",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The visible Derro assassin states that the Derro Council sent Gray Ghosts to exact revenge for the deaths of their High Council members.",
+    "source_quote": "He declared that the Derro Council had sent its Gray Ghosts to exact revenge for the deaths of their High Council members",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The visible Derro assassin claims the derro know exactly who the party is.",
+    "source_quote": "We know who it is, even if the rest of this city doesn't know who it is",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The visible Derro assassin admits they might have misdirected others to ensure they get their revenge.",
+    "source_quote": "And maybe we told them it looked like that so that we would get our revenge",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro Council sent Gray Ghosts to exact revenge for the deaths of their High Council members.",
+    "source_quote": "He declared that the Derro Council had sent its Gray Ghosts to exact revenge for the deaths of their High Council members",
+    "subject": "Derro Council",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are Derro assassins sent to cause chaos.",
+    "source_quote": "a bunch of gray ghosts, assassins who've been sent out to try to cause chaos",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Invisible figures close in on the party from all sides as the leader speaks.",
+    "source_quote": "Before the words had fully left his mouth, invisible figures closed in from all sides",
+    "subject": "ambush begins",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are five Derro assassins in total.",
+    "source_quote": "There are five derro in total, four of them invisible",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four of the Derro assassins are invisible, imposing disadvantage on attacks against them.",
+    "source_quote": "four of them invisible, which imposes disadvantage on attacks against them",
+    "subject": "Invisible Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir cuts down the visible leader of the Derro assassins.",
+    "source_quote": "Zalthir moved with lethal speed, cutting down the visible leader",
+    "subject": "Zalthir kills leader",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir cuts down a second hidden Derro attacker before they could react.",
+    "source_quote": "cutting down the visible leader and a second hidden attacker before they could react",
+    "subject": "Zalthir kills hidden attacker",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts the newly learned Spirit Guardians spell.",
+    "source_quote": "Gyrgum called upon the power of his faith, casting the newly learned Spirit Guardians",
+    "subject": "Spirit Guardians cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Spectral angelic guardians erupt around Gyrgum, tearing through two more assassins.",
+    "source_quote": "A swarm of spectral, angelic guardians erupted around him, tearing through two more assassins",
+    "subject": "Spirit Guardians effect",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first Derro killed by Spirit Guardians fails its Wisdom save and takes 17 damage.",
+    "source_quote": "The first derro fails its Wisdom save and takes 17 damage",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The second Derro killed by Spirit Guardians moves into the emanation, fails its save, and takes 15 damage.",
+    "source_quote": "It fails its save (DC 15, derro at \u22123) and takes 15 damage",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finishes the last Derro attacker with a decisive two-attack sequence.",
+    "source_quote": "Thorin finished the last of them with a decisive two-attack sequence",
+    "subject": "Thorin kills final attacker",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the final attacker for 8 damage.",
+    "source_quote": "He hits for 8, then kills with his new second attack",
+    "subject": "Thorin damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "All five Derro assassins are dead.",
+    "source_quote": "All five Derro lay dead",
+    "subject": "Derro defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz whistles while the party searches the fallen Derro.",
+    "source_quote": "Daz whistled while they searched",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz's whistling is a nod to Whistler, a character from a past campaign who always searched bodies.",
+    "source_quote": "Whistler would always search all bodies",
+    "subject": "Whistler",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a fuzzy lucky foot of indeterminate origin on one of the bodies.",
+    "source_quote": "a fuzzy lucky foot of indeterminate origin",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum claims the lucky foot.",
+    "source_quote": "Gyrgum claimed",
+    "subject": "Gyrgum takes lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he can always use the lucky foot.",
+    "source_quote": "I'm claiming the lucky foot. I can always use that",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a handful of coins on the fallen Derro.",
+    "source_quote": "They found a handful of coins",
+    "subject": "coins",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 3 gp and 8 sp.",
+    "source_quote": "One body carried 3 gp and 8 sp",
+    "subject": "coin pouch 1",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 10 cp.",
+    "source_quote": "another 10 cp",
+    "subject": "coin pouch 2",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 12 sp.",
+    "source_quote": "a third 12 sp",
+    "subject": "coin pouch 3",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a letter bearing the seal of the Council of Savants.",
+    "source_quote": "they found a letter bearing the seal of the Council of Savants",
+    "subject": "letter",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants ordered the Gray Ghosts to strike down the Duergar who brought the Ember Vanguard into the city.",
+    "source_quote": "The letter ordered the Gray Ghosts to strike down the Duergar who had brought the Ember Vanguard into the city",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard was brought into the city by the Duergar.",
+    "source_quote": "the Duergar who had brought the Ember Vanguard into the city",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin concludes the Ember Vanguard is now enemy number one.",
+    "source_quote": "Thorin concludes the Ember Vanguard is now \"enemy number one\"",
+    "subject": "Ember Vanguard status change",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The decision on whether to leave, hide, or stage the Derro bodies is left open for the next session.",
+    "source_quote": "Whether to leave the bodies, hide them, or stage them is left open for next session",
+    "subject": "body disposal",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The party attempts to slip away toward the Darklake District.",
+    "source_quote": "slip away toward the Darklake District",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh has a web of political conspiracy festering beneath its streets.",
+    "source_quote": "laying bare the web of political conspiracy festering beneath Gracklstugh's streets",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  }
+]

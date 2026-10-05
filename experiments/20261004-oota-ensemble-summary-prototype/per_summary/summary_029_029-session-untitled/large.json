@@ -1,0 +1,1276 @@
+[
+  {
+    "type": "location",
+    "fact": "The stone sarcophagus of Brysis is located within the Tomb of Khaem.",
+    "source_quote": "The party stood before the stone sarcophagus of Brysis",
+    "subject": "Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis's withered, mummified remains are inside the stone sarcophagus.",
+    "source_quote": "reveal the withered, mummified remains within",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his action to pry open the heavy lid of the sarcophagus.",
+    "source_quote": "Zalthir had spent his action opening it",
+    "subject": "opening sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "By opening the sarcophagus, Zalthir prevents Brysis from hiding inside it.",
+    "source_quote": "so that Brysis could no longer hide inside",
+    "subject": "Brysis hiding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A talking magic sword rests atop the corpse of Brysis in the sarcophagus.",
+    "source_quote": "Resting atop the ancient corpse was a sword",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sword pleads to be rescued from its imprisonment.",
+    "source_quote": "You can't leave me here. Please.",
+    "subject": "sword request",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wishes the talking sword were a less squeaky talking mace.",
+    "source_quote": "wished she had been a less squeaky talking mace",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a monk who cannot use bladed weapons.",
+    "source_quote": "Zalthir, a monk with no use for bladed weapons",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sword demands Zalthir bring the fighter to her.",
+    "source_quote": "wait, you're a monk. Get the fighter over here.",
+    "subject": "sword complaint",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A battle against Brysis begins amidst a shroud of magical darkness.",
+    "source_quote": "The battle against Brysis was fierce and chaotic",
+    "subject": "combat start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves his orb of darkness over Thorin.",
+    "source_quote": "Zalthir moved his orb of darkness over Thorin",
+    "subject": "Zalthir darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends focus points to strike twice with advantage from inside the darkness.",
+    "source_quote": "spent focus points to strike twice with advantage from inside it",
+    "subject": "Zalthir attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum holds back on turning the undead, saving the last use for a potential escape.",
+    "source_quote": "He held back on the GM's advice, saving his last use in case the party needed a quick getaway",
+    "subject": "Gyrgum turn undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum passes on casting Guiding Bolt to avoid firing blind at disadvantage.",
+    "source_quote": "He also passed on Guiding Bolt, which would have fired blind at disadvantage",
+    "subject": "Gyrgum spell rejection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Tasha's Caustic Brew as a five-foot stream past Zalthir.",
+    "source_quote": "threaded a five-foot stream of Tasha's Caustic Brew past Zalthir",
+    "subject": "Caustic Brew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis fails the saving throw for Tasha's Caustic Brew.",
+    "source_quote": "Brysis blew the saving throw",
+    "subject": "Brysis save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Acid clings to Brysis and deals ongoing damage.",
+    "source_quote": "acid clung to her and kept eating away at her",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires three scorching rays into the darkness.",
+    "source_quote": "fired three scorching rays into the darkness anyway",
+    "subject": "Daz attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two of Daz's rays hit for 10 damage each, and one hits for 3.",
+    "source_quote": "Two hit for 10 each and one for 3",
+    "subject": "Daz hits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz earns the award for pissing off the demonic creature.",
+    "source_quote": "earned him 'the award for pissing off the demonic creature'",
+    "subject": "Daz award",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Brysis vows she will not be defeated after a millennium of imprisonment.",
+    "source_quote": "Brysis raged that she would not be defeated after a millennium of imprisonment",
+    "subject": "Brysis rage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz retreats up the tunnel to avoid being turned into a specter.",
+    "source_quote": "Daz retreated up the tunnel so the creature could not turn him into a specter",
+    "subject": "Daz retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis is destroyed by the lingering acid damage.",
+    "source_quote": "she was destroyed before she could make good on his threat",
+    "subject": "Brysis destruction",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis is destroyed.",
+    "source_quote": "she was destroyed",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis is dead.",
+    "source_quote": "she was destroyed",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reaches into the sarcophagus and pulls free the sentient sword.",
+    "source_quote": "he reached into the sarcophagus and pulled free the sentient sword",
+    "subject": "Thorin grab",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A blade of pure radiance blazes to life when Thorin grasps the hilt.",
+    "source_quote": "a blade of pure radiance blazed to life",
+    "subject": "sword activation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sword announces herself as Dawnbringer.",
+    "source_quote": "The sword announced herself with 'Dawnbringer here! Let me show you what I can do!'",
+    "subject": "Dawnbringer introduction",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a +2 sword that deals radiant damage instead of slashing.",
+    "source_quote": "She is a +2 sword that deals radiant damage instead of slashing",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer adds 1d8 damage against undead.",
+    "source_quote": "adds 1d8 against undead",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer grants lesser restoration.",
+    "source_quote": "grants lesser restoration",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis says 'not done, Dawnbringer' before dying.",
+    "source_quote": "Brysis managed only 'not done, Dawnbringer'.",
+    "subject": "Brysis last words",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is capable of reading.",
+    "source_quote": "She could even read",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is down 12 maximum hit points.",
+    "source_quote": "He is already down 12 maximum hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party searched the tomb after defeating Brysis.",
+    "source_quote": "With Brysis defeated, the party searched the tomb.",
+    "subject": "searching the tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A thin gold sheath covers the sarcophagus.",
+    "source_quote": "found a thin gold sheath covering the sarcophagus",
+    "subject": "gold sheath",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gold sheath is worth 250 gold pieces.",
+    "source_quote": "worth 250 gold pieces",
+    "subject": "gold sheath",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pried loose the thin gold covering from Brysis's sarcophagus.",
+    "source_quote": "The party pries loose a thin gold covering from Brysis's sarcophagus",
+    "subject": "gold sheath removal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party discovered a chest that had been rendered completely invisible by magic.",
+    "source_quote": "a chest that had been rendered completely invisible by magic",
+    "subject": "invisible chest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cast Faerie Fire to strip away the enchantment on the chest.",
+    "source_quote": "Daz's Faerie Fire stripped away the enchantment.",
+    "subject": "Faerie Fire cast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz initially called the spell 'Faerie Fly' and was corrected.",
+    "source_quote": "He first calls it \"Faerie Fly\" and is corrected.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party compared their sleight of hand abilities.",
+    "source_quote": "The party compares sleight of hand.",
+    "subject": "sleight of hand check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has the worst sleight of hand in the group, with a modifier of -1.",
+    "source_quote": "Thorin has the worst sleight of hand in the group... Thorin has the worst at -1",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin was eager to open the chest despite his poor skill.",
+    "source_quote": "he is eager to do it anyway.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir volunteered to open the chest, stating he would 'take one for the team'.",
+    "source_quote": "Zalthir volunteers (\"I'll do it. I'll take one for the team.\")",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir successfully opened the chest.",
+    "source_quote": "Zalthir ... successfully opens the chest.",
+    "subject": "chest opening",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The contents of the chest were invisible and had to be dumped onto the floor.",
+    "source_quote": "Its contents were themselves invisible and had to be dumped onto the floor.",
+    "subject": "chest contents revealed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained 4,000 silver pieces.",
+    "source_quote": "They held 4,000 silver pieces",
+    "subject": "silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained 1,200 gold pieces.",
+    "source_quote": "1,200 gold pieces",
+    "subject": "gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained eleven zircons.",
+    "source_quote": "eleven zircons",
+    "subject": "zircons",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The zircons are worth 50 gold each.",
+    "source_quote": "eleven zircons worth 50 gold each",
+    "subject": "zircons",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained a necklace of fireballs.",
+    "source_quote": "a necklace of fireballs",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The necklace has four beads.",
+    "source_quote": "The necklace has four beads.",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Each bead can be thrown as a fireball.",
+    "source_quote": "Each can be thrown as a fireball",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "All four beads can be detached and thrown at once.",
+    "source_quote": "or all four can be detached and thrown at once.",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum claimed the necklace of fireballs.",
+    "source_quote": "Gyrgum claims the necklace",
+    "subject": "necklace claimed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained a philter of love.",
+    "source_quote": "a philter of love",
+    "subject": "philter of love",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained a potion of greater healing.",
+    "source_quote": "a potion of greater healing",
+    "subject": "potion of greater healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that consumables belong to the whole party.",
+    "source_quote": "The GM ruled that consumables belong to the whole party.",
+    "subject": "loot distribution",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz moved the money into D&D Beyond's new party inventory tab.",
+    "source_quote": "Daz moved the money into D&D Beyond's new party inventory tab.",
+    "subject": "inventory update",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer is revealed to speak, read, and understand Common.",
+    "source_quote": "Dawnbringer is revealed to speak, read, and understand Common.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer responded to Gyrgum's comments with a flat 'seriously?'.",
+    "source_quote": "the sword answers with a flat \"seriously?\"",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum quipped about needing an invisible key.",
+    "source_quote": "Gyrgum quips, \"Does anyone have an invisible key?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum made comments about Dawnbringer reading.",
+    "source_quote": "This prompts Gyrgum's \"a sword that can read\" and \"They've upgraded these things\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum pointed out the new party inventory tab in D&D Beyond.",
+    "source_quote": "Gyrgum points out D&D Beyond's new party inventory tab",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes himself as a completionist.",
+    "source_quote": "a little bit of a completionist",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to enter the unexplored southern chamber.",
+    "source_quote": "Gyrgum... wanted to see the unexplored southern chamber, and the party went in",
+    "subject": "exploration of southern chamber",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz hangs back at the rear of the party, ready to use fire spells.",
+    "source_quote": "Daz hanging back ready to throw fire",
+    "subject": "Daz rearguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin opens the door to the southern chamber.",
+    "source_quote": "Thorin has already opened the door",
+    "subject": "Thorin opens door",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The southern chamber contains canopic jars and a sarcophagus.",
+    "source_quote": "The party enters a southern chamber filled with canopic jars and a large stone sarcophagus",
+    "subject": "southern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There are a dozen clay canopic jars containing desiccated organs in niches on the western and eastern walls.",
+    "source_quote": "a dozen clay canopic jars of desiccated organs",
+    "subject": "canopic jars",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sarcophagus is decorated with mosaics depicting great floating cities.",
+    "source_quote": "decorated with mosaics of great floating cities",
+    "subject": "sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sarcophagus rests on a black marble bier.",
+    "source_quote": "The sarcophagus rests on a black marble bier",
+    "subject": "black marble bier",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone lid of the sarcophagus is magically enchanted to be light despite its heavy appearance.",
+    "source_quote": "The heavy-looking stone lid turns out to be light, thanks to a magical enchantment",
+    "subject": "sarcophagus lid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir boasts that he can punch the lid off the sarcophagus.",
+    "source_quote": "I bet I can punch it off. That's kind of my thing",
+    "subject": "Zalthir's boast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin pushes the sarcophagus lid, causing it to fly off.",
+    "source_quote": "Thorin pushes the lid, which flies off",
+    "subject": "Thorin opens lid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realizes the southern chamber is a decoy tomb, as warned by Fargas Rumblefoot.",
+    "source_quote": "The party realizes the chamber is the fake tomb mentioned by Fargas Rumblefoot, serving as a decoy for the real burial site",
+    "subject": "decoy identification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot warned the party that the southern chamber was a decoy.",
+    "source_quote": "Fargas Rumblefoot had once warned them that this chamber was a decoy",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith is dead.",
+    "source_quote": "its only curse had already been destroyed along with the wraith",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The curse associated with the chamber ended when the wraith was killed.",
+    "source_quote": "There had been a curse, but it ended when the wraith was killed",
+    "subject": "curse ended",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party exits the tomb complex and returns to the Underdark caverns.",
+    "source_quote": "the party exits the tomb complex back into the Underdark caverns",
+    "subject": "exit tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb complex is located within the Underdark caverns.",
+    "source_quote": "the party exits the tomb complex back into the Underdark caverns",
+    "subject": "Underdark caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is currently being pursued.",
+    "source_quote": "Zalthir notes they are still being pursued",
+    "subject": "pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that they are still being pursued.",
+    "source_quote": "Zalthir notes they are still being pursued",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin opens the sarcophagus lid.",
+    "source_quote": "Thorin pushes the lid, which flies off",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party travels through the Underdark for several days.",
+    "source_quote": "After several days of careful travel",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest in the caverns.",
+    "source_quote": "The party takes a long rest in the caverns",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains all his hit points.",
+    "source_quote": "Gyrgum regains all his hit points",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains his spells.",
+    "source_quote": "spells",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains his Channel Divinity uses.",
+    "source_quote": "Channel Divinity uses",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth uses her knowledge of the terrain to obscure the party's trail.",
+    "source_quote": "Eldeth uses her knowledge of the terrain to obscure the party's trail",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth brings the news that the drow pursuit has been broken.",
+    "source_quote": "Eldeth brought welcome news: the drow pursuit had finally been broken",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's pursuit rating drops to zero.",
+    "source_quote": "the party's pursuit rating dropped to zero",
+    "subject": "drow pursuit broken",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM warns that the hunters will eventually pick up the trail again.",
+    "source_quote": "the hunters would eventually pick up the trail again",
+    "subject": "drow pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is hopeful that their incredible actions will prevent the drow from finding them.",
+    "source_quote": "Daz was hopeful: \"Maybe we'll be doing something so incredible they won't be able to find us.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The narrow tunnels give way to something breathtaking.",
+    "source_quote": "the narrow tunnels gave way to something breathtaking",
+    "subject": "narrow tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Two more days of travel pass.",
+    "source_quote": "Two more days of travel pass",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is a vast cavern where bioluminescent mushrooms cover every surface from floor to ceiling, with a lake at its heart.",
+    "source_quote": "Neverlight Grove opened before them like a dream. It was a vast cavern where bioluminescent mushrooms covered every surface, floor to ceiling, with a lake at its heart.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A mushroom tower is visible beyond a ravine, glimpsed through mist.",
+    "source_quote": "Beyond a ravine, a mushroom tower is glimpsed through mist.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool and Rumpadump sprint ahead of the party to greet their sovereigns.",
+    "source_quote": "Rumpadump cried \"We're home! We're home! We're home!\" and sprinted ahead with Stool.",
+    "subject": "Stool and Rumpadump run ahead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith displays a quiet, peaceful expression upon arriving in Neverlight Grove.",
+    "source_quote": "Sarith walked with a quiet, peaceful expression that none of the party had seen on him before.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir wraps himself in a shroud of darkness due to distrust of the environment.",
+    "source_quote": "Zalthir, ever cautious, wrapped himself in a shroud of darkness, explaining, \"I don't trust any of these things.\"",
+    "subject": "Zalthir uses Darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is a sovereign of Neverlight Grove.",
+    "source_quote": "The two sovereigns of the grove, Phylo and Basidia, received them warmly",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is a sovereign of Neverlight Grove.",
+    "source_quote": "The two sovereigns of the grove, Phylo and Basidia, received them warmly",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo speaks of a coming \"day of joy\" with eerie enthusiasm.",
+    "source_quote": "something was immediately, unsettlingly wrong with Phylo. He spoke of a coming \"day of joy\" with eerie enthusiasm.",
+    "subject": "Phylo's strange behavior",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo praises the Great Seeder, claiming the entity can answer any question.",
+    "source_quote": "He praised a figure called the \"Great Seeder,\" who could answer any question",
+    "subject": "Great Seeder",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo refers to the Great Seeder using the pronouns \"she\" and \"her.\"",
+    "source_quote": "kept calling the entity \"she\" and \"her.\"",
+    "subject": "Phylo uses gendered pronouns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that referring to the Great Seeder with gendered pronouns is deeply strange because myconids have no gender.",
+    "source_quote": "Daz recalled that this was deeply strange, because myconids have no gender.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is visibly uncomfortable with Phylo's behavior.",
+    "source_quote": "An insight check revealed that Basidia was staring at Phylo in visible discomfort.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia arranges for Phylo to stay behind and leads the tour of the grove herself.",
+    "source_quote": "She arranged for Phylo to stay behind and led the tour herself.",
+    "subject": "Basidia leads tour",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo agrees to stay behind when Basidia takes charge of the tour.",
+    "source_quote": "Phylo replies, \"Yes, Basidia, you are my sovereign and co-equal in all things.\"",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia speaks in hushed, urgent tones while guiding the group through the grove.",
+    "source_quote": "As she guided the group through the grove, she spoke in hushed, urgent tones.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A previous group of \"softers\" accepted Phylo's hospitality and were taken to the Garden of Welcome.",
+    "source_quote": "A previous group of \"softers\" had accepted Phylo's hospitality and been taken to the Garden of Welcome.",
+    "subject": "Previous group of softers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia has not seen the previous group of softers since they were taken to the Garden of Welcome.",
+    "source_quote": "She had not seen them since, and Phylo had never mentioned them again.",
+    "subject": "Previous group of softers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump shouts \"We're home! We're home! We're home!\" upon entering the grove.",
+    "source_quote": "Rumpadump shouted: \"We're home! We're home! We're home!\"",
+    "subject": "Rumpadump",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that Neverlight Grove looks incredible, colorful, and mushroom-y.",
+    "source_quote": "Gyrgum: \"Wow, this place looks incredible! So colorful and mushroom-y.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz jokes about the party not having brought pepperoni-mushroom pizzas.",
+    "source_quote": "Daz jokes that it is a good thing the party has not brought any pepperoni-mushroom pizzas.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum follows at a distance to watch how the sprouts interact with Phylo and Basidia.",
+    "source_quote": "Gyrgum follows at a distance to watch how the sprouts interact with Phylo and Basidia.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz climbs onto high ground to observe.",
+    "source_quote": "Daz climbs onto high ground to observe.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth decides Thorin is \"crazy\" for following the group.",
+    "source_quote": "Eldeth decides Thorin is \"crazy\" for following, and she stands next to Daz instead.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth stands next to Daz on the high ground.",
+    "source_quote": "Eldeth decides Thorin is \"crazy\" for following, and she stands next to Daz instead.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar walks over with the group.",
+    "source_quote": "Jimjar and Sarith walk over with the group.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith walks over with the group.",
+    "source_quote": "Jimjar and Sarith walk over with the group.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo welcomes Rumpadump and Stool back to the grove.",
+    "source_quote": "Phylo: \"Welcome, welcome back, Rumpadump and Stool.\"",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool asks where Zalthir is.",
+    "source_quote": "Stool asks where Zalthir is and adds that \"Thorin carried me when I was tired.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool states that Thorin carried him when he was tired.",
+    "source_quote": "Stool asks where Zalthir is and adds that \"Thorin carried me when I was tired.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo addresses the party as \"friendly softers.\"",
+    "source_quote": "He addresses them as \"friendly softers.\"",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith advises the party to stay on the sovereign's good side.",
+    "source_quote": "Sarith advises staying on the sovereign's good side.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum plans to praise whatever Phylo shows them.",
+    "source_quote": "Gyrgum replies, \"Oh, I'm planning to praise the heck out of whatever he shows us.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo describes the Great Seeder as living beyond the garden.",
+    "source_quote": "Phylo describes the Great Seeder, who lives beyond the garden, as all-knowing, wise, and able to answer any question.",
+    "subject": "Great Seeder",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo describes the Great Seeder as all-knowing and wise.",
+    "source_quote": "Phylo describes the Great Seeder, who lives beyond the garden, as all-knowing, wise, and able to answer any question.",
+    "subject": "Great Seeder",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo describes the Great Seeder as able to answer any question.",
+    "source_quote": "Phylo describes the Great Seeder, who lives beyond the garden, as all-knowing, wise, and able to answer any question.",
+    "subject": "Great Seeder",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Arcana/Nature check results in a score of 12, or 23 with help.",
+    "source_quote": "Daz's Arcana/Nature check comes to 12, and 23 with help.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's insight check results in a score of 18.",
+    "source_quote": "Gyrgum's insight check of 18 catches Basidia looking uncomfortable at Phylo.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is the location where Phylo takes guests after offering hospitality.",
+    "source_quote": "A previous group of \"softers\" had accepted Phylo's hospitality and been taken to the Garden of Welcome.",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo states that the Circle of Masters will only be visited the following day.",
+    "source_quote": "Phylo speaks of a 'day of joy' and a 'great celebration' occurring soon, and offers a tour of the grove but says the Circle of Masters will only be visited the following day.",
+    "subject": "Phylo delays Circle of Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub is the leader of the Circle of Hunters.",
+    "source_quote": "There they met Loobamub, a circle leader",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub is a staunch ally of Basidia.",
+    "source_quote": "a circle leader and staunch ally of Basidia",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub shares unease about Phylo's new ways.",
+    "source_quote": "who shared her unease about Phylo's new ways",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid hunters do not kill prey.",
+    "source_quote": "He explained that myconid hunters did not kill prey",
+    "subject": "myconid hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid hunters track creatures that have already died near the grove.",
+    "source_quote": "They tracked creatures that had already died near the grove",
+    "subject": "myconid hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid hunters bring remains back for reanimation.",
+    "source_quote": "and brought the remains back for reanimation",
+    "subject": "myconid hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Loobamub asks the party to kill a grick alpha.",
+    "source_quote": "He asked the party to kill a grick alpha lurking in the nearby fungal wilds",
+    "subject": "grick alpha quest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Loobamub asks the party to bring back the grick alpha's carcass intact.",
+    "source_quote": "and bring back its carcass intact",
+    "subject": "grick alpha quest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The grick alpha is lurking in the nearby fungal wilds.",
+    "source_quote": "kill a grick alpha lurking in the nearby fungal wilds",
+    "subject": "fungal wilds",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks why the grick errand matters.",
+    "source_quote": "Zalthir asked why this errand mattered",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states that a reanimated grick could fight against the demonic force in the Garden of Welcome.",
+    "source_quote": "Zalthir asked why this errand mattered, and then answered his own question: a reanimated grick could fight alongside them against whatever demonic force was in the Garden of Welcome",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia calls Zalthir's suggestion regarding the grick 'an excellent idea.'",
+    "source_quote": "Basidia called it \"an excellent idea.\"",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer blazed at Thorin's side.",
+    "source_quote": "Dawnbringer blazed at Thorin's side",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer refuses to be dimmed.",
+    "source_quote": "and refused to be dimmed",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer chatters constantly.",
+    "source_quote": "a constant, chattering reminder",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer has spent far too long in the dark.",
+    "source_quote": "that she had spent far too long in the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer has absolutely no intention of going back to the dark.",
+    "source_quote": "and had absolutely no intention of ever going back",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tour brought the party to the Circle of Hunters.",
+    "source_quote": "The tour brought them to the Circle of Hunters",
+    "subject": "Circle of Hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is nearby with his friends.",
+    "source_quote": "Phylo is nearby with his friends",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo ignores the party.",
+    "source_quote": "Phylo is nearby with his friends but ignores the party",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub affirms that Phylo's new ways are not good.",
+    "source_quote": "Loobamub affirms, \"yes, yes, Phylo's new ways are not good.\"",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party questions why hunters would hire others to hunt.",
+    "source_quote": "The party questions why hunters would hire others to hunt",
+    "subject": "party questions hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party questions why hunters do not simply avoid a stationary predator.",
+    "source_quote": "and why they don't simply avoid a stationary predator",
+    "subject": "party questions hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM compares the reanimation to The Last of Us.",
+    "source_quote": "The GM compares the reanimation to The Last of Us",
+    "subject": "GM analogy",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The grick alpha is a dangerous worm-like monstrosity.",
+    "source_quote": "a dangerous worm-like monstrosity lurking in the nearby fungal wilds",
+    "subject": "grick alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The grick alpha is a passive predator that blends with rock.",
+    "source_quote": "The grick is a passive predator that blends with rock",
+    "subject": "grick alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The grick alpha lurks where creatures pass.",
+    "source_quote": "and lurks where creatures pass",
+    "subject": "grick alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum likens the grick to a carnivorous plant.",
+    "source_quote": "Gyrgum likens it to a carnivorous plant",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir asks why Basidia would want them distracted.",
+    "source_quote": "Zalthir asks why Basidia would want them distracted",
+    "subject": "Basidia justification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia states that if Loobamub needs help, the party should help Loobamub.",
+    "source_quote": "She answers: \"If Loobamub needs your help, then you should help Loobamub.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia states that all things can be done in their time and place.",
+    "source_quote": "All things can be done in their time and place\"",
+    "subject": "Basidia",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to hunt the grick.",
+    "source_quote": "The party agrees to hunt the creature",
+    "subject": "party accepts quest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realizes Basidia could reanimate the carcass to serve as an ally against the demonic corruption.",
+    "source_quote": "realizing that Basidia could reanimate the carcass to serve as an ally against the demonic corruption in the grove",
+    "subject": "party realization",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Loobamub shows the party where the grick is.",
+    "source_quote": "Loobamub shows the party where the grick is",
+    "subject": "grick location",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that fire damage does not prevent reanimation.",
+    "source_quote": "The GM rules that fire damage does not prevent reanimation",
+    "subject": "fire damage ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that slashing a creature to pieces prevents reanimation.",
+    "source_quote": "but slashing a creature to pieces or disintegrating it with acid does",
+    "subject": "slashing ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that disintegrating a creature with acid prevents reanimation.",
+    "source_quote": "but slashing a creature to pieces or disintegrating it with acid does",
+    "subject": "acid ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a sentient sword named Dawnbringer.",
+    "source_quote": "Thorin's sentient sword Dawnbringer",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer has been talking to Thorin throughout the visit.",
+    "source_quote": "is revealed to have been talking to Thorin throughout the visit",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer insists on remaining illuminated at all times.",
+    "source_quote": "and insists on remaining illuminated at all times",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer has a profound fear of the dark.",
+    "source_quote": "due to her profound fear of the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer causes stress when the party tries to sleep.",
+    "source_quote": "causing stress when the party tries to sleep",
+    "subject": "Dawnbringer sleep disruption",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer says she does not trust the dark.",
+    "source_quote": "Dawnbringer: \"I don't trust the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer says she has been in the dark for a very long time.",
+    "source_quote": "I've been in the dark for a very long time",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ends before the hunt begins.",
+    "source_quote": "The session ends before the hunt begins",
+    "subject": "session end",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "There is a demonic force in the Garden of Welcome.",
+    "source_quote": "whatever demonic force was in the Garden of Welcome",
+    "subject": "demonic force in Garden of Welcome",
+    "quote_verified": true
+  }
+]

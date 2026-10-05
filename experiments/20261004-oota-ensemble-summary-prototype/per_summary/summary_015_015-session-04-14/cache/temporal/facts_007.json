@@ -1,0 +1,149 @@
+[
+  {
+    "type": "monster",
+    "fact": "Buppido had 13 hit points before the final blow.",
+    "source_quote": "struck Buppido squarely for 15 damage against his 13 hit points",
+    "subject": "Buppido hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido takes 15 damage from Daz's Magic Missile, ending his life.",
+    "source_quote": "struck Buppido squarely for 15 damage",
+    "subject": "Buppido final damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido dies from the damage dealt by Daz.",
+    "source_quote": "The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Buppido is dead, killed by Daz's Magic Missile.",
+    "source_quote": "The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party reaches fourth level.",
+    "source_quote": "The party reached fourth level",
+    "subject": "party level",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party reaches fourth level after the battle with Buppido.",
+    "source_quote": "The party reached fourth level",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Only three skeletons could see Gyrgum's holy symbol during the Turn Undead attempt.",
+    "source_quote": "only three skeletons can see the symbol",
+    "subject": "skeleton turn attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three skeletons flee during the Turn Undead effect.",
+    "source_quote": "three flee",
+    "subject": "skeleton flee count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three skeletons flee.",
+    "source_quote": "three flee",
+    "subject": "skeleton flee count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The skeletons make a DC 13 Wisdom save at a -1 penalty to flee or not.",
+    "source_quote": "The skeletons make a DC 13 Wisdom save at -1",
+    "subject": "skeleton saving throw",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills a fleeing skeleton with an opportunity attack dealing 8 damage.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One skeleton is killed by Thorin's opportunity attack.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "skeleton killed by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills a skeleton that had 4 hit points remaining.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "Thorin kills 4hp skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A skeleton with 4 hit points remaining is killed by Thorin.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "skeleton killed by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflects 5 piercing damage from a skeleton completely, taking no damage.",
+    "source_quote": "A skeleton hits Zalthir for 5 piercing damage, and Zalthir deflects it completely",
+    "subject": "Zalthir damage deflection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes 5 damage from a short sword.",
+    "source_quote": "A short sword hits for 5 damage",
+    "subject": "Gyrgum damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes 5 damage from a crossbow.",
+    "source_quote": "hits Gyrgum for 5 damage",
+    "subject": "Gyrgum damage 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits a skeleton for 5 damage.",
+    "source_quote": "Zalthir hits a skeleton for 5 damage",
+    "subject": "Zalthir damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits a skeleton with a crossbow for 8 damage.",
+    "source_quote": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage",
+    "subject": "Gyrgum damage 3",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 8 damage to a skeleton.",
+    "source_quote": "8 damage to one skeleton",
+    "subject": "Daz damage split 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 1 damage to a neighboring skeleton.",
+    "source_quote": "and 1 to its neighbor",
+    "subject": "Daz damage split 2",
+    "quote_verified": true
+  }
+]

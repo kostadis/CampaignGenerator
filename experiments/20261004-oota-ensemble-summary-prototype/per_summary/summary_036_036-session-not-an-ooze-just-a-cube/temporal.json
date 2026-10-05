@@ -1,0 +1,79 @@
+[
+  {
+    "type": "location",
+    "fact": "Blingdenstone is located deep within the caverns.",
+    "source_quote": "The party arrived at a gate deep within the caverns of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard has a squeaky voice.",
+    "source_quote": "One squeaky-voiced guard asked",
+    "subject": "guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock is in control of the territory near Blingdenstone, having taken it from the Drow.",
+    "source_quote": "Clan Diggermattock had taken this territory from the Drow",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar wagers five empty spell gems against the party regarding the meeting with the clan leaders.",
+    "source_quote": "I\u2019ll bet you five empty spell gems that meeting with them is the right thing to do.",
+    "subject": "Jimjar bet wager",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wager involves five empty spell gems.",
+    "source_quote": "I\u2019ll bet you five empty spell gems",
+    "subject": "empty spell gems",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Jimjar describes the deep gnome settlement as having an extensive ooze infestation with many oozes present.",
+    "source_quote": "there\u2019s tons of them around",
+    "subject": "Blingdenstone ooze infestation",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session takes place on 036.03.",
+    "source_quote": "### Journey Through Blingdenstone 036.03",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guards bring the party to Diggermattock Hall after leading them through the reception hall and Traders' Grotto.",
+    "source_quote": "The guards ultimately bring the party to Diggermattock Hall.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is occupied by roughly two dozen Svirfneblin.",
+    "source_quote": "Roughly two dozen Svirfneblin occupied the well-lit cavern.",
+    "subject": "Diggermattock Hall population",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo is one of the two male and female Svirfneblin leaders seated at the stone desks in Diggermattock Hall.",
+    "source_quote": "A male and female Svirfneblin sat there conferring with one another",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni is Dorbo's assistant and co-leader, seated at one of the two stone desks.",
+    "source_quote": "My name is Dorbo. And over here is my assistant, Senni.",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  }
+]

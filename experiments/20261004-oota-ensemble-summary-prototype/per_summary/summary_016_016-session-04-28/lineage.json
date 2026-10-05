@@ -1,0 +1,26 @@
+{
+ "chapter": 16,
+ "kind": "summary",
+ "inputs": [
+  "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/016-session-04-28.md"
+ ],
+ "session": null,
+ "reason": "direct summary; filename numeric prefix is authoritative",
+ "passes": {
+  "small": "summary",
+  "large": "summary",
+  "sweep": "summary",
+  "temporal": "summary"
+ },
+ "source_path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/016-session-04-28.md",
+ "chapter_identity": {
+  "authoritative": 16,
+  "source": "filename_numeric_prefix",
+  "heading": null
+ },
+ "heading_chapter": null,
+ "chapter_mismatch": false,
+ "omitted_passes": [
+  "interiority"
+ ]
+}

@@ -1,0 +1,170 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek slipped through the stone to scout the area on the other side of the pool.",
+    "source_quote": "Pelek slipped effortlessly through the stone as only a ghost could, scouting ahead",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek confirmed that a tunnel continues on the other side of the pool.",
+    "source_quote": "confirming that a tunnel continued on the other side",
+    "subject": "tunnel scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel beyond the pool is clear of immediate danger.",
+    "source_quote": "confirming that a tunnel continued on the other side, clear of any immediate danger",
+    "subject": "tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rules out the narrow cracks in the wall as a viable passage.",
+    "source_quote": "With the cracks ruled out as a passage",
+    "subject": "abandoning cracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum eats Pygmywort to shrink himself in an attempt to fit through the narrow rock cracks.",
+    "source_quote": "Gyrgum eats Pygmywort to shrink himself through the narrow rock cracks",
+    "subject": "Pygmywort attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum cannot get small enough to pass through the cracks.",
+    "source_quote": "cannot get small enough to pass",
+    "subject": "Gyrgum fail to shrink",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pygmywort functions like the enlarge/reduce spell, reducing a Medium creature only to Small.",
+    "source_quote": "The mushroom works like enlarge/reduce, taking a Medium creature only to Small",
+    "subject": "Pygmywort",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eating more Pygmywort does not shrink Gyrgum further.",
+    "source_quote": "Eating more does not shrink him further",
+    "subject": "Gyrgum second dose",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum gets the impression that he will be smaller for a longer period of time after eating more Pygmywort.",
+    "source_quote": "you do get the distinct impression you might be smaller for a longer period of time",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wonders if the mushrooms behave like Photoshop zoom.",
+    "source_quote": "Thorin wonders whether the mushrooms behave like Photoshop zoom",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares the mushrooms to adding a picture to a Word document.",
+    "source_quote": "Daz compares them to adding a picture to a Word document",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to the large, dark pool to use an alternate route.",
+    "source_quote": "the party returns to the large, dark pool",
+    "subject": "dark pool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses magic to freeze successive sections of the water, creating a temporary ice bridge.",
+    "source_quote": "Daz uses magic to freeze successive sections of the water, creating a temporary ice bridge",
+    "subject": "ice bridge creation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz can freeze a five-foot cube and have no more than two non-instantaneous effects active at once.",
+    "source_quote": "Daz can freeze a five-foot cube and have no more than two non-instantaneous effects active at once",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests layering five-foot chunks to form the bridge.",
+    "source_quote": "Zalthir suggests layering five-foot chunks into a bridge",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "As each new ice slab forms, the previous one melts behind them.",
+    "source_quote": "As each new slab forms, the old one melts behind them",
+    "subject": "ice melting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes Daz perform 'Spider-Man motions' while freezing the bridge.",
+    "source_quote": "Thorin has him making \"Spider-Man motions.\"",
+    "subject": "Thorin gesture",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses that he likes the 'iceberg spell'.",
+    "source_quote": "Gyrgum: \"I like the iceberg spell.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The whole group walks safely over the black water to the far shore.",
+    "source_quote": "The whole group walked safely over the black water to the far shore",
+    "subject": "crossing pool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum learns that staying small weakens his Strength attacks.",
+    "source_quote": "Gyrgum learns that staying small weakens his Strength attacks",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes a Bigwig to restore his size.",
+    "source_quote": "he takes a Bigwig (\"the antidote\") to restore his size",
+    "subject": "Gyrgum restoration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Bigwig is described as the antidote to Pygmywort.",
+    "source_quote": "he takes a Bigwig (\"the antidote\") to restore his size",
+    "subject": "Bigwig",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "More Pygmywort and Bigwig grow on the far shore of the pool.",
+    "source_quote": "More Pygmywort and Bigwig grow on the far shore",
+    "subject": "far shore",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum stocks an ample supply of Pygmywort and Bigwig.",
+    "source_quote": "he makes sure to stock \"an ample supply.\"",
+    "subject": "Gyrgum stockpiling",
+    "quote_verified": true
+  }
+]

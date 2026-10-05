@@ -1,0 +1,121 @@
+[
+  {
+    "type": "faction",
+    "fact": "The DM names the group 'Ember Vanguard', though the party does not yet know that name.",
+    "source_quote": "The Ember Vanguard, though they did not yet know that name",
+    "subject": "Ember Vanguard",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is linked to nefarious activities and corruption via notes found in the chamber.",
+    "source_quote": "notes linking the Council of Savants to nefarious activities and corruption",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost who seized the derro spy's body at the end of the last fight.",
+    "source_quote": "The ghost Pelek, who had seized the derro spy's body at the end of the last fight",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party keeps careful hold of Pelek's bones.",
+    "source_quote": "while the party kept careful hold of his bones",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro spy's body is currently inhabited by the ghost Pelek.",
+    "source_quote": "The ghost Pelek, who had seized the derro spy's body at the end of the last fight, lingered in that borrowed body",
+    "subject": "derro spy",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg is considered most precious by the party.",
+    "source_quote": "Most precious of all was the dragon's egg.",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg is tough enough to be carried.",
+    "source_quote": "It was tough enough, and could be hidden in a bag or carried unnoticed",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg is possessed of demonic corruption known only to the party.",
+    "source_quote": "and its demonic corruption was a secret known only to them",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz carried the dragon's egg through the fight unnoticed.",
+    "source_quote": "Daz, who carried it through the fight unnoticed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is still at full hit points.",
+    "source_quote": "Daz, who carried it through the fight unnoticed, is still at full hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party discovers the derro group running the place is up to nefarious deeds.",
+    "source_quote": "The derro group running the place is \"clearly \u2026 up to nefariously no good deeds.\"",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are a faction the party considers delivering intelligence to.",
+    "source_quote": "considering the interests of the red dragon Themberchaud, the Keepers of the Flame, and the Stone Guard",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is a faction the party considers delivering intelligence to.",
+    "source_quote": "considering the interests of the red dragon Themberchaud, the Keepers of the Flame, and the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a red dragon considered as a potential recipient for intelligence.",
+    "source_quote": "considering the interests of the red dragon Themberchaud, the Keepers of the Flame, and the Stone Guard",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks whether there is someone paying the party to find out the intelligence.",
+    "source_quote": "Gyrgum asks whether there is someone paying them to find all this out",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM states that everybody is paying the party to find out the intelligence, and the question is who to deliver it to.",
+    "source_quote": "\"everybody's paying you to find it out. The question is, who are you going to deliver the information to?\"",
+    "subject": "delivery of intelligence",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Notes and documents were gathered from the chamber that laid bare the Council of Savants' dealings.",
+    "source_quote": "gathering notes and documents that laid bare the Council of Savants' foul dealings and demonic entanglements",
+    "subject": "notes",
+    "quote_verified": true
+  }
+]

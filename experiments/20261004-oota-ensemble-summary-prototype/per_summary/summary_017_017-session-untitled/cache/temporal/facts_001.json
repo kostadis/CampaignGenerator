@@ -1,0 +1,93 @@
+[
+  {
+    "type": "location",
+    "fact": "Thorin's Sentinel feat triggers opportunity attacks against foes attacking someone other than him within 5 feet.",
+    "source_quote": "within 5 feet",
+    "subject": "Sentinel feat range",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin is limited to one opportunity attack reaction per round due to the Sentinel feat.",
+    "source_quote": "uses his reaction, so only one per round",
+    "subject": "Sentinel reaction limit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Daz has an Armor Class of 11.",
+    "source_quote": "Daz, whose AC is only 11",
+    "subject": "Daz armor class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Centipedes deal 10 damage to Daz.",
+    "source_quote": "The centipedes bite Daz... for 10 damage",
+    "subject": "Centipedes bite Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum has an Armor Class of 14.",
+    "source_quote": "swarm attacks Gyrgum (AC 14)",
+    "subject": "Gyrgum armor class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals 9 radiant damage to a centipede swarm using True Strike.",
+    "source_quote": "He deals 9 radiant damage",
+    "subject": "Gyrgum damage output",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm at half hit points deals half damage.",
+    "source_quote": "swarms at half hit points do half damage",
+    "subject": "Swarm half HP damage rule",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin has an Armor Class of 18.",
+    "source_quote": "rolls exactly 18 against Thorin's AC 18",
+    "subject": "Thorin armor class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm deals 10 damage to Thorin.",
+    "source_quote": "hits for 10",
+    "subject": "Swarm damage to Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm lands a critical hit but deals only 10 damage.",
+    "source_quote": "A swarm lands a critical, but it deals only 10 damage",
+    "subject": "Swarm critical damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 7 damage to the swarm on Gyrgum.",
+    "source_quote": "punches the swarm on Gyrgum for 7 damage",
+    "subject": "Zalthir damage to swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 15 damage to the final swarm with magic missiles.",
+    "source_quote": "Daz fires magic missiles at the final swarm for 15 damage",
+    "subject": "Daz damage to swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 8 damage to the last swarm, killing it.",
+    "source_quote": "Thorin hits the last swarm for 8 and kills it",
+    "subject": "Thorin killing blow",
+    "quote_verified": true
+  }
+]

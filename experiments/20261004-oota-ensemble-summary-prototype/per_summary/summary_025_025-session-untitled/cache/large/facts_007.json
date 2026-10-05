@@ -1,0 +1,79 @@
+[
+  {
+    "type": "location",
+    "fact": "The clearing is dominated by a throne of intertwined fungal growths and ringed by twisted mushroom sentinels.",
+    "source_quote": "dominated by a throne of intertwined fungal growths, ringed by twisted mushroom sentinels",
+    "subject": "grim clearing",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The clearing is filled with an oppressive silence, muted colors of yellow, brown, and gray, and a faint drip of moisture.",
+    "source_quote": "A heavy, oppressive silence hung over everything... The colors were muted: sickly yellow, dull browns, and shadowed grays.",
+    "subject": "grim clearing",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is a spectral figure who shifts between radiant beauty and horrifying decay, with eyes glowing with otherworldly light.",
+    "source_quote": "a spectral figure shimmered into view at the center, shifting between radiant beauty and horrifying decay, her eyes glowing with an otherworldly light",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy speaks with a voice that reaches their minds like a haunting melody, soothing and commanding.",
+    "source_quote": "her voice reached their minds like a haunting melody, at once soothing and commanding",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy identifies herself as the Demon Queen of Fungi.",
+    "source_quote": "This was Zuggtmoy herself, the Demon Queen of Fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy offers Thorin and Gyrgum the gift of blooming beyond the bounds of flesh and time to become part of her endless mycelium forever.",
+    "source_quote": "offered her gift: to bloom beyond the bounds of flesh and time and become part of her endless mycelium forever",
+    "subject": "Zuggtmoy's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin felt keen temptation from Zuggtmoy's offer.",
+    "source_quote": "Thorin felt the temptation keenly",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin declines Zuggtmoy's offer, citing his responsibilities in the waking world.",
+    "source_quote": "But in the end he declined, telling the Dark Lady that he had too many responsibilities in the waking world to linger with her",
+    "subject": "Thorin's refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy regards Thorin with sorrow after his refusal, lamenting that he could have been part of the mycelium.",
+    "source_quote": "Zuggtmoy regarded him with something like sorrow, lamenting that he could have been \"forever part of the endless mycelium\"",
+    "subject": "Zuggtmoy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The vision of Zuggtmoy dissolves after Thorin refuses the offer.",
+    "source_quote": "and then the vision dissolved",
+    "subject": "vision dissolves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum wake up back in the Whorlstone Tunnels.",
+    "source_quote": "Thorin and Gyrgum woke up back in the Whorlstone Tunnels",
+    "subject": "wake up",
+    "quote_verified": true
+  }
+]

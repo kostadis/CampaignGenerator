@@ -1,0 +1,23 @@
+[
+  {
+    "type": "object",
+    "fact": "The total bribe demanded by the gate guard was twenty gold pieces.",
+    "source_quote": "twenty gold pieces, to be precise",
+    "subject": "bribe total value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Each party member paid five gold pieces as part of the bribe.",
+    "source_quote": "five from each party member",
+    "subject": "individual bribe value",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum displays a Charisma score of 14.",
+    "source_quote": "smiles \"showing off all that 14 charisma.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

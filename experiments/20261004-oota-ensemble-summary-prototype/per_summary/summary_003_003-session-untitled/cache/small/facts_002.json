@@ -1,0 +1,366 @@
+[
+  {
+    "type": "location",
+    "fact": "A skirmish takes place in the Guard Tower.",
+    "source_quote": "Skirmish in the Guard Tower",
+    "subject": "Guard Tower",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros is a seasoned Elite Warrior.",
+    "source_quote": "Imbros, a seasoned Elite Warrior",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Hardened drow soldiers are present in the Guard Tower.",
+    "source_quote": "face to face with hardened drow soldiers",
+    "subject": "drow soldiers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is unarmed and wearing no armor.",
+    "source_quote": "With no weapons and no armor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rushes into the room in the Guard Tower.",
+    "source_quote": "Thorin rushed into the room",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts to sucker-punch and shove Imbros.",
+    "source_quote": "attempted to sucker-punch and shove the Elite Warrior",
+    "subject": "Thorin's attempted sucker-punch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's fist misses Imbros.",
+    "source_quote": "His fist missed.",
+    "subject": "Thorin's missed strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Imbros strikes Thorin with his short sword.",
+    "source_quote": "Imbros struck him with his short sword",
+    "subject": "Imbros strikes Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Imbros attempts to subdue Thorin rather than kill him.",
+    "source_quote": "attempting to subdue rather than kill such a valuable prisoner",
+    "subject": "Imbros' intent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's second wind keeps him briefly upright after being struck.",
+    "source_quote": "Thorin\u2019s second wind briefly kept him upright",
+    "subject": "Thorin's second wind",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A drow cuts Thorin down.",
+    "source_quote": "another drow soon cut him down.",
+    "subject": "Thorin cut down",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds on one death save and fails another.",
+    "source_quote": "succeeding on one death save before failing another",
+    "subject": "Thorin's death saves",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is in the lower floor of the guard tower.",
+    "source_quote": "struggle became a desperate, chaotic brawl in the cramped lower floor",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir repeatedly attacks and tries to force Imbros away from the doorway.",
+    "source_quote": "Zalthir repeatedly attacked and tried to force the Elite Warrior away from the doorway",
+    "subject": "Zalthir's attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suffers a streak of failed strikes.",
+    "source_quote": "only to suffer an extraordinary streak of failed strikes",
+    "subject": "Zalthir's failed strikes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz attempts to attack an ordinary guard.",
+    "source_quote": "Daz tried to attack one of the ordinary guards",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses Mind Sliver on an ordinary guard.",
+    "source_quote": "Daz tried to attack one of the ordinary guards with Mind Sliver",
+    "subject": "Daz's Mind Sliver",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow guard resists Daz's Mind Sliver.",
+    "source_quote": "but the drow resisted the intrusion",
+    "subject": "Guard's resistance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is initially in the melee and then goes upstairs.",
+    "source_quote": "Eldeth, Turvy, Jimjar, Sarith, Buppido, Topsy, Shuushar, and others disengaged from the melee, scrambled upstairs",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy disengages from the melee and goes upstairs.",
+    "source_quote": "Turvy... disengaged from the melee, scrambled upstairs",
+    "subject": "Turvy",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar disengages from the melee and goes upstairs.",
+    "source_quote": "Jimjar... disengaged from the melee, scrambled upstairs",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith disengages from the melee and goes upstairs.",
+    "source_quote": "Sarith... disengaged from the melee, scrambled upstairs",
+    "subject": "Sarith",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido disengages from the melee and goes upstairs.",
+    "source_quote": "Buppido... disengaged from the melee, scrambled upstairs",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy disengages from the melee and goes upstairs.",
+    "source_quote": "Topsy... disengaged from the melee, scrambled upstairs",
+    "subject": "Topsy",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar disengages from the melee and goes upstairs.",
+    "source_quote": "Shuushar... disengaged from the melee, scrambled upstairs",
+    "subject": "Shuushar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth, Turvy, Jimjar, Sarith, Buppido, Topsy, Shuushar, and others arm themselves with short swords and hand crossbows.",
+    "source_quote": "armed themselves with short swords and hand crossbows",
+    "subject": "Prisoners arm themselves",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Short swords are found on the upper floor by the prisoners.",
+    "source_quote": "armed themselves with short swords",
+    "subject": "short swords",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hand crossbows are found on the upper floor by the prisoners.",
+    "source_quote": "armed themselves with short swords and hand crossbows",
+    "subject": "hand crossbows",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil remains below to hold the enemy in place.",
+    "source_quote": "Prince Derendil remained below to hold the enemy in place",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil enters the fighting and takes a short-sword wound.",
+    "source_quote": "taking a short-sword wound as he entered the fighting",
+    "subject": "Derendil enters fighting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil answers the attack with both claws.",
+    "source_quote": "and answering with both claws",
+    "subject": "Derendil's claws",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith kills one of the ordinary drow guards.",
+    "source_quote": "he descended upon one of the ordinary drow... and killed him",
+    "subject": "Sarith kills guard",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Sarith curses the guard as he strikes him.",
+    "source_quote": "cursing the guard as he struck twice",
+    "subject": "Sarith's cursing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners on the upper floor fire a barrage of hand-crossbow bolts.",
+    "source_quote": "A barrage of hand-crossbow bolts followed from the upper floor.",
+    "subject": "Barrage of bolts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth's shot misses.",
+    "source_quote": "Eldeth\u2019s shot missed",
+    "subject": "Eldeth's missed shot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido's shot misses.",
+    "source_quote": "as did Buppido\u2019s",
+    "subject": "Buppido's missed shot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido loudly asserts his expertise despite missing.",
+    "source_quote": "despite his loudly asserted expertise",
+    "subject": "Buppido's claim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the twins, Topsy or Turvy, hits their mark.",
+    "source_quote": "one of the twins, Topsy or Turvy... found their marks",
+    "subject": "Twin's hit",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar hits his mark.",
+    "source_quote": "and Jimjar found their marks",
+    "subject": "Jimjar's hit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront squeezes into the room.",
+    "source_quote": "Ront then squeezed into the room",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront kills the second ordinary guard with a short sword.",
+    "source_quote": "killed the second ordinary guard with a short sword",
+    "subject": "Ront kills guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar is known as 'the Awakened'.",
+    "source_quote": "Shuushar the Awakened",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Shuushar turns his own crossbow on Imbros and strikes him.",
+    "source_quote": "Shuushar the Awakened turned his own crossbow on the Elite Warrior and struck him",
+    "subject": "Shuushar hits Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric.",
+    "source_quote": "the cleric placed a hand",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fights through the press of bodies to reach Thorin.",
+    "source_quote": "Gyrgum fought through the press of bodies to reach the fallen Thorin",
+    "subject": "Gyrgum's advance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum weighs the merits of stabilizing Thorin against restoring him to battle.",
+    "source_quote": "After weighing the merits of merely stabilizing him against restoring him to the battle",
+    "subject": "Gyrgum's deliberation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Cure Wounds on Thorin.",
+    "source_quote": "the cleric placed a hand upon the dwarf and cast Cure Wounds",
+    "subject": "Cure Wounds cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spell restores Thorin completely.",
+    "source_quote": "The spell restored Thorin completely",
+    "subject": "Thorin restored",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum ensures a short sword is passed down to Thorin.",
+    "source_quote": "Gyrgum ensured that a short sword was passed down to him",
+    "subject": "Sword passed to Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin disengages from the fight.",
+    "source_quote": "Thorin then disengaged",
+    "subject": "Thorin disengages",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin climbs to the armory.",
+    "source_quote": "and climbed to the armory",
+    "subject": "Thorin climbs",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Thorin is searching for armor.",
+    "source_quote": "in search of armor",
+    "subject": "Thorin's search",
+    "quote_verified": true
+  }
+]

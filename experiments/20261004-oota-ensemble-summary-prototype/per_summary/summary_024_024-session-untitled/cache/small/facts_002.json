@@ -1,0 +1,198 @@
+[
+  {
+    "type": "event",
+    "fact": "Narrak's concentration on Zalthir breaks, causing the fear effect on Zalthir to end.",
+    "source_quote": "Narrak's concentration had since broken, so the fear no longer held him",
+    "subject": "Narrak's fear broken",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir drags his sphere of darkness back over the ettin.",
+    "source_quote": "He dragged his sphere of darkness back over the ettin",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's eldritch tattoo causes his face and arms to writh in inky tendrils.",
+    "source_quote": "his face and arms were now writhing inky tendrils",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir's tentacles coil around Grula-Munga and grapple the beast in place.",
+    "source_quote": "The tentacles coiled around the beast and grappled it in place",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum hauls himself back to his feet.",
+    "source_quote": "Gyrgum hauled himself back to his feet",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashes a torrent of caustic acid over the remaining cultists.",
+    "source_quote": "unleashed a torrent of caustic acid over the remaining cultists",
+    "subject": "Gyrgum's acid spray",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz maintains a magical earthen hand grip on Narrak that squeezes him when he struggles.",
+    "source_quote": "crushing grip of a great earthen hand that had erupted from the stone floor",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak casts a zone of silence to stop the party's magic.",
+    "source_quote": "Narrak cast silence to create a zone of dead air that would stop the party's magic",
+    "subject": "Narrak casts silence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is currently grappled by an earthen hand and cannot move.",
+    "source_quote": "Narrak, who is shown as grappled and unable to move",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz steps out of the darkness.",
+    "source_quote": "Daz stepped out of the darkness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hits a cultist with three bolts of magical force, killing him.",
+    "source_quote": "sent three bolts of magical force into one cultist, dropping him where he stood",
+    "subject": "Daz kills cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak cries out upon the cultist's death that their sacrifice is a step toward glory.",
+    "source_quote": "Fools, your sacrifice is but a step toward glory",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga hits Thorin for 13 damage.",
+    "source_quote": "Grula-Munga struck back hard, hitting Thorin for 13 damage",
+    "subject": "Grula-Munga attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin continues to hammer the ettin after taking damage.",
+    "source_quote": "Thorin kept hammering the ettin anyway",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacles finally cause Grula-Munga to drop.",
+    "source_quote": "When Zalthir's tentacles finally dropped Grula-Munga",
+    "subject": "Grula-Munga defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is dropped (defeated) by Zalthir's tentacles.",
+    "source_quote": "When Zalthir's tentacles finally dropped Grula-Munga",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak repeats his line about glory with less conviction after Grula-Munga falls.",
+    "source_quote": "Narrak repeated his line about glory \"with a little bit less conviction this time.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses blindsight to navigate the darkness.",
+    "source_quote": "Thorin guided by his blindsight despite the darkness",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga swings her battle axe twice at Thorin and fails to connect.",
+    "source_quote": "She swings her battle axe twice at Thorin... and fails to connect",
+    "subject": "Narrak's missed attacks",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A derro cultist attacks the prone Gyrgum with a hooked spear.",
+    "source_quote": "A derro cultist attacks the prone Gyrgum with a hooked spear",
+    "subject": "Derro attacks Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacles hit the ettin for 8 and 5 damage from within the darkness.",
+    "source_quote": "He attacks with advantage in the dark and hits for 8 and 5",
+    "subject": "Zalthir's tentacle attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga is at 41 hit points after Zalthir's attacks.",
+    "source_quote": "The ettin is then at 41 hit points",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point to deal an additional 12 damage to the ettin.",
+    "source_quote": "Zalthir spends a focus point for a third hit of 12",
+    "subject": "Zalthir's third hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro steps out of the darkness and fires a crossbow at Gyrgum, missing.",
+    "source_quote": "A derro steps out of the darkness and fires a crossbow at Gyrgum at disadvantage. It misses",
+    "subject": "Derro crossbow attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum exhales a stream of caustic acid over all three remaining derro cultists.",
+    "source_quote": "exhales a stream of caustic acid over all three remaining derro cultists",
+    "subject": "Gyrgum's acid spray",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attacks the ettin with his longsword, dealing 8 damage with advantage.",
+    "source_quote": "Thorin presses the advantage against the massive ettin with his longsword... dealing 8 damage",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin decides to keep his longsword +1 and shield rather than dual-wield short swords.",
+    "source_quote": "Thorin decides to keep the longsword +1 for now",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz strikes down a weakened derro cultist with three Magic Missiles.",
+    "source_quote": "He unleashes all three glowing darts of Magic Missile on a single weakened derro cultist and strikes him down",
+    "subject": "Daz kills derro cultist",
+    "quote_verified": true
+  }
+]

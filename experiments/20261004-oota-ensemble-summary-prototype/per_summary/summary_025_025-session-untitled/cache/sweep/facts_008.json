@@ -1,0 +1,345 @@
+[
+  {
+    "type": "npc",
+    "fact": "Voosbur remarks that Thorin didn't want to join the party and states he must leave.",
+    "source_quote": "Hey, man, I guess you didn't want to join the party. I got to go now.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur steps through a spore cloud and vanishes with the other infected Myconids.",
+    "source_quote": "He and the rest of the infected Myconids gathered at a spore cloud among the fungal growths and stepped through it, vanishing entirely.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The infected Myconids gather at a spore cloud to depart.",
+    "source_quote": "He and the rest of the infected Myconids gathered at a spore cloud",
+    "subject": "infected Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The infected Myconids step through the spore cloud and vanish entirely.",
+    "source_quote": "stepped through it, vanishing entirely",
+    "subject": "infected Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The infected Myconids travel through a vast fungal network connecting the hidden places of the Underdark.",
+    "source_quote": "They were traveling through some vast fungal network that connected the hidden places of the Underdark.",
+    "subject": "Myconid departure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin declines to follow Voosbur and the Myconids.",
+    "source_quote": "Thorin declines to follow.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player expresses satisfaction with the story resulting from the encounter.",
+    "source_quote": "now I got a good story,",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The spore cloud serves as a portal for the Myconids to vanish into the fungal network.",
+    "source_quote": "stepped through it, vanishing entirely",
+    "subject": "spore cloud",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir's player compares the Myconid travel method to the spore drive in Star Trek Discovery.",
+    "source_quote": "Zalthir's player compares it to the spore drive in *Star Trek Discovery*.",
+    "subject": "spore drive",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's player draws a comparison to Star Trek Discovery regarding the spore network.",
+    "source_quote": "Zalthir's player compares it to the spore drive in *Star Trek Discovery*.",
+    "subject": "Zalthir's player",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM notes that monsters traveling through spore networks is a long-standing concept.",
+    "source_quote": "The DM notes monsters traveling through spore networks is a long-standing thing.",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM expanded the encounter because of the prior buildup around Stool.",
+    "source_quote": "after all the buildup around Stool, \"we need to do more than that.\"",
+    "subject": "Stool buildup",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is referenced by the DM as a source of prior narrative buildup.",
+    "source_quote": "after all the buildup around Stool,",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is referenced as the giver of the gift Thorin declined.",
+    "source_quote": "had Thorin accepted Zuggtmoy's gift",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The gift from Zuggtmoy allows travel through the spore network at the cost of euphoric trip states.",
+    "source_quote": "the ability to travel the spore network, but at the cost of potentially falling into euphoric, uncontrollable trip states.",
+    "subject": "Zuggtmoy's gift",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The gift allows bringing others through the network.",
+    "source_quote": "He could have brought others with him through the network.",
+    "subject": "Zuggtmoy's gift",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The cost of the gift involves a Wisdom saving throw loop that can trap the user in euphoric bliss.",
+    "source_quote": "triggered after a short or long rest, that could trap him \"in a euphoric bliss\" where he refuses to do anything.",
+    "subject": "Zuggtmoy's gift",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rises to fifth level.",
+    "source_quote": "They rose to fifth level",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz finally gains the Fireball spell.",
+    "source_quote": "Daz finally gained Fireball.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reaches fifth level and gains access to third-level spells.",
+    "source_quote": "Daz reaches fifth level and gains third-level spells",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM's house rule requires players to pick one new spell every level.",
+    "source_quote": "pick one new spell every level.",
+    "subject": "house rule",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's longsword is now +8 to hit.",
+    "source_quote": "Thorin's longsword is now +8 to hit",
+    "subject": "Thorin's longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin gains an extra attack with his weapon.",
+    "source_quote": "and he gains an extra attack.",
+    "subject": "Thorin's longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz has ten spells in his spellbook.",
+    "source_quote": "ten in his spellbook.",
+    "subject": "Daz's spellbook",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz expresses the need for a bigger spellbook.",
+    "source_quote": "\"I need a bigger spellbook.\"",
+    "subject": "Daz's spellbook",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM reminisces about Fireball and Lightning Bolt from earlier editions.",
+    "source_quote": "The DM reminisces about how Fireball and Lightning Bolt worked in earlier editions",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM tells the 10-by-10 room story.",
+    "source_quote": "and tells the 10-by-10 room story.",
+    "subject": "10-by-10 room story",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest to recover their strength.",
+    "source_quote": "The party took a long rest, recovering their strength",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The long rest causes the party to lose Aid's temporary hit points.",
+    "source_quote": "losing Aid's temporary hit points",
+    "subject": "Aid expiry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states he does not need a long rest.",
+    "source_quote": "Zalthir says he doesn't need it",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz wants his spell slots back.",
+    "source_quote": "Daz wants his spell slots back.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that Gyrgum can simply cast Aid again.",
+    "source_quote": "Zalthir notes Gyrgum can simply cast it again.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is referenced as capable of casting Aid.",
+    "source_quote": "Gyrgum can simply cast it again.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party spends three days underground before emerging.",
+    "source_quote": "after three days underground",
+    "subject": "duration underground",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party makes their way out of the Whorlstone Caverns.",
+    "source_quote": "they made their way out of the Whorlstone Caverns.",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gates into the rest of Gracklstugh are sealed shut.",
+    "source_quote": "The gates into the rest of Gracklstugh were sealed shut",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Grim-faced Duergar in heavy armor guard the sealed gates.",
+    "source_quote": "guarded by grim-faced Duergar in heavy armor.",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow are on the other side of the gates and are on edge.",
+    "source_quote": "The drow on the other side were even more on edge than before",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar and Drow forces appear on the brink of open conflict.",
+    "source_quote": "Duergar and Drow forces appearing on the brink of open conflict.",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak is a particularly mean-looking Duergar guard.",
+    "source_quote": "A particularly mean-looking guard named Gorglak",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak steps forward and blocks the party's path.",
+    "source_quote": "Gorglak stepped forward and blocked their path",
+    "subject": "Gorglak intercepts party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak tells the party that none of them are allowed.",
+    "source_quote": "You, none of you are allowed.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak tells the party they should not be there.",
+    "source_quote": "You should not be in here.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak demands to inspect the party's possessions for contraband.",
+    "source_quote": "He demanded to inspect all of their possessions for contraband.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party is holding a bag full of demonic artifacts and political secrets.",
+    "source_quote": "holding a bag full of demonic artifacts and political secrets",
+    "subject": "bag of artifacts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin tries the 'diplomatic pouch' line.",
+    "source_quote": "Thorin tries the \"diplomatic pouch\" line.",
+    "subject": "Thorin's diplomacy attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM warns that the direct approach will probably produce poor outcomes.",
+    "source_quote": "\"the direct approach will probably produce poor outcomes\"",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz offers to share some mushrooms.",
+    "source_quote": "Daz offers to share some mushrooms",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The mushrooms are suggested as potential contraband.",
+    "source_quote": "\"Maybe that's the contraband he's looking for.\"",
+    "subject": "mushrooms",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,282 @@
+[
+  {
+    "type": "event",
+    "fact": "Plinki is dead, shifting the battle dynamics.",
+    "source_quote": "With Plinki dead, the battle shifted, but the danger was far from over.",
+    "subject": "Plinki's death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro Master Thief is a fifth-level rogue equivalent.",
+    "source_quote": "think of a fifth-level rogue",
+    "subject": "Derro Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro Master Thief is a tenacious foe who shrugs off multiple blows.",
+    "source_quote": "a skilled derro Master Thief proved to be a tenacious foe, shrugging off blow after blow",
+    "subject": "Derro Master Thief",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grapples the Master Thief.",
+    "source_quote": "Zalthir grapples the Master Thief",
+    "subject": "Zalthir grappling Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir maneuvers the Master Thief toward Thorin.",
+    "source_quote": "Zalthir grapples the Master Thief and maneuvers him toward Thorin",
+    "subject": "Master Thief movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attempts to drop the Master Thief off a ledge.",
+    "source_quote": "attempting to drop him off a ledge",
+    "subject": "Master Thief ledge threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands an unarmed strike with advantage on the Master Thief.",
+    "source_quote": "Unarmed strike with advantage hits",
+    "subject": "Zalthir unarmed strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dropping the Master Thief off the ledge would deal an additional 16 damage and knock him prone.",
+    "source_quote": "dropping him off the ledge deals an additional 16 damage and knocks him prone",
+    "subject": "Ledge drop damage rule",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost's first possession attempt on the Master Thief fails.",
+    "source_quote": "The ghost's first possession attempt on the Master Thief fails",
+    "subject": "Ghost possession attempt 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief makes his saving throw against possession.",
+    "source_quote": "he makes his saving throw",
+    "subject": "Master Thief save throw",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lands a punishing strike on the Master Thief.",
+    "source_quote": "Thorin's sentinel instincts snapped into action, landing a punishing strike",
+    "subject": "Thorin strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's strike roots the Master Thief in place.",
+    "source_quote": "landing a punishing strike that rooted the thief in place",
+    "subject": "Master Thief rooted",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses teleportation magic to vanish from the fray.",
+    "source_quote": "Daz, ever calculating, had already used a burst of teleportation magic to vanish from the fray",
+    "subject": "Daz teleport",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz conceals the egg beneath his robes.",
+    "source_quote": "secretly concealing the egg beneath his robes",
+    "subject": "Mysterious Egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cultists scramble blindly in the darkness.",
+    "source_quote": "the Derro cultists scrambled blindly in the darkness",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cultists scream about their missing prize.",
+    "source_quote": "screaming about their missing prize",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashes a caustic spray that coats several enemies in corrosive fluid.",
+    "source_quote": "Gyrgum unleashes a caustic spray that coats several enemies in corrosive fluid",
+    "subject": "Gyrgum caustic spray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Tasha's Caustic Brew instead of Guiding Bolt because the thief is 10 feet below in darkness.",
+    "source_quote": "steers him from Guiding Bolt (the thief is 10 feet below in darkness) to Tasha's Caustic Brew",
+    "subject": "Gyrgum spell choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro (#4) fails the DC 14 Dex save against the acid spray and takes 7 damage.",
+    "source_quote": "one (#4) fails and takes 2d4 (7)",
+    "subject": "Gyrgum acid save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminds the party they are beneficiaries of a Bless spell.",
+    "source_quote": "The GM reminds everyone they are beneficiaries of a Bless spell.",
+    "subject": "Bless reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A spy climbs up and senses the ghost.",
+    "source_quote": "A spy climbs up, senses the ghost",
+    "subject": "Spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The spy freaks out upon sensing the ghost.",
+    "source_quote": "\"freaks out\"",
+    "subject": "Spy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The spy attacks the ghost and misses.",
+    "source_quote": "attacks it, and misses",
+    "subject": "Spy attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A derro attacks Thorin and misses.",
+    "source_quote": "a derro \"too stupid to do anything otherwise\" attacks Thorin and misses",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills derro #6 for 7 damage.",
+    "source_quote": "Thorin kills derro #6 (the one with fewer hit points) for 7",
+    "subject": "Thorin kill derro #6",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro #6 is dead.",
+    "source_quote": "Thorin kills derro #6",
+    "subject": "Derro #6",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spectator breaks free from the magical earthen grasp.",
+    "source_quote": "The spectator manages to break free from the magical earthen grasp.",
+    "subject": "Spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spectator has Strength 8.",
+    "source_quote": "Strength 8, but it rolls a 17",
+    "subject": "Spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party hits the spectator twice, leaving it at one hit point.",
+    "source_quote": "The party helpers then hit it twice, leaving it at one hit point.",
+    "subject": "Spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires four Magic Missile darts.",
+    "source_quote": "Second-level Magic Missile, four darts",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz kills one Derro with Magic Missile.",
+    "source_quote": "killing one Derro",
+    "subject": "Daz kill derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz wounds another nearby enemy with Magic Missile, dealing 9 damage.",
+    "source_quote": "wounding another nearby enemy... The second target takes 9.",
+    "subject": "Daz wound enemy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz climbs the stairs and picks up the mysterious egg.",
+    "source_quote": "Daz climbs the stairs and picks up the mysterious egg.",
+    "subject": "Daz retrieve egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro screams \"where is the egg?\".",
+    "source_quote": "One screams \"where is the egg?\"",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro spends his action searching for the egg.",
+    "source_quote": "spends his action searching",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro's plan was to grab the egg and run.",
+    "source_quote": "his plan had been to grab the egg and run",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost summoned by the party attempts to intimidate the attackers.",
+    "source_quote": "The ghost summoned by the party attempts to intimidate the attackers",
+    "subject": "Ghost intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro scream for the sacrifice of the cleric of Bahamut.",
+    "source_quote": "the Derro scream for the sacrifice of the cleric of Bahamut",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An acid-coated derro spends his action scraping off the acid.",
+    "source_quote": "The acid-coated derro spends his action scraping off the acid",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro attacks the cleric of Bahamut and misses.",
+    "source_quote": "\"die, cleric of Bahamut\" \u2014 the swing misses.",
+    "subject": "Derro",
+    "quote_verified": true
+  }
+]

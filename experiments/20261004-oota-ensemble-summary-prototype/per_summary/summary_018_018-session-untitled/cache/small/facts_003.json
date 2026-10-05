@@ -1,0 +1,282 @@
+[
+  {
+    "type": "faction",
+    "fact": "The Stone Guard appears inclined toward a violent pacification mission against the Derro.",
+    "source_quote": "Both factions seem inclined toward a violent 'pacification mission' against the Derro",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame appear inclined toward a violent pacification mission against the Derro.",
+    "source_quote": "Both factions seem inclined toward a violent 'pacification mission' against the Derro",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party analyzes the motivations of the Stone Guard and the Keepers of the Flame.",
+    "source_quote": "The party analyzes the motivations of the Stone Guard and the Keepers of the Flame",
+    "subject": "pacification mission analysis",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the party has not seen evidence that the Derro are behind recent events.",
+    "source_quote": "But we've not actually seen any evidence that the Derro are behind all of this",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses concern about providing air cover for a slaughter rampage.",
+    "source_quote": "No, we want to be careful that we don't give her air cover to go on a slaughter rampage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is described as politically unstable.",
+    "source_quote": "discusses the instability of the Duergar Deepking",
+    "subject": "Duergar Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party speculates that shifting power away from the Deepking would cause factions to focus on grabbing power rather than killing Derro.",
+    "source_quote": "if the Deepking were no longer in charge, the factions would be more busy trying to grab power than they would be killing Derro",
+    "subject": "power shift speculation",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests setting up the evil vizier with fabricated incriminating evidence.",
+    "source_quote": "Are you suggesting we set up the evil vizier so we just pretend we have evidence that incriminates him?",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has started to grow up and notice that things are not as they seem.",
+    "source_quote": "Themberchaud has started to grow up and noticed that maybe things aren't as they seem",
+    "subject": "Themberchaud",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar has become frantic about the dragon egg due to Themberchaud's changing awareness.",
+    "source_quote": "which is why Gartokkar has become frantic about the dragon egg",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considers that killing Themberchaud would hurt the city's ability to produce goods.",
+    "source_quote": "Killing Themberchaud is always an option, but it would hurt the city's ability to produce goods",
+    "subject": "Themberchaud killing discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses that without Themberchaud, the Deepking might decide to lay off the Keepers of the Flame.",
+    "source_quote": "Without Themberchaud, the Deepking might decide he doesn't need the current Keepers of the Flame \u2014 A layoff",
+    "subject": "Keepers layoff discussion",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin jokes that the Keepers would be laid off because they have no flame.",
+    "source_quote": "Thorin: Because they have no flame",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks the party if they want to get involved in office politics or leave town.",
+    "source_quote": "Thorin asks whether the party wants to get involved in office politics or grab what they can and leave town",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes that the Keepers of the Flame have officially threatened permanent hostility if betrayed.",
+    "source_quote": "the Keepers of the Flame have officially threatened permanent hostility if betrayed",
+    "subject": "hostility threat discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests the party could fake their death.",
+    "source_quote": "So we could fake our death",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that the party already has the Drow after them.",
+    "source_quote": "I mean, we already have the Drow after us",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that because everyone wants to kill them, they are probably safe.",
+    "source_quote": "Daz argues that since everybody wants to kill them, they are probably safe",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM remarks that Daz's argument about safety is a very Drow thing to say.",
+    "source_quote": "That's a very Drow thing to say",
+    "subject": "Drow comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes they can have Errde arm their companions and then leave.",
+    "source_quote": "Zalthir notes that at worst, they can get Errde to arm their companions, say yes, and then leave",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum feels they should carry through with the beginning of what they were paid to do.",
+    "source_quote": "I feel like we should at least carry through with the beginning of what we got paid to do",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes a philosophy of radical candor involving complete transparency.",
+    "source_quote": "Thorin proposes a new personal philosophy of 'radical candor', suggesting the party be completely transparent with everyone they encounter",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin quotes that information wants to be free.",
+    "source_quote": "I think just information wants to be free",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum says that Thorin's plan seems like a great way to get killed.",
+    "source_quote": "That seems like a great way to get killed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tells Thorin to go for it.",
+    "source_quote": "you go for it, Thorin",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he trusts the party because he does not read people well.",
+    "source_quote": "But I also trust you all because I know I don't read people well",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Thorin debate the merits of honesty versus subtle manipulation.",
+    "source_quote": "Daz and Thorin debate the merits of honesty versus subtle manipulation in the dangerous social climate of the Underdark",
+    "subject": "honesty debate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminds Daz that in Drow society, information is power and hoarding information is power.",
+    "source_quote": "in Drow society, information is power, and hoarding information is power",
+    "subject": "Drow information philosophy",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz considers staying quiet and steering things with subtle misdirection or exaggerations.",
+    "source_quote": "Daz considers staying quiet and steering things with subtle misdirection or subtle exaggerations",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz concedes he has a 19 Intelligence but only a 10 Charisma and 14 Wisdom.",
+    "source_quote": "Daz concedes he has a 19 Intelligence but only a 10 Charisma (and 14 Wisdom)",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM points out that intelligence and the ability to manipulate people are not necessarily the same thing.",
+    "source_quote": "Intelligence and being able to manipulate people are not necessarily the same thing",
+    "subject": "Intelligence vs Manipulation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reviews their contracts and identifies their paid tasks as investigating the egg and the Council of Savants.",
+    "source_quote": "The only job they've really been paid for is to figure out what's going on with the egg, retrieve it, and figure out what's going on with the Council of Savants",
+    "subject": "contract review",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses enjoyment in solving mysteries.",
+    "source_quote": "See, I'm into solving mysteries anyway",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The GM notes that the city feels like a powder keg.",
+    "source_quote": "The GM notes the city feels like a powder keg",
+    "subject": "Gracklstugh",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The party knows nothing about the Council of Savants beyond them being nominally in charge of Derro society.",
+    "source_quote": "The party still knows nothing about who the Council of Savants actually are, beyond their being nominally in charge of Derro society",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has descended into madness.",
+    "source_quote": "The group reflects on Buppido's descent into madness",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pre-asylum Buppido resented the Council of Savants for perceived subservience to the Duergar.",
+    "source_quote": "his earlier resentment of the Council of Savants for their perceived subservience to the Duergar",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "According to the ghost, pre-asylum Buppido felt the Council were a mechanism of control by the Duergar.",
+    "source_quote": "pre-asylum Buppido felt the Council weren't committed to independence and freedom of the derro Society and were simply a mechanism of control by the duergar",
+    "subject": "Buppido's ghost testimony",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido came to see himself as being on a mission from God to free the Derro.",
+    "source_quote": "He came to see himself as on a mission from God to free the Derro",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The identity of the Council of Savants remains unknown to the party.",
+    "source_quote": "The party still knows nothing about who the Council of Savants actually are",
+    "subject": "Council of Savants identity",
+    "quote_verified": true
+  }
+]

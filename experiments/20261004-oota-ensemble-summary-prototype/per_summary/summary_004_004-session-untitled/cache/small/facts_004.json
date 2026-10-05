@@ -1,0 +1,289 @@
+[
+  {
+    "type": "event",
+    "fact": "The party completed a long rest, restoring lost health and expended spells.",
+    "source_quote": "After an exhausted rest... completes a long rest, restoring lost health and expended spells.",
+    "subject": "party rest",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Underdark travel is reduced to eight miles per day at a fast pace.",
+    "source_quote": "eight miles per day at a fast pace",
+    "subject": "underdark travel rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Underdark travel is reduced to six miles per day at a normal pace.",
+    "source_quote": "six at a normal pace",
+    "subject": "underdark travel rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Underdark travel is reduced to four miles per day at a slow pace.",
+    "source_quote": "or four while moving slowly.",
+    "subject": "underdark travel rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fast travel prevents foraging and makes danger harder to notice.",
+    "source_quote": "Fast travel prevented foraging and made danger harder to notice",
+    "subject": "fast travel effects",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Slow travel allows stealth and improves the group's chances of finding food.",
+    "source_quote": "slow travel allowed stealth and improved the group's chances of finding food.",
+    "subject": "slow travel effects",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith stepped forward as the party's navigator.",
+    "source_quote": "Sarith stepped forward as navigator",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith appeared to be telling the truth about his knowledge of the passages.",
+    "source_quote": "appeared to be telling the truth about his knowledge of the passages.",
+    "subject": "Sarith's honesty",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party arranged a marching order keeping sturdier companions toward the front.",
+    "source_quote": "keeping sturdier companions toward the front",
+    "subject": "marching order arrangement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is unarmored and was placed farther back in the marching order.",
+    "source_quote": "the unarmored Daz farther back.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin offered to travel at the front of the marching order.",
+    "source_quote": "Thorin offers to travel at the front",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir volunteered for the front or second position in the marching order.",
+    "source_quote": "Zalthir volunteers for the front or second position",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz preferred the third rank in the marching order.",
+    "source_quote": "the unarmored Daz prefers the third rank.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party agreed that player characters will generally bear the brunt of danger.",
+    "source_quote": "player characters will generally bear the brunt of danger",
+    "subject": "danger assumption",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress is a strange and ancient magical energy that suffuses parts of the Underdark.",
+    "source_quote": "the Faerzress, a strange and ancient magical energy that suffused parts of the Underdark.",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress bathes affected passages in dim light.",
+    "source_quote": "It bathed affected passages in dim light",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress protects creatures from divination.",
+    "source_quote": "protected creatures from divination",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Faerzress makes teleportation unreliable and physically dangerous.",
+    "source_quote": "made teleportation both unreliable and physically dangerous.",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Waterdeep is the party's distant ideal destination.",
+    "source_quote": "Waterdeep remained the distant ideal",
+    "subject": "Waterdeep",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy does not want to return to Blingdenstone due to a disagreement with its inhabitants.",
+    "source_quote": "Topsy and Turvy did not want to return to Blingdenstone after a disagreement with its inhabitants",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy does not want to return to Blingdenstone due to a disagreement with its inhabitants.",
+    "source_quote": "Topsy and Turvy did not want to return to Blingdenstone after a disagreement with its inhabitants",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy has an apparent reputation as a thief.",
+    "source_quote": "reinforcing the widespread suspicion that the twins were thieves.",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy has an apparent reputation as a thief.",
+    "source_quote": "reinforcing the widespread suspicion that the twins were thieves.",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh lies roughly twenty-eight days away from the party's current location.",
+    "source_quote": "Gracklstugh lay roughly twenty-eight days away",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sloobludop is the home sought by Shuushar.",
+    "source_quote": "Sloobludop\u2014the home sought by Shuushar",
+    "subject": "Sloobludop",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sloobludop is only eight days distant from the party's current location.",
+    "source_quote": "was only eight days distant.",
+    "subject": "Sloobludop",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake is an enormous network of underground rivers, canals, natural tunnels, and flooded caverns.",
+    "source_quote": "the Darklake was not a single lake but an enormous network of underground rivers, canals, natural tunnels, and flooded caverns",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake extends for more than a hundred miles.",
+    "source_quote": "extending for more than a hundred miles",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake has ceilings miles high and unfathomable depths.",
+    "source_quote": "with ceilings miles high and unfathomable depths.",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith explained that reaching the Darklake would allow the party to find or steal a boat.",
+    "source_quote": "Reaching it would allow the party to find or steal a boat",
+    "subject": "Sarith's navigation advice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido approved of the route because it could eventually take him to Gracklstugh.",
+    "source_quote": "Buppido approved because the route could eventually take him to Gracklstugh.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose Sloobludop as its first destination.",
+    "source_quote": "The party therefore chose Sloobludop as its first destination",
+    "subject": "destination choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party set out at a normal pace.",
+    "source_quote": "set out at a normal pace.",
+    "subject": "travel pace choice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool chose Gyrgum as his \u201cbestest friend\u201d and protector.",
+    "source_quote": "Stool... chose Gyrgum as his \u201cbestest friend\u201d and protector.",
+    "subject": "Stool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is too small to hold Gyrgum's hand comfortably.",
+    "source_quote": "Too small to hold the orc's hand comfortably",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool walked as close beside Gyrgum as possible.",
+    "source_quote": "Stool instead walked as close beside him as possible",
+    "subject": "Stool's movement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool hopes Gyrgum will keep him safe and eventually take him home.",
+    "source_quote": "hoping Gyrgum would keep him safe and eventually take him home.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum did not know what responsibility he had accepted by becoming Stool's protector.",
+    "source_quote": "Gyrgum did not know what responsibility he had accepted",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was unwilling to reject Stool.",
+    "source_quote": "he was unwilling to reject a terrified childlike creature.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar seeks Sloobludop.",
+    "source_quote": "Sloobludop\u2014the home sought by Shuushar",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party considered Blingdenstone as a practical Underdark settlement choice.",
+    "source_quote": "their practical choices were Underdark settlements... Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": false
+  }
+]

@@ -1,0 +1,114 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a red dragon of Gracklstugh.",
+    "source_quote": "Themberchaud, the red dragon of Gracklstugh",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud dives toward the party and lands with a shuddering, ungraceful impact due to his size.",
+    "source_quote": "Themberchaud dive-bombs toward the party, landing with a shuddering, ungraceful impact due to his voluminous size.",
+    "subject": "Themberchaud's landing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud addresses the party as his personal agents.",
+    "source_quote": "Themberchaud addressed the party as his personal agents",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud expresses frustration with the inefficiency of the Keepers of the Flame.",
+    "source_quote": "expressing grand frustration with the inefficiency of the Keepers of the Flame",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud complains about the Keepers of the Flame's petty checkpoints.",
+    "source_quote": "their petty checkpoints",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame maintain checkpoints and patrols that Themberchaud considers inefficient and petty.",
+    "source_quote": "frustration with the inefficiency of the Keepers of the Flame and their checkpoints and patrols",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud offers the party an 'express service' flight to their next destination.",
+    "source_quote": "the dragon offers the party 'express service' to their next destination",
+    "subject": "offer of express service",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud invites the party to climb onto his back.",
+    "source_quote": "invited them to climb aboard, as though it were the greatest honor he could bestow",
+    "subject": "climbing aboard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party climbs onto Themberchaud's back.",
+    "source_quote": "the party scrambled onto his back",
+    "subject": "party boarding",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes the ride as 'dangerous and stupid' but agrees to participate because it is a dragon ride.",
+    "source_quote": "Gyrgum called the ride \"dangerous and stupid\" but agreed because it was a dragon ride.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recalls they have already handed off Themberchaud's egg and do not have it on them.",
+    "source_quote": "The party recalls they have already handed off his egg, so they have none on them.",
+    "subject": "Themberchaud's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that not everyone was inside the sphere of darkness and that the dragon spotted them during the fight.",
+    "source_quote": "The DM rules that not everyone was inside it, and that the dragon spotted them during the fight.",
+    "subject": "DM ruling on hiding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party briefly considers hiding in a nearby market before deciding to stand their ground.",
+    "source_quote": "The party briefly considers hiding in a nearby market but decides to stand their ground",
+    "subject": "market consideration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum positions himself near an entrance he can duck into.",
+    "source_quote": "Gyrgum positions himself near an entrance he can duck into.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Themberchaud mistakes the party for his loyal agents.",
+    "source_quote": "mistaking them for his loyal agents",
+    "subject": "Themberchaud's misidentification",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM frames Themberchaud as a 'glorified lighter' who believes the party are his agents.",
+    "source_quote": "The DM frames Themberchaud as a \"glorified lighter\" who believes the party are his agents",
+    "subject": "Themberchaud's perception",
+    "quote_verified": true
+  }
+]

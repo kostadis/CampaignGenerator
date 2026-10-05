@@ -1,0 +1,128 @@
+[
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is a well-lit cavern occupied by roughly two dozen Svirfneblin.",
+    "source_quote": "Roughly two dozen Svirfneblin occupied the well-lit cavern.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo Diggermattock is a male Svirfeblin who introduces himself to the party.",
+    "source_quote": "The male leader introduced himself: \u201cMy name is Dorbo.",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni Diggermattock is a female Svirfeblin identified as Dorbo's assistant and Quartermaster.",
+    "source_quote": "And over here is my assistant, Senni.",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party initially introduces themselves as the Emerald Vanguard.",
+    "source_quote": "The party initially blurted out \u201cthe Emerald Vanguard\u201d",
+    "subject": "party introduction",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party confuses their identity with the Ember Vanguard and the Emerald Enclave.",
+    "source_quote": "became tangled in a discussion of the Emerald Vanguard, Ember Vanguard, and Emerald Enclave",
+    "subject": "name confusion",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recognizes one of the proposed names is associated with a faction blamed for destroying a capital city.",
+    "source_quote": "one of those names was associated with a faction blamed for destroying a capital city",
+    "subject": "tainted faction name",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party introduces themselves as adventurers trying to find their way home and reach the Overbright.",
+    "source_quote": "introduced themselves simply as adventurers trying to find their way home and reach the Overbright.",
+    "subject": "revised introduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo and Senni engage in a heated private argument involving muttering and finger-pointing.",
+    "source_quote": "Dorbo and Quartermaster Senni Diggermattock responded with muttering, finger-pointing, and an apparently heated private argument.",
+    "subject": "leaders' consultation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member asks if the clan has a side quest involving oozes, citing Jimjar's warning.",
+    "source_quote": "the party openly asked whether the clan had a side quest involving oozes and volunteered their interest",
+    "subject": "ooze quest offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni Diggermattock accepts the offer to deal with the ooze problem in exchange for helping the party reach the Overbright.",
+    "source_quote": "our community is suffering from an ooze problem. And since you so graciously volunteered to go look at it, we won\u2019t feel at all encumbered or guilty about asking you to do that before we help you.\u201d",
+    "subject": "Senni's acceptance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool declares he is a gelatinous cube, not an ooze, to distinguish himself from the pests.",
+    "source_quote": "Well, I\u2019m not an ooze. I\u2019m a gelatinous cube. A totally different species.\u201d",
+    "subject": "Glabbagool's distinction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool identifies himself as the friendly type.",
+    "source_quote": "I am the friendly type.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party argues that gelatinous cubes have higher viscosity and can maintain a square form unlike oozes.",
+    "source_quote": "gelatinous cubes have much higher viscosity than oozes and can maintain a square form",
+    "subject": "viscosity argument",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool declares he is better than oozes after hearing the square shape argument.",
+    "source_quote": "I knew there was a reason I was just better than them.\u201d",
+    "subject": "Glabbagool's vanity",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Stone tables in Diggermattock Hall are covered with maps and documents.",
+    "source_quote": "stone tables covered with maps and documents",
+    "subject": "maps and documents",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Shambling mounds do not sweep up and retain objects the way gelatinous cubes do.",
+    "source_quote": "shambling mounds did not sweep up and retain objects the way gelatinous cubes did",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool does not eat oozes but sometimes punches them.",
+    "source_quote": "No, no, I don\u2019t eat oozes. I mean, I do punch them sometimes, but no, I don\u2019t eat oozes.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool extends a pseudopod to demonstrate his ability to strike objects.",
+    "source_quote": "He then extended a pseudopod to demonstrate that he could strike things as well as absorb them.",
+    "subject": "Glabbagool demonstration",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,205 @@
+[
+  {
+    "type": "date",
+    "fact": "The party advanced to 4th level after the skeleton fight.",
+    "source_quote": "everyone advanced to 4th level",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost with a cleaved head who emerged from the ground in the Whorlstone Tunnels.",
+    "source_quote": "A ghost with a gruesome cleaved head emerged from the ground",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a deep gnome traveler from Blingdenstone.",
+    "source_quote": "Pelek, a deep gnome traveler from Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's mother named him after an actor, which his father disliked.",
+    "source_quote": "His mother had named him after an actor; his father never liked it",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek refuses to discuss the details of his past beyond his name, calling it complicated and sordid.",
+    "source_quote": "the rest was \"complicated and sordid\", which he declined to get into",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was once friends with a derro named Buppido.",
+    "source_quote": "he had once been friends with a derro named Buppido",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido lured Pelek into the tunnels with promises of business deals.",
+    "source_quote": "Buppido, who had lured him in with promises of business deals",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido slaughtered and dismembered Pelek with an axe.",
+    "source_quote": "slaughtering and dismembering him with an axe",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido changed overnight from eccentric to believing he was the avatar of a major deity.",
+    "source_quote": "Buppido had changed overnight, going from merely eccentric to utterly convinced he was the avatar of a major deity",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido raves and rants.",
+    "source_quote": "raving and ranting while the gnome tried desperately to reason with him",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek tried to reason with Buppido but failed.",
+    "source_quote": "raving and ranting while the gnome tried desperately to reason with him",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek has been trapped in the caverns for about a year.",
+    "source_quote": "trapped in the caverns ever since, which he reckoned was about a year",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is unable to move on.",
+    "source_quote": "unable to move on",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek attempted to possess Buppido but the effort failed entirely.",
+    "source_quote": "the effort failed entirely",
+    "subject": "Pelek's failed possession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek asks the party to collect his bones and carry them to Blingdenstone for burial.",
+    "source_quote": "asked the party to collect his specific bones and carry them back to Blingdenstone",
+    "subject": "Pelek's request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek pointed out each of his bones to the party.",
+    "source_quote": "He pointed out each bone carefully",
+    "subject": "Bone collection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wrapped Pelek's bones and put them in his pack.",
+    "source_quote": "Gyrgum wrapped them up and tucked them into his pack",
+    "subject": "Bone packing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's bones are currently in Gyrgum's pack.",
+    "source_quote": "Gyrgum wrapped them up and tucked them into his pack",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fumbled an intimidation attempt on Pelek.",
+    "source_quote": "Thorin pressed the ghost on what the party got out of the deal and fumbled an intimidation attempt badly",
+    "subject": "Thorin's intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "To enter Blingdenstone, the party must clarify that any drow have no ties to Menzoberranzan or devotion to Lolth.",
+    "source_quote": "make absolutely clear that the drow among them had no ties to Menzoberranzan and no devotion to the spider goddess Lolth",
+    "subject": "Blingdenstone entry conditions",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The number eight is the sign of Lolth, referencing a spider's eight legs.",
+    "source_quote": "eight for a spider's eight legs, the sign of Lolth",
+    "subject": "Lolth's sign",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party must not carry anything marked with or divisible by eight to enter Blingdenstone.",
+    "source_quote": "carry nothing marked with the number eight, or divisible by eight",
+    "subject": "Lolth's sign",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party must not carry spiders to enter Blingdenstone.",
+    "source_quote": "And no spiders",
+    "subject": "Lolth's sign",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The deep gnomes of Blingdenstone know ways to reach the Overbright.",
+    "source_quote": "deep gnomes of Blingdenstone know ways to reach the \"Overbright\"",
+    "subject": "Blingdenstone",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Pelek's severed hand was animated by strange magic.",
+    "source_quote": "the strange magic pervading the tunnels had animated his severed hand",
+    "subject": "Pelek's severed hand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's animated severed hand scuttled away through the cavern wall.",
+    "source_quote": "which had scuttled away through the narrow crevices of the cavern wall",
+    "subject": "Hand scuttles away",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's severed hand is wearing his obsidian ring.",
+    "source_quote": "still wearing his obsidian ring",
+    "subject": "Obsidian ring",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's spirit drifts alongside the party as a companion.",
+    "source_quote": "Pelek's spirit drifted alongside them as a companion",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's spirit is bound to wherever his remains travel.",
+    "source_quote": "bound to wherever his remains traveled",
+    "subject": "Pelek",
+    "quote_verified": true
+  }
+]

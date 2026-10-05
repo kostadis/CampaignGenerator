@@ -1,0 +1,142 @@
+[
+  {
+    "type": "event",
+    "fact": "The party failed their stealth check to slip away toward the Darklake District, despite Zalthir rolling a 24, because the group missed the DC 14.",
+    "source_quote": "Zalthir rolled a 24, but the group as a whole missed the DC 14 check.",
+    "subject": "failed stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Derro assassin stepped from the shadows and confronted the party.",
+    "source_quote": "A Derro assassin stepped from the shadows and confronted them directly.",
+    "subject": "Derro assassin confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro assassin declared that the Derro Council had sent Gray Ghosts to exact revenge for the deaths of their High Council members.",
+    "source_quote": "He declared that the Derro Council had sent its Gray Ghosts to exact revenge for the deaths of their High Council members.",
+    "subject": "Derro assassin leader",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro assassin claimed the Derro knew exactly who the party was.",
+    "source_quote": "He added that the derro knew exactly who the party was, even if the rest of the city did not.",
+    "subject": "Derro assassin leader",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro assassin leader was cut down by Zalthir before he could fully react.",
+    "source_quote": "Zalthir moved with lethal speed, cutting down the visible leader and a second hidden attacker before they could react.",
+    "subject": "Derro assassin leader",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moved with lethal speed to cut down the visible leader and a second hidden attacker.",
+    "source_quote": "Zalthir moved with lethal speed, cutting down the visible leader and a second hidden attacker before they could react.",
+    "subject": "Zalthir's ambush kill",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A second hidden Derro assassin was cut down by Zalthir alongside the leader.",
+    "source_quote": "Zalthir moved with lethal speed, cutting down the visible leader and a second hidden attacker before they could react.",
+    "subject": "hidden Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casted Spirit Guardians, causing spectral angelic guardians to erupt around him.",
+    "source_quote": "Gyrgum called upon the power of his faith, casting the newly learned Spirit Guardians. A swarm of spectral, angelic guardians erupted around him",
+    "subject": "Gyrgum casts Spirit Guardians",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro assassin strayed too close to Gyrgum's Spirit Guardians and took 17 radiant damage.",
+    "source_quote": "tearing through two more assassins who strayed too close, for 17 and 15 radiant damage.",
+    "subject": "Derro assassin 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro assassin strayed too close to Gyrgum's Spirit Guardians and took 15 radiant damage.",
+    "source_quote": "tearing through two more assassins who strayed too close, for 17 and 15 radiant damage.",
+    "subject": "Derro assassin 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finished the last invisible attacker with a decisive two-attack sequence.",
+    "source_quote": "Thorin finished the last of them with a decisive two-attack sequence",
+    "subject": "Thorin's final kill",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The final invisible Derro assassin was killed by Thorin.",
+    "source_quote": "Thorin finished the last of them with a decisive two-attack sequence, and silence returned to the corridor. All five Derro lay dead.",
+    "subject": "Derro assassin 5",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "All five Derro assassins in the encounter are dead.",
+    "source_quote": "All five Derro lay dead.",
+    "subject": "Derro assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party searched the bodies of the fallen Derro assassins.",
+    "source_quote": "The party searched the fallen Derro.",
+    "subject": "looting the Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a fuzzy lucky foot of indeterminate origin on one of the bodies.",
+    "source_quote": "They found a handful of coins and a fuzzy lucky foot of indeterminate origin",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum claimed the fuzzy lucky foot.",
+    "source_quote": "Gyrgum claimed the fuzzy lucky foot",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The party found a handful of coins on the bodies.",
+    "source_quote": "They found a handful of coins",
+    "subject": "coins",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a letter bearing the seal of the Council of Savants.",
+    "source_quote": "Most significantly, they found a letter bearing the seal of the Council of Savants.",
+    "subject": "letter from Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants issued a letter ordering the Gray Ghosts to strike down the Duergar who brought the Ember Vanguard into the city.",
+    "source_quote": "The letter ordered the Gray Ghosts to strike down the Duergar who had brought the Ember Vanguard into the city",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is now considered enemy number one by Thorin.",
+    "source_quote": "Thorin concludes the Ember Vanguard is now \"enemy number one.\"",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  }
+]

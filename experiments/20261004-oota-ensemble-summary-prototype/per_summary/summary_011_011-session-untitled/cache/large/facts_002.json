@@ -1,0 +1,114 @@
+[
+  {
+    "type": "date",
+    "fact": "The events occur on the fifteenth day of the party's voyage.",
+    "source_quote": "On the fifteenth day of their voyage",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party travels through a narrow, eerie tunnel illuminated by a purple glow.",
+    "source_quote": "narrow, eerie tunnel illuminated by a purple glow",
+    "subject": "darklake tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Blind cavefish drift mindlessly near the surface and bump against the hull of the boat.",
+    "source_quote": "Blind cavefish drifted mindlessly near the surface, occasionally bumping against the hull of the boat",
+    "subject": "blind cavefish",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel forks around a diamond-shaped limestone islet that is forty feet wide.",
+    "source_quote": "tunnel forked around a diamond-shaped limestone islet, forty feet wide",
+    "subject": "limestone islet",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bone pyramid is eight feet high and five feet wide at its base.",
+    "source_quote": "It was a pyramid of bones, eight feet high and five feet wide at its base",
+    "subject": "bone pyramid",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bone pyramid is crowned with a great horned ram skull positioned to stare at the travelers.",
+    "source_quote": "crowned with a great horned ram skull that had been carefully positioned so its empty sockets stared directly at them",
+    "subject": "horned ram skull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch panics upon seeing the bone pyramid.",
+    "source_quote": "Brannum Redmarch took one look at it and panicked",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum Redmarch admits that he thought the party was going the other way.",
+    "source_quote": "I thought we were going the other way",
+    "subject": "brannum admission",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A violent beam of lightning erupts from behind a stalactite and strikes the boat.",
+    "source_quote": "a violent beam of lightning erupted from behind a stalactite above the islet and tried to put a hole in their boat",
+    "subject": "lightning attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party fails the group check to avoid all harm, resulting in some damage to the boat.",
+    "source_quote": "Not enough of them succeeded to avoid all harm, but their quick reflexes kept the boat seaworthy with only some damage",
+    "subject": "boat check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin starts rowing the boat away from the islet.",
+    "source_quote": "Thorin starts rowing away",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A ten-foot floating sphere of rotting flesh and dead eyes rises from behind a stalactite.",
+    "source_quote": "rising from behind the great stalactite, a ten-foot floating sphere of rotting flesh and dead eyes drifted toward them",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is an undead horror that understands nothing the party says.",
+    "source_quote": "realize with a sinking feeling that the undead horror understood nothing he said",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Command on the beholder zombie.",
+    "source_quote": "Gyrgum cast Command and ordered the creature to flee",
+    "subject": "command spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Command spell fails because the beholder zombie does not understand Gyrgum.",
+    "source_quote": "ordered the creature to flee, only to realize with a sinking feeling that the undead horror understood nothing he said",
+    "subject": "command failure",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unclear whether the lightning came from the beholder zombie or a second source.",
+    "source_quote": "It is unclear whether the lightning came from the zombie or from a second source",
+    "subject": "lightning source",
+    "quote_verified": true
+  }
+]

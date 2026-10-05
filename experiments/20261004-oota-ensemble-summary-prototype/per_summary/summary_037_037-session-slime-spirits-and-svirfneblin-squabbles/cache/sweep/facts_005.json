@@ -1,0 +1,142 @@
+[
+  {
+    "type": "npc",
+    "fact": "The party uses Jadger's counsel to guide their decision to go to the Traders' Grotto.",
+    "source_quote": "With Jadger's counsel in mind",
+    "subject": "Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party refers to themselves as the self-appointed \"ooze crew\".",
+    "source_quote": "the self-appointed \u201cooze crew\u201d made their way",
+    "subject": "ooze crew",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Traders' Grotto is Blingdenstone's bustling central market.",
+    "source_quote": "the Traders' Grotto, Blingdenstone's bustling central market",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A sergeant guides the party through the cavern.",
+    "source_quote": "A sergeant guided them through the cavern",
+    "subject": "sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant is proud while explaining the cavern's history.",
+    "source_quote": "proudly explaining that fungi had once grown",
+    "subject": "sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A medusa's spell petrified the fungi in the cavern centuries ago.",
+    "source_quote": "a medusa's spell petrified them centuries ago",
+    "subject": "medusa petrification",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A medusa cast a spell that petrified fungi in the cavern.",
+    "source_quote": "a medusa's spell petrified them",
+    "subject": "medusa",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Merchants operate makeshift stalls among the stone growths.",
+    "source_quote": "Merchants now operated makeshift stalls among the stone growths",
+    "subject": "merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Caravans lower cargo into warehouses carved beneath the grotto.",
+    "source_quote": "arriving caravans lowered cargo into warehouses carved beneath the grotto",
+    "subject": "caravans",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Warehouses are carved beneath the Traders' Grotto.",
+    "source_quote": "caravans lowered cargo into warehouses carved beneath the grotto",
+    "subject": "warehouses",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Common potions are available in the Traders' Grotto market.",
+    "source_quote": "Ordinary goods and some common\u2014and perhaps a few uncommon\u2014potions were available",
+    "subject": "common potions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Some uncommon potions are available in the Traders' Grotto market.",
+    "source_quote": "some common\u2014and perhaps a few uncommon\u2014potions were available",
+    "subject": "uncommon potions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Merchants eyed Glabbagool suspiciously.",
+    "source_quote": "The merchants eyed Glabbagool suspiciously",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "An intelligent cube is located at the rear of the party's formation.",
+    "source_quote": "the outsiders and the intelligent cube at the rear of their formation",
+    "subject": "intelligent cube",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party initially considers the name Ash Enclave.",
+    "source_quote": "shifting from the Ash Enclave",
+    "subject": "Ash Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party considers the name Ash Vanguard.",
+    "source_quote": "shifting from the Ash Enclave toward \u201cAsh Vanguard\u201d",
+    "subject": "Ash Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party considers the name Ash Peloton.",
+    "source_quote": "alternatives such as the Ash Vanguard, Ash Peloton",
+    "subject": "Ash Peloton",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party suggests the name Ash Rearguard.",
+    "source_quote": "and the unfortunately phrased Ash Rearguard",
+    "subject": "Ash Rearguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rejects the name Ash Rearguard because it is unlikely to age well.",
+    "source_quote": "Ash Rearguard is rejected as particularly unlikely to age well",
+    "subject": "naming debate",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gnome merchants regard the party and Glabbagool with suspicion.",
+    "source_quote": "Gnome merchants regard the unusual visitors\u2014and particularly Glabbagool\u2014with considerable suspicion",
+    "subject": "gnome merchants",
+    "quote_verified": true
+  }
+]

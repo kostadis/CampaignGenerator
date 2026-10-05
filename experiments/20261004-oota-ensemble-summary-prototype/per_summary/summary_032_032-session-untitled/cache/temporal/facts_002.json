@@ -1,0 +1,23 @@
+[
+  {
+    "type": "monster",
+    "fact": "Three spore servants rise from the garden to carry Yestabrod's corpse.",
+    "source_quote": "Three spore servants rise from the garden",
+    "subject": "spore servants count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The fungal figure of Zuggtmoy in the vision is three times the height of the fungal bridesmaids.",
+    "source_quote": "three times the height of the fungal bridesmaids",
+    "subject": "Zuggtmoy size",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thousands of lesser fungi cling to the central stalk of the Majestic Mushroom.",
+    "source_quote": "Thousands of lesser fungi cling to the central stalk",
+    "subject": "lesser fungi count",
+    "quote_verified": true
+  }
+]

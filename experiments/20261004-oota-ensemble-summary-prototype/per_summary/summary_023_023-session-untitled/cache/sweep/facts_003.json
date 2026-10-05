@@ -1,0 +1,184 @@
+[
+  {
+    "type": "npc",
+    "fact": "Narrak successfully completed his work on one statue and is preparing to corrupt another.",
+    "source_quote": "Narrak had already completed his work on one statue and was now preparing to corrupt another",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak announces that converting one more of Hgraam's giants into a double-headed beast will bring Gracklstugh to its knees.",
+    "source_quote": "Narrak announced grandly that converting one more of Hgraam's giants into a double-headed beast would bring Gracklstugh to its knees",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak insists he does not curse, but rather invokes demonic powers.",
+    "source_quote": "I don't curse. I just invoke demonic powers.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak grew increasingly furious at his followers' lack of passion and vigor during the rehearsal.",
+    "source_quote": "He grew increasingly furious as his followers stumbled through the chorus with all the passion of bored schoolchildren",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak berates his followers, shouting for more vigor.",
+    "source_quote": "Silence, you blithering half-wits! More vigor! This city's doom, a ritual! Dig it!",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ritual cavern contains three stone giant statues, with one having a second head and the third being prepared.",
+    "source_quote": "By the DM's map, there were now three statues, and Narrak was preparing the third",
+    "subject": "ritual cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Whorlstone's depths are referenced as the origin of the spirals turning in Narrak's new chant verse.",
+    "source_quote": "a new verse about \"Whorlstone's depths.\"",
+    "subject": "Whorlstone's depths",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city Narrak claims his ritual will bring to its knees.",
+    "source_quote": "bring Gracklstugh to its knees",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hgraam is referenced as the owner or creator of the giants Narrak is converting.",
+    "source_quote": "converting one more of Hgraam's giants",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak launches into a ritual chant that includes a new verse.",
+    "source_quote": "Narrak launched into the ritual chant, including a new verse about \"Whorlstone's depths.\"",
+    "subject": "Narrak's chant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak makes his followers run the ritual chant again as a rehearsal.",
+    "source_quote": "he made them run it again as a rehearsal",
+    "subject": "cultist rehearsal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Bless on his three companions.",
+    "source_quote": "Gyrgum quietly blessed his three companions",
+    "subject": "Gyrgum's Bless",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party beat the cultists' passive perception of 7 on a group stealth check and slipped forward undetected.",
+    "source_quote": "The party then beat the cultists' passive perception of 7 on a group stealth check",
+    "subject": "group stealth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party earns a surprise round due to their successful stealth.",
+    "source_quote": "undetected, earning a surprise round",
+    "subject": "surprise round",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak has successfully grown a second head on one of the stone giant statues.",
+    "source_quote": "Narrak has successfully grown a second head on one of the stone giant statues",
+    "subject": "second head grown",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stone giant statues are being converted into double-headed beasts by Narrak.",
+    "source_quote": "converting one more of Hgraam's giants into a double-headed beast",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A death dog is present in the ritual cavern, being groomed by its handler.",
+    "source_quote": "the death dog's handler kept his head down by busily grooming the dog",
+    "subject": "death dog",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Narrak leads a group of Derro cultists who are rehearsing his ritual.",
+    "source_quote": "Narrak and his Derro cultists rehearse their ritual chant",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The death dog's handler keeps his head down by busily grooming the dog.",
+    "source_quote": "the death dog's handler kept his head down by busily grooming the dog",
+    "subject": "death dog's handler",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Bless on his three companions to prepare for a surprise attack.",
+    "source_quote": "Gyrgum quietly casts Bless on his three companions",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One stone giant statue has had a second head grown on it.",
+    "source_quote": "Narrak has successfully grown a second head on one of the stone giant statues",
+    "subject": "stone giant statue",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A third stone giant statue is being prepared by Narrak.",
+    "source_quote": "Narrak was preparing the third",
+    "subject": "stone giant statue",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party takes advantage of the cult being distracted to launch a surprise attack.",
+    "source_quote": "With the cult distracted, Gyrgum quietly blessed his three companions",
+    "subject": "cultist distraction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM plays Narrak as a cultist who refuses to curse.",
+    "source_quote": "The DM played him as a cultist who refuses to curse",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM warns that the Bless spell will expire if the party waits out the next couplet.",
+    "source_quote": "The DM warns that Bless will expire if they wait out the next couplet",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cultists have a passive perception of 7.",
+    "source_quote": "beat the cultists' passive perception of 7",
+    "subject": "passive perception check",
+    "quote_verified": true
+  }
+]

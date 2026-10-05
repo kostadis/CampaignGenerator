@@ -1,0 +1,128 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost who had been traveling with the party.",
+    "source_quote": "honor a promise made to Pelek, a ghost who had been traveling with them",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido had killed Pelek.",
+    "source_quote": "Buppido had killed Pelek",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum carries a small bag of Pelek's surviving bones.",
+    "source_quote": "Gyrgum carried a small bag of his surviving bones",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek addresses Gyrgum.",
+    "source_quote": "Pelek addressed Gyrgum",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum confirms that he still has the bones.",
+    "source_quote": "who confirmed that he still had the bones",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek asks whether they could finally visit the cemetery.",
+    "source_quote": "asked whether they could finally visit the cemetery",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek impatiently asks whether they can go to the cemetery now.",
+    "source_quote": "Pelek impatiently asks whether they can go to the cemetery now",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Pelek came to Blingdenstone specifically so his remains could be laid to rest.",
+    "source_quote": "Pelek came to Blingdenstone specifically so his remains could be laid to rest",
+    "subject": "Pelek's interment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks a guard where the cemetery is.",
+    "source_quote": "Gyrgum asks a guard where the cemetery is",
+    "subject": "guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum announces, \u201cI got a deposit to make,\u201d before rephrasing it.",
+    "source_quote": "announcing, \u201cI got a deposit to make,\u201d",
+    "subject": "Gyrgum's announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The remains are small enough to fit in a pouch.",
+    "source_quote": "The remains are small enough to fit in a pouch",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cemetery is beside the temple known as the Ruby in the Rough.",
+    "source_quote": "the cemetery is beside the temple known as the Ruby in the Rough",
+    "subject": "Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The temple is dedicated to Segojan Earthcaller.",
+    "source_quote": "The temple is dedicated to Segojan Earthcaller",
+    "subject": "Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Segojan Earthcaller is the Svirfneblin god of deep earthen nature.",
+    "source_quote": "Segojan Earthcaller, the Svirfneblin god of deep earthen nature",
+    "subject": "Segojan Earthcaller",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cemetery is on the way to the Traders' Grotto.",
+    "source_quote": "Because the cemetery is on the way to the Traders' Grotto",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party decides to fulfill the promise of interring Pelek before pursuing the ooze quest.",
+    "source_quote": "the party decides to fulfill its promise before pursuing the ooze quest",
+    "subject": "the party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party jokes that Saint Pelek might have toe bones in many places or even seven sternums.",
+    "source_quote": "The party jokes that Saint Pelek might have toe bones in many places or even seven sternums",
+    "subject": "Saint Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes Pelek's bones to the Blingdenstone cemetery.",
+    "source_quote": "The party takes Pelek's bones to the Blingdenstone cemetery",
+    "subject": "Blingdenstone cemetery visit",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,135 @@
+[
+  {
+    "type": "event",
+    "fact": "The party takes a long rest in a cramped lodging house before departing.",
+    "source_quote": "The party opts for a long rest rather than visiting the Keepers of the Flame immediately.",
+    "subject": "party rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pays five copper pieces per person to stay in a shared room with bunk beds.",
+    "source_quote": "The party spends the night in a shared room with bunk beds for five copper pieces per person.",
+    "subject": "rest cost",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lodging house is where the rest of the party's crew had been put up.",
+    "source_quote": "The establishment is where the rest of their crew had been put up.",
+    "subject": "lodging house",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recounts Orwell's *Down and Out in Paris and London*, describing lodgers who slept standing while leaning on a rope cut in the morning.",
+    "source_quote": "Gyrgum recounts Orwell's *Down and Out in Paris and London*, where lodgers slept standing, leaning on a rope that was cut in the morning.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is reduced to five hit points.",
+    "source_quote": "Daz is down to five hit points.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar notes that the party is equipped and ready to head toward Blingdenstone.",
+    "source_quote": "Jimjar notes that the party is equipped and ready to head toward Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is cool with visiting the Keepers of the Flame before leaving.",
+    "source_quote": "Jimjar is \"cool with that.\"",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Topsy-Turvy twins have disappeared from the group.",
+    "source_quote": "The party notices that the Topsy-Turvy twins have disappeared from the group.",
+    "subject": "Topsy-Turvy twins",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks if the Topsy-Turvy twins were wererats.",
+    "source_quote": "Zalthir asks, \"Were they the wererats?\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The twins may not have left for good.",
+    "source_quote": "The GM notes they \"haven't\" necessarily left for good.",
+    "subject": "twins disappearance status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido still looks cranky.",
+    "source_quote": "Buppido still looks cranky",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Everyone's health is fine.",
+    "source_quote": "but everyone's health seems fine.",
+    "subject": "health check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses a strong interest in visiting the Keepers of the Flame before leaving the city.",
+    "source_quote": "Daz expresses a strong interest in visiting the Keepers of the Flame before leaving the city",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that gathering intelligence is just as important as stocking up.",
+    "source_quote": "Daz: \"I think gathering intelligence is just as important as stocking up.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rest of the party agrees to visit the Keepers of the Flame.",
+    "source_quote": "The rest of the party agreed",
+    "subject": "party agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sets off through the stone corridors of Gracklstugh.",
+    "source_quote": "they set off through the stone corridors of Gracklstugh",
+    "subject": "departure",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Daz is curious about the dragon and the Keepers of the Flame.",
+    "source_quote": "Daz, curious about the dragon and the Keepers of the Flame, insisted they first pay the Keepers a visit",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is the party's intended destination.",
+    "source_quote": "make for Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The events take place on 014.03.",
+    "source_quote": "Rest and Departure Preparations 014.03",
+    "subject": "session date",
+    "quote_verified": true
+  }
+]

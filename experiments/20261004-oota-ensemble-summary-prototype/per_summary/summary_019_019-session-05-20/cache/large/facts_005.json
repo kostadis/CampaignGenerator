@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "The Obelisk Chamber is a vast cavern illuminated by faerzress energy and bioluminescent fungi, featuring a central rocky mesa connected by a sturdy bridge.",
+    "source_quote": "The chamber that greeted them was vast and breathtaking. Faerzress energy pulsed through the air alongside the soft glow of bioluminescent fungi... Atop one tier sat the dragon egg, and atop the other loomed a fifty-foot-tall obelisk",
+    "subject": "The Obelisk Chamber",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk is a fifty-foot-tall structure of smooth black metal with a few imperfections, as if pieces were chipped away over time.",
+    "source_quote": "looming a fifty-foot-tall obelisk of smooth black metal, its surface marred by only a handful of imperfections, as though pieces of it had been chipped away over time",
+    "subject": "The Obelisk",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a female derro conducting experiments on the obelisk.",
+    "source_quote": "Beside the obelisk stood a female derro named Plinki, stroking its surface with the reverent intensity of a scientist on the edge of a great discovery",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is obsessed with her work and ignores the armed party entering her chamber.",
+    "source_quote": "scribbling notes in a small book and paying no attention whatsoever to the armed group that had just walked into her chamber",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki commands a crowd of minions, some of whom may be invisible or hidden.",
+    "source_quote": "She had a crowd of minions, some possibly invisible or hidden",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki scrambled down from the mesa to greet Gyrgum after he approached her.",
+    "source_quote": "she scrambled down from the mesa to greet him",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric of Bahamut who is devoted to dragonkind.",
+    "source_quote": "Gyrgum, drawn irresistibly toward the egg by his devotion to Bahamut, strode boldly forward",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum announced himself to Plinki as a cleric of the dragon god come to worship at the egg.",
+    "source_quote": "announced himself as a cleric of the dragon god come to worship at the egg",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum cast Bless on his companions before passing them off to Plinki as unenlightened supporters.",
+    "source_quote": "Gyrgum casts Bless on his companions \"in my magnanimity.\" He passes them off as unenlightened supporters",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a natural 20 on an Arcana check regarding the egg's etchings.",
+    "source_quote": "Earlier, Daz had rolled a natural 20 on Arcana and read the egg's etchings",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin previously viewed the egg's etchings as festival decorations.",
+    "source_quote": "Thorin had taken the same etchings for festival decorations",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg sits atop one tier of the mesa.",
+    "source_quote": "Atop one tier sat the dragon egg",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg is corrupted, infused with demonic energy to honor Demogorgon.",
+    "source_quote": "she had spent untold hours using the obelisk's power to infuse it with demonic energy in honor of Demogorgon",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dragon egg is destined to hatch into a two-headed dragon possessed by a demonic power.",
+    "source_quote": "it would hatch a two-headed dragon, likely possessed by some demonic power",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The dragon egg was stolen from the Keepers of the Flame.",
+    "source_quote": "The egg had been stolen from the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Plinki carries a small book in which she scribbles notes.",
+    "source_quote": "scribbling notes in a small book",
+    "subject": "Plinki's small book",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki squeals with delight and writes notes whenever the obelisk flashes.",
+    "source_quote": "She squealed with delight each time the obelisk flashed, scribbling notes in a small book",
+    "subject": "Plinki's discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's bluff about being a holy man sent by Demogorgon succeeds, causing Plinki to believe him enthusiastically.",
+    "source_quote": "Plinki enthusiastically believes the bluff, declaring that Demogorgon sent him to acknowledge her grand achievement",
+    "subject": "Gyrgum's bluff",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki dismisses Gyrgum's companions as unimportant.",
+    "source_quote": "Plinki dismisses them as \"not important\"",
+    "subject": "Plinki's dismissal",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Plinki reveals that the egg was stolen and is being infused with demonic energy to honor Demogorgon.",
+    "source_quote": "The egg had been stolen from the Keepers of the Flame and is being infused with demonic energy to honor Demogorgon",
+    "subject": "Egg corruption revealed",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party has the option to destroy the egg and report this to Themberchaud.",
+    "source_quote": "the party didn't strictly need the egg; they could destroy it and report that to Themberchaud",
+    "subject": "Themberchaud's option",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "type": "monster",
+    "fact": "There are three resting cave bears in scrap iron cages.",
+    "source_quote": "chamber with scrap iron cages holding three resting cave bears",
+    "subject": "cave bears",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two derro cultists stand at the cauldron.",
+    "source_quote": "Two derro cultists stand at the cauldron",
+    "subject": "derro cultists",
+    "quote_verified": true
+  }
+]

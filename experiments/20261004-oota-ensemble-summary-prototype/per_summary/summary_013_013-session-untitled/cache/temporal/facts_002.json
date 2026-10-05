@@ -1,0 +1,58 @@
+[
+  {
+    "type": "monster",
+    "fact": "The stone giant Rihuud is reduced from 34 hit points to 8 hit points before being killed.",
+    "source_quote": "wore the giant down from 34 hit points to 8",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant Rihuud is killed by the duergar militia.",
+    "source_quote": "delivered a lethal blow, killing the stone giant",
+    "subject": "Rihuud",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The duergar militia delivers the killing blow to the stone giant Rihuud, ending the encounter.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant.",
+    "subject": "Rihuud death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a +1 modifier for Intimidation.",
+    "source_quote": "his modifier there is +1",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a -1 modifier for Persuasion (or other social skills implied as inferior to Intimidation).",
+    "source_quote": "versus -1 on the others",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum's mace hits for 1 damage.",
+    "source_quote": "Gyrgum's mace hits for 1 damage",
+    "subject": "Gyrgum's mace damage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The GM states that 100 hit points on a rhinoceros is different from 100 hit points on a human fighter.",
+    "source_quote": "100 hit points on a rhinoceros is different from 100 hit points on a human fighter",
+    "subject": "Rhino/Human HP comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The duergar soldiers shrink back to their normal size.",
+    "source_quote": "The duergar soldiers shrink back to their normal size",
+    "subject": "duergar size change",
+    "quote_verified": true
+  }
+]

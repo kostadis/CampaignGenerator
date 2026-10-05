@@ -1,0 +1,219 @@
+[
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the Captain of the Stone Guard.",
+    "source_quote": "Captain Errde Blackskull of the Stone Guard",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard arrived to meet the party from the direction of the prison with a small escort.",
+    "source_quote": "arrived from the direction of the prison with a small escort",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull made it politely but unmistakably clear that she expected the party to accompany her.",
+    "source_quote": "she made it politely but unmistakably clear that she expected them to accompany her",
+    "subject": "Errde's arrival",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull reminded the party that if she wanted them arrested she would have brought a whole platoon.",
+    "source_quote": "she reminded them that if she wanted them arrested she would have brought a whole platoon",
+    "subject": "Errde's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull loudly announced to the surrounding air that this was merely a friendly discussion and not 'that kind of meeting'.",
+    "source_quote": "she loudly announced to the surrounding air... that this was merely a friendly discussion and not \"that kind of meeting.\"",
+    "subject": "Errde's announcement",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "Errde Blackskull's front office is where the meeting with the party took place over pastries.",
+    "source_quote": "In her front office, over pastries",
+    "subject": "Errde's front office",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull commended the party's initiative, clever tactics, and brutal efficiency.",
+    "source_quote": "she commended the party's initiative, clever tactics, and \"brutal efficiency\"",
+    "subject": "Errde's commendation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull singled out Thorin's attempt to spare the stone giant's life.",
+    "source_quote": "singled out Thorin's attempt to spare the stone giant's life",
+    "subject": "Errde's praise of Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro who has been evading Stone Guard patrols with suspicious ease.",
+    "source_quote": "A derro named Droki had been evading Stone Guard patrols with suspicious ease",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Droki lives in the volatile West Cleft District, where the guards enter only in force.",
+    "source_quote": "He lived in the volatile West Cleft District, where the guards entered only in force.",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull asked the party to follow Droki and report back, seize him for questioning, or kill him and bring evidence of his activities.",
+    "source_quote": "She asked the party to follow him and report back, or better, to seize him for questioning, or failing that to kill him and bring evidence of his activities.",
+    "subject": "Errde's request",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Errde Blackskull believes a deeper conspiracy is festering beneath the surface of Gracklstugh involving corruption within the Council of Savants and among the clan lairds.",
+    "source_quote": "Errde spoke of a deeper conspiracy she believed was festering beneath the surface of Gracklstugh, involving corruption within the Council of Savants and among the clan lairds.",
+    "subject": "Undercity conspiracy",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde Blackskull suspects the Council of Savants is involved in a conspiracy.",
+    "source_quote": "involving corruption within the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde Blackskull suspects the clan lairds are involved in a conspiracy.",
+    "source_quote": "involving corruption within the Council of Savants and among the clan lairds",
+    "subject": "Clan Lairds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull promised each party member 350 gold pieces' worth of equipment from her armory plus safe passage out of the city upon completion of the task.",
+    "source_quote": "She promised that exposing it would earn each of them 350 gold pieces' worth of equipment from her armory, plus safe passage out of the city when their work was done.",
+    "subject": "Errde's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin pressed Errde Blackskull twice on whether the task bound the party to the Stone Guard.",
+    "source_quote": "Thorin pressed her twice on whether this bound them to the Stone Guard.",
+    "subject": "Thorin's inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull insisted to Thorin that the task would 'of course, be for the city'.",
+    "source_quote": "She insisted it would \"of course, be for the city.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's passive perception told him the bazaar's strange merchants broke every rule of this authoritarian society.",
+    "source_quote": "Daz, whose passive perception told him the bazaar's strange merchants broke every rule of this authoritarian society",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz stated that the market was definitely full of corruption.",
+    "source_quote": "agreed the market was \"definitely full of corruption.\"",
+    "subject": "Daz's observation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled an 18 on persuasion against Errde Blackskull.",
+    "source_quote": "He then rolled an 18 on persuasion",
+    "subject": "Daz's persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull advanced 175 gold pieces' worth of equipment to each party member.",
+    "source_quote": "Errde advanced 175 gold pieces' worth of equipment to each of them",
+    "subject": "Equipment advance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull stated the remaining 175 gold pieces' worth of equipment would follow on completion of the task.",
+    "source_quote": "with the remaining 175 to follow on completion.",
+    "subject": "Remaining equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull revealed that she was already aware drow were hunting the party.",
+    "source_quote": "she revealed that she was already aware drow were hunting the party",
+    "subject": "Errde's revelation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull offered her protection against the drow as an additional incentive.",
+    "source_quote": "offered her protection against them as an additional incentive",
+    "subject": "Protection offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull stated that nothing she said forbade the party from also hearing out the Keepers of the Flame.",
+    "source_quote": "Nothing she said forbade them from also hearing out the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin found splint armor too expensive at 200 gp.",
+    "source_quote": "Thorin priced splint (too expensive at 200 gp)",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Plate armor costs 1,500 gp in Errde's armory.",
+    "source_quote": "plate (1,500 gp)",
+    "subject": "Plate Armor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin settled on chain mail and twenty darts.",
+    "source_quote": "then settled on chain mail and twenty darts",
+    "subject": "Thorin's purchase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The other party members deferred their scrolls and potions to next time.",
+    "source_quote": "The others deferred their scrolls and potions to next time.",
+    "subject": "Deferred purchases",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The session ended just before the GM was about to run an encounter.",
+    "source_quote": "The session ended just before the GM was about to run an encounter.",
+    "subject": "Unresolved encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The stone giants of Cairngorm Cavern are expecting a visit from the party.",
+    "source_quote": "the stone giants of Cairngorm Cavern expecting a visit",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  }
+]

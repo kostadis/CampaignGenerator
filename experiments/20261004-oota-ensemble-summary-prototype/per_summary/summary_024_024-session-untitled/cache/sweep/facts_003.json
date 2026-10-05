@@ -1,0 +1,387 @@
+[
+  {
+    "type": "npc",
+    "fact": "Narrak fought to the last despite being restrained.",
+    "source_quote": "Narrak fought to the last.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak thrust his spear at Thorin even as an earthen hand crushed the breath from him.",
+    "source_quote": "He thrust his spear at Thorin even as the earthen hand crushed the breath from him",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak failed a DC 14 check to break free of the earthen hand.",
+    "source_quote": "Narrak tries to break free of the earthen hand but fails against Daz's DC 14.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak attempted to strike Thorin at disadvantage while restrained.",
+    "source_quote": "Narrak attempts to strike Thorin with a spear at disadvantage and fails to get past the warrior's defenses while restrained.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak was grappled by Zalthir and restrained by Daz's spell simultaneously.",
+    "source_quote": "The GM rules Narrak can be grappled by both Zalthir and Daz's spell, since they are two separate sources.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak was reduced to 17 hit points by Zalthir.",
+    "source_quote": "Zalthir brings him down to 17 hit points",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak received the killing blow from Thorin.",
+    "source_quote": "Thorin deals the fatal blow for 9 damage.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak was a member of the Council of Savants.",
+    "source_quote": "The GM notes that Narrak was the one \"practicing occult spells to turn stone giants into two-headed beasts\" and a member of the Council of Savants.",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak practiced occult spells to turn stone giants into two-headed beasts.",
+    "source_quote": "The GM notes that Narrak was the one \"practicing occult spells to turn stone giants into two-headed beasts\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak stated that a ritual could not be undone in his final moments.",
+    "source_quote": "In his final moments, Narrak cryptically claims the ritual cannot be undone",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak gasped that someone was 'sacrificed' in his final moments.",
+    "source_quote": "and gasps that someone was \"sacrificed.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak's name was mentioned by Narrak but not caught by the party.",
+    "source_quote": "and a name the party did not catch, \"sacrificed.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin took 13 damage from Grula-Munga's battle-axe.",
+    "source_quote": "Grula-Munga lands a battle-axe blow on Thorin for 13 damage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin used Second Wind as a bonus action to heal 11 hit points.",
+    "source_quote": "uses Second Wind as a bonus action to heal 11.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attacked Narrak using blindsight.",
+    "source_quote": "Thorin attacks Narrak using his blindsight",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin dealt the fatal blow to Narrak.",
+    "source_quote": "Thorin deals the fatal blow for 9 damage.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga is an ettin.",
+    "source_quote": "confrontation with the ettin Grula-Munga",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga was blinded during the fight.",
+    "source_quote": "dragging the blinded, grappled ettin",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga missed her second swing on a roll of 16.",
+    "source_quote": "misses her second swing on a 16.",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum took 5 damage from a derro's spear.",
+    "source_quote": "A derro hits Gyrgum with a spear for 5 damage.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum shrugged off the spear damage.",
+    "source_quote": "Gyrgum shrugs it off: \"I shrug it off.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum caused 6 acid damage to the derro with his brew.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum cast True Strike.",
+    "source_quote": "Gyrgum casts True Strike",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum hit a derro with his mace for 9 damage.",
+    "source_quote": "hits a derro with his mace for 9 damage.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir considered dragging the blinded, grappled ettin so Narrak would be hit by its blind swings.",
+    "source_quote": "Zalthir considers dragging the blinded, grappled ettin so that Narrak stands between it and Thorin, hoping its blind swings would hit the savant instead.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir decided to simply kill the ettin instead of dragging it.",
+    "source_quote": "He decides it is simpler to just kill it.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's tentacle struck the ettin for 11 damage.",
+    "source_quote": "Zalthir's tentacle strikes, 11 and 11 damage, finally slay the two-headed beast.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir turned his tentacles on Narrak for 11 damage.",
+    "source_quote": "Zalthir turns his tentacles on Narrak for 11 damage.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spent a focus point to attack Narrak again.",
+    "source_quote": "spends another focus point to attack again.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz used a magical earthen hand to restrain and crush Narrak.",
+    "source_quote": "Daz uses the magical earthen hand to restrain and crush Narrak.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz dispatched a derro cultist with bolts of magical force earlier in the fight.",
+    "source_quote": "Earlier, Daz had also dispatched a derro cultist with bolts of magical force.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A derro hit Gyrgum with a spear for 5 damage.",
+    "source_quote": "A derro hits Gyrgum with a spear for 5 damage.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An acid-coated derro took 6 more acid damage from Gyrgum's brew.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An acid-coated derro died without a word.",
+    "source_quote": "and dies without a word.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum hit a derro with his mace for 9 damage.",
+    "source_quote": "hits a derro with his mace for 9 damage.",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Daz dispatched a derro cultist with bolts of magical force.",
+    "source_quote": "Daz had also dispatched a derro cultist with bolts of magical force.",
+    "subject": "derro cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The ettin was blinded and grappled.",
+    "source_quote": "dragging the blinded, grappled ettin",
+    "subject": "ettin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The ettin was slain by Thorin and Zalthir's tentacles.",
+    "source_quote": "Thorin strikes the ettin with his longsword. Zalthir's tentacle strikes, 11 and 11 damage, finally slay the two-headed beast.",
+    "subject": "ettin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak died after receiving the fatal blow from Thorin.",
+    "source_quote": "Thorin deals the fatal blow for 9 damage.",
+    "subject": "Narrak death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ettin was slain.",
+    "source_quote": "finally slay the two-headed beast.",
+    "subject": "ettin death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An acid-coated derro died.",
+    "source_quote": "and dies without a word.",
+    "subject": "derro death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last derro cultist died in combat.",
+    "source_quote": "the last one dies in combat",
+    "subject": "last derro cultist death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak's silence spell ended.",
+    "source_quote": "Narrak's silence spell ends.",
+    "subject": "Narrak silence spell end",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spent another focus point to attack Narrak.",
+    "source_quote": "spends another focus point to attack again.",
+    "subject": "Zalthir focus point spent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin used Second Wind to heal.",
+    "source_quote": "uses Second Wind as a bonus action to heal 11.",
+    "subject": "Thorin Second Wind",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber became quiet after the last cultist fell.",
+    "source_quote": "leaving the chamber suddenly, eerily quiet.",
+    "subject": "chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz used a magical earthen hand to restrain and crush Narrak.",
+    "source_quote": "Daz uses the magical earthen hand to restrain and crush Narrak.",
+    "subject": "earthen hand",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A derro used a spear against Gyrgum.",
+    "source_quote": "A derro hits Gyrgum with a spear",
+    "subject": "spear",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Grula-Munga used a battle-axe against Thorin.",
+    "source_quote": "Grula-Munga lands a battle-axe blow",
+    "subject": "battle-axe",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin used a longsword to strike the ettin.",
+    "source_quote": "Thorin strikes the ettin with his longsword.",
+    "subject": "longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum used a mace to hit a derro.",
+    "source_quote": "hits a derro with his mace",
+    "subject": "mace",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Narrak used a spear to attempt to strike Thorin.",
+    "source_quote": "Narrak attempts to strike Thorin with a spear",
+    "subject": "spear",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum used a brew to coat a derro in acid.",
+    "source_quote": "6 more acid damage from Gyrgum's brew",
+    "subject": "brew",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Narrak was a member of the Council of Savants.",
+    "source_quote": "a member of the Council of Savants.",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The remaining derro cultists were defeated as the party cleared the chamber.",
+    "source_quote": "The remaining derro cultists are defeated as the party clears the chamber",
+    "subject": "derro cultists",
+    "quote_verified": true
+  }
+]

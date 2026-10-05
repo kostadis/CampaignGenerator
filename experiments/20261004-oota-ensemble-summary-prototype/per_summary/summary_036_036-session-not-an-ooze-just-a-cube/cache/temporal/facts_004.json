@@ -1,0 +1,23 @@
+[
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is occupied by roughly two dozen Svirfneblin.",
+    "source_quote": "Roughly two dozen Svirfneblin occupied the well-lit cavern.",
+    "subject": "Diggermattock Hall population",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo is one of the two male and female Svirfneblin leaders seated at the stone desks in Diggermattock Hall.",
+    "source_quote": "A male and female Svirfneblin sat there conferring with one another",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni is Dorbo's assistant and co-leader, seated at one of the two stone desks.",
+    "source_quote": "My name is Dorbo. And over here is my assistant, Senni.",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  }
+]

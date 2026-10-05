@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a Duergar city.",
+    "source_quote": "the party arrived at Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh has strict laws that keep foreigners in line.",
+    "source_quote": "their draconian laws kept all foreigners in line",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar have no love for the Drow.",
+    "source_quote": "The Duergar had no love for the Drow",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar trade actively with other subterranean and surface races.",
+    "source_quote": "the duergar also traded actively with other subterranean and surface races",
+    "subject": "Duergar",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is in Gracklstugh.",
+    "source_quote": "The city's Blade Bazaar was said to be the ideal place",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a place to sell stolen gear.",
+    "source_quote": "sell stolen gear",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a place to buy better equipment.",
+    "source_quote": "buy better equipment",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a place to find traders or explorers heading to the surface world.",
+    "source_quote": "find traders or explorers heading to the surface world",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido explained the city's advantages to the party.",
+    "source_quote": "Buppido and Hemeth explained the city's advantages",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth explained the city's advantages to the party.",
+    "source_quote": "Buppido and Hemeth explained the city's advantages",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum voiced concern about the laws against foreigners.",
+    "source_quote": "Gyrgum voiced some concern about those laws against foreigners",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth warned the group that it was not the time or place for heroics.",
+    "source_quote": "Hemeth warned the group that this was \"not the time or place for heroics\"",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth advised the group to enter quietly through the docks.",
+    "source_quote": "advised them to enter quietly through the docks",
+    "subject": "entry strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guards guard the doors of Gracklstugh, not the docks.",
+    "source_quote": "The guards guard the doors, not the docks",
+    "subject": "Gracklstugh Gates",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party approached Gracklstugh via boats gliding toward the dark harbor.",
+    "source_quote": "As the boats glided toward the dark harbor",
+    "subject": "dark harbor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discussed what Brannum Redmarch might be worth as a ransom.",
+    "source_quote": "the party also began to discuss what Brannum Redmarch might be worth as a ransom",
+    "subject": "ransom discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin pointed out that the party never promised to let Brannum Redmarch go.",
+    "source_quote": "Thorin pointed out that they had never promised to let him go",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch tried to sell the party out first.",
+    "source_quote": "anyway he had tried to sell them first",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has 27 platinum pieces.",
+    "source_quote": "27 platinum pieces",
+    "subject": "party funds",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has 1,100 gold pieces.",
+    "source_quote": "1,100 gold pieces",
+    "subject": "party funds",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir briefly mistook 1,100 gold pieces for a small fortune in platinum.",
+    "source_quote": "which Zalthir briefly mistook for a small fortune in platinum",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

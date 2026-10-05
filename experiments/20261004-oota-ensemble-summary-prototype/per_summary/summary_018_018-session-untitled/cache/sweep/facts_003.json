@@ -1,0 +1,240 @@
+[
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the leader of the Stone Guard and the party's current handler.",
+    "source_quote": "Negotiations with Errde Blackskull (continued)",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is practicing a philosophy of radical candor and a dice-driven 'blurt' rule.",
+    "source_quote": "Thorin, newly committed to a philosophy of radical candor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposes a cover story of visiting rival clans to disguise their mission for the Stone Guard.",
+    "source_quote": "Daz proposed a cover story: be seen talking to other factions first.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is an ally of the party who receives medium armor, short swords, shortbows, and shields from Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is an ally of the party who receives medium armor, short swords, shortbows, and shields from Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is an ally of the party who receives medium armor, short swords, shortbows, and shields from Errde.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool receives no weapons or armor from Errde.",
+    "source_quote": "Stool received nothing.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is a wererat ally who can wear splint mail and has disappeared.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a wererat ally who can wear splint mail and has disappeared.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum checks his other agreements against the current negotiation with Errde.",
+    "source_quote": "Gyrgum: \"Here, let me check it against my other agreements.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the party they were asked not to tell anyone about the egg.",
+    "source_quote": "Zalthir reminds them they were asked not to tell anyone.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde suspects the Gray Ghosts are working in concert with the Council of Savants.",
+    "source_quote": "Errde concluded that the Gray Ghosts and the Council of Savants were working in concert.",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde suspects the Council of Savants are working in concert with the Gray Ghosts.",
+    "source_quote": "Errde concluded that the Gray Ghosts and the Council of Savants were working in concert.",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are the faction the party also works for, which they keep secret from Errde.",
+    "source_quote": "could not imagine it was the very egg the Keepers of the Flame had lost.",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is the faction the party is working for, which they disguise by visiting rival clans.",
+    "source_quote": "so it would appear they were working against the Deepking rather than for the Stone Guard.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is openly opposed to the Deepking and forbidden from taking weapon orders directly.",
+    "source_quote": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow. It is openly opposed to the Deepking.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over.",
+    "source_quote": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over.",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Steelshadow provides surplus work to Clan Ironhead.",
+    "source_quote": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow.",
+    "subject": "Clan Steelshadow",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Errde demands the party return to the Whorlstone Caverns with documented evidence.",
+    "source_quote": "She then demanded the party return to the Whorlstone Caverns with proper documented evidence.",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party is keeping the red dragon egg secret from Errde.",
+    "source_quote": "Throughout the meeting, the party kept the red dragon egg a secret.",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Errde provides medium armor to Jimjar, Spiderbait, and Eldeth.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor",
+    "subject": "medium armor",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Errde provides short swords to Jimjar, Spiderbait, and Eldeth.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with... short swords",
+    "subject": "short swords",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Errde provides shortbows to Jimjar, Spiderbait, and Eldeth.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with... shortbows",
+    "subject": "shortbows",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Errde provides shields to Jimjar, Spiderbait, and Eldeth.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with... shields.",
+    "subject": "shields",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Topsy and Turvy are equipped with splint mail.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail",
+    "subject": "splint mail",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Errde demands documented proof in the form of papers from the caverns.",
+    "source_quote": "I need documented proof. There are papers there.",
+    "subject": "documented proof",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde agrees to arm Jimjar, Spiderbait, and Eldeth with weapons and armor.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "Errde arms allies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposes a cover story of visiting other factions to disguise their mission.",
+    "source_quote": "Daz proposed a cover story: be seen talking to other factions first.",
+    "subject": "cover story proposed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 20 on the blurt mechanic and does not reveal the egg.",
+    "source_quote": "Thorin, under his new dice-driven \"blurt\" rule, rolled a 20 and held his tongue.",
+    "subject": "Thorin holds tongue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde marks Clan Ironhead and Clan Xardelvar on a map.",
+    "source_quote": "Errde marks both clans on the map.",
+    "subject": "Errde marks clans",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Errde suspects a conspiracy between the Gray Ghosts and the Council of Savants but lacks documented proof.",
+    "source_quote": "Errde concluded that the Gray Ghosts and the Council of Savants were working in concert.",
+    "subject": "Gray Ghosts and Council of Savants conspiracy",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is maintaining secrecy regarding the red dragon egg from Errde.",
+    "source_quote": "Throughout the meeting, the party kept the red dragon egg a secret.",
+    "subject": "Red Dragon Egg Secret",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is tasked with visiting Clan Ironhead and Clan Xardelvar to establish a cover of dissidence against the Deepking.",
+    "source_quote": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish their cover as dissidents against the Deepking.",
+    "subject": "Cover Story Implementation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is the ruler whose opposition the party must fake to maintain their cover.",
+    "source_quote": "so it would appear they were working against the Deepking rather than for the Stone Guard.",
+    "subject": "Deepking",
+    "quote_verified": true
+  }
+]

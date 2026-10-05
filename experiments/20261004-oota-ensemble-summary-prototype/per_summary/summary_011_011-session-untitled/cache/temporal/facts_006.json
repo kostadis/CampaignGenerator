@@ -1,0 +1,51 @@
+[
+  {
+    "type": "date",
+    "fact": "Two more days of paddling pass before the ambush occurs.",
+    "source_quote": "Two more days of paddling brought them",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is within a day of Gracklstugh when the ambush begins.",
+    "source_quote": "within a day of Gracklstugh",
+    "subject": "travel to Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is 22 years old.",
+    "source_quote": "Zalthir (22)",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is 23 years old.",
+    "source_quote": "Daz (23)",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Magic Missiles deal 9 points of damage to the troll.",
+    "source_quote": "striking the troll with bolts of force for 9 damage",
+    "subject": "Daz Magic Missiles damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's technique shoves the troll five feet away from the boat.",
+    "source_quote": "shoved it five feet back",
+    "subject": "Zalthir shove distance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a Strength score of 8.",
+    "source_quote": "Gyrgum's Strength is 8",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

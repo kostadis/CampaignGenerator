@@ -1,0 +1,219 @@
+[
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the captain of the Stone Guard.",
+    "source_quote": "Captain Errde Blackskull of the Stone Guard",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the party's patron.",
+    "source_quote": "Their patron, Captain Errde Blackskull of the Stone Guard",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is skeptical of the existence of the Empty-Scabbard Killers.",
+    "source_quote": "Errde was deeply skeptical of the legend behind the killings",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull found one of the mysterious dead bodies herself.",
+    "source_quote": "it was I who found the dead body",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl Forgebrand is a subordinate of Errde Blackskull.",
+    "source_quote": "She introduced her subordinate, Grimholl Forgebrand",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl Forgebrand describes the killers as using their minds to cast invisible blades that kill instantly.",
+    "source_quote": "He adds that the killers use \"their mind to cast these blades that would kill you... Nobody could ever see the blades, but you die.\"",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard operates in the city of Gracklstugh.",
+    "source_quote": "rumor circulating through the city of Gracklstugh",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Two members of Errde Blackskull's clan, which is part of the Stone Guard, died under mysterious circumstances.",
+    "source_quote": "she admitted that two members of her own clan had died under these same mysterious circumstances",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are also known as the Forak-Erach-Naek.",
+    "source_quote": "known as the Empty-Scabbard Killers or the Forak-Erach-Naek",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are rumored to be an order of psionic assassins.",
+    "source_quote": "a supposed order of psionic assassins known as the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The name Forak-Erach-Naek is derived from an ancient, obscure dwarvish dialect.",
+    "source_quote": "their name derived from an ancient, obscure dwarvish dialect",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are said to practice disciplines unknown to derro or priests.",
+    "source_quote": "They are said to practice \"disciplines unknown even to the savviest of derro or the wisest priest.\"",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde Blackskull views the Empty-Scabbard Killers as a myth used to cover up government corruption.",
+    "source_quote": "She believed the myth was being weaponized by corrupt forces within the city to cover their tracks.",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The GM describes the Empty-Scabbard Killers as a folktale in Gracklstugh.",
+    "source_quote": "The GM describes the killers as a folktale in Gracklstugh",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city where the mysterious killings are occurring.",
+    "source_quote": "rumor circulating through the city of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are an extensive network beneath Gracklstugh.",
+    "source_quote": "The party learns about the Whorlstone Tunnels, an extensive network beneath the city",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are a rumored hiding place for the killers.",
+    "source_quote": "where the killers are rumored to hide",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull asks the party to investigate rumors of the Empty-Scabbard Killers.",
+    "source_quote": "asked them to look into a disturbing rumor circulating through the city of Gracklstugh",
+    "subject": "Errde's briefing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull points the party toward the Whorlstone Tunnels.",
+    "source_quote": "She pointed the party toward the Whorlstone Tunnels beneath Gracklstugh",
+    "subject": "Errde's briefing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grimholl Forgebrand describes bodies found with no visible wounds, burns, or magical residue.",
+    "source_quote": "described finding bodies with no visible wounds: no sword cuts, no burns, no magical residue, nothing at all to explain why the victims were dead",
+    "subject": "Grimholl's report",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grimholl Forgebrand reports that the clerics said the victims could not be revived.",
+    "source_quote": "Grimholl reports that the clerics said the victims couldn't be revived.",
+    "subject": "Grimholl's report",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull reveals that two members of her own clan died under the same mysterious circumstances.",
+    "source_quote": "Errde reveals that two members of her own clan have died under these same mysterious circumstances",
+    "subject": "Errde's personal stake",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull admits that she found one of the dead bodies.",
+    "source_quote": "she herself had found one of the bodies",
+    "subject": "Errde's discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The victim Errde found was in the prime of his health and died in his own household.",
+    "source_quote": "The victim was in the prime of his health and died in his own household",
+    "subject": "Victim details",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The clan had all eaten the same food before the victim's death.",
+    "source_quote": "the clan had all eaten the same food",
+    "subject": "Victim details",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "No body is currently available for the party to examine.",
+    "source_quote": "No body is currently available for the party to examine",
+    "subject": "No body available",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Errde Blackskull believes corrupt forces within the city are using the Empty-Scabbard Killers myth to cover their tracks.",
+    "source_quote": "She believed the myth was being weaponized by corrupt forces within the city to cover their tracks.",
+    "subject": "Corrupt forces",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Errde suggests the deaths could be explained by poison, natural causes, or a clerical cover-up.",
+    "source_quote": "suggesting the deaths could be explained by poison, natural causes, or a cover-up by clerics",
+    "subject": "Alternative explanations",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz makes a quip about the invisible blades being used alongside a dagger.",
+    "source_quote": "Daz quips about \"those blades\" being used alongside a dagger \"so I've heard.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks Errde who discovered the body.",
+    "source_quote": "When Gyrgum asks who discovered the body",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wonders aloud whether he should have picked Psi Warrior over Battle Master.",
+    "source_quote": "Thorin wonders aloud whether he should have picked Psi Warrior over Battle Master.",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "The party reached a door leading into a temple chamber containing a stone fountain and seven niches.",
+    "source_quote": "the party reached a door leading into a temple chamber. Inside stood a stone fountain filled with shallow, brackish water.",
+    "subject": "Temple Fountain Room",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone fountain is filled with shallow, brackish water.",
+    "source_quote": "Inside stood a stone fountain filled with shallow, brackish water.",
+    "subject": "stone fountain",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rubble of a broken statue lies atop a central pedestal, with only a pair of clawed stone feet still recognizable.",
+    "source_quote": "The rubble of a broken statue lay atop a central pedestal, with only a pair of clawed stone feet still recognizable.",
+    "subject": "broken statue",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Seven niches line the walls of the chamber.",
+    "source_quote": "Seven niches lined the walls:",
+    "subject": "seven niches",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Four of the seven niches contain strange, formless sculptures.",
+    "source_quote": "and four contained strange, formless sculptures.",
+    "subject": "formless sculptures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Skeletons lie in the chamber.",
+    "source_quote": "Skeletons also lay in the chamber",
+    "subject": "skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered removing the skeletons' weapons as a precaution against animation.",
+    "source_quote": "prompting the party to consider removing their weapons as a precaution against animation.",
+    "subject": "removing weapons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool suggested that he scout the room because oozes cannot go through him.",
+    "source_quote": "the party accepted Glabbagool\u2019s suggestion that he scout. \u201cWell, you know, the oozes can\u2019t go through me,\u201d he reasoned.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin told Glabbagool that they would sing his praises at the tavern once they get out of the Underdark.",
+    "source_quote": "Thorin told him, \u201cWe would sing your praises at the tavern once we get out of the Underdark,\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool possesses a newly acquired lucky foot.",
+    "source_quote": "his newly acquired lucky foot",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party pointed out that Glabbagool's newly acquired lucky foot might assist him.",
+    "source_quote": "the others pointed out that his newly acquired lucky foot",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A gray ooze materialized when Glabbagool touched one of the formless sculptures.",
+    "source_quote": "When he touched one of the formless sculptures, it materialized into a gray ooze.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rushed in and punched the first gray ooze apart.",
+    "source_quote": "Zalthir rushed in and punched the ooze apart.",
+    "subject": "Zalthir kills gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir rapidly destroyed each creature as it appeared.",
+    "source_quote": "Zalthir rapidly destroyed each creature as it appeared,",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir killed the remaining gray oozes that appeared from the sculptures.",
+    "source_quote": "Glabbagool touches each sculpture in turn, and Zalthir quickly punches each resulting ooze to death.",
+    "subject": "gray oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool absorbed the debris from the destroyed oozes until the floor was perfectly clean.",
+    "source_quote": "Glabbagool methodically absorbed the debris until the floor was perfectly clean.",
+    "subject": "cleaning the floor",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool reported that the remains of the oozes were not very tasty.",
+    "source_quote": "the remains were \u201cnot very tasty.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered 112 silver pieces in the fountain.",
+    "source_quote": "discovered a hidden cache of treasure: 112 silver pieces",
+    "subject": "112 silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered three gold pieces in the fountain.",
+    "source_quote": "three gold pieces",
+    "subject": "three gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered a drow dagger in the fountain.",
+    "source_quote": "a drow dagger",
+    "subject": "drow dagger",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered a vial of oil of slipperiness in the fountain.",
+    "source_quote": "and a vial of oil of slipperiness.",
+    "subject": "vial of oil of slipperiness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool absorbed the treasure found in the fountain.",
+    "source_quote": "Unfortunately, he absorbed all of it.",
+    "subject": "absorbing treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concluded they would have to wait several days for the valuables to pass through Glabbagool.",
+    "source_quote": "The party concluded that they would have to wait several days for the valuables to pass through him,",
+    "subject": "waiting for valuables",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party joked that Glabbagool had become a cube of holding.",
+    "source_quote": "joking that Glabbagool had become \u201ca cube of holding\u201d",
+    "subject": "cube of holding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party compared Glabbagool to a convenience-store time safe.",
+    "source_quote": "or a convenience-store time safe.",
+    "subject": "convenience-store time safe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party retraced its path and chose the eastern route.",
+    "source_quote": "Rather than investigate the remaining western passages, the party retraced its path and chooses the eastern route.",
+    "subject": "choosing eastern route",
+    "quote_verified": false
+  }
+]

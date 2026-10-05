@@ -1,0 +1,359 @@
+[
+  {
+    "type": "event",
+    "fact": "The party levels up to 4th level before play resumes.",
+    "source_quote": "Before play resumes, everyone levels up to 4th level.",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Intelligence score reaches 19.",
+    "source_quote": "Daz's Intelligence reaches 19",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum bumps a score to 19, at least temporarily, and defers browsing feats.",
+    "source_quote": "Gyrgum bumps a score to 19 \"at least temporarily\" and defers browsing feats.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party has not taken a long rest since the fight.",
+    "source_quote": "The party has not taken a long rest since the fight.",
+    "subject": "rest status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A ghost with a gruesome cleaved head emerges from the ground near a pile of cadavers and bones.",
+    "source_quote": "A ghost with a gruesome cleaved head emerges from the ground near a pile of cadavers and bones.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spot where Pelek emerged is marked on the map as \"Buppido's resting place.\"",
+    "source_quote": "The spot is marked on the map as \"Buppido's resting place.\"",
+    "subject": "Buppido's resting place",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tries not to look straight at the ghost.",
+    "source_quote": "Gyrgum tries not to look straight at it.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost introduces himself as Pelek.",
+    "source_quote": "The ghost introduces himself as Pelek (\"P-E-L-E-K\")",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek expresses relief that the party killed the derro nearby.",
+    "source_quote": "expresses relief that the party killed the derro nearby: \"He is dead, yes?\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek states that his mother named him after an actor who showed up in Blingdenstone.",
+    "source_quote": "Pelek says his mother named him after an actor who showed up in Blingdenstone.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek mentions \"the jealousy and the screaming and the terrible childhood\" before declining to go further.",
+    "source_quote": "he trails off into \"the jealousy and the screaming and the terrible childhood\" before declining to go further.",
+    "subject": "Pelek",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tells the DM to stop torturing them.",
+    "source_quote": "\"Stop torturing the DM. He'll get back at us.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek identifies himself as a traveler from Blingdenstone who fell in with Buppido.",
+    "source_quote": "he was a traveler from Blingdenstone who fell in with Buppido",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido betrayed and murdered Pelek.",
+    "source_quote": "betrayed and murdered by him.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido lured Pelek in with business deals to slaughter and dismember him.",
+    "source_quote": "Buppido lured him in with business deals only to slaughter and dismember him.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Buppido used a specific axe to cut off Pelek's head.",
+    "source_quote": "Pelek points at an axe: \"he cut my head with that axe.\"",
+    "subject": "axe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum briefly mistakes Pelek's request for a tip and reaches for his pocket.",
+    "source_quote": "Gyrgum briefly mistakes Pelek's request for a tip and reaches for his pocket.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A strange magic animated one of Pelek's severed hands.",
+    "source_quote": "a strange magic pervading the tunnels animated one of his severed hands.",
+    "subject": "severed hand",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The animated hand scuttled away through a narrow tunnel.",
+    "source_quote": "It scuttled away through a narrow tunnel",
+    "subject": "severed hand",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The animated hand is wearing an obsidian ring.",
+    "source_quote": "wearing an obsidian ring.",
+    "subject": "obsidian ring",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks Pelek whether he still needs the ring.",
+    "source_quote": "Thorin asks whether Pelek still needs the ring.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek states that he is dead and does not need anything.",
+    "source_quote": "Pelek: \"Well, I'm dead. I don't need anything.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek hints that the ring could say it does many powerful things if that would encourage the party.",
+    "source_quote": "Pelek hints that he \"could say it does many powerful things\" if that would encourage the party.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek has no alignment with any Gracklstugh faction.",
+    "source_quote": "Pelek has no alignment with any Gracklstugh faction.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek estimates he has been trapped for a year or so.",
+    "source_quote": "He estimates he has been trapped for \"a year or so.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek knows of Droki only as the mad derro who comes in and out.",
+    "source_quote": "Pelek knows of Droki only as the mad derro who comes in and out.",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek has never met Droki.",
+    "source_quote": "He has never met him",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek cannot leave his bones to follow Droki.",
+    "source_quote": "and cannot leave his bones to follow.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek describes Buppido's descent from eccentric to madness.",
+    "source_quote": "Pelek describes Buppido's sudden descent into madness: going from eccentric to \"convinced that he was the second coming of some major deity and an avatar and that everybody needed to bow to him.\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek denies that Buppido was possessed.",
+    "source_quote": "Pelek denies that Buppido was possessed",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek confirms Buppido grew no extra body parts.",
+    "source_quote": "and confirms he grew no extra body parts.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek requests that the party collect his specific bones and return them to his ancestral home in Blingdenstone.",
+    "source_quote": "Pelek requests that the party collect his specific bones and return them to his ancestral home in Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek flits over to point out exactly which bones to collect.",
+    "source_quote": "He flits over to point out exactly which bones; \"You don't have to bury all of them.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin questions what the party actually gains from the deal with Pelek.",
+    "source_quote": "Thorin questions what the party actually gains from the deal.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek offers to try to possess one of the party members.",
+    "source_quote": "Pelek offers, \"I could try to possess one of you.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM calls for an intimidation roll from Thorin and then Daz.",
+    "source_quote": "The DM calls for an intimidation roll. Thorin and then Daz try to intimidate the ghost.",
+    "subject": "intimidation roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolls a 1 on the intimidation check.",
+    "source_quote": "Thorin rolls a 1.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek laughs off the intimidation attempts by Thorin and Daz.",
+    "source_quote": "Pelek laughs both off (\"You do realize I'm a ghost, right?\")",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin concedes that the dead have nothing to lose.",
+    "source_quote": "Thorin concedes that the dead have nothing to lose.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek provides advice for the journey to Blingdenstone regarding the main gates.",
+    "source_quote": "Pelek offers crucial advice for the journey to Blingdenstone. At the main gates, explain that the drow (Daz) \"is not allied with any of the agents of Menzoberranzan, but actually comes from the Overbright.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Pelek advises the party to avoid any association with Lolth.",
+    "source_quote": "Avoid any association with Lolth.",
+    "subject": "avoiding Lolth",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Pelek advises the party to avoid anything divisible by eight.",
+    "source_quote": "\"No eights, no eight of anything. Don't have 208 coins. 207.\" Nothing divisible by eight.",
+    "subject": "avoiding eights",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek cites \"Spiders\" as the reason to avoid eights.",
+    "source_quote": "The reason, delivered to a confused Thorin: \"Spiders.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The svirfneblin of Blingdenstone know wonderful ways to get to the Overbright.",
+    "source_quote": "the svirfneblin of Blingdenstone \"know all these wonderful ways to get to the Overbright.\"",
+    "subject": "svirfneblin of Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek notes that Jimjar could guide the party to the Overbright.",
+    "source_quote": "He also notes that Jimjar and many others could guide the party there.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to help Pelek.",
+    "source_quote": "The party agrees to help.",
+    "subject": "party agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wraps Pelek's bones and stores them in his pack.",
+    "source_quote": "Gyrgum wraps the bones and stores them in his pack",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Storing the bones binds Pelek's spirit to travel alongside the party.",
+    "source_quote": "binding Pelek's spirit to travel alongside them as a companion.",
+    "subject": "Pelek bound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek does not gain levels.",
+    "source_quote": "The DM confirms Pelek does not gain levels",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is now effectively a companion whose thoughts the party hears.",
+    "source_quote": "but is now effectively a companion whose thoughts the party hears whether they like it or not.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz predicts two sessions of Gyrgum and Pelek chatting.",
+    "source_quote": "Daz predicts \"two sessions of Gyrgum and Pelek just like chatting.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

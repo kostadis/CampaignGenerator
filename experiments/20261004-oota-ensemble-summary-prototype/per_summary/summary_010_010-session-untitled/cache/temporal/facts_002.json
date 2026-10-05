@@ -1,0 +1,44 @@
+[
+  {
+    "type": "location",
+    "fact": "The abandoned duergar keelboat is located about 50 feet away from the party's boat.",
+    "source_quote": "About fifty feet away sat a duergar keelboat",
+    "subject": "abandoned keelboat distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth states that duergar invisibility can last for half an hour or an hour.",
+    "source_quote": "the invisibility could last half an hour or an hour",
+    "subject": "duergar invisibility duration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth turned invisible during the encounter with the keelboat.",
+    "source_quote": "Hemeth grimly reminded everyone that duergar can turn invisible, and promptly did so himself",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is a gray dwarf.",
+    "source_quote": "Hemeth, the gray dwarf traveling with the group",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Jimjar identifies Gracklstugh as the city where the duergar sell captured travelers as slaves.",
+    "source_quote": "selling them as slaves in the city of Gracklstugh",
+    "subject": "Gracklstugh destination",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The group of attackers are identified as gray dwarf slavers, also referred to as duergar.",
+    "source_quote": "gray dwarf slavers materialized from the shadows",
+    "subject": "duergar slavers",
+    "quote_verified": true
+  }
+]

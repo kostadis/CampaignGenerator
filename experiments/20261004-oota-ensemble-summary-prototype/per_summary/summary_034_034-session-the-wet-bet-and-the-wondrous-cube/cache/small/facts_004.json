@@ -1,0 +1,135 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin threw darts into the water pools before approaching.",
+    "source_quote": "Thorin, expecting more oozes, threw darts into the pools before approaching.",
+    "subject": "Thorin's precautionary attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's first dart hit a gray ooze for 8 damage.",
+    "source_quote": "His first dart hits a gray ooze for 8 damage",
+    "subject": "first dart hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's second dart hit the gray ooze for another 8 damage.",
+    "source_quote": "a second hit inflicts another 8",
+    "subject": "second dart hit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze was struck by two darts, taking a total of 16 damage.",
+    "source_quote": "His first dart hits a gray ooze for 8 damage, and a second hit inflicts another 8.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool's body completely blocked the narrow corridor behind him.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body completely blocked the narrow corridor behind him",
+    "subject": "Glabbagool blocks corridor",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool's body is ten feet by ten feet by ten feet.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool's size separated Thorin from the rest of the party.",
+    "source_quote": "separating Thorin from the rest of the party",
+    "subject": "Thorin isolated",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin withdrew before the gray ooze could reach his armor.",
+    "source_quote": "withdrew before it could reach his armor",
+    "subject": "Thorin withdraws",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cast Toll the Dead on the gray ooze.",
+    "source_quote": "Daz then cast Toll the Dead",
+    "subject": "Daz casts Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gray ooze failed its Wisdom saving throw and suffered 18 necrotic damage, killing it.",
+    "source_quote": "The ooze fails its Wisdom saving throw and suffers 18 necrotic damage, killing it.",
+    "subject": "gray ooze killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is dead, killed by Toll the Dead.",
+    "source_quote": "suffers 18 necrotic damage, killing it",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz initially considered using Magic Missile but chose to conserve the spell slot.",
+    "source_quote": "Daz finds a position beside Glabbagool and initially considers Magic Missile. After conserving the spell slot, Daz instead casts Toll the Dead.",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool suggested he should be in the back due to his size blocking the corridor.",
+    "source_quote": "\u201cPerhaps I should be in the back.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group agreed that Glabbagool taking rear placement was a good idea.",
+    "source_quote": "The group readily agrees that rear placement is probably a good idea.",
+    "subject": "party agrees on positioning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar asked if the 'tears' wager could be declared a mulligan due to Glabbagool's company.",
+    "source_quote": "Jimjar asked whether the \u201ctears\u201d wager might be declared a mulligan because they had met such a charming and humorous friend.",
+    "subject": "Jimjar asks for mulligan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar considers Glabbagool a charming and humorous friend.",
+    "source_quote": "because they had met such a charming and humorous friend",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin was willing to call the bet a draw on account of Glabbagool\u2019s company.",
+    "source_quote": "Thorin was willing to call it a draw on account of Glabbagool\u2019s company",
+    "subject": "Thorin offers draw",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The water in the passage continued to rise.",
+    "source_quote": "the temple continued filling \u201csort of like a bathtub that doesn\u2019t drain well.\u201d",
+    "subject": "water-filled passage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party recognized that gray oozes move only about ten feet per round.",
+    "source_quote": "The party recognizes that gray oozes move only about ten feet per round",
+    "subject": "gray oozes",
+    "quote_verified": true
+  }
+]

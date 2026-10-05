@@ -1,0 +1,198 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin rolls a die to decide between killing the guards and intimidation.",
+    "source_quote": "Thorin let a die roll decide between killing and intimidation",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The die roll resulted in intimidation.",
+    "source_quote": "It came up intimidation",
+    "subject": "die roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjured a swirling display of floating lights.",
+    "source_quote": "Daz conjured a swirling display of floating lights",
+    "subject": "Daz casting spells",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum used magic to send tremors through the stone.",
+    "source_quote": "Gyrgum used his connection to the earth to send tremors rippling through the stone",
+    "subject": "Gyrgum casting spells",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz tells the guards they do not know who they are.",
+    "source_quote": "Daz stepped forward into the shimmering light and told them, with absolute conviction, \"You do not know who we are.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin instructs the guards to tell everybody what happened.",
+    "source_quote": "Thorin added that they should make sure to tell everybody what had happened here",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to name themselves after a committee vote.",
+    "source_quote": "It was hammered out in a hasty committee vote while the guards stood frozen in awe",
+    "subject": "Naming the party",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party declares itself the Ember Vanguard.",
+    "source_quote": "the party declared itself the Ember Vanguard",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expressed a liking for the words 'Vanguard' and 'Ember'.",
+    "source_quote": "Thorin likes \"Vanguard\" and \"Ember\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum notes that the name can be changed later.",
+    "source_quote": "Gyrgum notes \"nobody's going to stop us from changing it later\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir retcons Daz's lights into floating embers.",
+    "source_quote": "Zalthir retcons Daz's lights into floating embers",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz agrees to the retcon of the lights into embers.",
+    "source_quote": "Daz agrees",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin failed the group intimidation check.",
+    "source_quote": "On the group intimidation check Thorin failed",
+    "subject": "Intimidation Check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 20 on the group intimidation check.",
+    "source_quote": "but Daz rolled a 20",
+    "subject": "Daz's Roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro mistakenly believe Daz is a 20th-level drow archmage.",
+    "source_quote": "The Derro mistook the ember-like lights for a meteor swarm and became convinced they faced a supremely powerful drow archmage",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro guards are left alive to spread rumors.",
+    "source_quote": "The Ember Vanguard let them go, satisfied that their reputation would now travel faster than they could",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM warns that the drow might now count the party as enemies.",
+    "source_quote": "The DM warned that the drow might now count among the factions who hated them",
+    "subject": "Drow faction opinion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party exits the dungeon face to face with guards at a heavy double door.",
+    "source_quote": "Their exit from the dungeon brought them face to face with four Derro guards stationed at a heavy double door",
+    "subject": "dungeon exit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "There are four Derro guards stationed at the door.",
+    "source_quote": "four Derro guards stationed at a heavy double door",
+    "subject": "Derro guards",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The guards have their hands hovering near an alarm mechanism.",
+    "source_quote": "hands hovering near an alarm mechanism",
+    "subject": "alarm mechanism",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir proposes floating posing as the baby rattle repair crew.",
+    "source_quote": "Zalthir floats posing as the \"baby rattle repair crew\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir offers a sphere of darkness if a fight breaks out.",
+    "source_quote": "Zalthir ... offers a sphere of darkness if it comes to a fight",
+    "subject": "Zalthir's offer",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes the guards have 13 hit points each.",
+    "source_quote": "Thorin notes they have 13 hit points each",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offers to use little earthquakes and a booming voice.",
+    "source_quote": "Gyrgum offers \"little earthquakes\" and a booming voice",
+    "subject": "Gyrgum's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes telling the guards nobody is coming if they press the alarm.",
+    "source_quote": "Thorin proposes telling them that nobody is coming if they press the alarm",
+    "subject": "Thorin's plan",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro are trembling and wide-eyed from the magical display.",
+    "source_quote": "The Derro, wide-eyed and trembling",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards will spread the story of a marauding army of drow led by an Archmage.",
+    "source_quote": "The story grows to \"a marauding army of drow, led by a drow Archmage\"",
+    "subject": "Rumor spreading",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The DM states the party can always change their brand name later.",
+    "source_quote": "\"You can always change your brand name later.\"",
+    "subject": "Reputation damage",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,107 @@
+[
+  {
+    "type": "monster",
+    "fact": "A squad of duergar militia accompanies the party in the street battle.",
+    "source_quote": "alongside a squad of duergar militia",
+    "subject": "duergar militia size",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two of the duergar guards magically enlarge themselves to confront the stone giant.",
+    "source_quote": "Two of the duergar guards swelled to enormous size",
+    "subject": "enlarged duergar count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two of the duergar guards do not magically enlarge themselves.",
+    "source_quote": "two of them unleashed sprays of fire",
+    "subject": "non-enlarged duergar count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fire sprays from the duergar deal 23 points of damage total to the stone giant.",
+    "source_quote": "unleashed sprays of fire that scorched the giant's rocky hide for 23 points of damage",
+    "subject": "duergar fire damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the duergar fire spray damage rolls was 13.",
+    "source_quote": "The damage rolls come to 13 and 10, for 23 points total",
+    "subject": "giant damage roll 13",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second of the duergar fire spray damage rolls was 10.",
+    "source_quote": "The damage rolls come to 13 and 10, for 23 points total",
+    "subject": "giant damage roll 10",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One duergar takes 19 damage from the stone giant's great club.",
+    "source_quote": "One duergar takes 19 damage",
+    "subject": "duergar damage from giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The stone giant rolls a 14 with disadvantage against Zalthir's AC 15 and misses.",
+    "source_quote": "it rolls a 14 against Zalthir's AC 15 and misses",
+    "subject": "giant attack on Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has an Armor Class of 15.",
+    "source_quote": "Zalthir's AC 15",
+    "subject": "Zalthir AC",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin scores a 16 on a nature/history/survival check to identify the giant's madness.",
+    "source_quote": "Thorin makes a nature/history/survival check (16)",
+    "subject": "Thorin skill check",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has 34 hit points remaining at the point of identification.",
+    "source_quote": "The giant is at 34 hit points at this point",
+    "subject": "stone giant HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Magic Missile deals 6 damage due to rolling a one.",
+    "source_quote": "Daz strikes the giant with Magic Missile but rolls a one, dealing 6 damage",
+    "subject": "Daz damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks three times, missing twice and hitting for 5 damage once.",
+    "source_quote": "He misses, hits for 5 damage, then misses",
+    "subject": "Zalthir attack sequence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends one focus point during his third attack attempt.",
+    "source_quote": "spending a focus point on the third",
+    "subject": "Zalthir resource usage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits again with his short sword for 6 damage after his critical hit.",
+    "source_quote": "uses Action Surge and hits again for 6 more damage",
+    "subject": "Thorin critical damage",
+    "quote_verified": true
+  }
+]

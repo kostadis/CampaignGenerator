@@ -1,0 +1,317 @@
+[
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is a duergar prisoner captured by the party.",
+    "source_quote": "the party turned their attention to their duergar prisoner, Brannum Redmarch.",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch introduces himself with a gruff attempt at dignity.",
+    "source_quote": "He introduced himself with a gruff attempt at dignity",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch distances himself from the kuo-toa and their strange ways.",
+    "source_quote": "distancing himself from the \"mad\" kuo-toa and their strange ways",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch refers to the kuo-toa's language as \"boops and beeps.\"",
+    "source_quote": "kuo-toa and their \"boops and beeps\"",
+    "subject": "Brannum Redmarch",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is barely conscious.",
+    "source_quote": "Barely conscious, he was surrounded by thirteen people",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch has very low Charisma.",
+    "source_quote": "Because he has very low Charisma, reading him is easy",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch grumbled and muttered.",
+    "source_quote": "Brannum grumbled and muttered",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch begins pointing the way forward across the Darklake.",
+    "source_quote": "ultimately began pointing the way forward across the Darklake",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is being straight with the party because he knows staying alive depends on it.",
+    "source_quote": "he was being straight with them, because he knew staying alive depended on it",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin fixed Brannum with a cold, unflinching stare.",
+    "source_quote": "Thorin fixed him with a cold, unflinching stare",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin made the terms of Brannum's survival perfectly clear.",
+    "source_quote": "made the terms of his survival perfectly clear",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin insists Brannum be restrained because he can turn invisible.",
+    "source_quote": "Thorin insists Brannum be restrained because he can turn invisible",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rejects simply asking for a map.",
+    "source_quote": "rejects simply asking for a map",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks why Brannum would draw a correct map.",
+    "source_quote": "why would he draw a correct map",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin intimidates Brannum.",
+    "source_quote": "Thorin intimidates Brannum",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin floats the idea of selling Brannum into slavery.",
+    "source_quote": "Thorin also floated the idea of selling Brannum into slavery",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that Brannum's only way to live is to help the party to Gracklstugh.",
+    "source_quote": "the only way he'll live is if he helps us",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is visibly impressed by Thorin's directness.",
+    "source_quote": "Sarith, visibly impressed by the directness of the approach",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith says he admires the technique.",
+    "source_quote": "said he admired the technique",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is disappointed that torture hasn't been deemed necessary.",
+    "source_quote": "though he was a little disappointed that torture hadn't been deemed necessary",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith discusses the duergar's nature with Eldeth.",
+    "source_quote": "Eldeth and Sarith discuss the duergar's nature",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth discusses the duergar's nature with Sarith.",
+    "source_quote": "Eldeth and Sarith discuss the duergar's nature",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth calls the duergar followers of an evil god.",
+    "source_quote": "Eldeth calls the duergar followers of an evil god",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests that Brannum ride in the party's own boat as a hostage.",
+    "source_quote": "At Gyrgum's suggestion, Brannum would ride in the party's own boat as a hostage",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum warns Brannum that if he tries to screw them over he will be the first to go.",
+    "source_quote": "with Gyrgum's warning that if he tried to screw them over he would be the first to go",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido calls the idea of selling Brannum into slavery an excellent idea.",
+    "source_quote": "Buppido called it an excellent idea",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is \"all over\" the idea of selling Brannum into slavery.",
+    "source_quote": "Buppido is \"all over that idea\"",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth announces that he \"knew a guy\" regarding selling Brannum.",
+    "source_quote": "Hemeth announced that he \"knew a guy\"",
+    "subject": "Hemeth",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth claims to know someone who buys slaves.",
+    "source_quote": "Hemeth \"knows a guy\"",
+    "subject": "Hemeth",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Brannum describes the kuo-toa as \"mad\".",
+    "source_quote": "distancing himself from the \"mad\" kuo-toa",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Eldeth identifies the duergar as followers of an evil god.",
+    "source_quote": "Eldeth calls the duergar followers of an evil god",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is on a voyage across the Darklake.",
+    "source_quote": "voyage across the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the destination Thorin threatens Brannum must guide them to.",
+    "source_quote": "his only path to living was to guide them faithfully to Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party secured a larger boat which has oars.",
+    "source_quote": "With their larger boat secured",
+    "subject": "larger boat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The DM notes that the larger boat is actually a little too small.",
+    "source_quote": "the DM notes it is actually a little too small",
+    "subject": "larger boat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The larger boat has oars.",
+    "source_quote": "The bigger boat has oars",
+    "subject": "oars",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rest of the party's followers take the second boat.",
+    "source_quote": "the rest of their followers take the second boat",
+    "subject": "second boat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Brannum is tied up as a hostage in the boat.",
+    "source_quote": "tied up, with Gyrgum's warning",
+    "subject": "restraints",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brannum is surrounded by thirteen people he had just tried to enslave.",
+    "source_quote": "surrounded by thirteen people he had just tried to enslave",
+    "subject": "thirteen people",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party secured a larger boat.",
+    "source_quote": "With their larger boat secured",
+    "subject": "party secures larger boat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum begins pointing the way forward across the Darklake.",
+    "source_quote": "ultimately began pointing the way forward across the Darklake",
+    "subject": "Brannum guides party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check of 18 confirmed that Brannum was being straight with the party.",
+    "source_quote": "An insight check of 18 confirmed that he was being straight with them",
+    "subject": "insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum is tied up as a hostage in the party's boat.",
+    "source_quote": "Brannum would ride in the party's own boat as a hostage, tied up",
+    "subject": "Brannum tied up",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rest of the party's followers take the second boat.",
+    "source_quote": "the rest of their followers take the second boat",
+    "subject": "followers take second boat",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Brannum's survival is contingent on guiding the party to Gracklstugh.",
+    "source_quote": "his only path to living was to guide them faithfully to Gracklstugh",
+    "subject": "Brannum's survival condition",
+    "quote_verified": true
+  }
+]

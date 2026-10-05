@@ -1,0 +1,156 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek tells the party that Droki passes through once a day.",
+    "source_quote": "Pelek told them that Droki passed through once a day.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows the messy trail of food scraps Droki left behind, moving southeast.",
+    "source_quote": "Following the messy trail of food scraps Droki left behind, the party pushed southeast",
+    "subject": "following Droki's trail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek remarks that the party could wait for Droki or take a long rest because he passes through once a day.",
+    "source_quote": "Pelek mentions that Droki passes through roughly once a day, so the party could wait for him or even take a long rest.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reaches a massive cavern filled with a deep, black pool of water stretching nearly a hundred feet across.",
+    "source_quote": "they reached a massive cavern filled with a deep, black pool of water stretching nearly a hundred feet across",
+    "subject": "discovery of dark pool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The dark pool is deep and black, with nothing visible beneath its surface.",
+    "source_quote": "nothing can be seen beneath the surface of the black water",
+    "subject": "dark pool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz sees the pool as an opportunity to use Shape Water.",
+    "source_quote": "Daz sees it as his chance to shine with Shape Water.",
+    "subject": "Daz's intent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests continuing on Droki's path first and circling back to the pool if needed.",
+    "source_quote": "Zalthir suggests continuing on Droki's path first and circling back if needed.",
+    "subject": "Zalthir's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party traces Droki's path to a solid rock wall riddled with narrow cracks.",
+    "source_quote": "they traced Droki's path to a solid rock wall riddled with narrow cracks",
+    "subject": "finding rock wall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Gyrgum roll 11 and 10 respectively on Investigation, revealing no secret doors.",
+    "source_quote": "Investigation rolls: Daz 11, Gyrgum 10. There are no secret doors.",
+    "subject": "investigation rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Through the cracks, the party sees a tunnel running about 30 feet.",
+    "source_quote": "Through the cracks the party can see a tunnel running about 30 feet",
+    "subject": "crack observation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests that Droki might be obsessive-compulsive.",
+    "source_quote": "Gyrgum suggests Droki may just be obsessive-compulsive.",
+    "subject": "Gyrgum's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM clarifies that Droki's obsessive behavior is only a piece of his madness.",
+    "source_quote": "The DM replies, \"that's only a piece of his madness.\"",
+    "subject": "DM's comment on Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes growing large to smash through the wall.",
+    "source_quote": "Thorin proposes growing large and \"Hulk smash[ing]\" through.",
+    "subject": "Thorin's proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests casting mending to seal the cracks in the wall.",
+    "source_quote": "Gyrgum's contrarian streak wants to cast mending to seal the cracks instead.",
+    "subject": "Gyrgum's counter-proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warns that smashing the wall is unwise because the caverns are held by people plotting against the Deepking and noise would draw attention.",
+    "source_quote": "The DM warns that the caverns, once \"a hippie place,\" are now held by groups committed to overthrowing the Deepking, so drawing attention would be unwise.",
+    "subject": "DM's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek slips through the narrow stone cracks to scout ahead.",
+    "source_quote": "Pelek slips through the narrow stone cracks to scout ahead",
+    "subject": "Pelek scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reports that the tunnel continues for some distance with nobody there.",
+    "source_quote": "He reports that the tunnel continues for some distance with nobody there.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is tied to his bones and cannot travel far from the party.",
+    "source_quote": "Tied to his bones, he cannot go far.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum eats one of the magical shrinking mushrooms growing nearby.",
+    "source_quote": "Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "shrinking mushroom usage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Magical shrinking mushrooms grow nearby in the caverns.",
+    "source_quote": "magical shrinking mushrooms growing nearby",
+    "subject": "magical shrinking mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cracks are too small for the party to squeeze through even after Gyrgum eats a shrinking mushroom.",
+    "source_quote": "The cracks were far too small for any of them to squeeze through, even after Gyrgum ate one of the magical shrinking mushrooms growing nearby.",
+    "subject": "shrink mushroom ineffectiveness",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The caverns are currently held by groups committed to overthrowing the Deepking.",
+    "source_quote": "the caverns ... are now held by groups committed to overthrowing the Deepking",
+    "subject": "Deepking's enemies",
+    "quote_verified": false
+  }
+]

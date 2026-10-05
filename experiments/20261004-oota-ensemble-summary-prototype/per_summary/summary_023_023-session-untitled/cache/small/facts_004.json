@@ -1,0 +1,261 @@
+[
+  {
+    "type": "event",
+    "fact": "A burst of magical darkness swallowed the ritual platform.",
+    "source_quote": "The ambush began with a burst of magical darkness that swallowed the platform whole.",
+    "subject": "magical darkness cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir used dragonborn fire breath, scorching several cultists.",
+    "source_quote": "Zalthir followed it with a gout of dragonborn fire breath that scorched several of the cultists where they stood.",
+    "subject": "Zalthir breath weapon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak shrieked in defiance from within the darkness.",
+    "source_quote": "From inside the darkness, Narrak shrieked in defiance.",
+    "subject": "Narrak defiance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One Derro stepped out of the darkness to stab with a short spear but missed.",
+    "source_quote": "One Derro stepped out to stab with a short spear... both missed.",
+    "subject": "Derro spear attack",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Another Derro struck blindly from within the darkness but missed.",
+    "source_quote": "another struck blindly from within the dark... both missed.",
+    "subject": "Derro blind attack",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir felt the madness of the ritual circle clawing at his mind before steadying himself with monastic focus.",
+    "source_quote": "Zalthir briefly felt the madness of the ritual circle clawing at his mind, then steadied himself with monastic focus.",
+    "subject": "Zalthir mental struggle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashed a stream of caustic acid that coated the chanters in corrosive liquid.",
+    "source_quote": "Gyrgum then unleashed a stream of caustic acid that coated the chanters in corrosive liquid.",
+    "subject": "Gyrgum acid attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir warned Thorin away from the maddening ritual circle.",
+    "source_quote": "Zalthir warned Thorin away from the maddening circle",
+    "subject": "Zalthir warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin charged a cultist instead of entering the circle.",
+    "source_quote": "Thorin charged a cultist instead.",
+    "subject": "Thorin charge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's first blazing ray finished off one of the tougher Derro.",
+    "source_quote": "the first finished off one of the tougher Derro",
+    "subject": "Daz radiant attack 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the tougher Derro is dead, killed by Daz's blazing ray.",
+    "source_quote": "the first finished off one of the tougher Derro",
+    "subject": "Derro defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's last blazing ray seared Grula-Munga.",
+    "source_quote": "the last seared Grula-Munga.",
+    "subject": "Daz radiant attack 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga pointed out the intruders with an exasperated \"Oh, brother!\"",
+    "source_quote": "Grula-Munga pointed out the intruders with an exasperated \"Oh, brother!\"",
+    "subject": "Grula-Munga reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak stepped out of the darkness and cast a Fear spell.",
+    "source_quote": "Narrak, furious and wounded, stepped out of the darkness and retaliated with a Fear spell.",
+    "subject": "Narrak Fear spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wave of terror from the Fear spell sent Thorin, Gyrgum, and Zalthir fleeing in blind panic.",
+    "source_quote": "The wave of terror sent Thorin, Gyrgum, and Zalthir fleeing in blind panic",
+    "subject": "Party panic",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum, who had blessed everyone but himself, failed his saving throw against the Fear spell.",
+    "source_quote": "Gyrgum had blessed everyone but himself, and he failed his save.",
+    "subject": "Gyrgum save fail",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga's battle axe glanced off Thorin.",
+    "source_quote": "her battle axe glanced off Thorin",
+    "subject": "Grula-Munga axe miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga's morning star struck Thorin for 14 damage.",
+    "source_quote": "her morning star struck the frightened warrior hard for 14 damage.",
+    "subject": "Grula-Munga morning star hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin was injured by Grula-Munga's morning star, taking 14 damage.",
+    "source_quote": "her morning star struck the frightened warrior hard for 14 damage.",
+    "subject": "Thorin injured",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dashed away and repositioned the sphere of darkness to cut off Narrak's line of sight.",
+    "source_quote": "Zalthir, thinking quickly, dashed away and repositioned the sphere of darkness to cut off Narrak's line of sight.",
+    "subject": "Zalthir reposition darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir empowered his tattoo with Eldritch Maul.",
+    "source_quote": "He then empowered his tattoo with Eldritch Maul.",
+    "subject": "Zalthir Eldritch Maul",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party members shook off their fear one by one and turned back to the fight.",
+    "source_quote": "One by one, the party members shook off their fear and turned back to the fight.",
+    "subject": "Party fear recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum cast Guiding Bolt, creating a flash of radiant light that marked Grula-Munga.",
+    "source_quote": "A flash of radiant light from Gyrgum's Guiding Bolt marked Grula-Munga",
+    "subject": "Gyrgum Guiding Bolt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin struck Grula-Munga with a longsword, dealing 16 damage.",
+    "source_quote": "Thorin's follow-up blow, a longsword strike with advantage for 16 damage",
+    "subject": "Thorin longsword strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga's longsword injury from Thorin left her with 54 hit points.",
+    "source_quote": "which left her with 54 hit points.",
+    "subject": "Grula-Munga injury",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz called upon the earth, causing a massive hand of compacted stone to erupt from the ground.",
+    "source_quote": "Daz called upon the earth itself. A massive hand of compacted stone erupted from the ground",
+    "subject": "Daz earth hand summon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The stone hand seized Narrak, pinning him in place.",
+    "source_quote": "to seize Narrak, pinning him in place",
+    "subject": "Narrak restrained",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Being pinned by the stone hand broke Narrak's concentration, ending the fear effect.",
+    "source_quote": "breaking his concentration, which ended the fear effect.",
+    "subject": "Narrak concentration break",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak proclaimed that the curse cannot be stopped and spreads.",
+    "source_quote": "\"You cannot stop the inevitable\u2026 The curse spreads!\"",
+    "subject": "Narrak proclamation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak ended his proclamation with \"By golly.\"",
+    "source_quote": "He capped it with \"By golly.\"",
+    "subject": "Narrak final remark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ended mid-combat to resume after Daz's turn.",
+    "source_quote": "The session ended mid-combat, to resume after Daz's turn.",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is currently restrained by a stone hand and has lost concentration.",
+    "source_quote": "seize Narrak, pinning him in place and breaking his concentration",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga has 54 hit points.",
+    "source_quote": "left her with 54 hit points",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One Derro is dead, finished off by Daz's blazing ray.",
+    "source_quote": "the first finished off one of the tougher Derro",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sphere of darkness was repositioned by Zalthir to cut off Narrak's line of sight.",
+    "source_quote": "repositioned the sphere of darkness to cut off Narrak's line of sight",
+    "subject": "sphere of darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Narrak claims the curse is spreading and inevitable.",
+    "source_quote": "The curse spreads!",
+    "subject": "narrak curse",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The ritual circle exudes a maddening influence that claws at the minds of those nearby.",
+    "source_quote": "madness of the ritual circle clawing at his mind",
+    "subject": "ritual circle madness",
+    "quote_verified": true
+  }
+]

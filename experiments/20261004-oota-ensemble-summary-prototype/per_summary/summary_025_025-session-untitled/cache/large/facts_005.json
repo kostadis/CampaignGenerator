@@ -1,0 +1,219 @@
+[
+  {
+    "type": "npc",
+    "fact": "Voosbur is an infected Myconid.",
+    "source_quote": "The party approached the infected Myconid",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur is deep in a frantic dance.",
+    "source_quote": "deep in his frantic dance",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur speaks in a rambling, euphoric stream of consciousness.",
+    "source_quote": "He spoke in a rambling, euphoric stream of consciousness",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the place as \"a far out place, a hidden trip where the lady herself spins the vibes.\"",
+    "source_quote": "\"a far out place, a hidden trip where the lady herself spins the vibes\"",
+    "subject": "Voosbur",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur insists that his condition is \"no infection.\"",
+    "source_quote": "\"this is no infection.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the entity as \"the mama of the mushrooms, the queen of the dreamscape.\"",
+    "source_quote": "She's the mama of the mushrooms, the queen of the dreamscape.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur invites the party to \"drop in, tune out, and dance with the spores.\"",
+    "source_quote": "\"drop in, tune out, and dance with the spores.\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proposes tying a rope around whoever approaches Voosbur to yank them back if bad things happen.",
+    "source_quote": "The party proposes tying a rope around whoever approaches, \"ready to yank them back if bad things happen.\"",
+    "subject": "rope safety plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party compares Charisma scores.",
+    "source_quote": "They compare Charisma scores.",
+    "subject": "charisma comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that he has \"a charisma of a toad.\"",
+    "source_quote": "Daz: \"i have a charisma of a toad.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asks Voosbur where the infection started.",
+    "source_quote": "The party asks Voosbur where the infection started.",
+    "subject": "infection origin question",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur mentions \"the Lady's cosmic garden.\"",
+    "source_quote": "speaking in a euphoric, stream-of-consciousness manner about a 'far out place' and the Lady's cosmic garden.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the experience as having \"no noise just the pulse of the spores and the rhythm of the earth.\"",
+    "source_quote": "\"no noise just the pulse of the spores and the rhythm of the earth\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur claims that the Lady \"has a gift.\"",
+    "source_quote": "And she's got a gift.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur warns that \"the lady's dream is deep.\"",
+    "source_quote": "this ain't no Sunday picnic. The lady's dream is deep",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the destination as the \"ultimate underground rave.\"",
+    "source_quote": "join the 'ultimate underground rave'",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Voosbur offers his outstretched hand to the party.",
+    "source_quote": "Voosbur's outstretched hand",
+    "subject": "Voosbur's hand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin feels a strong impulsive pull to accept Voosbur's invitation.",
+    "source_quote": "Thorin felt the pull of it more strongly than he expected.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player rolled for the decision.",
+    "source_quote": "His player literally rolled for it",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reaches out and takes Voosbur's outstretched hand.",
+    "source_quote": "Thorin reached out and took Voosbur's outstretched hand.",
+    "subject": "Thorin takes hand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player explains that his character \"has a fucket streak.\"",
+    "source_quote": "his character \"has a fucket streak.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks \"Nobody wants to stop me, I guess, huh?\"",
+    "source_quote": "\"Nobody wants to stop me, I guess, huh?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum follows close behind Thorin.",
+    "source_quote": "Gyrgum, unwilling to let his companion go alone and appointing himself the \"designated driver,\" followed close behind.",
+    "subject": "Gyrgum follows",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum appoints himself the \"designated driver.\"",
+    "source_quote": "appointing himself the \"designated driver\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz declines the invitation.",
+    "source_quote": "Daz declined outright",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states \"I am not interested.\"",
+    "source_quote": "Daz: \"I am not interested.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stays back holding Sarith.",
+    "source_quote": "Zalthir stayed back holding Sarith",
+    "subject": "Zalthir stays back",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is holding Sarith.",
+    "source_quote": "Zalthir stayed back holding Sarith",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is being held by Zalthir.",
+    "source_quote": "Zalthir stayed back holding Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Observers outside see Thorin and Gyrgum become dazed for a moment.",
+    "source_quote": "Observers outside see Thorin and Gyrgum become dazed for a moment.",
+    "subject": "observers reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz remarks \"Oh, very Alice in Wonderland.\"",
+    "source_quote": "Daz: \"Oh, very Alice in Wonderland.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

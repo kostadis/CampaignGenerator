@@ -1,0 +1,191 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir moves first, jumping up the tiers to stand beside Plinki.",
+    "source_quote": "Zalthir moved first. He had already jumped up the tiers to stand right beside Plinki.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir seizes Plinki in an iron grip, pinning her in place.",
+    "source_quote": "He seized her in an iron grip, pinning her in place",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses magical darkness to ambush Plinki.",
+    "source_quote": "Zalthir uses the magical darkness to ambush Plinki",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir attacks with advantage from the darkness.",
+    "source_quote": "He attacks with advantage from the darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir totals 27 against Plinki's AC 13 on his first attack.",
+    "source_quote": "totals 27 against AC 13",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends one focus point for another strike.",
+    "source_quote": "he spent a focus point for another strike",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deals 11 damage with his follow-up strike.",
+    "source_quote": "for 11 points of damage.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir adds Bless's d4 to his second attack.",
+    "source_quote": "He adds Bless's d4 to his second attack",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir and the DM debate whether Flurry of Blows grants two extra attacks.",
+    "source_quote": "The DM and Zalthir briefly debate whether Flurry of Blows grants two extra attacks.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir and the DM decide Flurry of Blows grants only one extra attack.",
+    "source_quote": "They leave it at one.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a derro leader.",
+    "source_quote": "against the derro leader, Plinki",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is pinned in a tight grapple by Zalthir.",
+    "source_quote": "striking the derro leader and pinning her in a tight grapple.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki has an AC of 13.",
+    "source_quote": "totals 27 against AC 13",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki succeeds on a DC 14 Constitution save against Gyrgum's spell.",
+    "source_quote": "She made the DC 14 Constitution save",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki takes 12 points of damage from Gyrgum's Inflict Wounds.",
+    "source_quote": "still took 12 points of damage.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's warmth toward the egg curdles into righteous fury at the betrayal.",
+    "source_quote": "his earlier warmth toward the egg curdled into righteous fury at the betrayal",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum channels divine anger into a powerful necrotic spell.",
+    "source_quote": "Gyrgum channels his divine anger into a powerful necrotic spell",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts a 2nd-level Inflict Wounds on Plinki.",
+    "source_quote": "It is a 2nd-level Inflict Wounds",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin will be out next week.",
+    "source_quote": "Thorin will be out next week",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir unleashes a rapid and brutal series of strikes against Plinki.",
+    "source_quote": "unleashing a rapid and brutal series of strikes that left the derro reeling.",
+    "subject": "Zalthir's assault",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum blasts Plinki with dark necrotic energy.",
+    "source_quote": "blasting Plinki with dark energy",
+    "subject": "Gyrgum's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The battle for the obelisk chamber begins in earnest.",
+    "source_quote": "The battle for the obelisk chamber had begun in earnest",
+    "subject": "combat initiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session pauses mid-combat.",
+    "source_quote": "The session paused mid-combat.",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The next session is skipped.",
+    "source_quote": "and the next session is skipped.",
+    "subject": "next session schedule",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber contains magical darkness used for the ambush.",
+    "source_quote": "within Zalthir's magical darkness in the obelisk chamber",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The fate of the corrupted dragon egg hangs in the balance in the obelisk chamber.",
+    "source_quote": "and the fate of the corrupted dragon egg \u2014 and perhaps the city of Gracklstugh itself \u2014 hung in the balance.",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A corrupted dragon egg is present in the obelisk chamber.",
+    "source_quote": "and the fate of the corrupted dragon egg",
+    "subject": "corrupted dragon egg",
+    "quote_verified": true
+  }
+]

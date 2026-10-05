@@ -1,0 +1,331 @@
+[
+  {
+    "type": "date",
+    "fact": "The party finished leveling to 5th level before the session began.",
+    "source_quote": "the party finished leveling to 5th",
+    "subject": "leveling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum gained access to third-level spells.",
+    "source_quote": "Gyrgum gained access to third-level spells",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz now has access to the Fireball spell.",
+    "source_quote": "Daz now has Fireball",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin gained a second attack.",
+    "source_quote": "Thorin gained a second attack",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin gained the Tactical Shift ability, allowing him to move without provoking opportunity attacks.",
+    "source_quote": "Tactical Shift, which lets him move without provoking opportunity attacks",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The DM shared an in-world wanted poster for the Ember Vanguard.",
+    "source_quote": "an in-world wanted poster for the Ember Vanguard",
+    "subject": "wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wanted poster states the Ember Vanguard is wanted dead, as long as they can be raised from the dead or alive.",
+    "source_quote": "Wanted dead, as long as they can be raised from the dead or alive",
+    "subject": "wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is the name the party had given itself.",
+    "source_quote": "The Ember Vanguard is the name the party had given itself",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "City rumors identified Daz as an old, wizened drow.",
+    "source_quote": "Daz had become an old, wizened drow",
+    "subject": "city rumors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "City rumors identified the brass dragonborn Zalthir as a red dragonborn.",
+    "source_quote": "the brass dragonborn Zalthir had become a *red* dragonborn",
+    "subject": "city rumors",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft Exit is a suffocating corridor of rough-hewn stone carved from the bedrock of Gracklstugh.",
+    "source_quote": "a suffocating corridor of rough-hewn stone carved from the very bedrock of Gracklstugh",
+    "subject": "West Cleft Exit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party arrived at the West Cleft Exit.",
+    "source_quote": "The party arrived at the West Cleft Exit",
+    "subject": "party arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar patrols are present at the West Cleft Exit, creating an atmosphere of suspicion.",
+    "source_quote": "The low clink of armor and the heavy tread of Duergar patrols filled the air with a suppressive weight of suspicion",
+    "subject": "Duergar patrols",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The checkpoint at the West Cleft Exit has been locked down.",
+    "source_quote": "The checkpoint had been locked down",
+    "subject": "checkpoint lockdown",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The first guard identified each party member's species one by one.",
+    "source_quote": "A first guard identified each party member's species one by one",
+    "subject": "first guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The first guard concluded that the party must not be the Ember Vanguard.",
+    "source_quote": "concluded that they \"must not be the Ember Vanguard\"",
+    "subject": "guard identification",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak is a scarred Duergar captain.",
+    "source_quote": "passed them to a scarred Duergar captain named Gorglak",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The first guard passed the party to Gorglak.",
+    "source_quote": "He then passed them to a scarred Duergar captain named Gorglak",
+    "subject": "passing the guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak wears a heavy iron chain with a crude clenched-fist pendant.",
+    "source_quote": "The captain wore a heavy iron chain with a crude clenched-fist pendant",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's history reading identified Gorglak's pendant as a mark of loyalty to the Deepking.",
+    "source_quote": "Zalthir's history reading identified as a mark of loyalty to the Deepking",
+    "subject": "history reading",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak's pendant marks loyalty to the Deepking.",
+    "source_quote": "a mark of loyalty to the Deepking",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "City gossip has inflated the Ember Vanguard's reputation into a fearsome band of shadowy assassins.",
+    "source_quote": "the city's gossip had inflated far beyond the party's actual appearance",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak compared the party against the exaggerated rumors of the Ember Vanguard.",
+    "source_quote": "Gorglak compared the group against the wildly exaggerated rumors of the Ember Vanguard",
+    "subject": "Gorglak's comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recognized the look of a corrupt official angling for a bribe in Gorglak.",
+    "source_quote": "recognized the familiar look of a corrupt official angling for a bribe",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party feigned ignorance of the Ember Vanguard.",
+    "source_quote": "They feigned ignorance of the Ember Vanguard",
+    "subject": "feigned ignorance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party presented their Stone Guard passes, choosing them over their Keeper of the Flame passes.",
+    "source_quote": "presented their Stone Guard passes, choosing them over their Keeper of the Flame passes",
+    "subject": "presenting passes",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses Stone Guard passes.",
+    "source_quote": "presented their Stone Guard passes",
+    "subject": "Stone Guard passes",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses Keeper of the Flame passes.",
+    "source_quote": "over their Keeper of the Flame passes",
+    "subject": "Keeper of the Flame passes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party's Stone Guard task had been to find proof that the derro were engaged in demonic possession.",
+    "source_quote": "Their Stone Guard task had been to find proof that the derro were engaged in demonic possession",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak declared that passes mean little at the checkpoint.",
+    "source_quote": "He declared that \"passes mean little here\"",
+    "subject": "Gorglak's declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak demanded the party prove they were not the Ember Vanguard or confess and surrender.",
+    "source_quote": "demanded they prove they were not the Ember Vanguard or \"confess and surrender\"",
+    "subject": "Gorglak's demand",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak ordered the party to lay down weapons and magic items for inspection.",
+    "source_quote": "He also ordered them to lay down weapons and magic items for inspection",
+    "subject": "inspection order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak ordered the party to speak the Stone Guard's secret salute.",
+    "source_quote": "and to speak the Stone Guard's secret salute",
+    "subject": "salute order",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalled the details of the Stone Guard's secret salute due to his years studying the rituals of Bahamut.",
+    "source_quote": "Gyrgum's years studying the rituals of Bahamut helped him recall the details",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum recalling the salute details gave the party advantage.",
+    "source_quote": "which gave the party advantage",
+    "subject": "advantage gained",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum performed the faction's secret salute with conviction.",
+    "source_quote": "He then performed the faction's secret salute with enough conviction",
+    "subject": "Gyrgum's salute",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's salute gave Gorglak pause.",
+    "source_quote": "to give Gorglak pause",
+    "subject": "Gorglak's reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Five invisible Duergar soldiers are positioned throughout the hallway.",
+    "source_quote": "spotted five invisible Duergar soldiers positioned throughout the hallway",
+    "subject": "invisible Duergar soldiers",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The invisible Duergar soldiers are ready to strike if negotiations collapse.",
+    "source_quote": "ready to strike if negotiations collapsed",
+    "subject": "invisible Duergar soldiers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spotted the invisible Duergar soldiers with sharp eyes.",
+    "source_quote": "Zalthir, scanning the dim corridor with sharp eyes, spotted five invisible Duergar soldiers",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz prepared a contingency plan in case the bluff failed.",
+    "source_quote": "Daz prepared a contingency plan in case the bluff failed",
+    "subject": "Daz's contingency plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's plan involves carrying the egg and other incriminating items.",
+    "source_quote": "He would carry the egg and other incriminating items",
+    "subject": "Daz's plan details",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's plan involves casting Misty Step past the guards.",
+    "source_quote": "cast Misty Step past the guards",
+    "subject": "Daz's plan details",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's plan involves claiming divine favor.",
+    "source_quote": "and claim divine favor",
+    "subject": "Daz's plan details",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses an egg that Daz plans to carry in his contingency plan.",
+    "source_quote": "He would carry the egg",
+    "subject": "the egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offered to add a magical booming voice or tremors in the ground to Daz's plan.",
+    "source_quote": "with Gyrgum offering to add \"a magical booming voice or tremors in the ground\"",
+    "subject": "Gyrgum's addition",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party's bluff regarding the Ember Vanguard identity is not yet resolved.",
+    "source_quote": "in case the bluff failed",
+    "subject": "Bluff success",
+    "quote_verified": true
+  }
+]

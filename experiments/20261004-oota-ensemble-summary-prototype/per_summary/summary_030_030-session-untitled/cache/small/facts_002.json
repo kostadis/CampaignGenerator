@@ -1,0 +1,219 @@
+[
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha resembles a great snake with a hooked beak and writhing, talon-tipped tentacles.",
+    "source_quote": "The creature is a grotesque thing resembling a great snake with a hooked beak and writhing, talon-tipped tentacles.",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is described as a surly, cranky, miserable creature.",
+    "source_quote": "The GM describes it as \"a surly, cranky, miserable creature.\"",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is resistant to non-magical bludgeoning, piercing, and slashing damage.",
+    "source_quote": "the party learns that the Grick is resistant to non-magical bludgeoning, piercing, and slashing",
+    "subject": "Grick Alpha",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is not resistant to fire damage.",
+    "source_quote": "The GM confirms that Gricks are not resistant to fire",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is currently dead.",
+    "source_quote": "Thorin's blow finished it as it ran.",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha woke from its surroundings and lunged at the party.",
+    "source_quote": "The party's freezing of its surroundings disturbed it, and it woke, bared its teeth and claws, and lunged toward them",
+    "subject": "Grick Alpha awakening",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir shrouded the Grick Alpha in a sphere of impenetrable magical darkness.",
+    "source_quote": "Zalthir immediately shrouded it in a sphere of impenetrable magical darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir landed unarmed strikes on the Grick Alpha for a total of 29 damage.",
+    "source_quote": "He landed a relentless series of unarmed strikes for 29 damage",
+    "subject": "Zalthir strikes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha resisted Zalthir's Stunning Strike.",
+    "source_quote": "though the Grick shook off his Stunning Strike",
+    "subject": "Zalthir Stunning Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz could not see the Grick Alpha through the magical darkness.",
+    "source_quote": "Daz could not see the creature through the darkness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cast Fireball into the darkness, angling it to avoid allies.",
+    "source_quote": "he trusted his memory of where it stood and angled a fireball to miss his allies",
+    "subject": "Daz Fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha made a DC 15 Dexterity save against Daz's Fireball.",
+    "source_quote": "The Grick makes its DC 15 Dexterity save",
+    "subject": "Grick Alpha Fireball Save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha took 13 damage from Daz's Fireball.",
+    "source_quote": "took only 13 damage, prompting Daz's lament",
+    "subject": "Fireball damage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is Thorin's magical sword.",
+    "source_quote": "Thorin shows off his magical sword Dawnbringer",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer glows with radiant light because it hates the dark.",
+    "source_quote": "who is lit because she hates the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin charged into the battle wielding Dawnbringer.",
+    "source_quote": "Thorin charged in after, Dawnbringer blazing with radiant light",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit the Grick Alpha for 9 radiant damage.",
+    "source_quote": "Rolling with advantage, he hits for 9 radiant damage",
+    "subject": "Thorin hits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit the Grick Alpha for an additional 6 damage.",
+    "source_quote": "and then 6.",
+    "subject": "Thorin second hit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has the ability Tremor Sense.",
+    "source_quote": "Thorin also mentions that his Tremor Sense could help find the other creature.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum attempted to cast Tasha's Caustic Brew on the Grick Alpha.",
+    "source_quote": "he tried to drench it in Tasha's Caustic Brew",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha made a DC 15 Dexterity save against Tasha's Caustic Brew.",
+    "source_quote": "The Grick makes its DC 15 Dexterity save and takes no damage",
+    "subject": "Gyrgum Brew Save",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stated that half his spells are useless without seeing into magical darkness.",
+    "source_quote": "Gyrgum notes that half his spells are useless without a way to see into magical darkness",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum could not use Guiding Bolt due to lack of line of sight.",
+    "source_quote": "Gyrgum could not use Guiding Bolt without line of sight",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir identified the Grick as a treasure-hoarding creature.",
+    "source_quote": "Zalthir points out that there is a treasure-hoarding creature right here",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha missed Thorin with its attacks due to disadvantage from darkness.",
+    "source_quote": "the darkness gives it disadvantage and it misses wildly",
+    "subject": "Grick Alpha attack Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha missed all three of its attacks against Zalthir.",
+    "source_quote": "The Grick turns on Zalthir (AC 16) and misses again: all three of its attacks miss",
+    "subject": "Grick Alpha attack Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha attempted to flee the battle.",
+    "source_quote": "attempted to flee the battle",
+    "subject": "Grick Alpha flee attempt",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir struck the fleeing Grick Alpha for 13 damage.",
+    "source_quote": "Zalthir's attack of opportunity hit for 13",
+    "subject": "Zalthir attack of opportunity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin killed the fleeing Grick Alpha.",
+    "source_quote": "Thorin's blow finished it as it ran",
+    "subject": "Thorin kill shot",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party harvested the Grick Alpha's tough, camouflaged hide.",
+    "source_quote": "The party harvested the creature's tough, camouflaged hide",
+    "subject": "Grick hide",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Grick hide can be fashioned into a cloak granting advantage when hiding in rocky terrain.",
+    "source_quote": "could be fashioned in six days into a cloak granting advantage when hiding in rocky terrain",
+    "subject": "Grick cloak",
+    "quote_verified": true
+  }
+]

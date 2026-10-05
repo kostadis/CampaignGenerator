@@ -1,0 +1,443 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir states he now has a reason to grapple.",
+    "source_quote": "now with \"a reason to grapple for once\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir seized and locked the stunned Shambling Mound in place within a burning aura.",
+    "source_quote": "seized the stunned creature and locked it in place within the burning aura",
+    "subject": "Zalthir grapples Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cast a fireball after checking that nobody would take steam damage from melting the lake.",
+    "source_quote": "having first checked that nobody would take steam damage from him \"melting the lake\"",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz's fireball blast brought the Shambling Mound down to 9 hit points.",
+    "source_quote": "That blast brought the mound down to 9 hit points.",
+    "subject": "Daz casts fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound thrashed with electrified tendrils and struck Zalthir.",
+    "source_quote": "The Shambling Mound thrashed with electrified tendrils and struck Zalthir",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deflected the bludgeoning force from the Shambling Mound and took only 2 lightning damage.",
+    "source_quote": "he deflected the bludgeoning force and took only 2 lightning damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound engulfed Thorin within its rotting mass.",
+    "source_quote": "It then engulfed Thorin within its rotting mass",
+    "subject": "Shambling Mound engulfs Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin was blinded while engulfed by the Shambling Mound.",
+    "source_quote": "Thorin, blinded and muttering that he had \"smelt better cologne\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin fought his way free of the Shambling Mound.",
+    "source_quote": "fought his way free",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin commanded Gyrgum to perform his ability.",
+    "source_quote": "shouted, \"damn you, Gyrgum, do your thing\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is addressed by Thorin to use his abilities.",
+    "source_quote": "shouted, \"damn you, Gyrgum, do your thing\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Spectral dragons scorched the Shambling Mound at the end of its turn.",
+    "source_quote": "The spectral dragons scorched the creature once more at the end of its turn",
+    "subject": "spectral dragons attack Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound collapsed into a heap of lifeless vines.",
+    "source_quote": "it collapsed into a heap of lifeless vines",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A 2d6 roll yielded enough vine material from the mound to make six ropes worth 300 gold pieces.",
+    "source_quote": "A 2d6 roll yielded enough vine material for six ropes, worth 300 gold pieces.",
+    "subject": "vine ropes",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A body of water about 10 feet deep lies between the party and the mound.",
+    "source_quote": "A body of water about 10 feet deep lies between the party and the mound",
+    "subject": "body of water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM warns that the mound tends to grab people and shove them under, calling wading in a poor tactical decision.",
+    "source_quote": "calls wading in \"a very poor tactical decision by Zalthir\"",
+    "subject": "GM tactical warning",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir acknowledges the GM's tactical warning by saying \"Duly noted.\"",
+    "source_quote": "Zalthir replies, \"Duly noted.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir closes in along the shore to engage the Shambling Mound directly.",
+    "source_quote": "Zalthir closes in along the shore to engage the Shambling Mound directly",
+    "subject": "Zalthir moves to shore",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands a critical hit on the Shambling Mound for 18 damage.",
+    "source_quote": "He lands a critical hit for 18",
+    "subject": "Zalthir critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands a Stunning Strike on the Shambling Mound, stunning it.",
+    "source_quote": "His Stunning Strike (DC 13 Constitution) succeeds, and the mound is stunned",
+    "subject": "Zalthir Stunning Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits the stunned Shambling Mound two more times for 8 and 10 damage.",
+    "source_quote": "He follows with two more hits for 8 and 10.",
+    "subject": "Zalthir attacks stunned mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks if Zalthir can move his darkness to expose the mound to Magic Missile.",
+    "source_quote": "Daz asks whether Zalthir can move his darkness to expose the mound to Magic Missile",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir can only move his darkness at the start of his turn.",
+    "source_quote": "Zalthir can only move it at the start of his turn",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes scorching rays at the stunned creature with advantage.",
+    "source_quote": "Daz unleashes scorching rays at the stunned creature, with advantage because it is stunned",
+    "subject": "Daz casts scorching ray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "All three of Daz's scorching rays hit the Shambling Mound.",
+    "source_quote": "All three rays hit (15, 25, and 22 to hit)",
+    "subject": "Scorching Ray hits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Scorching Ray damage was halved to 11 due to the creature's natural resistance.",
+    "source_quote": "the creature's natural resistance halves the 23 damage to 11",
+    "subject": "Scorching Ray damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stunned Shambling Mound is incapacitated and can take no actions or reactions.",
+    "source_quote": "The stunned mound is incapacitated and can take no actions or reactions",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is too far away to reach the mound and dashes toward the fight.",
+    "source_quote": "Thorin is too far away to reach it and dashes toward the fight",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum moves close to the fight.",
+    "source_quote": "Gyrgum moves close",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum summons spectral spirits resembling platinum dragons in a 15-foot radius.",
+    "source_quote": "summons spectral spirits resembling platinum dragons that swirl around him in a 15-foot radius",
+    "subject": "Gyrgum summons spirits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum exempts Thorin and Zalthir from the spectral spirit effect.",
+    "source_quote": "He exempts Thorin and Zalthir from the effect",
+    "subject": "Gyrgum exempts allies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound failed its DC 15 Wisdom save and took 13 damage.",
+    "source_quote": "The mound fails its DC 15 Wisdom save, takes 13 damage",
+    "subject": "Mound fails Wisdom save",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound has its speed halved.",
+    "source_quote": "and has its speed halved",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir realizes a combat combo involving grappling.",
+    "source_quote": "Zalthir realizes the combo (\"Suddenly I have a reason to grapple for once\")",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grapples the creature as part of an attack to keep it trapped within Gyrgum's spectral aura.",
+    "source_quote": "grapples the creature as part of an attack to keep it trapped within Gyrgum's spectral aura",
+    "subject": "Zalthir grapples for aura",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits the grappled creature for 11 damage.",
+    "source_quote": "He then hits for 11",
+    "subject": "Zalthir attacks grappled",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point to hit the creature for 14 and 10 damage.",
+    "source_quote": "and spends a focus point to hit for 14 and 10",
+    "subject": "Zalthir uses focus point",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz detonates a massive fireball that further weakens the Shambling Mound.",
+    "source_quote": "Daz detonates a massive fireball that further weakens the mossy behemoth",
+    "subject": "Daz casts fireball 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz checks the 20-foot radius to ensure no steam damage occurs.",
+    "source_quote": "First he checks the 20-foot radius and asks whether anyone will take steam damage",
+    "subject": "Daz checks radius",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound failed its save against the fireball and took 12 damage after resistance.",
+    "source_quote": "The mound fails its save and takes 12 after resistance",
+    "subject": "Mound fails fireball save",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is dropped to 9 hit points by the fireball.",
+    "source_quote": "dropping to 9 hit points",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound retaliates with electrified tendrils.",
+    "source_quote": "The Shambling Mound retaliates with electrified tendrils",
+    "subject": "Mound retaliates",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the Shambling Mound's electrified tendrils misses.",
+    "source_quote": "One misses",
+    "subject": "Tendril miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the electrified tendrils strikes Zalthir for 11 damage.",
+    "source_quote": "one strikes Zalthir with a discharge of lightning and bludgeoning force for 11",
+    "subject": "Tendril hit Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deflects the bludgeoning portion of the tendril attack and takes only 2 lightning damage.",
+    "source_quote": "Zalthir deflects the bludgeoning portion and takes only 2 lightning damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks Zalthir not to deflect the attack his way.",
+    "source_quote": "When Gyrgum asks him not to deflect it his way",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deflects the attack \"just upward.\"",
+    "source_quote": "Zalthir sends it \"just upward\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that the mound cannot engulf a creature grappling it as that would end the grapple.",
+    "source_quote": "The GM rules that the mound cannot engulf the creature grappling it",
+    "subject": "GM ruling engulf grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound attempts to engulf Thorin and pulls him into its mass.",
+    "source_quote": "The creature attempts to engulf Thorin instead and pulls him into its rotting mass",
+    "subject": "Mound engulfs Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin failed the DC 15 Strength save against the engulf.",
+    "source_quote": "Thorin fails the DC 15 Strength save",
+    "subject": "Thorin fails save",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin takes 10 damage from the engulf.",
+    "source_quote": "is blinded, and takes 10 damage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin mutters that he has smelt better cologne.",
+    "source_quote": "muttering that he has \"smelt better cologne\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin manages to struggle free of the Shambling Mound.",
+    "source_quote": "He then manages to struggle free",
+    "subject": "Thorin struggles free",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The combined radiant energy of the spectral guardians overcomes the Shambling Mound.",
+    "source_quote": "The combined radiant energy of the spectral guardians finally overcomes the Shambling Mound",
+    "subject": "Mound death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound fails its Wisdom save at the end of its turn and takes 15 damage.",
+    "source_quote": "It fails its Wisdom save at the end of its turn, takes 15 damage",
+    "subject": "Mound fails final save",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound collapses into a heap of lifeless vines.",
+    "source_quote": "and collapses into a heap of lifeless vines",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The table discusses Spirit Guardians rules.",
+    "source_quote": "Afterward the table discusses Spirit Guardians rules",
+    "subject": "Spirit Guardians discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that Spirit Guardians is not an infinite-damage hack.",
+    "source_quote": "The GM rules that the spell is not an infinite-damage hack",
+    "subject": "GM Spirit Guardians ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that a creature takes damage when moved into the Spirit Guardians emanation and again if it stays there on its turn.",
+    "source_quote": "A creature takes damage when it is moved into the emanation and again if it stays there on its turn",
+    "subject": "Spirit Guardians mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that a creature saves only once per turn against Spirit Guardians.",
+    "source_quote": "and it saves only once per turn",
+    "subject": "Spirit Guardians saves",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir plans to drag creatures into the Spirit Guardians aura and grapple them there.",
+    "source_quote": "Zalthir plans to drag creatures into the aura and grapple them there",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir plans to possibly grapple two creatures at a time.",
+    "source_quote": "possibly two at a time",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM suggests pummelling foes in Zalthir's darkness and then moving them out into the open.",
+    "source_quote": "The GM also suggests pummelling foes in Zalthir's darkness and then moving them out into the open",
+    "subject": "GM tactic suggestion",
+    "quote_verified": true
+  }
+]

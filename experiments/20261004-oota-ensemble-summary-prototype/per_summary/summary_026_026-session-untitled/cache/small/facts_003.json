@@ -1,0 +1,121 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gorglak is a suspicious Duergar captain managing a heavily guarded checkpoint.",
+    "source_quote": "checkpoint managed by a suspicious Duergar captain",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum performs the secret Stone Guard salute to prove the party are not the Ember Vanguard.",
+    "source_quote": "Gyrgum performs the secret Stone Guard salute",
+    "subject": "Gyrgum's salute",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum stretches and does vocal exercises before performing the salute.",
+    "source_quote": "He first stretches and does vocal exercises",
+    "subject": "Gyrgum's preparation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum ensures no unauthorized eyes see the salute ritual.",
+    "source_quote": "He keeps watch that no unauthorized eyes see the rite",
+    "subject": "Gyrgum's watchfulness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak concedes that the party is clearly working for the Stone Guard and not the Ember Vanguard.",
+    "source_quote": "I see that you are clearly working for the stone guard. You clearly are not the Ember Vanguard",
+    "subject": "Gorglak's concession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak demands a bribe of twenty gold pieces to allow the party through without a full inspection.",
+    "source_quote": "The captain demands a bribe of twenty gold pieces to allow them through without a full inspection",
+    "subject": "bribe demand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pays the bribe, with each member contributing five gold.",
+    "source_quote": "The party paid five gold each",
+    "subject": "payment of bribe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Several hidden, invisible guards stand down after the bribe is paid.",
+    "source_quote": "causing several hidden, invisible guards to stand down",
+    "subject": "guards stand down",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The back gate swings open, allowing the group to pass into the city.",
+    "source_quote": "The back gate swung open",
+    "subject": "gate opening",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak warns the group to do their business in Gracklstugh quickly and leave.",
+    "source_quote": "Whatever your business in Gracklstugh, I suggest you do it quickly and leave",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak states that the Deepking fears a drow raiding party.",
+    "source_quote": "the Deepking feared a drow raiding party",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gorglak states that the derro are convinced the Deepking is behind the troubles.",
+    "source_quote": "the derro were convinced the Deepking was behind the troubles",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The group passes through the gate into the city proper of Gracklstugh.",
+    "source_quote": "passed through into the city proper",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he was not eager to fight Gorglak if asked afterward.",
+    "source_quote": "I wasn't eager to do it",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is an infamous group the party must prove they are not part of.",
+    "source_quote": "prove they are not the infamous Ember Vanguard",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is the faction whose secret salute Gyrgum performs.",
+    "source_quote": "secret Stone Guard salute",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM notes it is unclear whether the invisible guards would have attacked the party or the captain.",
+    "source_quote": "it was unclear whether the invisible guards would have attacked the party or the captain",
+    "subject": "DM clarification",
+    "quote_verified": true
+  }
+]

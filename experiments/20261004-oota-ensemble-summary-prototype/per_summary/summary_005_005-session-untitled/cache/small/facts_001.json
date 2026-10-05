@@ -1,0 +1,135 @@
+[
+  {
+    "type": "event",
+    "fact": "The party rescues companions from the rubble after a rockfall.",
+    "source_quote": "The aftermath of the rockfall left the party scrambling to pull their companions from the rubble",
+    "subject": "rescue from rockfall",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Freeing a buried companion takes an action, and anyone left under the dirt takes damage the next round.",
+    "source_quote": "Freeing a buried companion took an action, and anyone left under the dirt would take damage the next round.",
+    "subject": "rescue timing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir goes first in the rescue effort.",
+    "source_quote": "The party worked in rough initiative order, with Zalthir going first.",
+    "subject": "rescue initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses his strength to heave heavy slabs of rock aside.",
+    "source_quote": "Zalthir, drawing on his considerable strength, heaved heavy slabs of rock aside",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir shoves rocks off Daz.",
+    "source_quote": "Zalthir shoved the rocks off Daz",
+    "subject": "Zalthir rescues Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is stable but unconscious.",
+    "source_quote": "Zalthir shoved the rocks off Daz, who lay stable but unconscious",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is treated as the urgent case because he is the only unconscious companion.",
+    "source_quote": "Daz is the only unconscious companion, so Zalthir treats him as the urgent case.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin drags Gyrgum clear of the debris.",
+    "source_quote": "Thorin focused his efforts on dragging Gyrgum clear of the debris",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rescues Gyrgum because he is part of the party's crew.",
+    "source_quote": "Thorin focuses his efforts on rescuing Gyrgum from the debris, \"because he's part of our crew.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a small but determined sentient fungus.",
+    "source_quote": "Stool, the small but determined sentient fungus",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool asks Gyrgum if he is okay.",
+    "source_quote": "Stool... asked Gyrgum if he was okay",
+    "subject": "Stool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he is not doing well and is badly hurt.",
+    "source_quote": "Oh, I'm not doing so well. I got pretty badly hurt.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool pulls Shuushar and Buppido to safety.",
+    "source_quote": "Stool managed to pull both Shuushar and Buppido to safety",
+    "subject": "Stool rescues Shuushar and Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool frees Buppido because he thinks Buppido dying would be tragic.",
+    "source_quote": "He freed Buppido because he thought Buppido dying would be tragic",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asked Stool to save Shuushar.",
+    "source_quote": "Gyrgum asked for Shuushar",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is the party's guide.",
+    "source_quote": "Their guide had not been trapped at all.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith was not trapped under the rocks.",
+    "source_quote": "Their guide had not been trapped at all.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is still trapped in the rubble.",
+    "source_quote": "though Eldeth and Jimjar were still trapped",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is still trapped in the rubble.",
+    "source_quote": "though Eldeth and Jimjar were still trapped",
+    "subject": "Jimjar",
+    "quote_verified": true
+  }
+]

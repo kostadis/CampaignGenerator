@@ -1,0 +1,37 @@
+[
+  {
+    "type": "event",
+    "fact": "The session notes identify this location as Pit 022.02, implying a 22-day journey from the starting point.",
+    "source_quote": "The Pit of Decomposed Flesh 022.02",
+    "subject": "travel time to Pit",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The entire Ember Vanguard group consists of sixteen people.",
+    "source_quote": "all sixteen of the group would need to succeed",
+    "subject": "Ember Vanguard group size",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit the derro cultist has 13 hit points.",
+    "source_quote": "He appears to have 13 hit points.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The hulking zombie accompanying Ulnara has approximately 22 hit points.",
+    "source_quote": "Zombies here have about 22 hit points.",
+    "subject": "Ulnara's zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Ulnara and her zombie emerged from about 80 feet away.",
+    "source_quote": "from about 80 feet away",
+    "subject": "Ulnara's position",
+    "quote_verified": true
+  }
+]

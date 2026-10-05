@@ -1,0 +1,79 @@
+[
+  {
+    "type": "npc",
+    "fact": "One derro cultist complains about the endless contributions required for the prince.",
+    "source_quote": "One grumbled about endless contributions for a \"prince\" who was \"always hungry.\"",
+    "subject": "derro cultist 1",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A second derro cultist recites a cryptic poem about a smooth obsidian scale.",
+    "source_quote": "The other recited a cryptic, almost poetic speech about a scale \"smooth as polished obsidian\" that \"came from the deep, deep, deep\"",
+    "subject": "derro cultist 2",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The derro cultist stops mid-poem to correct himself and start again.",
+    "source_quote": "He then stopped, corrected himself, and started again.",
+    "subject": "derro poem interruption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro cultists mutter about their devotion to Demogorgon while ignoring each other.",
+    "source_quote": "They mutter about \"the prince\" and their devotion to Demogorgon",
+    "subject": "derro devotion recital",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three cave bears are resting in scrap iron cages within the chamber.",
+    "source_quote": "scrap iron cages holding three resting cave bears",
+    "subject": "cave bears",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber is filled with a heavy, unpleasant musk.",
+    "source_quote": "A heavy, unpleasant musk fills the air.",
+    "subject": "derro chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A large cauldron sits near the center of the area, marked by a spiral path of small stone pylons.",
+    "source_quote": "A spiral path marked by small stone pylons circles in toward a tent and a large cauldron near the center.",
+    "subject": "cauldron area",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The dwarves of the party hold contempt for the derro, viewing them as dwarves corrupted by mind flayers.",
+    "source_quote": "the dwarves' contempt for the derro as a race of dwarves corrupted by the mind flayers",
+    "subject": "Dwarves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party quietly withdraws from the cauldron chamber, deciding the bears are too dangerous.",
+    "source_quote": "The party quietly retreats and takes the western path",
+    "subject": "party withdrawal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests the party could return to the chamber at a later time.",
+    "source_quote": "Gyrgum suggesting they could \"come back here another time.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The poem mentions a smooth obsidian scale that came from the deep Underdark where voices sing of two heads.",
+    "source_quote": "came from the deep, deep, deep,\" from a place where a voice sang of two heads",
+    "subject": "obsidian scale",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Daz's takeover of leadership came from exhaustion with political maneuvering rather than ambition.",
+    "source_quote": "Daz\u2014whose takeover had come from exhaustion with political maneuvering rather than ambition",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recognized why Dorbo had become accommodating.",
+    "source_quote": "recognized exactly why Dorbo had become so accommodating",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz remained determined to involve Clan Goldwhisker so everyone would have warning if the Pudding King operation failed.",
+    "source_quote": "Daz remained determined to involve the Goldwhiskers so everyone would have warning if the Pudding King operation failed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argued that the Goldwhiskers' political status could be settled only if they survived.",
+    "source_quote": "their political status could be settled only if they survived",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz sharpened Senni's rhetoric regarding the appeal to common purpose.",
+    "source_quote": "Daz sharpened her rhetoric",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz stated that it is important to have a common outcome and a common drive to that outcome.",
+    "source_quote": "It's important for us to have a common outcome and a common drive to that outcome",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz stated that the rest of the commonality would be a nice-to-have.",
+    "source_quote": "The rest of the commonality would be a nice-to-have",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compared Dorbo's conduct to a classic vice president move.",
+    "source_quote": "Daz compared Dorbo's conduct to \u201ca classic vice president move.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo became accommodating to Daz's leadership.",
+    "source_quote": "recognized exactly why Dorbo had become so accommodating",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo viewed Daz as a convenient fall guy for the operation.",
+    "source_quote": "The chief had found a convenient fall guy",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo planned to blame Daz if the operation failed.",
+    "source_quote": "if the operation failed, he could blame the drow who had seized control",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo planned to claim credit for the design if the operation succeeded.",
+    "source_quote": "if it succeeded, he could claim that supporting Daz had been his own design",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni supported the appeal to common purpose.",
+    "source_quote": "Senni supported the appeal to common purpose",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni made an appeal for common community.",
+    "source_quote": "Daz reframed Senni's appeal for common community",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party is poised to recruit Clan Goldwhisker.",
+    "source_quote": "With the party poised to recruit Clan Goldwhisker",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party confirmed that they would recruit Clan Goldwhisker directly.",
+    "source_quote": "The party confirmed that they would recruit Clan Goldwhisker directly",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Pudding King operation is relevant to Clan Goldwhisker's political status and survival.",
+    "source_quote": "their political status could be settled only if they survived",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Bureaucrats are taking notes on Daz's pronouncements in a chamber.",
+    "source_quote": "The bureaucrats began taking notes on Daz's pronouncements while papers shuffled around the chamber",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gnomish bureaucrats began taking notes on Daz's pronouncements.",
+    "source_quote": "The bureaucrats began taking notes on Daz's pronouncements",
+    "subject": "note-taking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confirmed they would recruit Clan Goldwhisker directly.",
+    "source_quote": "The party confirmed that they would recruit Clan Goldwhisker directly",
+    "subject": "recruitment confirmation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gnomish bureaucrats prepared to explain how faithfully implementing Daz's leadership had produced eventual success.",
+    "source_quote": "each official seemingly preparing to explain how faithfully implementing Daz's leadership had produced any eventual success",
+    "subject": "Daz's leadership framing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gnomes made jokes about a future airport business book titled along the lines of Everything I Needed to Know About Business, I Learned from Playing D&D.",
+    "source_quote": "inspiring jokes about a future airport business book titled along the lines of Everything I Needed to Know About Business, I Learned from Playing D&D",
+    "subject": "business book joke",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "A hypothetical business book titled Everything I Needed to Know About Business, I Learned from Playing D&D is referenced.",
+    "source_quote": "business book titled along the lines of Everything I Needed to Know About Business, I Learned from Playing D&D",
+    "subject": "business book",
+    "quote_verified": false
+  }
+]

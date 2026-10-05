@@ -1,0 +1,128 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin adds a 1d8 superiority die to his initiative roll, resulting in a total initiative of 12.",
+    "source_quote": "adds a 1d8 superiority die to his initiative through his Ambush maneuver and rolls +4, bringing him to 12",
+    "subject": "Thorin initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The water in the Darklake counts as difficult terrain.",
+    "source_quote": "Moving through the water counts as difficult terrain",
+    "subject": "Darklake terrain",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir conjures a sphere of magical darkness with a 15-foot radius.",
+    "source_quote": "conjures a 15-foot-radius sphere of magical darkness",
+    "subject": "Magical Darkness radius",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The duergar slavers have an Armor Class of 16.",
+    "source_quote": "The duergar has AC 16",
+    "subject": "Duergar AC",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a Passive Perception score of 14.",
+    "source_quote": "Daz's passive Perception of 14 lets the party sense that another invisible duergar is lurking nearby",
+    "subject": "Daz Passive Perception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz lands one of three Scorching Rays for 7 fire damage.",
+    "source_quote": "The first two rays miss and the third hits for 7 fire damage",
+    "subject": "Daz Scorching Ray damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 7 at disadvantage for one of his melee attacks.",
+    "source_quote": "He rolls a 7 at disadvantage",
+    "subject": "Thorin attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Feinting Attack hits for 9 damage.",
+    "source_quote": "The 17 hits for 9 damage",
+    "subject": "Thorin Feint damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Tasha's Caustic Brew deals 2d4 acid damage at the start of each turn.",
+    "source_quote": "The acid deals 2d4 at the start of each turn",
+    "subject": "Gyrgum Caustic Brew damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 9 damage plus 1 from a Hill Strike for a total of 10 damage.",
+    "source_quote": "He deals 9 damage plus 1 from a Hill Strike, for 10 total",
+    "subject": "Thorin Hill Strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar beats the DC 13 Strength save with a roll of 14.",
+    "source_quote": "The duergar beats the DC 13 Strength save with a 14",
+    "subject": "Thorin Strength Save",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir can move his sphere of magical darkness up to 60 feet at the start of his turn.",
+    "source_quote": "He moves the sphere up to 60 feet at the start of his turn",
+    "subject": "Darkness movement range",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One duergar is left with only 1 hit point after taking 7 fire damage from Scorching Ray.",
+    "source_quote": "hits for 7 fire damage, leaving the duergar at 1 hit point",
+    "subject": "Duergar HP status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is one of the two goblins that help the party.",
+    "source_quote": "Spiderbait, \"one of the two goblins that helps you\"",
+    "subject": "Spiderbait role",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The enlarged duergar saves against being knocked prone with a roll of 17.",
+    "source_quote": "The duergar saves against prone with a 17",
+    "subject": "Duergar Prone Save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last duergar killed by Daz had 2 hit points remaining and took 6 force damage.",
+    "source_quote": "The duergar Daz kills had only 2 hit points left and took 6 force damage",
+    "subject": "Duergar death damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last duergar takes 8 acid damage from Gyrgum's caustic brew.",
+    "source_quote": "leaves him \"doubly acidified,\" and he takes 8 acid damage",
+    "subject": "Last Duergar Acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin knocks out the last duergar with a non-lethal blow dealing 12 damage.",
+    "source_quote": "The blow is a Feinting Attack at a straight roll for 12 damage",
+    "subject": "Thorin Capture Damage",
+    "quote_verified": true
+  }
+]

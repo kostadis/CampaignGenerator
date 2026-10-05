@@ -1,0 +1,44 @@
+[
+  {
+    "type": "date",
+    "fact": "The party encounters the limestone islet on the fifteenth day of their voyage.",
+    "source_quote": "On the fifteenth day of their voyage, the tunnel forked",
+    "subject": "travel duration to islet",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The diamond-shaped limestone islet is forty feet wide.",
+    "source_quote": "diamond-shaped limestone islet, forty feet wide",
+    "subject": "limestone islet width",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party spots the islet 50 feet ahead when rounding the bend.",
+    "source_quote": "spots a diamond-shaped islet 50 feet ahead",
+    "subject": "islet distance",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The bone pyramid at the center of the islet is eight feet high.",
+    "source_quote": "It was a pyramid of bones, eight feet high",
+    "subject": "bone pyramid height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The bone pyramid is five feet wide at its base.",
+    "source_quote": "five feet wide at its base",
+    "subject": "bone pyramid width",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is a ten-foot floating sphere.",
+    "source_quote": "a ten-foot floating sphere of rotting flesh",
+    "subject": "beholder zombie size",
+    "quote_verified": true
+  }
+]

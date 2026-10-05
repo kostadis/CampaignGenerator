@@ -1,0 +1,289 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz outlined three of the skeletons in pale, shimmering light.",
+    "source_quote": "Daz outlined three of the skeletons in pale, shimmering light that marked them for advantage",
+    "subject": "Daz marks skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjured a sphere of absolute darkness.",
+    "source_quote": "Zalthir conjured a sphere of absolute darkness to blind and confuse them",
+    "subject": "Zalthir casts darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin traded blows with the skeletons in the melee.",
+    "source_quote": "Thorin waded into the melee, trading blows with the rattling undead",
+    "subject": "Thorin engages skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz struck Buppido with magical force, dealing 15 damage and killing him.",
+    "source_quote": "Daz unleashed a volley of unerring magical force that struck Buppido squarely for 15 damage",
+    "subject": "Daz kills Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is dead, killed by Daz's magical force.",
+    "source_quote": "The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channeled the power of Bahamut to make the remaining skeletons flee.",
+    "source_quote": "Gyrgum raised the holy symbol and channeled the divine power of Bahamut, sending the remaining skeletons fleeing in blind panic",
+    "subject": "Gyrgum turns undead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remaining skeletons fled in blind panic after Gyrgum's turning attempt.",
+    "source_quote": "sending the remaining skeletons fleeing in blind panic",
+    "subject": "skeletons (remaining)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party cut down the fleeing skeletons one by one.",
+    "source_quote": "the party cut them down one by one",
+    "subject": "party clears cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The skeletons are dead, cut down by the party.",
+    "source_quote": "the party cut them down one by one",
+    "subject": "skeletons (fleeing)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido was formerly the party's companion and guide through the Underdark.",
+    "source_quote": "He had been their companion once, a guide through the horrors of the Underdark",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yuk Yuk was a goblin guide who was killed by Buppido.",
+    "source_quote": "He had also killed Yuk Yuk, the party's goblin guide",
+    "subject": "Yuk Yuk",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reflected that Buppido was \"crazy, but he was our crazy.\"",
+    "source_quote": "\"He was crazy, but he was our crazy,\" Thorin reflected",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reached fourth level.",
+    "source_quote": "The party reached fourth level",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Droki is still somewhere ahead in the tunnels.",
+    "source_quote": "Droki was still somewhere ahead in the tunnels",
+    "subject": "Droki's location",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels contain deeper mysteries and the evil Hgraam warned about.",
+    "source_quote": "the deeper mysteries of the Whorlstone Tunnels, and the evil that Hgraam had warned them about, still lay waiting in the dark",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hit a skeleton for 5 damage.",
+    "source_quote": "Zalthir hits a skeleton for 5 damage",
+    "subject": "Zalthir attack 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir missed a second attack on a skeleton.",
+    "source_quote": "spends a focus point on a second attack, which misses",
+    "subject": "Zalthir attack 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido lunged at Thorin with a hooked spear but failed to land a blow.",
+    "source_quote": "Buppido lunges at Thorin with a hooked spear but fails to land a blow",
+    "subject": "Buppido attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A skeleton missed Gyrgum with a short bow.",
+    "source_quote": "A short bow misses Gyrgum",
+    "subject": "skeleton bow miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A skeleton hit a party member with a short sword for 5 damage.",
+    "source_quote": "A short sword hits for 5 damage",
+    "subject": "skeleton sword hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crossbow-wielding skeleton stepped out of darkness and hit Gyrgum for 5 damage.",
+    "source_quote": "A crossbow skeleton steps out of the darkness and hits Gyrgum for 5 damage",
+    "subject": "crossbow skeleton hit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum uses a chessboard holy symbol.",
+    "source_quote": "Gyrgum readied his chessboard holy symbol",
+    "subject": "holy symbol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir offered to move his darkness spell so all skeletons could see Gyrgum's holy symbol.",
+    "source_quote": "Zalthir offers to move his darkness so all of them can see it",
+    "subject": "darkness adjustment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM fixed a Roll20 label clutter problem using the \"Hover to Show Token Nameplate and Bar Overlay\" graphics setting.",
+    "source_quote": "The DM fixes it with the \"Hover to Show Token Nameplate and Bar Overlay\" graphics setting",
+    "subject": "roll20 fix",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz used Magic Missile to strike Buppido.",
+    "source_quote": "The Magic Missile deals 15 damage",
+    "subject": "Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finished a skeleton with 4 hit points.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "Thorin kills skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The 4-hp skeleton is dead, killed by Thorin.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "skeleton (4hp)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflected a skeleton's 5 piercing damage attack completely.",
+    "source_quote": "A skeleton hits Zalthir for 5 piercing damage, and Zalthir deflects it completely",
+    "subject": "Zalthir deflect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum brandished his holy symbol to strike terror into the remaining skeletons, causing them to flee.",
+    "source_quote": "Gyrgum brandishes his holy symbol, channeling divine power to strike terror into the remaining skeletons and forcing them to flee",
+    "subject": "Gyrgum turns undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The skeletons made a DC 13 Wisdom save at -1 and three fled.",
+    "source_quote": "The skeletons make a DC 13 Wisdom save at -1, and three flee",
+    "subject": "skeletons save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin killed a fleeing skeleton with an 8-damage opportunity attack.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One fleeing skeleton is dead, killed by Thorin's opportunity attack.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "skeleton (fleeing 1)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir missed twice, prompting the DM to say the universe does not like him.",
+    "source_quote": "Zalthir misses twice. DM: \"The universe does not like you.\"",
+    "subject": "Zalthir misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflected another blow later in the combat.",
+    "source_quote": "He deflects another blow later",
+    "subject": "Zalthir deflect 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hit a faerie-fired skeleton with his crossbow for 8 damage.",
+    "source_quote": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage",
+    "subject": "Gyrgum crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz split a second Magic Missile, dealing 8 damage to one skeleton and 1 to its neighbor.",
+    "source_quote": "Daz splits a second Magic Missile, 8 damage to one skeleton and 1 to its neighbor",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The faerie-fired skeleton was hit for 8 damage by Gyrgum.",
+    "source_quote": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage",
+    "subject": "faerie-fired skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The skeleton next to the faerie-fired skeleton took 1 damage from Daz's split missile.",
+    "source_quote": "8 damage to one skeleton and 1 to its neighbor",
+    "subject": "skeleton (neighbor)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir killed the last skeleton next to Thorin.",
+    "source_quote": "Zalthir kills the last skeleton next to Thorin",
+    "subject": "Zalthir kills skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last skeleton is dead, killed by Zalthir.",
+    "source_quote": "Zalthir kills the last skeleton next to Thorin",
+    "subject": "skeleton (last)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM declared the combat over and the party fourth level.",
+    "source_quote": "The DM declares the skeletons dead: \"you are now fourth level.\"",
+    "subject": "combat end",
+    "quote_verified": true
+  }
+]

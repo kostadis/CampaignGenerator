@@ -1,0 +1,114 @@
+[
+  {
+    "type": "npc",
+    "fact": "Jimjar is a deep gnome guide.",
+    "source_quote": "Jimjar, the deep gnome guide",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar insists his navigational error was not intentional.",
+    "source_quote": "He insisted that the mistake was not intentional",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims that shifting passages are expected in the Underdark.",
+    "source_quote": "shifting passages were to be expected",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar suggests finding an exit through their current location is a shortcut to Blingdenstone.",
+    "source_quote": "finding an exit through their current location was remarkably convenient\u2014perhaps even a shortcut to their destination of Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin predicts that the current path will end in tears.",
+    "source_quote": "Thorin immediately predicted, \u201cYeah, this will end in tears.\u201d",
+    "subject": "Thorin's prediction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a wager.",
+    "source_quote": "When Jimjar offered a wager",
+    "subject": "Bet offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin clarifies that 'end in tears' means an unfortunate event occurs, not literal crying.",
+    "source_quote": "\u201cBy end in tears, what I mean is not literally that somebody will cry, but rather there will be some unfortunate event before we get back on our way.\u201d",
+    "subject": "Thorin's clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The bet is accepted.",
+    "source_quote": "With the definition settled, the bet was accepted.",
+    "subject": "Bet accepted",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The alternate passage is blocked by extensive rubble.",
+    "source_quote": "the alternate passage is blocked by extensive rubble",
+    "subject": "Alternate passage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a Strength score of 18.",
+    "source_quote": "Thorin points out that he has a Strength of 18",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is a dwarf who enjoys digging.",
+    "source_quote": "is a dwarf who enjoys digging",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin compares his digging ability to that of a dachshund.",
+    "source_quote": "\u201cKind of like a dachshund in that way,\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar urges Thorin to lead on.",
+    "source_quote": "\u201cLead on, lead on, fair Thorin.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group briefly struggles to remember that their destination is Blingdenstone.",
+    "source_quote": "the group briefly struggles to remember that their destination is Blingdenstone",
+    "subject": "Memory lapse",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin chooses the left branch by flipping a coin.",
+    "source_quote": "Thorin chooses the left branch by chance: \u201cSo I rolled a D2, otherwise known as flip a coin, and it came up one. So I say we go left.\u201d",
+    "subject": "Thorin's path choice",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is the party's destination.",
+    "source_quote": "their destination of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  }
+]

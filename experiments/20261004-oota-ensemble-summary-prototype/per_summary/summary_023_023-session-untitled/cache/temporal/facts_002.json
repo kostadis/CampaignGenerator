@@ -1,0 +1,16 @@
+[
+  {
+    "type": "object",
+    "fact": "Gyrgum wagers five gold pieces on the knots holding Pelek.",
+    "source_quote": "bet five gold pieces that Pelek would not escape his bonds",
+    "subject": "wager amount",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest in a secluded alcove.",
+    "source_quote": "Before settling in for the night... The party completes their long rest",
+    "subject": "rest duration",
+    "quote_verified": false
+  }
+]

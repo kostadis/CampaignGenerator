@@ -1,0 +1,93 @@
+[
+  {
+    "type": "date",
+    "fact": "The session takes place on the 6th day of the 2nd Tenday of Gracklstugh in the year 026 of the current calendar.",
+    "source_quote": "Business with the Keepers of the Flame 026.06",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Several days have passed since the party last interacted with Gartokkar.",
+    "source_quote": "He had clearly not expected them to survive after several days' absence",
+    "subject": "time since last meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar remembers Daz as a third-level drow wizard.",
+    "source_quote": "He remembered Daz only as a third-level drow wizard",
+    "subject": "Daz level",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The original contract was for 2,000 gp.",
+    "source_quote": "The original deal was 2,000 gp",
+    "subject": "original deal value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "600 gp was paid up front.",
+    "source_quote": "600 gp paid up front",
+    "subject": "upfront payment value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A confidentiality rider worth 1,000 gp was added to the deal.",
+    "source_quote": "plus a 1,000 gp confidentiality rider",
+    "subject": "confidentiality rider value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The total value of the agreement was 3,000 gp.",
+    "source_quote": "for a total of 3,000 gp",
+    "subject": "total deal value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar paid the party 2,400 gp as their remaining fee.",
+    "source_quote": "This payment was 2,400 gp",
+    "subject": "final payment value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party's spreadsheet shows each member holding 1,042 gp.",
+    "source_quote": "the party's spreadsheet showed 1,042 gp plus one electrum each",
+    "subject": "party share gold",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party's spreadsheet shows each member holding one electrum.",
+    "source_quote": "the party's spreadsheet showed 1,042 gp plus one electrum each",
+    "subject": "party share electrum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A pearl item worth 1,000 gp remains unsold.",
+    "source_quote": "A 1,000 gp pearl item is still unsold",
+    "subject": "unsold pearl",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking's agents are a mercenary band of four members.",
+    "source_quote": "They were a mercenary band of four so fierce that even the Stone Guard feared to face them",
+    "subject": "Deepking's agents size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Stone Guard have doubled their patrols due to fear of unrest.",
+    "source_quote": "The Stone Guard were doubling their patrols",
+    "subject": "Stone Guard patrol increase",
+    "quote_verified": true
+  }
+]

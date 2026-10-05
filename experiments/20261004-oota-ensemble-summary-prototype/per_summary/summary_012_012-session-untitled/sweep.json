@@ -1,0 +1,1325 @@
+[
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a duergar city located across the Darklake.",
+    "source_quote": "tied up their boat at the grim duergar city of Gracklstugh, which loomed before them",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake reflects the light of countless forges in Gracklstugh.",
+    "source_quote": "the light of countless forges reflected off the dark water",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party ties up their boat at Gracklstugh after traveling across the Darklake.",
+    "source_quote": "the party finally tied up their boat at the grim duergar city of Gracklstugh",
+    "subject": "Arrival in Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar enforce swift and merciless laws in Gracklstugh.",
+    "source_quote": "the city's laws were swift and merciless",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar are described as grim, austere, and methodical.",
+    "source_quote": "Duergar are described as grim, austere and methodical",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Svirfneblin are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "svirfneblin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Derro are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Orcs are present in the crowds of Gracklstugh.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "orcs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is a duergar arms dealer who was previously rescued by the party.",
+    "source_quote": "Hemeth, the duergar arms dealer they had rescued",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth warns the party that non-duergar are permitted only in the Darklake district.",
+    "source_quote": "Hemeth, the duergar arms dealer they had rescued, warned them that non-duergar were permitted only in the Darklake district",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin objects to being labeled as escaped slaves, stating they were merely 'temporarily detained'.",
+    "source_quote": "Thorin objected that they had merely been \"temporarily detained.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar guards can turn invisible at will.",
+    "source_quote": "Guards who could turn invisible at will enforced a code",
+    "subject": "duergar guards",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Any duergar in sight within Gracklstugh counts as instant reinforcements.",
+    "source_quote": "any duergar in sight counted as instant reinforcements",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Theft in Gracklstugh is punishable by immediate death without trial.",
+    "source_quote": "theft was punishable by death on the spot, no trial required",
+    "subject": "Theft punishment law",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Slavers in the Underdark might try to repossess the party if word spreads that they are escaped slaves.",
+    "source_quote": "slavers might try to repossess them or sell them back to the drow",
+    "subject": "Slavers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Slavers might sell escaped slaves back to the drow.",
+    "source_quote": "sell them back to the drow",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party's goal is to find information that might lead them out of the Underdark.",
+    "source_quote": "find information that might lead them out of the Underdark for good",
+    "subject": "Escape from Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A lost tomb is marked on the dwarf's map.",
+    "source_quote": "the lost tomb marked on the dwarf's map",
+    "subject": "lost tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is a possible exit point from the Underdark.",
+    "source_quote": "from there to Blingdenstone, a possible exit point",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to travel from Gracklstugh to the lost tomb and then to Blingdenstone.",
+    "source_quote": "The longer route ran from Gracklstugh to the lost tomb marked on the dwarf's map, and from there to Blingdenstone, a possible exit point.",
+    "subject": "Travel route determination",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party decides to head to the Blade Bazaar to trade and purchase supplies.",
+    "source_quote": "The party decides to head to the Blade Bazaar to trade and purchase supplies.",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake district of Gracklstugh is fully enclosed by walls.",
+    "source_quote": "The district is fully enclosed by walls.",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is level 3 and close to leveling up.",
+    "source_quote": "The party is level 3 and \"close, but not quite\" to leveling up.",
+    "subject": "Party level status",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The forges in Gracklstugh burn within hollowed-out columns and stalagmites.",
+    "source_quote": "light of countless fires burning within hollowed-out columns and stalagmites",
+    "subject": "Gracklstugh forges",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Slaves are present in the crowds and streets of Gracklstugh.",
+    "source_quote": "The streets are crowded with buyers, merchants and slaves.",
+    "subject": "Slaves",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a sprawling marketplace named for the duergar's most abundant goods.",
+    "source_quote": "The party made their way to the Blade Bazaar, a sprawling marketplace named for the most abundant goods the duergar offered",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar sells all kinds of non-magical weapons, armor, and shields.",
+    "source_quote": "All kinds of non-magical weapons, armor and shields are available",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Powerful magic items are not sold at the Blade Bazaar.",
+    "source_quote": "powerful magic items are not sold at the bazaar",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Healing potions can be bought in the Darklake district.",
+    "source_quote": "Healing potions can also be bought in the Darklake district",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Heavy armor is available in the Darklake district.",
+    "source_quote": "Thorin asks for heavy armor, which the GM confirms is available in the Darklake district",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is one of the locations listed on the mysterious list of names found by Zalthir.",
+    "source_quote": "one name corresponded to someone in Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum approaches a merchant who initially hurled insults at every customer.",
+    "source_quote": "Gyrgum approached a merchant who hurled insults at every customer until he realized they intended to buy",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir is the merchant who curses Gyrgum 'to the seven heavens' before switching to a posh accent.",
+    "source_quote": "The merchant, Dulgir, curses Gyrgum \"to the seven heavens\" until he learns Gyrgum is buying",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir adopts an eerily posh duergar accent that sounds like the Queen's English when selling to Gyrgum.",
+    "source_quote": "the duergar adopted an eerily posh accent, much like the Queen's English",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir states he has not traveled in foreign lands.",
+    "source_quote": "Merchant: \"No, no, I've not traveled in foreign lands.\"",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum trades his short sword for a ten percent discount on a new mace.",
+    "source_quote": "Gyrgum trades in a short sword he can't use effectively for a ten percent discount on a new mace",
+    "subject": "weapon trade",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum surrenders his short sword as part of the trade.",
+    "source_quote": "offered a ten percent discount on a new mace in exchange for Gyrgum's \"rubbish\" old short sword",
+    "subject": "short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum acquires a new mace from Dulgir.",
+    "source_quote": "offered a ten percent discount on a new mace",
+    "subject": "mace",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum buys a hand axe without a trade-in.",
+    "source_quote": "Gyrgum also buys a hand axe with no trade-in",
+    "subject": "hand axe",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum picks up a light crossbow.",
+    "source_quote": "and picks up a light crossbow",
+    "subject": "light crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses interest in finding a magical light crossbow imbued with a spell.",
+    "source_quote": "Daz expresses interest in finding a magical light crossbow imbued with a spell to aid his accuracy",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz hopes to enchant a crossbow with True Strike for advantage on attacks.",
+    "source_quote": "He hoped to enchant it with True Strike for advantage on attacks",
+    "subject": "True Strike spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz decides against buying anything after research.",
+    "source_quote": "After researching, Daz decides against buying anything: \"I'm happy with what I have and I need to level up before anything makes sense.\"",
+    "subject": "Daz decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for heavy armor.",
+    "source_quote": "Thorin asks for heavy armor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin settles on darts as his ranged weapon.",
+    "source_quote": "Thorin later settles on darts as his ranged weapon after confirming the game isn't using pistols",
+    "subject": "Thorin weapon choice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls a mysterious list of names found while cleaning.",
+    "source_quote": "Zalthir recalled a mysterious list of names he had found while cleaning",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The list of names contains individuals connected to people held as slaves by the drow.",
+    "source_quote": "The individuals on it had some connection to the people held as slaves by the drow",
+    "subject": "list of names",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is the arms dealer the party previously rescued.",
+    "source_quote": "Hemeth, the arms dealer the party previously rescued",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth insists on offering his own wares at a discount after being passed over for Brannum.",
+    "source_quote": "Hemeth, deeply offended at being passed over, insisted on offering his own superior wares at a discount",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hemeth claims his handaxes are so well-made they will be easily reused by whoever kills their owner.",
+    "source_quote": "boasting that his handaxes were so well-made they would be easily reused by whoever killed their owner",
+    "subject": "Hemeth's handaxes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is a captive duergar who previously plotted against the party.",
+    "source_quote": "their captive, Brannum Redmarch, a duergar who had previously plotted against them",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party offers Brannum Redmarch his freedom in exchange for using his underworld connections to procure magical goods.",
+    "source_quote": "They offered him his freedom in exchange for using his underworld connections to procure uncommon magical goods",
+    "subject": "Brannum freedom deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is eager to leave while waiting in the district.",
+    "source_quote": "Buppido is eager to leave",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party has six traveling companions who are willing to wait in the district.",
+    "source_quote": "The GM asks what the party tells its six traveling companions. They are happy to wait in the district",
+    "subject": "six traveling companions",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir expresses interest in acquiring an Eldritch Claw tattoo.",
+    "source_quote": "Zalthir expresses interest in acquiring an Eldritch Claw tattoo, an uncommon magical item",
+    "subject": "Eldritch Claw tattoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum claims he may know a contact who can procure the Eldritch Claw tattoo and requests two days.",
+    "source_quote": "Brannum claims he may know a contact who can procure it, requesting two days",
+    "subject": "tattoo contact search",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum purchases a scroll of Detect Magic.",
+    "source_quote": "Gyrgum purchases scrolls of Detect Magic and Identify",
+    "subject": "scroll of Detect Magic",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum purchases a scroll of Identify.",
+    "source_quote": "Gyrgum purchases scrolls of Detect Magic and Identify",
+    "subject": "scroll of Identify",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The scroll merchant threatens to kill Gyrgum as a haggling technique.",
+    "source_quote": "The merchant threatens to kill Gyrgum \"as a haggling technique\"",
+    "subject": "scroll merchant",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum puts his hand on his weapon in response to the merchant's threat.",
+    "source_quote": "Gyrgum puts his hand on his weapon",
+    "subject": "Gyrgum reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Brannum requests two days to find a contact for the tattoo.",
+    "source_quote": "Give me two days",
+    "subject": "two days",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is described as an erratic and murderous derro companion.",
+    "source_quote": "their erratic and murderous derro companion",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido claims his divine mission demands he visit a personal shrine in the caverns near the city.",
+    "source_quote": "claiming his divine mission demanded he visit a personal shrine in the caverns near the city",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido expects to receive glory and praise at his shrine.",
+    "source_quote": "At the shrine he expects to \"receive the glory and the praise that is due to him.\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido calls the party a bunch of annoying nuisances.",
+    "source_quote": "He calls the party \"a bunch of annoying nuisances\" that he wishes to forget.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido ate a Tongue of Madness mushroom.",
+    "source_quote": "the party has Buppido eat a Tongue of Madness mushroom",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido unleashed a five-day backlog of petty insults against every single member of the party.",
+    "source_quote": "unleashed a five-day backlog of petty insults against every single member of the party",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido screamed at Jimjar to stop betting.",
+    "source_quote": "Buppido screams at Jimjar to stop betting.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is the party's neutral good cleric.",
+    "source_quote": "Killing him in cold blood sat uneasily with Gyrgum, the party's neutral good cleric.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggested they have Buppido try one of the mushrooms.",
+    "source_quote": "Gyrgum suggested they have him \"try one of these.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stated he cannot imagine slaying Buppido in cold blood as a neutral good person.",
+    "source_quote": "Gyrgum: \"As a neutral good person, I can't imagine just slaying him in cold blood.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expressed liking the idea of Buppido forgetting all about the party.",
+    "source_quote": "Gyrgum: \"You know, I kind of like the sound of that, of him forgetting all about us.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum floated marooning Buppido in the Underdark.",
+    "source_quote": "Gyrgum and Zalthir floated marooning him somewhere in the Underdark when they departed.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offered to see if anyone will summon a Demogorgon.",
+    "source_quote": "Gyrgum offers: \"I could see if any of them will summon a Demogorgon.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposed marooning Buppido from the boat.",
+    "source_quote": "Gyrgum proposes marooning him from the boat.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggested turning Buppido loose when they leave the city.",
+    "source_quote": "Gyrgum also suggests simply turning him loose when they leave the city.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir remembered the party's mushrooms.",
+    "source_quote": "Zalthir then remembered the party's mushrooms",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir pointed out that Buppido knows where they are going.",
+    "source_quote": "Zalthir points out that Buppido was present when they found the tomb information",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir noted that Buppido could point the drow pursuers at the tomb.",
+    "source_quote": "\"He knows where we're going\u2026 Which means he could point the drow, the pursuers, at the tomb.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir stated that Buppido is a murderer.",
+    "source_quote": "Zalthir: \"I mean, he is a murderer, though.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggested the mystery contact might be a legal authority.",
+    "source_quote": "Zalthir suggests that the mystery contact from the list might be a legal authority who could take Buppido off their hands.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asked if Buppido might summon another horror.",
+    "source_quote": "Zalthir asks whether Buppido might summon another horror like the one the kuo-toa raised",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalled running away from a religious ceremony that summoned a Kraken.",
+    "source_quote": "\"we literally just ran away from a religious ceremony that summoned a Kraken and that almost ate us.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir stated they should just leave Buppido in the middle of the Underdark.",
+    "source_quote": "Zalthir: \"Just leave him in the middle of the Underdark.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir concluded they could simply cut Buppido loose once they were done with the city.",
+    "source_quote": "By the end of his tirade, Zalthir was convinced they could simply cut him loose once they were done with the city.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin sees only two options for Buppido: let him go on good terms, or kill him.",
+    "source_quote": "Thorin sees only two options: let him go on good terms, or \"make sure Dead Men Tell No Tales type thing.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is a deep gnome with an incurable gambling habit.",
+    "source_quote": "Jimjar, the deep gnome with an incurable gambling habit",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar lamented that he should have wagered on whether Buppido would say exactly that.",
+    "source_quote": "he immediately lamented that he should have wagered on whether Buppido would say exactly that",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar offered two possibilities for the event: either kuo-toa mass psychosis created a god, or it was actually Demogorgon.",
+    "source_quote": "Either the kuo-toa's mass psychosis created a god, or it was actually Demogorgon. \"I don't know which is worse.\"",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar dismissed the idea that Buppido has the power to summon a demon lord like Demogorgon.",
+    "source_quote": "Jimjar dismisses the idea that Buppido has the power to summon a demon lord like Demogorgon.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar replied that he should have bet on Buppido screaming at him.",
+    "source_quote": "Jimjar replies that he should have bet on that.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz wants Buppido locked up or unable to act for a very long time.",
+    "source_quote": "Daz wants Buppido locked up or unable to act \"for a very long time.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls that they tied Buppido up.",
+    "source_quote": "He recalls that they tied Buppido up and that he threatened him.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM warned that Buppido seems to be from this area.",
+    "source_quote": "The GM warns that Buppido seems to be this area",
+    "subject": "GM",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The GM stated that Buppido spent the last five days constructing a long list.",
+    "source_quote": "The GM says Buppido \"spent the last five days constructing this long list.\"",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Buppido is a derro.",
+    "source_quote": "their erratic and murderous derro companion",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Jimjar is a deep gnome.",
+    "source_quote": "Jimjar, the deep gnome with an incurable gambling habit",
+    "subject": "deep gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow pursuers are following the party.",
+    "source_quote": "leading their drow pursuers straight to the tomb",
+    "subject": "drow pursuers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Kuo-toa performed a religious ceremony that summoned a Kraken.",
+    "source_quote": "we literally just ran away from a religious ceremony that summoned a Kraken and that almost ate us",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Kraken was summoned and almost ate the party.",
+    "source_quote": "summoned a Kraken and that almost ate us",
+    "subject": "Kraken",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Demogorgon is a demon lord.",
+    "source_quote": "Jimjar dismisses the idea that Buppido has the power to summon a demon lord like Demogorgon.",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The kuo-toa raised a horror.",
+    "source_quote": "Zalthir asks whether Buppido might summon another horror like the one the kuo-toa raised",
+    "subject": "horror",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses mushrooms called Tongue of Madness.",
+    "source_quote": "Zalthir then remembered the party's mushrooms",
+    "subject": "Tongue of Madness",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Tongue of Madness mushroom reveals the eater's true intentions.",
+    "source_quote": "the party has Buppido eat a Tongue of Madness mushroom to reveal his true intentions",
+    "subject": "Tongue of Madness",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is navigating dangers in Gracklstugh.",
+    "source_quote": "while navigating the dangers of Gracklstugh.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Buppido has a personal shrine in the caverns near the city.",
+    "source_quote": "visit a personal shrine in the caverns near the city",
+    "subject": "personal shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party found the location of a tomb.",
+    "source_quote": "he had been present when they found its location",
+    "subject": "tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Underdark is the region where the party proposes marooning Buppido.",
+    "source_quote": "Gyrgum and Zalthir floated marooning him somewhere in the Underdark when they departed.",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido recited every personal failing he had silently tallied during the journey.",
+    "source_quote": "reciting every personal failing he had silently tallied during their journey together",
+    "subject": "Buppido's tirade",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The tirade ran for about 20 minutes.",
+    "source_quote": "The tirade runs about 20 minutes, with Buppido turning to each person in turn.",
+    "subject": "Buppido's tirade",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido turned to each party member in turn during the tirade.",
+    "source_quote": "The tirade runs about 20 minutes, with Buppido turning to each person in turn.",
+    "subject": "Buppido's tirade",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party debated releasing, killing, or turning Buppido over to authorities.",
+    "source_quote": "The party discusses whether to release, kill, or turn Buppido over to the authorities after his past murderous actions.",
+    "subject": "Buppido's fate",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The mystery contact from a list might be a legal authority who could take Buppido.",
+    "source_quote": "Zalthir suggests that the mystery contact from the list might be a legal authority who could take Buppido off their hands.",
+    "subject": "Buppido's fate",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The kuo-toa ritual potentially created a god via mass psychosis.",
+    "source_quote": "Either the kuo-toa's mass psychosis created a god",
+    "subject": "Ku-toa ritual",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gyrgum haggles for scrolls in the Blade Bazaar.",
+    "source_quote": "While Gyrgum haggled for his scrolls",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A merchant breaks off mid-sale to threaten to kill Gyrgum.",
+    "source_quote": "the merchant broke off mid-sale to threaten to kill him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum senses there is something off about the second duergar merchant he sees behaving oddly.",
+    "source_quote": "Gyrgum rolls Insight (15) and senses \"there's something off.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders if the merchants are talking to invisible duergar.",
+    "source_quote": "Gyrgum wonders whether they are talking to invisible duergar.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks if the merchants see into the Ethereal Plane like seeing dead people.",
+    "source_quote": "Is it like they see dead people?\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "One duergar merchant consults a twin brother who does not exist.",
+    "source_quote": "One duergar merchant kept consulting a twin brother who did not exist.",
+    "subject": "duergar merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One duergar merchant quotes wildly different prices from moment to moment, insisting the buyers change the terms.",
+    "source_quote": "Others quoted wildly different prices for the same goods from one moment to the next, insisting it was the buyers who kept changing the terms.",
+    "subject": "duergar merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One duergar merchant turns completely invisible mid-transaction but continues speaking.",
+    "source_quote": "one merchant turned completely invisible in the middle of a transaction and simply continued speaking as though nothing had happened",
+    "subject": "duergar merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One duergar confirms a merchant is an only child with no twin brother.",
+    "source_quote": "there's no twin brother. He's an only child.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Creeping madness seems to have seeped into the stones of Gracklstugh.",
+    "source_quote": "seemed to have seeped into the very stones of Gracklstugh itself",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Madness showed itself in the frenzy of the kuo-toa and their summoned horror.",
+    "source_quote": "shown itself in the frenzy of the kuo-toa and their summoned horror",
+    "subject": "kuo-toa frenzy",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The kuo-toa exhibited a frenzy indicative of madness.",
+    "source_quote": "frenzy of the kuo-toa and their summoned horror",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gyrgum senses something deeply wrong with the duergar of the city.",
+    "source_quote": "Gyrgum senses something deeply wrong with the duergar of the city",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A stone giant arrives as Gyrgum looks around outside the bazaar.",
+    "source_quote": "looks around just as the stone giant arrives",
+    "subject": "stone giant arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stone giant arrives at the location outside the bazaar.",
+    "source_quote": "looks around just as the stone giant arrives",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum and Hemeth leave for an errand marked by an arrow on the map.",
+    "source_quote": "Brannum and Hemeth go off on their errand, marked by an arrow on the map.",
+    "subject": "Brannum and Hemeth errand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum goes off on an errand.",
+    "source_quote": "Brannum and Hemeth go off on their errand",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth goes off on an errand.",
+    "source_quote": "Brannum and Hemeth go off on their errand",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The two-headed stone giant has gray skin and is howling with wild-eyed madness.",
+    "source_quote": "A two-headed stone giant, gray-skinned and howling with wild-eyed madness",
+    "subject": "two-headed stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two-headed stone giant burst through one of the district's gates.",
+    "source_quote": "burst through one of the district's gates",
+    "subject": "giant bursts through gate",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The two-headed stone giant sends rock and debris scattering across the plaza.",
+    "source_quote": "lashing out in every direction, sending rock and debris scattering across the plaza",
+    "subject": "two-headed stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A duergar soldier's broken body flies through the air and crashes near the party's feet.",
+    "source_quote": "A duergar soldier's broken body flew through the air and crashed near the party's feet",
+    "subject": "duergar soldier",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The two-headed stone giant's frenzied gaze locks onto the party.",
+    "source_quote": "the giant's frenzied gaze locked onto them",
+    "subject": "two-headed stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recognizes that the giant's behavior is deeply wrong.",
+    "source_quote": "Thorin recognized immediately that this was deeply wrong",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stone giants are among the most taciturn and reserved creatures in existence.",
+    "source_quote": "Stone giants were among the most taciturn and reserved creatures in existence",
+    "subject": "stone giants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's instinct is to stop the creature before it rampaged through the marketplace.",
+    "source_quote": "Zalthir's instinct was to stop the creature before it rampaged through the marketplace",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir wants to protect the merchants and their goods in the marketplace.",
+    "source_quote": "smashed the merchants and their goods",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM points out that helping the law-respecting duergar might earn the strangers some goodwill.",
+    "source_quote": "GM pointed out that helping the law-respecting duergar might earn the strangers some goodwill",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum raises his holy symbol and brandishes it at the giant.",
+    "source_quote": "Gyrgum raised his holy symbol and brandished it at the giant",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The plaza contains rock and stone debris from the giant's attack.",
+    "source_quote": "littering the plaza with rock and stone debris",
+    "subject": "plaza",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Most duergar get out of the way and the giant barrels straight at Gyrgum.",
+    "source_quote": "Most duergar get out of the way, and the giant barrels straight at Gyrgum",
+    "subject": "giant barrels at Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls Investigation (15) to test for illusion.",
+    "source_quote": "Gyrgum rolls Investigation (15) to test for illusion",
+    "subject": "Gyrgum rolls Investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A pebble of debris strikes Gyrgum's foot for no damage.",
+    "source_quote": "A pebble of debris strikes his foot for no damage",
+    "subject": "pebble strikes Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes the extreme abnormality of a stone giant acting with such chaotic violence.",
+    "source_quote": "Thorin notes the extreme abnormality of a stone giant acting with such chaotic violence",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM states that stone giants make Zalthir look like an overly talkative human being.",
+    "source_quote": "stone giants \"make Zalthir look like an overly talkative human being\"",
+    "subject": "GM",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he is very confused by the whole thing.",
+    "source_quote": "Thorin: \"I'm very confused by the whole thing.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM notes that helping the duergar might earn brownie points.",
+    "source_quote": "helping the duergar might earn \"brownie points\"",
+    "subject": "GM",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks whether this is a fight they can win or another kraken.",
+    "source_quote": "Zalthir asks whether this is a fight they can win or another kraken",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM confirms they can fight the giant.",
+    "source_quote": "GM confirms they can fight it",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM confirms that duergar troops will arrive.",
+    "source_quote": "GM confirms they can fight it and that duergar troops will arrive",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The initiative order has Daz at 19 and Zalthir at 16.",
+    "source_quote": "Initiative: Daz 19, Zalthir 16",
+    "subject": "initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The giant has about 100 and something hit points.",
+    "source_quote": "The giant has \"about 100 and something\" hit points",
+    "subject": "two-headed stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz launches magical bolts of force that unerringly strike the stone giant.",
+    "source_quote": "Daz opens the engagement by launching magical bolts of force that unerringly strike the stone giant",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Magic Missile deals 15 damage to the giant.",
+    "source_quote": "Magic Missile deals 15 damage",
+    "subject": "Magic Missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rushes into melee range and conjures a sphere of magical darkness to blind the creature.",
+    "source_quote": "Zalthir rushes into melee range and conjures a sphere of magical darkness to blind the creature",
+    "subject": "Zalthir conjures darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir follows up with Flurry of Blows.",
+    "source_quote": "He follows with Flurry of Blows",
+    "subject": "Zalthir Flurry of Blows",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The first extra attack from Flurry of Blows misses.",
+    "source_quote": "The first extra attack misses",
+    "subject": "Zalthir attack miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's focus-point attack hits for 7 damage.",
+    "source_quote": "and a focus-point attack hits for 7",
+    "subject": "Zalthir focus-point attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM suggests repositioning the sphere so that Daz keeps line of sight for his spells.",
+    "source_quote": "GM later suggests repositioning the sphere so that Daz keeps line of sight for his spells",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin charges in to strike the giant with his short sword.",
+    "source_quote": "Thorin exploits the giant's blindness, charging in to strike with his short sword",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attacks with advantage and deals 6 damage.",
+    "source_quote": "He attacks with advantage and deals 6 damage",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin holds his Action Surge in reserve.",
+    "source_quote": "holding his Action Surge in reserve",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels radiant divine energy through his holy symbol that sears the giant's flesh.",
+    "source_quote": "Gyrgum channels radiant divine energy through his holy symbol that sears the giant's flesh",
+    "subject": "Gyrgum radiant damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant fails a DC 13 Constitution save.",
+    "source_quote": "The giant fails a DC 13 Constitution save",
+    "subject": "Giant Constitution save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant takes 11 radiant damage.",
+    "source_quote": "and takes 11 radiant damage",
+    "subject": "Giant radiant damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant, driven by madness, lashes out blindly at Thorin.",
+    "source_quote": "The giant, driven by madness, lashes out blindly at Thorin",
+    "subject": "Giant attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deflects the giant's blow.",
+    "source_quote": "and Zalthir deflects the blow",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant attacks with disadvantage and rolls a 25 (+9).",
+    "source_quote": "The giant attacks with disadvantage and rolls a 25 (+9)",
+    "subject": "Giant attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's attack deals 10 bludgeoning damage.",
+    "source_quote": "for 10 bludgeoning damage",
+    "subject": "Bludgeoning damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's deflection reduces damage by 1d10 plus a modifier.",
+    "source_quote": "The deflection, a reaction that reduces damage by 1d10 plus a modifier",
+    "subject": "Zalthir deflection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "No damage is taken due to the deflection.",
+    "source_quote": "means no damage is taken",
+    "subject": "No damage taken",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A squad of duergar city guards comes rushing into the plaza.",
+    "source_quote": "a squad of duergar city guards came rushing into the plaza",
+    "subject": "duergar city guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The duergar city guards are weapons drawn, ready to join the fray.",
+    "source_quote": "weapons drawn, ready to join the fray",
+    "subject": "duergar city guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two guards act at initiative 10.",
+    "source_quote": "Two guards act at initiative 10",
+    "subject": "Guards initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz moves to see around the darkness.",
+    "source_quote": "Daz moves to see around the darkness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hits with Magic Missile for 9 damage.",
+    "source_quote": "hits with Magic Missile for 9",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits for 11 damage.",
+    "source_quote": "Zalthir hits for 11",
+    "subject": "Zalthir damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks again with a focus point.",
+    "source_quote": "and attacks again with a focus point",
+    "subject": "Zalthir focus point",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses a feinting attack (+1d8).",
+    "source_quote": "Thorin uses a feinting attack (+1d8)",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits on a 17 for 9 damage.",
+    "source_quote": "hitting on a 17 for 9",
+    "subject": "Thorin hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals another 7 damage.",
+    "source_quote": "and then another 7",
+    "subject": "Thorin second hit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum moves around the darkness.",
+    "source_quote": "Gyrgum moves around the darkness",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits with a crossbow bolt (17) for 9 damage.",
+    "source_quote": "hits with a crossbow bolt (17) for 9",
+    "subject": "Gyrgum crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session stops with the duergar guards up next.",
+    "source_quote": "The session stops with the duergar guards up next",
+    "subject": "Session end",
+    "quote_verified": true
+  }
+]

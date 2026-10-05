@@ -1,0 +1,191 @@
+[
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull is the patron of the party and a member of the Stone Guard.",
+    "source_quote": "Their patron, Captain Errde Blackskull of the Stone Guard",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is the organization to which Captain Errde Blackskull belongs.",
+    "source_quote": "Captain Errde Blackskull of the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a city where Captain Errde Blackskull asked the party to investigate a disturbing rumor.",
+    "source_quote": "asked them to look into a disturbing rumor circulating through the city of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl Forgebrand is introduced by Errde as her subordinate and a resource for the party.",
+    "source_quote": "She introduced her subordinate, Grimholl Forgebrand",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl describes finding bodies with no visible wounds, such as sword cuts or burns.",
+    "source_quote": "Grimholl Forgebrand, who described finding bodies with no visible wounds: no sword cuts, no burns, no magical residue",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl reports that the clerics stated the victims could not be revived.",
+    "source_quote": "Grimholl reports that the clerics said the victims couldn't be revived",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl believes psionic assassins are responsible for the deaths.",
+    "source_quote": "leading him to believe psionic assassins are responsible",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl states that the killers use their minds to cast invisible blades.",
+    "source_quote": "He adds that the killers use \"their mind to cast these blades that would kill you... Nobody could ever see the blades, but you die.\"",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde rolls her eyes in response to Grimholl's explanation of the psionic blades.",
+    "source_quote": "Errde's eyes roll",
+    "subject": "Errde rolling eyes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde gropes for the right managerial word when calling Grimholl a resource.",
+    "source_quote": "Errde calls him in as one of her \"resources\", after groping for the right managerial word for her subordinates",
+    "subject": "Errde groping for word",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are a supposed order of psionic assassins.",
+    "source_quote": "a supposed order of psionic assassins known as the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Forak-Erach-Naek is an alternative name for the Empty-Scabbard Killers.",
+    "source_quote": "known as the Empty-Scabbard Killers or the Forak-Erach-Naek",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The name Forak-Erach-Naek is derived from an ancient, obscure dwarvish dialect.",
+    "source_quote": "their name derived from an ancient, obscure dwarvish dialect",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Forak-Erach-Naek are said to practice disciplines unknown to derro or priests.",
+    "source_quote": "They are said to practice \"disciplines unknown even to the savviest of derro or the wisest priest.\"",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde views the Forak-Erach-Naek as a story used to keep children quiet.",
+    "source_quote": "a story that old women and men tell their grandchildren to keep them quiet at night",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wonders aloud if he should have chosen the Psi Warrior subclass over Battle Master.",
+    "source_quote": "Thorin wonders aloud whether he should have picked Psi Warrior over Battle Master",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz makes a quip about 'those blades' being used alongside a dagger.",
+    "source_quote": "Daz quips about \"those blades\" being used alongside a dagger \"so I've heard.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks who discovered the body that Errde's clan lost.",
+    "source_quote": "When Gyrgum asks who discovered the body",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde personally found one of the bodies of the victims.",
+    "source_quote": "she herself had found one of the bodies",
+    "subject": "Errde finding body",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde snaps at Gyrgum, asserting that she was the one who found the dead body.",
+    "source_quote": "it was I who found the dead body. Is there some kind of implication you're making?",
+    "subject": "Errde finding body",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are an extensive network beneath Gracklstugh.",
+    "source_quote": "pointed the party toward the Whorlstone Tunnels beneath Gracklstugh",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are rumored to be a hiding place for the killers or those responsible.",
+    "source_quote": "as a possible hiding place for whoever, or whatever, was responsible",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two members of Errde's clan have died under mysterious circumstances.",
+    "source_quote": "two members of her own clan had died under these same mysterious circumstances",
+    "subject": "death of two clan members",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The victim died in his own household while in the prime of his health.",
+    "source_quote": "The victim was in the prime of his health and died in his own household",
+    "subject": "victim death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde's clan had all eaten the same food prior to the victim's death.",
+    "source_quote": "the clan had all eaten the same food",
+    "subject": "clan meal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bodies currently have no visible wounds, such as sword cuts, burns, or magical residue.",
+    "source_quote": "finding bodies with no visible wounds: no sword cuts, no burns, no magical residue",
+    "subject": "bodies",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "No body is currently available for the party to examine.",
+    "source_quote": "No body is currently available for the party to examine",
+    "subject": "bodies",
+    "quote_verified": true
+  }
+]

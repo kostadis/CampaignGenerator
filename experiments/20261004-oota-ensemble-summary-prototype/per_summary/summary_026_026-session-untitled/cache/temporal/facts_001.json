@@ -1,0 +1,58 @@
+[
+  {
+    "type": "date",
+    "fact": "The party finished leveling to 5th level before play began.",
+    "source_quote": "Before play, the party finished leveling to 5th.",
+    "subject": "session progression",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The passage at the West Cleft exit is 30 feet long and 20 feet wide.",
+    "source_quote": "a 30-foot passage, 20 feet wide",
+    "subject": "West Cleft passage dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir spotted five invisible Duergar soldiers positioned throughout the hallway.",
+    "source_quote": "spotted five invisible Duergar soldiers",
+    "subject": "invisible Duergar soldiers count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Duergar patrols were present at the checkpoint.",
+    "source_quote": "heavy tread of Duergar patrols",
+    "subject": "Duergar patrol species",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Gorglak is a Duergar.",
+    "source_quote": "scarred Duergar captain named Gorglak",
+    "subject": "Gorglak species",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The first guard identified the party members as drow, orc, dwarf, and not a red dragonborn.",
+    "source_quote": "identified each member's species one by one: drow, orc, dwarf, and 'not a red dragonborn'",
+    "subject": "Guard species identification",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The area around the West Cleft exit was under lockdown.",
+    "source_quote": "This area has been put under lockdown",
+    "subject": "Gorglak lockdown status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 15 on his insight check regarding the bribe.",
+    "source_quote": "Daz's insight roll was 15",
+    "subject": "Daz insight roll",
+    "quote_verified": true
+  }
+]

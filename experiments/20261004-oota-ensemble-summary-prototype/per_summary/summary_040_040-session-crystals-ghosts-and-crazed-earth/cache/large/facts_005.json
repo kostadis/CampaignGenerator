@@ -1,0 +1,149 @@
+[
+  {
+    "type": "event",
+    "fact": "The party entered abandoned residential caverns marked by carnage from the old drow assault.",
+    "source_quote": "the party entered abandoned residential caverns devoid of warmth or joy and marked by carnage from the old drow assault",
+    "subject": "exploration of residential caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A furious deep gnome ghost appeared and attacked the party.",
+    "source_quote": "A furious deep gnome ghost appeared and attacked",
+    "subject": "Udhask's Ghost attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A furious deep gnome ghost appeared and attacked the party.",
+    "source_quote": "A furious deep gnome ghost appeared and attacked",
+    "subject": "Udhask's Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir struck the ghost repeatedly.",
+    "source_quote": "Zalthir struck it repeatedly",
+    "subject": "Zalthir's melee attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost cried, \u201cThey\u2019re coming! Everyone must hide!\u201d after being struck.",
+    "source_quote": "prompting the spirit to cry, \u201cThey\u2019re coming! Everyone must hide!\u201d",
+    "subject": "Ghost's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The ghost became frightened.",
+    "source_quote": "The party realized it had become frightened",
+    "subject": "Udhask's Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalled that frightened ghosts sometimes retreat to their lairs, possibly near treasure.",
+    "source_quote": "Gyrgum recalled that frightened ghosts sometimes retreat to their lairs\u2014and possibly their treasure",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum struck the ghost to frighten it further without destroying it.",
+    "source_quote": "After Gyrgum struck it once more, the ghost disengaged",
+    "subject": "Gyrgum's non-lethal strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost turned ethereal and fled into a nearby burrow.",
+    "source_quote": "the ghost disengaged, turned ethereal, and fled into a nearby burrow",
+    "subject": "Ghost's retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask's ghost fled into a nearby burrow.",
+    "source_quote": "fled into a nearby burrow",
+    "subject": "Udhask's Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party followed the ghost into the burrow.",
+    "source_quote": "The party followed",
+    "subject": "Party pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The burrow contained skeletal remains beside a stone bed.",
+    "source_quote": "the party followed and found skeletal remains beside a stone bed",
+    "subject": "Udhask's burrow",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Just before vanishing, the ghost appeared to reach beneath the bed.",
+    "source_quote": "Just before vanishing, the ghost had appeared to reach beneath that bed",
+    "subject": "Ghost's final gesture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party uncovered a hidden compartment containing gems and a potion.",
+    "source_quote": "leading the adventurers to uncover a hidden compartment containing six gems worth six hundred gold pieces each and a potion of invisibility",
+    "subject": "Discovery of compartment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden compartment contained six gems worth six hundred gold pieces each.",
+    "source_quote": "containing six gems worth six hundred gold pieces each",
+    "subject": "Six Gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden compartment contained a potion of invisibility.",
+    "source_quote": "and a potion of invisibility",
+    "subject": "Potion of Invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The bones bore no signs of violent death, leaving the cause of death unknown.",
+    "source_quote": "The bones bore no signs of violent death, leaving the exact cause of death unknown",
+    "subject": "Bone examination",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The skeletal remains belonged to Udhask.",
+    "source_quote": "The remains belonged to Udhask",
+    "subject": "Udhask",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger wanted the spirit of Udhask rescued.",
+    "source_quote": "belonged to Udhask, one of the spirits Burrow Warden Jadger wanted rescued",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party collected the bones to return them to the temple.",
+    "source_quote": "The party collected the bones so they could return them to the temple and restore the ghost",
+    "subject": "Recovery of bones",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The exact cause of Udhask's death remains unknown.",
+    "source_quote": "leaving the exact cause of death unknown",
+    "subject": "Udhask's cause of death",
+    "quote_verified": true
+  }
+]

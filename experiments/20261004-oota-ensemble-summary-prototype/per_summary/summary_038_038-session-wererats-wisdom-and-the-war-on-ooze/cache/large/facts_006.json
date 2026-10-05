@@ -1,0 +1,191 @@
+[
+  {
+    "type": "npc",
+    "fact": "Bystanders in Blingdenstone pretended to work while listening to the party's report.",
+    "source_quote": "bystanders pretended to work while straining to overhear their report",
+    "subject": "Bystanders in Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo asked if the party had dealt with his ooze problem.",
+    "source_quote": "Chief Dorbo demanded, \u201cHas my ooze problem been dealt with?\u201d",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo reacted to the news of the Pudding King by calling the situation awful, terrible, catastrophic, and cataclysmic.",
+    "source_quote": "Dorbo called the situation awful, terrible, catastrophic, and cataclysmic",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo described the party's plan as \"the dumbest plan I\u2019ve heard ever.\"",
+    "source_quote": "Dorbo called it \u201cthe dumbest plan I\u2019ve heard ever,\u201d",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposed that his motivational speech to Blingdenstone's army would distract the oozes while the party killed their king.",
+    "source_quote": "The plan is I make a motivational speech to your army, and they distract the oozes while we kill their king",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni told Chief Dorbo that he had spoken enough during the presentation.",
+    "source_quote": "Senni told him that he had spoken enough",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni asked Chief Dorbo if he had a better plan than the party's.",
+    "source_quote": "Senni told him ... and asked whether he possessed a better one",
+    "subject": "Senni",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners' Guild.",
+    "source_quote": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners\u2019 Guild",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni accepted the party's takeover of the command structure and tasked them with securing Clan Goldwhisker's alliance.",
+    "source_quote": "Senni then accepted the arrangement and tasked the party with securing Clan Goldwhisker\u2019s alliance",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The assembled deep gnomes extinguished the lights in the chamber at Zalthir's request.",
+    "source_quote": "The assembled deep gnomes eagerly extinguished the lights",
+    "subject": "deep gnomes extinguish lights",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Pudding King controls a throne room covered in slime and commands hundreds of oozes.",
+    "source_quote": "They reveal the Pudding King, his slime-covered throne room, and the hundreds of oozes gathered under his control",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asked for dim light to demonstrate his plan's viability.",
+    "source_quote": "Zalthir asked for dim light",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir teleported around the chamber, performed flips, and threw punches in the air in the dim light.",
+    "source_quote": "teleport around the chamber, perform flips, and throw punches in the air",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni understood that Zalthir would infiltrate the throne room, seize the Pudding King, and kill or extract him while Blingdenstone's forces occupied the ooze army.",
+    "source_quote": "Senni understood immediately: Zalthir would infiltrate the throne room, seize the Pudding King, and kill or extract him while Blingdenstone\u2019s forces occupied the ooze army",
+    "subject": "Zalthir's infiltration plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar wagered with Chief Dorbo that everyone would be living happily ever after when the mission was done.",
+    "source_quote": "Jimjar then made an extraordinary wager in the party\u2019s favor, telling Dorbo, \u201cI\u2019ll make you a bet that by the time this is all done, we\u2019re all going to be living happily ever after.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar's willingness to bet on the party's success helped move the skeptical Chief Dorbo.",
+    "source_quote": "His willingness to bet on them helped move the skeptical chief",
+    "subject": "Jimjar's wager influences Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo argued that Blingdenstone's forces were not prepared to fight oozes and lacked allies and equipment.",
+    "source_quote": "Dorbo still argued that Blingdenstone\u2019s forces were not prepared to fight oozes and that they needed allies and equipment",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo attempted to exclude Clan Goldwhisker from the clan meeting.",
+    "source_quote": "Dorbo attempted to exclude Clan Goldwhisker, insisting that its members were not even gnomes",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo claimed he would accept Clan Goldwhisker's participation only if they acknowledged his authority.",
+    "source_quote": "When Dorbo suggested that the Goldwhiskers could participate only if they acknowledged his authority",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker members are lycanthropes who transform into rats.",
+    "source_quote": "they were lycanthropes who merely transformed into rats",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker members have immunity to ordinary weapons.",
+    "source_quote": "their immunity to ordinary weapons could make them invaluable against oozes",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz seized control of the meeting to declare that the adventurers would command the operation.",
+    "source_quote": "Daz seized control of the meeting. He declared that the adventurers\u2014not the rival gnome leaders\u2014would command the operation",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz stated that the adventurers figured out the solution and would be in charge.",
+    "source_quote": "\u201cWe figured it out, and we\u2019re going to be in charge of it.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz declared that the party would solve Blingdenstone's problem without the interference of the gnome leaders.",
+    "source_quote": "without the bickering of those whose political conflict had helped create the current crisis",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The room fell silent when Daz asserted the adventurers' command over the gnome leaders.",
+    "source_quote": "The room fell silent at the \u201cmanagement coup.\u201d",
+    "subject": "management coup",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stoneheart Enclave is included in the full clan meeting called by Senni.",
+    "source_quote": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners\u2019 Guild",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Miners' Guild is included in the full clan meeting called by Senni.",
+    "source_quote": "Senni called for a full clan meeting involving the Stoneheart Enclave and the Miners\u2019 Guild",
+    "subject": "Miners' Guild",
+    "quote_verified": true
+  }
+]

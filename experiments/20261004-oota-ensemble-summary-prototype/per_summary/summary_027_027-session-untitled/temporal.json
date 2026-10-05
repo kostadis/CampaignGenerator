@@ -1,0 +1,198 @@
+[
+  {
+    "type": "location",
+    "fact": "There are three gates separating the industrial heart of Gracklstugh from the Darklake.",
+    "source_quote": "The DM marks three gates the party could use to leave Gracklstugh.",
+    "subject": "Gracklstugh gates",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is positioned near Laduguer's Furrow in the industrial heart of Gracklstugh.",
+    "source_quote": "The party assesses their position near Laduguer's Furrow",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 13 on a Persuasion check to convince Themberchaud to visit the docks.",
+    "source_quote": "Gyrgum's Persuasion roll was a middling 13",
+    "subject": "persuasion check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is newly level five.",
+    "source_quote": "Zalthir, newly level five",
+    "subject": "Zalthir level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a natural 3 plus a bonus d10 on an Acrobatics check and fails to secure himself.",
+    "source_quote": "Thorin rolls a natural 3 +4, then uses a 1d10 boost and still fails",
+    "subject": "thorin acrobatics check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 19 on Acrobatics to catch the rope thrown by Jimjar.",
+    "source_quote": "Gyrgum catches it with a 19 on Acrobatics",
+    "subject": "gyrgum acrobatics check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party faces DC 13 Athletics or Acrobatics checks during the dragon's maneuver.",
+    "source_quote": "It called for DC 13 Athletics or Acrobatics checks",
+    "subject": "dc difficulty",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a natural 20 on Insight to determine the crowd's perception.",
+    "source_quote": "Daz rolled a natural 20 on Insight",
+    "subject": "daz insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "In the rumor spread by the citizens, Daz is believed to be an 18th-level mage.",
+    "source_quote": "In rumor, Daz is an 18th-level mage able to cast Meteor Swarm",
+    "subject": "Daz rumor level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rolls 15, 15, and 18 on Investigation and Insight to observe the duergar.",
+    "source_quote": "The party rolls Investigation and Insight (15, 15, 18)",
+    "subject": "crowd perception checks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Lost Tomb is four days' travel by boat.",
+    "source_quote": "the tomb was four days' travel by boat",
+    "subject": "travel to Lost Tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Three days pass into the voyage before the stirge ambush.",
+    "source_quote": "Three days into their voyage",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stirges have 2 hit points each.",
+    "source_quote": "2 hit points each",
+    "subject": "stirge",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stirges have an Armor Class of 14.",
+    "source_quote": "with AC 14, 2 hit points each",
+    "subject": "stirge",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stirges have a bite attack dealing 1d4+3 piercing damage.",
+    "source_quote": "1d4+3 piercing bite",
+    "subject": "stirge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses a 15-foot cone of fire to attack the stirges.",
+    "source_quote": "unleashed a 15-foot cone of searing fire",
+    "subject": "Zalthir fire attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three stirges are incinerated by Zalthir's fire cone.",
+    "source_quote": "incinerated three of the creatures",
+    "subject": "stirge killed by Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has an Armor Class of 14.",
+    "source_quote": "latch onto Gyrgum (AC 14)",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A stirge drains 4 damage from Gyrgum.",
+    "source_quote": "drain his blood for 4 damage",
+    "subject": "Gyrgum blood drain",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has an Armor Class of 11.",
+    "source_quote": "Daz (AC 11) deflects a swooping stirge",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin kills two stirges.",
+    "source_quote": "cleaves through two of the creatures",
+    "subject": "stirge killed by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 for stealth.",
+    "source_quote": "Thorin rolls with disadvantage in chain mail and gets 15",
+    "subject": "stealth roll Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 20 and a 21 when killing stirges.",
+    "source_quote": "rolling 20 and 21",
+    "subject": "Thorin sword rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Zalthir's darkness spell lasts up to 10 minutes.",
+    "source_quote": "spell lasts up to 10 minutes",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirges are dead after the encounter, leaving a bloody mess on the deck.",
+    "source_quote": "strike the remaining stirges, leaving a bloody mess on the deck",
+    "subject": "stirge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The journey to the Hidden Shore took four days in total.",
+    "source_quote": "the only encounter of the four-day journey",
+    "subject": "journey duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The final two days of the journey were uneventful.",
+    "source_quote": "Two more uneventful days pass",
+    "subject": "uneventful days",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stirge swarm was the only combat encounter during the four-day journey.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "stirge",
+    "quote_verified": true
+  }
+]

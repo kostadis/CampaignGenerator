@@ -1,0 +1,247 @@
+[
+  {
+    "type": "object",
+    "fact": "The party found a volume called The Rituals of the Two-Headed Beast in the ritual chamber.",
+    "source_quote": "a volume called The Rituals of the Two-Headed Beast",
+    "subject": "The Rituals of the Two-Headed Beast",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Rituals of the Two-Headed Beast details methods to drive stone giants mad and warp them into two-headed monstrosities.",
+    "source_quote": "laid bare the methods the cult had used to drive stone giants mad and warp them into two-headed monstrosities",
+    "subject": "The Rituals of the Two-Headed Beast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offered a quiet prayer to Bahamut.",
+    "source_quote": "Gyrgum offered a quiet prayer to Bahamut",
+    "subject": "Gyrgum's prayer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum removed a key from around Narrak's neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Key retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The key was removed from around Narrak's neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Key",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There was an iron chest in the ritual chamber.",
+    "source_quote": "open an iron chest",
+    "subject": "Iron chest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin used the key to carefully open the iron chest.",
+    "source_quote": "Thorin used the key to carefully open an iron chest",
+    "subject": "Thorin opens chest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin stood well to the side while opening the iron chest to avoid potential traps.",
+    "source_quote": "standing well to the side, just in case",
+    "subject": "Thorin's caution",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A small leather bag was found inside the iron chest.",
+    "source_quote": "a small leather bag",
+    "subject": "Leather bag",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The leather bag contained 45 gold pieces.",
+    "source_quote": "45 gold",
+    "subject": "45 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The leather bag contained 15 silver pieces.",
+    "source_quote": "15 silver pieces",
+    "subject": "15 silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained five doses of Keoghtom's Ointment.",
+    "source_quote": "five doses of Keoghtom's Ointment",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Keoghtom's Ointment is a rare healing salve that mends wounds and purges poison.",
+    "source_quote": "rare and powerful healing salve that mends wounds and purges poison from the body",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party took stock of the texts, evidence of collusion, dragon egg, and passes.",
+    "source_quote": "The party then took stock of everything they had gathered",
+    "subject": "Party inventory review",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has evidence of the king's collusion with assassins.",
+    "source_quote": "the evidence of the king's collusion with assassins",
+    "subject": "Evidence of collusion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a red dragon egg.",
+    "source_quote": "the red dragon egg",
+    "subject": "Red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses passes that allow them to leave with their gathered items.",
+    "source_quote": "a couple of passes that would let them walk out with all of it",
+    "subject": "Passes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bet that the party would want to hold on to some of the gathered items.",
+    "source_quote": "Jimjar bet that they would want to hold on to some of it for later",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a small fungal creature.",
+    "source_quote": "the small fungal creature Stool",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool tugged at Zalthir's sleeve.",
+    "source_quote": "Stool tugged at Zalthir's sleeve",
+    "subject": "Stool reminds Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool reminded Zalthir that they still needed to go rescue Rumpadump.",
+    "source_quote": "reminded him... that they still needed to go rescue Rumpadump",
+    "subject": "Rescue reminder",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir was reminded by Stool to rescue Rumpadump.",
+    "source_quote": "reminded him... that they still needed to go rescue Rumpadump",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had a key around his neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had been reading The Rituals of the Two-Headed Beast.",
+    "source_quote": "a volume titled 'The Rituals of the Two-Headed Beast', which Narrak had been reading",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two-foot-tall statue does not come alive.",
+    "source_quote": "The GM clarifies that it does not come alive",
+    "subject": "Statue clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ritual turns a stone giant mad and gives it another head.",
+    "source_quote": "the ritual \"turns one of the stone giants mad and gives it another head\"",
+    "subject": "Ritual effect",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party killed two members of the Council of Savants.",
+    "source_quote": "political implications of having killed two members of the Council of Savants",
+    "subject": "Council members killed",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is a council whose members were killed by the party.",
+    "source_quote": "killed two members of the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The king has been working with assassins to kill members of her clan.",
+    "source_quote": "the king has been working with the assassins to kill members of her clan",
+    "subject": "King's collusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin joked about installing democracy.",
+    "source_quote": "Thorin jokes about regime change and \"installing democracy\"",
+    "subject": "Thorin's joke",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum countered Thorin's joke by noting that installing chaos would be straightforward.",
+    "source_quote": "Gyrgum counters that \"if we wanted to install some sort of system of chaos, that would be straightforward\"",
+    "subject": "Gyrgum's counter",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party members looked funny at a member who mentioned eating the egg.",
+    "source_quote": "\"everybody kind of looks at you funny\"",
+    "subject": "Party reaction to egg comment",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a friend of the party who needs to be rescued.",
+    "source_quote": "go rescue Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool asked the party to open the cell.",
+    "source_quote": "asks them to \"just open the cell\"",
+    "subject": "Stool's request",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "There is a cell that needs to be opened.",
+    "source_quote": "asks them to \"just open the cell\"",
+    "subject": "Cell",
+    "quote_verified": false
+  }
+]

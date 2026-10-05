@@ -1,0 +1,282 @@
+[
+  {
+    "type": "npc",
+    "fact": "Buppido is an erratic and murderous derro.",
+    "source_quote": "their erratic and murderous derro companion",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is growing increasingly anxious to leave the party.",
+    "source_quote": "Buppido had been growing increasingly anxious to leave",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido claims his divine mission demands he visit a personal shrine in the caverns near the city.",
+    "source_quote": "claiming his divine mission demanded he visit a personal shrine in the caverns near the city",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is the party's neutral good cleric.",
+    "source_quote": "Gyrgum, the party's neutral good cleric",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido insists that life is too short for grudges and that the divine plan requires them to part ways.",
+    "source_quote": "insisting that life was too short for grudges and that the divine plan simply required them to part ways",
+    "subject": "Buppido's philosophical accommodation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido asks if they can declare their relationship over so he can pursue his divine mission.",
+    "source_quote": "\"Can we just declare our relationship over and I could go back to pursuing my divine mission?\"",
+    "subject": "Buppido's proposal to leave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin sees only two options for Buppido: let him go on good terms or kill him to ensure he tells no tales.",
+    "source_quote": "Thorin sees only two options: let him go on good terms, or \"make sure Dead Men Tell No Tales type thing.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir points out that Buppido knows the tomb's location and could point drow pursuers there.",
+    "source_quote": "Zalthir points out that Buppido was present when they found the tomb information: \"He knows where we're going\u2026 Which means he could point the drow, the pursuers, at the tomb.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he cannot imagine slaying Buppido in cold blood because he is a neutral good person.",
+    "source_quote": "Gyrgum: \"As a neutral good person, I can't imagine just slaying him in cold blood.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that Buppido is a murderer.",
+    "source_quote": "Zalthir: \"I mean, he is a murderer, though.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests a mystery contact from the list might be a legal authority who could take Buppido off their hands.",
+    "source_quote": "Zalthir suggests that the mystery contact from the list might be a legal authority who could take Buppido off their hands.",
+    "subject": "legal authority suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM warns that Buppido seems to be from the area, so his other connections are unknown.",
+    "source_quote": "The GM warns that Buppido seems to be from this area, \"so you never know who else he knows.\"",
+    "subject": "Buppido's local connections",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz wants Buppido locked up or unable to act for a very long time.",
+    "source_quote": "Daz wants Buppido locked up or unable to act \"for a very long time.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls that they tied Buppido up and that Buppido threatened him.",
+    "source_quote": "He recalls that they tied Buppido up and that he threatened him.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Buppido expects to receive glory and praise at his personal shrine in the caverns.",
+    "source_quote": "At the shrine he expects to \"receive the glory and the praise that is due to him.\"",
+    "subject": "personal shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido calls the party \"a bunch of annoying nuisances\" that he wishes to forget.",
+    "source_quote": "He calls the party \"a bunch of annoying nuisances\" that he wishes to forget.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses approval of Buppido potentially forgetting about the party.",
+    "source_quote": "Gyrgum: \"You know, I kind of like the sound of that, of him forgetting all about us.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses Tongue of Madness mushrooms.",
+    "source_quote": "Zalthir then remembered the party's mushrooms, and Gyrgum suggested they have him \"try one of these.\"",
+    "subject": "Tongue of Madness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido eats a Tongue of Madness mushroom.",
+    "source_quote": "Buppido ate a Tongue of Madness",
+    "subject": "Buppido consumes mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido unleashes a five-day backlog of petty insults against every single member of the party.",
+    "source_quote": "unleashed a five-day backlog of petty insults against every single member of the party in one long, unbroken stream of consciousness",
+    "subject": "Buppido's tirade",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido recites every personal failing he had silently tallied during their journey together.",
+    "source_quote": "reciting every personal failing he had silently tallied during their journey together",
+    "subject": "Buppido's memory",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is a deep gnome with an incurable gambling habit.",
+    "source_quote": "Jimjar, the deep gnome with an incurable gambling habit",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar laments that he should have wagered on whether Buppido would say exactly what he was about to say.",
+    "source_quote": "he immediately lamented that he should have wagered on whether Buppido would say exactly that",
+    "subject": "Jimjar's regret",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum and Zalthir float the idea of marooning Buppido somewhere in the Underdark when they depart.",
+    "source_quote": "Gyrgum and Zalthir floated marooning him somewhere in the Underdark when they departed.",
+    "subject": "Marooning suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "By the end of the tirade, Zalthir is convinced they can simply cut Buppido loose once they are done with the city.",
+    "source_quote": "By the end of his tirade, Zalthir was convinced they could simply cut him loose once they were done with the city.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM states Buppido's tirade runs about 20 minutes.",
+    "source_quote": "The tirade runs about 20 minutes",
+    "subject": "Tirade duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido turns to each person in the party in turn during the tirade.",
+    "source_quote": "with Buppido turning to each person in turn",
+    "subject": "Tirade structure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM states Buppido spent the last five days constructing the list of insults.",
+    "source_quote": "The GM says Buppido \"spent the last five days constructing this long list.\"",
+    "subject": "Tirade construction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks whether Buppido might summon another horror like the one the kuo-toa raised.",
+    "source_quote": "Zalthir asks whether Buppido might summon another horror like the one the kuo-toa raised",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party ran away from a religious ceremony that summoned a Kraken which almost ate them.",
+    "source_quote": "we literally just ran away from a religious ceremony that summoned a Kraken and that almost ate us",
+    "subject": "Previous horror encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar offers two possibilities for the origin of the kuo-toa's horror: mass psychosis creating a god, or it was actually Demogorgon.",
+    "source_quote": "Either the kuo-toa's mass psychosis created a god, or it was actually Demogorgon. \"I don't know which is worse.\"",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar dismisses the idea that Buppido has the power to summon a demon lord like Demogorgon.",
+    "source_quote": "Jimjar dismisses the idea that Buppido has the power to summon a demon lord like Demogorgon.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido screams at Jimjar to stop betting.",
+    "source_quote": "Buppido screams at Jimjar to stop betting",
+    "subject": "Buppido screams",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar replies that he should have bet on Buppido screaming.",
+    "source_quote": "Jimjar replies that he should have bet on that",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offers to see if any of the mushrooms will summon a Demogorgon.",
+    "source_quote": "Gyrgum offers: \"I could see if any of them will summon a Demogorgon.\"",
+    "subject": "Gyrgum's summoning offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum proposes marooning Buppido from the boat.",
+    "source_quote": "Gyrgum proposes marooning him from the boat.",
+    "subject": "Gyrgum's marooning proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests just leaving Buppido in the middle of the Underdark.",
+    "source_quote": "Zalthir: \"Just leave him in the middle of the Underdark.\"",
+    "subject": "Zalthir's marooning comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests simply turning Buppido loose when they leave the city.",
+    "source_quote": "Gyrgum also suggests simply turning him loose when they leave the city.",
+    "subject": "Gyrgum's release suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar and his companions are asked to guard Buppido while the party shops.",
+    "source_quote": "Jimjar and the companions are asked to guard Buppido while the party shops.",
+    "subject": "Guarding Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is guarding Buppido while the rest of the party shops.",
+    "source_quote": "Jimjar and the companions are asked to guard Buppido while the party shops.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  }
+]

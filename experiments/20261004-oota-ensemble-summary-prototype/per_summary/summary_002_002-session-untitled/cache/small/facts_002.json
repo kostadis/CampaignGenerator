@@ -1,0 +1,240 @@
+[
+  {
+    "type": "object",
+    "fact": "The lift consists of a swinging arm, a hand-cranked horizontal spool, several pulleys, and a heavy woven basket supported by spider-silk cord.",
+    "source_quote": "Zalthir saw that the lift consisted of a swinging arm, a hand-cranked horizontal spool, several pulleys, and a heavy woven basket supported by spider-silk cord.",
+    "subject": "lift mechanism",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir discovers a mysterious list of people belonging to a nearby settlement while removing rubbish from the lift basket.",
+    "source_quote": "While removing the rubbish left by passengers, Zalthir discovered a mysterious list of people belonging to a nearby settlement.",
+    "subject": "Zalthir discovers settlement list",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar proposes wagers on lift usage and is willing to extend credit to prisoners who have no money.",
+    "source_quote": "Despite having no money in captivity, he was perfectly willing to extend credit, assuring the prisoners, \u201cAs long as you're willing to trust me as the bookkeeper, I'm willing to go on credit.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar displays an almost freakish ability to remember precisely how much has been wagered, won, and lost.",
+    "source_quote": "Jimjar displayed an almost freakish ability to remember precisely how much had been wagered, won, and lost.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth periodically accepts Jimjar's bets.",
+    "source_quote": "Eldeth periodically accepted his bets",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spider-silk cord supporting the lift basket is extremely hard to cut with a blade.",
+    "source_quote": "The spider-silk cord was extremely hard to cut",
+    "subject": "spider-silk cord",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spider-silk cord is vulnerable to fire, as Zalthir's fire breath burns the webbing.",
+    "source_quote": "the webbing burned, and the rope would give way to flame much more readily than to a blade",
+    "subject": "spider-silk cord",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hand-cranked zurkhwood winch of the lift cannot be broken without tools.",
+    "source_quote": "the hand-cranked zurkhwood winch could not be broken without tools",
+    "subject": "hand-cranked zurkhwood winch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz suggests freezing part of the lift mechanism with Shape Water using frozen spit to jam it.",
+    "source_quote": "Daz suggested freezing part of the mechanism with Shape Water, using something as simple as frozen spit to damage or jam it.",
+    "subject": "Daz suggests freezing mechanism",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir realizes his fire breath can damage the wooden mechanism and the extensive webs surrounding the outpost.",
+    "source_quote": "The same fire could potentially damage the wooden mechanism and the extensive webs surrounding the outpost.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lift appears to be the only visible safe way to descend from the barracks level.",
+    "source_quote": "It appeared to be the only visible way to descend safely from the barracks level without cutting a rope or risking the tremendous drop.",
+    "subject": "barracks level",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoths supervise the lift.",
+    "source_quote": "Two quaggoths supervise the lift.",
+    "subject": "quaggoths",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The quaggoths force Zalthir to clean the basket and amuse themselves by dropping it a short distance before hauling it back up.",
+    "source_quote": "They force Zalthir to clean the basket and amuse themselves by dropping it a short distance before hauling it back up.",
+    "subject": "quaggoths harass Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir is assigned to work at the lift.",
+    "source_quote": "with Zalthir assigned to the lift",
+    "subject": "Zalthir assigned to lift",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is sent to the food preparation area.",
+    "source_quote": "Gyrgum sent to the food preparation area",
+    "subject": "Gyrgum assigned to kitchen",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Someone presses Jimjar on who the word \"we\" includes when he bets on the group escaping alive.",
+    "source_quote": "someone presses Jimjar on who that \u201cwe\u201d includes: all of them, or just \u201cyou and me\u201d?",
+    "subject": "Jimjar asked about 'we'",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Eldeth finds a comb which is potentially valuable in the filthy conditions of the slave pen.",
+    "source_quote": "Eldeth finds a comb, potentially valuable in the filthy conditions of the slave pen.",
+    "subject": "comb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The drow dining hall contains four circular zurkhwood tables, each surrounded by five chairs.",
+    "source_quote": "The drow dining hall contains four circular zurkhwood tables, each surrounded by five chairs.",
+    "subject": "drow dining hall",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dining hall stores include fresh and dried fungi, dried fruit, cheese, preserved meat, and jars of spices.",
+    "source_quote": "Its stores include fresh and dried fungi, dried fruit, cheese, preserved meat, and jars of spices.",
+    "subject": "dining hall stores",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A heavy iron brazier in the dining hall supplies cooking heat and dim light.",
+    "source_quote": "A heavy iron brazier supplies cooking heat and dim light",
+    "subject": "heavy iron brazier",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Four drow are eating and entertaining themselves with dice or cards when Gyrgum arrives.",
+    "source_quote": "Four drow are eating and entertaining themselves with dice or cards when Gyrgum arrives.",
+    "subject": "drow eating",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy immediately begin looking for an opportunity to steal food.",
+    "source_quote": "Topsy and Turvy immediately begin looking for an opportunity to steal food.",
+    "subject": "twins seek food",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to talk to the drow but cannot understand their Undercommon.",
+    "source_quote": "Gyrgum attempts to talk to the drow but cannot understand their Undercommon.",
+    "subject": "Gyrgum cannot understand drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar announces he will omit colorful adjectives for the sake of his spiritual and mental balance, then enumerates the insults anyway.",
+    "source_quote": "Shuushar announces that he will omit many of the \u201ccolorful adjectives\u201d for the sake of his own spiritual and mental balance\u2014then enumerates the insults anyway.",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow question Gyrgum's ancestry and viability, and suggest he make them a meal instead of talking.",
+    "source_quote": "Shuushar explains that the drow question Gyrgum's ancestry, viability, and species, and suggest that, instead of talking to them, he make them a tasty meal.",
+    "subject": "drow insult Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses performance to prepare a meal, impressing the drow who offer rare praise.",
+    "source_quote": "Gyrgum uses performance to manipulate, combine, and dramatically sizzle the ingredients. The meal's presentation and preparation impress the drow, who offer rare praise.",
+    "subject": "Gyrgum impresses drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum notices accessible knives in the kitchen and realizes only slaves cook, meaning theft might go unnoticed.",
+    "source_quote": "Looking around the kitchen, Gyrgum notices accessible knives and realizes that only slaves perform the cooking, meaning a discreet theft might go unnoticed.",
+    "subject": "Gyrgum spots knives",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy advises stealing carefully and quietly, pointedly looking at Gyrgum's massive body.",
+    "source_quote": "Topsy advises that stealing should be done \u201ccarefully, quietly, and not make a big production of it,\u201d pointedly looking at Gyrgum's massive body.",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's conspicuous attempt to distract the drow results in a guard catching him holding the knife up.",
+    "source_quote": "but his attempt is so conspicuous that a drow catches him holding the knife up.",
+    "subject": "Gyrgum caught with knife",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum tells the guard he is going to sharpen the knife, and his performance persuades the drow not to punish him.",
+    "source_quote": "Challenged by the guard, Gyrgum says, \u201cI'm going to sharpen this knife.\u201d His performance and the goodwill from his meal persuade the drow not to punish him.",
+    "subject": "Gyrgum excuses theft",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow warn Gyrgum that another attempt could cost him various body parts.",
+    "source_quote": "The drow nevertheless warn that another attempt could cost Gyrgum \u201cvarious body parts.\u201d",
+    "subject": "drow warn Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "On the following day, Gyrgum asks Topsy and Turvy to steal the knives due to increased drow supervision.",
+    "source_quote": "On the following day, six or seven drow are present and paying close attention to Gyrgum's celebrated cooking. Rather than risk another personal attempt, he asks Topsy and Turvy to steal the knives.",
+    "subject": "Gyrgum asks twins to steal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy successfully bring two knives back to the prisoners.",
+    "source_quote": "The twins successfully bring two knives back to the prisoners.",
+    "subject": "twins steal knives",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen knives are treated as ordinary daggers and sharpened by Gyrgum.",
+    "source_quote": "The group treats them as ordinary daggers, and Gyrgum sharpens them.",
+    "subject": "stolen knives",
+    "quote_verified": true
+  }
+]

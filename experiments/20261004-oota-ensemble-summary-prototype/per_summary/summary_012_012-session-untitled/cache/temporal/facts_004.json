@@ -1,0 +1,30 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum notes this is the second duergar merchant behaving oddly.",
+    "source_quote": "This is the second duergar merchant he has seen behaving oddly.",
+    "subject": "erratic merchant count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The duergar merchant with the imaginary twin brother is an only child.",
+    "source_quote": "there's no twin brother. He's an only child.",
+    "subject": "duergar merchant with imaginary twin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The stone giant arrives as Gyrgum steps outside the bazaar.",
+    "source_quote": "steps outside the bazaar and looks around just as the stone giant arrives.",
+    "subject": "stone giant arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum and Hemeth go off on an errand marked by an arrow on the map.",
+    "source_quote": "Brannum and Hemeth go off on their errand, marked by an arrow on the map.",
+    "subject": "Brannum and Hemeth errand",
+    "quote_verified": true
+  }
+]

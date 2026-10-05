@@ -1,0 +1,205 @@
+[
+  {
+    "type": "date",
+    "fact": "The events take place on the second day of the prisoners' labor.",
+    "source_quote": "On the second day of labor",
+    "subject": "second day of labor",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jorlan Duskryn was once Ilvara Mizzrym's favored lieutenant and lover.",
+    "source_quote": "Jorlan Duskryn had once been Ilvara's favored lieutenant and lover",
+    "subject": "Jorlan Duskryn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A black pudding attack on a routine raid melted and scarred Jorlan's face, twisted his sword hand, and cost him two fingers.",
+    "source_quote": "a black pudding attack on a routine raid had melted and scarred his formerly handsome face, twisted his sword hand, and cost him two fingers",
+    "subject": "Jorlan Duskryn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ilvara Mizzrym replaced Jorlan Duskryn with Shoor Vandree.",
+    "source_quote": "Ilvara replaced him with Shoor Vandree",
+    "subject": "Ilvara Mizzrym",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shoor Vandree is the drow who replaced Jorlan Duskryn as Ilvara's lieutenant.",
+    "source_quote": "Ilvara replaced him with Shoor Vandree",
+    "subject": "Shoor Vandree",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ilvara Mizzrym is the cruel commander and priestess of Lolth at the outpost.",
+    "source_quote": "Ilvara Mizzrym is the outpost's cruel commander and priestess of Lolth",
+    "subject": "Ilvara Mizzrym",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jorlan Duskryn brings food during his guard duty and asks the nearest prisoner if they would take a means to escape.",
+    "source_quote": "Bringing food during his guard duty, he quietly asked the nearest prisoner, \u201cif I gave you a means to escape, would you take it?\u201d",
+    "subject": "Jorlan approaches prisoners",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners suspect a trap and ask Jorlan why a drow would help them.",
+    "source_quote": "The prisoners suspected a trap and asked why a drow would help them",
+    "subject": "prisoners question Jorlan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jorlan states he hates Ilvara and Shoor, and that a prisoner escape would ruin them by causing them to lose face.",
+    "source_quote": "Jorlan answered bluntly, \u201chate Ilvara, and I hate Shoor. And your escape, even your attempted escape, would ruin them.\u201d",
+    "subject": "Jorlan explains motive",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jorlan proposes leaving the slave-pen gate unlocked and creating a distraction during the changing of the guard.",
+    "source_quote": "Jorlan proposed leaving the slave-pen gate unlocked and creating a distraction during the changing of the guard",
+    "subject": "Jorlan proposes escape plan",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The armory is located in the chamber above the guard post, inside the hanging guard tower directly in front of the slave pen.",
+    "source_quote": "He revealed that the armory was in the chamber above the guard post, inside the hanging guard tower directly in front of the slave pen",
+    "subject": "armory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jorlan reveals that prisoners can jump from the tower onto the webs below and then leap into the pool.",
+    "source_quote": "From there, the prisoners could jump onto the webs below and then leap into the pool",
+    "subject": "Jorlan details route",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jorlan states that what the prisoners do after reaching the water is not his problem.",
+    "source_quote": "When asked what they should do after reaching the water, Jorlan replied, \u201cthat is not my problem.\u201d",
+    "subject": "Jorlan disclaims water advice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar knows how to travel west toward Darklake.",
+    "source_quote": "Shuushar knew how to travel toward Darklake to the west",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Darklake is located to the west of Velkynvelve.",
+    "source_quote": "Shuushar knew how to travel toward Darklake to the west",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Menzoberranzan lies to the north and is ruled out as a destination.",
+    "source_quote": "Menzoberranzan lay to the north and was emphatically ruled out",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a duergar city to the south where Buppido's derro kin also live.",
+    "source_quote": "Gracklstugh, a duergar city where Buppido's derro kin also live, offered a possible route to the south",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has derro kin who live in Gracklstugh.",
+    "source_quote": "Gracklstugh, a duergar city where Buppido's derro kin also live",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool seems happy to keep the others nearby.",
+    "source_quote": "Stool seemed happy to keep the others nearby",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido believes he needs disciples and protectors.",
+    "source_quote": "Buppido, at least, believed he needed disciples and protectors",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party debates whether to flee immediately or risk retrieving weapons from the armory.",
+    "source_quote": "The party also had to decide whether to flee immediately or risk retrieving weapons first",
+    "subject": "debate on retrieving weapons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum draws on drow cultural habits to reason about the location of their gear.",
+    "source_quote": "Drawing on drow cultural habits, Gyrgum and Daz reasoned that the highest-ranking drow would traditionally claim captured treasure",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz draws on drow cultural habits to reason about the location of their gear.",
+    "source_quote": "Drawing on drow cultural habits, Gyrgum and Daz reasoned that the highest-ranking drow would traditionally claim captured treasure",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The prisoners infer their gear is in the chest Thorin saw in Ilvara's private chambers.",
+    "source_quote": "the party concluded that their gear was probably in the chest Thorin had seen in Ilvara's private chambers",
+    "subject": "chest in Ilvara's quarters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir confirms that the spider webbing around the outpost burns.",
+    "source_quote": "Zalthir confirms that the extensive spider webbing around the outpost burns",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's fire breath could attack the lift's rope and nearby webs.",
+    "source_quote": "His fire breath could attack both the lift's rope and nearby webs",
+    "subject": "Zalthir's fire breath potential",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin argues that the group will need equipment to survive outside Velkynvelve.",
+    "source_quote": "Thorin argues that they will need equipment to survive outside Velkynvelve",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks about the large spools of spider silk used by the drow for rapid descents.",
+    "source_quote": "Zalthir asks about the large spools of spider silk used by the drow for rapid descents",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The group plans to scout the spools and exploit Zalthir's fire breath to destroy the drow's mobility assets.",
+    "source_quote": "The group plans to scout the spools and exploit Zalthir's fire breath to destroy the drow's mobility assets",
+    "subject": "spider silk spools",
+    "quote_verified": true
+  }
+]

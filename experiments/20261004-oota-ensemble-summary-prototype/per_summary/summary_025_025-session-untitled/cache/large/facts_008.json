@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Voosbur tells Thorin he is leaving because Thorin declined to join the Myconids.",
+    "source_quote": "Voosbur remarked, \"Hey, man, I guess you didn't want to join the party. I got to go now.\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Voosbur and the other infected Myconids walk into a spore cloud and vanish.",
+    "source_quote": "He and the rest of the infected Myconids gathered at a spore cloud among the fungal growths and stepped through it, vanishing entirely.",
+    "subject": "Myconid departure",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Myconids use a vast fungal network to travel between hidden places in the Underdark.",
+    "source_quote": "They were traveling through some vast fungal network that connected the hidden places of the Underdark.",
+    "subject": "fungal network",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party spends three days underground in the Whorlstone Caverns.",
+    "source_quote": "after three days underground, they made their way out of the Whorlstone Caverns.",
+    "subject": "three days underground",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gains a fifth level.",
+    "source_quote": "They rose to fifth level",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains the spell Fireball upon reaching fifth level.",
+    "source_quote": "and Daz finally gained Fireball.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reconciles his spell counts, noting he has nine preparable spells and ten in his spellbook.",
+    "source_quote": "Daz reconciles his \"prepared 7 of 9 (10 known)\" count: nine preparable spells, ten in his spellbook.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz comments that he needs a bigger spellbook.",
+    "source_quote": "\"I need a bigger spellbook.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's longsword now has a +8 to hit bonus.",
+    "source_quote": "Thorin's longsword is now +8 to hit",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin gains an extra attack.",
+    "source_quote": "and he gains an extra attack.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest, recovering strength but losing Aid's temporary hit points.",
+    "source_quote": "The party took a long rest, recovering their strength (and losing Aid's temporary hit points)",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The long rest causes Aid's temporary hit points to vanish.",
+    "source_quote": "The rest clears Aid's temporary hit points (\"Bummer\").",
+    "subject": "Aid spell expiration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states that Gyrgum can simply cast Aid again.",
+    "source_quote": "Zalthir notes Gyrgum can simply cast it again.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states he does not need the long rest.",
+    "source_quote": "Zalthir says he doesn't need it",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gates into the rest of Gracklstugh are sealed shut.",
+    "source_quote": "The gates into the rest of Gracklstugh were sealed shut",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Grim-faced Duergar in heavy armor guard the sealed gates of Gracklstugh.",
+    "source_quote": "guarded by grim-faced Duergar in heavy armor",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow on the other side of the gates are on edge.",
+    "source_quote": "The drow on the other side were even more on edge than before",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A Duergar guard named Gorglak steps forward to block the party's path.",
+    "source_quote": "A particularly mean-looking guard named Gorglak stepped forward and blocked their path",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak tells the party that they are not allowed in the city.",
+    "source_quote": "\"You, none of you are allowed. You should not be in here.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak demands to inspect the party's possessions for contraband.",
+    "source_quote": "He demanded to inspect all of their possessions for contraband.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party is holding a bag full of demonic artifacts and political secrets.",
+    "source_quote": "holding a bag full of demonic artifacts and political secrets",
+    "subject": "bag of artifacts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempts to use a 'diplomatic pouch' line to bypass inspection.",
+    "source_quote": "Thorin tries the \"diplomatic pouch\" line.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz offers to share mushrooms, suggesting they might be the contraband.",
+    "source_quote": "Daz offers to share some mushrooms, \"Maybe that's the contraband he's looking for.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

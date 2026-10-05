@@ -1,0 +1,65 @@
+[
+  {
+    "type": "event",
+    "fact": "Gartokkar reveals the true political landscape of Gracklstugh to the party.",
+    "source_quote": "Gartokkar then drew the party aside and revealed the true political landscape of Gracklstugh.",
+    "subject": "Gartokkar's revelation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers' power derives from psionic abilities, the leadership of the Deepking, and influence over Themberchaud.",
+    "source_quote": "in equal measure from our psionic abilities, the leadership of the Deepking, and our influence over Themberchaud.",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is unaware that the Keepers are planning to replace him.",
+    "source_quote": "The dragon had no idea that they were already planning to replace him.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A red dragon egg intended to hatch Themberchaud's successor has been stolen.",
+    "source_quote": "A red dragon egg, intended to hatch his successor, had been stolen",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are a shadowy organization that stole the red dragon egg.",
+    "source_quote": "stolen by a shadowy organization known as the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers have been waging a quiet war against the Thieves Guild since the egg was stolen.",
+    "source_quote": "the Keepers had been waging a quiet war against the Thieves Guild ever since.",
+    "subject": "Thieves Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reveals that Themberchaud wants the party to report directly to him.",
+    "source_quote": "Thorin revealed that Themberchaud wanted the party to report directly to him",
+    "subject": "reporting arrangement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is grateful for the tip about reporting directly to Themberchaud.",
+    "source_quote": "Gartokkar was grateful for the tip.",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar insists that the Keepers will set Themberchaud free rather than dispose of him.",
+    "source_quote": "Gartokkar insisted that the old dragon would not be disposed of but \"set free.\"",
+    "subject": "Gartokkar",
+    "quote_verified": false
+  }
+]

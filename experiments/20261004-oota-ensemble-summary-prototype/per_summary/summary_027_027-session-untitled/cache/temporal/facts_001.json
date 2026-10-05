@@ -1,0 +1,16 @@
+[
+  {
+    "type": "location",
+    "fact": "There are three gates separating the industrial heart of Gracklstugh from the Darklake.",
+    "source_quote": "The DM marks three gates the party could use to leave Gracklstugh.",
+    "subject": "Gracklstugh gates",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is positioned near Laduguer's Furrow in the industrial heart of Gracklstugh.",
+    "source_quote": "The party assesses their position near Laduguer's Furrow",
+    "subject": "Laduguer's Furrow",
+    "quote_verified": true
+  }
+]

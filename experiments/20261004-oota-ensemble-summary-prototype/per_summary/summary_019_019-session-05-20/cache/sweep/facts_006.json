@@ -1,0 +1,226 @@
+[
+  {
+    "type": "npc",
+    "fact": "Plinki reveals that the final ingredient to complete her ritual is the beating heart of a cleric of Bahamut.",
+    "source_quote": "Plinki reveals that the final ingredient to complete her ritual is the beating heart of a cleric of Bahamut",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's cover as a fellow worshiper is instantly revealed when Plinki announces her need for a cleric's heart.",
+    "source_quote": "Gyrgum's cover evaporated in an instant",
+    "subject": "Gyrgum's cover lost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The table briefly debates what a cleric of Bahamut would do about a demon-corrupted egg.",
+    "source_quote": "The table briefly debated what a cleric of Bahamut would do about a demon-corrupted egg",
+    "subject": "Bahamut cleric debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gemini is an AI or tool consulted by the DM to identify four camps of Bahamut's clerics.",
+    "source_quote": "The DM consulted Gemini, which named four camps of Bahamut's clerics",
+    "subject": "Gemini",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gemini identifies four camps among Bahamut's clerics regarding the dragon egg: destroy it, cleanse it, study it, or seek guidance while holding it.",
+    "source_quote": "named four camps of Bahamut's clerics: destroy it, cleanse it, study it, or seek guidance while holding it",
+    "subject": "Clerics of Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wondered aloud about a dragon omelette.",
+    "source_quote": "Thorin wondered aloud about a dragon omelette",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum warns Plinki and her followers that Daz will not hesitate to smash the egg if they do not stand down.",
+    "source_quote": "Gyrgum grandstanded loudly, warning Plinki and her followers that Daz would not hesitate to smash the egg",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum justifies the threat by stating a drow could never be trusted.",
+    "source_quote": "a drow, after all, could never be trusted",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki screams for her followers to attack after her madness wins out.",
+    "source_quote": "Plinki's madness won out, and she screamed for her followers to attack",
+    "subject": "Plinki orders attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki shows Gyrgum the dragon egg and calls it her masterpiece.",
+    "source_quote": "Plinki: \"here is the egg. See my masterpiece.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki explains she is using the massive black obelisk to infuse the stolen dragon egg with demonic energy in honor of Demogorgon.",
+    "source_quote": "Plinki enthusiastically explains she is using the massive black obelisk to infuse the stolen dragon egg with demonic energy in honor of Demogorgon",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a shrine of Demogorgon near the ritual site.",
+    "source_quote": "She points out the shrine of Demogorgon and the incantations inscribed on the egg",
+    "subject": "Shrine of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg has incantations inscribed on it.",
+    "source_quote": "the incantations inscribed on the egg",
+    "subject": "Dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki points out a specific symbol on the egg that she claims was critical to the entire spell.",
+    "source_quote": "look, look at this. Look at this symbol that I found. It was critical to the entire spell",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Cultists are closing in around Gyrgum, noticed due to his passive perception of 14.",
+    "source_quote": "With a passive perception of 14, Gyrgum notices the cultists closing in around him",
+    "subject": "cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rest of the party stays as close as Plinki allows but remains away from the egg.",
+    "source_quote": "The rest of the party stays as close as Plinki allows, but not up at the egg",
+    "subject": "Party positioning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz maneuvers to within 30 feet of the egg.",
+    "source_quote": "Daz maneuvers to within 30 feet of the egg",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz plans to use Misty Step to reach the egg and hold it hostage.",
+    "source_quote": "He plans to Misty Step to it and hold it hostage",
+    "subject": "Daz's plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM comments that Gyrgum is playing a cultural bias angle by referencing Daz's drow heritage.",
+    "source_quote": "The DM: \"Playing that cultural bias angle.\"",
+    "subject": "Gyrgum's cultural bias joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum retorts that the cultural bias warning is coming from an orc.",
+    "source_quote": "Gyrgum: \"Coming from an orc.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is described as being a little bit concerned during the standoff.",
+    "source_quote": "Plinki is \"a little bit concerned.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One cultist moves closer to Gyrgum but does not yet attack.",
+    "source_quote": "One cultist moves closer but does not yet attack",
+    "subject": "cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir maneuvers himself across the high tiers to stand directly next to Plinki.",
+    "source_quote": "Zalthir maneuvers himself across the high tiers to stand directly next to Plinki",
+    "subject": "Zalthir's movement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tiers in the chamber are 10 feet high.",
+    "source_quote": "The tiers are 10 feet high",
+    "subject": "High tiers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir climbs the stairs to reach the tier beside Plinki, avoiding the square beside a cultist.",
+    "source_quote": "he climbs the stairs, avoiding the square beside a cultist",
+    "subject": "Zalthir's climb",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 14 on initiative.",
+    "source_quote": "Gyrgum rolled 14 initiative",
+    "subject": "Initiative rolled",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum acts after Zalthir, who acts on initiative 10.",
+    "source_quote": "The allied crew is set to act on initiative 10. Gyrgum rolled 14 initiative and acts after Zalthir",
+    "subject": "Initiative order",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Plinki's followers are acting in honor of Demogorgon.",
+    "source_quote": "in honor of Demogorgon",
+    "subject": "Cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "deity",
+    "fact": "Bahamut is the deity whose cleric's heart is required for Plinki's ritual.",
+    "source_quote": "the beating heart of a cleric of Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "deity",
+    "fact": "Demogorgon is the entity being honored by the ritual involving the obelisk and dragon egg.",
+    "source_quote": "in honor of Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The confrontation takes place in a chamber with tiers.",
+    "source_quote": "Gyrgum navigates the chamber tiers",
+    "subject": "Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A massive black obelisk is used to infuse the dragon egg with demonic energy.",
+    "source_quote": "using the massive black obelisk to infuse the stolen dragon egg",
+    "subject": "Massive black obelisk",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,212 @@
+[
+  {
+    "type": "event",
+    "fact": "The party searches the bodies of three fallen drow guards for equipment and traps.",
+    "source_quote": "the party wasted no time in searching the bodies of the three fallen drow guards. They agreed that henceforth every fallen enemy would be searched carefully for useful equipment\u2014and for traps.",
+    "subject": "looting fallen drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum claim the chain shirts worn by two of the fallen drow.",
+    "source_quote": "Two of the drow wore chain shirts, which Thorin and Gyrgum claimed",
+    "subject": "Thorin and Gyrgum take chain shirts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith claims the studded leather armor from one of the fallen drow warriors.",
+    "source_quote": "Sarith picked up the studded leather armor from one of the fallen warriors",
+    "subject": "Sarith takes studded leather",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin puts away his studded leather armor after upgrading to a chain shirt.",
+    "source_quote": "Thorin puts away his studded leather armor after upgrading to a chain shirt.",
+    "subject": "Thorin upgrades armor",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a shield on the fallen drow.",
+    "source_quote": "The bodies also yielded three short swords, three hand crossbows, and a shield",
+    "subject": "shield",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds three short swords on the fallen drow.",
+    "source_quote": "The bodies also yielded three short swords, three hand crossbows, and a shield",
+    "subject": "short swords",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds three hand crossbows on the fallen drow.",
+    "source_quote": "The bodies also yielded three short swords, three hand crossbows, and a shield",
+    "subject": "hand crossbows",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes one of the hand crossbows.",
+    "source_quote": "Gyrgum took one of the hand crossbows",
+    "subject": "Gyrgum takes hand crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Three poisoned crossbow bolts are found on the body of Imbros.",
+    "source_quote": "along with the three poisoned bolts found on the elite warrior Imbros",
+    "subject": "poisoned bolts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros is a fallen drow elite warrior.",
+    "source_quote": "found on the elite warrior Imbros",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A vial of poison is found on Imbros.",
+    "source_quote": "Imbros also carried a vial of poison that could be applied to a weapon to inflict additional harm",
+    "subject": "vial of poison",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes the three poisoned bolts.",
+    "source_quote": "Gyrgum takes the three poisoned bolts.",
+    "subject": "Gyrgum takes poisoned bolts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz declines wearing armor because he lacks proficiency and wants to retain his spellcasting ability.",
+    "source_quote": "Daz briefly considered armor but discovered that wearing it without proficiency would hinder his physical abilities and prevent him from casting spells, so he wisely declined.",
+    "subject": "Daz declines armor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses divine magic to restore Zalthir to full health.",
+    "source_quote": "Gyrgum called upon divine power to mend Zalthir's grievous wounds, restoring him to full health",
+    "subject": "Gyrgum heals Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's available magic is exhausted after healing Zalthir.",
+    "source_quote": "restoring him to full health but exhausting Gyrgum's available magic",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is restored to full health by Gyrgum's magic.",
+    "source_quote": "mend Zalthir's grievous wounds, restoring him to full health",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three vrocks appear in the sky above Velkynvelve, fighting among themselves.",
+    "source_quote": "Three winged demons\u2014vrocks\u2014came screaming out of the darkness, fighting among themselves above the outpost",
+    "subject": "vrocks appear",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three vrocks are present, screaming and fighting each other.",
+    "source_quote": "Three winged demons\u2014vrocks\u2014came screaming out of the darkness, fighting among themselves",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recognizes the winged creatures as demons.",
+    "source_quote": "Daz recognized the creatures as demons",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow and their quaggoth servants rush to defensive positions, ignoring the prisoners.",
+    "source_quote": "The drow and their quaggoth servants scrambled to their defensive positions, no longer concerned with their prisoners in the slightest.",
+    "subject": "drow abandon prisoners",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Quaggoths appear amidst the confusion.",
+    "source_quote": "Quaggoths also begin appearing amid the confusion",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to escape using the distraction caused by the demons.",
+    "source_quote": "The companions recognized that they could not survive a fight against the creatures and decided to use the confusion to escape.",
+    "subject": "escape plan",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party's confiscated equipment is located in another tower.",
+    "source_quote": "doing so would have required crossing to another tower while the demons attacked",
+    "subject": "confiscated gear",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin possesses a pendant carved from a giant's tooth, which was small enough to not be confiscated.",
+    "source_quote": "Thorin cared chiefly about a sentimental pendant carved from a giant's tooth, only to learn that an object small enough to have remained around his neck would not have been taken",
+    "subject": "Thorin's pendant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to abandon the rest of their former gear.",
+    "source_quote": "With nothing else worth dying for, the group abandoned the rest of its former gear.",
+    "subject": "abandoning gear",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith insists on leaving quickly rather than setting fire to the outpost.",
+    "source_quote": "Sarith\u2014flickering between lucidity and madness\u2014insisted that the quicker they left, the better",
+    "subject": "Sarith's refusal to burn outpost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith flickers between lucidity and madness.",
+    "source_quote": "Sarith\u2014flickering between lucidity and madness\u2014insisted",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy transform into rats.",
+    "source_quote": "Topsy and Turvy reveal their nature as wererats by transforming into rats",
+    "subject": "Topsy and Turvy transform",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy and Turvy are revealed to be wererats.",
+    "source_quote": "Topsy and Turvy reveal their nature as wererats",
+    "subject": "Topsy and Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle with the vrocks takes place above Velkynvelve.",
+    "source_quote": "the sky above Velkynvelve erupted into madness",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  }
+]

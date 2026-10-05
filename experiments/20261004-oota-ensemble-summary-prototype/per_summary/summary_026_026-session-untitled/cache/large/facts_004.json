@@ -1,0 +1,135 @@
+[
+  {
+    "type": "event",
+    "fact": "The party decided their first stop would be the cavern of the stone giants.",
+    "source_quote": "The party decided their first stop would be the cavern of the stone giants.",
+    "subject": "first destination chosen",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is contending with another of his brothers who has succumbed to the two-headed curse.",
+    "source_quote": "They found Hgraam already contending with another of his brothers who had succumbed to the two-headed curse",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Hgraam's brother's massive form is twisted and confused due to the curse.",
+    "source_quote": "his massive form twisted and confused",
+    "subject": "two-headed giant brother",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin presents Hgraam with the ritualistic two-headed statue recovered from the Derro.",
+    "source_quote": "Thorin presented the stone giant leader with the ritualistic two-headed statue they had recovered.",
+    "subject": "statue presented",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin explains to Hgraam that the Derro had been using dark rituals to drive the giants into a rampage.",
+    "source_quote": "He explained that the Derro had been using dark rituals to drive the giants into a rampage.",
+    "subject": "Derro accusation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam probes whether the ritual was the work of the derro ruling council.",
+    "source_quote": "Hgraam probed whether the ritual was the work of the derro ruling council.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party uses the \"we don't know who they were\" defense regarding the derro council.",
+    "source_quote": "The party chose the \"we don't know who they were\" defense",
+    "subject": "defense strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 13 on persuasion with advantage as a giant-friend.",
+    "source_quote": "Thorin's persuasion roll (13, with advantage as a giant-friend) held.",
+    "subject": "Thorin's persuasion roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam accepts the statue gravely.",
+    "source_quote": "Hgraam accepted the statue gravely",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam declares that with the statue he can begin to cure his afflicted kin.",
+    "source_quote": "declaring that with it he could begin to cure his afflicted kin",
+    "subject": "statue utility",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam presses five hundred gold pieces into the party's hands as a reward.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "gold reward",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam warns the party that the Stone Guard is growing increasingly agitated.",
+    "source_quote": "He warned them, however, that the Stone Guard was growing increasingly agitated.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is becoming agitated and Hgraam advises the party to be careful around them.",
+    "source_quote": "the stone guard have become more agitated recently. I suggest you be careful around them.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam closes the cavern to outsiders while he consults the stones in silence.",
+    "source_quote": "He urged them to leave the cavern while he consulted the stones in silence, closing it to outsiders.",
+    "subject": "cavern closure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests claiming the derro were screaming and chanting with unknown intentions.",
+    "source_quote": "Zalthir suggests: \"Say that these are crazy derro and they were screaming and chanting. We don't know what the deal was.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asks Hgraam if he knows a way to the Overbright.",
+    "source_quote": "Thorin asks whether Hgraam knows a way to the Overbright.",
+    "subject": "Overbright inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam does not know where the Overbright is or whether it exists.",
+    "source_quote": "Hgraam does not know where it is, or whether it exists",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Little people have told Hgraam that the Overbright exists.",
+    "source_quote": "though \"little people\" have told him it does.",
+    "subject": "little people",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The stone giant cavern in Gracklstugh is closed to outsiders.",
+    "source_quote": "I'm afraid we must close this Gracklstugh cavern to the outside while I ponder what the stones will say.",
+    "subject": "Gracklstugh stone giant cavern",
+    "quote_verified": true
+  }
+]

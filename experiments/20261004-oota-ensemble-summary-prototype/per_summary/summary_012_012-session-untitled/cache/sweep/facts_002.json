@@ -1,0 +1,254 @@
+[
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a sprawling marketplace named for the duergar's most abundant goods.",
+    "source_quote": "The party made their way to the Blade Bazaar, a sprawling marketplace named for the most abundant goods the duergar offered",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar sells all kinds of non-magical weapons, armor, and shields.",
+    "source_quote": "All kinds of non-magical weapons, armor and shields are available",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Powerful magic items are not sold at the Blade Bazaar.",
+    "source_quote": "powerful magic items are not sold at the bazaar",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Healing potions can be bought in the Darklake district.",
+    "source_quote": "Healing potions can also be bought in the Darklake district",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Heavy armor is available in the Darklake district.",
+    "source_quote": "Thorin asks for heavy armor, which the GM confirms is available in the Darklake district",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is one of the locations listed on the mysterious list of names found by Zalthir.",
+    "source_quote": "one name corresponded to someone in Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum approaches a merchant who initially hurled insults at every customer.",
+    "source_quote": "Gyrgum approached a merchant who hurled insults at every customer until he realized they intended to buy",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir is the merchant who curses Gyrgum 'to the seven heavens' before switching to a posh accent.",
+    "source_quote": "The merchant, Dulgir, curses Gyrgum \"to the seven heavens\" until he learns Gyrgum is buying",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir adopts an eerily posh duergar accent that sounds like the Queen's English when selling to Gyrgum.",
+    "source_quote": "the duergar adopted an eerily posh accent, much like the Queen's English",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dulgir states he has not traveled in foreign lands.",
+    "source_quote": "Merchant: \"No, no, I've not traveled in foreign lands.\"",
+    "subject": "Dulgir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum trades his short sword for a ten percent discount on a new mace.",
+    "source_quote": "Gyrgum trades in a short sword he can't use effectively for a ten percent discount on a new mace",
+    "subject": "weapon trade",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum surrenders his short sword as part of the trade.",
+    "source_quote": "offered a ten percent discount on a new mace in exchange for Gyrgum's \"rubbish\" old short sword",
+    "subject": "short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum acquires a new mace from Dulgir.",
+    "source_quote": "offered a ten percent discount on a new mace",
+    "subject": "mace",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum buys a hand axe without a trade-in.",
+    "source_quote": "Gyrgum also buys a hand axe with no trade-in",
+    "subject": "hand axe",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum picks up a light crossbow.",
+    "source_quote": "and picks up a light crossbow",
+    "subject": "light crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses interest in finding a magical light crossbow imbued with a spell.",
+    "source_quote": "Daz expresses interest in finding a magical light crossbow imbued with a spell to aid his accuracy",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz hopes to enchant a crossbow with True Strike for advantage on attacks.",
+    "source_quote": "He hoped to enchant it with True Strike for advantage on attacks",
+    "subject": "True Strike spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz decides against buying anything after research.",
+    "source_quote": "After researching, Daz decides against buying anything: \"I'm happy with what I have and I need to level up before anything makes sense.\"",
+    "subject": "Daz decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for heavy armor.",
+    "source_quote": "Thorin asks for heavy armor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin settles on darts as his ranged weapon.",
+    "source_quote": "Thorin later settles on darts as his ranged weapon after confirming the game isn't using pistols",
+    "subject": "Thorin weapon choice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls a mysterious list of names found while cleaning.",
+    "source_quote": "Zalthir recalled a mysterious list of names he had found while cleaning",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The list of names contains individuals connected to people held as slaves by the drow.",
+    "source_quote": "The individuals on it had some connection to the people held as slaves by the drow",
+    "subject": "list of names",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is the arms dealer the party previously rescued.",
+    "source_quote": "Hemeth, the arms dealer the party previously rescued",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth insists on offering his own wares at a discount after being passed over for Brannum.",
+    "source_quote": "Hemeth, deeply offended at being passed over, insisted on offering his own superior wares at a discount",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hemeth claims his handaxes are so well-made they will be easily reused by whoever kills their owner.",
+    "source_quote": "boasting that his handaxes were so well-made they would be easily reused by whoever killed their owner",
+    "subject": "Hemeth's handaxes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is a captive duergar who previously plotted against the party.",
+    "source_quote": "their captive, Brannum Redmarch, a duergar who had previously plotted against them",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party offers Brannum Redmarch his freedom in exchange for using his underworld connections to procure magical goods.",
+    "source_quote": "They offered him his freedom in exchange for using his underworld connections to procure uncommon magical goods",
+    "subject": "Brannum freedom deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is eager to leave while waiting in the district.",
+    "source_quote": "Buppido is eager to leave",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party has six traveling companions who are willing to wait in the district.",
+    "source_quote": "The GM asks what the party tells its six traveling companions. They are happy to wait in the district",
+    "subject": "six traveling companions",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir expresses interest in acquiring an Eldritch Claw tattoo.",
+    "source_quote": "Zalthir expresses interest in acquiring an Eldritch Claw tattoo, an uncommon magical item",
+    "subject": "Eldritch Claw tattoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum claims he may know a contact who can procure the Eldritch Claw tattoo and requests two days.",
+    "source_quote": "Brannum claims he may know a contact who can procure it, requesting two days",
+    "subject": "tattoo contact search",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum purchases a scroll of Detect Magic.",
+    "source_quote": "Gyrgum purchases scrolls of Detect Magic and Identify",
+    "subject": "scroll of Detect Magic",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum purchases a scroll of Identify.",
+    "source_quote": "Gyrgum purchases scrolls of Detect Magic and Identify",
+    "subject": "scroll of Identify",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The scroll merchant threatens to kill Gyrgum as a haggling technique.",
+    "source_quote": "The merchant threatens to kill Gyrgum \"as a haggling technique\"",
+    "subject": "scroll merchant",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum puts his hand on his weapon in response to the merchant's threat.",
+    "source_quote": "Gyrgum puts his hand on his weapon",
+    "subject": "Gyrgum reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Brannum requests two days to find a contact for the tattoo.",
+    "source_quote": "Give me two days",
+    "subject": "two days",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,331 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's realm lies deeper within the grove, accessible via a passage the party refused to take.",
+    "source_quote": "a passage that would take them deeper into Zuggtmoy\u2019s realm",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's evil fully consumes the former beauty and glory of Neverlight Grove.",
+    "source_quote": "Zuggtmoy\u2019s evil has fully consumed the former beauty and glory of Neverlight Grove",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is horrified by the news regarding the fungal demon's plans.",
+    "source_quote": "Both myconids were horrified",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia insists that Phylo must be warned about the danger.",
+    "source_quote": "Basidia insisted that Phylo had to be told",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia accuses Phylo of betraying the circle and allying with corruption.",
+    "source_quote": "Basidia could no longer contain herself and accused Phylo of betraying the circle and allying himself with corruption",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia initially resolves to remain in the grove and fight Phylo.",
+    "source_quote": "she resolves to remain",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is grabbed and pulled away by Zalthir to prevent her from fighting Phylo.",
+    "source_quote": "Zalthir then physically seized Basidia before she could throw herself into a hopeless fight with Phylo",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is convinced to flee when she sees Stool, Rumpadump, and Rasharoo leaving.",
+    "source_quote": "Seeing Stool, Rumpadump, Rasharoo, and everyone she cared about fleeing finally convinced Basidia that this was not the time to stay and die",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia apologizes for failing to complete work on the party's pet grick.",
+    "source_quote": "Basidia, grateful and heartbroken, apologized for never finishing work on the party\u2019s pet grick",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia promises that she can prepare additional potions given a few days.",
+    "source_quote": "promised that, given a few days, she could prepare additional potions",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia presses potions of greater healing and a box of treasure into the party's hands.",
+    "source_quote": "she pressed potions of greater healing and a box of treasure into the party\u2019s hands",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo is horrified by the news regarding the fungal demon's plans.",
+    "source_quote": "Both myconids were horrified",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo argues that the group should simply run rather than warn Phylo.",
+    "source_quote": "Rasharoo argued that they should simply run",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo directs the survivors toward his escape route, shouting that they must come with him to live.",
+    "source_quote": "Rasharoo shouted, \u201cIf you want to live, come with me.\u201d",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo cheerfully asks Basidia how the tour went and if the guests enjoyed the changes.",
+    "source_quote": "Phylo cheerfully asked Basidia how the tour had gone and whether their guests had enjoyed all the changes",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is accused by Basidia of betraying the circle and allying with corruption.",
+    "source_quote": "Basidia could no longer contain herself and accused Phylo of betraying the circle and allying himself with corruption",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo begins to fight Basidia as the grove's trees move to attack her.",
+    "source_quote": "As Phylo and Basidia began to fight and the grove\u2019s trees moved to attack her",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo calls after the fleeing party, promising that Neverlight Grove will be better than ever.",
+    "source_quote": "The last thing the party heard from Phylo was his cheerful, deluded voice calling after them, promising that Neverlight Grove would be better than ever",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo claims that the Great Cedar will make them all happy.",
+    "source_quote": "the Great Cedar would make them all happy",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo laments that the party refused the hospitality of the Circle of Welcome.",
+    "source_quote": "He even lamented that they had refused the hospitality of the Circle of Welcome",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo tells Basidia to stay and not go.",
+    "source_quote": "Basidia, don\u2019t go. Stay.",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin summarizes the decision to save the myconids over the mycelium with the phrase 'Bros before toadstools'.",
+    "source_quote": "Thorin summarizes the decision with, \u201cBros before toadstools.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz answers Phylo's question by stating that the changes are causing problems for some while others are unaware.",
+    "source_quote": "Daz answered cautiously that the changes appeared to be causing problems for some while others remained unaware of them",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum signals danger with such agitation that subtlety becomes nearly impossible.",
+    "source_quote": "Gyrgum simultaneously signals danger with such agitation that subtlety becomes nearly impossible",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum persuades Stool and Rumpadump that Neverlight Grove is no longer safe and that they must leave immediately.",
+    "source_quote": "Gyrgum managed to convince Stool and Rumpadump that Neverlight Grove was no longer what it had been and that they needed to leave immediately",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir worries that Stool and Rumpadump have been exposed to the infected Phylo for too long.",
+    "source_quote": "Zalthir worries that Stool and Rumpadump have been left with the infected Phylo for too long",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests having Basidia examine Stool and Rumpadump before committing to the rescue.",
+    "source_quote": "suggests having Basidia examine them before committing to the rescue",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir explains that his preferred method of grabbing people involves punching.",
+    "source_quote": "Although his preferred method of grabbing people involved punching, he successfully dragged her away",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir physically seizes Basidia to prevent her from fighting Phylo.",
+    "source_quote": "Zalthir then physically seized Basidia before she could throw herself into a hopeless fight with Phylo",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub chooses to follow Rasharoo with his circle.",
+    "source_quote": "Loobamub and his circle followed him toward the escape route",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is convinced by Gyrgum to leave Neverlight Grove immediately.",
+    "source_quote": "Gyrgum managed to convince Stool and Rumpadump that Neverlight Grove was no longer what it had been and that they needed to leave immediately",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is seen fleeing by Basidia, which convinces Basidia to also flee.",
+    "source_quote": "Seeing Stool, Rumpadump, Rasharoo, and everyone she cared about fleeing finally convinced Basidia",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is convinced by Gyrgum to leave Neverlight Grove immediately.",
+    "source_quote": "Gyrgum managed to convince Stool and Rumpadump that Neverlight Grove was no longer what it had been and that they needed to leave immediately",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is seen fleeing by Basidia, which convinces Basidia to also flee.",
+    "source_quote": "Seeing Stool, Rumpadump, Rasharoo, and everyone she cared about fleeing finally convinced Basidia",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Welcome is a place in the grove where guests are transformed into heads rooted in the ground.",
+    "source_quote": "the hospitality of the Circle of Welcome \u2014 a \u201cwelcome\u201d that would have transformed them into heads rooted in the ground",
+    "subject": "Circle of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is fully consumed by Zuggtmoy's rot as the party flees.",
+    "source_quote": "the once-beautiful grove fell fully into Zuggtmoy\u2019s rot behind them",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gyrgum states that Neverlight Grove is no longer what it had been.",
+    "source_quote": "Gyrgum managed to convince Stool and Rumpadump that Neverlight Grove was no longer what it had been",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia confronts Phylo, accusing him of betrayal and alliance with corruption.",
+    "source_quote": "Basidia could no longer contain herself and accused Phylo of betraying the circle and allying himself with corruption",
+    "subject": "Basidia's confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo and Basidia begin to fight as the grove's trees move to attack Basidia.",
+    "source_quote": "As Phylo and Basidia began to fight and the grove\u2019s trees moved to attack her",
+    "subject": "Fight begins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The grove's trees move to attack Basidia.",
+    "source_quote": "the grove\u2019s trees moved to attack her",
+    "subject": "Trees attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully retreats from Neverlight Grove.",
+    "source_quote": "The party successfully retreats from Neverlight Grove as Phylo rants about the Great Cedar",
+    "subject": "Party flees",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a pet grick that Basidia was working on but did not finish.",
+    "source_quote": "Basidia apologizes for not completing work on the party\u2019s pet grick",
+    "subject": "pet grick",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia gives the party potions of greater healing as a reward.",
+    "source_quote": "she pressed potions of greater healing and a box of treasure into the party\u2019s hands",
+    "subject": "potions of greater healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia gives the party a box of treasure as a reward.",
+    "source_quote": "she pressed potions of greater healing and a box of treasure into the party\u2019s hands",
+    "subject": "box of treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The recovered monetary treasure totals 975 gold pieces.",
+    "source_quote": "The recovered treasure totaled 975 gold pieces",
+    "subject": "treasure acquisition",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Great Cedar is an entity in the grove that Phylo claims will make everyone happy.",
+    "source_quote": "the Great Cedar would make them all happy",
+    "subject": "Great Cedar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Fungal Demon (Zuggtmoy) has plans that horrify Basidia and Rasharoo.",
+    "source_quote": "describing the \u201cwhole nine yards\u201d of the wedding rehearsal and the fungal demon\u2019s plans",
+    "subject": "Fungal Demon",
+    "quote_verified": true
+  }
+]

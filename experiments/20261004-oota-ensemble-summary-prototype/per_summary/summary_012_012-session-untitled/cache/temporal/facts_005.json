@@ -1,0 +1,156 @@
+[
+  {
+    "type": "monster",
+    "fact": "The attacking creature is a two-headed stone giant.",
+    "source_quote": "A two-headed stone giant, gray-skinned and howling with wild-eyed madness",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A duergar soldier is killed by the stone giant at the start of the encounter.",
+    "source_quote": "A duergar soldier's broken body flew through the air",
+    "subject": "duergar soldier death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The duergar soldier is dead.",
+    "source_quote": "A duergar soldier's broken body flew through the air",
+    "subject": "duergar soldier",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party members are within five to ten feet of Gyrgum.",
+    "source_quote": "The rest of the party is within five to ten feet.",
+    "subject": "party proximity",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The debris striking Gyrgum deals no damage.",
+    "source_quote": "strikes his foot for no damage",
+    "subject": "debris damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has approximately 100 hit points.",
+    "source_quote": "The giant has \"about 100 and something\" hit points",
+    "subject": "stone giant HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled initiative 19.",
+    "source_quote": "Initiative: Daz 19",
+    "subject": "initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled initiative 16.",
+    "source_quote": "Zalthir 16",
+    "subject": "initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 15 damage with Magic Missile.",
+    "source_quote": "Magic Missile deals 15 damage.",
+    "subject": "Daz Magic Missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 7 damage with a focus-point attack.",
+    "source_quote": "a focus-point attack hits for 7",
+    "subject": "Zalthir Flurry damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 6 damage with his short sword.",
+    "source_quote": "He attacks with advantage and deals 6 damage",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The stone giant failed a DC 13 Constitution saving throw.",
+    "source_quote": "The giant fails a DC 13 Constitution save",
+    "subject": "stone giant saving throw",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals 11 radiant damage to the stone giant.",
+    "source_quote": "takes 11 radiant damage",
+    "subject": "Gyrgum radiant damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The stone giant rolled a 25 (with a +9 modifier) to attack Thorin.",
+    "source_quote": "rolls a 25 (+9) for 10 bludgeoning damage",
+    "subject": "stone giant attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflects the blow, reducing the damage taken to zero.",
+    "source_quote": "The deflection... means no damage is taken.",
+    "subject": "Zalthir deflection",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "A squad of duergar city guards arrives to join the fray.",
+    "source_quote": "a squad of duergar city guards came rushing into the plaza",
+    "subject": "duergar city guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Two of the duergar guards act at initiative 10.",
+    "source_quote": "Two guards act at initiative 10.",
+    "subject": "duergar city guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 9 damage with a subsequent Magic Missile attack.",
+    "source_quote": "hits with Magic Missile for 9",
+    "subject": "Daz Magic Missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 11 damage in a subsequent attack.",
+    "source_quote": "Zalthir hits for 11",
+    "subject": "Zalthir damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 9 damage with a feinting attack on a roll of 17.",
+    "source_quote": "feinting attack (+1d8), hitting on a 17 for 9",
+    "subject": "Thorin feint damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 7 damage with a subsequent attack.",
+    "source_quote": "and then another 7",
+    "subject": "Thorin second damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals 9 damage with a crossbow bolt on a roll of 17.",
+    "source_quote": "hits with a crossbow bolt (17) for 9",
+    "subject": "Gyrgum crossbow damage",
+    "quote_verified": true
+  }
+]

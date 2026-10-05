@@ -1,0 +1,65 @@
+[
+  {
+    "type": "date",
+    "fact": "The party takes a long rest in a defensible corner of the cavern.",
+    "source_quote": "the party settled into a defensible corner of the cavern for a long rest",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Everyone in the party reaches 2nd level.",
+    "source_quote": "During the rest everyone reached 2nd level",
+    "subject": "party reaches 2nd level",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz takes expertise in Arcana.",
+    "source_quote": "Daz took expertise in Arcana",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz weighed Arcana, History, Investigation, Nature, and Perception before choosing Arcana.",
+    "source_quote": "Daz weighed Arcana, History, Investigation, Nature, and Perception",
+    "subject": "Daz chooses Arcana",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz passed on Perception because he has only 14 Wisdom.",
+    "source_quote": "With only Wisdom 14 he passed on Perception",
+    "subject": "Daz passes on Perception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz chose Arcana because he has been doing the wizardry stuff.",
+    "source_quote": "chose Arcana \"because he's been doing all the wizardry stuff.\"",
+    "subject": "Daz chooses Arcana",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that Perception indicates the existence of a trap or a lie but not its location or content.",
+    "source_quote": "Perception tells you that there is a trap, or that someone isn't telling the truth, but not where the trap is or what the lie is",
+    "subject": "GM ruling on Perception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that Insight and Investigation answer questions about where a trap is or what a lie is.",
+    "source_quote": "Insight and Investigation answer those questions",
+    "subject": "GM ruling on Investigation/Insight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum notes he has +3.",
+    "source_quote": "Gyrgum notes he has +3",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,240 @@
+[
+  {
+    "type": "location",
+    "fact": "The stone sarcophagus of Brysis is located within the Tomb of Khaem.",
+    "source_quote": "The party stood before the stone sarcophagus of Brysis",
+    "subject": "Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis's withered, mummified remains are inside the stone sarcophagus.",
+    "source_quote": "reveal the withered, mummified remains within",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his action to pry open the heavy lid of the sarcophagus.",
+    "source_quote": "Zalthir had spent his action opening it",
+    "subject": "opening sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "By opening the sarcophagus, Zalthir prevents Brysis from hiding inside it.",
+    "source_quote": "so that Brysis could no longer hide inside",
+    "subject": "Brysis hiding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A talking magic sword rests atop the corpse of Brysis in the sarcophagus.",
+    "source_quote": "Resting atop the ancient corpse was a sword",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sword pleads to be rescued from its imprisonment.",
+    "source_quote": "You can't leave me here. Please.",
+    "subject": "sword request",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wishes the talking sword were a less squeaky talking mace.",
+    "source_quote": "wished she had been a less squeaky talking mace",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a monk who cannot use bladed weapons.",
+    "source_quote": "Zalthir, a monk with no use for bladed weapons",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sword demands Zalthir bring the fighter to her.",
+    "source_quote": "wait, you're a monk. Get the fighter over here.",
+    "subject": "sword complaint",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A battle against Brysis begins amidst a shroud of magical darkness.",
+    "source_quote": "The battle against Brysis was fierce and chaotic",
+    "subject": "combat start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves his orb of darkness over Thorin.",
+    "source_quote": "Zalthir moved his orb of darkness over Thorin",
+    "subject": "Zalthir darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends focus points to strike twice with advantage from inside the darkness.",
+    "source_quote": "spent focus points to strike twice with advantage from inside it",
+    "subject": "Zalthir attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum holds back on turning the undead, saving the last use for a potential escape.",
+    "source_quote": "He held back on the GM's advice, saving his last use in case the party needed a quick getaway",
+    "subject": "Gyrgum turn undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum passes on casting Guiding Bolt to avoid firing blind at disadvantage.",
+    "source_quote": "He also passed on Guiding Bolt, which would have fired blind at disadvantage",
+    "subject": "Gyrgum spell rejection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Tasha's Caustic Brew as a five-foot stream past Zalthir.",
+    "source_quote": "threaded a five-foot stream of Tasha's Caustic Brew past Zalthir",
+    "subject": "Caustic Brew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis fails the saving throw for Tasha's Caustic Brew.",
+    "source_quote": "Brysis blew the saving throw",
+    "subject": "Brysis save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Acid clings to Brysis and deals ongoing damage.",
+    "source_quote": "acid clung to her and kept eating away at her",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires three scorching rays into the darkness.",
+    "source_quote": "fired three scorching rays into the darkness anyway",
+    "subject": "Daz attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two of Daz's rays hit for 10 damage each, and one hits for 3.",
+    "source_quote": "Two hit for 10 each and one for 3",
+    "subject": "Daz hits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz earns the award for pissing off the demonic creature.",
+    "source_quote": "earned him 'the award for pissing off the demonic creature'",
+    "subject": "Daz award",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Brysis vows she will not be defeated after a millennium of imprisonment.",
+    "source_quote": "Brysis raged that she would not be defeated after a millennium of imprisonment",
+    "subject": "Brysis rage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz retreats up the tunnel to avoid being turned into a specter.",
+    "source_quote": "Daz retreated up the tunnel so the creature could not turn him into a specter",
+    "subject": "Daz retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis is destroyed by the lingering acid damage.",
+    "source_quote": "she was destroyed before she could make good on his threat",
+    "subject": "Brysis destruction",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis is destroyed.",
+    "source_quote": "she was destroyed",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis is dead.",
+    "source_quote": "she was destroyed",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reaches into the sarcophagus and pulls free the sentient sword.",
+    "source_quote": "he reached into the sarcophagus and pulled free the sentient sword",
+    "subject": "Thorin grab",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A blade of pure radiance blazes to life when Thorin grasps the hilt.",
+    "source_quote": "a blade of pure radiance blazed to life",
+    "subject": "sword activation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sword announces herself as Dawnbringer.",
+    "source_quote": "The sword announced herself with 'Dawnbringer here! Let me show you what I can do!'",
+    "subject": "Dawnbringer introduction",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a +2 sword that deals radiant damage instead of slashing.",
+    "source_quote": "She is a +2 sword that deals radiant damage instead of slashing",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer adds 1d8 damage against undead.",
+    "source_quote": "adds 1d8 against undead",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer grants lesser restoration.",
+    "source_quote": "grants lesser restoration",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis says 'not done, Dawnbringer' before dying.",
+    "source_quote": "Brysis managed only 'not done, Dawnbringer'.",
+    "subject": "Brysis last words",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is capable of reading.",
+    "source_quote": "She could even read",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is down 12 maximum hit points.",
+    "source_quote": "He is already down 12 maximum hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

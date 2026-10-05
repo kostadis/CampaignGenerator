@@ -1,0 +1,212 @@
+[
+  {
+    "type": "location",
+    "fact": "The ambush takes place at the end of a pier on the Darklake Docks.",
+    "source_quote": "At the end of a pier on the Darklake Docks",
+    "subject": "Darklake Docks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is a Duergar merchant who was standing alone at the pier when the assassination attempt began.",
+    "source_quote": "they spotted a Duergar merchant standing alone",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Assassin 1 is one of two masked, hooded assassins who suddenly became visible beside the merchant.",
+    "source_quote": "Two figures suddenly shimmered into visibility beside him: masked, hooded assassins",
+    "subject": "assassin 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Assassin 2 is the other of the two masked, hooded assassins who appeared beside the merchant.",
+    "source_quote": "Two figures suddenly shimmered into visibility beside him: masked, hooded assassins",
+    "subject": "assassin 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two assassins drove glowing blades into the merchant Werz.",
+    "source_quote": "who drove glowing blades into the merchant with vicious precision",
+    "subject": "assassination attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expressed immediate interest in acquiring the assassins' glowing weapons.",
+    "source_quote": "Thorin immediately coveted the glowing weapons",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player's out-of-game anecdote about fireflies led to the party naming their tactic 'Firefly Tactics'.",
+    "source_quote": "Thorin's player's out-of-game firefly anecdote leads to the group name 'Firefly Tactics'",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party charged the assassins immediately upon spotting the attack.",
+    "source_quote": "Without hesitation, the party charged",
+    "subject": "party charges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempted to shove an assassin into the water but failed a contested Athletics check.",
+    "source_quote": "Gyrgum rushed forward and tried to shove one of the killers into the water, but the assassin held his ground",
+    "subject": "Gyrgum shove attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz dealt nine points of magical damage to one of the assassins.",
+    "source_quote": "Daz unleashed a torrent of magical energy that tore into one of the attackers for nine damage",
+    "subject": "Daz magical attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz moved closer to the combatants to avoid being separated from them if the assassin turned invisible again.",
+    "source_quote": "Daz moves closer in case the assassin turns invisible again",
+    "subject": "Daz positioning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One assassin attempted to strike Gyrgum with a glowing blade but missed on a natural 1.",
+    "source_quote": "One assassin retaliates against Gyrgum with a glowing blade but misses on a natural 1",
+    "subject": "assassin counterattack miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant Werz screamed for help, disengaged, and ran away from the combat.",
+    "source_quote": "The merchant screams for help, disengages, and runs",
+    "subject": "Werz disengagement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjured a 15-foot sphere of impenetrable magical darkness over the pier.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness over the pier",
+    "subject": "Zalthir darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first attack roll against the assassin was a natural 1.",
+    "source_quote": "His first strike missed on a natural 1",
+    "subject": "Zalthir first strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spent a focus point to make a second attack and killed one of the assassins.",
+    "source_quote": "but he spent a focus point to strike again and killed one assassin outright",
+    "subject": "Zalthir killing blow",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One assassin is dead, killed by Zalthir's strike.",
+    "source_quote": "killed one assassin outright",
+    "subject": "assassin 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin used a Precision Attack superiority die to turn a miss into a hit on the remaining assassin, dealing six damage.",
+    "source_quote": "Thorin salvaged a miss with a Precision Attack and landed a precise blow for six damage",
+    "subject": "Thorin precision attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum struck the remaining assassin with radiant energy channeled through his mace, dealing two points of damage.",
+    "source_quote": "Gyrgum channeled radiant holy energy through his mace",
+    "subject": "Gyrgum radiant strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM questioned the rules for True Strike regarding Gyrgum's attack but conceded that the rules had changed.",
+    "source_quote": "The GM briefly questioned whether True Strike includes the attack, then conceded the rules had changed",
+    "subject": "Gyrgum true strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz targeted the assassin with Scorching Ray at disadvantage because he could not see the target in the magical darkness.",
+    "source_quote": "Magic Missile can't target a creature he can't see in magical darkness, so he targets squares with Scorching Ray at disadvantage",
+    "subject": "Daz scorching rays",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's rays dealt four and six damage, killing the final assassin.",
+    "source_quote": "Rays for four and six damage finish the assassin",
+    "subject": "Daz killing rays",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The second assassin is dead, killed by Daz's Scorching Rays.",
+    "source_quote": "When the darkness lifted, both assassins lay dead",
+    "subject": "assassin 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The glowing blades used by the assassins vanished, dissolving back into psychic energy.",
+    "source_quote": "The glowing blades they had wielded had vanished entirely, dissolving back into the psychic energy from which they had been conjured",
+    "subject": "blades dissolve",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The glowing blades used in the attack are psionic weapons that do not persist after the wielder's death.",
+    "source_quote": "revealing it to be a psionic weapon",
+    "subject": "glowing blades",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum healed the wounds of the merchant Werz with a quick prayer.",
+    "source_quote": "Gyrgum knelt beside the wounded merchant and spoke a quick prayer, closing the man's wounds",
+    "subject": "Werz healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz invited the party to meet him at the Shattered Spire to receive a reward.",
+    "source_quote": "invited them to meet him at the Shattered Spire to receive a proper reward",
+    "subject": "Werz invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz claims he does not know why he was targeted by assassins.",
+    "source_quote": "Werz, claimed to have no idea why he had been targeted",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The reason for the assassination attempt on Werz is currently unknown.",
+    "source_quote": "Werz: 'I have no idea why I was targeted by assassins.'",
+    "subject": "Werz motivation",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Werz's clan affiliation is unknown.",
+    "source_quote": "Werz's clan affiliation remains unknown",
+    "subject": "Werz clan",
+    "quote_verified": true
+  }
+]

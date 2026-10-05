@@ -1,0 +1,163 @@
+[
+  {
+    "type": "location",
+    "fact": "The party ventured deeper into the vast caverns surrounding Neverlight Grove.",
+    "source_quote": "The party ventured deeper into the vast caverns surrounding Neverlight Grove.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The underground landscape of the caverns surrounding Neverlight Grove is filled with towering, psychedelically colored mushrooms that glow with strange light.",
+    "source_quote": "The underground landscape was filled with towering, psychedelically colored mushrooms that glowed with strange, inviting light.",
+    "subject": "vast caverns surrounding Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub warns the party to kill a Shambling Mound if they find it.",
+    "source_quote": "Loobamub warned them that a Shambling Mound also lurked nearby: \"if you do find that, kill it.",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub states that they do not reanimate shambling mounds.",
+    "source_quote": "We don't reanimate shambling mounds.\"",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Shambling Mound is a massive creature of living swamp matter.",
+    "source_quote": "A Shambling Mound is a massive creature of living swamp matter.",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Shambling Mound does not walk around but flops down as if it were part of a mossy swamp.",
+    "source_quote": "It does not walk around but flops down as if it were part of a mossy swamp.",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is a surly predator lurking in the rocky, mossy terrain to the south.",
+    "source_quote": "Their quarry was a Grick Alpha, a surly predator lurking in the rocky, mossy terrain to the south.",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz devised an unusual strategy involving Shape Water to locate the creature.",
+    "source_quote": "Daz devised an unusual strategy.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz froze small sections of the mossy ground in a checkerboard pattern.",
+    "source_quote": "he froze small sections of the mossy ground in a checkerboard pattern",
+    "subject": "Shape Water casting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz spaced his lines so that no 10-by-10 gap could hide the Large creature.",
+    "source_quote": "spacing his lines so that no 10-by-10 gap could hide the Large creature.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is in the lead of the party.",
+    "source_quote": "with Thorin in front, \"because that's what he does.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer glowed fiercely in the dark.",
+    "source_quote": "Dawnbringer glowed fiercely in the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a magical blade that refuses to tolerate the absence of light.",
+    "source_quote": "since the magical blade refuses to tolerate the absence of light.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM introduced a new, larger map to convey the true scale of the area.",
+    "source_quote": "The GM introduced a new, larger map to convey the true scale of the area",
+    "subject": "GM map swap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz first proposes freezing the mound itself.",
+    "source_quote": "Daz first proposes freezing the mound itself.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM rules that cantrips do not work by freezing creatures directly.",
+    "source_quote": "The GM rules that cantrips do not work that way.",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the party of the mound's resistances.",
+    "source_quote": "Zalthir reminds the party of the mound's resistances.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz considers Magic Missile as a follow-up spell.",
+    "source_quote": "Daz considers Magic Missile and Maximilian's Earthen Grasp as follow-ups",
+    "subject": "Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz considers Maximilian's Earthen Grasp as a follow-up spell.",
+    "source_quote": "Daz considers Magic Missile and Maximilian's Earthen Grasp as follow-ups",
+    "subject": "Maximilian's Earthen Grasp",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM confirms that the mound is only resistant, not immune, to cold and fire.",
+    "source_quote": "the GM confirms that the mound is only resistant, not immune, to cold and fire.",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha wakes after being disturbed by the party freezing its surroundings.",
+    "source_quote": "The Grick Alpha, disturbed by the party freezing its surroundings, wakes",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha bares its teeth and claws.",
+    "source_quote": "wakes and bares its teeth and claws",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha emerges to confront the party.",
+    "source_quote": "then emerges to confront them.",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  }
+]

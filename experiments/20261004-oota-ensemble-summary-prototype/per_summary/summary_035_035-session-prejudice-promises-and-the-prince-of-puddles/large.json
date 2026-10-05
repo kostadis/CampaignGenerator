@@ -1,0 +1,422 @@
+[
+  {
+    "type": "event",
+    "fact": "The party arrives on the shores of the Darklake, wet and cold.",
+    "source_quote": "The party arrived on the shores of the Darklake drenched, cold, and miserable",
+    "subject": "arrival at Darklake Shores",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party has landed on the shores of the Darklake after their journey through the water.",
+    "source_quote": "The party arrived on the shores of the Darklake",
+    "subject": "Darklake Shores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is thrilled to be close to home.",
+    "source_quote": "Jimjar was thrilled to be so close to home",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar announces that Blingdenstone is a day's journey from their current location.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone. I know it for sure this time.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar wagers that someone will demand a rest.",
+    "source_quote": "He immediately wagered that someone would demand a rest",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to take a long rest.",
+    "source_quote": "Once the party agreed to take a long rest",
+    "subject": "party agrees to rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar celebrates winning his bet.",
+    "source_quote": "Excellent. I made\u2014I won, I won my bet",
+    "subject": "Jimjar wins bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he had a miscalculation regarding who accepted his wager.",
+    "source_quote": "Jimjar admitted to a \u201cslight miscalculation,\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar unsuccessfully tries to start a new bet about Gyrgum.",
+    "source_quote": "unsuccessfully tried to start another bet about whether Gyrgum would take the bet",
+    "subject": "Jimjar new bet attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confirms no one is pursuing them.",
+    "source_quote": "With no one pursuing them",
+    "subject": "pursuit check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party settles in for a full night\u2019s long rest.",
+    "source_quote": "the party settled in for a full night\u2019s rest",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum puzzles over the concept of a long rest.",
+    "source_quote": "Gyrgum puzzled over the unfamiliar idea of a \u201clong rest\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum concludes that sleeping might explain why he feels refreshed.",
+    "source_quote": "concluded that it might explain why closing his eyes sometimes left him feeling refreshed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Morning arrives after the rest, and everyone has recovered.",
+    "source_quote": "By morning, everyone had recovered their strength",
+    "subject": "morning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party begins a day-long march to Blingdenstone.",
+    "source_quote": "ready for the day-long march to Blingdenstone",
+    "subject": "march to Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is located a day's journey from the shores of the Darklake.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The approach to Blingdenstone ends at a long, tedious staircase built for three-foot-tall people.",
+    "source_quote": "ended at a long, tedious staircase built for three-foot-tall people",
+    "subject": "Blingdenstone Staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar, Spiderbait, and smaller members of the company climb the stairs comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "subject": "climbing the staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The closely spaced steps count as difficult terrain for the party\u2019s larger members.",
+    "source_quote": "while the closely spaced steps count as difficult terrain for the party\u2019s larger members",
+    "subject": "difficult terrain for larger travelers",
+    "quote_verified": true
+  },
+  {
+    "type": "fact",
+    "fact": "Dwarves are close enough to gnome size that they are not hindered by the staircase.",
+    "source_quote": "Dwarves are close enough to gnome size that they are not similarly hindered",
+    "subject": "dwarves on the staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "At the top of the stairs, Jimjar happily declares the group's arrival at Blingdenstone.",
+    "source_quote": "At the top, Jimjar happily declared, \u201cWe've arrived at Blingdenstone!\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar tries to turn the party\u2019s request for information into a wager, offering to bet that no one wants to know what is happening.",
+    "source_quote": "Jimjar tries to turn the party\u2019s request for information into another wager, offering to bet that no one wants to know what is happening",
+    "subject": "Jimjar's wager proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone used to belong to the gnomes, then the drow, and then the gnomes again.",
+    "source_quote": "He explained that the city had belonged to the gnomes, then the drow, and then the gnomes",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Jimjar describes Blingdenstone as currently being \u201ca little bit of a mess.\u201d",
+    "source_quote": "Although Blingdenstone was now \u201ca little bit of a mess\u201d",
+    "subject": "Blingdenstone",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The inhabitants of Blingdenstone know routes out of the Underdark.",
+    "source_quote": "its inhabitants knew routes out of the Underdark",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar assures the party that the people of Blingdenstone might help them reach the surface.",
+    "source_quote": "might be persuaded to help",
+    "subject": "request for help",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The main gate is built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine.",
+    "source_quote": "built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine",
+    "subject": "Blingdenstone Main Gate",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Eight gnomes are guarding the passage beyond the gate.",
+    "source_quote": "the party can see through it to the eight gnomes guarding the passage beyond",
+    "subject": "gnome guards",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gate is made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine.",
+    "source_quote": "a massive gate made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine",
+    "subject": "massive gate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eight gnome guards waited behind the gate.",
+    "source_quote": "Eight gnome guards waited behind it",
+    "subject": "gnome guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The head guard demanded to know who the travelers were and why they had come.",
+    "source_quote": "Their leader demanded to know who the travelers were and why they had come.",
+    "subject": "head guard challenge",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One guard stated a distrust of Daz, claiming drow are liars.",
+    "source_quote": "You are a drow, and we know that drow lie.",
+    "subject": "gnome guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum countered the guard's accusation by stating that orcs only tell the truth.",
+    "source_quote": "But I am an orc, and everyone knows that orcs only tell the truth,",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "he was an orc cleric of Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards were bewildered when they realized Gyrgum was an orc cleric.",
+    "source_quote": "bewildering the guards further when they realized he was an orc cleric of Bahamut",
+    "subject": "guards' realization",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum affirmed his nature to the guards, stating 'Tis true. You see me truly.'",
+    "source_quote": "Gyrgum answers their disbelief with, \u201cTis true. You see me truly.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar responded to the guard's inquiry with his habitual phrase 'Wanna bet?'.",
+    "source_quote": "Jimjar initially responds with his habitual \u201cWanna bet?\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar introduced himself to the guards as another friend of the party.",
+    "source_quote": "before presenting himself as merely another friend of the party.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar reassured the guards that Daz is interested in exploration and growth rather than domination.",
+    "source_quote": "he's really a really nice guy. He's all about exploring and growing, not about domination and world conquest.",
+    "subject": "Jimjar's reassurance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Jimjar claimed Daz was reading a popular book called *The Up in the Overbright*.",
+    "source_quote": "he has been reading a popular book called *The Up in the Overbright*",
+    "subject": "The Up in the Overbright",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the group had been detained and exploited against their will.",
+    "source_quote": "the group had been detained and exploited against their will",
+    "subject": "Daz's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the group escaped their captors.",
+    "source_quote": "had escaped their captors",
+    "subject": "Daz's escape narrative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the group had gathered other good people seeking safe companions and a better destination.",
+    "source_quote": "had gathered other good people seeking safe companions and a better destination",
+    "subject": "Daz's gathering",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The group arrived at Blingdenstone hoping for help.",
+    "source_quote": "They had arrived at Blingdenstone hoping for help",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Maze is a defensive network of twisting, trapped tunnels intended to slow and kill invading armies.",
+    "source_quote": "a defensive network of twisting, trapped tunnels intended to slow and kill invading armies",
+    "subject": "Blingdenstone's Maze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards permit the entire group, including Glabbagool, to enter Blingdenstone.",
+    "source_quote": "The guards ultimately permitted the entire group to enter, but urged them to consult Chief Dorbo Diggermattock",
+    "subject": "entry into Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guards recommend the party consult Chief Dorbo Diggermattock for permission to keep Glabbagool in the city.",
+    "source_quote": "urged them to consult Chief Dorbo Diggermattock and Quartermaster Senni for full permission to keep Glabbagool in the city",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guards recommend the party consult Quartermaster Senni for an explanation of Blingdenstone\u2019s ooze crisis.",
+    "source_quote": "Quartermaster Senni ... for an explanation of Blingdenstone\u2019s ooze crisis",
+    "subject": "Quartermaster Senni",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is being kept in the city, which requires specific permission from the leaders.",
+    "source_quote": "full permission to keep Glabbagool in the city",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz responds to a gnome's warning about defenses by stating he feels safer because of them.",
+    "source_quote": "Daz answered that the powerful fortifications made him feel safer and thanked them for hosting the group.",
+    "subject": "Daz's diplomacy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's tactful compliment delighted the gnomes.",
+    "source_quote": "His tactful compliment delighted the gnomes.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes and dwarves compete for the same finite underground resources.",
+    "source_quote": "The two peoples competed for the same finite underground resources",
+    "subject": "gnomes and dwarves",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes and dwarves can become allies against deeper Underdark threats.",
+    "source_quote": "but could become allies against deeper Underdark threats.",
+    "subject": "gnomes and dwarves",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth considers gnomes clever with magic and gems but not particularly formidable fighters.",
+    "source_quote": "Eldeth admitted that she considered gnomes clever with magic and gems but not particularly formidable fighters.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth reflects on her inherited prejudice toward drow.",
+    "source_quote": "The conversation prompted Eldeth to reflect on her inherited prejudice toward drow.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth was raised with the belief that the only good drow is a dead drow.",
+    "source_quote": "she had been raised to believe \u201cThe only good drow is a dead drow,\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth now believes the true enemy is the fanatical cult of Lolth rather than every individual drow.",
+    "source_quote": "She now believed the true enemy was the fanatical cult of Lolth rather than every individual drow.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cautions Eldeth that people raised in the cult of Lolth might be redeemable people shaped by a terrible environment.",
+    "source_quote": "Daz cautioned that even those raised knowing nothing but that cult might be redeemable people shaped by a terrible environment.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth acknowledges that Daz's example convinced her to rethink her culture's reflexive treatment of entire peoples as inherently evil.",
+    "source_quote": "Eldeth acknowledged that his example had convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil ... was something she needed to rethink.",
+    "subject": "Eldeth",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Eldeth accepts that her views on the inherent evil of certain peoples need to be reconsidered as the group proceeds deeper into Blingdenstone.",
+    "source_quote": "She accepts that it is something she personally should continue thinking about as the group proceeds deeper into Blingdenstone.",
+    "subject": "Eldeth's evolving prejudice",
+    "quote_verified": true
+  }
+]

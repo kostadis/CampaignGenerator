@@ -1,0 +1,331 @@
+[
+  {
+    "type": "faction",
+    "fact": "Three spore servants rise from the garden during the mock wedding.",
+    "source_quote": "Three spore servants rise from the garden",
+    "subject": "spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spore servants carry Yestabrod's corpse like a puppet to play the priest.",
+    "source_quote": "carry the recently slain Yestabrod\u2019s corpse like a grotesque puppet, forcing it to play the priest",
+    "subject": "Yestabrod corpse used in ceremony",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Yestabrod's corpse is recently slain.",
+    "source_quote": "the recently slain Yestabrod\u2019s corpse",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A chamberlain stands in for Araumycos in the mock wedding.",
+    "source_quote": "a chamberlain and bridesmaid standing in for Araumycos",
+    "subject": "chamberlain",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A bridesmaid stands in for Zuggtmoy in the mock wedding.",
+    "source_quote": "a chamberlain and bridesmaid standing in for Araumycos and Zuggtmoy",
+    "subject": "bridesmaid",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Fungal bridesmaids sing a strange, soothing song.",
+    "source_quote": "They sang a strange, soothing song",
+    "subject": "fungal bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The fungal bridesmaids weave lichen veils and a mycelium bridal train.",
+    "source_quote": "weaving her substance into delicate lichen veils and a long mycelium bridal train",
+    "subject": "fungal bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A woman-like figure made entirely of fungi and mold floats in the center of the tower.",
+    "source_quote": "a woman-like figure made entirely of fungi and mold",
+    "subject": "woman-like figure",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The woman-like figure is three times the height of the fungal bridesmaids.",
+    "source_quote": "three times the height of the fungal bridesmaids",
+    "subject": "woman-like figure",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The interior walls of the tower are carved with spiraling stairs and balconies.",
+    "source_quote": "walls were carved with spiraling stairs and balconies",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Phosphorescent mold grows across the tower walls in glowing whorls.",
+    "source_quote": "Phosphorescent mold grew across it in glowing whorls",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Eerie luminescence pours from slitted windows cut into the tower's trunk.",
+    "source_quote": "eerie luminescence pours from slitted windows cut into its trunk",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thousands of lesser fungi cling to the central stalk of the tower.",
+    "source_quote": "Thousands of lesser fungi cling to the central stalk",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tower's secondary stalks have caps large enough to top great towers.",
+    "source_quote": "caps are large enough to top great towers",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A carpet of fungi covers the cavern floor around the tower.",
+    "source_quote": "A carpet of fungi covers the cavern floor around it",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tower reaches nearly from floor to ceiling.",
+    "source_quote": "the mushroom still reaches nearly from floor to ceiling",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tower has slitted windows cut into its trunk.",
+    "source_quote": "slitted windows cut into its trunk",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A cacophony of atonal music echoes from inside the tower.",
+    "source_quote": "The same cacophony of atonal music they had heard before echoed from within",
+    "subject": "fungus tower",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Finely crafted studded leather armor is found near Xinaya\u2019s burial place.",
+    "source_quote": "including finely crafted studded leather armor",
+    "subject": "studded leather armor",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Magical scrolls are found near Xinaya\u2019s burial place.",
+    "source_quote": "including finely crafted studded leather armor and magical scrolls",
+    "subject": "magical scrolls",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Equipment including studded leather armor and scrolls is piled near Xinaya\u2019s burial place.",
+    "source_quote": "When the party collected equipment piled near Xinaya\u2019s burial place",
+    "subject": "Xinaya\u2019s burial place",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Lesser Restoration through Dawnbringer on Zalthir.",
+    "source_quote": "Thorin used Dawnbringer\u2019s restorative power on Zalthir",
+    "subject": "madness cure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir apologizes for his possessive behavior.",
+    "source_quote": "He admitted that he did not know what had come over me... I apologize. It was bizarre.",
+    "subject": "Zalthir apologizes",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir claims ownership of the magical scrolls.",
+    "source_quote": "These are mine. I found them",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir refuses to share the scrolls.",
+    "source_quote": "refusing to share them with anyone",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states he does not know what came over him.",
+    "source_quote": "He admitted that he did not know what had come over him",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is affected by spores released by Yestabrod.",
+    "source_quote": "both Zalthir and Daz had inhaled spores released by Yestabrod",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz experiences hallucinations of happy elf families.",
+    "source_quote": "Daz was overcome by short-term madness and experienced vivid hallucinations of happy elf families",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz experiences hallucinations of dwarves and elves living in peace.",
+    "source_quote": "hallucinations of happy elf families, dwarves and elves living in peace",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz experiences hallucinations of pictures of dogs.",
+    "source_quote": "hallucinations of happy elf families, dwarves and elves living in peace, countless pictures of dogs",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz experiences hallucinations of a city without spiders.",
+    "source_quote": "a city without spiders",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is overwhelmed by short-term madness.",
+    "source_quote": "Daz was overcome by short-term madness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz struggles to distinguish hallucinations from reality.",
+    "source_quote": "struggled to distinguish the hallucinations from reality",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz screams and hides.",
+    "source_quote": "He screamed, hid, and struggled to distinguish the hallucinations from reality",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is affected by spores released by Yestabrod.",
+    "source_quote": "both Zalthir and Daz had inhaled spores released by Yestabrod",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reasons that Zalthir's affliction might be a disease.",
+    "source_quote": "reasoning that the affliction might be a disease",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks the ghostly companion for a diagnosis.",
+    "source_quote": "When Gyrgum asks their ghostly companion for a diagnosis",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly companion states he is a traitor.",
+    "source_quote": "he answers, \u201cI am a ghost. I am a traitor. I am a gem cutter. I am not a doctor.\u201d",
+    "subject": "ghostly companion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly companion states he is a gem cutter.",
+    "source_quote": "he answers, \u201cI am a ghost. I am a traitor. I am a gem cutter. I am not a doctor.\u201d",
+    "subject": "ghostly companion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly companion states he is not a doctor.",
+    "source_quote": "he answers, \u201cI am a ghost. I am a traitor. I am a gem cutter. I am not a doctor.\u201d",
+    "subject": "ghostly companion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin decides not to proceed further into Zuggtmoy's realm.",
+    "source_quote": "Thorin decides, \u201cYeah, no, let\u2019s not do that.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya has a burial place.",
+    "source_quote": "equipment piled near Xinaya\u2019s burial place",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Araumycos is represented in a mock wedding ceremony.",
+    "source_quote": "a chamberlain and bridesmaid standing in for Araumycos",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is represented in a mock wedding ceremony.",
+    "source_quote": "a chamberlain and bridesmaid standing in for Araumycos and Zuggtmoy",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's realm requires resistance against madness to enter deeper passages.",
+    "source_quote": "following it would take them deeper into Zuggtmoy\u2019s realm and require further resistance against madness",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party wets strips of cloth to cover their mouths and noses.",
+    "source_quote": "they wetted strips of cloth and covered their mouths and noses",
+    "subject": "wetted cloth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM calls wetting cloth a very good strategy.",
+    "source_quote": "The DM calls it \u201ca very good strategy.\u201d",
+    "subject": "spore warning",
+    "quote_verified": true
+  }
+]

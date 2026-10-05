@@ -1,0 +1,16 @@
+[
+  {
+    "type": "date",
+    "fact": "The party took a long rest before setting out.",
+    "source_quote": "The party confirms they had taken a long rest before setting out.",
+    "subject": "rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully bypassed the Council of Savants without incident.",
+    "source_quote": "slipping past the mad derro scholars without incident",
+    "subject": "Council bypass",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "type": "date",
+    "fact": "Droki passes through the area roughly once a day.",
+    "source_quote": "Droki passes through roughly once a day",
+    "subject": "Droki patrol frequency",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The black pool in the cavern is nearly 100 feet across.",
+    "source_quote": "The opposite shore is nearly 100 feet away",
+    "subject": "black pool dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel visible through the wall cracks runs about 30 feet.",
+    "source_quote": "tunnel running about 30 feet",
+    "subject": "adjacent tunnel length",
+    "quote_verified": true
+  }
+]

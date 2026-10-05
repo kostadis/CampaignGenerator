@@ -1,0 +1,44 @@
+[
+  {
+    "type": "event",
+    "fact": "Basidia leads the party on a tour of the colony's various circles in the Neverlight Grove.",
+    "source_quote": "Basidia, the myconid sovereign who had been guiding the party through the Neverlight Grove, led them on a tour of the colony's various circles.",
+    "subject": "tour of the circles",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The investigation into the Garden of Welcome is delayed until the morning, prompting an immediate nighttime alternative.",
+    "source_quote": "without waiting for Phylo's guided tour in the morning",
+    "subject": "tour duration",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The newly spored myconids are only a few inches tall and not yet aware.",
+    "source_quote": "newly spored myconids only a few inches tall, not yet aware",
+    "subject": "newly spored myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi.",
+    "source_quote": "Hebopbe proudly points out the terraces and extensive cultivation program",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar places no bets at all, which is described as tellingly strange behavior for him.",
+    "source_quote": "placing no bets at all",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims he has never been infected by spores.",
+    "source_quote": "offering to bet that he had never been infected by spores",
+    "subject": "Jimjar",
+    "quote_verified": true
+  }
+]

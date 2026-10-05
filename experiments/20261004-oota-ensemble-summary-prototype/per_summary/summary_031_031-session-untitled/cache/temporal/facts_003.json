@@ -1,0 +1,37 @@
+[
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is located on a plateau rising high above the surrounding terraces of the grove.",
+    "source_quote": "The plateau rose high above the rest of the grove",
+    "subject": "Garden of Welcome topography",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The heads of creatures from a dozen different Underdark races are emerging from the soil in the Garden of Welcome.",
+    "source_quote": "the heads of creatures from a dozen different Underdark races",
+    "subject": "heads count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Half of Xinaya's face is rotted into a bed for scores of tiny mushrooms.",
+    "source_quote": "Half of Xinaya's face has rotted into a bed for scores of tiny mushrooms",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Phylo's planned tour of the Garden of Welcome is scheduled for the following morning.",
+    "source_quote": "before Phylo can conduct his planned tour the following morning",
+    "subject": "Phylo tour timing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two adult myconids emerge to attack the party alongside the larval creature.",
+    "source_quote": "Two adult myconids and drow spore servants",
+    "subject": "myconid adults count",
+    "quote_verified": true
+  }
+]

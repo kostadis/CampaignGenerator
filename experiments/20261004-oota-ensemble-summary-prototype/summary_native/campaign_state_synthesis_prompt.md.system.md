@@ -1,0 +1,482 @@
+You are creating a campaign state reference document for a D&D GM.
+
+You will receive extraction notes from multiple session summaries. Synthesize them into a single authoritative campaign_state.md. This document serves as grounding context for future planning: it tells the LLM what is DONE and what is CURRENT so it does not hallucinate completed content as still active, or suggest revisiting finished encounters.
+
+Produce campaign_state.md with these sections:
+
+## Completed Encounters & Quests
+A definitive list of content that is DONE and should NOT be replayed or re-suggested.
+For each entry: name, brief outcome, and any lasting consequence.
+Format as a list, most recent last.
+
+## Resolved Plot Threads
+Threads that are closed. One bullet per thread: what it was and how it ended.
+
+## NPC Current States
+A table of all named NPCs with their current status:
+| NPC | Status | Last Known Location | Disposition toward Party |
+(Status: Alive / Dead / Missing / Imprisoned / Unknown)
+
+## Active Quests & Open Threads
+What is genuinely still in play. For each: what it is, current stakes, and last known state.
+Keep this section short — if it's here, it's unfinished.
+
+## Party Current Situation
+- Current location
+- Active obligations and outstanding debts
+- Key resources and assets held
+- Recent developments shaping the next session
+
+## Tracked Items Status
+The following events were explicitly requested for tracking. For EACH item below, include a subsection with its status and what was found in the session notes. If an item was not found at all, write "NOT FOUND IN SUMMARIES" so the GM knows to verify it manually.
+- - Escape from Velkynvelve — drow outpost
+- - Return to the Underdark — second expedition
+- - Gather components for Vizeran's ritual — dark heart talisman
+- - Place the dark heart talisman — final ritual setup
+- - Perform Vizeran's ritual — demon lord summoning
+- - Final battle against demon lords — Against the Demon Lords
+- - Jorlan's Gambit — gate left unlocked
+- - Reach Sloobludop — kuo-toa settlement
+- - Reach Gracklstugh — duergar city
+- - Reach Neverlight Grove — myconid colony
+- - Reach Blingdenstone — deep gnome settlement
+- - Reach Gravenhollow — stone giant library
+- - Reach Mantol-Derith — Zhentarim outpost
+- - Reach Menzoberranzan — City of Spiders
+- - Reach the Wormwrithings — purple worm territory
+- - Reach the Labyrinth — maze tunnels
+- - Retrieve Gromph Baenre's grimoire — Sorcere
+- - Obtain purple worm egg — worm nursery
+- - Obtain beholder central eye — Vast Oblivium
+- - Obtain six angel feathers — Gallery of Angels
+- - Obtain goristro heart — Yeenoghu's hunt
+- - Obtain timmask mushrooms — demon footprint spores
+- - Obtain demon lord blood or ichor — component collection
+- - Eldeth Feldrun — return to Gauntlgrym or honor her memory
+- - Shuushar — guide to Sloobludop
+- - Stool — return to Neverlight Grove
+- - Rumpadump — return to Neverlight Grove
+- - Deliver Werz Saltbaron's gems — Kazook Pickshine in Blingdenstone
+- - Droki delivery interception — Whorlstone Tunnels
+- - Ylsa Henstak's investigation — surface-world currency source
+- - Find Entémoch's Boon — Blingdenstone outskirts
+- - Cleanse the Steadfast Stone — Rockblight
+- - Encounter with the Pudding King — Blingdenstone
+- - Battle for Blingdenstone — ooze incursion
+- - Burrow Warden Jadger's tasks — lay gnome spirits to rest
+- - Retrieve Pelek's remains — Blingdenstone catacombs
+- - Return Sladis Vadir — Emerald Enclave scout
+- - Return Rystia Zav — Harper spy
+- - Locate Khalessa Draga — Lords' Alliance deep cover operative
+- - Activate or disable the Maze Engine — Labyrinth
+- - Xazax the Eyemonger — beholder encounter
+- - Zuggtmoy's fetid wedding — Araumycos confrontation
+- - Fraz-Urb'luu's gem — Mantol-Derith conflict
+- - Stonespeaker Hgraam audience — stone giant leader
+- - Velkynvelve — drow outpost, slave pen
+- - Sloobludop — kuo-toa town on the Darklake
+- - Gracklstugh — duergar city, City of Blades
+- - Neverlight Grove — myconid colony
+- - Blingdenstone — deep gnome settlement
+- - Whorlstone Tunnels — beneath Gracklstugh
+- - Darklake — Underdark waterway
+- - Gravenhollow — stone giant library
+- - Araj — Vizeran's tower
+- - Mantol-Derith — Underdark trade outpost
+- - Menzoberranzan — drow city, City of Spiders
+- - Wormwrithings — purple worm tunnel network
+- - Vast Oblivium — beholder lair chasm
+- - Labyrinth — maze tunnels, Baphomet's domain
+- - Gallery of Angels — petrified angel cavern
+- - Araumycos — vast fungal entity cavern
+- - Gauntlgrym — dwarf fortress, Bruenor's seat
+- - Sorcere — drow arcane academy in Menzoberranzan
+- - Yggmorgus — Zuggtmoy's mushroom tower
+- - Overlake Hold — Dunglorrin Torune, Gracklstugh fortress
+- - Cairngorm Cavern — stone giant home in Gracklstugh
+- - Silken Paths — spider web chasm
+- - Oozing Temple — flooded dungeon
+- - Lost Tomb of Khaem — Netherese tomb
+- - Troglodyte Lair — Wormwrithings encounter
+- - Worm Nursery — purple worm egg chamber
+- - Hook Horror Lair — gnoll hunt encounter
+- - Spiral of the Horned King — Labyrinth entrance maze
+- - Ilvara Mizzrym — drow commander, first contact in Velkynvelve
+- - Jorlan Duskryn — drow elite warrior, potential aid to escaping prisoners
+- - Shoor Vandree — Ilvara's lieutenant, antagonist
+- - Asha Vandree — junior priestess, potential betrayal of Ilvara
+- - Buppido — derro prisoner, true nature as killer revealed
+- - Prince Derendil — quaggoth prisoner, delusion exposed
+- - Eldeth Feldrun — shield dwarf prisoner, fate determined
+- - Jimjar — deep gnome prisoner, first contact
+- - Ront — orc prisoner, first contact
+- - Sarith Kzekarit — drow prisoner, demonic spore infection revealed
+- - Shuushar the Awakened — kuo-toa prisoner, first contact
+- - Stool — myconid sprout prisoner, first contact
+- - Topsy and Turvy — svirfneblin twins, lycanthropy secret revealed
+- - Ploopploopeen — kuo-toa archpriest, alliance offer
+- - Bloppblippodd — kuo-toa archpriest of Deep Father, confrontation
+- - Demogorgon — demon lord, rise at Sloobludop
+- - Shuushar — pacifist kuo-toa, at Sloobludop
+- - Gorglak — corrupt duergar gate guard, bribe encounter
+- - Errde Blackskull — Stone Guard captain, employment offer
+- - Themberchaud — red dragon Wyrmsmith, alliance offer
+- - Gartokkar Xundorn — Keeper of the Flame, quest giver
+- - Ylsa Henstak — duergar merchant, quest giver
+- - Droki — derro courier, capture objective
+- - Werz Saltbaron — duergar merchant, assassination attempt witnessed
+- - Stonespeaker Hgraam — stone giant elder, audience
+- - Narrak — derro savant cultist, confrontation
+- - Glabbagool — sentient gelatinous cube, first contact
+- - Sovereign Phylo — myconid sovereign, corrupted by Zuggtmoy
+- - Sovereign Basidia — myconid sovereign, resistance leader
+- - Yestabrod — Circle of Masters leader, confrontation
+- - Xinaya — drow scout, fate in Garden of Welcome
+- - Zuggtmoy — Demon Queen of Fungi, presence at Neverlight Grove
+- - Dorbo Diggermattock — Blingdenstone leader, first contact
+- - Senni Diggermattock — Blingdenstone quartermaster, first contact
+- - Kazook Pickshine — svirfneblin alchemist, quest giver
+- - Chipgrin Goldwhisker — wererat leader, negotiation
+- - Burrow Warden Jadger — ghost, quest giver
+- - The Pudding King — insane deep gnome, confrontation
+- - Bruenor Battlehammer — dwarf king, audience at Gauntlgrym
+- - Lord Zelraun Roaringhorn — Harper representative, alliance negotiation
+- - Sir Lanniver Strayl — Order of the Gauntlet representative, alliance negotiation
+- - Morista Malkin — Emerald Enclave representative, alliance negotiation
+- - Lord Eravien Haund — Lords' Alliance representative, alliance negotiation
+- - Davra Jassur — Zhentarim representative, alliance negotiation
+- - Ghazrim DuLoc — Zhentarim contact, ring acquisition
+- - Lorthuun — maimed beholder, confrontation at Mantol-Derith
+- - Kinyel Druu'giir — drow assassin, disruption at Mantol-Derith
+- - Yantha Coaxrock — svirfneblin mage, capture and rescue
+- - Peebles — svirfneblin spy for Xazax, first contact
+- - Zilchyn Q'Leptin — kleptomaniac drow mage, first contact
+- - Sladis Vadir — Emerald Enclave scout, discovery at Mantol-Derith
+- - Rystia Zav — Harper spy, discovery at Mantol-Derith
+- - Vizeran DeVir — drow archmage, alliance offer at Gravenhollow
+- - Grin Ousstyl — Vizeran's apprentice, change of heart revelation
+- - Karazikar — beholder of Vast Oblivium, confrontation
+- - Shedrak of the Eyes — beholder's thrall, confrontation
+- - Baphomet — demon lord, presence in Labyrinth
+- - Yeenoghu — demon lord, hunt encounter in Labyrinth
+- - Gash — gnoll servant, guide encounter
+- - Quenthel Baenre — matron mother, private meeting
+- - Jarlaxle Baenre — Bregan D'aerthe leader, private meeting
+- - Hanne Hallen — young drow mage, encounter near worm nursery
+- - Zhora Hallen — Dark Hunters leader, reunion with Hanne
+- - Khalessa Draga — Lords' Alliance spy, possible encounter
+- - Juiblex — Faceless Lord, Underdark presence
+- - Araumycos — vast fungal entity, rapport contact
+- - Orcus — demon lord, presence in final battle
+- - Demogorgon — Prince of Demons, final battle
+- - Drow prisoners escape Velkynvelve — chapter 1
+- - Flight of demons distraction at Velkynvelve — escape event
+- - Demogorgon's rise from the Darklake at Sloobludop — demon lord first appearance
+- - Discovery of demon lords loose in the Underdark — party awareness moment
+- - Characters return to the surface world — end of chapter 7
+- - Audience with Bruenor at Gauntlgrym — chapter 8
+- - Faction alliance negotiations at Gauntlgrym — chapter 8
+- - Arrival at Mantol-Derith — chapter 9
+- - Fraz-Urb'luu's influence discovered at Mantol-Derith — plot reveal
+- - Vizeran DeVir encountered at Gravenhollow — chapter 11 reveal
+- - Gromph Baenre's ritual identified as cause of demon lord summoning — vision at Gravenhollow
+- - Vizeran's plan revealed at Araj — chapter 12
+- - Grin Ousstyl reveals Vizeran's true intent to destroy Menzoberranzan — chapter 15
+- - Zuggtmoy's fetid wedding attempt at Araumycos — chapter 16
+- - Juiblex crashes the wedding, destroys Zuggtmoy's material form — chapter 16
+- - Dark heart talisman placed — final ritual setup
+- - Demon lords drawn together by Vizeran's ritual — chapter 17
+- - Demogorgon defeats remaining demon lords — chapter 17
+- - Final battle against Demogorgon — chapter 17
+- - Acquiring scavenged possessions in Velkynvelve slave pen
+- - Escaping Velkynvelve via webs and pool
+- - Drow pursuit level tracked — ongoing
+- - Drow pursuers final confrontation — chapter 7
+- - Characters encounter Society of Brilliance members — random event
+- - Society of Brilliance encounter with tridrone modrons — Labyrinth
+- - Hook Horror Hunt — gnoll and hook horror encounter
+- - Oozing Temple — flooded dungeon exploration
+- - Lost Tomb of Khaem — Netherese tomb exploration
+- - Silken Paths traversal — spider web chasm
+- - Yuk Yuk and Spiderbait — goblin guides encounter
+- - Fargas Rumblefoot — halfling rescue in Silken Paths
+- - Kuo-toa day's catch — capture encounter near Sloobludop
+- - Rampaging two-headed stone giant — Gracklstugh encounter
+- - Stone giant curse at Whorlstone Tunnels — ritual disruption
+- - Broken statue of Rihuud — returned to Stonespeaker Hgraam
+- - Gray Ghosts dragon egg — recovered or returned
+- - Black obelisk — Whorlstone Tunnels discovery
+- - Buppido's shrine and killings — revealed in Whorlstone Tunnels
+- - Pelek the deep gnome ghost — laid to rest
+- - Clan Goldwhisker truce negotiation — Blingdenstone
+- - Neheedra the medusa — Rockblight confrontation
+- - Ogrémoch's Bane — elemental entity banishment
+- - Vadimir Coaxrock cube incursion — Blingdenstone traders grotto
+- - Vazuk's ghost — laid to rest
+- - Entémoch's Boon — summoning circle discovered
+- - Basilisks and eggs at Entémoch's Boon — encounter
+- - Maze Engine activation — Labyrinth
+- - Slaughtertusk nalfeshnee — Maze Engine guardian
+- - Modrons encountered — March to Nowhere
+- - Tridrone as Labyrinth guide — alliance opportunity
+- - Adamantine tower — haunted encounter
+- - Shadow demons in adamantine tower — cleared
+- - Gnoll pack led by Kurr — Labyrinth encounter
+- - Filthriddens cult of Yeenoghu — Grisha encounter
+- - Yeenoghu's goristro slaying — observed in Labyrinth
+- - Troglodyte lair standoff — resolved
+- - Voice in the Dark — Hanne Hallen encounter near worm nursery
+- - Dark Hunters arrival at worm nursery — Zhora and Hanne
+- - Karazikar's slaves — liberated
+- - Modron prisoner at Vast Oblivium — rescued and questioned
+- - Xazax the Eyemonger — beholder encounter
+- - Veldyskar the basilisk — guide to Gravenhollow
+- - Galeb duhr Hourm — guide within Gravenhollow
+- - Visions obtained at Gravenhollow — various reveals
+- - Drow patrol confrontation near Menzoberranzan — chapter 10
+- - Aljanor Keenblade — Order of the Gauntlet captive rescued
+- - Sloobludop ruins — second visit after Demogorgon's attack
+- - Gracklstugh chaos — second visit conditions
+- - Neverlight Grove corruption — second visit conditions
+- - Velkynvelve — second visit conditions
+- - Ooze spies attack Basidia's group — chapter 16
+- - Araumycos fungal creatures — awakening sequence encounter
+- - Infected area of Araumycos's mind — destroyed during rapport
+- - House Baenre private meeting — Quenthel negotiation
+- - House Do'Urden Bregan D'aerthe meeting — Jarlaxle negotiation
+- - Council of Spiders assistance — Sorcere infiltration aid
+- - Gromph's outer sanctum — infiltration and trap encounter
+- - Four-armed stone golem Szashune — Gromph's sanctum guardian
+- - Yochlol in Gromph's inner sanctum — confrontation
+- - Wand of Orcus — claimed during final battle
+- - Heroic sacrifice opportunity — final battle
+- - Demon sortie encounters — final battle complications
+- - Travelogue prelude — party arrival at Candlekeep gates
+- - Surface-madness gradient — party awareness established before Candlekeep
+- - Gorg'Bahamut breadcrumb — planted with Kestler at Triboar
+- - Mirabar smith commissions — armor or weapon work ordered and collected
+- - Daz shopping arc — ink, vellum, spell-component refills acquired (Waterdeep)
+- - Daz fitted Calishite cloak — purchased at Open Lord's Bazaar
+- - Milo Goodbarrel Volume 3 — acquired at Rishaal the Pageturner's
+- - Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford
+- - Gyrgum Hagiography of the Dragon-Born Faithful Vol III — acquired (Waterdeep)
+- - Zalthir brass shadow-puppet hand — acquired (Waterdeep)
+- - Dawnbringer scabbard finishing work — completed at Steelwoods of Mistshore
+- - Elin the silent child — Gyrgum healing attempt (Daggerford)
+- - Charcoal rubbing of six-pointed star — taken from Daggerford inn table
+- - Kestler meeting — Gorg'Bahamut temple lead received (Triboar)
+- - Triboar carpenter's journal — donated at Candlekeep gate
+- - Burned hamlet "The Auroch's Horn" — Silver Marches road
+- - Broken Thunderbeast standing stone — Silver Marches road
+- - Defaced Tempus shrine — Silver Marches crossroads
+- - Forge of Mirabar — dwarven smithing city
+- - Order of the Gauntlet shrine — Mirabar temples' quarter
+- - Goldenfields — Chauntean temple-city and refugee shelter
+- - Mountain's Mouth Inn — Triboar
+- - Triboar memorial square — cairn of the Triboar dead
+- - Waterdeep — city visit and shopping arc
+- - Rishaal the Pageturner's — Waterdeep Castle Ward bookshop
+- - Order of the Gauntlet chapter house — Waterdeep Sea Ward
+- - Sleeping Snake fence — Waterdeep Dock Ward
+- - Aurora's Whole Realms Catalog — Waterdeep Castle Ward
+- - Halaster's Prized Findings — Waterdeep Trades Ward
+- - Steelwoods of Mistshore — Waterdeep docks smith
+- - River Shining Tavern — Daggerford
+- - Hand of Tarvis monument — Daggerford village square
+- - Burning Wizard inn — Beregost
+- - Way of the Lion — cliff road to Candlekeep
+- - Candlekeep Emerald Door — outer ward arrival
+- - Eldeth farewell — Mithral Hall outskirts (Day 3)
+- - Dwarven outriders — Mithral Hall salute to Eldeth
+- - Stroudite polemicist — first contact and pamphlet handout (Mirabar)
+- - Sister Ellune — first contact at Goldenfields
+- - Brindle Wenth and the Dornal Greyhand cup story — Mountain's Mouth Inn
+- - Kestler the half-orc lay brother — first contact (Triboar)
+- - Eldred the two-voiced courier — witnessed at Mountain's Mouth Inn
+- - Rishaal the Pageturner — first contact at Waterdeep bookshop
+- - Stroudite half-orc pilgrims — first contact (Waterdeep)
+- - Field Ward street-preacher — witnessed (Waterdeep)
+- - City Watch patrol — ooze-rights confrontation (Waterdeep Trades Ward)
+- - Maerith of the Ford — first contact regarding Elin (Daggerford)
+- - Elin the silent child — first encounter (Daggerford)
+- - Veyloss the bard — "The Kenku Could Not Fly" performance (Beregost)
+- - Festrum the gnome innkeeper — Burning Wizard history recounted
+- - Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)
+- - Triboar carpenter — Way of the Lion procession encounter
+- - Stroudite half-orc pilgrims — Way of the Lion procession encounter
+- - Bookwyrm — receives party at Candlekeep Emerald Door
+- - Queenie the cat — witnessed at Candlekeep gate bollard
+- - First Faction painting — party witnesses original above Rishaal's cash desk
+- - Thorin and Dawnbringer ooze-rights stand — City Watch confrontation (Waterdeep)
+- - Thorin and Dawnbringer orphan-healing run — Dock Ward (Waterdeep)
+- - Daz somatic field-perception — first tell at Goldenfields (spiral wheat)
+- - Daz somatic field-perception — Eldred two-voice Insight check (Triboar)
+- - Daz somatic field-perception — Field Ward preacher Insight check (Waterdeep)
+- - Daz somatic field-perception — pressure-headache begins (Beregost)
+- - Daz somatic field-perception — pressure-headache sharpens on Way of the Lion
+- - Six-pointed star — first appearance (Elin's drawings, Daggerford)
+- - Black-Banner Five trial-site marker — six-pointed shape witnessed (Waterdeep)
+- - Endless Chant error — verse substitution witnessed (Beregost)
+- - Endless Chant — first heard on wind approaching Candlekeep (Way of the Lion)
+- - Sjurkar priest benediction error — witnessed at Mirabar West Gate
+- - Stroud-school sponsorship of Tarvis monument — discovered (Daggerford)
+- - Drow refugee in Waterdeep — Sleeping Snake fence mention (banked thread)
+- - Refugee family from Episode 1 — party interaction (Silver Marches road)
+- - Candlekeep murder investigation — conscription by Bookwyrm
+- - Cryptogram race — six-clue chase to the Vault
+- - Vault confrontation — Manshoon and the Book of Vile Darkness
+- - Gauntlgrym call — Eldeth's letter and the forge
+- - Daz / Yvenne scholar arc — Drow Material Culture research (multiple sittings)
+- - Zalthir / Khell-Vire scholar arc — Watcher's Stillness / Severed Path (multiple sittings)
+- - Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C)
+- - Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10)
+- - Glabbagool's question — Pavilion Naturalis / Tower of Tall Tales / Whispering Dome
+- - Polly Pocket disposition — kept / Bell Tower / messenger release
+- - Sylvira recruitment — Path A / B / C choice
+- - Daral rescue — Bath House poisoning intervention
+- - Kalan missing — Pont de Paramours investigation
+- - Alkrist arrest — Drakonoikos confrontation
+- - Moziqodo binding — Cursed Tower ritual evidence
+- - Daz / Yvenne — Fourth-Seat synthesis investigation (DC 20 roll)
+- - Daz / Yvenne — Vaelissa T'sarran name and Bell Tower deadline
+- - Thorin / Philemon — Layer 2 Brysis reveal (Path C only)
+- - Gyrgum / Vareth — unsigned sting (Stations 9–10)
+- - Glabbagool — Shadow Apprentice sidekick unlock at Whispering Dome
+- - Candlekeep gates — party arrival and Five Books admission
+- - Refectory — dinner with Janussi alive
+- - Whispering Dome — Glabbagool's question
+- - Infernal Fortress — Sylvira interview and Abyssal Plague
+- - Janussi's chamber — crime scene investigation
+- - Southern Dining Hall — heart and lead chalice search
+- - Bath House — Daral interview and poisoning
+- - Founder's Court — Fheminor interview
+- - Oak Tree Apothecary — midnight tears evidence (Leuwin / Nibbles)
+- - Kitchens — Sprig Summerfoot witness
+- - Erudite Outfitters — Bookwyrm's cloak evidence
+- - Drakonoikos — Alkrist interview and evidence
+- - Reader's Tower — Bookwyrm interview and death scene
+- - Immortal Chambers — A'lai Aivenmore interview
+- - Sea Warden's Tower — Kalan check-in and Trial of the Broken Mirror
+- - Bell Tower — Polly Pocket cells
+- - Cursed Tower — Moziqodo and rooftop incidents
+- - Pont de Paramours — Kalan disappearance and forged note
+- - Oval Theatre — Casketball Tournament
+- - House of Alaundo — riddle, inkpot, first prophecy
+- - Astronomicon Orrery — Limniz clue / Manshoon raiders
+- - Philosopher's Court — Fustilugs clue (black marble knight)
+- - Melodrome / Jook's Box — Stars at Dawn clue / doppelganger encounter
+- - Jewel of the Styx — wight shanty encounter
+- - School of Drama — Batbayar statue encounter
+- - High Tower Library — A'lai and Moziqodo combat, cryptogram recovery
+- - Lava chamber — bridge, Obsidian Door, Iron Owlbear corpse
+- - The Vault (B2) — Manshoon confrontation and Echoes of Alaundo
+- - The Vault (B3) — Book of Vile Darkness chamber
+- - Vault tower rocket — last resort lever
+- - Janussi — first contact (refectory dinner, Day One)
+- - Janussi — death (just after midnight, Day One)
+- - Bookwyrm — first contact (Chapter House conscription)
+- - Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)
+- - Bookwyrm — confrontation and pivot (signed deposition / Alkrist sacrifice)
+- - Bookwyrm — death (Reader's Tower, Beast attack)
+- - Kalan Strongbranch — first contact (private corridor after Chapter House)
+- - Kalan — second key handoff
+- - Kalan — farewell / deterioration (Sea Warden's Tower check-in)
+- - Kalan — disappearance and presumed death (Pont de Paramours)
+- - Sylvira Sashenstar — first contact and demon-lord-evidence handoff (Day One)
+- - Sylvira — prime suspect status (interview, Infernal Fortress)
+- - Sylvira — recruitment as battlefield ally (Path B choice point)
+- - Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)
+- - Sylvira — survival and senior Great Reader status (post-arc)
+- - Daral — first contact (Chapter House)
+- - Daral — poisoning discovery (Bath House)
+- - Daral — death or survival (player choice)
+- - Daral — key witness testimony (if saved, Session 5)
+- - Fheminor — first contact (Founder's Court interview)
+- - Fheminor — "Bookwyrm was not surprised" revelation
+- - Fheminor — appointment as Keeper of Tomes (post-arc)
+- - A'lai Aivenmore — first contact (Chapter House)
+- - A'lai — interview (Immortal Chambers)
+- - A'lai — sapphire smash and escape (High Tower Library)
+- - A'lai — fate resolution (dead / escaped)
+- - Alkrist — first contact (Chapter House)
+- - Alkrist — interview (Drakonoikos)
+- - Alkrist — arrest or confession (Path A)
+- - Fembris — first contact (Fembris-at-door cliffhanger)
+- - Fembris — rooftop confession (Bell Tower break)
+- - Tadric — first contact (crime scene witness)
+- - Tadric — flight assistance (High Tower approach)
+- - Tadric — acting Gatewarden appointment (post-arc)
+- - Hollypocket — witness interview (Janussi's chamber)
+- - Sprig Summerfoot — witness interview (Kitchens)
+- - Leuwin — witness interview (Oak Tree Apothecary)
+- - Teles Ahvoste — interview and disguise sighting (if earned)
+- - Kazryn Nyantani — interview and A'lai alibi break
+- - Khell-Vire — closing letter and standing correspondence sealed
+- - Philemon — sealed letter delivery (Path C)
+- - Vareth — final stations and unsigned sting
+- - Yvenne — third sitting and bloodline-pattern observation
+- - Yvenne — Vaelissa name delivery
+- - Yvenne — Fourth-Seat synthesis scene
+- - Inda — emergence from brass statue and vault escort
+- - Spanner — Mechanus dust handoff
+- - Moziqodo — first encounter (rooftop / Cursed Tower)
+- - Moziqodo — binding break (Path B, High Tower fight)
+- - Moziqodo — fate resolution (killed / unbound with Sylvira / fled)
+- - Manshoon — voice-only arrival announcement (Session 6)
+- - Manshoon — direct confrontation (Vault B2)
+- - Manshoon — escape (with or without Book of Vile Darkness)
+- - Glabbagool — bad night / Juiblex reach (Session 5)
+- - Glabbagool — Shadow Apprentice sidekick status confirmed
+- - Eldeth — letter delivered via courier (Session 8)
+- - Brevin — Sloobludop recitation incident
+- - Brevin — six-pointed star bedclothes incident
+- - Marin — six-pointed star quill arrangement incident
+- - Jimjar / Callarduran — Echo 4 witness prophecy activation
+- - Five Books, Five Questions — gate admission and scholar pairings established
+- - Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand")
+- - Janussi murder — crime scene forensic reveals (poison, heart post-mortem, no defensive wounds)
+- - Two "Sylvira" figures — dual-timeline disguise revelation assembled
+- - Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use
+- - Alkrist as killer — party identifies the poisoner
+- - Disguise rosetta cracked — milestone event, level-up to 9
+- - Wards drop — ward-flex hallucination sequence (narrative, per-PC visions)
+- - Cryptogram recovered — six-clue text transcribed from High Tower Library
+- - Manshoon arrival announced — keep under siege
+- - Iron Owlbear found dead — Manshoon already in the Vault
+- - Echo 1 activated — surface contamination prophecy
+- - Echo 2 activated — wedding / Zuggtmoy prophecy
+- - Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named)
+- - Echo 4 activated — Jimjar / Callarduran witness prophecy
+- - Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)
+- - Vault tower rocket — lever pulled or left
+- - Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden
+- - Party named guest seekers of the Avowed — Inner Ward access ceremony
+- - Manshoon-pursuit thread — activated regardless of escape outcome
+- - Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence
+- - Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3)
+- - Yvenne — names Daz's field-perception sensitivity
+- - Marin — quill six-pointed star incident
+- - Brevin — Sloobludop recitation at cliff base
+- - Brevin — bedclothes six-pointed star incident
+- - Endless Chant — first complete stoppage (Session 5 opening)
+- - Ward-drop vision sequence — per-PC hallucinations (Session 6)
+- - Glabbagool — Juiblex "mother voice" contact (Session 5)
+- - Echo 1 — prophecy names surface-contamination field-effect directly
+- - Daz and Yvenne — field-perception expertise confirmed (post-arc)
+- - Sylvira recruited (Path B) — dispel payoff and cryptogram shortcut
+- - Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7)
+- - Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7)
+- - Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7)
+- - Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage
+- - Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)
+- - Polly Pocket released as messenger — OOTA endgame thread flagged
+- - Walking-permit medallions worn — wight-safe at Jewel of the Styx
+- - Second High Tower key held — door opened from outside (Session 6)
+
+Rules:
+- Merge duplicate entries; later events override earlier ones.
+- The "Completed" sections are the most important — be thorough and explicit there.
+- The "Active" section should only contain genuinely unresolved threads.
+- Be concise. This document is scanned quickly before each session.
+- Do not invent anything not present in the source notes.
+- Output only the campaign_state document. No preamble or commentary.

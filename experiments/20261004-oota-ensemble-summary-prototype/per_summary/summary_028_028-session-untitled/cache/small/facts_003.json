@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Daz approached Fuurm and Baedora carefully, introducing himself without giving too much away.",
+    "source_quote": "Daz approached them carefully, introducing himself without giving too much away.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the party had no interest in returning anyone to the Drow, since they were trying to escape the Underdark themselves.",
+    "source_quote": "He explained that the party had no interest in returning anyone to the Drow, since they were trying to escape the Underdark themselves.",
+    "subject": "Daz explains intent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm offered that the party could be of some help to him and Baedora.",
+    "source_quote": "Fuurm quickly offered that \"we could be of some help\"",
+    "subject": "Fuurm offers help",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A 24 on Insight confirmed that Fuurm and Baedora were simply desperate to get out, not plants.",
+    "source_quote": "a 24 on Insight confirmed the pair were simply desperate to get out, not plants.",
+    "subject": "Insight check on Fuurm and Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm's story came out haltingly over a shared meal.",
+    "source_quote": "Fuurm's story came out haltingly over a shared meal.",
+    "subject": "Fuurm tells his story",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm followed his sister into the depths after the Drow stole her from the Overbright.",
+    "source_quote": "He had followed his sister into the depths after the Drow stole her from the Overbright",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm was captured almost immediately after following his sister.",
+    "source_quote": "only to be captured almost immediately.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm spent a long and miserable stretch as a Drow slave.",
+    "source_quote": "He spent a long and miserable stretch as a Drow slave",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm fled his Drow captors due to a demonic attack.",
+    "source_quote": "until a demonic attack on his captors gave him the chance to flee.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM described Fuurm as \"just a farmer... with a perverse sense of loyalty who made some terrible life choices.\"",
+    "source_quote": "The GM described him as \"just a farmer... with a perverse sense of loyalty who made some terrible life choices,\"",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agreed to let Fuurm and Baedora travel with them.",
+    "source_quote": "The party agreed to let Fuurm and Baedora travel with them",
+    "subject": "party agrees to travel",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party entered a cavern filled with various types of mushrooms and fungi.",
+    "source_quote": "The party enters a cavern filled with various types of mushrooms and fungi.",
+    "subject": "fungus cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Shrieker fungi began to wail, threatening to alert nearby threats to the party's presence.",
+    "source_quote": "Shrieker fungi begin to wail, threatening to alert nearby threats to the party's presence.",
+    "subject": "shrieker fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crystal was thrown at the shriekers from 10 feet away.",
+    "source_quote": "A crystal is thrown at the shriekers from a safe distance.",
+    "subject": "crystal thrown at shriekers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crystal landed 10 feet away and had no effect on the shriekers.",
+    "source_quote": "The crystal lands 10 feet away and has no effect: \"It's just shrieking.\"",
+    "subject": "crystal ineffective",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth managed to cover the party's tracks as they moved through the fungus cavern.",
+    "source_quote": "Eldeth once again manages to cover the party's tracks as they move through the cavern.",
+    "subject": "Eldeth covers tracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth passed a DC 16 Survival check because Gyrgum rolled a 12 and Eldeth had the party's best Survival at +6.",
+    "source_quote": "It takes a DC 16 Survival check. Gyrgum's own roll is a 12, so the GM rolls for Eldeth, who has the party's best Survival at +6. She succeeds",
+    "subject": "Survival check in fungus cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Several uneventful days followed the fungus cavern, with the next event occurring on about the sixth day.",
+    "source_quote": "Several uneventful days follow. On about the sixth day",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party passed another crystal cluster with no one around on the sixth day.",
+    "source_quote": "On about the sixth day the party passes another crystal cluster with no one around",
+    "subject": "crystal clusters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz decided to search for a little bit more crystal at the new cluster.",
+    "source_quote": "Daz decides \"Might as well search for a little bit more.\"",
+    "subject": "Daz searches for crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth once again covered the party's trail at the crystal clusters.",
+    "source_quote": "Eldeth once again covered their trail.",
+    "subject": "Eldeth covers tracks again",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Eldeth was fairly confident she had almost shaken the Drow off their trail, and the pursuit level stood at one.",
+    "source_quote": "she had almost shaken the Drow off their trail but isn't certain, and the pursuit level is now one.",
+    "subject": "Drow pursuit",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith announced that the party had arrived at their destination.",
+    "source_quote": "Sarith announced that they had arrived.",
+    "subject": "Sarith",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "type": "location",
+    "fact": "The Stone Guard headquarters is the location of the meeting with Errde Blackskull.",
+    "source_quote": "made their way to the Stone Guard headquarters to meet with Errde Blackskull",
+    "subject": "Stone Guard headquarters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the captain of the Stone Guard.",
+    "source_quote": "meet with Errde Blackskull, the captain of the Stone Guard",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is the organization Errde Blackskull captains.",
+    "source_quote": "Errde Blackskull, the captain of the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum judged himself 'not in bad shape' and suggested going to the Stone Guard immediately.",
+    "source_quote": "Gyrgum judged himself \"not in bad shape,\" so the party went to the Stone Guard straight away",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magic items the party had ordered are not arriving until the next morning.",
+    "source_quote": "The magic items the party had ordered would not arrive until the next morning",
+    "subject": "magic items delayed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The ghost is currently invisible.",
+    "source_quote": "The ghost was invisible again",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph is impressed by the sights, concerned, but excited.",
+    "source_quote": "very impressed with all the things that it's seeing and very concerned, but very excited",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz tells Errde that the party has information.",
+    "source_quote": "Daz answers: \"We do have information.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asked which kind of pacification mission Errde wanted, receiving the answer 'the more violent one.'",
+    "source_quote": "When Zalthir asked which kind, the GM said \"the more violent one\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks if the flumph's psychic images count as evidence.",
+    "source_quote": "Zalthir asks whether the flumph's psychic images count as evidence",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The cult of Demogorgon is currently fighting the assassins in an area previously marked as Mind Flayer territory.",
+    "source_quote": "actually where the cult of Demogorgon and the assassins keep fighting each other",
+    "subject": "cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The assassins are currently fighting the cult of Demogorgon.",
+    "source_quote": "actually where the cult of Demogorgon and the assassins keep fighting each other",
+    "subject": "assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde is desperate for documented proof that the Gray Ghosts are involved in sinister conspiracies.",
+    "source_quote": "She was desperate for documented proof that the Gray Ghosts and the Council of Savants were involved in sinister conspiracies",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde is desperate for documented proof that the Council of Savants are involved in sinister conspiracies.",
+    "source_quote": "She was desperate for documented proof that the Gray Ghosts and the Council of Savants were involved in sinister conspiracies",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde wants evidence of the Assassin's Guild targeting her clan.",
+    "source_quote": "She secretly wanted evidence of the Assassin's Guild targeting her clan",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is the authority Errde needs to get sign-off on a pacification mission against the Derro.",
+    "source_quote": "evidence she could take to the Deepking to get sign-off on a \"pacification mission\" against the Derro",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro were once slaves of the Duergar.",
+    "source_quote": "The Derro, once slaves of the Duergar, had also learned to build specialized traps",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro build specialized traps that catch invisible intruders.",
+    "source_quote": "had also learned to build specialized traps that catch even invisible intruders",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro are described as being 'on edge to a crazy level.'",
+    "source_quote": "now are like on edge to a crazy level",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar formerly enslaved the Derro.",
+    "source_quote": "The Derro, once slaves of the Duergar",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame knew that the answers lay deep within the Whorlstone Caverns.",
+    "source_quote": "both Errde and the Keepers of the Flame knew the answers they all sought lay deep within the Whorlstone Caverns",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The answers sought by the factions lie deep within the Whorlstone Caverns.",
+    "source_quote": "the answers they all sought lay deep within the Whorlstone Caverns",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde and the Keepers of the Flame knew Droki would lead the party to the Whorlstone Caverns.",
+    "source_quote": "They had known Droki would lead them there",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Errde's office contains 'the usual set of hangers on, guards, et cetera.'",
+    "source_quote": "Errde's office holds \"the usual set of hangers on, guards, et cetera\"",
+    "subject": "Errde's office",
+    "quote_verified": false
+  }
+]

@@ -1,0 +1,296 @@
+[
+  {
+    "type": "object",
+    "fact": "Thorin defines 'end in tears' as any unfortunate event before returning to their path, excluding literal crying or death.",
+    "source_quote": "By end in tears, what I mean is not literally that somebody will cry, but rather there will be some unfortunate event before we get back on our way.",
+    "subject": "Thorin's wager definition",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a Strength score of 18.",
+    "source_quote": "Thorin points out that he has a Strength of 18",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin rolled a 1 on a D2 (coin flip) to determine their path.",
+    "source_quote": "So I rolled a D2, otherwise known as flip a coin, and it came up one",
+    "subject": "Thorin's die roll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The passage entered by the party is 10 feet high.",
+    "source_quote": "a 10-foot-high passage whose walls glistened with dark, dripping water",
+    "subject": "flooding passage height",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is destroyed by Zalthir's attacks.",
+    "source_quote": "Zalthir stepped forward and destroyed the creature with two powerful unarmed blows",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first strike against the gray ooze deals 10 damage.",
+    "source_quote": "Zalthir strikes for 10 damage",
+    "subject": "Zalthir damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's second strike against the gray ooze deals 12 damage.",
+    "source_quote": "then 12 more, killing the ooze",
+    "subject": "Zalthir damage 2",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Glabbagool\u2019s body is ten-foot-by-ten-foot-by-ten-foot.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body",
+    "subject": "Glabbagool dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze moves only about ten feet per round.",
+    "source_quote": "gray oozes move only about ten feet per round",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The corridor Glabbagool blocked had a ten-foot width.",
+    "source_quote": "completely fills its ten-foot width",
+    "subject": "corridor width",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's first dart hit a gray ooze for 8 damage.",
+    "source_quote": "His first dart hits a gray ooze for 8 damage",
+    "subject": "Thorin dart attack 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's second dart hit the gray ooze for another 8 damage.",
+    "source_quote": "a second hit inflicts another 8",
+    "subject": "Thorin dart attack 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead, inflicting 18 points of necrotic damage.",
+    "source_quote": "Toll the Dead, inflicting 18 points of necrotic damage",
+    "subject": "Daz Toll the Dead cast",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The junction consists of four passages heading west and one route to the east.",
+    "source_quote": "four passages heading west and a fifth route to the east",
+    "subject": "junction passage count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a d5 to select one of the western passages.",
+    "source_quote": "Thorin uses another virtual die\u2014this time a d5\u2014to select one of the western passages",
+    "subject": "Thorin path selection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party retreats roughly 25 feet from the pit to engage the black pudding.",
+    "source_quote": "Thorin proposes retreating roughly 25 feet",
+    "subject": "retreat distance",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There are seven niches carved into the walls of the temple fountain room.",
+    "source_quote": "Seven niches lined the walls",
+    "subject": "temple fountain niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Only one niche admits water through a crack.",
+    "source_quote": "one admitted water through a crack",
+    "subject": "temple fountain water niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The two niches flanking the water niche are empty.",
+    "source_quote": "the two beside it were empty",
+    "subject": "temple fountain empty niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Four niches contain strange, formless sculptures.",
+    "source_quote": "four contained strange, formless sculptures",
+    "subject": "temple fountain sculpture niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Only a pair of clawed stone feet from the broken statue remains recognizable.",
+    "source_quote": "only a pair of clawed stone feet still recognizable",
+    "subject": "broken statue features",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four gray oozes appear from the formless sculptures in the niches.",
+    "source_quote": "Gray ooze... Zalthir rapidly destroyed each creature",
+    "subject": "gray oozes",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers 112 silver pieces in the fountain.",
+    "source_quote": "discovered a hidden cache of treasure: 112 silver pieces",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers three gold pieces in the fountain.",
+    "source_quote": "112 silver pieces, three gold pieces",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers one drow dagger in the fountain.",
+    "source_quote": "a drow dagger",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers one vial of oil of slipperiness in the fountain.",
+    "source_quote": "a vial of oil of slipperiness",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party must wait several days for the absorbed valuables to pass through Glabbagool.",
+    "source_quote": "wait several days for the valuables to pass through him",
+    "subject": "treasure digestion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceiling in the eastern passage is 10 feet high.",
+    "source_quote": "Streams entered through cracks in the 10-foot-high ceiling",
+    "subject": "ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The water in the eastern passage is rising at a rate of approximately one foot per hour.",
+    "source_quote": "the party estimated that the water was rising by roughly one foot per hour",
+    "subject": "water rising speed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool cannot squeeze through a space as narrow as one inch.",
+    "source_quote": "squeeze through a space as narrow as one inch",
+    "subject": "glabbagool squeezing limit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceiling is only ten feet high.",
+    "source_quote": "The ceiling is only ten feet high",
+    "subject": "ceiling clearance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Shape Water spell can affect a five-foot cube.",
+    "source_quote": "Daz determines that the spell can affect a five-foot cube",
+    "subject": "shape water area",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The non-instantaneous effect of Shape Water lasts for one hour.",
+    "source_quote": "its non-instantaneous effect can last for an hour",
+    "subject": "shape water duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two Shape Water effects can be maintained at once.",
+    "source_quote": "that two such effects can be maintained at once",
+    "subject": "shape water maintenance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The plan involves creating two adjacent five-foot pockets to move through in sequence.",
+    "source_quote": "The resulting plan is to create two adjacent five-foot pockets and move through them in sequence",
+    "subject": "air pocket plan",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceiling of the chamber where the escape plan was devised is ten feet high.",
+    "source_quote": "the chamber\u2019s ten-foot ceiling offered little advantage",
+    "subject": "Chamber ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Daz redirects water inside five-foot cubes to create air pockets.",
+    "source_quote": "redirect the water inside five-foot cubes to create pockets containing no water",
+    "subject": "Shape Water pocket dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The moving refuge created by maintaining two Shape Water effects is ten feet long.",
+    "source_quote": "Daz could create a moving, ten-foot-long refuge",
+    "subject": "Air pocket length",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party swam upward for approximately thirty feet through the opened passage to reach the surface.",
+    "source_quote": "swam upward for approximately thirty feet",
+    "subject": "escape ascent distance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin promised Jimjar ten silver pieces as the settlement of a wager.",
+    "source_quote": "settle the wager by promising Jimjar ten of the silver pieces",
+    "subject": "Thorin's wager payout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party advanced to level 6 after successfully escaping the flooding complex.",
+    "source_quote": "Their successful escape also brought them to level 6",
+    "subject": "party level advancement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz gained another third-level spell slot upon leveling up.",
+    "source_quote": "Daz gains another third-level spell slot",
+    "subject": "Daz spell slot advancement",
+    "quote_verified": true
+  }
+]

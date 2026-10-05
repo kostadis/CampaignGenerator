@@ -1,0 +1,968 @@
+[
+  {
+    "type": "location",
+    "fact": "The streets of Gracklstugh erupted into chaos due to a rampaging stone giant.",
+    "source_quote": "The streets of Gracklstugh erupted into chaos",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has two heads and is crazed.",
+    "source_quote": "facing down a rampaging stone giant with two heads, a grotesque sign of the madness",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A squad of duergar militia is fighting alongside the party against the giant.",
+    "source_quote": "alongside a squad of duergar militia, facing down a rampaging stone giant",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar guards act very official and are on the party's side.",
+    "source_quote": "The duergar \"act very official\" and are on the party's side.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two duergar guards magically enlarge themselves.",
+    "source_quote": "Two of the duergar guards swelled to enormous size",
+    "subject": "duergar enlarge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two duergar guards unleash sprays of fire at the giant.",
+    "source_quote": "two of them unleashed sprays of fire that scorched the giant's rocky hide",
+    "subject": "duergar fire spray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fire sprays deal 23 points of damage to the giant.",
+    "source_quote": "damage rolls come to 13 and 10, for 23 points total.",
+    "subject": "fire damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels divine energy against the giant using his holy symbol.",
+    "source_quote": "Gyrgum called upon his divine power through his holy symbol.",
+    "subject": "Gyrgum channel divine",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant burns as a result of Gyrgum's channeled divine energy.",
+    "source_quote": "The giant \"once again burns at the end of the day.\"",
+    "subject": "Gyrgum's effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes a nature/history/survival check with a result of 16.",
+    "source_quote": "Thorin makes a nature/history/survival check (16)",
+    "subject": "Thorin check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recognizes that the giant has likely gone mad.",
+    "source_quote": "recognizes the giant has likely gone mad.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin scores a critical hit on the giant with his short sword.",
+    "source_quote": "Thorin scored a critical hit with his short sword",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses Action Surge to strike the giant again.",
+    "source_quote": "then uses Action Surge and hits again for 6 more damage.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's second strike deals 6 damage to the giant.",
+    "source_quote": "hits again for 6 more damage.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's first swing of his great club hits a duergar for 19 damage.",
+    "source_quote": "hitting one duergar for 19 damage",
+    "subject": "Giant's first club swing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One duergar takes 19 damage from the giant's club swing.",
+    "source_quote": "hitting one duergar for 19 damage",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's second swing targets Zalthir but misses.",
+    "source_quote": "narrowly missing Zalthir.",
+    "subject": "Giant's second club swing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's attack roll against Zalthir was a 14 against AC 15 with disadvantage.",
+    "source_quote": "targets Zalthir, but with disadvantage it rolls a 14 against Zalthir's AC 15 and misses.",
+    "subject": "Giant's missed attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir declares non-lethal damage for his attacks.",
+    "source_quote": "Zalthir declares non-lethal damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir attacks the giant three times.",
+    "source_quote": "attacks three times",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends a focus point on his third attack.",
+    "source_quote": "spending a focus point on the third.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir misses his first and third attacks and hits the second for 5 damage.",
+    "source_quote": "He misses, hits for 5 damage, then misses.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz strikes the giant with Magic Missile.",
+    "source_quote": "Daz strikes the giant with Magic Missile",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls a one on the Magic Missile attack, dealing 6 damage.",
+    "source_quote": "but rolls a one, dealing 6 damage",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that dropping the giant to zero with a weapon knocks him out.",
+    "source_quote": "dropping the giant to zero with a weapon knocks him out",
+    "subject": "GM ruling on giant death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that dropping the giant to zero with a spell kills him.",
+    "source_quote": "dropping him with a spell like Magic Missile kills him.",
+    "subject": "GM ruling on giant death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant is at 34 hit points during the battle.",
+    "source_quote": "The giant is at 34 hit points at this point.",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Stone giants are particularly unforgiving of those who kill their kind.",
+    "source_quote": "Stone giants are particularly unforgiving of those who kill their kind.",
+    "subject": "stone giant madness",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The events described take place during the instance labeled The Fall of Rihuud 013.02.",
+    "source_quote": "### The Fall of Rihuud 013.02",
+    "subject": "The Fall of Rihuud 013.02",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds on a check and realizes the stone giant has gone mad.",
+    "source_quote": "Thorin drew on his deep familiarity with giant-kind and made a successful check (a 16) that revealed the terrible truth: this creature had not chosen violence but had gone mad.",
+    "subject": "Thorin identifies madness",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant is in a state of madness rather than having chosen violence.",
+    "source_quote": "this creature had not chosen violence but had gone mad",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin urges the party and the duergar militia to bring the giant down without killing him.",
+    "source_quote": "Thorin urged the party and the duergar militia alike to bring the giant down without killing him.",
+    "subject": "Thorin urges non-lethal force",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party switches to non-lethal weapon attacks.",
+    "source_quote": "The party switched to non-lethal weapon attacks",
+    "subject": "party switches to non-lethal attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party wears the giant down from 34 hit points to 8.",
+    "source_quote": "and wore the giant down from 34 hit points to 8",
+    "subject": "giant damaged",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks the giant with a focus point.",
+    "source_quote": "Zalthir attacked with a focus point",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attacks the giant with a critical hit and uses Action Surge.",
+    "source_quote": "Thorin followed with his crit and Action Surge",
+    "subject": "Thorin attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum charges the giant with his mace.",
+    "source_quote": "Gyrgum charged in with his mace",
+    "subject": "Gyrgum charges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum moves out of the darkness into melee range to strike the giant.",
+    "source_quote": "He moves out of the darkness into melee range to strike with his mace",
+    "subject": "Gyrgum moves to melee",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace hits the giant for 1 damage.",
+    "source_quote": "Gyrgum's mace hits for 1 damage",
+    "subject": "Gyrgum hits giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses two-weapon fighting with the flat of his hand axe and misses.",
+    "source_quote": "He then uses two-weapon fighting with the flat of his hand axe and misses",
+    "subject": "Gyrgum misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts to intimidate the duergar militia to spare the giant but fails.",
+    "source_quote": "Thorin attempts to intimidate or persuade the duergar to stay their hand and spare the giant's life, but rolls poorly and fails",
+    "subject": "Thorin fails to save giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar militia delivers a lethal blow, killing the stone giant.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant.",
+    "subject": "duergar kill giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant crumples to the stone floor of the city.",
+    "source_quote": "The giant, later identified as Rihuud, crumpled to the stone floor of the city.",
+    "subject": "giant falls",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rihuud, the stone giant, is dead, killed by the duergar militia.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rihuud is identified as a stone giant who had gone mad.",
+    "source_quote": "The giant, later identified as Rihuud",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin speaks funeral words over the giant's body to save face in case the giants take offense.",
+    "source_quote": "Thorin spoke funeral words over the body to save face in case the giants took offense",
+    "subject": "Thorin speaks funeral words",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical darkness cast by Zalthir lifts.",
+    "source_quote": "and the darkness lifted",
+    "subject": "darkness lifts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar soldiers shrink back to their normal size with a popping sound.",
+    "source_quote": "The duergar soldiers shrink back to their normal size with the \"usual popping sound\"",
+    "subject": "duergar return to normal size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar Xundorn materialized out of thin air near the party.",
+    "source_quote": "a duergar materialized out of thin air nearby",
+    "subject": "Gartokkar materializes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party notes that materializing out of thin air is a disconcerting habit of the city's inhabitants.",
+    "source_quote": "The party was learning that this was a disconcerting habit of the city's inhabitants",
+    "subject": "party observation on invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn introduced himself as a member of the Keepers of the Flame.",
+    "source_quote": "He introduced himself as Gartokkar Xundorn of the Keepers of the Flame",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar flashed a badge that caused curious onlookers to scatter.",
+    "source_quote": "flashed a badge that sent curious onlookers scattering",
+    "subject": "Gartokkar's badge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gets the impression Gartokkar is a legal authority who can make other authorities disappear.",
+    "source_quote": "The party gets the impression he is a legal authority, one who \"has the ability to make the other authorities disappear.\"",
+    "subject": "party impression of authority",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar explains that his order's duty is to tend to the red dragon Themberchaud.",
+    "source_quote": "his order's sacred duty was to tend to the red dragon Themberchaud",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud keeps the city's forges burning in the lightless depths of the Underdark.",
+    "source_quote": "who kept the city's forges burning in the lightless depths of the Underdark",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking treats the Keepers of the Flame as his most prized advisors.",
+    "source_quote": "the Deepking treated the Keepers as his most prized advisors",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum dryly offered kindling if the order was running short on dragons.",
+    "source_quote": "Gyrgum drily offered that they had some kindling available if the order was running short on dragons",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar laughed at Gyrgum's joke but dissected it with analytical precision, extinguishing the humor.",
+    "source_quote": "Gartokkar laughed, then dissected the joke with such analytical precision that every trace of humor was methodically extinguished",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar invited the party to his quarters by the following day to discuss a problem.",
+    "source_quote": "He invited the party to his quarters by the following day",
+    "subject": "Gartokkar's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar promised city passes in exchange for help with an unnamed problem.",
+    "source_quote": "In exchange for their help with a problem he was not yet ready to name, he promised city passes",
+    "subject": "Gartokkar's compensation offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar offered help if the party runs afoul of other factions or police while acting on his behalf.",
+    "source_quote": "He also offers help if they run afoul of other factions or police while acting on his behalf, with \"a standard set of disclaimers.\"",
+    "subject": "Gartokkar's legal protection offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin summarized the offer as \"a limited get-out of jail-free card.\"",
+    "source_quote": "what Thorin summarized as \"a limited get-out of jail-free card.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gartokkar has a problem he is not yet ready to name.",
+    "source_quote": "a problem he was not yet ready to name",
+    "subject": "Gartokkar's problem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminded Zalthir of his \"I know a guy\" list: one favor per city.",
+    "source_quote": "the GM reminded Zalthir of his \"I know a guy\" list: one favor per city",
+    "subject": "GM reminder to Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party has already sent someone to fetch them a magical weapon.",
+    "source_quote": "The GM also reminds the party they have already sent someone to fetch them a magical weapon",
+    "subject": "magical weapon retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to get a drink as their method of gathering information.",
+    "source_quote": "They settle on getting a drink",
+    "subject": "party decision on information",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake Brewery has a duergar-only sign.",
+    "source_quote": "The brewery bears a duergar-only sign",
+    "subject": "Darklake Brewery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 3 on stealth while trying to peek inside the Darklake Brewery.",
+    "source_quote": "Gyrgum tried to peek inside and rolled a 3 on stealth.",
+    "subject": "Gyrgum stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum observes quiet duergar inside the brewery drinking cheaper beer over serious conversations.",
+    "source_quote": "He still glimpsed quiet duergar drinking cheaper beer over very serious conversations.",
+    "subject": "Gyrgum observation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A halfling is drinking outside the Darklake Brewery kiosk.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow.",
+    "subject": "halfling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A human is drinking outside the Darklake Brewery kiosk.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow.",
+    "subject": "human",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A drow is drinking outside the Darklake Brewery kiosk.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow.",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum buys a round for the halfling.",
+    "source_quote": "Gyrgum bought a round for the talkative halfling",
+    "subject": "Gyrgum buys drinks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling appears to be well-informed.",
+    "source_quote": "who was grateful and apparently well-informed.",
+    "subject": "halfling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The halfling welcomes Gyrgum.",
+    "source_quote": "The halfling welcomes Gyrgum: \"You're new to this town.\"",
+    "subject": "halfling greeting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum buys the halfling a second mug.",
+    "source_quote": "Gyrgum buys the halfling a refill, and later a second mug \"out of gratitude.\"",
+    "subject": "Gyrgum buys second drink",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The halfling points out a nearby prison.",
+    "source_quote": "The halfling points out the nearby prison.",
+    "subject": "prison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling mentions a crazed giant was brought down with the help of a spellcasting dragonborn.",
+    "source_quote": "The halfling has heard of a crazed giant brought down with the help of a spellcasting dragonborn.",
+    "subject": "crazed giant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Deepking Horgar Steelshadow has reportedly gone mad.",
+    "source_quote": "The halfling reveals that Deepking Horgar Steelshadow has reportedly gone mad",
+    "subject": "Deepking Horgar Steelshadow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Deepking Horgar Steelshadow's madness manifests as paranoia and arbitrary laws.",
+    "source_quote": "This was not rampaging violence but paranoia and increasingly arbitrary laws.",
+    "subject": "Horgar's madness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling describes duergar merchants as boring, unenlightened, and ignorant traders.",
+    "source_quote": "\"They are the most boring, unenlightened, ignorant traders on the planet.\"",
+    "subject": "duergar merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are in conflict with the Gray Ghosts and the crown.",
+    "source_quote": "He said the Keepers of the Flame and Themberchaud were \"in a bit of a pickle with the Gray Ghosts and the crown\"",
+    "subject": "Keepers of the Flame",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are in conflict with the Keepers of the Flame and the crown.",
+    "source_quote": "He said the Keepers of the Flame and Themberchaud were \"in a bit of a pickle with the Gray Ghosts and the crown\"",
+    "subject": "Gray Ghosts",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Crown is in conflict with the Keepers of the Flame and the Gray Ghosts.",
+    "source_quote": "He said the Keepers of the Flame and Themberchaud were \"in a bit of a pickle with the Gray Ghosts and the crown\"",
+    "subject": "the Crown",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "All the factions in Gracklstugh are at each other's throats.",
+    "source_quote": "and that all the factions were at each other's throats.",
+    "subject": "Gracklstugh factions",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Non-duergar are considered civilians and not relevant to the city.",
+    "source_quote": "As a non-duergar who stayed uninvolved, he was a \"civilian\" free to talk.",
+    "subject": "non-duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The halfling is classified as a civilian because he is a non-duergar who stays uninvolved.",
+    "source_quote": "As a non-duergar who stayed uninvolved, he was a \"civilian\" free to talk.",
+    "subject": "halfling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The halfling refuses to attend the faction meeting with the party.",
+    "source_quote": "He refuses: attending \"would be immediately interpreted as me joining one of the factions.",
+    "subject": "halfling refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The halfling states that his life would be extremely short if he were interpreted as joining a faction.",
+    "source_quote": "And as a non-duergar, my life would be extremely short.\"",
+    "subject": "halfling risk",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "A pending invitation for the party comes from the Keepers of the Flame.",
+    "source_quote": "He confirmed that the pending invitation came from the Keepers of the Flame.",
+    "subject": "faction meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Keepers of the Flame use Themberchaud as a dragon, who is seen flying over the city.",
+    "source_quote": "Themberchaud is seen flying over the city.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud is pampered and given a large hoard to keep him pleasant.",
+    "source_quote": "The halfling explains he is pampered and given a hoard large enough \"to keep him pleasant\"",
+    "subject": "Themberchaud treatment",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame periodically replace their red dragon by raising a new one from an egg.",
+    "source_quote": "the Keepers periodically replace their red dragon with a new one raised from a purchased egg",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Red dragon eggs can be purchased or stolen.",
+    "source_quote": "Eggs \"can be purchased or stolen\"",
+    "subject": "red dragon egg",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Keepers must raise the new dragon, deal with the old one, and keep both happy in between.",
+    "source_quote": "the Keepers must raise the new dragon, deal with the old one, and keep both happy in between.",
+    "subject": "dragon replacement process",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Attending an official meeting with a faction leader turns a civilian into a soldier in the eyes of rival groups.",
+    "source_quote": "If you go with the mob parlance, you go from being a civilian to a soldier.",
+    "subject": "faction status change",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron has been to Menzoberranzan.",
+    "source_quote": "A drow patron who has been in Menzoberranzan",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron mocks the lack of finesse in duergar conspiracies.",
+    "source_quote": "mocks the lack of 'finesse' in duergar conspiracies.",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron describes duergar politics as blunt violence.",
+    "source_quote": "He describes their politics as blunt violence compared to the dramatic artistry of Menzoberranzan",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The drow patron describes Menzoberranzan politics as having torture, burning houses, and speeches.",
+    "source_quote": "where \"we'll torture people, we'll burn their houses down, we'll make speeches.\"",
+    "subject": "drow patron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM tells the party the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame.",
+    "source_quote": "The GM tells the party the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame.",
+    "subject": "GM faction disclosure",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is a faction the party can currently attract.",
+    "source_quote": "The GM tells the party the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues for talking to everyone to get a better picture.",
+    "source_quote": "Daz argues for talking to everyone to get a better picture.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders about a job fair kind of area.",
+    "source_quote": "Gyrgum wonders about \"a job fair kind of area.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The drow patron references Menzoberranzan's political intrigues.",
+    "source_quote": "A drow patron who has been in Menzoberranzan (to the other patrons' eye-rolling) mocks the lack of 'finesse' in duergar conspiracies.",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull is a captain in the Stone Guard.",
+    "source_quote": "Captain Errde Blackskull of the Stone Guard",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull arrived from the direction of the prison with a small escort.",
+    "source_quote": "arrived from the direction of the prison with a small escort",
+    "subject": "Errde's arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull expected the party to accompany her.",
+    "source_quote": "she expected them to accompany her",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull implied that she could have arrested the party if she desired.",
+    "source_quote": "if she wanted them arrested she would have brought a whole platoon",
+    "subject": "Errde's threat implication",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull loudly announced to the surrounding air that the meeting was merely friendly and not a recruitment.",
+    "source_quote": "loudly announced to the surrounding air, and to any invisible listeners, that this was merely a friendly discussion",
+    "subject": "Errde's public announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Captain Errde Blackskull met the party in her front office.",
+    "source_quote": "In her front office, over pastries",
+    "subject": "Stone Guard front office",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempted to spare the stone giant's life.",
+    "source_quote": "singled out Thorin's attempt to spare the stone giant's life",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro.",
+    "source_quote": "A derro named Droki",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki has been evading Stone Guard patrols with suspicious ease.",
+    "source_quote": "had been evading Stone Guard patrols with suspicious ease",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki appears to know in advance where Stone Guard patrols will be.",
+    "source_quote": "as though he always knew in advance where they would be",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki lives in the West Cleft District.",
+    "source_quote": "He lived in the volatile West Cleft District",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is volatile.",
+    "source_quote": "the volatile West Cleft District",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Stone Guards enter the West Cleft District only in force.",
+    "source_quote": "where the guards entered only in force",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull asked the party to follow Droki and report back, seize him for questioning, or kill him and bring evidence.",
+    "source_quote": "She asked the party to follow him and report back, or better, to seize him for questioning, or failing that to kill him and bring evidence of his activities.",
+    "subject": "Droki mission assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Captain Errde Blackskull believes there is corruption within the Council of Savants.",
+    "source_quote": "involving corruption within the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Captain Errde Blackskull believes there is corruption among the clan lairds.",
+    "source_quote": "and among the clan lairds",
+    "subject": "Clan lairds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull promised 350 gold pieces' worth of equipment from her armory to each party member if they exposed the conspiracy.",
+    "source_quote": "She promised that exposing it would earn each of them 350 gold pieces' worth of equipment from her armory",
+    "subject": "Errde's reward offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull promised safe passage out of the city when the party's work was done.",
+    "source_quote": "plus safe passage out of the city when their work was done",
+    "subject": "Errde's safe passage offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin pressed Captain Errde Blackskull twice on whether the job bound them to the Stone Guard.",
+    "source_quote": "Thorin pressed her twice on whether this bound them to the Stone Guard.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull stated the job would be for the city.",
+    "source_quote": "She insisted it would \"of course, be for the city.\"",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz observed that the bazaar's strange merchants broke every rule of the authoritarian society.",
+    "source_quote": "whose passive perception told him the bazaar's strange merchants broke every rule of this authoritarian society",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled an 18 on persuasion.",
+    "source_quote": "He then rolled an 18 on persuasion",
+    "subject": "Daz's persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull advanced 175 gold pieces' worth of equipment to each party member.",
+    "source_quote": "Errde advanced 175 gold pieces' worth of equipment to each of them",
+    "subject": "Errde's advance payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining 175 gold pieces' worth of equipment was promised on completion of the task.",
+    "source_quote": "with the remaining 175 to follow on completion",
+    "subject": "Errde's remaining payment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull revealed she was aware drow were hunting the party.",
+    "source_quote": "she revealed that she was already aware drow were hunting the party",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull offered her protection against the drow hunting the party.",
+    "source_quote": "offered her protection against them as an additional incentive",
+    "subject": "Errde's protection offer",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Nothing Captain Errde Blackskull said forbade the party from hearing out the Keepers of the Flame.",
+    "source_quote": "Nothing she said forbade them from also hearing out the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin priced splint armor.",
+    "source_quote": "Thorin priced splint",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin priced plate armor.",
+    "source_quote": "Thorin ... priced ... plate",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin settled on chain mail and twenty darts.",
+    "source_quote": "settled on chain mail and twenty darts",
+    "subject": "Thorin's equipment selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The other party members deferred their scrolls and potions to next time.",
+    "source_quote": "The others deferred their scrolls and potions to next time",
+    "subject": "Party's deferred purchases",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ended just before the GM was about to run an encounter.",
+    "source_quote": "The session ended just before the GM was about to run an encounter",
+    "subject": "Session end",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone giants of Cairngorm Cavern are expecting a visit from the party.",
+    "source_quote": "the stone giants of Cairngorm Cavern expecting a visit",
+    "subject": "Stone giants of Cairngorm Cavern",
+    "quote_verified": true
+  }
+]

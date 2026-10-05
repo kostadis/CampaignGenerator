@@ -1,0 +1,1227 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is deep within the Whorlstone Caverns, located beneath the city of Gracklstugh.",
+    "source_quote": "Deep within the Whorlstone Caverns beneath the city of Gracklstugh",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Every derro in the caverns is dead.",
+    "source_quote": "With every derro in the caves dead",
+    "subject": "derro extinction",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a two-headed dragon egg tied to the cult of Demogorgon.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon",
+    "subject": "two-headed dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a ritual statue connected to the affliction causing stone giants to sprout second heads.",
+    "source_quote": "A ritual statue connected to the affliction causing stone giants to sprout second heads",
+    "subject": "ritual statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party interrupted the ritual on the second statue.",
+    "source_quote": "The party interrupted the ritual on the second",
+    "subject": "ritual disruption",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Only one ritual statue was completed before the party intervened.",
+    "source_quote": "Only one ritual statue was completed",
+    "subject": "ritual statues",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The cult of Demogorgon is linked to the two-headed dragon egg.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon",
+    "subject": "cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are aligned with demonic powers.",
+    "source_quote": "Proof that the derro were aligned with demonic powers",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is allied with assassins trying to wipe out the opposition.",
+    "source_quote": "Knowledge that the Deepking himself was allied with assassins trying to wipe out the opposition",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is actually Themberchaud the 28th.",
+    "source_quote": "Proof that Themberchaud is in fact \"Themberchaud the 28th.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares the party's political leverage to having 'Epstein level dirt on everybody.'",
+    "source_quote": "\"Epstein level dirt on everybody,\" as Daz's player put it",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a city of 10,000 duergar that is barely holding together.",
+    "source_quote": "only fourth level in a city of 10,000 duergar... the city was barely holding together",
+    "subject": "Gracklstugh",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir proposes a dead man's switch to ensure information release if the party is captured or killed.",
+    "source_quote": "Zalthir proposed a dead man's switch, some way to ensure the information would be released if the party were captured or killed",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar urges the party to hold onto the evidence for future use.",
+    "source_quote": "Jimjar urged them to hold onto everything for future use rather than hand it over too soon",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests visiting a merchant the party previously helped.",
+    "source_quote": "Thorin floated going to the merchant they had helped",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin worries that the merchant might betray them.",
+    "source_quote": "he worried the merchant might betray them",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's player rolls a die to decide if Thorin wants to burn the place down, but fails to get a 15+.",
+    "source_quote": "Thorin's player rolls a die (15+ = burn it down)... The roll comes up short",
+    "subject": "Thorin's burn roll",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool pleads with the party to find his friend Rumpadump.",
+    "source_quote": "Stool pleads with them to find his friend Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is Stool's friend.",
+    "source_quote": "find his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gartokkar is the head of the Keepers of the Flame.",
+    "source_quote": "Gartokkar, head of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party's original plan was to hand the dragon egg to Gartokkar.",
+    "source_quote": "hand the egg to Gartokkar, head of the Keepers of the Flame, and call it a day",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum agrees with Jimjar's instinct to hold onto the evidence.",
+    "source_quote": "Gyrgum's player agrees: \"Yeah, that's always my instinct.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalls owing a favor to two duergar.",
+    "source_quote": "Thorin also recalls the two duergar the party earned a favor with",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests telling the merchant 'we got the assassin's office back'.",
+    "source_quote": "He suggests telling the merchant \"we got the assassin's office back\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum summarizes the plan as handing over the egg and getting out of Gracklstugh.",
+    "source_quote": "Gyrgum summarizes the plan: hand over the egg and get out of Gracklstugh",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool throws a tantrum, bouncing with agitation and threatening to go alone to see Rumpadump if the party refuses.",
+    "source_quote": "He threw what could only be described as a tantrum, bouncing with agitation and threatening to go alone if the others refused.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool attempts to win Thorin over by declaring him \"much nicer than Zalthir.\"",
+    "source_quote": "He even tried to win Thorin over by declaring him \"much nicer than Zalthir.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool calls Zalthir \"a scaredy cat.\"",
+    "source_quote": "Stool calls Zalthir \"a scaredy cat.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir expresses deep skepticism about the mission due to previously scouted infected creatures near Rumpadump's location.",
+    "source_quote": "Zalthir was deeply skeptical. He recalled the frantic, infected creatures they had previously scouted near Rumpadump's location",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A massive ape-like beast was previously scouted near Rumpadump's location.",
+    "source_quote": "including a massive ape-like beast that looked anything but friendly.",
+    "subject": "ape-like beast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool explains that Myconid spores do not turn people into zombies unless the person is killed first.",
+    "source_quote": "Myconids could only calm people and talk to them, and turning someone into a \"zombie\" required them to be killed first.",
+    "subject": "Stool's reassurances on spores",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool explains that Myconids can only calm people three times and communicate by talking, requiring close proximity.",
+    "source_quote": "Myconids can only \"calm you down three times\" and talk to you, and you have to be right up close for either.",
+    "subject": "Stool's reassurances on Myconid abilities",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls Myconid lore confirming they are generally peaceable but capable of stunning or bludgeoning those who get too close.",
+    "source_quote": "Daz recalls his knowledge of Myconids (nature check with advantage), noting they are generally peaceable but capable of stunning or bludgeoning those who get too close.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow used Myconids as target practice in the past.",
+    "source_quote": "They are anthropomorphic walking mushrooms the drow used as target practice",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid spores stun creatures within 5 feet and allow communication within 20 feet.",
+    "source_quote": "Their spores stun within 5 feet, they communicate within 20 feet",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids possess bludgeoning fists.",
+    "source_quote": "they have bludgeoning fists",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Aid on three companions, granting them five temporary hit points for eight hours.",
+    "source_quote": "Gyrgum casts Aid on three party members to bolster their resilience before they depart. Each gains 5 temporary hit points for eight hours.",
+    "subject": "Gyrgum casts Aid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows Stool deeper into the caverns.",
+    "source_quote": "and the group followed the little mushroom child deeper into the caverns.",
+    "subject": "Party departure",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party takes a short rest before arriving at their destination.",
+    "source_quote": "The DM allows a short rest (but not a long rest) before they arrive.",
+    "subject": "rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Stool's friend Rumpadump is reportedly upset.",
+    "source_quote": "pleading with the party for some time to go check on his friend Rumpadump... insisting the party accompany him to see Rumpadump, who is reportedly upset.",
+    "subject": "Rumpadump",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is about Stool's height.",
+    "source_quote": "He says Rumpadump is about his height",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrives at a natural cave containing dancing fungal creatures.",
+    "source_quote": "They arrived at a natural cave",
+    "subject": "Natural Cave",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Several Myconids are dancing in a frantic, crazed manner that is unnatural for their kind.",
+    "source_quote": "Several Myconids were dancing in a frantic, crazed manner that Daz recognized as completely unnatural for their kind.",
+    "subject": "Dancing Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three Myconids stand five feet tall.",
+    "source_quote": "Three stood five feet tall",
+    "subject": "Large Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remaining Myconids are half the height of the larger ones.",
+    "source_quote": "the others half that",
+    "subject": "Small Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One small Myconid stands apart from the group and moves with far less frantic energy.",
+    "source_quote": "one of the small ones stood apart with far less frantic movements",
+    "subject": "Calm Small Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two large, ape-like creatures covered in yellow mold and mushroom growths are hunched near the dancing Myconids.",
+    "source_quote": "Two large, ape-like creatures covered in yellow mold and mushroom growths were hunched nearby",
+    "subject": "Mold-Covered Ape Creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith became agitated and attempted to run toward the dancing Myconids when they came into view.",
+    "source_quote": "Sarith, the drow emissary traveling with the party, became agitated the moment the dancing Myconids came into view.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith wanted to join the Myconids in their dance.",
+    "source_quote": "He wanted to join in.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is an expert grappler.",
+    "source_quote": "Zalthir, an expert grappler",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grappled Sarith and hauled him back around the corner to prevent him from joining the dancing Myconids.",
+    "source_quote": "Zalthir, an expert grappler, reacted quickly, grabbed him, and hauled him back around the corner.",
+    "subject": "Sarith Grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception of 14.",
+    "source_quote": "Gyrgum, with a passive perception of 14",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum noticed that Sarith grew more agitated the instant he had line of sight to the Myconids.",
+    "source_quote": "Gyrgum's passive perception caught that the agitation began the instant Sarith had line of sight.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz noted that the effects reaching the party extend beyond 30 feet.",
+    "source_quote": "Daz notes that effects are clearly reaching beyond 30 feet",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump appeared calm and studious while the other Myconids danced frantically.",
+    "source_quote": "It was then that Rumpadump appeared, calm and studious where the others were frantic",
+    "subject": "Rumpadump Appearance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool spotted Rumpadump and moved excitedly to meet him.",
+    "source_quote": "Stool spots Rumpadump... and moves excitedly to meet him.",
+    "subject": "Stool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool erupted with excitement upon seeing Rumpadump.",
+    "source_quote": "Stool erupted with excitement at the reunion (\"I found you. I found you. I found you.\").",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump stated that something is not right.",
+    "source_quote": "Rumpadump said simply: \"something is not right here.\"",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The other Myconids ignored both the party and Stool's movements.",
+    "source_quote": "The other Myconids ignore both the party and Stool's bouncing.",
+    "subject": "Myconid Indifference",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur is a Myconid who released strange spores in the Neverlight Grove.",
+    "source_quote": "a Myconid named Voosbur released strange spores",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party and the infected Myconids materialized in the Whorlstone Caverns after walking through fungi following Voosbur's spore release.",
+    "source_quote": "they had walked through some fungi and materialized here in the Whorlstone Caverns",
+    "subject": "fungal teleportation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump avoided infection by not eating the suspicious mushrooms.",
+    "source_quote": "I did not eat the silly mushrooms",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The growy-shrinky mushrooms the party gathered are the same mushrooms that caused infection or madness.",
+    "source_quote": "These were the same growy-shrinky mushrooms the party had gathered",
+    "subject": "growy-shrinky mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool loudly disputes the theory that the growy-shrinky mushrooms caused the madness.",
+    "source_quote": "Stool loudly disputed this theory",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur fears the infection has spread back to the rest of his kin in the Neverlight Grove.",
+    "source_quote": "He feared the infection had spread back to the rest of his kin in the Neverlight Grove",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign dwells in the Neverlight Grove.",
+    "source_quote": "The Myconid Sovereign who dwells in the Grove",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign holds the accumulated knowledge of all his predecessors.",
+    "source_quote": "holds the accumulated knowledge of all his predecessors",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign might know a way out of the Underdark.",
+    "source_quote": "might even know a way out of the Underdark entirely",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is speaking of a Dark Lady calling to him.",
+    "source_quote": "He began talking about a Dark Lady calling to him",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is experiencing visions of the Dark Lady.",
+    "source_quote": "and about visions of the Dark Lady",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith shows signs of increasing mental instability as the party nears the infected Myconids.",
+    "source_quote": "Sarith begins speaking of a 'Dark Lady' calling to him, showing signs of increasing mental instability",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz skipped the sections of his drow training regarding drow religious lore.",
+    "source_quote": "Daz had apparently skipped those sections of his drow training",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 23 on a religion check using his training as a cleric of Bahamut.",
+    "source_quote": "Gyrgum, however, drew on his training as a cleric of Bahamut and rolled a 23 on religion",
+    "subject": "Gyrgum's religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi.",
+    "source_quote": "the Dark Lady was Zuggtmoy, the Demon Queen of Fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is known as the Lady of Rot and Decay.",
+    "source_quote": "Lady of Rot and Decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy desires to infect the living with her spores and transform them into mindless servants.",
+    "source_quote": "whose sole desire is to infect the living with her spores and transform them into mindless servants",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy transforms her servants into decomposing hosts for fungi.",
+    "source_quote": "eventually into decomposing hosts for her fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz recalled that infection normally requires proximity to the demonic power itself.",
+    "source_quote": "Daz recalled that such infection normally required proximity to the demonic power itself",
+    "subject": "Daz's arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concluded that the infected dancing Myconids are not the source of the demonic power.",
+    "source_quote": "these dancing Myconids clearly were not it",
+    "subject": "infection source deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party theorized that Sarith had been touched by Zuggtmoy's influence before they met him in prison.",
+    "source_quote": "Sarith had likely been touched by Zuggtmoy's influence well before they met him in prison",
+    "subject": "Sarith's infection timing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith has never been mentally stable.",
+    "source_quote": "they noted he had never been mentally stable",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party suspects Zuggtmoy is abroad in the Underdark, similar to Demogorgon.",
+    "source_quote": "Since Demogorgon was already abroad, it seemed entirely possible Zuggtmoy was too",
+    "subject": "Zuggtmoy's whereabouts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump greets the party upon their arrival in the Whorlstone Caverns.",
+    "source_quote": "Rumpadump greets them: \"So I see you found my friend Stool.\"",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool repeats the phrase \"I found you.\"",
+    "source_quote": "Stool replies, \"I found you. I found you. I found you.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur is one of the tall Myconids.",
+    "source_quote": "He points out Voosbur, one of the tall Myconids.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is worried the infection has spread to his kin in the Neverlight Grove.",
+    "source_quote": "\"I'm worried that they might have infected the rest of my Myconids back home.\"",
+    "subject": "Rumpadump",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party observes two apes that appear dangerous, but they are far away.",
+    "source_quote": "the only dangerous-looking things are the two apes, which are far away",
+    "subject": "ape observation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The dancing Myconids carry no weapons.",
+    "source_quote": "They carry no weapons",
+    "subject": "weapon check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The dancing Myconids can still communicate.",
+    "source_quote": "Rumpadump confirms the dancers can still communicate",
+    "subject": "communication check",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Neverlight Grove is the home of the Myconids.",
+    "source_quote": "back in their home, the Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Caverns are where the party and infected Myconids materialized.",
+    "source_quote": "materialized here in the Whorlstone Caverns",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur is an infected Myconid.",
+    "source_quote": "The party approached the infected Myconid",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur is deep in a frantic dance.",
+    "source_quote": "deep in his frantic dance",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur speaks in a rambling, euphoric stream of consciousness.",
+    "source_quote": "He spoke in a rambling, euphoric stream of consciousness",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the place as \"a far out place, a hidden trip where the lady herself spins the vibes.\"",
+    "source_quote": "\"a far out place, a hidden trip where the lady herself spins the vibes\"",
+    "subject": "Voosbur",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur insists that his condition is \"no infection.\"",
+    "source_quote": "\"this is no infection.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the entity as \"the mama of the mushrooms, the queen of the dreamscape.\"",
+    "source_quote": "She's the mama of the mushrooms, the queen of the dreamscape.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur invites the party to \"drop in, tune out, and dance with the spores.\"",
+    "source_quote": "\"drop in, tune out, and dance with the spores.\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proposes tying a rope around whoever approaches Voosbur to yank them back if bad things happen.",
+    "source_quote": "The party proposes tying a rope around whoever approaches, \"ready to yank them back if bad things happen.\"",
+    "subject": "rope safety plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party compares Charisma scores.",
+    "source_quote": "They compare Charisma scores.",
+    "subject": "charisma comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that he has \"a charisma of a toad.\"",
+    "source_quote": "Daz: \"i have a charisma of a toad.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asks Voosbur where the infection started.",
+    "source_quote": "The party asks Voosbur where the infection started.",
+    "subject": "infection origin question",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur mentions \"the Lady's cosmic garden.\"",
+    "source_quote": "speaking in a euphoric, stream-of-consciousness manner about a 'far out place' and the Lady's cosmic garden.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the experience as having \"no noise just the pulse of the spores and the rhythm of the earth.\"",
+    "source_quote": "\"no noise just the pulse of the spores and the rhythm of the earth\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur claims that the Lady \"has a gift.\"",
+    "source_quote": "And she's got a gift.",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur warns that \"the lady's dream is deep.\"",
+    "source_quote": "this ain't no Sunday picnic. The lady's dream is deep",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur describes the destination as the \"ultimate underground rave.\"",
+    "source_quote": "join the 'ultimate underground rave'",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Voosbur offers his outstretched hand to the party.",
+    "source_quote": "Voosbur's outstretched hand",
+    "subject": "Voosbur's hand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin feels a strong impulsive pull to accept Voosbur's invitation.",
+    "source_quote": "Thorin felt the pull of it more strongly than he expected.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player rolled for the decision.",
+    "source_quote": "His player literally rolled for it",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reaches out and takes Voosbur's outstretched hand.",
+    "source_quote": "Thorin reached out and took Voosbur's outstretched hand.",
+    "subject": "Thorin takes hand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player explains that his character \"has a fucket streak.\"",
+    "source_quote": "his character \"has a fucket streak.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks \"Nobody wants to stop me, I guess, huh?\"",
+    "source_quote": "\"Nobody wants to stop me, I guess, huh?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum follows close behind Thorin.",
+    "source_quote": "Gyrgum, unwilling to let his companion go alone and appointing himself the \"designated driver,\" followed close behind.",
+    "subject": "Gyrgum follows",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum appoints himself the \"designated driver.\"",
+    "source_quote": "appointing himself the \"designated driver\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz declines the invitation.",
+    "source_quote": "Daz declined outright",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states \"I am not interested.\"",
+    "source_quote": "Daz: \"I am not interested.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stays back holding Sarith.",
+    "source_quote": "Zalthir stayed back holding Sarith",
+    "subject": "Zalthir stays back",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is holding Sarith.",
+    "source_quote": "Zalthir stayed back holding Sarith",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is being held by Zalthir.",
+    "source_quote": "Zalthir stayed back holding Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Observers outside see Thorin and Gyrgum become dazed for a moment.",
+    "source_quote": "Observers outside see Thorin and Gyrgum become dazed for a moment.",
+    "subject": "observers reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz remarks \"Oh, very Alice in Wonderland.\"",
+    "source_quote": "Daz: \"Oh, very Alice in Wonderland.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Spore Glade is a bioluminescent area with towering mushrooms that glow in radiant hues.",
+    "source_quote": "a bioluminescent glade where towering mushrooms glowed in radiant hues",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ground in the Spore Glade pulses softly as if breathing.",
+    "source_quote": "the ground pulsed softly beneath their feet as if breathing",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Delicate spores drift lazily through the air in the Spore Glade.",
+    "source_quote": "Delicate spores drifted lazily through the air",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The scent in the Spore Glade is earthy and sweet with an intoxicating undercurrent that makes the head swim.",
+    "source_quote": "The scent was earthy and sweet, with an intoxicating undercurrent that made the head swim",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum arrive in the Spore Glade.",
+    "source_quote": "They found themselves standing in a bioluminescent glade",
+    "subject": "entering the Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin runs through the Spore Glade, brushing against objects along the way.",
+    "source_quote": "Thorin ran through and brushed a few things on the way",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The glowing fungi in the Spore Glade pulse brighter when touched by Thorin.",
+    "source_quote": "the glowing fungi pulsed brighter when touched",
+    "subject": "touching fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he is trying to observe the environment rather than participate in it.",
+    "source_quote": "Gyrgum: \"I'm trying to observe here, not participate.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player announces that the character must leave the session at seven.",
+    "source_quote": "Gyrgum's player announces he has to leave at seven.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Vine Wood is a damp and oppressive maze of thick, twisting vines covered in translucent slime.",
+    "source_quote": "a damp and oppressive maze of thick, twisting vines covered in translucent slime",
+    "subject": "The Vine Wood",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The vines in the Vine Wood twitch and sway with an almost sentient awareness.",
+    "source_quote": "The vines twitched and swayed with an almost sentient awareness",
+    "subject": "The Vine Wood",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ground in the Vine Wood is tangled with root-like growths that seem to reach upward.",
+    "source_quote": "the ground beneath was tangled with root-like growths that seemed to reach upward",
+    "subject": "The Vine Wood",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum pass from the Spore Glade into the Vine Wood.",
+    "source_quote": "They passed into what could only be called the Vine Wood",
+    "subject": "entering the Vine Wood",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses that the environment is freaking him out.",
+    "source_quote": "Gyrgum: \"This is freaking me out, okay?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum roll a 7 on a group stealth check while in the Vine Wood.",
+    "source_quote": "their group stealth check came up a mere 7",
+    "subject": "stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin considers spending a superiority die for a stealth/initiative maneuver but decides against it.",
+    "source_quote": "Thorin considers spending a superiority die from his stealth/initiative maneuver but decides it won't help",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vines in the Vine Wood begin to advance toward Thorin and Gyrgum.",
+    "source_quote": "the vines began to advance toward them",
+    "subject": "vines",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that they perhaps should not have split the party.",
+    "source_quote": "Gyrgum: \"Well, maybe we shouldn't have split the party.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vines collapse behind Thorin and Gyrgum in a crushing wave as they exit the Vine Wood.",
+    "source_quote": "the vines collapsed behind them in a crushing wave as they burst through the exit",
+    "subject": "vine collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The clearing is dominated by a throne of intertwined fungal growths and ringed by twisted mushroom sentinels.",
+    "source_quote": "dominated by a throne of intertwined fungal growths, ringed by twisted mushroom sentinels",
+    "subject": "grim clearing",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The clearing is filled with an oppressive silence, muted colors of yellow, brown, and gray, and a faint drip of moisture.",
+    "source_quote": "A heavy, oppressive silence hung over everything... The colors were muted: sickly yellow, dull browns, and shadowed grays.",
+    "subject": "grim clearing",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is a spectral figure who shifts between radiant beauty and horrifying decay, with eyes glowing with otherworldly light.",
+    "source_quote": "a spectral figure shimmered into view at the center, shifting between radiant beauty and horrifying decay, her eyes glowing with an otherworldly light",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy speaks with a voice that reaches their minds like a haunting melody, soothing and commanding.",
+    "source_quote": "her voice reached their minds like a haunting melody, at once soothing and commanding",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy identifies herself as the Demon Queen of Fungi.",
+    "source_quote": "This was Zuggtmoy herself, the Demon Queen of Fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zuggtmoy offers Thorin and Gyrgum the gift of blooming beyond the bounds of flesh and time to become part of her endless mycelium forever.",
+    "source_quote": "offered her gift: to bloom beyond the bounds of flesh and time and become part of her endless mycelium forever",
+    "subject": "Zuggtmoy's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin felt keen temptation from Zuggtmoy's offer.",
+    "source_quote": "Thorin felt the temptation keenly",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin declines Zuggtmoy's offer, citing his responsibilities in the waking world.",
+    "source_quote": "But in the end he declined, telling the Dark Lady that he had too many responsibilities in the waking world to linger with her",
+    "subject": "Thorin's refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy regards Thorin with sorrow after his refusal, lamenting that he could have been part of the mycelium.",
+    "source_quote": "Zuggtmoy regarded him with something like sorrow, lamenting that he could have been \"forever part of the endless mycelium\"",
+    "subject": "Zuggtmoy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The vision of Zuggtmoy dissolves after Thorin refuses the offer.",
+    "source_quote": "and then the vision dissolved",
+    "subject": "vision dissolves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum wake up back in the Whorlstone Tunnels.",
+    "source_quote": "Thorin and Gyrgum woke up back in the Whorlstone Tunnels",
+    "subject": "wake up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Voosbur tells Thorin he is leaving because Thorin declined to join the Myconids.",
+    "source_quote": "Voosbur remarked, \"Hey, man, I guess you didn't want to join the party. I got to go now.\"",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Voosbur and the other infected Myconids walk into a spore cloud and vanish.",
+    "source_quote": "He and the rest of the infected Myconids gathered at a spore cloud among the fungal growths and stepped through it, vanishing entirely.",
+    "subject": "Myconid departure",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Myconids use a vast fungal network to travel between hidden places in the Underdark.",
+    "source_quote": "They were traveling through some vast fungal network that connected the hidden places of the Underdark.",
+    "subject": "fungal network",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party spends three days underground in the Whorlstone Caverns.",
+    "source_quote": "after three days underground, they made their way out of the Whorlstone Caverns.",
+    "subject": "three days underground",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gains a fifth level.",
+    "source_quote": "They rose to fifth level",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains the spell Fireball upon reaching fifth level.",
+    "source_quote": "and Daz finally gained Fireball.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reconciles his spell counts, noting he has nine preparable spells and ten in his spellbook.",
+    "source_quote": "Daz reconciles his \"prepared 7 of 9 (10 known)\" count: nine preparable spells, ten in his spellbook.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz comments that he needs a bigger spellbook.",
+    "source_quote": "\"I need a bigger spellbook.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's longsword now has a +8 to hit bonus.",
+    "source_quote": "Thorin's longsword is now +8 to hit",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin gains an extra attack.",
+    "source_quote": "and he gains an extra attack.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest, recovering strength but losing Aid's temporary hit points.",
+    "source_quote": "The party took a long rest, recovering their strength (and losing Aid's temporary hit points)",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The long rest causes Aid's temporary hit points to vanish.",
+    "source_quote": "The rest clears Aid's temporary hit points (\"Bummer\").",
+    "subject": "Aid spell expiration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states that Gyrgum can simply cast Aid again.",
+    "source_quote": "Zalthir notes Gyrgum can simply cast it again.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states he does not need the long rest.",
+    "source_quote": "Zalthir says he doesn't need it",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gates into the rest of Gracklstugh are sealed shut.",
+    "source_quote": "The gates into the rest of Gracklstugh were sealed shut",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Grim-faced Duergar in heavy armor guard the sealed gates of Gracklstugh.",
+    "source_quote": "guarded by grim-faced Duergar in heavy armor",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow on the other side of the gates are on edge.",
+    "source_quote": "The drow on the other side were even more on edge than before",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A Duergar guard named Gorglak steps forward to block the party's path.",
+    "source_quote": "A particularly mean-looking guard named Gorglak stepped forward and blocked their path",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak tells the party that they are not allowed in the city.",
+    "source_quote": "\"You, none of you are allowed. You should not be in here.\"",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gorglak demands to inspect the party's possessions for contraband.",
+    "source_quote": "He demanded to inspect all of their possessions for contraband.",
+    "subject": "Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party is holding a bag full of demonic artifacts and political secrets.",
+    "source_quote": "holding a bag full of demonic artifacts and political secrets",
+    "subject": "bag of artifacts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempts to use a 'diplomatic pouch' line to bypass inspection.",
+    "source_quote": "Thorin tries the \"diplomatic pouch\" line.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz offers to share mushrooms, suggesting they might be the contraband.",
+    "source_quote": "Daz offers to share some mushrooms, \"Maybe that's the contraband he's looking for.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

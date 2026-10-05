@@ -1,0 +1,142 @@
+[
+  {
+    "type": "npc",
+    "fact": "Shuushar is the kuo-toa companion who left to pursue his fate.",
+    "source_quote": "Shuushar, who had gone off to pursue his fate",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake has a black surface and low ceilings in certain sections.",
+    "source_quote": "grounded on a submerged sandbar hidden beneath the black surface of the lake",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The low ceilings in the Darklake ended after the party defeated a creature.",
+    "source_quote": "The low ceilings ended after they defeated the creature.",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses an imperfect map left behind by Shuushar.",
+    "source_quote": "They had only an imperfect map left behind by their departed kuo-toa companion, Shuushar",
+    "subject": "map",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith warned the party that the map's flaws could be problematic.",
+    "source_quote": "Sarith had warned them of the map's flaws",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party met kuo-toa before Shuushar departed.",
+    "source_quote": "They then met the kuo-toa",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM called for survival checks because the party lacks rangers or rogues.",
+    "source_quote": "With no rangers or rogues in the party, the GM called for survival checks.",
+    "subject": "survival checks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that the group would find food and water without specific rolls due to the number of companions.",
+    "source_quote": "He added the slightly ominous warning that this could change if people started dying off, since the crew was effectively the party's dice pool.",
+    "subject": "food and water rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's boat lurched to a halt and grounded on a submerged sandbar.",
+    "source_quote": "the boat lurched to a sudden halt, grounded on a submerged sandbar hidden beneath the black surface of the lake",
+    "subject": "boat grounding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The boat carries no oars or poles.",
+    "source_quote": "The boat carried no oars or poles",
+    "subject": "boat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin quotes the movie Apocalypse Now regarding the situation.",
+    "source_quote": "Thorin quoted Apocalypse Now",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is teased by companions for carrying a seemingly useless water-shaping cantrip.",
+    "source_quote": "Daz had long been teased by his companions for carrying a water-shaping cantrip of seemingly little use",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party defeated a creature prior to the current scene, causing the low ceilings to end.",
+    "source_quote": "The low ceilings ended after they defeated the creature",
+    "subject": "creature",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a surging wave from behind the boat that shoves it over the sandbar.",
+    "source_quote": "conjuring a surging wave from behind the boat that shoved it clean over the sandbar and back into open water",
+    "subject": "Daz's wave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he should have placed a bet on whether Daz would use his trick practically.",
+    "source_quote": "Jimjar wryly admitted he should have placed a bet on whether Daz would ever use the trick for something practical",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin navigates the vessel through dark waters with uncanny confidence.",
+    "source_quote": "Thorin proved himself a surprisingly capable navigator, guiding the vessel with an almost uncanny confidence through the dark waters",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's successful navigation spare the party the next day's survival check.",
+    "source_quote": "His roll was good enough to spare the party the next day's check as well.",
+    "subject": "Thorin's navigation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith asks Thorin whether he knows where he is going.",
+    "source_quote": "When Sarith asked whether he knew where he was going",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin claims he is following the vibes rather than giving directions.",
+    "source_quote": "Thorin claimed he was simply following the vibes",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz reads out the text for the Shape Water cantrip.",
+    "source_quote": "Daz reads out the Shape Water text",
+    "subject": "Shape Water",
+    "quote_verified": true
+  }
+]

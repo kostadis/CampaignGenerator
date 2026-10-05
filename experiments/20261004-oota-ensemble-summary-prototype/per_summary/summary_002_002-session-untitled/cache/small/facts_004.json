@@ -1,0 +1,177 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to pocket a knife but is caught by a drow.",
+    "source_quote": "His first attempt to pocket a knife went badly.",
+    "subject": "Gyrgum's failed theft",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy attempt to create a distraction to help Gyrgum steal the knife.",
+    "source_quote": "Topsy and Turvy tried to help with a distraction",
+    "subject": "Topsy and Turvy distraction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum claims he was going to sharpen the knife when challenged by the drow.",
+    "source_quote": "he claimed, \u201cI'm going to sharpen this knife.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A drow warns the prisoners to stop stealing or face dismemberment, which Shuushar translates.",
+    "source_quote": "Shuushar translated their warning: \u201cdon't do that. Or next time, you may find yourself missing various body parts.\u201d",
+    "subject": "drow warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar translates the drow's warning to the other prisoners.",
+    "source_quote": "Shuushar translated their warning",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks Topsy and Turvy to handle the theft themselves the next day while he cooks.",
+    "source_quote": "he sensibly asked Topsy and Turvy to handle the theft themselves.",
+    "subject": "Gyrgum delegates theft",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy successfully steal two knives and bring them back to the prisoners.",
+    "source_quote": "The twins successfully stole two knives and brought them back for the prisoners to use as makeshift daggers.",
+    "subject": "knife theft success",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is one of the twins who steals knives for the prisoners.",
+    "source_quote": "The twins successfully stole two knives",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is one of the twins who steals knives for the prisoners.",
+    "source_quote": "The twins successfully stole two knives",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Two knives are stolen and used by the prisoners as makeshift daggers.",
+    "source_quote": "two knives and brought them back for the prisoners to use as makeshift daggers.",
+    "subject": "stolen knives",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum sharpens the stolen knives.",
+    "source_quote": "Gyrgum sharpened them",
+    "subject": "knife sharpening",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The group jokes that the sharpened knives are \u201cmagical plus zero\u201d weapons, equivalent to a zero-ohm resistor.",
+    "source_quote": "the group joked that they were \u201cmagical plus zero\u201d weapons\u2014the equivalent of a zero-ohm resistor.",
+    "subject": "magical plus zero joke",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The prisoners return to the Slave Pen at the end of the day to pool observations.",
+    "source_quote": "the prisoners returned to the Slave Pen and pooled their observations.",
+    "subject": "Slave Pen",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith rambles through insane tangents.",
+    "source_quote": "Sarith rambled through insane tangents",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is delighted by the day's cleaning activities.",
+    "source_quote": "Stool was delighted by everyone\u2019s cleaning activities",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar continues his obsessive betting.",
+    "source_quote": "Jimjar continued his obsessive betting.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido repeatedly invokes \u201cthe divine plan\u201d without identifying the divinity.",
+    "source_quote": "Buppido repeatedly invoked \u201cthe divine plan\u201d without identifying the divinity behind it.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum conclude that Buppido might believe he is a god.",
+    "source_quote": "Thorin and Gyrgum gradually concluded that Buppido might not merely worship a god\u2014he might believe that he was one.",
+    "subject": "Thorin and Gyrgum's deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin observes Buppido's behavior alongside Gyrgum.",
+    "source_quote": "Thorin and Gyrgum gradually concluded",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido proposes that the other prisoners distract the enemy while he escapes through the waterfall.",
+    "source_quote": "\u201cIt's quite simple. All of you will distract the enemy while I escape through the waterfall.\u201d",
+    "subject": "Buppido's escape plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido admits he needs to consider the divine plan more carefully when asked about the others' escape.",
+    "source_quote": "he admitted that he needed to consider the divine plan more carefully.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin flatters Buppido by suggesting the divine plan arranged for the prisoners to escape and protect him.",
+    "source_quote": "Thorin pointed out that Buppido would be entering the Underdark without protection, and flattered him with the idea that the divine plan must have arranged for everyone to escape so they could protect him.",
+    "subject": "Thorin's flattery",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido eagerly accepts Thorin's logic about needing protection.",
+    "source_quote": "Buppido eagerly accepted the logic.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido grants the prisoners insight into the divine plan's mysteries later that evening in exchange for their pledges.",
+    "source_quote": "he declared, \u201csince you have pledged your swords \u2026 your spells \u2026 your lives, at least, to protecting the divine plan, I will grant you insight into its mysteries later this evening.\u201d",
+    "subject": "Buppido's pledge requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Buppido promises to reveal insights into the divine plan's mysteries later this evening.",
+    "source_quote": "I will grant you insight into its mysteries later this evening",
+    "subject": "divine plan mysteries",
+    "quote_verified": true
+  }
+]

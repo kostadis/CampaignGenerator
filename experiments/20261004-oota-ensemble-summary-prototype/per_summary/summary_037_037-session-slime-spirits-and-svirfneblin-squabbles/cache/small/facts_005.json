@@ -1,0 +1,289 @@
+[
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger is a three-foot-tall ghost who materializes in the catacombs.",
+    "source_quote": "Burrow Warden Jadger, a three-foot-tall ghost, materializes in the catacombs after Pelek's departure.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger identifies his pronouns as he/him.",
+    "source_quote": "Jadger identifies his pronouns as he/him.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is not carrying any weapons.",
+    "source_quote": "the Dragonborn is not carrying any weapons",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger pays particular attention to Zalthir because the Dragonborn is unarmed.",
+    "source_quote": "Jadger pays particular attention to Zalthir because the Dragonborn is not carrying any weapons.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a monk.",
+    "source_quote": "When Zalthir explains that he is a monk",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger declares that Zalthir would be an excellent asset upon learning he is a monk.",
+    "source_quote": "Ah, then you would be an excellent asset",
+    "subject": "Jadger on Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger floats upward to make himself more imposing.",
+    "source_quote": "Jadger floats upward to make himself more imposing",
+    "subject": "Jadger levitates",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Burrow Wardens were the first and last line of defense of Blingdenstone.",
+    "source_quote": "the Burrow Wardens were \u201cthe first and last line of defense of Blingdenstone.\u201d",
+    "subject": "Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Most of the honored protectors of the Burrow Wardens died during the Drow invasion.",
+    "source_quote": "Most of the honored protectors died during the Drow invasion",
+    "subject": "Burrow Wardens casualties",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining Burrow Wardens perished while protecting their people during the flight from Blingdenstone.",
+    "source_quote": "the remainder perished while protecting their people during the flight from Blingdenstone",
+    "subject": "Burrow Wardens casualties",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger defended Blingdenstone against the Drow, oozes, and other Underdark creatures.",
+    "source_quote": "Jadger says that he defended Blingdenstone against the Drow, oozes, and a long list of other Underdark creatures.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger has taken it upon himself to establish a new group of Burrow Wardens since the deep gnomes recaptured Blingdenstone.",
+    "source_quote": "he has taken it upon himself to establish a new group of Burrow Wardens",
+    "subject": "New Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger is proud of several young gnomes he has been training in secret.",
+    "source_quote": "He is proud of several young gnomes whom he has been training in secret.",
+    "subject": "Young gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger describes himself as an expert on the Underdark and its denizens, and on methods for fighting them.",
+    "source_quote": "Jadger describes himself as an expert on the Underdark and its denizens, as well as on methods for fighting them.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger offers to answer one question for every ghost the party puts to rest within the community.",
+    "source_quote": "He offers to answer one question for every ghost the party puts to rest within the community.",
+    "subject": "Ghost quest deal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's interment counts as the first completed task, granting the party one question credit.",
+    "source_quote": "Pelek's interment counts as the first completed task, giving the party one answer that it may claim immediately or save for later.",
+    "subject": "Question credit",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Burrow Warden Jadger mentions there are two more ghosts he would like the party to deal with for two additional question answers.",
+    "source_quote": "there are two more ghosts he would like the party to deal with if they want two additional questions answered.",
+    "subject": "Remaining ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum avoids asking how many mysteries there are to avoid being tricked.",
+    "source_quote": "Gyrgum avoids asking how many mysteries there are because \u201cthis feels like a genie situation where you can get fooled into asking your question before you know you're asking your question.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party debates whether the phrase 'I wish we knew' counts as a question for the purpose of the deal.",
+    "source_quote": "When someone says, \u201cI wish we knew,\u201d the party debates whether a wish counts as a question.",
+    "subject": "Wish debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger rejects being compared to a genie.",
+    "source_quote": "I'm not some trivial genie. I am Burrow Warden Jadger.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger claims to know things about the Underdark that other people have forgotten.",
+    "source_quote": "I know things about the Underdark that other people have forgotten were things.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo knows how to leave the Underdark.",
+    "source_quote": "Chief Dorbo and Senni know how to leave the Underdark and that the route is well known.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni knows how to leave the Underdark.",
+    "source_quote": "Chief Dorbo and Senni know how to leave the Underdark and that the route is well known.",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to use its question on how best to deal with the oozes.",
+    "source_quote": "the party decides to ask how best to deal with the oozes.",
+    "subject": "Question selection",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Ordinary oozes are solitary and do not bother others unless bothered.",
+    "source_quote": "They kind of live in their corner, and as long as you don't bother them, they don't bother you.",
+    "subject": "Oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "A mass of oozes acting together is unusual and suggests an external source providing direction or orders.",
+    "source_quote": "A mass of oozes acting together is therefore highly unusual and suggests that something is providing direction, orders, or a mission.",
+    "subject": "Ooze coordination",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger recommends sending a carefully organized strike force to find whatever caused the ooze behavior.",
+    "source_quote": "His initial recommendation is to send a carefully organized strike force into the affected area and look for whatever \u201cmade no sense.\u201d",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir mentions that the party suspects a connection to Juiblex regarding the oozes.",
+    "source_quote": "Zalthir mentions that the party suspects a connection to Juiblex.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger treats the mention of Juiblex as a clarification and asks Zalthir to demonstrate a monk technique for the young gnomes.",
+    "source_quote": "Jadger treats this as a clarification rather than an entirely separate question, but asks Zalthir to demonstrate a monk technique that could be taught to the young gnomes.",
+    "subject": "Jadger's condition",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir agrees and performs a monk technique for Burrow Warden Jadger.",
+    "source_quote": "Zalthir agrees and performs the technique.",
+    "subject": "Zalthir demonstrates technique",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Burrow Warden Jadger tries moving his fists in imitation of Zalthir, but performs the movements incorrectly.",
+    "source_quote": "Jadger is impressed and tries moving his own fists in imitation, though he performs the movements incorrectly while Zalthir resists correcting him immediately.",
+    "subject": "Jadger imitates",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger tells a rambling demon story before returning to the point.",
+    "source_quote": "Jadger launches into a rambling demon story likened to Grandpa Simpson's \u201conion tied to my belt\u201d monologue before returning to the point.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Devils make deals, granting people ungodly power and enjoying their personal corruption and destruction.",
+    "source_quote": "Devils make deals,\u201d granting people ungodly power and enjoying their personal corruption and destruction.",
+    "subject": "Devils",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Demons find souls, imbue them with terrifying power, and enjoy watching them destroy everything around them.",
+    "source_quote": "Demons instead find \u201cpoor benighted souls,\u201d imbue them with terrifying power, and enjoy watching them destroy everything around them.",
+    "subject": "Demons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger summarizes the distinction between devils (personal corruption) and demons (maximum carnage).",
+    "source_quote": "With devils, it's a very personal corruption of the souls. With demons, it's about causing maximum carnage and destruction.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger advises the party to look for someone or something motivating the oozes.",
+    "source_quote": "If I were you, I would go look for someone or something that is motivating those oozes.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger corrects the party's assumption that Juiblex is directly controlling the oozes.",
+    "source_quote": "No, no, no, that's not what I said.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Burrow Warden Jadger's theory is that Juiblex has granted power to a proxy or intermediate agent directing the oozes.",
+    "source_quote": "His actual theory is that Juiblex has granted power to a proxy or intermediate agent who is directing the oozes.",
+    "subject": "Juiblex's proxy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes that the demon has a \u201cconsigliere\u201d and that they will \u201cgo to the mattresses.\u201d",
+    "source_quote": "The party reduces the theory to finding and killing whoever has been granted the power, joking that the demon has a \u201cconsigliere\u201d and that they will \u201cgo to the mattresses.\u201d",
+    "subject": "Consigliere joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger suggests the party consult a young gnome under his mentorship once they have gathered information.",
+    "source_quote": "Jadger suggests that, once the party has gathered information, it should consult a young gnome under his mentorship who will soon become leader of the new Burrow Wardens.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The trainee gnome is too young for the present mission but may have useful insights after the party discovers more about the infestation.",
+    "source_quote": "The trainee is too young for the present mission but may have useful insights after the party discovers more about the infestation.",
+    "subject": "Trainee gnome",
+    "quote_verified": true
+  }
+]

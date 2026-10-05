@@ -1,0 +1,1045 @@
+[
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is a duergar prisoner taken by the party.",
+    "source_quote": "their duergar prisoner, Brannum Redmarch",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch introduces himself with a gruff attempt at dignity.",
+    "source_quote": "He introduced himself with a gruff attempt at dignity",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch distances himself from the kuo-toa and their ways.",
+    "source_quote": "distancing himself from the \"mad\" kuo-toa and their strange ways",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch is barely conscious.",
+    "source_quote": "Barely conscious, he was surrounded by thirteen people",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch can turn invisible.",
+    "source_quote": "he can turn invisible",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch has very low Charisma, making him easy to read.",
+    "source_quote": "Because he has very low Charisma, reading him is easy",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch begins pointing the way forward across the Darklake.",
+    "source_quote": "ultimately began pointing the way forward across the Darklake",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum Redmarch is tied up to ride in the party's boat.",
+    "source_quote": "Brannum would ride in the party's own boat as a hostage, tied up",
+    "subject": "Brannum restrained",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin tells Brannum that his survival depends on guiding the party to Gracklstugh.",
+    "source_quote": "his only path to living was to guide them faithfully to Gracklstugh",
+    "subject": "Thorin threatens Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum warns Brannum that he will be the first to go if he tries to screw them over.",
+    "source_quote": "Gyrgum's warning that if he tried to screw them over he would be the first to go",
+    "subject": "Gyrgum threatens Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith states he admires the directness of the approach.",
+    "source_quote": "Sarith, visibly impressed by the directness of the approach, said he admired the technique",
+    "subject": "Sarith comments on technique",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith expresses disappointment that torture was not deemed necessary.",
+    "source_quote": "though he was a little disappointed that torture hadn't been deemed necessary",
+    "subject": "Sarith on torture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin floats the idea of selling Brannum into slavery.",
+    "source_quote": "Thorin also floated the idea of selling Brannum into slavery",
+    "subject": "Thorin proposes selling Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido calls selling Brannum an excellent idea.",
+    "source_quote": "Buppido called it an excellent idea",
+    "subject": "Buppido agrees to slavery proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth announces that he \"knew a guy\" regarding selling Brannum.",
+    "source_quote": "Hemeth announced that he \"knew a guy.\"",
+    "subject": "Hemeth contacts contact",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check of 18 confirms Brannum is being truthful.",
+    "source_quote": "An insight check of 18 confirmed that he was being straight with them",
+    "subject": "Insight check on Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party secured a larger boat that has oars but is a little too small.",
+    "source_quote": "With their larger boat secured... The bigger boat has oars, though the DM notes it is actually a little too small.",
+    "subject": "Larger boat",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The kuo-toa are described by the party as \"mad\" and associated with strange sounds like \"boops and beeps.\"",
+    "source_quote": "the \"mad\" kuo-toa and their \"boops and beeps\"",
+    "subject": "Kuo-toa",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth calls the duergar followers of an evil god.",
+    "source_quote": "Eldeth calls the duergar followers of an evil god.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rejects asking Brannum for a map, questioning if it would be correct.",
+    "source_quote": "rejects simply asking for a map (\"why would he draw a correct map\")",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party stays together in one boat while their followers take the second boat.",
+    "source_quote": "The party decides to stay together in one boat with Brannum as a hostage, while the rest of their followers take the second boat.",
+    "subject": "Party boat separation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the destination Brannum is being forced to guide the party toward.",
+    "source_quote": "guide them faithfully to Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The events occur on the fifteenth day of the party's voyage.",
+    "source_quote": "On the fifteenth day of their voyage",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party travels through a narrow, eerie tunnel illuminated by a purple glow.",
+    "source_quote": "narrow, eerie tunnel illuminated by a purple glow",
+    "subject": "darklake tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Blind cavefish drift mindlessly near the surface and bump against the hull of the boat.",
+    "source_quote": "Blind cavefish drifted mindlessly near the surface, occasionally bumping against the hull of the boat",
+    "subject": "blind cavefish",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel forks around a diamond-shaped limestone islet that is forty feet wide.",
+    "source_quote": "tunnel forked around a diamond-shaped limestone islet, forty feet wide",
+    "subject": "limestone islet",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bone pyramid is eight feet high and five feet wide at its base.",
+    "source_quote": "It was a pyramid of bones, eight feet high and five feet wide at its base",
+    "subject": "bone pyramid",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bone pyramid is crowned with a great horned ram skull positioned to stare at the travelers.",
+    "source_quote": "crowned with a great horned ram skull that had been carefully positioned so its empty sockets stared directly at them",
+    "subject": "horned ram skull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch panics upon seeing the bone pyramid.",
+    "source_quote": "Brannum Redmarch took one look at it and panicked",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum Redmarch admits that he thought the party was going the other way.",
+    "source_quote": "I thought we were going the other way",
+    "subject": "brannum admission",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A violent beam of lightning erupts from behind a stalactite and strikes the boat.",
+    "source_quote": "a violent beam of lightning erupted from behind a stalactite above the islet and tried to put a hole in their boat",
+    "subject": "lightning attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party fails the group check to avoid all harm, resulting in some damage to the boat.",
+    "source_quote": "Not enough of them succeeded to avoid all harm, but their quick reflexes kept the boat seaworthy with only some damage",
+    "subject": "boat check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin starts rowing the boat away from the islet.",
+    "source_quote": "Thorin starts rowing away",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A ten-foot floating sphere of rotting flesh and dead eyes rises from behind a stalactite.",
+    "source_quote": "rising from behind the great stalactite, a ten-foot floating sphere of rotting flesh and dead eyes drifted toward them",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is an undead horror that understands nothing the party says.",
+    "source_quote": "realize with a sinking feeling that the undead horror understood nothing he said",
+    "subject": "beholder zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Command on the beholder zombie.",
+    "source_quote": "Gyrgum cast Command and ordered the creature to flee",
+    "subject": "command spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Command spell fails because the beholder zombie does not understand Gyrgum.",
+    "source_quote": "ordered the creature to flee, only to realize with a sinking feeling that the undead horror understood nothing he said",
+    "subject": "command failure",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unclear whether the lightning came from the beholder zombie or a second source.",
+    "source_quote": "It is unclear whether the lightning came from the zombie or from a second source",
+    "subject": "lightning source",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a 15-foot shroud of magical darkness around the beholder zombie, leaving enough of it visible for companions to target.",
+    "source_quote": "Zalthir moved with fluid precision, conjuring a 15-foot shroud of magical darkness around the creature while keeping just enough of it visible for his companions to target.",
+    "subject": "Zalthir creates darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the beholder zombie with his bare fists, landing a critical hit.",
+    "source_quote": "He struck the zombie with his bare fists in a series of devastating blows, landing one thunderous critical hit that sent a shudder through the floating monstrosity.",
+    "subject": "Zalthir unarmed strikes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fights from inside the magical darkness where the blinded creature cannot see him, gaining advantage on attacks.",
+    "source_quote": "Thorin fought from inside the darkness, where the blinded creature could not see him, and hammered it with advantage.",
+    "subject": "Thorin fights in darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a feinting attack that leaves the beholder zombie vexed.",
+    "source_quote": "He used a feinting attack that left the zombie vexed",
+    "subject": "Thorin feint",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts a Hill Strike to knock the beholder zombie prone, but the effect fails because the creature is immune to being knocked prone.",
+    "source_quote": "tried a Hill Strike to knock it prone, only to learn that a floating beholder zombie is immune to being knocked prone.",
+    "subject": "Thorin Hill Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missiles on the beholder zombie, dealing 15 damage.",
+    "source_quote": "Daz unleashed a barrage of Magic Missiles for 15 damage",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels divine power to scorch the undead from within.",
+    "source_quote": "Gyrgum channeled divine power to scorch the undead from within.",
+    "subject": "Gyrgum Divine Spark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie hits Gyrgum with a ray of sickly light for 10 damage, poisoning him.",
+    "source_quote": "A ray of sickly light, which the DM compared to a Dalek, hit Gyrgum for 10 damage and poisoned him.",
+    "subject": "Beholder Zombie ray attack on Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie strikes Daz with a beam, leaving him paralyzed and helpless after a failed saving throw.",
+    "source_quote": "Another beam struck Daz, who missed the save by a single point and was left paralyzed and helpless.",
+    "subject": "Beholder Zombie ray attack on Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool, Hemeth, and the companion crew row hard toward the fight and raise their crossbows to fire a volley.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight. The crew raised their crossbows and let fly a first volley.",
+    "subject": "Crew joins fight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie bites Zalthir for 16 damage.",
+    "source_quote": "The zombie bit Zalthir for 16 damage",
+    "subject": "Beholder Zombie bites Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to Turn Undead, but the beholder zombie succeeds on its saving throw.",
+    "source_quote": "Gyrgum's attempt to Turn Undead failed against the creature's saving throw.",
+    "subject": "Gyrgum Turn Undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The combined fire of the crew's second volley and Zalthir's assault causes the beholder zombie to crumple and explode into ash.",
+    "source_quote": "The crew's second volley, combined with Zalthir's relentless assault, finally proved too much for the undead horror. The beholder zombie shuddered, crumpled, and exploded into ash",
+    "subject": "Beholder Zombie killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's paralysis ends when the beholder zombie dies.",
+    "source_quote": "and Daz's paralysis ended with its death.",
+    "subject": "Daz paralysis ends",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is dead, having exploded into ash after taking damage from the party and the crew.",
+    "source_quote": "The beholder zombie shuddered, crumpled, and exploded into ash, its threat extinguished at last",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Cure Wounds on Zalthir, restoring 15 of the 16 hit points he lost to the zombie's bite.",
+    "source_quote": "Gyrgum moved quickly to Zalthir's side and cast Cure Wounds, restoring 15 of the 16 hit points the monk had lost to the creature's savage bite.",
+    "subject": "Gyrgum Cure Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party turns to Brannum and demands the truth about the shortcut he had chosen.",
+    "source_quote": "the party turned back to Brannum and demanded the truth about the shortcut he had chosen.",
+    "subject": "Interrogation of Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum's initial answer about the shortcut is determined to be false by Thorin's insight check.",
+    "source_quote": "Thorin called his first answer \"bullshit,\" and an insight check proved him right.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a monk.",
+    "source_quote": "restoring 15 of the 16 hit points the monk had lost to the creature's savage bite",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is part of the companion crew that joined the fight against the beholder zombie.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is part of the companion crew that joined the fight against the beholder zombie.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight.",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle with the beholder zombie takes place in the dark waters of the Darklake.",
+    "source_quote": "in the dark waters of the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch confesses that the route was a shortcut his crew used regularly.",
+    "source_quote": "This route had once been a quick shortcut his crew used regularly",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch's crew had lost two boats that never returned.",
+    "source_quote": "two of his boats had never come back",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch had assumed the crew of the lost boats abandoned him.",
+    "source_quote": "Brannum had assumed that crew had simply abandoned him",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch realizes with horror that the lost crew met a horrible fate upon seeing the bone pyramid.",
+    "source_quote": "Brannum had assumed that crew had simply abandoned him, until he saw the bone pyramid and realized, with dawning horror, that they had not",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch asks where the lost crew members are if they are dead.",
+    "source_quote": "\"If they're dead, where are they?\" he asked",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confronts Brannum Redmarch about his dishonesty regarding the route's safety.",
+    "source_quote": "The party confronts Brannum Redmarch, calling out his dishonesty regarding the safety of the route",
+    "subject": "interrogation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin calls Brannum Redmarch's initial claim of 'the fast way' bullshit.",
+    "source_quote": "Thorin calls \"bullshit\"",
+    "subject": "Thorin's outburst",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "An insight check confirms that Thorin's accusation against Brannum is correct.",
+    "source_quote": "and an insight check confirms it",
+    "subject": "insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts a healing spell on Zalthir, restoring 15 of the 16 hit points lost from a zombie's bite.",
+    "source_quote": "Gyrgum casts a healing spell to mend Zalthir's severe wounds from the zombie's bite, restoring 15 of the 16 hit points lost",
+    "subject": "healing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has severe wounds from a zombie's bite that are partially healed by Gyrgum.",
+    "source_quote": "Gyrgum casts a healing spell to mend Zalthir's severe wounds from the zombie's bite",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin accuses Brannum Redmarch of dishonesty.",
+    "source_quote": "Thorin calls \"bullshit\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz peers into the water and finds the sunken wrecks of Brannum's lost boats.",
+    "source_quote": "Daz peered over the side into the dark water below and found the grim answer: the sunken wrecks of Brannum's lost boats rested on the lakebed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz observes bodies moving among the sunken wrecks.",
+    "source_quote": "and bodies moved among them, possibly zombies",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is hesitant to set foot on the islet.",
+    "source_quote": "but the party hesitated to set foot on it",
+    "subject": "islet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Mending on the damaged hull of the boat.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull",
+    "subject": "Mending cantrip",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Find Traps on the islet and finds none.",
+    "source_quote": "The curious cleric also cast Find Traps on the islet and found none",
+    "subject": "Find Traps",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The boat's hull was damaged and is mended by Gyrgum.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull",
+    "subject": "boat hull",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken wrecks of Brannum's lost boats are resting on the lakebed.",
+    "source_quote": "the sunken wrecks of Brannum's lost boats rested on the lakebed",
+    "subject": "sunken boats",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Bodies are moving among the sunken wrecks in the water.",
+    "source_quote": "and bodies moved among them, possibly zombies",
+    "subject": "body in water",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The DM suggests the bodies moving in the water are possibly zombies.",
+    "source_quote": "and bodies moved among them, possibly zombies",
+    "subject": "zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Brannum questions the location of the lost crew members if they are dead, as no boat is recovered.",
+    "source_quote": "\"If they're dead, where are they?\" he asked. There were bones, but there was no boat",
+    "subject": "missing crew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "No further attacks have occurred after the initial encounter.",
+    "source_quote": "nothing has attacked again",
+    "subject": "attack status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Mending and Find Traps during the investigation.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull. The curious cleric also cast Find Traps on the islet",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A small chest rests on the lakebed among wreckage.",
+    "source_quote": "Daz spotted a small chest resting on the lakebed",
+    "subject": "lakebed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Several aquatic zombies surround the sunken chest on the lakebed.",
+    "source_quote": "surrounded by the undead",
+    "subject": "aquatic zombies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that floating the chest with Shape Water is too great a stretch of the rules.",
+    "source_quote": "The DM called that a stretch of the rules",
+    "subject": "DM ruling on Shape Water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin volunteers to dive to the chest because someone other than a squishy magic-user should do it.",
+    "source_quote": "\"I'm going to regret this, but, you know, somebody's got to do it.\"",
+    "subject": "Thorin volunteers to dive",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Shield of Faith on Thorin.",
+    "source_quote": "Gyrgum cast Shield of Faith on Thorin",
+    "subject": "Shield of Faith cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz shapes a bubble of breathable air for Thorin.",
+    "source_quote": "Daz shaped a bubble of breathable air",
+    "subject": "Air bubble created",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir creates magical darkness around the dive site.",
+    "source_quote": "Zalthir created magical darkness around the dive site",
+    "subject": "Magical darkness created",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin descends into the water and returns to the surface with the chest without stirring the undead.",
+    "source_quote": "Thorin slipped into the water and descended without making a sound... He returned to the surface with the chest, and not a single zombie had stirred.",
+    "subject": "Thorin retrieves chest",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin successfully retrieved the chest from the lakebed.",
+    "source_quote": "He returned to the surface with the chest",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic zombies remained oblivious to Thorin's dive due to the magical darkness.",
+    "source_quote": "blind the zombies lurking below... while the undead remained oblivious",
+    "subject": "aquatic zombies",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The chest contains 120 silver pieces, 30 gold pieces, four spell scrolls, and a drifting globe of light.",
+    "source_quote": "found 120 silver and 30 gold pieces, four spell scrolls, and a drifting globe of light",
+    "subject": "chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch suggested he deserved a share of the treasure because it belonged to his crew.",
+    "source_quote": "Brannum immediately suggested he deserved a share, since the treasure had belonged to his crew",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rebuffs Brannum by inviting him to argue with the zombies and spraying water around him.",
+    "source_quote": "inviting him to argue it out with the zombies below and twinkling his fingers to send water spraying up around the duergar",
+    "subject": "Daz rebuffs Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Find Traps on the limestone islet and finds no traps.",
+    "source_quote": "Gyrgum... casts Find Traps and finds none",
+    "subject": "Gyrgum casts Find Traps",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses a mending cantrip to repair the boat's hull.",
+    "source_quote": "Gyrgum uses a mending cantrip to repair the boat's hull",
+    "subject": "Gyrgum repairs boat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a driftglobe (drifting globe of light) recovered from the chest.",
+    "source_quote": "a drifting globe of light",
+    "subject": "driftglobe",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is researching whether the driftglobe's Daylight spell dispels Zalthir's Darkness spell, pending determination of Darkness's cast level.",
+    "source_quote": "Daylight dispels darkness from spells of 3rd level or lower, and the DM leaves the question of Darkness's cast level for further research",
+    "subject": "Darkness vs Daylight interaction",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Two more days of paddling pass.",
+    "source_quote": "Two more days of paddling brought them",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum states they are only a day away from Gracklstugh.",
+    "source_quote": "Brannum says they are only a day away",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is within a day of paddling to Gracklstugh.",
+    "source_quote": "within a day of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An enormous aquatic troll surges up alongside the boat.",
+    "source_quote": "an enormous aquatic troll surging up alongside the boat",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notices the aquatic troll just before it attacks.",
+    "source_quote": "Zalthir (22) and Daz (23) notice a large, troll-like creature",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notices the aquatic troll just before it attacks.",
+    "source_quote": "Zalthir (22) and Daz (23) notice a large, troll-like creature",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic troll speaks in the rumbling tongue of giants.",
+    "source_quote": "Speaking in the rumbling tongue of giants",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The aquatic troll demands the party hand over one of their number for a meal.",
+    "source_quote": "it demanded that the party hand over one of their number for a meal",
+    "subject": "troll demand",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM indicates the troll wants something 'live or meaty' despite food potentially satisfying it.",
+    "source_quote": "it wants something 'live or meaty'",
+    "subject": "troll preference",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz suggests giving Brannum to the troll.",
+    "source_quote": "Daz suggested giving it Brannum",
+    "subject": "Daz suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum refuses to toss Brannum to the troll, citing his Neutral Good alignment.",
+    "source_quote": "Gyrgum refused: 'I'm neutral good here. I don't think I can be tossing people to the trolls.'",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin calls for the party to run away from the troll.",
+    "source_quote": "Thorin called for them to run",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar shouts a question about whether anyone has fire.",
+    "source_quote": "Jimjar shouted 'Does anybody have fire?'",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar warns that the troll will regenerate unless burned with fire or acid.",
+    "source_quote": "warned that the creature would simply regenerate from any wound unless it was burned with fire or acid",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Scorching Ray misses the troll.",
+    "source_quote": "Daz's Scorching Ray missed",
+    "subject": "Scorching Ray miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Magic Missiles hit the troll for 9 damage.",
+    "source_quote": "his Magic Missiles hit for 9",
+    "subject": "Magic Missile hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll grabs the boat and pulls it down.",
+    "source_quote": "The troll grabbed the boat and pulled it down",
+    "subject": "troll grabs boat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll rakes Daz with a claw.",
+    "source_quote": "raking Daz with a claw",
+    "subject": "troll claw hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll's bite misses Daz.",
+    "source_quote": "though its bite missed",
+    "subject": "troll bite miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the troll hard enough that it releases the hull.",
+    "source_quote": "Zalthir struck the troll hard enough that it released the hull",
+    "subject": "Zalthir strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his class technique to shove the troll five feet back.",
+    "source_quote": "his class technique shoved it five feet back",
+    "subject": "Zalthir shove",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a Strength of only 8.",
+    "source_quote": "Gyrgum, with a Strength of only 8",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum vomits forth a wave of acid using Tasha's Caustic Brew.",
+    "source_quote": "vomited forth a wave of acid with Tasha's Caustic Brew",
+    "subject": "Tasha's Caustic Brew cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll twists away from the worst of the acid spray.",
+    "source_quote": "the troll twisted away from the worst of it",
+    "subject": "troll dodge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum offers to grow to giant size and help row if they untie him.",
+    "source_quote": "Brannum offered to grow to giant size and help row if they untied him",
+    "subject": "Brannum offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin refuses Brannum's offer to help row.",
+    "source_quote": "Thorin refused",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reasons that freeing Brannum would end with the duergar smashing the boat or killing the party.",
+    "source_quote": "reasoning that it would end with the duergar smashing the boat or killing them all",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and the others throw their backs into the oars to row.",
+    "source_quote": "Thorin and the others threw their backs into the oars",
+    "subject": "party rowing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic troll is singed and frustrated.",
+    "source_quote": "The troll, singed and frustrated",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The aquatic troll sinks back into the dark water.",
+    "source_quote": "sank back into the dark water",
+    "subject": "troll retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic troll grumbles that it had only been trying to help by reducing the number of mouths the party had to feed.",
+    "source_quote": "with a grumbling complaint that it had only been trying to help by reducing the number of mouths the party had to feed",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrives at Gracklstugh, a Duergar city.",
+    "source_quote": "At last, weary and battle-worn, the party arrived at Gracklstugh.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar have no love for the Drow.",
+    "source_quote": "The Duergar had no love for the Drow",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar's draconian laws keep all foreigners in line.",
+    "source_quote": "their draconian laws kept all foreigners in line",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh offers a measure of safety from Drow pursuit.",
+    "source_quote": "offering a measure of safety from any Drow pursuit",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar trade actively with other subterranean and surface races.",
+    "source_quote": "The duergar also traded actively with other subterranean and surface races",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is said to be the ideal place to sell stolen gear and buy better equipment.",
+    "source_quote": "The city's Blade Bazaar was said to be the ideal place to sell stolen gear, buy better equipment",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a place to find traders or explorers heading to the surface world.",
+    "source_quote": "and find traders or explorers heading to the surface world",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum voices concern about the laws against foreigners.",
+    "source_quote": "Gyrgum voiced some concern about those laws against foreigners",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth advises the group to enter Gracklstugh quietly through the docks.",
+    "source_quote": "advised them to enter quietly through the docks",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth warns that it is not the time or place for heroics.",
+    "source_quote": "warned the group that this was \"not the time or place for heroics\"",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth notes that guards guard the doors, not the docks.",
+    "source_quote": "because \"The guards guard the doors, not the docks.\"",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The boats glide toward the dark harbor.",
+    "source_quote": "As the boats glided toward the dark harbor",
+    "subject": "dark harbor",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party discusses what Brannum Redmarch might be worth as a ransom.",
+    "source_quote": "the party also began to discuss what Brannum Redmarch might be worth as a ransom",
+    "subject": "ransom of Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin points out that they never promised to let Brannum Redmarch go.",
+    "source_quote": "Thorin pointed out that they had never promised to let him go",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch tried to sell the party out.",
+    "source_quote": "anyway he had tried to sell them first",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has 27 platinum pieces.",
+    "source_quote": "They also counted up their funds: 27 platinum pieces",
+    "subject": "party funds",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has 1,100 gold pieces.",
+    "source_quote": "and 1,100 gold pieces",
+    "subject": "party funds",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir mistakes their funds for a small fortune in platinum.",
+    "source_quote": "which Zalthir briefly mistook for a small fortune in platinum",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "type": "object",
+    "fact": "The thin gold sheath covering the sarcophagus is worth 250 gold pieces.",
+    "source_quote": "a thin gold sheath covering the sarcophagus worth 250 gold pieces",
+    "subject": "gold sheath value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The invisible chest held 4,000 silver pieces.",
+    "source_quote": "held 4,000 silver pieces",
+    "subject": "silver pieces count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The invisible chest held 1,200 gold pieces.",
+    "source_quote": "1,200 gold pieces",
+    "subject": "gold pieces count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The invisible chest held eleven zircons.",
+    "source_quote": "eleven zircons",
+    "subject": "zircons count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Each zircon in the chest is worth 50 gold.",
+    "source_quote": "eleven zircons worth 50 gold each",
+    "subject": "zircon value",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's sleight of hand modifier is -1.",
+    "source_quote": "Thorin has the worst at -1",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The necklace of fireballs has four beads.",
+    "source_quote": "The necklace has four beads",
+    "subject": "necklace of fireballs beads",
+    "quote_verified": true
+  }
+]

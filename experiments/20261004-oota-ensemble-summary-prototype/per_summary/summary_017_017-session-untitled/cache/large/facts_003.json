@@ -1,0 +1,135 @@
+[
+  {
+    "type": "monster",
+    "fact": "The flumph speaks directly into the minds of those it encounters.",
+    "source_quote": "The small floating creature spoke directly into their minds",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph claims to be a being that feeds on the background psionic energy radiated by evil creatures.",
+    "source_quote": "It introduced itself as a being that fed on the background psionic energy radiated by evil creatures.",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph unleashes a torrent of vivid, distressing psychic visions upon the party.",
+    "source_quote": "the flumph unleashed a torrent of vivid, distressing psychic visions upon them.",
+    "subject": "flumph psychic assault",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sees a vision of a shrine to Demogorgon.",
+    "source_quote": "They saw a shrine to Demogorgon,",
+    "subject": "vision of shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party sees a vision of a broken magical shard being worked upon near a dark obelisk.",
+    "source_quote": "a broken magical shard being worked upon near a dark obelisk,",
+    "subject": "magical shard",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party sees a vision of a stolen red dragon egg being subjected to cruel experiments.",
+    "source_quote": "and a stolen red dragon egg being subjected to cruel experiments.",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph announces that it feels much better after unburdening itself on the party.",
+    "source_quote": "the flumph announced cheerfully that it felt much better, having unburdened itself entirely at the party's expense.",
+    "subject": "flumph relief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin names the flumph's behavior 'trauma dumping'.",
+    "source_quote": "Thorin promptly named the habit: it had \"trauma dumped\" on them.",
+    "subject": "naming of habit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A cave opens off to the south from a bend in the passage.",
+    "source_quote": "A cave opens off to the south",
+    "subject": "natural cave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stealthily scouts ahead with a Stealth roll of 26.",
+    "source_quote": "Zalthir stealthily scouts ahead with a Stealth roll of 26",
+    "subject": "Zalthir scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that his own stealth abilities are essentially non-existent.",
+    "source_quote": "Thorin notes that his own stealth abilities \"are essentially non-existent.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three myconid adults in the cave stand five feet tall.",
+    "source_quote": "Three myconid adults stand five feet tall",
+    "subject": "myconid adults",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The myconid sprouts in the cave are half the height of the adults.",
+    "source_quote": "the sprouts are half that height.",
+    "subject": "myconid sprouts",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One small sprout stands apart from the rest with movement that is not nearly as frantic.",
+    "source_quote": "One small sprout stands apart from the rest, its movement not nearly as frantic.",
+    "subject": "small sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party's myconid friend taught them that myconids do not dance and instead farm and sit around in circles.",
+    "source_quote": "The party recalls what their myconid friend taught them: \"myconids don't dance.\" They farm and sit around in circles.",
+    "subject": "myconid friend",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two larger ape-like creatures in the cave are identified as quaggoth spore servants covered in mushroom growths and yellow mold.",
+    "source_quote": "The scouts identify two larger ape-like creatures as quaggoth spore servants covered in mushroom growths and yellow mold.",
+    "subject": "quaggoth spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to avoid the fungal creatures for now and resume following the trail east.",
+    "source_quote": "The party decides to avoid the fungal creatures for now and flags them to raise with their contacts later. They then resume following the trail east.",
+    "subject": "party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz worries that the myconids could turn the party into spore servants.",
+    "source_quote": "Daz worries they could turn the party into spore servants",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz is reminded that myconids typically have to kill you first to create spore servants.",
+    "source_quote": "and is reminded that \"typically, they have to kill you first.\"",
+    "subject": "spore servant reminder",
+    "quote_verified": true
+  }
+]

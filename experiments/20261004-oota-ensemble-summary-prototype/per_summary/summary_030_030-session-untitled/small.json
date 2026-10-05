@@ -1,0 +1,1542 @@
+[
+  {
+    "type": "location",
+    "fact": "The party ventures deeper into the vast caverns surrounding Neverlight Grove.",
+    "source_quote": "The party ventured deeper into the vast caverns surrounding Neverlight Grove.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The underground landscape is filled with towering, psychedelically colored mushrooms that glow with strange, inviting light.",
+    "source_quote": "filled with towering, psychedelically colored mushrooms that glowed with strange, inviting light",
+    "subject": "cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM introduces a new, larger map to convey the true scale of the area.",
+    "source_quote": "The GM introduced a new, larger map to convey the true scale of the area",
+    "subject": "map swap",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is a surly predator lurking in the rocky, mossy terrain to the south.",
+    "source_quote": "The party ventured deeper into the vast caverns surrounding Neverlight Grove. ... Their quarry was a Grick Alpha, a surly predator lurking in the rocky, mossy terrain to the south.",
+    "subject": "Grick Alpha",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub warns the party that a Shambling Mound also lurks nearby.",
+    "source_quote": "Loobamub warned them that a Shambling Mound also lurked nearby",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub instructs the party to kill the Shambling Mound if found.",
+    "source_quote": "if you do find that, kill it. We don't reanimate shambling mounds.",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Shambling Mound is a massive creature of living swamp matter.",
+    "source_quote": "A Shambling Mound is a massive creature of living swamp matter.",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Shambling Mound does not walk around but flops down as if it were part of a mossy swamp.",
+    "source_quote": "It does not walk around but flops down as if it were part of a mossy swamp.",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz devises a strategy to locate the Shambling Mound by freezing small sections of mossy ground in a checkerboard pattern.",
+    "source_quote": "Daz devised an unusual strategy. Advancing slowly within Shape Water's 30-foot range, he froze small sections of the mossy ground in a checkerboard pattern",
+    "subject": "Daz's strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Shape Water has a range of 30 feet.",
+    "source_quote": "within Shape Water's 30-foot range",
+    "subject": "Shape Water",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Shape Water only freezes water that has no creature in it.",
+    "source_quote": "The spell only freezes water that has no creature in it",
+    "subject": "Shape Water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party advances cautiously toward the Grick Alpha's location.",
+    "source_quote": "The party advanced cautiously",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin takes the lead in the party's formation.",
+    "source_quote": "Thorin in front, \"because that's what he does\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer glowed fiercely in the dark because the magical blade refuses to tolerate the absence of light.",
+    "source_quote": "Dawnbringer glowed fiercely in the dark, since the magical blade refuses to tolerate the absence of light.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposes freezing the mound itself, but the GM rules that cantrips do not work that way.",
+    "source_quote": "Daz first proposes freezing the mound itself. The GM rules that cantrips do not work that way.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz realizes that a patch of ground failing to freeze with Shape Water would reveal the mound.",
+    "source_quote": "Daz then realizes that Shape Water only freezes water with no creature in it, so a patch that fails to freeze would reveal the mound.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the party of the Shambling Mound's resistances.",
+    "source_quote": "Zalthir reminds the party of the mound's resistances.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz considers Magic Missile and Maximilian's Earthen Grasp as follow-up spells.",
+    "source_quote": "Daz considers Magic Missile and Maximilian's Earthen Grasp as follow-ups",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is resistant, not immune, to cold and fire.",
+    "source_quote": "the GM confirms that the mound is only resistant, not immune, to cold and fire",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha is disturbed by the party freezing its surroundings and wakes up.",
+    "source_quote": "The Grick Alpha, disturbed by the party freezing its surroundings, wakes",
+    "subject": "Grick Alpha wakes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha bares its teeth and claws and emerges to confront the party.",
+    "source_quote": "bares its teeth and claws, then emerges to confront them",
+    "subject": "Grick Alpha confronts",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha resembles a great snake with a hooked beak and writhing, talon-tipped tentacles.",
+    "source_quote": "The creature is a grotesque thing resembling a great snake with a hooked beak and writhing, talon-tipped tentacles.",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is described as a surly, cranky, miserable creature.",
+    "source_quote": "The GM describes it as \"a surly, cranky, miserable creature.\"",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is resistant to non-magical bludgeoning, piercing, and slashing damage.",
+    "source_quote": "the party learns that the Grick is resistant to non-magical bludgeoning, piercing, and slashing",
+    "subject": "Grick Alpha",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is not resistant to fire damage.",
+    "source_quote": "The GM confirms that Gricks are not resistant to fire",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is currently dead.",
+    "source_quote": "Thorin's blow finished it as it ran.",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha woke from its surroundings and lunged at the party.",
+    "source_quote": "The party's freezing of its surroundings disturbed it, and it woke, bared its teeth and claws, and lunged toward them",
+    "subject": "Grick Alpha awakening",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir shrouded the Grick Alpha in a sphere of impenetrable magical darkness.",
+    "source_quote": "Zalthir immediately shrouded it in a sphere of impenetrable magical darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir landed unarmed strikes on the Grick Alpha for a total of 29 damage.",
+    "source_quote": "He landed a relentless series of unarmed strikes for 29 damage",
+    "subject": "Zalthir strikes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha resisted Zalthir's Stunning Strike.",
+    "source_quote": "though the Grick shook off his Stunning Strike",
+    "subject": "Zalthir Stunning Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz could not see the Grick Alpha through the magical darkness.",
+    "source_quote": "Daz could not see the creature through the darkness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cast Fireball into the darkness, angling it to avoid allies.",
+    "source_quote": "he trusted his memory of where it stood and angled a fireball to miss his allies",
+    "subject": "Daz Fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha made a DC 15 Dexterity save against Daz's Fireball.",
+    "source_quote": "The Grick makes its DC 15 Dexterity save",
+    "subject": "Grick Alpha Fireball Save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha took 13 damage from Daz's Fireball.",
+    "source_quote": "took only 13 damage, prompting Daz's lament",
+    "subject": "Fireball damage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is Thorin's magical sword.",
+    "source_quote": "Thorin shows off his magical sword Dawnbringer",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer glows with radiant light because it hates the dark.",
+    "source_quote": "who is lit because she hates the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin charged into the battle wielding Dawnbringer.",
+    "source_quote": "Thorin charged in after, Dawnbringer blazing with radiant light",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit the Grick Alpha for 9 radiant damage.",
+    "source_quote": "Rolling with advantage, he hits for 9 radiant damage",
+    "subject": "Thorin hits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit the Grick Alpha for an additional 6 damage.",
+    "source_quote": "and then 6.",
+    "subject": "Thorin second hit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has the ability Tremor Sense.",
+    "source_quote": "Thorin also mentions that his Tremor Sense could help find the other creature.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum attempted to cast Tasha's Caustic Brew on the Grick Alpha.",
+    "source_quote": "he tried to drench it in Tasha's Caustic Brew",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha made a DC 15 Dexterity save against Tasha's Caustic Brew.",
+    "source_quote": "The Grick makes its DC 15 Dexterity save and takes no damage",
+    "subject": "Gyrgum Brew Save",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stated that half his spells are useless without seeing into magical darkness.",
+    "source_quote": "Gyrgum notes that half his spells are useless without a way to see into magical darkness",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum could not use Guiding Bolt due to lack of line of sight.",
+    "source_quote": "Gyrgum could not use Guiding Bolt without line of sight",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir identified the Grick as a treasure-hoarding creature.",
+    "source_quote": "Zalthir points out that there is a treasure-hoarding creature right here",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha missed Thorin with its attacks due to disadvantage from darkness.",
+    "source_quote": "the darkness gives it disadvantage and it misses wildly",
+    "subject": "Grick Alpha attack Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha missed all three of its attacks against Zalthir.",
+    "source_quote": "The Grick turns on Zalthir (AC 16) and misses again: all three of its attacks miss",
+    "subject": "Grick Alpha attack Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha attempted to flee the battle.",
+    "source_quote": "attempted to flee the battle",
+    "subject": "Grick Alpha flee attempt",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir struck the fleeing Grick Alpha for 13 damage.",
+    "source_quote": "Zalthir's attack of opportunity hit for 13",
+    "subject": "Zalthir attack of opportunity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin killed the fleeing Grick Alpha.",
+    "source_quote": "Thorin's blow finished it as it ran",
+    "subject": "Thorin kill shot",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party harvested the Grick Alpha's tough, camouflaged hide.",
+    "source_quote": "The party harvested the creature's tough, camouflaged hide",
+    "subject": "Grick hide",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Grick hide can be fashioned into a cloak granting advantage when hiding in rocky terrain.",
+    "source_quote": "could be fashioned in six days into a cloak granting advantage when hiding in rocky terrain",
+    "subject": "Grick cloak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits the fleeing Grick Alpha with an attack of opportunity for 13 damage.",
+    "source_quote": "Zalthir's attack of opportunity (with advantage) hits for 13",
+    "subject": "Grick Alpha attack of opportunity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills the Grick Alpha.",
+    "source_quote": "Thorin's attack kills it",
+    "subject": "Grick Alpha death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Grick Alpha is dead.",
+    "source_quote": "Thorin's attack kills it",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum observes the piles of \"acid soup\" left around the battlefield and pulls out his toothbrush.",
+    "source_quote": "Gyrgum observes the piles of \"acid soup\" left around the battlefield and pulls out his toothbrush",
+    "subject": "Gyrgum hygiene",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party harvests the hide of the Grick Alpha.",
+    "source_quote": "The party harvests the hide of the Grick Alpha",
+    "subject": "Grick Alpha hide",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party plans to craft the Grick Alpha hide into a cloak for stealth in rocky terrain, which will be ready after six days.",
+    "source_quote": "planning to craft it into a cloak for stealth in rocky terrain. The cloak will be ready after six days",
+    "subject": "Grick hide cloak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirms that the party only committed to killing the Grick, not the Shambling Mound.",
+    "source_quote": "Zalthir asks whether the party ever committed to killing the Shambling Mound. The GM confirms that they only committed to the Grick",
+    "subject": "Commitment check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz learns via an Arcana check that while Shambling Mounds have no treasure, their vines are valued for crafting magical items, especially ropes.",
+    "source_quote": "Daz's Arcana check reveals that their vines are valued in various communities for crafting magical items, especially ropes",
+    "subject": "Arcana check on Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is where Jimjar's crew is headed.",
+    "source_quote": "Blingdenstone, where Jimjar's crew is headed",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar's crew is headed to Blingdenstone.",
+    "source_quote": "Blingdenstone, where Jimjar's crew is headed",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to hunt the Shambling Mound motivated by the potential crafting value of its vines.",
+    "source_quote": "Motivated by the potential crafting value, the party decides to hunt the Shambling Mound",
+    "subject": "Shambling Mound hunt decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz asks \"can I restart my sunk your battleship?\" during the decision to hunt.",
+    "source_quote": "Daz asks, \"can I restart my sunk your battleship?\"",
+    "subject": "Daz question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz resumes freezing sections of the swamp in a checkerboard pattern.",
+    "source_quote": "Daz resumes freezing sections of the swamp in a checkerboard pattern",
+    "subject": "Daz freezes swamp",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hits the Shambling Mound while working his way across the lake.",
+    "source_quote": "eventually hits the creature while working his way across the lake",
+    "subject": "Daz hits Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum comments on Daz's patience during the freezing process.",
+    "source_quote": "Gyrgum comments, \"You have a lot of patience, Daz.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rolls initiative for a new engagement after locating the Shambling Mound.",
+    "source_quote": "The party locates the Shambling Mound near a pool of water and rolls initiative for a new engagement",
+    "subject": "Initiative rolled",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir is warned that the Shambling Mound likes to grab people and shove them under.",
+    "source_quote": "Zalthir closed in along the shore after being warned that the mound likes to grab people and shove them under",
+    "subject": "Zalthir warns party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir opens the combat with a critical hit.",
+    "source_quote": "He opened with a critical hit",
+    "subject": "Zalthir critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stuns the Shambling Mound with a well-placed strike.",
+    "source_quote": "stunned the massive creature with a well-placed strike",
+    "subject": "Zalthir stun",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is stunned by Zalthir.",
+    "source_quote": "stunned the massive creature with a well-placed strike",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts three scorching rays that all hit the Shambling Mound.",
+    "source_quote": "Daz followed with three scorching rays, all of which hit",
+    "subject": "Daz scorching rays",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound's resistance halved the damage from Daz's scorching rays.",
+    "source_quote": "the creature's resistance halved the damage",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum invokes Spirit Guardians.",
+    "source_quote": "Gyrgum then invoked Spirit Guardians",
+    "subject": "Gyrgum Spirit Guardians",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Spirit Guardians summons spectral platinum dragons that swirl in a 15-foot radius around Gyrgum.",
+    "source_quote": "summoning spectral platinum dragons that swirled around him in a 15-foot radius",
+    "subject": "Spirit Guardians summons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum spares Thorin and Zalthir from the effects of Spirit Guardians.",
+    "source_quote": "He spared Thorin and Zalthir from their effects",
+    "subject": "Spirit Guardians sparing",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A body of water about 10 feet deep lies between the party and the mound and costs half speed to cross.",
+    "source_quote": "A body of water about 10 feet deep lies between the party and the mound and costs half speed to cross",
+    "subject": "body of water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir closes in along the shore to engage the Shambling Mound directly.",
+    "source_quote": "Zalthir closes in along the shore to engage the Shambling Mound directly",
+    "subject": "Zalthir closes in",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands a critical hit on the Shambling Mound for 18 damage.",
+    "source_quote": "He lands a critical hit for 18",
+    "subject": "Zalthir critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir succeeds on a Stunning Strike against the Shambling Mound, stunning it.",
+    "source_quote": "His Stunning Strike (DC 13 Constitution) succeeds, and the mound is stunned",
+    "subject": "Zalthir stun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits the stunned Shambling Mound twice more for 8 and 10 damage.",
+    "source_quote": "He follows with two more hits for 8 and 10",
+    "subject": "Zalthir additional hits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir clarifies that his darkness spell can only be moved at the start of his turn.",
+    "source_quote": "Zalthir can only move it at the start of his turn",
+    "subject": "Zalthir darkness limitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes scorching rays at the stunned Shambling Mound with advantage.",
+    "source_quote": "Daz unleashes scorching rays at the stunned creature, with advantage because it is stunned",
+    "subject": "Daz scorching rays",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "All three of Daz's scorching rays hit the Shambling Mound for 6, 10, and 7 damage respectively.",
+    "source_quote": "All three rays hit (15, 25, and 22 to hit) for 6, 10, and 7",
+    "subject": "Daz rays hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound's natural resistance halves the fire damage from Daz's rays to 11.",
+    "source_quote": "but the creature's natural resistance halves the 23 damage to 11",
+    "subject": "Shambling Mound resistance",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is stunned and incapacitated.",
+    "source_quote": "The stunned mound is incapacitated and can take no actions or reactions",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin dashes toward the fight because he is too far away to reach the mound.",
+    "source_quote": "Thorin is too far away to reach it and dashes toward the fight",
+    "subject": "Thorin dash",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum summons spectral spirits resembling platinum dragons that swirl around him in a 15-foot radius.",
+    "source_quote": "Gyrgum moves close and summons spectral spirits resembling platinum dragons that swirl around him in a 15-foot radius",
+    "subject": "Gyrgum summons spirits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum exempts Thorin and Zalthir from his spectral spirit effect.",
+    "source_quote": "He exempts Thorin and Zalthir from the effect",
+    "subject": "Gyrgum exempts allies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound fails its DC 15 Wisdom save against Gyrgum's spirits.",
+    "source_quote": "The mound fails its DC 15 Wisdom save",
+    "subject": "Mound fails save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound takes 13 damage from Gyrgum's spirits.",
+    "source_quote": "takes 13 damage",
+    "subject": "Mound spirit damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound's speed is halved by Gyrgum's spirits.",
+    "source_quote": "and has its speed halved",
+    "subject": "Mound speed reduced",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grapples the Shambling Mound to keep it trapped within Gyrgum's spectral aura.",
+    "source_quote": "Zalthir realizes the combo (\"Suddenly I have a reason to grapple for once\") and grapples the creature as part of an attack to keep it trapped within Gyrgum's spectral aura",
+    "subject": "Zalthir grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits the Shambling Mound for 11 damage.",
+    "source_quote": "He then hits for 11",
+    "subject": "Zalthir hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point to hit the Shambling Mound for 14 and 10 damage.",
+    "source_quote": "and spends a focus point to hit for 14 and 10",
+    "subject": "Zalthir focus point attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz detonates a massive fireball at the Shambling Mound, angling the blast to avoid his allies.",
+    "source_quote": "Daz detonates a massive fireball that further weakens the mossy behemoth, carefully angling the blast to avoid his allies",
+    "subject": "Daz fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz checks the 20-foot radius of the fireball to ensure nobody takes steam damage from melting the lake.",
+    "source_quote": "First he checks the 20-foot radius and asks whether anyone will take steam damage from \"melting the lake\"",
+    "subject": "Daz steam check",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound fails its save against the fireball and takes 12 damage after resistance.",
+    "source_quote": "The mound fails its save and takes 12 after resistance",
+    "subject": "Mound fireball damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is reduced to 9 hit points.",
+    "source_quote": "That blast brought the mound down to 9 hit points",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound retaliates with electrified tendrils.",
+    "source_quote": "The Shambling Mound retaliates with electrified tendrils",
+    "subject": "Mound tendrils",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the Shambling Mound's tendrils misses its target.",
+    "source_quote": "One misses",
+    "subject": "Tendril miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the Shambling Mound's tendrils strikes Zalthir with a discharge of lightning and bludgeoning force for 11 damage.",
+    "source_quote": "one strikes Zalthir with a discharge of lightning and bludgeoning force for 11",
+    "subject": "Tendril hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deflects the bludgeoning portion of the tendril attack.",
+    "source_quote": "Zalthir deflects the bludgeoning portion",
+    "subject": "Zalthir deflect",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir takes only 2 lightning damage from the tendril attack.",
+    "source_quote": "and takes only 2 lightning damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir sends the deflected force \"just upward\" after Gyrgum asks him not to deflect it his way.",
+    "source_quote": "When Gyrgum asks him not to deflect it his way, Zalthir sends it \"just upward\"",
+    "subject": "Zalthir upward send",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that the Shambling Mound cannot engulf the creature grappling it.",
+    "source_quote": "The GM rules that the mound cannot engulf the creature grappling it, since that would effectively end the grapple",
+    "subject": "GM grapple ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound attempts to engulf Thorin and pulls him into its rotting mass.",
+    "source_quote": "The creature attempts to engulf Thorin instead and pulls him into its rotting mass",
+    "subject": "Mound engulfs Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fails the DC 15 Strength save against the Shambling Mound's engulfment.",
+    "source_quote": "Thorin fails the DC 15 Strength save",
+    "subject": "Thorin save fail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is blinded by the Shambling Mound's engulfment.",
+    "source_quote": "is blinded",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin takes 10 damage from being engulfed by the Shambling Mound.",
+    "source_quote": "and takes 10 damage",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin mutters that he has \"smelt better cologne.\"",
+    "source_quote": "muttering that he has \"smelt better cologne\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin manages to struggle free from the Shambling Mound.",
+    "source_quote": "He then manages to struggle free",
+    "subject": "Thorin escapes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound fails its Wisdom save at the end of its turn against the spectral guardians.",
+    "source_quote": "It fails its Wisdom save at the end of its turn",
+    "subject": "Mound final save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound takes 15 radiant damage from the spectral guardians.",
+    "source_quote": "takes 15 damage",
+    "subject": "Mound radiant damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Shambling Mound collapses into a heap of lifeless vines.",
+    "source_quote": "collapses into a heap of lifeless vines",
+    "subject": "Mound death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is dead.",
+    "source_quote": "It fails its Wisdom save at the end of its turn, takes 15 damage, and collapses into a heap of lifeless vines",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A 2d6 roll yields vine material.",
+    "source_quote": "A 2d6 roll yielded enough vine material",
+    "subject": "vine loot roll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The vine material is enough to make six ropes worth 300 gold pieces.",
+    "source_quote": "for six ropes, worth 300 gold pieces",
+    "subject": "vine ropes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that Spirit Guardians is not an infinite-damage hack; a creature takes damage when moved into the emanation and again if it stays there on its turn, saving only once per turn.",
+    "source_quote": "A creature takes damage when it is moved into the emanation and again if it stays there on its turn, and it saves only once per turn",
+    "subject": "Spirit Guardians ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Zalthir plans to drag creatures into the aura and grapple them there, possibly two at a time.",
+    "source_quote": "Zalthir plans to drag creatures into the aura and grapple them there, possibly two at a time",
+    "subject": "Zalthir tactics",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returned to Neverlight Grove.",
+    "source_quote": "The party returned to Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party presented the remains of the Grick Alpha to Basidia.",
+    "source_quote": "presented the remains of the Grick Alpha to Basidia",
+    "subject": "Grick Alpha presented",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Grick Alpha is dead and its hide is in a poor state.",
+    "source_quote": "mildly disappointed at the state of the hide",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia expressed mild disappointment at the state of the Grick Alpha's hide but anticipated an interesting transformation.",
+    "source_quote": "She was mildly disappointed at the state of the hide but mused, \"hmm, this will be an interesting transformation. I can't wait.\"",
+    "subject": "Basidia's reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a Myconid companion of the party.",
+    "source_quote": "their old Myconid companions, Stool and Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a Myconid companion of the party.",
+    "source_quote": "their old Myconid companions, Stool and Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party checked in on Stool and Rumpadump.",
+    "source_quote": "The party checked in on their old Myconid companions, Stool and Rumpadump",
+    "subject": "check-in with Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool declined an offer to go adventuring with the party.",
+    "source_quote": "Gyrgum told them they were welcome to come adventuring, but the pair preferred to stay home",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump declined an offer to go adventuring with the party.",
+    "source_quote": "Gyrgum told them they were welcome to come adventuring, but the pair preferred to stay home",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz considered heading to Blingdenstone.",
+    "source_quote": "Daz wondered whether they should head on to Blingdenstone",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Blingdenstone is a location Daz considered visiting.",
+    "source_quote": "Daz wondered whether they should head on to Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia reminded the party of her promise of magic and treasure in exchange for exploring the Circle of Masters.",
+    "source_quote": "Basidia reminded them that she had promised magic and treasure if they explored the Circle of Masters",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Masters is a location promised to be explored for a reward.",
+    "source_quote": "Basidia reminded them that she had promised magic and treasure if they explored the Circle of Masters",
+    "subject": "Circle of Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia held forth about the circles during a brief rest.",
+    "source_quote": "During a brief rest she held forth about the circles",
+    "subject": "rest and lecture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia led the party to the Circle of Builders.",
+    "source_quote": "She then led them to the Circle of Builders",
+    "subject": "move to Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Builders is a vast cavern featuring terraced irrigation systems and thousands of glowing fungi.",
+    "source_quote": "a vast cavern of terraced irrigation systems and thousands of glowing fungi",
+    "subject": "Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air in the Circle of Builders has a thick, sweet smell.",
+    "source_quote": "that filled the air with a thick, sweet smell",
+    "subject": "Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is a Myconid with intense and obsessive curiosity.",
+    "source_quote": "There they met Gasbide, a Myconid of intense and obsessive curiosity",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is a supporter of Sovereign Phylo.",
+    "source_quote": "and a supporter of Sovereign Phylo",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Sovereign Phylo is the entity Gasbide supports.",
+    "source_quote": "and a supporter of Sovereign Phylo",
+    "subject": "Sovereign Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide immediately began interrogating the party about surface-world architecture.",
+    "source_quote": "He immediately began interrogating the party about surface-world architecture",
+    "subject": "interrogation starts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum described surface buildings as being either tall or big.",
+    "source_quote": "Gyrgum offered that \"we have some that are tall and some that are big\"",
+    "subject": "Gyrgum's answer",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide was not satisfied with Gyrgum's description of buildings.",
+    "source_quote": "which did not satisfy him",
+    "subject": "satisfaction check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide demanded details on shapes, materials, and counts of windows and doors.",
+    "source_quote": "Gasbide demanded shapes, materials, and counts of windows and doors",
+    "subject": "Gasbide's demands",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide was captivated by the word \"window\".",
+    "source_quote": "and was captivated by the unfamiliar word \"window\"",
+    "subject": "window fascination",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjured an illusion of a small surface building.",
+    "source_quote": "Zalthir conjured an illusion of a small surface building",
+    "subject": "illusion cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide was utterly transfixed by Zalthir's illusion.",
+    "source_quote": "and Gasbide was utterly transfixed",
+    "subject": "Gasbide transfixed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide theorized the illusion depicted a building for small people, then concluded the creator was a member of their local circle of builders.",
+    "source_quote": "He wondered whether it was built for small people, then decided that its creator must be a member of the circle of builders in their own community",
+    "subject": "Gasbide's theory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia rolled her eyes during the interaction with Gasbide.",
+    "source_quote": "Meanwhile, Basidia rolled her eyes",
+    "subject": "Basidia's reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide dreams of building a fungal tower greater than Yggmorgus.",
+    "source_quote": "Gasbide revealed that he dreamed of building a fungal tower even greater than Yggmorgus",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Yggmorgus is a colossal mushroom in Neverlight Grove.",
+    "source_quote": "the colossal mushroom of Neverlight Grove",
+    "subject": "Yggmorgus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide hopes his tower will break through the Underdark to the surface world.",
+    "source_quote": "He hoped it would break through the Underdark to the surface world",
+    "subject": "tower ambition",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide asked for a construction that could shield him from the sun.",
+    "source_quote": "He asked for a construction that could shield him from the sun",
+    "subject": "sun shield request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggested \"shade\" as a shield from the sun.",
+    "source_quote": "and Gyrgum helpfully suggested \"shade\"",
+    "subject": "shade suggestion",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz engaged with Gasbide regarding zurkhwood and construction minutiae.",
+    "source_quote": "Daz happily nerded out with him over zurkhwood and construction minutiae",
+    "subject": "Daz's bonding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zurkhwood is a subject of interest for Gasbide and Daz.",
+    "source_quote": "Daz happily nerded out with him over zurkhwood",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide does not understand what Araumycos is, viewing it only as part of a coming celebration.",
+    "source_quote": "Gasbide had no real understanding of what Araumycos was, only that it was part of a great celebration to come",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Araumycos is an entity mentioned by Gasbide in relation to a great awakening.",
+    "source_quote": "possibly with the aid of Araumycos",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gasbide quoted Phylo as promising a great awakening and improvement after a celebration.",
+    "source_quote": "\"Phylo said that there would be a great awakening, that everything will be better after the great celebration.\"",
+    "subject": "Phylo's promise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party noted that Gasbide's words indicated a larger, unsettling plan involving blind faith in Phylo.",
+    "source_quote": "The party noted the unsettling vagueness of his words and the blind faith he placed in Phylo's promises",
+    "subject": "unrest in Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party observed that something far larger than a simple celebration is being planned in Neverlight Grove.",
+    "source_quote": "Something was being planned in Neverlight Grove, and it was far larger than a simple celebration",
+    "subject": "scale of plot",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party harvests vines from the Shambling Mound suitable for crafting enchanted ropes.",
+    "source_quote": "The party harvests magical vines from the Shambling Mound for crafting enchanted ropes.",
+    "subject": "magical vines",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The harvested vines yield six ropes' worth valued at 300 gold pieces.",
+    "source_quote": "A 2d6 roll yields six ropes' worth, valued at 300 gold pieces.",
+    "subject": "magical vines",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The vines are not inherently magical but are useful for creating magical ropes.",
+    "source_quote": "not magical, but they are noted for their usefulness in creating magical ropes.",
+    "subject": "magical vines",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party returns to Neverlight Grove and presents the remains of the Grick Alpha to Basidia.",
+    "source_quote": "The party returns to Neverlight Grove and presents the remains of the Grick Alpha to Basidia.",
+    "subject": "return to Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia expresses mild disappointment that the Grick's hide was harvested.",
+    "source_quote": "Basidia expresses mild disappointment that the Grick's hide was harvested",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia prepares to reanimate the Grick Alpha remains as a fungal servant.",
+    "source_quote": "prepares to reanimate the creature as a fungal servant",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia states she is excited about the transformation of the Grick remains.",
+    "source_quote": "hmm, this will be an interesting transformation. I can't wait.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia offers to show the party other places.",
+    "source_quote": "Basidia offers to show the party other places.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz suggests heading to Blingdenstone.",
+    "source_quote": "Daz raises heading on to Blingdenstone",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia reminds the party of her previous promise of magic and treasure in exchange for exploring the Circle of Masters.",
+    "source_quote": "Basidia reminds them that she had promised magic and treasure in exchange for exploring the Circle of Masters.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is happy and cheering when the party checks on him.",
+    "source_quote": "The party checks on Stool and Rumpadump, who are happy and cheering.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is happy and cheering when the party checks on him.",
+    "source_quote": "The party checks on Stool and Rumpadump, who are happy and cheering.",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool had been kidnapped.",
+    "source_quote": "Stool had been kidnapped",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump had been teleported by a crazed Myconid using a power Thorin refused.",
+    "source_quote": "Rumpadump had been teleported by a crazed Myconid using a power Thorin refused.",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tells Stool and Rumpadump that they are good companions and welcome to adventure with the party.",
+    "source_quote": "Gyrgum tells the two Myconids they are good companions and welcome to adventure with the party.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool prefers to stay home.",
+    "source_quote": "They prefer to stay home",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump prefers to stay home.",
+    "source_quote": "They prefer to stay home",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool tells Gyrgum, 'That's very sweet of you.'",
+    "source_quote": "reply, \"That's very sweet of you.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump tells Gyrgum, 'That's very sweet of you.'",
+    "source_quote": "reply, \"That's very sweet of you.\"",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a short rest to recover their strength and magical energy.",
+    "source_quote": "The party takes a short rest to recover their strength and magical energy.",
+    "subject": "short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia uses the rest period to talk at length about the circles.",
+    "source_quote": "Basidia uses the rest to talk at length about the circles.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia leads the party toward the Circle of Builders.",
+    "source_quote": "Basidia leads the party toward the Circle of Builders.",
+    "subject": "travel to Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Builders features a terraced irrigation system channeled from trickling walls.",
+    "source_quote": "Waters trickling from the walls of this vast cavern are channeled into a crude but effective terraced irrigation system.",
+    "subject": "Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air in the Circle of Builders has a thick, sweet smell from thousands of fungi.",
+    "source_quote": "A thick, sweet smell fills the air from the thousands of fungi of all colors and sizes, many glowing with a strange, inviting light.",
+    "subject": "Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is the leader of the Circle of Builders.",
+    "source_quote": "The party meets Gasbide, leader of the Circle of Builders",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is a supporter of Sovereign Phylo.",
+    "source_quote": "and a supporter of Sovereign Phylo.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide notices that the party is new to the area.",
+    "source_quote": "He notices that they are new",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is intensely curious about surface-world architecture.",
+    "source_quote": "is intensely curious about surface-world architecture.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide asks whether the party is from above.",
+    "source_quote": "Gasbide asks whether the party is from above.",
+    "subject": "question about origins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum answers that the party comes from the 'Great Bright'.",
+    "source_quote": "Gyrgum answers that they come from the \"Great Bright\"",
+    "subject": "Gyrgum's answer",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is fascinated by surface buildings and the concept of windows.",
+    "source_quote": "Gasbide is fascinated by surface buildings and the concept of windows",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide asks what a window is.",
+    "source_quote": "\"What is a window?\"",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia rolls her eyes at Gasbide's enthusiasm.",
+    "source_quote": "Basidia rolls her eyes at Gasbide's enthusiasm.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses a minor illusion to create a scale model of a surface building.",
+    "source_quote": "Zalthir uses a minor illusion to create a scale model of a surface building",
+    "subject": "illusion cast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is fascinated by Zalthir's illusion.",
+    "source_quote": "fascinating Gasbide.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide asks whether the illusion is to scale.",
+    "source_quote": "He asks whether it is to scale",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide notes that the party members do not fit in the buildings in the illusion and asks if they are for small people.",
+    "source_quote": "\"you don't fit in those buildings. Is it for small people?\"",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide asks whether Zalthir, the illusion's creator, is an architect.",
+    "source_quote": "Gasbide asks whether the illusion's creator is an architect.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir answers that he is 'Aspiring' at architecture.",
+    "source_quote": "On hearing \"Aspiring\"",
+    "subject": "Zalthir's answer",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide decides that Zalthir is a member of the circle of builders in his own community.",
+    "source_quote": "he decides that they are a member of the circle of builders in their own community.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide describes several bizarre, elaborate structures he imagines building.",
+    "source_quote": "Gasbide describes several bizarre, elaborate structures he imagines building.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide dreams of building a fungal tower greater than Yggmorgus to break through the Underdark to the surface world.",
+    "source_quote": "Gasbide shares his dream of building a fungal tower greater than Yggmorgus to break through the Underdark to the surface world",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide mentions possibly using Araumycos to aid in building his fungal tower.",
+    "source_quote": "\"possibly with the aid of Araumycos.\"",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that fungus only really grows where it is shaded.",
+    "source_quote": "Daz notes that fungus only really grows where it is shaded.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide asks for a construction to protect him from the sun.",
+    "source_quote": "Gasbide asks for a construction to protect him from the sun",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum identifies the construction to protect from the sun as 'shade'.",
+    "source_quote": "Gyrgum answers, \"Oh, yes, it's called shade.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Gasbide engage in a lengthy, detailed discussion about construction materials.",
+    "source_quote": "Daz and Gasbide engage in a lengthy, detailed discussion about construction materials",
+    "subject": "construction discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide compares surface wood to zurkhwood mushrooms.",
+    "source_quote": "comparing surface wood to zurkhwood mushrooms.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide asks how big a shade should be.",
+    "source_quote": "Gasbide asks how big a shade should be",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide asks how many pieces of wood are needed for a shade.",
+    "source_quote": "and how many pieces of wood it needs.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers a rule of thumb that a shade requires about three zurkhwood mushrooms to the square foot.",
+    "source_quote": "Gyrgum offers a rule of thumb: \"about three zurkhwood mushrooms to the square foot.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide mentions a coming 'Great Awakening' involving something called Araumycos.",
+    "source_quote": "Gasbide mentions a coming \"Great Awakening\" and a celebration involving something called Araumycos",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is unclear on the details of the Great Awakening.",
+    "source_quote": "though he is unclear on the details.",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide knows that Sovereign Phylo promised everything will be better after the great celebration.",
+    "source_quote": "He only knows that Sovereign Phylo has promised everything will be better afterward",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide quotes Sovereign Phylo saying there would be a great awakening where everything will be better afterward.",
+    "source_quote": "\"Phylo said that there would be a great awakening, that everything will be better after the great celebration.\"",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Sovereign Phylo has promised that everything will be better after the Great Awakening.",
+    "source_quote": "Sovereign Phylo has promised everything will be better afterward",
+    "subject": "Sovereign Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The details of the Great Awakening and the celebration involving Araumycos remain unclear.",
+    "source_quote": "Gasbide is unclear on the details.",
+    "subject": "Great Awakening",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Araumycos is involved in the Great Awakening and possibly aiding Gasbide's tower.",
+    "source_quote": "celebration involving something called Araumycos",
+    "subject": "Araumycos",
+    "quote_verified": true
+  }
+]

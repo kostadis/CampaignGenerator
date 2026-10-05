@@ -1,0 +1,289 @@
+[
+  {
+    "type": "npc",
+    "fact": "Rumpadump shouts that they are home and sprints ahead.",
+    "source_quote": "Rumpadump cried \"We're home! We're home! We're home!\" and sprinted ahead with Stool.",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith walks with a quiet, peaceful expression unlike any the party had seen before.",
+    "source_quote": "Sarith walked with a quiet, peaceful expression that none of the party had seen on him before.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir wraps himself in a shroud of darkness because he does not trust the environment.",
+    "source_quote": "Zalthir, ever cautious, wrapped himself in a shroud of darkness, explaining, \"I don't trust any of these things.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is a vast cavern with bioluminescent mushrooms covering every surface and a lake at its heart.",
+    "source_quote": "Neverlight Grove opened before them like a dream. It was a vast cavern where bioluminescent mushrooms covered every surface, floor to ceiling, with a lake at its heart.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is a sovereign of the grove who receives the party warmly.",
+    "source_quote": "The two sovereigns of the grove, Phylo and Basidia, received them warmly",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is a sovereign of the grove who receives the party warmly.",
+    "source_quote": "The two sovereigns of the grove, Phylo and Basidia, received them warmly",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Great Seeder is a figure praised by Phylo who is said to be able to answer any question.",
+    "source_quote": "He praised a figure called the \"Great Seeder,\" who could answer any question",
+    "subject": "Great Seeder",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo refers to the Great Seeder using female pronouns 'she' and 'her'.",
+    "source_quote": "kept calling the entity \"she\" and \"her\".",
+    "subject": "Phylo",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids have no gender.",
+    "source_quote": "because myconids have no gender.",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is observed staring at Phylo in visible discomfort.",
+    "source_quote": "An insight check revealed that Basidia was staring at Phylo in visible discomfort.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia arranges for Phylo to stay behind and leads the tour herself.",
+    "source_quote": "She arranged for Phylo to stay behind and led the tour herself.",
+    "subject": "Basidia takes over tour",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A previous group of 'softers' accepted Phylo's hospitality and were taken to the Garden of Welcome.",
+    "source_quote": "A previous group of \"softers\" had accepted Phylo's hospitality and been taken to the Garden of Welcome.",
+    "subject": "softers",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is a place where a previous group of softers was taken by Phylo.",
+    "source_quote": "been taken to the Garden of Welcome.",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The previous group of softers has not been seen since and Phylo never mentions them again.",
+    "source_quote": "She had not seen them since, and Phylo had never mentioned them again.",
+    "subject": "softers disappearance",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel into the grove is lit by glowing lichen.",
+    "source_quote": "The party enters the grove through a natural tunnel lit by glowing lichen",
+    "subject": "tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel is the only passage fit for easy travel.",
+    "source_quote": "The tunnel is the only passage fit for easy travel; the others are narrow fissures.",
+    "subject": "tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Beyond a ravine, a mushroom tower is glimpsed through mist.",
+    "source_quote": "Beyond a ravine, a mushroom tower is glimpsed through mist.",
+    "subject": "ravine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that the place looks incredible, colorful, and mushroom-y.",
+    "source_quote": "Gyrgum: \"Wow, this place looks incredible! So colorful and mushroom-y.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM likens myconids to 1960s flower people who are chill, communal, and uninterested in conquest.",
+    "source_quote": "The GM likens myconids to 1960s \"flower people\" who are chill, communal, and uninterested in conquest.",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz jokes that it is good the party did not bring pepperoni-mushroom pizzas.",
+    "source_quote": "Daz jokes that it is a good thing the party has not brought any pepperoni-mushroom pizzas.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool sprints ahead with Rumpadump to greet the sovereigns.",
+    "source_quote": "Rumpadump cried \"We're home! We're home! We're home!\" and sprinted ahead with Stool.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum follows at a distance to watch how the sprouts interact with Phylo and Basidia.",
+    "source_quote": "Gyrgum follows at a distance to watch how the sprouts interact with Phylo and Basidia.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz climbs onto high ground to observe.",
+    "source_quote": "Daz climbs onto high ground to observe.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth decides Thorin is crazy for following and stands next to Daz.",
+    "source_quote": "Eldeth decides Thorin is \"crazy\" for following, and she stands next to Daz instead.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is referenced by Eldeth as being crazy for following.",
+    "source_quote": "Eldeth decides Thorin is \"crazy\" for following",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar walks over with the group.",
+    "source_quote": "Jimjar and Sarith walk over with the group.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir maintains a protective orb of darkness around himself.",
+    "source_quote": "Zalthir maintains a protective orb of darkness around himself",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sovereign Phylo and Sovereign Basidia welcome the party for returning the young myconids.",
+    "source_quote": "The party meets Sovereign Phylo and Sovereign Basidia, who welcome them for returning the young myconids.",
+    "subject": "Phylo and Basidia welcome party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool states that Thorin carried him when he was tired.",
+    "source_quote": "Stool asks where Zalthir is and adds that \"Thorin carried me when I was tired.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo speaks of a 'day of joy' and a 'great celebration' occurring soon.",
+    "source_quote": "Phylo speaks of a 'day of joy' and a 'great celebration' occurring soon",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo offers a tour of the grove but says the Circle of Masters will be visited the following day.",
+    "source_quote": "offers a tour of the grove but says the Circle of Masters will only be visited the following day.",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Masters is a place in the grove that Phylo says will be visited the following day.",
+    "source_quote": "says the Circle of Masters will only be visited the following day.",
+    "subject": "Circle of Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo addresses the party as 'friendly softers'.",
+    "source_quote": "He addresses them as \"friendly softers.\"",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith advises the party to stay on the sovereign's good side.",
+    "source_quote": "Sarith advises staying on the sovereign's good side.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he plans to praise whatever the sovereign shows them.",
+    "source_quote": "Gyrgum replies, \"Oh, I'm planning to praise the heck out of whatever he shows us.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo describes the Great Seeder as all-knowing, wise, and able to answer any question.",
+    "source_quote": "Phylo describes the Great Seeder, who lives beyond the garden, as all-knowing, wise, and able to answer any question.",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Great Seeder lives beyond the garden.",
+    "source_quote": "the Great Seeder, who lives beyond the garden",
+    "subject": "garden",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Arcana/Nature check results in a 12, or 23 with help.",
+    "source_quote": "Daz's Arcana/Nature check comes to 12, and 23 with help.",
+    "subject": "Daz insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's insight check of 18 reveals Basidia looking uncomfortable at Phylo.",
+    "source_quote": "Gyrgum's insight check of 18 catches Basidia looking uncomfortable at Phylo.",
+    "subject": "Gyrgum insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo affirms that Basidia is his sovereign and co-equal in all things.",
+    "source_quote": "Phylo replies, \"Yes, Basidia, you are my sovereign and co-equal in all things.\"",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum and Zalthir trade jokes about 'two-in-the-box' management.",
+    "source_quote": "Gyrgum and Zalthir trade jokes about \"two-in-the-box\" management.",
+    "subject": "two-in-the-box joke",
+    "quote_verified": true
+  }
+]

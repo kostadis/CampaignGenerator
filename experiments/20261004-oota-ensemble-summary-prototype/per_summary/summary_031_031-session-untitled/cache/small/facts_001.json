@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin's player returned after an absence, and the party confirmed Thorin was still alive.",
+    "source_quote": "When Thorin's player returned... confirms that his character is still alive",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia occasionally determined Thorin's actions at random in the absence of his player.",
+    "source_quote": "his companions admit that Basidia has occasionally determined his actions at random",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a legendary sunblade with a gilded longsword hilt.",
+    "source_quote": "Dawnbringer, a gilded longsword that could conjure a blade of pure radiance from its hilt",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is sentient and possesses a kind feminine voice.",
+    "source_quote": "It was sentient, possessed of a kind feminine voice",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer fears the darkness with a desperate, anxious intensity.",
+    "source_quote": "It feared the darkness with a desperate, anxious intensity",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer fears being left alone.",
+    "source_quote": "it feared being left alone even more",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is deeply scarred by millennia spent trapped in the dark.",
+    "source_quote": "deeply scarred by millennia spent trapped in the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer deals radiant damage instead of slashing damage.",
+    "source_quote": "inflicted radiant rather than slashing damage",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer deals additional damage to undead.",
+    "source_quote": "dealt additional damage to undead",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer can cast lesser restoration once per day.",
+    "source_quote": "could cast lesser restoration once each day",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a plus-two weapon.",
+    "source_quote": "Dawnbringer was a plus-two weapon",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The plus-two status of Dawnbringer is inherited from its underlying sunblade properties.",
+    "source_quote": "this is inherited from its underlying sunblade properties rather than clearly displayed in its description",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer emits genuine sunlight that is effective against light-sensitive Underdark creatures.",
+    "source_quote": "Its light was genuine sunlight \u2014 a tremendous advantage against the light-sensitive creatures of the Underdark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir's magical darkness can extinguish Dawnbringer's light.",
+    "source_quote": "but Zalthir's magical darkness could still extinguish it",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer may attempt to charm Thorin if he rushes into magical darkness.",
+    "source_quote": "may attempt to charm Thorin if he rushes into magical darkness",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer remains aware that it is trying to shine even when suppressed by magical darkness.",
+    "source_quote": "though the sword remains aware that it is trying to shine",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attunes to Dawnbringer.",
+    "source_quote": "Thorin attunes to Dawnbringer",
+    "subject": "Thorin attunes to Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Dawnbringer came to an uneasy understanding and arranged partnership.",
+    "source_quote": "Thorin and Dawnbringer came to an uneasy understanding, a kind of arranged partnership neither had asked for, but both seemed willing to honor",
+    "subject": "Dawnbringer bond",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a negative charisma modifier.",
+    "source_quote": "Thorin, whose charisma was notably poor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asked Dawnbringer to guide him through the sword's reactions as they occur.",
+    "source_quote": "Thorin accepts the arrangement and asks to be guided through Dawnbringer's reactions as they occur: \u201cLead me through it as we go.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin accepted the risk of Dawnbringer attempting to take control of him in darkness.",
+    "source_quote": "Thorin... accepted the risk: \u201cI mean, no, we're bonded at this point.\u201d",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Dawnbringer may feel neglected if Thorin stops carrying it or begins using another weapon.",
+    "source_quote": "Dawnbringer may feel neglected if Thorin stops carrying it or begins using another weapon",
+    "subject": "Dawnbringer neglect",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party joked that Thorin behaves randomly enough without the intelligent sword's influence.",
+    "source_quote": "The party jokes that Thorin already behaves randomly enough without an intelligent weapon influencing him",
+    "subject": "Thorin randomness",
+    "quote_verified": true
+  }
+]

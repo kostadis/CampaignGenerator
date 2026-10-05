@@ -1,0 +1,233 @@
+[
+  {
+    "type": "location",
+    "fact": "The southern passage opens into a large cavern filled with oozes.",
+    "source_quote": "The southern passage opens into a cavern containing more oozes than the party has ever seen",
+    "subject": "southern passage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The cavern contains more oozes than the party has ever seen.",
+    "source_quote": "more oozes than the party has ever seen",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party determines that engaging the oozes directly would result in a total party kill.",
+    "source_quote": "engaging them directly would kill the entire party",
+    "subject": "combat analysis",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sickening green slime coats the walls and drips throughout the cave.",
+    "source_quote": "Sickening green slime coats the walls and drips throughout the cave",
+    "subject": "ooze cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A large spherical structure stands at the center of the cavern, elevated on stone pillars.",
+    "source_quote": "A large spherical structure stands at the cavern\u2019s center, elevated from the floor on stone pillars.",
+    "subject": "central structure",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Dozens of oozes crawl around the pillars, reaching with grasping pseudopods.",
+    "source_quote": "Dozens of living oozes crawl around the pillars, heaving forward and reaching with grasping pseudopods.",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Black, yellow, and gray slime swirl together on the central sphere.",
+    "source_quote": "Black slime swirls together with yellow and gray slime across the sphere in a \u201cdisgusting soup.\u201d",
+    "subject": "slime mixing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The patterns of the slime strain the observers' eyes and minds.",
+    "source_quote": "The slime\u2019s unearthly patterns strain the observers\u2019 eyes and tug at their minds.",
+    "subject": "mental strain",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A disembodied voice calls to the visitors and proclaims the coming of the Faceless Lord.",
+    "source_quote": "A disembodied voice calls, \u201cWhat\u2019s this? What\u2019s this, visitors?\u201d and proclaims the coming of the \u201cFaceless Lord\u201d",
+    "subject": "disembodied voice",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The assembled oozes call to Glabbagool, urging him to join them.",
+    "source_quote": "The assembled oozes call to Glabbagool and urge him to join them.",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool rejects the oozes' invitation, stating he does not like them because there is something not nice about them.",
+    "source_quote": "Glabbagool rejects the invitation: \u201cOh, I like you guys. I\u2019m not quite sure that I like these guys. There\u2019s something not nice about them.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool identifies that the oozes are weird because they are talking.",
+    "source_quote": "He identifies the fundamental wrongness of the situation: \u201cOozes don\u2019t talk. Something\u2019s weird.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees that the talking oozes cannot be trusted.",
+    "source_quote": "The party agrees that Glabbagool is a welcome exception but that the other talking oozes cannot be trusted.",
+    "subject": "party consensus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls that Juiblex is known as the Faceless Lord.",
+    "source_quote": "Gyrgum recalls that Juiblex is known as the Faceless Lord.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party remembers a ghost's explanation that devils make contracts while demons infuse people or objects with power to spread chaos.",
+    "source_quote": "The party remembers a ghost\u2019s explanation that devils make contracts, while demons infuse people or objects with power to spread chaos and mayhem.",
+    "subject": "memory recall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concludes that Juiblex is not physically present and is acting through a proxy.",
+    "source_quote": "the party concludes that Juiblex is not physically present and is instead acting through a proxy.",
+    "subject": "strategic deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cavern resembles an attractant or gathering point for oozes rather than a creation site.",
+    "source_quote": "The cavern resembles an attractant or gathering point for oozes rather than necessarily being the place where they are created.",
+    "subject": "ooze cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concludes that a separate controlling intelligence is nearby.",
+    "source_quote": "the oozes are both an immediate hazard and evidence of a separate controlling intelligence somewhere nearby.",
+    "subject": "threat assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz summons a bat familiar to navigate darkness and caves via echolocation.",
+    "source_quote": "Daz summons a bat familiar, choosing that form for its ability to navigate darkness and caves by echolocation.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz names his bat familiar Batman.",
+    "source_quote": "Daz names the familiar Batman.",
+    "subject": "Batman",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz can communicate telepathically with Batman within one hundred feet.",
+    "source_quote": "Within one hundred feet, Daz can communicate telepathically with Batman and perceive through his senses",
+    "subject": "familiar abilities",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Batman scouts north and finds an abandoned gnomish settlement.",
+    "source_quote": "Batman first searches north and finds abandoned remnants of a gnomish settlement where no one has lived for some time.",
+    "subject": "scouting north",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Batman finds caves with dripping water and scattered oozes moving over surfaces.",
+    "source_quote": "Farther on, he finds caves filled with dripping water and scattered oozes moving over the walls and floors.",
+    "subject": "scouting further north",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A fungal wall has been destroyed, and the wreckage beyond has been scoured clean by oozes.",
+    "source_quote": "A once-standing fungal wall or partition has been destroyed, and the wreckage beyond it has been scoured clean by oozes.",
+    "subject": "destroyed fungal wall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz directs Batman through the branches using a breadth-first search.",
+    "source_quote": "Daz directs Batman through the branches in a breadth-first search",
+    "subject": "scouting method",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Phosphorescent lichen illuminates a cave covered in pools of green slime in the southwestern branch.",
+    "source_quote": "In the southwestern branch, phosphorescent lichen illuminates a cave covered in pools of green slime.",
+    "subject": "southwestern branch",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Slime clings to the ceiling and hangs from the walls in the southwestern branch cave.",
+    "source_quote": "More slime clings to the ceiling and hangs from the walls in hideous drapes.",
+    "subject": "southwestern branch",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A slime-covered throne stands in the middle of the southwestern branch chamber, facing east.",
+    "source_quote": "A slime-covered throne stands in the middle of the chamber, facing east.",
+    "subject": "slime-covered throne",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A small gnome sits on the throne, holding court in an insane manner.",
+    "source_quote": "A small gnome sits on the throne and holds court \u201cin the insane way an insane madman holds court.\u201d",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome speaks eagerly about cleansing Blingdenstone and declares himself the Pudding King and king of Blingdenstone.",
+    "source_quote": "He speaks eagerly about cleansing Blingdenstone of everyone who has irritated him and declares that he is the Pudding King and will become king of Blingdenstone.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool and the party recognize the gnome's voice as the one heard in the main ooze cavern.",
+    "source_quote": "Glabbagool and the party recognize his voice as the one heard in the main ooze cavern.",
+    "subject": "voice recognition",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King commands hundreds of oozes, making him dangerously difficult to approach despite his appearance.",
+    "source_quote": "The Pudding King himself does not appear especially dangerous, but his command of hundreds of oozes makes approaching him extraordinarily perilous.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz receives inspiration for the successful reconnaissance of the Pudding King.",
+    "source_quote": "Daz receives inspiration for the successful reconnaissance.",
+    "subject": "Daz's inspiration",
+    "quote_verified": true
+  }
+]

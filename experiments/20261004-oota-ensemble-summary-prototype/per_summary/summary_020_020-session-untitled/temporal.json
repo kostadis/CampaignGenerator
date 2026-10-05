@@ -1,0 +1,261 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldeth is down to four hit points after taking 12 points of damage.",
+    "source_quote": "Eldeth takes 12 points of damage and is down to four hit points.",
+    "subject": "Eldeth HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 against AC 16 with disadvantage, resulting in a miss.",
+    "source_quote": "rolling a 15 against AC 16 \u2014 a miss.",
+    "subject": "Thorin attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin hits derro #6 for 9 damage.",
+    "source_quote": "he hits derro #6 for 9",
+    "subject": "derro #6 damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A party helper hits the spectator for 10 damage.",
+    "source_quote": "One of the helpers hits the spectator for 10.",
+    "subject": "spectator damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Daz's earthen hand deals 16 damage to the spectator.",
+    "source_quote": "16 damage; the spectator is restrained",
+    "subject": "spectator damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An enemy crossbowman hits Gyrgum for six damage.",
+    "source_quote": "one hits Gyrgum for six",
+    "subject": "Gyrgum damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Plinki is killed by Zalthir's breath attack.",
+    "source_quote": "successfully killing Plinki",
+    "subject": "Plinki status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Plinki is dead, killed by Zalthir's breath attack.",
+    "source_quote": "successfully killing Plinki",
+    "subject": "Plinki status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Enemies other than Plinki take one or two points of damage from the breath attack.",
+    "source_quote": "others take one or two points",
+    "subject": "enemies damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Sentinel opportunity attack deals 7 damage to the derro Master Thief.",
+    "source_quote": "Thorin takes a Sentinel opportunity attack for 7",
+    "subject": "Thorin opportunity attack damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost takes 13 damage from the Master Thief's hits after halving for resistance to non-magical attacks.",
+    "source_quote": "the ghost's resistance to non-magical attacks halves it to 13",
+    "subject": "Ghost damage after resistance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes 6 damage and fails a DC 9 Strength save, being knocked prone.",
+    "source_quote": "Six damage; Gyrgum fails a DC 9 Strength save and is knocked prone",
+    "subject": "Gyrgum prone knockdown",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 5 damage to the Master Thief after rerolling a 1 on a d6 damage die.",
+    "source_quote": "Rerolls a 1 on a d6 damage die for 5 more",
+    "subject": "Zalthir grapple damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief takes 6 damage from being dropped off the ledge.",
+    "source_quote": "drops him off the ledge again for 6",
+    "subject": "Zalthir ledge drop damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Master Thief has an Armor Class of 16.",
+    "source_quote": "miss against AC 16",
+    "subject": "Master Thief AC",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Caustic Brew spell deals five damage each to two Derro targets.",
+    "source_quote": "he rolls 4 and 6 and takes \"the mean\" \u2014 five each",
+    "subject": "Caustic Brew damage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Master Thief has 30 hit points before Thorin's final blow.",
+    "source_quote": "Told the thief still has 30 hit points",
+    "subject": "Master Thief HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the Master Thief for 13 damage.",
+    "source_quote": "Thorin hits him for 13",
+    "subject": "Thorin final blow damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fails a DC 9 Strength save and is knocked prone again, taking 1 point of damage.",
+    "source_quote": "Another failed DC 9 Strength save; only one hit lands, for a single point",
+    "subject": "Gyrgum second prone knockdown",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ledge from which the Derro was pushed is ten feet high.",
+    "source_quote": "pushed him off a ten-foot ledge",
+    "subject": "Derro ledge height",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The red dragon egg is secured in the party's possession.",
+    "source_quote": "the stolen red dragon egg safely in their possession",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Play is paused until after the 13th.",
+    "source_quote": "play paused until after the 13th",
+    "subject": "session break duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes three points of damage from a later hit.",
+    "source_quote": "A later hit lands for three",
+    "subject": "Gyrgum hit damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack deals 11 damage.",
+    "source_quote": "Thorin's OA deals 11",
+    "subject": "Thorin OA damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief deals 17 damage to the ghost.",
+    "source_quote": "the thief hits the ghost for 17",
+    "subject": "Master Thief damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro takes 10 damage from being struck, and the fall damage roll is a 6.",
+    "source_quote": "10 damage plus an unconditional push; the fall's d6 rolls a 6",
+    "subject": "Derro fall damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost is at 15 hit points.",
+    "source_quote": "the ghost is at 15 hit points",
+    "subject": "ghost hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 12 damage to a Derro.",
+    "source_quote": "12 damage",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party helpers hit the spy for four damage.",
+    "source_quote": "hit the spy once for four",
+    "subject": "spy damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spy takes 8 damage while restrained.",
+    "source_quote": "The spy is restrained and takes 8",
+    "subject": "spy restrained damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three Derro swing at Thorin.",
+    "source_quote": "Three Derro swing at Thorin",
+    "subject": "Derro attack count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grabs and kills two more Derro.",
+    "source_quote": "Zalthir grabs and kills two more Derro",
+    "subject": "Derro kill count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost's fly speed is 40 feet.",
+    "source_quote": "Fly speed 40 feet",
+    "subject": "ghost fly speed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost's possession attempt requires a DC 13 Charisma save.",
+    "source_quote": "DC 13 Charisma save fails",
+    "subject": "ghost possession save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace hits for three damage.",
+    "source_quote": "mace hits despite disadvantage, for three",
+    "subject": "Gyrgum mace damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals nine damage to the last Derro.",
+    "source_quote": "Thorin then kills the last Derro for nine",
+    "subject": "last Derro damage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The GM's family Santorini house was bought 70 years ago.",
+    "source_quote": "bought by his grandfather 70 years ago",
+    "subject": "Santorini house age",
+    "quote_verified": true
+  }
+]

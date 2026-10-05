@@ -1,0 +1,156 @@
+[
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is a plateau rising high above the rest of the grove, screened by towering zurkhwood stalks.",
+    "source_quote": "The Garden of Welcome was a nightmare made real. The plateau rose high above the rest of the grove, screened by towering zurkhwood stalks",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party enters the Garden of Welcome through Rumpadump's secret route.",
+    "source_quote": "The party enters through Rumpadump's secret route",
+    "subject": "party enters Garden",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The garden is illuminated only by a few glowing mushrooms along the edge.",
+    "source_quote": "Only a few glowing mushrooms along the edge provide light.",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Heads of creatures from a dozen different Underdark races peek from the soil with bodies consumed by mold.",
+    "source_quote": "the heads of creatures from a dozen different Underdark races peeked from the soil, their bodies consumed by mold",
+    "subject": "consumed heads",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is a drow woman whose face is half-rotted and blooming with tiny fungi.",
+    "source_quote": "a drow woman named Xinaya, her face half-rotted and blooming with tiny fungi",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya raises a spider medallion embedded in the fungal mass that had once been her hand.",
+    "source_quote": "who raised a spider medallion embedded in the fungal mass that had once been her hand",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya begs the party to end her suffering.",
+    "source_quote": "She begged the party in desperate, broken words to end her suffering",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya warns the party that Zuggtmoy is present.",
+    "source_quote": "warned that Zuggtmoy, the Lady of Decay, was present.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya laughs hysterically at the reversal of fortune because she must beg the party for salvation.",
+    "source_quote": "Xinaya recognized the party and laughed hysterically at the reversal of fortune: she had been sent by Ilvara to search for and capture them near the grove, only to find herself begging those same fugitives for salvation.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya was part of a patrol sent by Ilvara to search near the grove and capture the party.",
+    "source_quote": "She reveals she was part of a patrol sent by Ilvara to search near the grove and capture the party.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ilvara had reserved the privilege of killing the fugitives for herself.",
+    "source_quote": "Ilvara had reserved the privilege of killing the fugitives for herself.",
+    "subject": "Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya and her patrol accepted Phylo's invitation to visit the Garden of Welcome.",
+    "source_quote": "She and her patrol had made the fatal mistake of accepting Phylo's invitation to visit the Garden of Welcome.",
+    "subject": "patrol trap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya recognizes Daz as being from Menzoberranzan.",
+    "source_quote": "She urged Daz, whom she recognized as being from Menzoberranzan",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya urges Daz to warn the other Drow that the Demon Queen of Fungi had entered the Underdark.",
+    "source_quote": "warn the other Drow that the Demon Queen of Fungi had entered the Underdark.",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is a disgusting larval creature with vestigial fungal growths suggesting it was once a myconid.",
+    "source_quote": "a disgusting larval creature named Yestabrod rises from the ground, its vestigial fungal growths suggesting that it might once have been a myconid.",
+    "subject": "Yestabrod",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod speaks both aloud and in the party's minds.",
+    "source_quote": "Yestabrod speaks both aloud and in the party's minds, gurgling and spitting as it welcomes them.",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod welcomes the party to a wedding rehearsal.",
+    "source_quote": "It welcomed the party to a wedding rehearsal in a gurgling voice",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod promises the party will be embraced by the 'great cedar' and made one with the 'great body'.",
+    "source_quote": "Yestabrod promises that the \u201cgreat cedar\u201d will embrace them and make them one with her chosen, the \u201cgreat body.\u201d",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two adult myconids emerge to join Yestabrod.",
+    "source_quote": "Two adult myconids and drow spore servants from Xinaya's former patrol emerged to join it.",
+    "subject": "myconid adults",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Drow spore servants from Xinaya's former patrol emerge to join Yestabrod.",
+    "source_quote": "drow spore servants from Xinaya's former patrol emerged to join it.",
+    "subject": "drow spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod rejects the party's attempt to invoke an audit, stating there will be no audit.",
+    "source_quote": "Yestabrod rejected the ploy: there would be no audit",
+    "subject": "audit rejection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod summons the spore servants and myconids to attack the party.",
+    "source_quote": "Yestabrod summons drow spore servants from Xinaya's former patrol and myconid adults to attack the party.",
+    "subject": "attack initiation",
+    "quote_verified": true
+  }
+]

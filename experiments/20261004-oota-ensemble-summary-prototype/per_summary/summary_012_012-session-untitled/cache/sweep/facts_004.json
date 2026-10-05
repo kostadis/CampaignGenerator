@@ -1,0 +1,128 @@
+[
+  {
+    "type": "location",
+    "fact": "Gyrgum haggles for scrolls in the Blade Bazaar.",
+    "source_quote": "While Gyrgum haggled for his scrolls",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A merchant breaks off mid-sale to threaten to kill Gyrgum.",
+    "source_quote": "the merchant broke off mid-sale to threaten to kill him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum senses there is something off about the second duergar merchant he sees behaving oddly.",
+    "source_quote": "Gyrgum rolls Insight (15) and senses \"there's something off.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders if the merchants are talking to invisible duergar.",
+    "source_quote": "Gyrgum wonders whether they are talking to invisible duergar.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks if the merchants see into the Ethereal Plane like seeing dead people.",
+    "source_quote": "Is it like they see dead people?\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "One duergar merchant consults a twin brother who does not exist.",
+    "source_quote": "One duergar merchant kept consulting a twin brother who did not exist.",
+    "subject": "duergar merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One duergar merchant quotes wildly different prices from moment to moment, insisting the buyers change the terms.",
+    "source_quote": "Others quoted wildly different prices for the same goods from one moment to the next, insisting it was the buyers who kept changing the terms.",
+    "subject": "duergar merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One duergar merchant turns completely invisible mid-transaction but continues speaking.",
+    "source_quote": "one merchant turned completely invisible in the middle of a transaction and simply continued speaking as though nothing had happened",
+    "subject": "duergar merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One duergar confirms a merchant is an only child with no twin brother.",
+    "source_quote": "there's no twin brother. He's an only child.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Creeping madness seems to have seeped into the stones of Gracklstugh.",
+    "source_quote": "seemed to have seeped into the very stones of Gracklstugh itself",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Madness showed itself in the frenzy of the kuo-toa and their summoned horror.",
+    "source_quote": "shown itself in the frenzy of the kuo-toa and their summoned horror",
+    "subject": "kuo-toa frenzy",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The kuo-toa exhibited a frenzy indicative of madness.",
+    "source_quote": "frenzy of the kuo-toa and their summoned horror",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gyrgum senses something deeply wrong with the duergar of the city.",
+    "source_quote": "Gyrgum senses something deeply wrong with the duergar of the city",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A stone giant arrives as Gyrgum looks around outside the bazaar.",
+    "source_quote": "looks around just as the stone giant arrives",
+    "subject": "stone giant arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stone giant arrives at the location outside the bazaar.",
+    "source_quote": "looks around just as the stone giant arrives",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum and Hemeth leave for an errand marked by an arrow on the map.",
+    "source_quote": "Brannum and Hemeth go off on their errand, marked by an arrow on the map.",
+    "subject": "Brannum and Hemeth errand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum goes off on an errand.",
+    "source_quote": "Brannum and Hemeth go off on their errand",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth goes off on an errand.",
+    "source_quote": "Brannum and Hemeth go off on their errand",
+    "subject": "Hemeth",
+    "quote_verified": true
+  }
+]

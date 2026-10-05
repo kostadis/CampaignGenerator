@@ -1,0 +1,72 @@
+[
+  {
+    "type": "location",
+    "fact": "Traders' Grotto is Blingdenstone's bustling central market.",
+    "source_quote": "the Traders' Grotto, Blingdenstone's bustling central market",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A sergeant guides the party through the cavern to the Traders' Grotto.",
+    "source_quote": "A sergeant guided them through the cavern",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Fungi once grew in the moist environment of Traders' Grotto before being petrified by a medusa's spell centuries ago.",
+    "source_quote": "fungi had once grown in its moist environment until a medusa's spell petrified them centuries ago",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnome merchants operate makeshift stalls among the stone growths in Traders' Grotto.",
+    "source_quote": "Merchants now operated makeshift stalls among the stone growths",
+    "subject": "Gnome merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Arriving caravans lower cargo into warehouses carved beneath the grotto.",
+    "source_quote": "arriving caravans lowered cargo into warehouses carved beneath the grotto",
+    "subject": "cargo delivery",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The market sells ordinary goods and some common and uncommon potions.",
+    "source_quote": "Ordinary goods and some common\u2014and perhaps a few uncommon\u2014potions were available",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Traders' Grotto is not a magical-item shop.",
+    "source_quote": "though it was not a magical-item shop",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The merchants regard Glabbagool with suspicion.",
+    "source_quote": "The merchants eyed Glabbagool suspiciously",
+    "subject": "Gnome merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses names including the Ash Enclave, Ash Vanguard, Ash Peloton, and Ash Rearguard.",
+    "source_quote": "the party continued workshopping its name, moving from the Ash Enclave to alternatives such as the Ash Vanguard, Ash Peloton, and the unfortunately phrased Ash Rearguard",
+    "subject": "Party name workshop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The name \"Ash Rearguard\" is rejected due to unfortunate phrasing.",
+    "source_quote": "and the unfortunately phrased Ash Rearguard",
+    "subject": "Ash Rearguard rejection",
+    "quote_verified": true
+  }
+]

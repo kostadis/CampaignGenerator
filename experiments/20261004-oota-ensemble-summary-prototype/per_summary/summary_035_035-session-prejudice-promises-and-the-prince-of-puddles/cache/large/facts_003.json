@@ -1,0 +1,114 @@
+[
+  {
+    "type": "location",
+    "fact": "The gate is made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine.",
+    "source_quote": "a massive gate made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine",
+    "subject": "massive gate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eight gnome guards waited behind the gate.",
+    "source_quote": "Eight gnome guards waited behind it",
+    "subject": "gnome guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The head guard demanded to know who the travelers were and why they had come.",
+    "source_quote": "Their leader demanded to know who the travelers were and why they had come.",
+    "subject": "head guard challenge",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One guard stated a distrust of Daz, claiming drow are liars.",
+    "source_quote": "You are a drow, and we know that drow lie.",
+    "subject": "gnome guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum countered the guard's accusation by stating that orcs only tell the truth.",
+    "source_quote": "But I am an orc, and everyone knows that orcs only tell the truth,",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "he was an orc cleric of Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards were bewildered when they realized Gyrgum was an orc cleric.",
+    "source_quote": "bewildering the guards further when they realized he was an orc cleric of Bahamut",
+    "subject": "guards' realization",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum affirmed his nature to the guards, stating 'Tis true. You see me truly.'",
+    "source_quote": "Gyrgum answers their disbelief with, \u201cTis true. You see me truly.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar responded to the guard's inquiry with his habitual phrase 'Wanna bet?'.",
+    "source_quote": "Jimjar initially responds with his habitual \u201cWanna bet?\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar introduced himself to the guards as another friend of the party.",
+    "source_quote": "before presenting himself as merely another friend of the party.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar reassured the guards that Daz is interested in exploration and growth rather than domination.",
+    "source_quote": "he's really a really nice guy. He's all about exploring and growing, not about domination and world conquest.",
+    "subject": "Jimjar's reassurance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Jimjar claimed Daz was reading a popular book called *The Up in the Overbright*.",
+    "source_quote": "he has been reading a popular book called *The Up in the Overbright*",
+    "subject": "The Up in the Overbright",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the group had been detained and exploited against their will.",
+    "source_quote": "the group had been detained and exploited against their will",
+    "subject": "Daz's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the group escaped their captors.",
+    "source_quote": "had escaped their captors",
+    "subject": "Daz's escape narrative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the group had gathered other good people seeking safe companions and a better destination.",
+    "source_quote": "had gathered other good people seeking safe companions and a better destination",
+    "subject": "Daz's gathering",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The group arrived at Blingdenstone hoping for help.",
+    "source_quote": "They had arrived at Blingdenstone hoping for help",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,149 @@
+[
+  {
+    "type": "faction",
+    "fact": "The drow overseers dragged the prisoners from the slave pen and divided them into labor groups.",
+    "source_quote": "The drow overseers of Velkynvelve wasted no time putting their prisoners to work, dragging them from the slave pen and dividing them into labor groups",
+    "subject": "Drow overseers of Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Velkynvelve has a confusing vertical layout featuring hanging chambers, webbing, rope bridges, a lower pool, and a river tunnel.",
+    "source_quote": "hanging chambers, webbing, rope bridges, the lower pool, the river tunnel",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners were divided into work groups by their drow captors.",
+    "source_quote": "dividing them into labor groups before the day had barely begun",
+    "subject": "prisoners divided into work groups",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin was assigned to haul small barrels of water at the waterfall.",
+    "source_quote": "Thorin, Ront, and Prince Derendil were marched to the waterfall to haul small barrels of water",
+    "subject": "Thorin assigned to water hauling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has considerable strength.",
+    "source_quote": "Thorin, with his considerable strength",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront was assigned to haul small barrels of water at the waterfall.",
+    "source_quote": "Thorin, Ront, and Prince Derendil were marched to the waterfall to haul small barrels of water",
+    "subject": "Ront assigned to water hauling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil was assigned to haul small barrels of water at the waterfall.",
+    "source_quote": "Thorin, Ront, and Prince Derendil were marched to the waterfall to haul small barrels of water",
+    "subject": "Prince Derendil assigned to water hauling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir was sent to clean and operate the outpost's lift.",
+    "source_quote": "Zalthir was sent to clean and operate the outpost's lift",
+    "subject": "Zalthir assigned to lift operation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The outpost's lift is a creaking contraption made of zurkhwood and spider silk suspended high above the cavern floor.",
+    "source_quote": "a creaking contraption of zurkhwood and spider silk suspended high above the cavern floor",
+    "subject": "outpost's lift",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two quaggoth guards dropped the lift basket suddenly and yanked it back up to startle Zalthir.",
+    "source_quote": "dropping the basket suddenly and yanking it back up to startle him",
+    "subject": "quaggoth guards startling Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoth guards are present at the outpost's lift.",
+    "source_quote": "two quaggoth guards amused themselves by dropping the basket",
+    "subject": "quaggoth guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum was put to work in the drow dining hall preparing meals.",
+    "source_quote": "Gyrgum was put to work in the drow dining hall, tasked with preparing meals",
+    "subject": "Gyrgum assigned to kitchen duty",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The drow warriors lounge at circular zurkhwood tables in the dining hall.",
+    "source_quote": "the sneering warriors who lounged at circular zurkhwood tables",
+    "subject": "circular zurkhwood tables",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz was assigned to clean chamber pots.",
+    "source_quote": "Daz... was assigned the least glamorous duty of all\u2014cleaning chamber pots",
+    "subject": "Daz assigned to cleaning",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a Myconid assigned to clean chamber pots.",
+    "source_quote": "Daz, along with Stool the Myconid and one other drow prisoner, was assigned the least glamorous duty of all\u2014cleaning chamber pots",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool's fungal nature makes him unconcerned by the filth of cleaning chamber pots.",
+    "source_quote": "Stool's fungal nature makes him unconcerned by the filth",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "An unnamed drow prisoner was assigned to clean chamber pots alongside Daz and Stool.",
+    "source_quote": "one other drow prisoner, was assigned the least glamorous duty of all\u2014cleaning chamber pots",
+    "subject": "unnamed drow prisoner",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower levels of the outpost contain an underground river flowing from the pool below.",
+    "source_quote": "observe the lower levels of the outpost and the underground river flowing from the pool below",
+    "subject": "lower levels of the outpost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners spotted three drow at the guard post who sneered at them as they passed.",
+    "source_quote": "the prisoners spotted three drow who sneered at them",
+    "subject": "guard post encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are ominous creatures located below the outpost.",
+    "source_quote": "ominous creatures below",
+    "subject": "ominous creatures below",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Attacking the captors openly is considered suicidal because it would result in a total-party kill.",
+    "source_quote": "doing so would produce a total-party kill rather than an escape",
+    "subject": "suicidal resistance",
+    "quote_verified": true
+  }
+]

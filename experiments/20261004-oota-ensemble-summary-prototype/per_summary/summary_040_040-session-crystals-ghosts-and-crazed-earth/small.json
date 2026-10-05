@@ -1,0 +1,996 @@
+[
+  {
+    "type": "event",
+    "fact": "Eldeth, Jimjar, and Spiderbait are assigned to handle the ghost problem.",
+    "source_quote": "Eldeth, Jimjar, and Spiderbait took on the ghost problem",
+    "subject": "ghost problem assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool initially volunteered for the ghost problem but remained with the main party after a plan change.",
+    "source_quote": "Glabbagool initially volunteered too, but the plan changed and he remained with the main party",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool wonders aloud if he would become the first gelatinous cube ghost if he died.",
+    "source_quote": "he wondered aloud whether he would become the first gelatinous cube ghost if he died",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger wishes the ghost-hunting group well.",
+    "source_quote": "Burrow Warden Jadger wished the ghost-hunting group well",
+    "subject": "Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger reassures the group that they can still fight in the coming battle as ghosts if they die.",
+    "source_quote": "reassured them that if they died, they could still fight in the coming battle as ghosts",
+    "subject": "Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party chooses the Rockblight as their first objective because it lies close to their current position.",
+    "source_quote": "The party chose to begin with the Rockblight, which lay close to their current position",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to take a long rest before setting out for the Rockblight.",
+    "source_quote": "planned to take a long rest before setting out",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Foaming Mug Tavern is a staggeringly large cave converted into an inn specifically built to house visitors to Blingdenstone.",
+    "source_quote": "Foaming Mug Tavern, a staggeringly large cave converted into an inn specifically built to house visitors to Blingdenstone",
+    "subject": "Foaming Mug Tavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tavern's rooms have beds large enough for dwarves, elves, dragonborn, and ogres, not just deep gnomes.",
+    "source_quote": "Its rooms had beds large enough for dwarves, elves, dragonborn, ogres, and other \u201cnormal-sized\u201d guests",
+    "subject": "Foaming Mug Tavern rooms",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Foaming Mug Tavern serves Darklake Stout imported through Mantol-Derith.",
+    "source_quote": "The tavern served Darklake Stout imported through Mantol-Derith",
+    "subject": "Darklake Stout",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy Foamstrap is the proprietor of the Foaming Mug Tavern and is a bored deep gnome.",
+    "source_quote": "Its proprietor, Tappy Foamstrap, was a bored deep gnome",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy Foamstrap is desperate for new stories after hearing every local\u2019s troubles dozens of times.",
+    "source_quote": "desperate for new stories after hearing every local\u2019s troubles dozens of times",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost problem in Blingdenstone is worsening with spirits haunting the catacombs.",
+    "source_quote": "The ghost problem was worsening, with spirits now haunting Blingdenstone\u2019s catacombs",
+    "subject": "Blingdenstone ghost problem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Scouts saw a crazy gnome from the first days of the reclamation skulking through unrecovered portions of Blingdenstone.",
+    "source_quote": "Scouts had reportedly seen a crazy gnome from the first days of the reclamation skulking through unrecovered portions of the settlement",
+    "subject": "Crazy Gnome Scout sighting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party suspects the crazy gnome sighted in Blingdenstone is the Pudding King.",
+    "source_quote": "whom the party suspected was the Pudding King",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stoneheart Enclave is reportedly closing in on a solution to Ogr\u00e9moch\u2019s Bane.",
+    "source_quote": "The Stoneheart Enclave was said to be \u201cclosing in on a solution\u201d to Ogr\u00e9moch\u2019s Bane",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party believes the Stoneheart Enclave's solution to Ogr\u00e9moch\u2019s Bane is to send the party to deal with it.",
+    "source_quote": "since the solution was evidently to send them to deal with it",
+    "subject": "Stoneheart Enclave solution",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Debate continues in Blingdenstone over whether the wererats should be considered gnomes.",
+    "source_quote": "Debate also continued over the wererats and whether they should be considered gnomes at all",
+    "subject": "Wererat debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A merchant recently returned from Gracklstugh described the duergar city as outwardly calm but deeply on edge.",
+    "source_quote": "A merchant recently returned from Gracklstugh described the duergar city as outwardly calm but deeply on edge",
+    "subject": "Merchant from Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gracklstugh's authorities imposed controls and blamed the Ember Vanguard for recent chaos.",
+    "source_quote": "The authorities had imposed controls while blaming the Ember Vanguard for recent chaos",
+    "subject": "Gracklstugh Authorities",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is being blamed by Gracklstugh authorities for recent chaos.",
+    "source_quote": "blaming the Ember Vanguard for recent chaos",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The merchant from Gracklstugh carried a wanted poster that misspells \"alive\" as \"a-live\" or similar.",
+    "source_quote": "the merchant carried a wanted poster reading \u201cwanted dead or alive,\u201d with \u201calive\u201d misspelled",
+    "subject": "Wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wanted poster depicts a red dragonborn rather than a gold one.",
+    "source_quote": "the poster depicted a red rather than gold dragonborn",
+    "subject": "Wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wanted poster depicts the drow, orc, and dwarf as older and more fearsome than the party members.",
+    "source_quote": "as well as an older and more fearsome drow, orc, and dwarf",
+    "subject": "Wanted poster",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The merchant from Gracklstugh mentioned rumors that the Assassin\u2019s Guild had returned.",
+    "source_quote": "He also mentioned rumors that the Assassin\u2019s Guild had returned",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "There is an influx of unexplained surface coins in Gracklstugh.",
+    "source_quote": "an influx of unexplained surface coins",
+    "subject": "Surface coins in Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Summary executions, decapitations, and derro heads displayed on pikes occurred in Gracklstugh.",
+    "source_quote": "summary executions, decapitations, and derro heads displayed on pikes",
+    "subject": "Gracklstugh executions",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar in Gracklstugh have been emphatic about the derro needing to \"learn their place.\"",
+    "source_quote": "the duergar had been emphatic about the derro needing to \u201clearn their place.\u201d",
+    "subject": "Gracklstugh Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There is a peculiarly portly red dragon in Gracklstugh used as an extravagant matchlighter.",
+    "source_quote": "Gracklstugh\u2019s peculiarly portly red dragon, used as an extravagant matchlighter",
+    "subject": "Gracklstugh Dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The red dragon in Gracklstugh has a double chin and two bellies.",
+    "source_quote": "distinguished by a double chin and two bellies",
+    "subject": "Gracklstugh Dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gracklstugh has not collapsed into open war despite its internal conflicts.",
+    "source_quote": "Despite the city\u2019s murders, assassinations, political struggles, and controlled chaos, it had not collapsed into open war",
+    "subject": "Gracklstugh stability",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is relieved that Gracklstugh did not burn down during their stay.",
+    "source_quote": "The party was relieved that its goal of leaving Gracklstugh without causing the city to burn down had been achieved",
+    "subject": "Party relief",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A deep gnome returning from the Whiteshell Mine reported encountering dancing myconids.",
+    "source_quote": "A deep gnome returning from the Whiteshell Mine offered another strange report: he had encountered a parade of dancing myconids",
+    "subject": "Deep Gnome Miner",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids were seen communicating through Rapport Spores and announcing they were going to a wedding celebration.",
+    "source_quote": "communicating through Rapport Spores and announcing that they were on their way to a wedding celebration",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party suspects Neverlight Grove might be emptying or its inhabitants have gone insane due to the myconid behavior.",
+    "source_quote": "The dancing myconids might mean Neverlight Grove was emptying\u2014or that its inhabitants had gone completely insane",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool cleaned the tavern floor by absorbing spilled drinks and became intoxicated.",
+    "source_quote": "Glabbagool cleaned the tavern floor by absorbing spilled drinks and became increasingly intoxicated",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool began singing traditional gelatinous cube sea shanties while intoxicated.",
+    "source_quote": "The gelatinous cube grew loopier than usual and began singing traditional gelatinous cube sea shanties",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is considering using alcohol against hostile oozes and puddings.",
+    "source_quote": "inspired the party to consider using alcohol against hostile oozes and puddings",
+    "subject": "Alcohol against oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Tappy Foamstrap agreed to provide barrels of old or spoiled booze if no one attributed its quality to the tavern.",
+    "source_quote": "He was willing to provide it only if no one attributed its questionable quality to the Foaming Mug",
+    "subject": "Tappy's deal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggested Tappy could advertise himself as the hero whose alcohol saved the city.",
+    "source_quote": "The party countered that he might instead advertise himself as the hero whose alcohol saved the city",
+    "subject": "Tappy's counter-offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Tappy agreed to provide the alcohol if Blingdenstone\u2019s leaders provide an official notice for him to display.",
+    "source_quote": "Tappy agreed if Blingdenstone\u2019s leaders would provide an official notice he could display behind the bar",
+    "subject": "Tappy's condition",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party discussed using a seltzer bottle as a delivery mechanism for the alcohol.",
+    "source_quote": "The party also discussed using Shape Water, a seltzer bottle, mugs, or some other improvised delivery mechanism to spray the alcohol",
+    "subject": "Seltzer bottle",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A deep gnome returned from the Whiteshell Mine.",
+    "source_quote": "A deep gnome returning from the Whiteshell Mine offered another strange report",
+    "subject": "Whiteshell Mine",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Darklake Stout is imported through Mantol-Derith.",
+    "source_quote": "The tavern served Darklake Stout imported through Mantol-Derith",
+    "subject": "Mantol-Derith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concealed their knowledge to encourage the merchant to reveal more.",
+    "source_quote": "The party concealed how much it knew and encouraged the merchant to believe he was the most knowledgeable person in the room",
+    "subject": "party deception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant described rumors of a foreign adventuring group that arrived, made deals, and disappeared.",
+    "source_quote": "The merchant described rumors that a foreign adventuring group had arrived, made deals with numerous factions, and disappeared.",
+    "subject": "merchant's rumors",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blame for the adventuring group's actions settled on the Ember Vanguard.",
+    "source_quote": "Blame subsequently settled on the Ember Vanguard.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Rumors claimed that the Assassin\u2019s Guild had returned.",
+    "source_quote": "Rumors also claimed that the Assassin\u2019s Guild had returned.",
+    "subject": "Assassin\u2019s Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Assassin\u2019s Guild maintains the ethic of only assassinating those paid for.",
+    "source_quote": "the guild at least maintained the ethic of not assassinating anyone unless someone paid for it",
+    "subject": "Assassin\u2019s Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant survived by staying in areas where foreigners were permitted and avoiding duergar affairs.",
+    "source_quote": "The merchant\u2019s survival strategy had been to remain in areas where foreigners were permitted, treat political conspiracies as idle gossip, and avoid involvement in duergar affairs.",
+    "subject": "merchant survival strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "There have been summary executions and hangings of derro.",
+    "source_quote": "The merchant noted that there had been summary executions and hangings of derro.",
+    "subject": "derro executions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Murders, assassinations, decapitations, and heads placed on pikes occurred.",
+    "source_quote": "murders, assassinations, decapitations, and heads placed on pikes",
+    "subject": "derro atrocities",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar claim the derro needed to \"learn their place.\"",
+    "source_quote": "with the duergar insisting that the derro needed to \u201clearn their place.\u201d",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant described the party's concerns about Gracklstugh's power struggles as ordinary duergar behavior.",
+    "source_quote": "the merchant treated them as ordinary duergar behavior",
+    "subject": "merchant on duergar conflict",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A portly red dragon with a double chin and two bellies is used as a matchlighter in Gracklstugh.",
+    "source_quote": "The merchant described a portly red dragon used as a matchlighter in Gracklstugh, noting its unusual double chin and two bellies.",
+    "subject": "portly red dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gracklstugh remained operational and had not imploded.",
+    "source_quote": "Despite the unrest, Gracklstugh remained operational and had not imploded.",
+    "subject": "Gracklstugh status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party succeeded in leaving Gracklstugh in controlled chaos rather than outright civil war.",
+    "source_quote": "The party\u2019s goal of leaving it in controlled chaos rather than outright civil war had succeeded.",
+    "subject": "party goal achieved",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A deep gnome returned from the Whiteshell Mine.",
+    "source_quote": "A deep gnome returning from the Whiteshell Mine",
+    "subject": "deep gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The deep gnome encountered a parade of dancing myconids communicating through Rapport Spores.",
+    "source_quote": "recounted encountering a parade of dancing myconids communicating through Rapport Spores",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The myconids said they were traveling to a \"wedding celebration.\"",
+    "source_quote": "The myconids said they were traveling to a \u201cwedding celebration\u201d",
+    "subject": "myconids",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The gnome initially phrased the myconids' destination as a \"sweating celebration\" due to drunkenness.",
+    "source_quote": "after the gnome corrected his drunken initial phrasing of \u201csweating celebration.\u201d",
+    "subject": "gnome's misstatement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconids do not normally marry and are not known for holding celebrations.",
+    "source_quote": "the scout explained that myconids do not normally marry and are not known for holding celebrations at all",
+    "subject": "myconids",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party connected the myconid procession to Zuggtmoy\u2019s intended wedding.",
+    "source_quote": "The party connected the procession to Zuggtmoy\u2019s intended wedding.",
+    "subject": "myconid wedding",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The dancing procession suggested Neverlight Grove was being emptied or its inhabitants had succumbed to madness.",
+    "source_quote": "The dancing procession suggested either that the Neverlight Grove was being emptied or that its inhabitants had succumbed completely to madness.",
+    "subject": "Neverlight Grove state",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool cleaned the tavern floor by absorbing spilled drinks.",
+    "source_quote": "Glabbagool cleaned the tavern floor by absorbing spilled drinks",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool became drunk and started singing gelatinous cube sea shanties.",
+    "source_quote": "became drunk, and started singing gelatinous cube sea shanties.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realized alcohol could intoxicate a gelatinous cube.",
+    "source_quote": "The party realized alcohol could intoxicate a gelatinous cube",
+    "subject": "alcohol discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party considered using ethanol or spoiled booze against the Pudding King\u2019s ooze forces.",
+    "source_quote": "considered bringing barrels of ethanol or spoiled booze against the Pudding King\u2019s ooze forces.",
+    "subject": "anti-ooze tactics",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group considered carrying barrels in the Bag of Holding or obtaining a \"keg of holding.\"",
+    "source_quote": "The group briefly considered carrying barrels in the Bag of Holding, obtaining a \u201ckeg of holding\u201d",
+    "subject": "storage brainstorming",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The group considered using mugs, a seltzer bottle, or Shape Water to spray alcohol.",
+    "source_quote": "using mugs, a seltzer bottle, or Shape Water to spray alcohol.",
+    "subject": "spraying brainstorming",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party negotiated with Tappy Foamstrap to acquire barrels of spoiled booze.",
+    "source_quote": "The party negotiated with Tappy Foamstrap to acquire barrels of spoiled booze",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The condition of the negotiation was that the Foaming Mug\u2019s reputation would be protected.",
+    "source_quote": "with the condition that the Foaming Mug\u2019s reputation would be protected.",
+    "subject": "The Foaming Mug",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy became more cooperative when the party suggested he could advertise himself as the hero who helped save the city.",
+    "source_quote": "Tappy became more cooperative when the party suggested he could advertise himself as the hero who helped save the city.",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Tappy requested an official signed notice to display in the tavern.",
+    "source_quote": "He requested an official signed notice to display in the tavern.",
+    "subject": "Tappy Foamstrap",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Cultivation Cave is a vast complex where deep gnomes grow useful fungi for cooking and crafting.",
+    "source_quote": "Cultivation Cave, a vast complex where the deep gnomes grew useful fungi for cooking and crafting",
+    "subject": "Cultivation Cave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stoneheart Enclave manages the Cultivation Cave and supplies the party with fungi.",
+    "source_quote": "managed by the Stoneheart Enclave and devoted to fungi used by deep gnomes",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A member of the Stoneheart Enclave greeted the party, having heard they intended to cleanse the temple, and provided them with fresh fungi.",
+    "source_quote": "A member of the Stoneheart Enclave welcomed them and supplied the freshest fungi from the garden",
+    "subject": "Stoneheart Enclave member",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Rockblight can be entered through a fortified staging area with fences or through a route obstructed by dirt and gravel.",
+    "source_quote": "The Rockblight could be entered through a fortified staging area with multiple fences or through a route obstructed by dirt and gravel",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party selected the dirt and gravel route to enter the Rockblight.",
+    "source_quote": "The party selected the gravel route",
+    "subject": "route selection",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool plowed through the dirt and gravel blocking the alternate entrance to the Rockblight.",
+    "source_quote": "Glabbagool enthusiastically ate mushrooms and plowed through the dirt and gravel blocking the alternate entrance",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool sprayed debris aside like a gigantic transparent snowblower while excavating.",
+    "source_quote": "spraying debris aside like a gigantic transparent snowblower",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool consumed mushrooms along the route while clearing the path.",
+    "source_quote": "Glabbagool was delighted by the supplies and consumed mushrooms along the route while clearing a path through the cave",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool initially appeared prepared to remain behind but happily accompanied the party into the Rockblight.",
+    "source_quote": "Glabbagool initially appeared prepared to remain behind for \u201cmore important activities,\u201d but happily accompanied the party",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party excavated for several hours to reach the caverns of the Rockblight.",
+    "source_quote": "After several hours of excavation, the party reached the caverns",
+    "subject": "excavation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party briefly worried about the possibility of a hallucinating gelatinous cube.",
+    "source_quote": "The party briefly worried about the possibility of a hallucinating gelatinous cube",
+    "subject": "hallucination worry",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party intends to cleanse the temple.",
+    "source_quote": "having heard that they intended to cleanse the temple",
+    "subject": "temple cleansing",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Rockblight is dark, damp, and chill, with rubble, shallow streams, and pools of difficult terrain.",
+    "source_quote": "The Rockblight was dark, damp, and chill, with rubble, shallow streams, and pools of difficult terrain.",
+    "subject": "The Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The connecting tunnels resemble those of Inner Blingdenstone but are empty.",
+    "source_quote": "The Rockblight\u2019s connecting tunnels resembled those of Inner Blingdenstone but were empty",
+    "subject": "The Rockblight connecting tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The crystal caverns are illuminated by bioluminescent fungi and semi-transparent crystal formations that cast a kaleidoscope of colors.",
+    "source_quote": "bioluminescent fungi shone through semi-transparent crystal formations, casting a kaleidoscope of colors across the walls",
+    "subject": "Crystal Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party discovered a stone statue of a deep gnome cowering beside a crystal outgrowth.",
+    "source_quote": "They discovered a stone statue of a deep gnome cowering beside a crystal outgrowth",
+    "subject": "Petrified Deep Gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The petrified deep gnome holds a broken crystal toward its face.",
+    "source_quote": "holding a broken crystal toward its face",
+    "subject": "Petrified Deep Gnome's crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal protects against creatures with gaze attacks when viewed through, acting like sunglasses against a Medusa.",
+    "source_quote": "looking through the crystals protected against creatures capable of harming or petrifying victims with their gaze\u2014effectively making the crystals magical sunglasses against a Medusa",
+    "subject": "Petrified Deep Gnome's crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a natural 20 on an Arcana check which, combined with Daz's expertise, revealed the crystals' protective properties.",
+    "source_quote": "Thorin\u2019s natural 20, combined with Daz\u2019s arcane expertise, revealed that looking through the crystals protected against creatures capable of harming or petrifying victims with their gaze",
+    "subject": "Thorin's Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party warned Glabbagool not to eat the crystals.",
+    "source_quote": "The party warned Glabbagool not to eat the crystals.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party collected portable crystals of several colors.",
+    "source_quote": "The party collected portable crystals in several colors.",
+    "subject": "crystal collection",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collected a teal crystal among the portable crystals.",
+    "source_quote": "including a teal one",
+    "subject": "Teal crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Thorin began a long technical discussion about crystal growth, color, and spell interactions.",
+    "source_quote": "Daz and Thorin nearly launched into a much longer discussion about crystal growth, color, and interactions with different spells.",
+    "subject": "Daz and Thorin's discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz noted that different crystal colors could produce different effects when combined with particular spells.",
+    "source_quote": "Daz noted that different colors could still produce different effects when combined with particular spells.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalled that a crystal\u2019s magic depended more on where and how it grew.",
+    "source_quote": "Thorin recalled that a crystal\u2019s magic depended more on where and how it grew",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to explore first before heading to the temple to the northeast or east.",
+    "source_quote": "The party knew the temple lay to the northeast or east but chose to explore first",
+    "subject": "party route decision",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party possesses portable crystals to protect against gaze attacks during their exploration.",
+    "source_quote": "so they could raise them to their faces if confronted by a gaze-wielding creature",
+    "subject": "Gaze-protected exploration",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party entered abandoned residential caverns marked by darkness, lack of warmth, and signs of a past drow assault.",
+    "source_quote": "entered abandoned residential caverns devoid of warmth or joy and marked by carnage from the old drow assault",
+    "subject": "abandoned residential caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Udhask is identified as a ghost whom Burrow Warden Jadger wanted rescued.",
+    "source_quote": "remains belonged to Udhask, one of the spirits Burrow Warden Jadger wanted rescued",
+    "subject": "Udhask",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask appeared as a furious deep gnome ghost and attacked the party.",
+    "source_quote": "A furious deep gnome ghost appeared and attacked",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask cried out, \u201cThey\u2019re coming! Everyone must hide!\u201d",
+    "source_quote": "prompting the spirit to cry, \u201cThey\u2019re coming! Everyone must hide!\u201d",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask became frightened after being struck by Zalthir.",
+    "source_quote": "Zalthir\u2019s insight revealed that the ghost had become afraid",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir surrounded Udhask with magical darkness and struck it repeatedly with his fists.",
+    "source_quote": "Zalthir surrounded the spirit with magical darkness... and struck it repeatedly with his fists",
+    "subject": "Zalthir attacks Udhask",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir declared his intention to non-lethally punch the ghost.",
+    "source_quote": "Zalthir declared, \u201cI want to non-lethally punch the ghost,\u201d",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum struck Udhask with a mace to frighten it further without destroying it.",
+    "source_quote": "Gyrgum... struck it without destroying it",
+    "subject": "Gyrgum attacks Udhask",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask disengaged, turned ethereal, and fled into a nearby burrow.",
+    "source_quote": "the ghost disengaged, turned ethereal, and fled into a nearby burrow",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party followed Udhask into a burrow where they found skeletal remains beside a stone bed.",
+    "source_quote": "The party followed and found skeletal remains beside a stone bed",
+    "subject": "burrow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Udhask appeared to reach beneath the bed before vanishing, revealing a hidden compartment.",
+    "source_quote": "Just before vanishing, the ghost had appeared to reach beneath that bed",
+    "subject": "hidden compartment discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden compartment contained six gems worth six hundred gold pieces each.",
+    "source_quote": "containing six gems worth six hundred gold pieces each",
+    "subject": "gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden compartment contained a potion of invisibility.",
+    "source_quote": "and a potion of invisibility",
+    "subject": "potion of invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask's skeletal remains bore no signs of violent death.",
+    "source_quote": "The bones bore no signs of violent death",
+    "subject": "Udhask (skeleton)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party collected Udhask's bones to return them to the temple.",
+    "source_quote": "The party collected the bones so they could return them to the temple and restore the ghost",
+    "subject": "bone collection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool and the party improvised a ghost-themed song referencing 'Ghostbusters'.",
+    "source_quote": "The discovery prompted Glabbagool and the party to improvise: \u201cWhen something strange in the neighborhood,\u201d \u201cWho are you going to call?\u201d and \u201cGhost cleaners.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party reached a shallow, swiftly flowing stream after passing a waterfall.",
+    "source_quote": "reached a shallow, swiftly flowing stream",
+    "subject": "Stream 040.06",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Crystalline formations rise on both sides of the stream.",
+    "source_quote": "Crystalline formations rose on both sides",
+    "subject": "Stream 040.06",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Rough-hewn stairs climb thirty feet from the stream to a barren ledge.",
+    "source_quote": "rough-hewn stairs climbed thirty feet to a barren ledge",
+    "subject": "Barren ledge",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ledge is occupied by two winged statues.",
+    "source_quote": "barren ledge occupied by two winged statues",
+    "subject": "Barren ledge",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool approaches the statues to clean them on the party's instruction.",
+    "source_quote": "the party invited Glabbagool to clean them",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first statue animates into a gargoyle when Glabbagool approaches.",
+    "source_quote": "both statues animated",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The second statue animates into a gargoyle when Glabbagool approaches.",
+    "source_quote": "both statues animated",
+    "subject": "Gargoyle 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gargoyle's ambush plan was disrupted by Glabbagool's appearance.",
+    "source_quote": "Their customary plan of remaining motionless until prey drew near was disrupted by the baffling sight of a friendly gelatinous cube",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rushed the first gargoyle and struck it with repeated punches.",
+    "source_quote": "Zalthir rushed the first gargoyle and battered it with repeated punches",
+    "subject": "Zalthir attacks gargoyle",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first gargoyle is wounded by Zalthir's punches.",
+    "source_quote": "The wounded creature disengaged",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wounded gargoyle flew away in search of a visible target.",
+    "source_quote": "flew away in search of a target it could see",
+    "subject": "Gargoyle 1 flees",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead on the flying gargoyle.",
+    "source_quote": "Daz cast Toll the Dead",
+    "subject": "Daz casts Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gargoyle resists the Toll the Dead cantrip and takes no damage.",
+    "source_quote": "the gargoyle resisted the cantrip and took no damage",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin moves closer and throws darts at the flying gargoyle.",
+    "source_quote": "Thorin moved closer and hurled darts at it",
+    "subject": "Thorin attacks gargoyle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's second dart kills the gargoyle despite its resistance.",
+    "source_quote": "finishing it with his second dart despite its resistance to nonmagical piercing attacks",
+    "subject": "Thorin kills Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gargoyle 1 is dead.",
+    "source_quote": "finishing it with his second dart",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum shoots the second gargoyle with his crossbow.",
+    "source_quote": "Gyrgum shot the second gargoyle with his crossbow",
+    "subject": "Gyrgum attacks gargoyle",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gargoyle 2 takes reduced damage from Gyrgum's crossbow bolts.",
+    "source_quote": "likewise dealing reduced damage",
+    "subject": "Gargoyle 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second gargoyle flies at Gyrgum and strikes him with bite and claws.",
+    "source_quote": "The creature retaliated by flying directly at him and striking with both bite and claws",
+    "subject": "Gargoyle 2 attacks Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes ten points of damage from the gargoyle's attack.",
+    "source_quote": "for ten points of damage",
+    "subject": "Gyrgum damaged",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes about gargoyle venom and rabies after Gyrgum is attacked.",
+    "source_quote": "prompting jokes about gargoyle venom and rabies",
+    "subject": "Party jokes about rabies",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A crazed earth elemental erupts from the ground near the water.",
+    "source_quote": "a crazed earth elemental erupted from the ground near the water",
+    "subject": "Crazed earth elemental",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The earth elemental prepares to attack the party.",
+    "source_quote": "prepared to attack",
+    "subject": "Crazed earth elemental",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The arrival of the crazed earth elemental confirms that elementals in the Rockblight are driven mad.",
+    "source_quote": "Its appearance confirmed that the warnings about elementals being driven mad in the Rockblight were true",
+    "subject": "Rockblight corruption confirmed",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party wonders what Maximilian's Earthen Grasp would do if cast on an earth elemental.",
+    "source_quote": "the party wondered what would happen if Maximilian\u2019s Earthen Grasp were cast upon an earth elemental",
+    "subject": "Earthen Grasp interaction",
+    "quote_verified": true
+  }
+]

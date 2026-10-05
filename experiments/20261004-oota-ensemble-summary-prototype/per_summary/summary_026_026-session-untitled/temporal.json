@@ -1,0 +1,359 @@
+[
+  {
+    "type": "date",
+    "fact": "The party finished leveling to 5th level before play began.",
+    "source_quote": "Before play, the party finished leveling to 5th.",
+    "subject": "session progression",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The passage at the West Cleft exit is 30 feet long and 20 feet wide.",
+    "source_quote": "a 30-foot passage, 20 feet wide",
+    "subject": "West Cleft passage dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir spotted five invisible Duergar soldiers positioned throughout the hallway.",
+    "source_quote": "spotted five invisible Duergar soldiers",
+    "subject": "invisible Duergar soldiers count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Duergar patrols were present at the checkpoint.",
+    "source_quote": "heavy tread of Duergar patrols",
+    "subject": "Duergar patrol species",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Gorglak is a Duergar.",
+    "source_quote": "scarred Duergar captain named Gorglak",
+    "subject": "Gorglak species",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The first guard identified the party members as drow, orc, dwarf, and not a red dragonborn.",
+    "source_quote": "identified each member's species one by one: drow, orc, dwarf, and 'not a red dragonborn'",
+    "subject": "Guard species identification",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The area around the West Cleft exit was under lockdown.",
+    "source_quote": "This area has been put under lockdown",
+    "subject": "Gorglak lockdown status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 15 on his insight check regarding the bribe.",
+    "source_quote": "Daz's insight roll was 15",
+    "subject": "Daz insight roll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The total bribe demanded by the gate guard was twenty gold pieces.",
+    "source_quote": "twenty gold pieces, to be precise",
+    "subject": "bribe total value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Each party member paid five gold pieces as part of the bribe.",
+    "source_quote": "five from each party member",
+    "subject": "individual bribe value",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum displays a Charisma score of 14.",
+    "source_quote": "smiles \"showing off all that 14 charisma.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Jimjar wagered a single gold piece that Thorin would do something embarrassing.",
+    "source_quote": "Jimjar made a bet. The ever-wagering deep gnome companion bet a gold piece",
+    "subject": "wager amount",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled that small wagers are not tracked unless they reach hundreds of units.",
+    "source_quote": "small wagers are not tracked unless they reach \"hundreds.\"",
+    "subject": "DM wager ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The industrial haze of the city was described as having a 19th-century Pittsburgh vibe.",
+    "source_quote": "which the DM described as a 19th-century Pittsburgh vibe",
+    "subject": "city atmosphere",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A perception check (roll of 20) found no invisible watchers nearby.",
+    "source_quote": "A perception roll of 20 finds no invisible duergar nearby",
+    "subject": "perception check result",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The informant provided two warnings in exchange for a single gold piece.",
+    "source_quote": "For a single gold piece, which Thorin had Jimjar pay from his lost wager",
+    "subject": "informant fee",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The informant noted that the group consists of four individuals with a drow.",
+    "source_quote": "A group of four with a drow would probably want to make sure they weren't noticed walking around as a group",
+    "subject": "party group size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's perception roll resulted in a 13, which was inconclusive.",
+    "source_quote": "Daz's roll (13) was inconclusive",
+    "subject": "Zalthir's check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's perception roll resulted in a 16, allowing him to sense real information.",
+    "source_quote": "but Thorin (16) sensed real information",
+    "subject": "Thorin's check",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The events take place in session 026.04.",
+    "source_quote": "### A Giant's Gratitude 026.04",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hgraam gives the party a reward of five hundred gold pieces.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "Hgraam reward",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a 13 on his persuasion check to convince Hgraam.",
+    "source_quote": "Thorin's persuasion roll (13, with advantage as a giant-friend) held.",
+    "subject": "Thorin persuasion roll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Visibility within the magical darkness is clear up to 30 feet, beyond which the streets appear as dark as a dark room.",
+    "source_quote": "Beyond 30 feet the streets were already as dim as a dark room",
+    "subject": "darkness visibility limit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party can see each other within 30 feet, but the environment beyond that distance is indistinguishable.",
+    "source_quote": "Within 30 feet the party can see each other",
+    "subject": "darkness visibility limit",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session takes place on the 6th day of the 2nd Tenday of Gracklstugh in the year 026 of the current calendar.",
+    "source_quote": "Business with the Keepers of the Flame 026.06",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Several days have passed since the party last interacted with Gartokkar.",
+    "source_quote": "He had clearly not expected them to survive after several days' absence",
+    "subject": "time since last meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar remembers Daz as a third-level drow wizard.",
+    "source_quote": "He remembered Daz only as a third-level drow wizard",
+    "subject": "Daz level",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The original contract was for 2,000 gp.",
+    "source_quote": "The original deal was 2,000 gp",
+    "subject": "original deal value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "600 gp was paid up front.",
+    "source_quote": "600 gp paid up front",
+    "subject": "upfront payment value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A confidentiality rider worth 1,000 gp was added to the deal.",
+    "source_quote": "plus a 1,000 gp confidentiality rider",
+    "subject": "confidentiality rider value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The total value of the agreement was 3,000 gp.",
+    "source_quote": "for a total of 3,000 gp",
+    "subject": "total deal value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar paid the party 2,400 gp as their remaining fee.",
+    "source_quote": "This payment was 2,400 gp",
+    "subject": "final payment value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party's spreadsheet shows each member holding 1,042 gp.",
+    "source_quote": "the party's spreadsheet showed 1,042 gp plus one electrum each",
+    "subject": "party share gold",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party's spreadsheet shows each member holding one electrum.",
+    "source_quote": "the party's spreadsheet showed 1,042 gp plus one electrum each",
+    "subject": "party share electrum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A pearl item worth 1,000 gp remains unsold.",
+    "source_quote": "A 1,000 gp pearl item is still unsold",
+    "subject": "unsold pearl",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking's agents are a mercenary band of four members.",
+    "source_quote": "They were a mercenary band of four so fierce that even the Stone Guard feared to face them",
+    "subject": "Deepking's agents size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Stone Guard have doubled their patrols due to fear of unrest.",
+    "source_quote": "The Stone Guard were doubling their patrols",
+    "subject": "Stone Guard patrol increase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's group stealth check failed to meet a DC of 14.",
+    "source_quote": "the group as a whole missed the DC 14 check",
+    "subject": "stealth check failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a 24 on his stealth check.",
+    "source_quote": "Zalthir rolled a 24",
+    "subject": "stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Darkness granted the party advantage on stealth checks.",
+    "source_quote": "They moved under the darkness, which gave them advantage on stealth",
+    "subject": "stealth advantage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are five derro assassins in total.",
+    "source_quote": "There are five derro in total",
+    "subject": "derro assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four of the derro assassins are invisible.",
+    "source_quote": "five derro in total, four of them invisible",
+    "subject": "derro assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Spirit Guardians dealt 17 radiant damage to the first derro.",
+    "source_quote": "takes 17 damage",
+    "subject": "Spirit Guardians damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Spirit Guardians dealt 15 radiant damage to the second derro.",
+    "source_quote": "takes 15 damage",
+    "subject": "Spirit Guardians damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit the final attacker for 8 damage.",
+    "source_quote": "He hits for 8",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Spirit Guardians spell creates a 15-foot emanation.",
+    "source_quote": "The spell creates a 15-foot emanation",
+    "subject": "Spirit Guardians area",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second derro made its Wisdom save against a DC of 15.",
+    "source_quote": "It fails its save (DC 15",
+    "subject": "derro wisdom save",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 3 gp and 8 sp.",
+    "source_quote": "One body carried 3 gp and 8 sp",
+    "subject": "derro loot 1",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Another body carried 10 cp.",
+    "source_quote": "another 10 cp",
+    "subject": "derro loot 2",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A third body carried 12 sp.",
+    "source_quote": "a third 12 sp",
+    "subject": "derro loot 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "All five derro assassins are dead.",
+    "source_quote": "All five Derro lay dead.",
+    "subject": "derro assassins",
+    "quote_verified": true
+  }
+]

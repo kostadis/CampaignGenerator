@@ -1,0 +1,275 @@
+[
+  {
+    "type": "location",
+    "fact": "The Circle of Hunters is located within the myconid grove.",
+    "source_quote": "The tour brought them to the Circle of Hunters",
+    "subject": "Circle of Hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub is a leader of the myconid hunters in the Circle of Hunters.",
+    "source_quote": "There they met Loobamub, a circle leader",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub is a staunch ally of Basidia.",
+    "source_quote": "a circle leader and staunch ally of Basidia",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub shares unease about Phylo's new ways.",
+    "source_quote": "who shared her unease about Phylo's new ways",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid hunters do not kill prey.",
+    "source_quote": "He explained that myconid hunters did not kill prey",
+    "subject": "myconid hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid hunters track creatures that have already died near the grove.",
+    "source_quote": "They tracked creatures that had already died near the grove",
+    "subject": "myconid hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid hunters bring remains back for reanimation.",
+    "source_quote": "and brought the remains back for reanimation",
+    "subject": "myconid hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Loobamub asks the party to kill a grick alpha in the nearby fungal wilds.",
+    "source_quote": "He asked the party to kill a grick alpha lurking in the nearby fungal wilds",
+    "subject": "grick hunt request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Loobamub asks the party to bring back the grick's carcass intact.",
+    "source_quote": "and bring back its carcass intact",
+    "subject": "grick hunt request",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The grick alpha is a dangerous worm-like monstrosity.",
+    "source_quote": "Loobamub requests the party's help in slaying a grick alpha, a dangerous worm-like monstrosity",
+    "subject": "grick alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The grick is a passive predator that blends with rock.",
+    "source_quote": "The grick is a passive predator that blends with rock",
+    "subject": "grick alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The grick lurks where creatures pass.",
+    "source_quote": "and lurks where creatures pass",
+    "subject": "grick alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The grick alpha is lurking in the nearby fungal wilds.",
+    "source_quote": "lurking in the nearby fungal wilds",
+    "subject": "fungal wilds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deduces that a reanimated grick could fight alongside them against a demonic force in the Garden of Welcome.",
+    "source_quote": "a reanimated grick could fight alongside them against whatever demonic force was in the Garden of Welcome",
+    "subject": "Zalthir's deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia calls the idea of using a reanimated grick against the demonic force an excellent idea.",
+    "source_quote": "Basidia called it \"an excellent idea.\"",
+    "subject": "Basidia's approval",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer is a sentient sword at Thorin's side.",
+    "source_quote": "Dawnbringer blazed at Thorin's side",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer blazed continuously during the visit.",
+    "source_quote": "Dawnbringer blazed at Thorin's side",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer refused to be dimmed during the visit.",
+    "source_quote": "and refused to be dimmed",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer chattered throughout the visit.",
+    "source_quote": "a constant, chattering reminder",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer talks to Thorin.",
+    "source_quote": "Dawnbringer is revealed to have been talking to Thorin throughout the visit",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer has a profound fear of the dark.",
+    "source_quote": "insists on remaining illuminated at all times due to her profound fear of the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer claims to have spent far too long in the dark.",
+    "source_quote": "she had spent far too long in the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer states she has no intention of ever going back into the dark.",
+    "source_quote": "had absolutely no intention of ever going back",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer states that she does not trust the dark.",
+    "source_quote": "Dawnbringer: \"I don't trust the dark",
+    "subject": "Dawnbringer's dialogue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer states that she has been in the dark for a very long time.",
+    "source_quote": "I've been in the dark for a very long time.\"",
+    "subject": "Dawnbringer's dialogue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer's illumination causes stress for the party when they try to sleep.",
+    "source_quote": "causing stress when the party tries to sleep",
+    "subject": "sleep disruption",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is nearby with his friends during the visit to the Circle of Hunters.",
+    "source_quote": "Phylo is nearby with his friends",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo ignores the party during the visit.",
+    "source_quote": "but ignores the party",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Loobamub affirms that Phylo's new ways are not good.",
+    "source_quote": "Loobamub affirms, \"yes, yes, Phylo's new ways are not good.\"",
+    "subject": "Loobamub's stance",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The acoustics in the Circle of Hunters are poor.",
+    "source_quote": "and the acoustics are poor",
+    "subject": "Circle of Hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum likens the grick to a carnivorous plant.",
+    "source_quote": "Gyrgum likens it to a carnivorous plant",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia advises the party to help Loobamub if needed.",
+    "source_quote": "If Loobamub needs your help, then you should help Loobamub",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia states that all things can be done in their time and place.",
+    "source_quote": "All things can be done in their time and place.\"",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to hunt the grick.",
+    "source_quote": "The party agrees to hunt the creature",
+    "subject": "party agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Loobamub shows the party where the grick is located.",
+    "source_quote": "Loobamub shows the party where the grick is",
+    "subject": "Loobamub's guidance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that fire damage does not prevent reanimation.",
+    "source_quote": "The GM rules that fire damage does not prevent reanimation",
+    "subject": "reanimation rules discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that slashing a creature to pieces prevents reanimation.",
+    "source_quote": "but slashing a creature to pieces or disintegrating it with acid does",
+    "subject": "reanimation rules discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that disintegrating a creature with acid prevents reanimation.",
+    "source_quote": "but slashing a creature to pieces or disintegrating it with acid does",
+    "subject": "reanimation rules discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The session ends before the hunt for the grick begins.",
+    "source_quote": "The session ends before the hunt begins",
+    "subject": "grick hunt",
+    "quote_verified": true
+  }
+]

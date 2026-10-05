@@ -1,0 +1,128 @@
+[
+  {
+    "type": "event",
+    "fact": "The leaders begin proposing strategic modifications and side quests.",
+    "source_quote": "The leaders then began proposing strategic modifications and side quests.",
+    "subject": "strategic proposal session",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo suggests that the army attack from the Temple of the Steadfast Stone.",
+    "source_quote": "Dorbo suggested that the army attack from the Temple of the Steadfast Stone",
+    "subject": "Dorbo's strategic proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo argues that attacking from the Temple of the Steadfast Stone would redirect the oozes away from Blingdenstone's populated areas.",
+    "source_quote": "redirecting the oozes away from Blingdenstone's populated areas",
+    "subject": "southern attack rationale",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Temple of the Steadfast Stone stands within the Rockblight.",
+    "source_quote": "The temple stood within the Rockblight",
+    "subject": "Temple of the Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Temple of the Steadfast Stone had fallen under hostile influence.",
+    "source_quote": "the temple there had fallen under hostile influence",
+    "subject": "Temple of the Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Temple of the Steadfast Stone must first be cleansed before it can be used as a staging area.",
+    "source_quote": "and would first need to be cleansed",
+    "subject": "temple cleansing requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger warns that someone would first have to cleanse the area.",
+    "source_quote": "Uth-Jadger warned that someone would first have to \u201ccleanse the area.\u201d",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The district surrounding the Temple of the Steadfast Stone is known as the Rockblight.",
+    "source_quote": "The surrounding district was known as the Rockblight",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik Tapfinger produces a red spell gem containing the Hallow spell.",
+    "source_quote": "Gurnik Tapfinger produced a red spell gem containing the Hallow spell",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The red spell gem contains the Hallow spell.",
+    "source_quote": "red spell gem containing the Hallow spell",
+    "subject": "red spell gem",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The menhir is located in the Temple of the Steadfast Stone.",
+    "source_quote": "temple's menhir",
+    "subject": "menhir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The red spell gem must be placed in the temple's menhir.",
+    "source_quote": "explained that it must be placed in the temple's menhir",
+    "subject": "gem placement plan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Ogr\u00e9moch's Bane would likely ignore the party until the gem was placed.",
+    "source_quote": "Ogr\u00e9moch's Bane would likely ignore the party until the gem was placed.",
+    "subject": "Ogr\u00e9moch's Bane",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ogr\u00e9moch's Bane would send servants to dislodge the gem once it is placed.",
+    "source_quote": "Ogr\u00e9moch's Bane would then send servants to dislodge the gem",
+    "subject": "servants attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party must defend the menhir against waves of enemies.",
+    "source_quote": "forcing the party to defend it until its power awakened three temple guardians",
+    "subject": "defend the menhir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gem's power would awaken three temple guardians.",
+    "source_quote": "awakened three temple guardians",
+    "subject": "awaken guardians",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The awakened guardians and the gem's power would cleanse and protect the temple.",
+    "source_quote": "cleansed the site",
+    "subject": "cleansing the site",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz used insight to confirm that Gurnik was omitting the dangerous part of the task in his initial description.",
+    "source_quote": "Daz used his insight to confirm that Gurnik was omitting the dangerous part when he initially described the task",
+    "subject": "Gurnik's description",
+    "quote_verified": true
+  }
+]

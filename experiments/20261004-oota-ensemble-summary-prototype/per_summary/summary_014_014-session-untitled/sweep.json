@@ -1,0 +1,1192 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gyrgum initially hoped to buy scrolls of Thunderwave and Heroism.",
+    "source_quote": "Gyrgum first hoped to buy scrolls of Thunderwave and Heroism",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum learns he is limited to casting spells from scrolls that are on his class spell list.",
+    "source_quote": "learned that he could only cast scrolls of spells on his own class list",
+    "subject": "Gyrgum learns class limitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum acquires a scroll containing a powerful divine bolt of radiant energy.",
+    "source_quote": "He instead acquired a scroll containing a powerful divine bolt of radiant energy",
+    "subject": "Gyrgum buys scroll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The shopkeeper is visibly disappointed that she gets customers who do not need magic or weapons.",
+    "source_quote": "The shopkeeper was visibly disappointed that \"of all the adventures in all the world, she gets the two who don't need any magic, who don't need any weapons.\"",
+    "subject": "Shopkeeper",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The shopkeeper sells only common potions and scrolls.",
+    "source_quote": "Only common potions and scrolls are for sale here, not magic weapons.",
+    "subject": "Shopkeeper",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM provides a price book titled 'Sane Magical Prices'.",
+    "source_quote": "priced from the GM's \"Sane Magical Prices\" price book",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM saved a 'Sane Magical Prices' document to a shared Google Drive folder.",
+    "source_quote": "The GM saved a \"Sane Magical Prices\" document to the shared Google Drive folder",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM referred to Gyrgum's choice of a Guiding Bolt scroll as 'a fantastic choice'.",
+    "source_quote": "Gyrgum buys a scroll of Guiding Bolt, which the GM called \"a fantastic choice\"",
+    "subject": "GM",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin adds rations to his gear at the GM's urging.",
+    "source_quote": "At the GM's urging, Thorin adds them to his gear.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin bought two potions.",
+    "source_quote": "Daz and Thorin bought two each",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz bought two potions.",
+    "source_quote": "Daz and Thorin bought two each",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was left with 105 gold after purchases.",
+    "source_quote": "Daz was left with 105 gold.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchases a week's worth of rations.",
+    "source_quote": "They bought a week's worth of rations",
+    "subject": "Party purchases rations",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchases several potions of healing to hold jointly.",
+    "source_quote": "The party purchases several potions of healing, held jointly.",
+    "subject": "Party purchases healing potions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM adds three more potions to the party's supply.",
+    "source_quote": "the GM added three more, for a total of nine.",
+    "subject": "GM adds potions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reviews their current inventory, noting recovered basic survival gear.",
+    "source_quote": "The party reviews their current inventory, noting they have recovered basic survival gear like bedrolls, rope, tinderbox, torches, and a waterskin.",
+    "subject": "Party reviews inventory",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The shop is the location where the party uses their store credit.",
+    "source_quote": "good only at this particular store",
+    "subject": "Shop",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The store credit is 175 gold pieces, described as an advance.",
+    "source_quote": "The credit came to 175 gold pieces, given as an advance",
+    "subject": "Store Credit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A bedroll is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Bedroll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Rope is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A tinderbox is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Tinderbox",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Torches are among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Torches",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A waterskin is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Waterskin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum considered but did not acquire a scroll of Thunderwave due to class limitations.",
+    "source_quote": "Gyrgum first hoped to buy scrolls of Thunderwave and Heroism, but learned that he could only cast scrolls of spells on his own class list.",
+    "subject": "Scroll of Thunderwave",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum considered but did not acquire a scroll of Heroism due to class limitations.",
+    "source_quote": "Gyrgum first hoped to buy scrolls of Thunderwave and Heroism, but learned that he could only cast scrolls of spells on his own class list.",
+    "subject": "Scroll of Heroism",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum buys a scroll of Guiding Bolt.",
+    "source_quote": "Gyrgum buys a scroll of Guiding Bolt",
+    "subject": "Scroll of Guiding Bolt",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a total of nine healing potions.",
+    "source_quote": "for a total of nine.",
+    "subject": "Healing Potions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The 'Sane Magical Prices' document was shared in a Google Drive folder on February 28, 2021.",
+    "source_quote": "which the players discovered had been shared back on February 28, 2021.",
+    "subject": "'Sane Magical Prices' document",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The 'Sane Magical Prices' document was shared on February 28, 2021.",
+    "source_quote": "which the players discovered had been shared back on February 28, 2021.",
+    "subject": "February 28, 2021",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Other magic items are expected to come later when 'the magic guy shows up'.",
+    "source_quote": "Other magic items come later, when \"the magic guy shows up.\"",
+    "subject": "Magic Guy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull is the patron of the party and a member of the Stone Guard.",
+    "source_quote": "Their patron, Captain Errde Blackskull of the Stone Guard",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is the organization to which Captain Errde Blackskull belongs.",
+    "source_quote": "Captain Errde Blackskull of the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a city where Captain Errde Blackskull asked the party to investigate a disturbing rumor.",
+    "source_quote": "asked them to look into a disturbing rumor circulating through the city of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl Forgebrand is introduced by Errde as her subordinate and a resource for the party.",
+    "source_quote": "She introduced her subordinate, Grimholl Forgebrand",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl describes finding bodies with no visible wounds, such as sword cuts or burns.",
+    "source_quote": "Grimholl Forgebrand, who described finding bodies with no visible wounds: no sword cuts, no burns, no magical residue",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl reports that the clerics stated the victims could not be revived.",
+    "source_quote": "Grimholl reports that the clerics said the victims couldn't be revived",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl believes psionic assassins are responsible for the deaths.",
+    "source_quote": "leading him to believe psionic assassins are responsible",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimholl states that the killers use their minds to cast invisible blades.",
+    "source_quote": "He adds that the killers use \"their mind to cast these blades that would kill you... Nobody could ever see the blades, but you die.\"",
+    "subject": "Grimholl Forgebrand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde rolls her eyes in response to Grimholl's explanation of the psionic blades.",
+    "source_quote": "Errde's eyes roll",
+    "subject": "Errde rolling eyes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde gropes for the right managerial word when calling Grimholl a resource.",
+    "source_quote": "Errde calls him in as one of her \"resources\", after groping for the right managerial word for her subordinates",
+    "subject": "Errde groping for word",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are a supposed order of psionic assassins.",
+    "source_quote": "a supposed order of psionic assassins known as the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Forak-Erach-Naek is an alternative name for the Empty-Scabbard Killers.",
+    "source_quote": "known as the Empty-Scabbard Killers or the Forak-Erach-Naek",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The name Forak-Erach-Naek is derived from an ancient, obscure dwarvish dialect.",
+    "source_quote": "their name derived from an ancient, obscure dwarvish dialect",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Forak-Erach-Naek are said to practice disciplines unknown to derro or priests.",
+    "source_quote": "They are said to practice \"disciplines unknown even to the savviest of derro or the wisest priest.\"",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Errde views the Forak-Erach-Naek as a story used to keep children quiet.",
+    "source_quote": "a story that old women and men tell their grandchildren to keep them quiet at night",
+    "subject": "Forak-Erach-Naek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wonders aloud if he should have chosen the Psi Warrior subclass over Battle Master.",
+    "source_quote": "Thorin wonders aloud whether he should have picked Psi Warrior over Battle Master",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz makes a quip about 'those blades' being used alongside a dagger.",
+    "source_quote": "Daz quips about \"those blades\" being used alongside a dagger \"so I've heard.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks who discovered the body that Errde's clan lost.",
+    "source_quote": "When Gyrgum asks who discovered the body",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde personally found one of the bodies of the victims.",
+    "source_quote": "she herself had found one of the bodies",
+    "subject": "Errde finding body",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde snaps at Gyrgum, asserting that she was the one who found the dead body.",
+    "source_quote": "it was I who found the dead body. Is there some kind of implication you're making?",
+    "subject": "Errde finding body",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are an extensive network beneath Gracklstugh.",
+    "source_quote": "pointed the party toward the Whorlstone Tunnels beneath Gracklstugh",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are rumored to be a hiding place for the killers or those responsible.",
+    "source_quote": "as a possible hiding place for whoever, or whatever, was responsible",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two members of Errde's clan have died under mysterious circumstances.",
+    "source_quote": "two members of her own clan had died under these same mysterious circumstances",
+    "subject": "death of two clan members",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The victim died in his own household while in the prime of his health.",
+    "source_quote": "The victim was in the prime of his health and died in his own household",
+    "subject": "victim death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde's clan had all eaten the same food prior to the victim's death.",
+    "source_quote": "the clan had all eaten the same food",
+    "subject": "clan meal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bodies currently have no visible wounds, such as sword cuts, burns, or magical residue.",
+    "source_quote": "finding bodies with no visible wounds: no sword cuts, no burns, no magical residue",
+    "subject": "bodies",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "No body is currently available for the party to examine.",
+    "source_quote": "No body is currently available for the party to examine",
+    "subject": "bodies",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party moves through the stone corridors of Gracklstugh.",
+    "source_quote": "they set off through the stone corridors of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are an organization in Gracklstugh that the party visits.",
+    "source_quote": "Daz, curious about the dragon and the Keepers of the Flame, insisted they first pay the Keepers a visit",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is down to five hit points.",
+    "source_quote": "Daz is down to five hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar notes that the party is equipped and ready to head toward Blingdenstone.",
+    "source_quote": "Jimjar notes that the party is equipped and ready to head toward Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is the destination the party intends to travel to.",
+    "source_quote": "Jimjar urges the group to gather their things and make for Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The Topsy-Turvy twins quietly slipped away from the shared room during the night.",
+    "source_quote": "the party woke to find that the Topsy-Turvy twins had quietly slipped away during the night",
+    "subject": "Topsy-Turvy twins",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks if the Topsy-Turvy twins were the wererats.",
+    "source_quote": "Zalthir asks, \"Were they the wererats?\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Wererats are a creature type referenced in connection with the Topsy-Turvy twins.",
+    "source_quote": "Zalthir asks, \"Were they the wererats?\"",
+    "subject": "wererats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido looks cranky.",
+    "source_quote": "Buppido still looks cranky",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recounts Orwell's *Down and Out in Paris and London*.",
+    "source_quote": "Gyrgum recounts Orwell's Down and Out in Paris and London",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Orwell is the author of the book *Down and Out in Paris and London*.",
+    "source_quote": "Gyrgum recounts Orwell's Down and Out in Paris and London",
+    "subject": "Orwell",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party spends five copper pieces per person for the night in the shared room.",
+    "source_quote": "The party spends the night in a shared room with bunk beds for five copper pieces per person",
+    "subject": "lodging cost",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The shared room contains bunk beds.",
+    "source_quote": "After a night spent crammed into a shared room with bunk beds",
+    "subject": "bunk beds",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The rest of the party's crew was put up in the same establishment.",
+    "source_quote": "The establishment is where the rest of their crew had been put up",
+    "subject": "crew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to visit the Keepers of the Flame before leaving the city.",
+    "source_quote": "The rest of the party agreed, and they set off through the stone corridors of Gracklstugh",
+    "subject": "decision to visit Keepers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar is cool with the plan to visit the Keepers of the Flame.",
+    "source_quote": "Jimjar is \"cool with that.\"",
+    "subject": "Jimjar's agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The assassination attempt occurs at the end of a pier on the Darklake Docks.",
+    "source_quote": "At the end of a pier on the Darklake Docks",
+    "subject": "Darklake Docks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is a Duergar merchant standing alone at the end of the pier.",
+    "source_quote": "they spotted a Duergar merchant standing alone",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is stabbed by two assassins with glowing blades.",
+    "source_quote": "masked, hooded assassins who drove glowing blades into the merchant with vicious precision",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz claims to have no idea why he was targeted.",
+    "source_quote": "The merchant, Werz, claimed to have no idea why he had been targeted.",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz invites the party to the Shattered Spire to receive a reward.",
+    "source_quote": "invited them to meet him at the Shattered Spire to receive a proper reward",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two masked and hooded assassins shimmer into visibility beside the merchant.",
+    "source_quote": "Two figures suddenly shimmered into visibility beside him: masked, hooded assassins",
+    "subject": "assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The assassins wield glowing blades.",
+    "source_quote": "assassins who drove glowing blades into the merchant with vicious precision",
+    "subject": "assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Both assassins lie dead after the darkness lifts.",
+    "source_quote": "When the darkness lifted, both assassins lay dead.",
+    "subject": "assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The assassin killed by Zalthir's second strike is dead.",
+    "source_quote": "he spent a focus point to strike again and killed one assassin outright",
+    "subject": "assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remaining assassin is incinerated by Daz's fire rays.",
+    "source_quote": "Daz hurled three searing rays of fire into the black void... incinerating the final assassin.",
+    "subject": "assassin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party dubs themselves 'Firefly Tactics' while charging the assassins.",
+    "source_quote": "the party charged, and dubbed themselves \"Firefly Tactics\" on the way in",
+    "subject": "Firefly Tactics naming",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum tries to shove one of the killers into the water but fails.",
+    "source_quote": "Gyrgum rushed forward and tried to shove one of the killers into the water, but the assassin held his ground",
+    "subject": "Gyrgum's shove attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes a torrent of magical energy that tears into one of the attackers for nine damage.",
+    "source_quote": "Daz unleashed a torrent of magical energy that tore into one of the attackers for nine damage",
+    "subject": "Daz's magical energy attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of impenetrable magical darkness over the pier.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness over the pier",
+    "subject": "Zalthir's darkness spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first strike misses on a natural 1.",
+    "source_quote": "His first strike missed on a natural 1",
+    "subject": "Zalthir's first attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point to strike again and kills one assassin.",
+    "source_quote": "he spent a focus point to strike again and killed one assassin outright",
+    "subject": "Zalthir's second attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin salvages a miss with a Precision Attack and lands a precise blow for six damage.",
+    "source_quote": "Thorin salvaged a miss with a Precision Attack and landed a precise blow for six damage",
+    "subject": "Thorin's Precision Attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels radiant holy energy through his mace.",
+    "source_quote": "Gyrgum channeled radiant holy energy through his mace",
+    "subject": "Gyrgum's radiant strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hurled three searing rays of fire into the black void.",
+    "source_quote": "Daz hurled three searing rays of fire into the black void",
+    "subject": "Daz's Scorching Rays",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The glowing blades vanish entirely, dissolving back into psychic energy.",
+    "source_quote": "The glowing blades they had wielded had vanished entirely, dissolving back into the psychic energy from which they had been conjured",
+    "subject": "blade dissolution",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum knelt beside the wounded merchant and spoke a quick prayer, closing the man's wounds.",
+    "source_quote": "Gyrgum knelt beside the wounded merchant and spoke a quick prayer, closing the man's wounds",
+    "subject": "Gyrgum's healing prayer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cautions that the party went in 'guns blazing' without knowing who the villain was.",
+    "source_quote": "Thorin cautioned that the party had gone in \"guns blazing\" without knowing who the villain really was",
+    "subject": "Thorin's caution",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Shattered Spire is the location where Werz invites the party for a reward.",
+    "source_quote": "invited them to meet him at the Shattered Spire to receive a proper reward",
+    "subject": "Shattered Spire",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The glowing blades are psionic weapons that vanish upon the wielder's death.",
+    "source_quote": "The glowing blades they had wielded had vanished entirely, dissolving back into the psychic energy from which they had been conjured",
+    "subject": "glowing blades",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum uses his mace to channel radiant holy energy.",
+    "source_quote": "Gyrgum channeled radiant holy energy through his mace",
+    "subject": "Gyrgum's mace",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin covets the glowing weapons of the assassins.",
+    "source_quote": "Thorin immediately coveted the glowing weapons",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he wants a glowing weapon.",
+    "source_quote": "Thorin: \"I want a glowing weapon.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin urges caution before helping the merchant.",
+    "source_quote": "Thorin urges caution before helping the merchant: \"He might be a bad guy, and the guys we just killed might be the good guys.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz admits he is easy to kill and moves closer to avoid invisibility tricks.",
+    "source_quote": "admitting, \"I need to be careful because I'm like easy to kill.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that Magic Missile cannot target a creature he cannot see in magical darkness.",
+    "source_quote": "Magic Missile can't target a creature he can't see in magical darkness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum attributes the victory to his two points of valor.",
+    "source_quote": "Gyrgum: \"I'm sure that it was mainly due to my two points of valor.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The merchants and context are situated within Duergar society at Darklake Docks.",
+    "source_quote": "spotted a Duergar merchant standing alone",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Werz's clan affiliation remains unknown.",
+    "source_quote": "Werz's clan affiliation remains unknown",
+    "subject": "Werz's clan affiliation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Eighteen silver pieces are found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "eighteen silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A trinket is found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "trinket",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A pair of bloodstained gloves is found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "bloodstained gloves",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A box of scented candles is found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "box of scented candles",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bloodstained gloves are not magical.",
+    "source_quote": "Neither the gloves nor the candles are magical",
+    "subject": "bloodstained gloves",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The box of scented candles is not magical.",
+    "source_quote": "Neither the gloves nor the candles are magical",
+    "subject": "box of scented candles",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A fish-skin parchment bearing a charcoal likeness of Werz is found on the bodies of the assassins.",
+    "source_quote": "discovered a fish-skin parchment bearing a charcoal likeness of Werz himself",
+    "subject": "fish-skin parchment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is depicted in a charcoal likeness on the fish-skin parchment found on the assassins.",
+    "source_quote": "bearing a charcoal likeness of Werz himself",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The discovery of the likeness confirms the attack was a deliberate, pre-planned assassination.",
+    "source_quote": "confirming that the attack had been a deliberate, pre-planned assassination",
+    "subject": "assassination plot confirmed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the attack was not an opportunity attack.",
+    "source_quote": "Thorin: \"It was not an attack of opportunity.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The city guard has not yet arrived at the pier.",
+    "source_quote": "the party slipped away before the city guard could arrive",
+    "subject": "city guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Stone Guards are a type of guard the GM warns will eventually show up.",
+    "source_quote": "The GM warns that Stone Guards and other guards will eventually show up if the party lingers",
+    "subject": "Stone Guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum pushes the corpses of the assassins off the pier into the water.",
+    "source_quote": "Gyrgum shoved the corpses off the pier into the dark water below",
+    "subject": "bodies dumped",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a short rest to recover their strength.",
+    "source_quote": "After a brief rest to recover their strength",
+    "subject": "short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz uses Arcane Recovery to regain a second-level spell slot.",
+    "source_quote": "Daz used Arcane Recovery to regain a second-level spell slot",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Flowstone District is inhabited by no one but Duergar.",
+    "source_quote": "through a district inhabited by no one but Duergar",
+    "subject": "Flowstone District",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar priests escort the party through the stone corridors.",
+    "source_quote": "the party was escorted by Duergar priests through the stone corridors of the Flowstone District",
+    "subject": "Duergar priests",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame occupy a territory in the Flowstone District.",
+    "source_quote": "toward the territory of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party travels through the district on the strength of their permit.",
+    "source_quote": "They traveled on the strength of their permit",
+    "subject": "travel on permit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a massive red dragon who serves as the Wyrmsmith of Gracklstugh.",
+    "source_quote": "introduced him with great reverence as Themberchaud, the Wyrmsmith of Gracklstugh",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is known as the Father of Flame.",
+    "source_quote": "introduced him with great reverence as Themberchaud, the Wyrmsmith of Gracklstugh, Father of Flame",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has scales the color of cooling lava.",
+    "source_quote": "His scales were the color of cooling lava",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has bright yellow eyes.",
+    "source_quote": "his bright yellow eyes gleamed in the shadows",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud jokes about the party being surfacers for dinner.",
+    "source_quote": "He announced himself with the joke, \"You didn't say I was having surfacers for dinner tonight.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is enormously well-fed and looks like a predator who has not hunted in a long time.",
+    "source_quote": "He was enormous, and clearly well-fed, carrying the unmistakable look of a predator who had not hunted in a very long time.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar prefer each people to keep to its own place.",
+    "source_quote": "The Duergar prefer each people to keep to its own place",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar value rule-following and directness.",
+    "source_quote": "value rule-following and directness",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar lack a sense of humor.",
+    "source_quote": "\"lack a sense of humor,\"",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar find other species confusing.",
+    "source_quote": "and find other species confusing.",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar priests introduce Themberchaud with great reverence.",
+    "source_quote": "The priests introduced him with great reverence",
+    "subject": "Duergar priests",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar priests are visibly uncomfortable leaving Themberchaud alone with strangers.",
+    "source_quote": "The priests look \"very uncomfortable\" about it.",
+    "subject": "Duergar priests",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud dismisses the Duergar priests to speak with the party in private.",
+    "source_quote": "Themberchaud dismissed the priests, who were visibly uncomfortable at leaving him alone with strangers, and led the party into his private lair.",
+    "subject": "Themberchaud dismissing priests",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests tipping Themberchaud off about a new dragon in training.",
+    "source_quote": "Thorin suggests tipping the dragon off that the Duergar have \"a new dragon in training.\"",
+    "subject": "Thorin's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric of Bahamut.",
+    "source_quote": "Gyrgum, as a cleric of Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud dismisses Gyrgum's devotion to Bahamut curtly.",
+    "source_quote": "He dismissed Gyrgum's devotion to Bahamut with a curt \"Next!\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has a brass dragonborn heritage.",
+    "source_quote": "He expressed mild disdain for Zalthir's brass dragonborn heritage.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud calls Zalthir an inferior Dragonborn.",
+    "source_quote": "Themberchaud calls Zalthir \"an inferior Dragonborn, if ever there was one.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is from Menzoberranzan.",
+    "source_quote": "He showed a flicker of approval for Daz's Drow origins, from Menzoberranzan",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud approves of Daz's capacity for secrecy.",
+    "source_quote": "and his capacity for secrecy.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz confirms his origin from Menzoberranzan to Themberchaud.",
+    "source_quote": "Daz confirms he is from Menzoberranzan.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin Giantfriend describes himself as a foundling who grew up amongst giants.",
+    "source_quote": "My name is Thorin Giantfriend, and I was a foundling and grew up amongst giants",
+    "subject": "Thorin Giantfriend",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin Giantfriend states that he likes to hit things over the head.",
+    "source_quote": "but I like to hit things over the head.\"",
+    "subject": "Thorin Giantfriend",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud summons Gartokkar to act as the liaison for the party.",
+    "source_quote": "summoned his liaison Gartokkar",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is referenced by Themberchaud as his liaison.",
+    "source_quote": "summoned his liaison Gartokkar",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud declares the party to be his personal agents without waiting for formal agreement.",
+    "source_quote": "Without waiting for the party to formally agree, Themberchaud declared them his personal agents",
+    "subject": "Themberchaud declaring agents",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud presents each party member with a golden badge bearing his profile.",
+    "source_quote": "presented each of them with a golden badge bearing his own profile.",
+    "subject": "presenting badges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud orders the party to do whatever the Keepers ask but report back to him first.",
+    "source_quote": "Their first mission is to do whatever the Keepers ask but report back to Themberchaud first.",
+    "subject": "first mission assigned",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud's lair contains a mountain of gold.",
+    "source_quote": "settling onto a mountain of gold.",
+    "subject": "Themberchaud's lair",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud thrashes his wings inside his lair.",
+    "source_quote": "thrashed his wings about",
+    "subject": "Themberchaud's lair",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The golden badge bears Themberchaud's profile.",
+    "source_quote": "presented each of them with a golden badge bearing his own profile.",
+    "subject": "golden badge",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz confirms that the badge is made of real gold.",
+    "source_quote": "Daz confirms the badge is real gold.",
+    "subject": "golden badge",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud is the Wyrmsmith of Gracklstugh.",
+    "source_quote": "Themberchaud, the Wyrmsmith of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud refers to the party as surfacers when addressing them in Gracklstugh context.",
+    "source_quote": "\"I want you to become my agents in Gracklstugh.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Daz originates from Menzoberranzan.",
+    "source_quote": "Daz confirms he is from Menzoberranzan.",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud threatens to turn anyone invisible to ash.",
+    "source_quote": "He warned, \"Anyone who's invisible will be turned to ash,\"",
+    "subject": "Themberchaud burning invisible intruders",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud breathes fire in every direction upon entering his lair.",
+    "source_quote": "breathed fire in every direction before settling onto a mountain of gold.",
+    "subject": "Themberchaud breathing fire",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ground trembles before the party arrives at Themberchaud's location.",
+    "source_quote": "The ground trembled before they arrived",
+    "subject": "party arriving",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin explains that he woke up in a jail cell surrounded by Drow and strangers.",
+    "source_quote": "When Thorin explained that he had simply been minding his own business before waking up in a jail cell surrounded by Drow and strangers",
+    "subject": "Thorin waking in jail",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow are the ones who imprisoned Thorin in the jail cell.",
+    "source_quote": "surrounded by Drow and strangers",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud expresses approval for Daz being a Drow from Menzoberranzan.",
+    "source_quote": "He showed a flicker of approval for Daz's Drow origins, from Menzoberranzan",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states his devotion to Bahamut, the platinum dragon.",
+    "source_quote": "I serve Bahamut, the platinum dragon.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bahamut is referenced by Gyrgum as the platinum dragon he serves.",
+    "source_quote": "I serve Bahamut, the platinum dragon.\"",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party reflects that they may already be triple agents due to their conflicting obligations.",
+    "source_quote": "The party reflects that they may already be \"triple agents.\"",
+    "subject": "party's dual allegiance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggests that the party needs to form their own faction.",
+    "source_quote": "Thorin: \"I think we need to form our own faction.\"",
+    "subject": "Thorin suggesting new faction",
+    "quote_verified": true
+  }
+]

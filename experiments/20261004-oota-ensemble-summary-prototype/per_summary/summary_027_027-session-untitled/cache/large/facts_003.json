@@ -1,0 +1,233 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud is flying the party over Gracklstugh.",
+    "source_quote": "The party climbs onto the voluminous back of the dragon as he takes flight within the massive cavern.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh sits in a huge cavern, surrounded by small tunnels that prevent Themberchaud from leaving.",
+    "source_quote": "The DM explains the city sits in a huge cavern, but beyond it are only small tunnels, so Themberchaud cannot really leave.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 13 on a Persuasion check to convince Themberchaud to drop the party at the docks.",
+    "source_quote": "Gyrgum rolls a 13 on Persuasion, and a helped reroll comes out worse.",
+    "subject": "persuasion attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud admits he does not know where to investigate.",
+    "source_quote": "Asked where to investigate, Themberchaud reveals he has no clue.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud concedes that the docks might be a district his agents missed.",
+    "source_quote": "Themberchaud asks, \"Are you suggesting that I've missed a crucial district\u2026?\" He concedes, \"Hmm, that's a good point.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud makes an inelegant turn to bank toward the docks.",
+    "source_quote": "As the dragon makes an inelegant turn, the party makes DC 13 Athletics or Acrobatics checks.",
+    "subject": "dragon turn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolls a 12 on an Athletics or Acrobatics check during the dragon's turn.",
+    "source_quote": "Gyrgum gets 12.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin fails his Athletics or Acrobatics check, rolling a natural 3 plus 4.",
+    "source_quote": "Thorin rolls a natural 3 +4, then uses a 1d10 boost and still fails.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls an 8 on an Athletics or Acrobatics check during the dragon's turn.",
+    "source_quote": "Daz gets 8.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Several party members lose their footing and begin to fall off Themberchaud's back.",
+    "source_quote": "Several party members lose their footing and begin to fall.",
+    "subject": "falling party members",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir sprouts wings.",
+    "source_quote": "Zalthir sprouts wings and catches the falling Thorin.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir catches the falling Thorin while flying.",
+    "source_quote": "Zalthir sprouts wings and catches the falling Thorin.",
+    "subject": "Zalthir catch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is level five.",
+    "source_quote": "Zalthir, newly level five, sprouted wings and caught the falling Thorin",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Misty Step and teleports in a silvery mist to a spot next to Zalthir.",
+    "source_quote": "Daz casts Misty Step and teleports in a silvery mist to a spot right next to the flying Zalthir.",
+    "subject": "Daz teleport",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum cries out to Bahamut while falling.",
+    "source_quote": "As Gyrgum falls, he cries out to Bahamut.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar throws a rope to the falling Gyrgum.",
+    "source_quote": "Jimjar saves the falling Gyrgum by tossing a rope to him mid-air.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum catches the rope with a 19 on Acrobatics.",
+    "source_quote": "Gyrgum catches it with a 19 on Acrobatics.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party hauls Gyrgum back up onto the dragon's back.",
+    "source_quote": "The whole party hauls him back up.",
+    "subject": "party rescue",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud flaps harder in distress after seeing the party fall.",
+    "source_quote": "Themberchaud, distraught, flaps harder. \"If dragons could sweat, there would be lots of sweat.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air above Gracklstugh is foul with forge smoke.",
+    "source_quote": "The air is foul with forge smoke.",
+    "subject": "Gracklstugh air",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party ties themselves together with rope.",
+    "source_quote": "The party ties themselves together with rope.",
+    "subject": "rope",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud performs a fly-by of the Forge of Thrazgad.",
+    "source_quote": "Themberchaud performs a fly-by of the Forge of Thrazgad",
+    "subject": "Forge of Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud breathes fire to light the Forge of Thrazgad.",
+    "source_quote": "Themberchaud performs a fly-by of the Forge of Thrazgad, breathing fire to light it while boasting of his own greatness.",
+    "subject": "forge lighting",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar roll their eyes at Themberchaud's ego.",
+    "source_quote": "sees the duergar rolling their eyes at his ego.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The citizens of Gracklstugh see the party riding the dragon.",
+    "source_quote": "Citizens of Gracklstugh witness the party riding the dragon",
+    "subject": "citizen witness",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The citizens mistake the party for the Ember Vanguard.",
+    "source_quote": "mistake them for the legendary and powerful Ember Vanguard, which Daz confirms with a natural 20.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls a natural 20 on Insight.",
+    "source_quote": "which Daz confirms with a natural 20.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The city of Gracklstugh is thrown into hysterics.",
+    "source_quote": "The city is thrown into hysterics.",
+    "subject": "city panic",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "In rumor, Daz is an 18th-level mage able to cast Meteor Swarm.",
+    "source_quote": "with Daz rumored as an 18th-level mage.",
+    "subject": "Daz rumor",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud lands heavily at the docks of the Darklake.",
+    "source_quote": "Themberchaud lands heavily at the docks.",
+    "subject": "docks of the Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud uses his frightful presence to frighten the local populace.",
+    "source_quote": "He roars and uses his frightful presence to frighten the local populace.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum promises to search the docks.",
+    "source_quote": "Gyrgum answers, \"Aye aye, we will search the docks far and wide,\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud departs for his lair.",
+    "source_quote": "before the dragon departs for his lair.",
+    "subject": "dragon departure",
+    "quote_verified": true
+  }
+]

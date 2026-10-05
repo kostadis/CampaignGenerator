@@ -1,0 +1,114 @@
+[
+  {
+    "type": "npc",
+    "fact": "Stool throws a tantrum, bouncing with agitation and threatening to go alone to see Rumpadump if the party refuses.",
+    "source_quote": "He threw what could only be described as a tantrum, bouncing with agitation and threatening to go alone if the others refused.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool attempts to win Thorin over by declaring him \"much nicer than Zalthir.\"",
+    "source_quote": "He even tried to win Thorin over by declaring him \"much nicer than Zalthir.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool calls Zalthir \"a scaredy cat.\"",
+    "source_quote": "Stool calls Zalthir \"a scaredy cat.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir expresses deep skepticism about the mission due to previously scouted infected creatures near Rumpadump's location.",
+    "source_quote": "Zalthir was deeply skeptical. He recalled the frantic, infected creatures they had previously scouted near Rumpadump's location",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A massive ape-like beast was previously scouted near Rumpadump's location.",
+    "source_quote": "including a massive ape-like beast that looked anything but friendly.",
+    "subject": "ape-like beast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool explains that Myconid spores do not turn people into zombies unless the person is killed first.",
+    "source_quote": "Myconids could only calm people and talk to them, and turning someone into a \"zombie\" required them to be killed first.",
+    "subject": "Stool's reassurances on spores",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool explains that Myconids can only calm people three times and communicate by talking, requiring close proximity.",
+    "source_quote": "Myconids can only \"calm you down three times\" and talk to you, and you have to be right up close for either.",
+    "subject": "Stool's reassurances on Myconid abilities",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls Myconid lore confirming they are generally peaceable but capable of stunning or bludgeoning those who get too close.",
+    "source_quote": "Daz recalls his knowledge of Myconids (nature check with advantage), noting they are generally peaceable but capable of stunning or bludgeoning those who get too close.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow used Myconids as target practice in the past.",
+    "source_quote": "They are anthropomorphic walking mushrooms the drow used as target practice",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid spores stun creatures within 5 feet and allow communication within 20 feet.",
+    "source_quote": "Their spores stun within 5 feet, they communicate within 20 feet",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids possess bludgeoning fists.",
+    "source_quote": "they have bludgeoning fists",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Aid on three companions, granting them five temporary hit points for eight hours.",
+    "source_quote": "Gyrgum casts Aid on three party members to bolster their resilience before they depart. Each gains 5 temporary hit points for eight hours.",
+    "subject": "Gyrgum casts Aid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows Stool deeper into the caverns.",
+    "source_quote": "and the group followed the little mushroom child deeper into the caverns.",
+    "subject": "Party departure",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party takes a short rest before arriving at their destination.",
+    "source_quote": "The DM allows a short rest (but not a long rest) before they arrive.",
+    "subject": "rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Stool's friend Rumpadump is reportedly upset.",
+    "source_quote": "pleading with the party for some time to go check on his friend Rumpadump... insisting the party accompany him to see Rumpadump, who is reportedly upset.",
+    "subject": "Rumpadump",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is about Stool's height.",
+    "source_quote": "He says Rumpadump is about his height",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  }
+]

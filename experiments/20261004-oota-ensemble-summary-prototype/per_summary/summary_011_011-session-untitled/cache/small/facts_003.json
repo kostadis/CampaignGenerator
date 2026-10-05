@@ -1,0 +1,261 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a 15-foot shroud of magical darkness around the beholder zombie, leaving just enough visible for companions to target.",
+    "source_quote": "conjuring a 15-foot shroud of magical darkness around the creature while keeping just enough of it visible for his companions to target",
+    "subject": "Zalthir's darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the zombie with bare fists, landing a critical hit that causes it to shudder.",
+    "source_quote": "He struck the zombie with his bare fists in a series of devastating blows, landing one thunderous critical hit that sent a shudder through the floating monstrosity.",
+    "subject": "Zalthir's critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the undead creature with unarmed blows for 9 damage.",
+    "source_quote": "then strikes the undead creature with unarmed blows for 9 damage.",
+    "subject": "Zalthir's unarmed damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fights from inside the darkness, gaining advantage because the blinded creature cannot see him.",
+    "source_quote": "Thorin fought from inside the darkness, where the blinded creature could not see him, and hammered it with advantage.",
+    "subject": "Thorin's advantage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a feinting attack that deals 6 damage and leaves the zombie vexed.",
+    "source_quote": "His feinting attack deals 6 damage and leaves it vexed",
+    "subject": "Thorin's feint",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts a Hill Strike to knock the zombie prone, adding 4 damage.",
+    "source_quote": "his Hill Strike adds 4",
+    "subject": "Thorin's Hill Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prone effect from Thorin's strike fails because the floating beholder zombie is immune to being knocked prone.",
+    "source_quote": "only to learn that a floating beholder zombie is immune to being knocked prone.",
+    "subject": "Prone immunity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes a barrage of Magic Missiles against the floating undead orb for 15 damage.",
+    "source_quote": "Daz unleashed a barrage of Magic Missiles for 15 damage",
+    "subject": "Daz's Magic Missiles",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels divine power to scorch the undead from within.",
+    "source_quote": "while Gyrgum channeled divine power to scorch the undead from within",
+    "subject": "Gyrgum's Divine Spark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Divine Spark, dealing 4 damage to the zombie as it saves.",
+    "source_quote": "Gyrgum uses Divine Spark. The zombie saves but takes 4 damage.",
+    "subject": "Gyrgum's Divine Spark damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A ray of sickly light hits Gyrgum for 10 damage and poisons him.",
+    "source_quote": "A ray of sickly light, which the DM compared to a Dalek, hit Gyrgum for 10 damage and poisoned him.",
+    "subject": "Gyrgum poisoned",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz misses a saving throw against a beam, becoming paralyzed and helpless.",
+    "source_quote": "Another beam struck Daz, who missed the save by a single point and was left paralyzed and helpless.",
+    "subject": "Daz paralyzed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 13 against paralysis, failing the save, with a new save required at the end of each of his turns.",
+    "source_quote": "Daz rolls a 13 and is paralyzed, with a new save at the end of each of his turns.",
+    "subject": "Daz's paralysis details",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is paralyzed and helpless.",
+    "source_quote": "left paralyzed and helpless",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is poisoned.",
+    "source_quote": "hit Gyrgum for 10 damage and poisoned him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool, Hemeth, and the rest of the companion crew debate briefly before rowing hard toward the fight to assist the party.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight",
+    "subject": "Crew intervention",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool debates briefly with the crew before rowing toward the fight to assist the party.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth debates briefly with the crew before rowing toward the fight to assist the party.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crew raises their crossbows and lets fly a first volley, landing two bolts for 8 damage.",
+    "source_quote": "The crew raised their crossbows and let fly a first volley... The crew's first crossbow volley lands two bolts for 8 damage",
+    "subject": "First crew volley",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The zombie bites Zalthir for 16 damage.",
+    "source_quote": "The zombie bit Zalthir for 16 damage",
+    "subject": "Zalthir bitten",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has taken 16 damage from a zombie bite.",
+    "source_quote": "The zombie bit Zalthir for 16 damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to Turn Undead, but the zombie succeeds on its saving throw.",
+    "source_quote": "Gyrgum's attempt to Turn Undead failed against the creature's saving throw.",
+    "subject": "Turn Undead failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches the zombie for 5 damage and then disengages.",
+    "source_quote": "Zalthir punches it for 5 and disengages.",
+    "subject": "Zalthir disengage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands a critical strike with his fists for 17 damage.",
+    "source_quote": "Zalthir then lands a critical strike with his fists for 17 damage.",
+    "subject": "Zalthir critical strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the zombie with advantage from the vex condition for 9 damage.",
+    "source_quote": "Thorin hits with advantage from vex for 9.",
+    "subject": "Thorin advantage hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The zombie fires its paralyzing ray at a crew member, who succeeds on the saving throw.",
+    "source_quote": "fires its paralyzing ray at a crew member, who saves",
+    "subject": "Crew target ray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companion crew's second crossbow volley deals 12 damage, causing the beholder zombie to explode into ash.",
+    "source_quote": "The companion crew's second crossbow volley deals 12 damage and causes the monster to explode into ash.",
+    "subject": "Zombie killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's paralysis ends with the zombie's death.",
+    "source_quote": "Daz's paralysis ended with its death.",
+    "subject": "Daz freed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Cure Wounds on Zalthir, restoring 15 of the 16 hit points lost.",
+    "source_quote": "Gyrgum moved quickly to Zalthir's side and cast Cure Wounds, restoring 15 of the 16 hit points the monk had lost to the creature's savage bite.",
+    "subject": "Cure Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party turns back to Brannum and demands the truth about the shortcut he chose.",
+    "source_quote": "the party turned back to Brannum and demanded the truth about the shortcut he had chosen",
+    "subject": "Brannum confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum is confronted by the party regarding the shortcut he chose.",
+    "source_quote": "the party turned back to Brannum and demanded the truth about the shortcut he had chosen",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin calls Brannum's first answer 'bullshit'.",
+    "source_quote": "Thorin called his first answer \"bullshit\"",
+    "subject": "Thorin's insult",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "An insight check proves Thorin right about Brannum's answer.",
+    "source_quote": "and an insight check proved him right",
+    "subject": "Insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Beholder Zombie explodes into ash after taking damage from the second crew volley.",
+    "source_quote": "The beholder zombie shuddered, crumpled, and exploded into ash",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Beholder Zombie is dead, killed by the party and the companion crew.",
+    "source_quote": "The companion crew's second crossbow volley deals 12 damage and causes the monster to explode into ash",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party faces the beholder zombie in the dark waters of the Darklake.",
+    "source_quote": "terrifying beholder zombie in the dark waters of the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir spends a focus point to create the sphere of magical darkness.",
+    "source_quote": "Zalthir creates a 15-foot sphere of magical darkness (spending a focus point)",
+    "subject": "Focus Point",
+    "quote_verified": true
+  }
+]

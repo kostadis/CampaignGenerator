@@ -1,0 +1,16 @@
+[
+  {
+    "type": "npc",
+    "fact": "Buppido is currently imprisoned in Ghohlbrorn's Lair.",
+    "source_quote": "The party returns to Ghohlbrorn's Lair... leads the party upstairs to a forlorn Buppido.",
+    "subject": "Buppido",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Buppido killed one member of the party's group in the past.",
+    "source_quote": "he did kill one of our party members.",
+    "subject": "Buppido's killing",
+    "quote_verified": true
+  }
+]

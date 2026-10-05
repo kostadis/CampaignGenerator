@@ -1,0 +1,107 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is inside the caverns of Blingdenstone.",
+    "source_quote": "The party arrived at a gate deep within the caverns of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Deep gnome guards who had previously admitted the party catch up to them at the gate.",
+    "source_quote": "where the deep gnome guards who had previously admitted them came huffing and puffing after them",
+    "subject": "deep gnome guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard with a squeaky voice asks the party to confirm their escape from Velkynvelve and the Drow.",
+    "source_quote": "One squeaky-voiced guard asked, \u201cSo you escaped from Velkynvelve from the Drow. Is this correct?\u201d",
+    "subject": "squeaky-voiced guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant failed to read the latest report all the way through.",
+    "source_quote": "the visibly embarrassed sergeant had not read the latest report all the way through",
+    "subject": "sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The officer publicly admonishes the sergeant with 'Shame on you' and states the importance of reading orders thoroughly.",
+    "source_quote": "The officer publicly admonishes the sergeant: \u201cShame on you,\u201d then stresses, \u201cIt\u2019s very important in any military operation that people read the orders thoroughly.\u201d",
+    "subject": "admonishment of sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The officer appears increasingly pleased with his own handling of the situation.",
+    "source_quote": "while the officer appears increasingly pleased with his own handling of the situation",
+    "subject": "officer",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock took their current territory from the Drow.",
+    "source_quote": "Clan Diggermattock had taken this territory from the Drow",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Standing orders require escapees from the Drow to be escorted immediately to Chief Dorbo of Clan Diggermattock.",
+    "source_quote": "Standing orders required any escapees from the Drow to be escorted immediately to Chief Dorbo of Clan Diggermattock",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo wants to question the party to help the deep gnomes better prepare their defenses.",
+    "source_quote": "Chief Dorbo wanted to question the party so the deep gnomes could better prepare their defenses",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check determines that the guards' request is sincere and contains no malevolence.",
+    "source_quote": "An insight check established that the request was sincere and contained no malevolence",
+    "subject": "insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Svirfneblin routinely seek intelligence from anyone who has escaped the Drow.",
+    "source_quote": "the deep gnomes routinely sought intelligence from anyone who had escaped the Drow",
+    "subject": "Svirfneblin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A party member jokes that going to the meeting is preferable to trying to kill all the guards.",
+    "source_quote": "One party member joked that this was preferable to \u201ctrying to kill all the guards, which was the other thing I was considering.\u201d",
+    "subject": "party member",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A party member remarks that there were so many conspiracies they previously encountered that they needed a spreadsheet to keep track of them.",
+    "source_quote": "There were so many conspiracies. I needed a friggin\u2019 spreadsheet to keep track of the conspiracies.",
+    "subject": "party member",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to accompany the guards to Diggermattock Hall.",
+    "source_quote": "The party agrees to accompany the guards to Diggermattock Hall",
+    "subject": "agreement to go to Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is the destination the party agrees to accompany the guards to.",
+    "source_quote": "The party agrees to accompany the guards to Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  }
+]

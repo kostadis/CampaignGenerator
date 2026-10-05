@@ -1,0 +1,177 @@
+[
+  {
+    "type": "location",
+    "fact": "The party reached a shallow, swiftly flowing stream after passing a waterfall.",
+    "source_quote": "reached a shallow, swiftly flowing stream",
+    "subject": "Stream 040.06",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Crystalline formations rise on both sides of the stream.",
+    "source_quote": "Crystalline formations rose on both sides",
+    "subject": "Stream 040.06",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Rough-hewn stairs climb thirty feet from the stream to a barren ledge.",
+    "source_quote": "rough-hewn stairs climbed thirty feet to a barren ledge",
+    "subject": "Barren ledge",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ledge is occupied by two winged statues.",
+    "source_quote": "barren ledge occupied by two winged statues",
+    "subject": "Barren ledge",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool approaches the statues to clean them on the party's instruction.",
+    "source_quote": "the party invited Glabbagool to clean them",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first statue animates into a gargoyle when Glabbagool approaches.",
+    "source_quote": "both statues animated",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The second statue animates into a gargoyle when Glabbagool approaches.",
+    "source_quote": "both statues animated",
+    "subject": "Gargoyle 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gargoyle's ambush plan was disrupted by Glabbagool's appearance.",
+    "source_quote": "Their customary plan of remaining motionless until prey drew near was disrupted by the baffling sight of a friendly gelatinous cube",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rushed the first gargoyle and struck it with repeated punches.",
+    "source_quote": "Zalthir rushed the first gargoyle and battered it with repeated punches",
+    "subject": "Zalthir attacks gargoyle",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first gargoyle is wounded by Zalthir's punches.",
+    "source_quote": "The wounded creature disengaged",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wounded gargoyle flew away in search of a visible target.",
+    "source_quote": "flew away in search of a target it could see",
+    "subject": "Gargoyle 1 flees",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead on the flying gargoyle.",
+    "source_quote": "Daz cast Toll the Dead",
+    "subject": "Daz casts Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gargoyle resists the Toll the Dead cantrip and takes no damage.",
+    "source_quote": "the gargoyle resisted the cantrip and took no damage",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin moves closer and throws darts at the flying gargoyle.",
+    "source_quote": "Thorin moved closer and hurled darts at it",
+    "subject": "Thorin attacks gargoyle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's second dart kills the gargoyle despite its resistance.",
+    "source_quote": "finishing it with his second dart despite its resistance to nonmagical piercing attacks",
+    "subject": "Thorin kills Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gargoyle 1 is dead.",
+    "source_quote": "finishing it with his second dart",
+    "subject": "Gargoyle 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum shoots the second gargoyle with his crossbow.",
+    "source_quote": "Gyrgum shot the second gargoyle with his crossbow",
+    "subject": "Gyrgum attacks gargoyle",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gargoyle 2 takes reduced damage from Gyrgum's crossbow bolts.",
+    "source_quote": "likewise dealing reduced damage",
+    "subject": "Gargoyle 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second gargoyle flies at Gyrgum and strikes him with bite and claws.",
+    "source_quote": "The creature retaliated by flying directly at him and striking with both bite and claws",
+    "subject": "Gargoyle 2 attacks Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes ten points of damage from the gargoyle's attack.",
+    "source_quote": "for ten points of damage",
+    "subject": "Gyrgum damaged",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes about gargoyle venom and rabies after Gyrgum is attacked.",
+    "source_quote": "prompting jokes about gargoyle venom and rabies",
+    "subject": "Party jokes about rabies",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A crazed earth elemental erupts from the ground near the water.",
+    "source_quote": "a crazed earth elemental erupted from the ground near the water",
+    "subject": "Crazed earth elemental",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The earth elemental prepares to attack the party.",
+    "source_quote": "prepared to attack",
+    "subject": "Crazed earth elemental",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The arrival of the crazed earth elemental confirms that elementals in the Rockblight are driven mad.",
+    "source_quote": "Its appearance confirmed that the warnings about elementals being driven mad in the Rockblight were true",
+    "subject": "Rockblight corruption confirmed",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party wonders what Maximilian's Earthen Grasp would do if cast on an earth elemental.",
+    "source_quote": "the party wondered what would happen if Maximilian\u2019s Earthen Grasp were cast upon an earth elemental",
+    "subject": "Earthen Grasp interaction",
+    "quote_verified": true
+  }
+]

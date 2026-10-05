@@ -1,0 +1,121 @@
+[
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown increasingly erratic.",
+    "source_quote": "The Deepking had grown increasingly erratic",
+    "subject": "The Deepking",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Deepking granted all weapons contracts exclusively to Clan Steelshadow.",
+    "source_quote": "His decision to grant all weapons contracts exclusively to his own clan, Clan Steelshadow",
+    "subject": "weapons contract grant",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The exclusive weapons contracts granted by the Deepking have bred deep resentment across the city.",
+    "source_quote": "had bred deep resentment across the city",
+    "subject": "Clan Steelshadow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud's fire is essential to the city's industrial output.",
+    "source_quote": "whose fire was essential to the city's industrial output",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud was convinced by his handlers that he was the real power in the city.",
+    "source_quote": "had been convinced by his handlers in the Keepers of the Flame that he was the real power in the city",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame act as handlers for Themberchaud.",
+    "source_quote": "convinced by his handlers in the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has lately started to grow up.",
+    "source_quote": "He had lately \"started to grow up\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud has noticed that things might not be as they seem.",
+    "source_quote": "noticed things might not be as they seemed",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar became frantic about the dragon egg because Themberchaud noticed discrepancies.",
+    "source_quote": "That was why Gartokkar had become so frantic about the dragon egg.",
+    "subject": "Gartokkar's panic",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "If Themberchaud were absent, the Keepers of the Flame might face a layoff.",
+    "source_quote": "Without Themberchaud, the Keepers of the Flame might face \"a layoff.\"",
+    "subject": "layoff threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz points out that the party has never actually seen evidence the Derro were behind the events.",
+    "source_quote": "Daz pointed out that the party had never actually seen evidence the Derro were behind any of this.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin warns against giving Errde air cover to go on a slaughter rampage.",
+    "source_quote": "Thorin warned against giving Errde \"air cover to go on a slaughter rampage.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame formally threatened permanent hostility if betrayed.",
+    "source_quote": "the Keepers of the Flame had formally threatened permanent hostility if betrayed",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Unfinished business and unpaid contracts keep pulling the party back toward the depths.",
+    "source_quote": "Unfinished business and unpaid contracts kept pulling them back toward the depths",
+    "subject": "party contracts",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party's only truly paid job is to find out what was going on with the egg, retrieve it, and investigate the Council of Savants.",
+    "source_quote": "Their only truly paid job was to find out what was going on with the egg, retrieve it, and investigate the Council of Savants.",
+    "subject": "party mission",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is the subject of the party's paid investigative mission.",
+    "source_quote": "investigate the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg is the subject of a paid mission to retrieve it and investigate its status.",
+    "source_quote": "find out what was going on with the egg, retrieve it",
+    "subject": "dragon egg",
+    "quote_verified": true
+  }
+]

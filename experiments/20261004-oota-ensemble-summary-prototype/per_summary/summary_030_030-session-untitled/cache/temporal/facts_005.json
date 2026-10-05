@@ -1,0 +1,37 @@
+[
+  {
+    "type": "monster",
+    "fact": "The harvested magical vines yield six ropes' worth of material.",
+    "source_quote": "A 2d6 roll yields six ropes' worth",
+    "subject": "vines yield",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The harvested magical vines are valued at 300 gold pieces.",
+    "source_quote": "valued at 300 gold pieces",
+    "subject": "vines value",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "A long rest would push the timeline into the next day.",
+    "source_quote": "a long rest would push into the next day",
+    "subject": "rest duration implication",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Builders cavern is filled with thousands of glowing fungi.",
+    "source_quote": "thousands of glowing fungi that filled the air",
+    "subject": "Circle of Builders fungal density",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The rule of thumb for shade construction is three zurkhwood mushrooms to the square foot.",
+    "source_quote": "about three zurkhwood mushrooms to the square foot",
+    "subject": "zurkhwood construction ratio",
+    "quote_verified": true
+  }
+]

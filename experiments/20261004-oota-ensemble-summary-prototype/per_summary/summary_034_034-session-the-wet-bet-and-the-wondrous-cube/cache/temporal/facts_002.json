@@ -1,0 +1,30 @@
+[
+  {
+    "type": "location",
+    "fact": "The passage entered by the party is 10 feet high.",
+    "source_quote": "a 10-foot-high passage whose walls glistened with dark, dripping water",
+    "subject": "flooding passage height",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is destroyed by Zalthir's attacks.",
+    "source_quote": "Zalthir stepped forward and destroyed the creature with two powerful unarmed blows",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first strike against the gray ooze deals 10 damage.",
+    "source_quote": "Zalthir strikes for 10 damage",
+    "subject": "Zalthir damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's second strike against the gray ooze deals 12 damage.",
+    "source_quote": "then 12 more, killing the ooze",
+    "subject": "Zalthir damage 2",
+    "quote_verified": true
+  }
+]

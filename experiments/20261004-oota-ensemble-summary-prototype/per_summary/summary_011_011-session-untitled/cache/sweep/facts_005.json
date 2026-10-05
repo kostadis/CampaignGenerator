@@ -1,0 +1,275 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz spots a small chest resting on the lakebed surrounded by undead.",
+    "source_quote": "Daz spotted a small chest resting on the lakebed, surrounded by the undead",
+    "subject": "Spotting the chest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lakebed contains a small chest surrounded by undead and wreckage of boats.",
+    "source_quote": "Among the wreckage, Daz spotted a small chest resting on the lakebed, surrounded by the undead",
+    "subject": "lakebed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Undead creatures are located on the lakebed surrounding the chest.",
+    "source_quote": "surrounded by the undead",
+    "subject": "undead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz attempts to use Shape Water to float the chest up.",
+    "source_quote": "Daz first wanted to use Shape Water to float the chest up",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that using Shape Water to float the chest is too great a stretch of the rules.",
+    "source_quote": "The DM called that a stretch of the rules, though a clever one",
+    "subject": "DM ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir points out that someone other than a squishy magic-user should make the dive.",
+    "source_quote": "Zalthir pointed out that someone other than a squishy magic-user should make the dive",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin volunteers to make the dive to retrieve the chest.",
+    "source_quote": "Thorin volunteered: \"I'm going to regret this, but, you know, somebody's got to do it.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Shield of Faith on Thorin.",
+    "source_quote": "Gyrgum cast Shield of Faith on Thorin",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts a protective shield of faith on Thorin, granting him +2 AC for up to 10 minutes.",
+    "source_quote": "Gyrgum casts a protective shield of faith on Thorin before he dives (+2 AC for up to 10 minutes)",
+    "subject": "Casting Shield of Faith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz shapes a bubble of breathable air for Thorin.",
+    "source_quote": "Daz shaped a bubble of breathable air",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir creates magical darkness around the dive site.",
+    "source_quote": "Zalthir created magical darkness around the dive site",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zombies are lurking below the water at the dive site.",
+    "source_quote": "to blind the zombies lurking below",
+    "subject": "zombies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin slips into the water and descends without making a sound.",
+    "source_quote": "Thorin slipped into the water and descended without making a sound",
+    "subject": "Thorin's dive",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin returns to the surface with the chest.",
+    "source_quote": "He returned to the surface with the chest",
+    "subject": "Thorin's retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "No zombies stirred while Thorin retrieved the chest.",
+    "source_quote": "not a single zombie had stirred",
+    "subject": "zombies",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contains 120 silver pieces.",
+    "source_quote": "they found 120 silver",
+    "subject": "chest",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contains 30 gold pieces.",
+    "source_quote": "and 30 gold pieces",
+    "subject": "chest",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contains four spell scrolls.",
+    "source_quote": "four spell scrolls",
+    "subject": "chest",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contains a drifting globe of light.",
+    "source_quote": "and a drifting globe of light",
+    "subject": "driftglobe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum suggests he deserves a share of the treasure.",
+    "source_quote": "Brannum immediately suggested he deserved a share",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum claims the treasure belonged to his crew.",
+    "source_quote": "since the treasure had belonged to his crew",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz invites Brannum to argue his claim with the zombies.",
+    "source_quote": "Daz dismissed the idea by inviting him to argue it out with the zombies below",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz twinkles his fingers to send water spraying up around the duergar.",
+    "source_quote": "twinkling his fingers to send water spraying up around the duergar",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch attempts to claim a share of the treasure.",
+    "source_quote": "Brannum Redmarch attempts to claim a share of the treasure",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party debates investigating the nearby limestone islet.",
+    "source_quote": "The party debates investigating the nearby limestone islet",
+    "subject": "limestone islet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Find Traps on the area.",
+    "source_quote": "Gyrgum (\"one of my flaws is that I'm terribly curious\") casts Find Traps",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum finds no traps on the islet.",
+    "source_quote": "casts Find Traps and finds none",
+    "subject": "Find Traps result",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suspects something bad happens if they set foot on the islet.",
+    "source_quote": "Thorin suspects something bad happens if they set foot there",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum uses a mending cantrip to repair the boat's hull.",
+    "source_quote": "Gyrgum uses a mending cantrip to repair the boat's hull",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The boat's hull was damaged and repaired by Gyrgum.",
+    "source_quote": "Gyrgum uses a mending cantrip to repair the boat's hull",
+    "subject": "boat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The invisible-capable duergar wants a share of the treasure.",
+    "source_quote": "the invisible-capable duergar down, but he wants a share",
+    "subject": "invisible-capable duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir refers to magic users as human pincushions.",
+    "source_quote": "someone who isn't \"a human pincushion like a magic user\" should go",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM explains that a scroll can be copied into a spellbook or kept for one use outside spell slots.",
+    "source_quote": "The DM explains how scrolls work: a scroll can be copied into a spellbook or kept for one use outside spell slots",
+    "subject": "Scroll Mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM explains the new edition's Magic action.",
+    "source_quote": "The DM also explains the new edition's \"Magic action.\"",
+    "subject": "Magic Action",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The driftglobe has a Daylight feature.",
+    "source_quote": "The table checks how the driftglobe's Daylight interacts with Zalthir's Darkness",
+    "subject": "driftglobe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has a Darkness spell active.",
+    "source_quote": "interacts with Zalthir's Darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daylight dispels darkness from spells of 3rd level or lower.",
+    "source_quote": "Daylight dispels darkness from spells of 3rd level or lower",
+    "subject": "Daylight interaction",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The question of Darkness's cast level is left for further research.",
+    "source_quote": "and the DM leaves the question of Darkness's cast level for further research",
+    "subject": "Darkness Cast Level",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Aquatic zombies guard the chest at the bottom of the lake.",
+    "source_quote": "Daz spots several sunken boats and a small chest at the bottom of the lake, surrounded by aquatic zombies",
+    "subject": "aquatic zombies",
+    "quote_verified": true
+  }
+]

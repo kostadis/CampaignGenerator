@@ -1,0 +1,317 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud deposited the party at the docks.",
+    "source_quote": "Themberchaud deposited the party at the docks",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud used his frightful presence to terrify the locals.",
+    "source_quote": "used his frightful presence to terrify the locals",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud flapped off toward his lair.",
+    "source_quote": "the dragon flapped off toward his lair",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud believed his agents were on a vital mission.",
+    "source_quote": "convinced his agents were on a vital mission",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum promised to search the docks far and wide.",
+    "source_quote": "Gyrgum promised to \"search the docks far and wide\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum attempted to pass in the name of Themberchaud.",
+    "source_quote": "Gyrgum's attempt to pass \"in the name of Themberchaud\" failed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled an 8 on his attempt to pass.",
+    "source_quote": "rolling an 8 and then worse",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum produced a caltrop from his pack.",
+    "source_quote": "Gyrgum solemnly produced a caltrop from his pack",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum pressed the caltrop into the guard's hand.",
+    "source_quote": "pressed it into the guard's hand as a secret symbol of the conspiracy",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum advised the guard to file down the sharp points of the caltrop.",
+    "source_quote": "He then helpfully advised him to file down the sharp points.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stated they would hide on the boat to spring the trap.",
+    "source_quote": "Gyrgum said they would hide on the boat to spring the trap",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum explained that the dragon ride was meant to draw the real Vanguard to the spot.",
+    "source_quote": "Gyrgum explains the dragon ride was meant to draw the real Vanguard to this spot",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggested deputizing the guard.",
+    "source_quote": "When Thorin suggested deputizing him",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin quipped that to save the village, they had to destroy the village.",
+    "source_quote": "Thorin quips, \"And to save the village, we had to destroy the village.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin concluded they must be as powerful as expected if they return.",
+    "source_quote": "Thorin concluded, \"We better be as powerful as they think we are if we come back.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir considered silencing the guard.",
+    "source_quote": "Zalthir considers silencing him",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar guard stepped forward to halt the party.",
+    "source_quote": "A lone Duergar guard stepped forward, trembling but dutiful, and raised his hand to halt them",
+    "subject": "The Duergar Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar guard halted the party in the name of the Deepking.",
+    "source_quote": "halt them in the name of the Deepking",
+    "subject": "The Duergar Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar guard pulled out a wanted poster.",
+    "source_quote": "The guard pulled out a wanted poster",
+    "subject": "The Duergar Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar guard recognized the party's faces as those of the Ember Vanguard.",
+    "source_quote": "recognized the party's faces as those of the Ember Vanguard",
+    "subject": "The Duergar Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar guard suggested the party wait to meet the real Vanguard.",
+    "source_quote": "The guard suggested the party wait there to meet the real Vanguard",
+    "subject": "The Duergar Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar guard rushed off to inform Captain Errde.",
+    "source_quote": "rushed off to inform Captain Errde",
+    "subject": "The Duergar Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Duergar guard was visibly relieved he did not have to fight anyone.",
+    "source_quote": "The guard, enormously relieved that he would not have to fight anyone",
+    "subject": "The Duergar Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard proposed fetching Captain Errde.",
+    "source_quote": "while he fetches Errde",
+    "subject": "Captain Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard rushed off to inform Captain Errde.",
+    "source_quote": "rushed off to inform Captain Errde",
+    "subject": "Captain Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party could invoke their work for Errde.",
+    "source_quote": "The DM notes the party can also invoke their work for Errde",
+    "subject": "Captain Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the one person the party has not betrayed.",
+    "source_quote": "Hgraam is the one person they have not betrayed",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Giants are friendly with the party.",
+    "source_quote": "the Stone Giants are good with them",
+    "subject": "Stone Giants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro High Council probably wants the party dead.",
+    "source_quote": "The Derro High Council and the Gray Ghosts probably want them dead.",
+    "subject": "Derro High Council",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts probably want the party dead.",
+    "source_quote": "The Derro High Council and the Gray Ghosts probably want them dead.",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party resembles the Ember Vanguard.",
+    "source_quote": "The Deepking hates the Ember Vanguard, which the party only resembles.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking hates the Ember Vanguard.",
+    "source_quote": "The Deepking hates the Ember Vanguard",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party landed at the docks.",
+    "source_quote": "Themberchaud deposited the party at the docks",
+    "subject": "The Docks",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party pushed off into the Darklake.",
+    "source_quote": "seize the boat and push off into the Darklake",
+    "subject": "The Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The guard carried a wanted poster featuring the faces of the Ember Vanguard.",
+    "source_quote": "The guard pulled out a wanted poster and recognized the party's faces as those of the Ember Vanguard",
+    "subject": "Wanted Poster",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum used a caltrop as a secret symbol of a conspiracy.",
+    "source_quote": "Gyrgum solemnly produced a caltrop from his pack and pressed it into the guard's hand as a secret symbol of the conspiracy",
+    "subject": "Caltrop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud deposited the party at the docks with a thunderous, ungainly landing.",
+    "source_quote": "Themberchaud deposited the party at the docks with a thunderous, ungainly landing",
+    "subject": "Themberchaud landing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud roared for good measure.",
+    "source_quote": "He roared for good measure",
+    "subject": "Themberchaud roaring",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard raised his hand to halt the party.",
+    "source_quote": "raised his hand to halt them in the name of the Deepking",
+    "subject": "Guard Halting Party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard recognized the party as the Ember Vanguard.",
+    "source_quote": "recognized the party's faces as those of the Ember Vanguard",
+    "subject": "Guard Recognizing Party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party claimed they were undercover agents impersonating the Ember Vanguard.",
+    "source_quote": "claiming they were undercover agents impersonating the Ember Vanguard to lure out the real threat",
+    "subject": "Deception Claim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum officially 'deputized' the guard by giving him the caltrop.",
+    "source_quote": "officially \"deputizing\" him",
+    "subject": "Deputizing Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard rushed off to inform Captain Errde.",
+    "source_quote": "rushed off to inform Captain Errde",
+    "subject": "Guard Running for Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party seized the boat and pushed off into the Darklake.",
+    "source_quote": "seize the boat and push off into the Darklake",
+    "subject": "Seizing Boat",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is maintaining a deception that they are undercover agents impersonating the Ember Vanguard.",
+    "source_quote": "claiming they were undercover agents impersonating the Ember Vanguard to lure out the real threat",
+    "subject": "Undercover Impersonation",
+    "quote_verified": true
+  }
+]

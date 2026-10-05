@@ -1,0 +1,107 @@
+[
+  {
+    "type": "location",
+    "fact": "Hidden Shore is a desolate, lonely beach identified by Sarith as the path toward the Lost Tomb of Khaem.",
+    "source_quote": "party arrived at a desolate, lonely beach that Sarith identified as the path toward the Lost Tomb of Khaem",
+    "subject": "Hidden Shore",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith identifies the current location as the landing point for the tomb.",
+    "source_quote": "We must disembark here and leave our boat and go into the underdark again.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party previously heard about the Lost Tomb of Khaem from Fargas Rumblefoot.",
+    "source_quote": "They had heard about the tomb from Fargas Rumblefoot",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is a gnome who was rescued by the party from spider webs long ago.",
+    "source_quote": "the gnome they rescued in the spider webs long ago",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses options for disposing of their boat, including burning, smashing, sinking, or dragging it into caves.",
+    "source_quote": "The options are burning, smashing, sinking, or dragging it into the caves.",
+    "subject": "boat disposal discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if there is anyone available to sell the boat to.",
+    "source_quote": "Thorin asks whether there is anyone to sell the boat to",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith confirms there is no one on the beach to sell the boat to.",
+    "source_quote": "Sarith glances at the empty beach and says no.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith proposes sinking the boat with the intention of repairing it with the Mending spell later.",
+    "source_quote": "Sarith suggests sinking the boat rather than burning it, so it can be recovered later. He asks whether anyone has Mending.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party intentionally scuttles their boat, letting it sink beneath the water.",
+    "source_quote": "The party intentionally scuttles the boat, letting it sink beneath the dark waters",
+    "subject": "scuttling the boat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum punches a hole in the boat to facilitate its sinking.",
+    "source_quote": "Gyrgum happily punches the hole.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith leads the group away from the Darklake and back into the winding tunnels of the Underdark.",
+    "source_quote": "Sarith leads the group away from the Darklake and back into the winding tunnels of the Underdark",
+    "subject": "departure from shore",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The journey to the beach took four days.",
+    "source_quote": "Two more uneventful days pass. The stirge swarm is the only encounter of the four-day journey.",
+    "subject": "journey duration",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stirge swarm was encountered during the four-day journey to the beach.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "stirge swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM notes that the Drow will eventually come looking for the party.",
+    "source_quote": "The DM notes the Drow will eventually come looking.",
+    "subject": "Drow pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is concerned about being tracked by the Gray Ghosts.",
+    "source_quote": "Concerned about being tracked by the Drow or the Gray Ghosts",
+    "subject": "Gray Ghosts pursuit",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,289 @@
+[
+  {
+    "type": "location",
+    "fact": "Thorin's Sentinel feat triggers opportunity attacks against foes attacking someone other than him within 5 feet.",
+    "source_quote": "within 5 feet",
+    "subject": "Sentinel feat range",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin is limited to one opportunity attack reaction per round due to the Sentinel feat.",
+    "source_quote": "uses his reaction, so only one per round",
+    "subject": "Sentinel reaction limit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Daz has an Armor Class of 11.",
+    "source_quote": "Daz, whose AC is only 11",
+    "subject": "Daz armor class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Centipedes deal 10 damage to Daz.",
+    "source_quote": "The centipedes bite Daz... for 10 damage",
+    "subject": "Centipedes bite Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum has an Armor Class of 14.",
+    "source_quote": "swarm attacks Gyrgum (AC 14)",
+    "subject": "Gyrgum armor class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals 9 radiant damage to a centipede swarm using True Strike.",
+    "source_quote": "He deals 9 radiant damage",
+    "subject": "Gyrgum damage output",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm at half hit points deals half damage.",
+    "source_quote": "swarms at half hit points do half damage",
+    "subject": "Swarm half HP damage rule",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin has an Armor Class of 18.",
+    "source_quote": "rolls exactly 18 against Thorin's AC 18",
+    "subject": "Thorin armor class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm deals 10 damage to Thorin.",
+    "source_quote": "hits for 10",
+    "subject": "Swarm damage to Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A swarm lands a critical hit but deals only 10 damage.",
+    "source_quote": "A swarm lands a critical, but it deals only 10 damage",
+    "subject": "Swarm critical damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 7 damage to the swarm on Gyrgum.",
+    "source_quote": "punches the swarm on Gyrgum for 7 damage",
+    "subject": "Zalthir damage to swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 15 damage to the final swarm with magic missiles.",
+    "source_quote": "Daz fires magic missiles at the final swarm for 15 damage",
+    "subject": "Daz damage to swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 8 damage to the last swarm, killing it.",
+    "source_quote": "Thorin hits the last swarm for 8 and kills it",
+    "subject": "Thorin killing blow",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Droki is expected to complete his circuit and return within a day.",
+    "source_quote": "he will likely come round again within a day or so",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Prayer of Healing on five creatures: Thorin, Daz, Zalthir, himself, and the ghost.",
+    "source_quote": "Gyrgum casts Prayer of Healing on up to five creatures",
+    "subject": "Prayer of Healing casting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "This was the first of Gyrgum's three 2nd-level spell slots.",
+    "source_quote": "It is the first of Gyrgum's three 2nd-level spell slots",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoths accompanied the dancing myconids.",
+    "source_quote": "accompanied by two hulking quaggoths",
+    "subject": "quaggoths count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three myconid adults are present in the cave.",
+    "source_quote": "Three myconid adults stand five feet tall",
+    "subject": "myconid adults",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The myconid adults are five feet tall.",
+    "source_quote": "Three myconid adults stand five feet tall",
+    "subject": "myconid adult height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The myconid sprouts are half the height of the adults (2.5 feet).",
+    "source_quote": "and the sprouts are half that height",
+    "subject": "myconid sprout height",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoth spore servants are identified in the cave.",
+    "source_quote": "The scouts identify two larger ape-like creatures as quaggoth spore servants",
+    "subject": "quaggoth spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir succeeds on a Stealth check with a roll of 26 while scouting ahead.",
+    "source_quote": "Zalthir stealthily scouts ahead with a Stealth roll of 26",
+    "subject": "Zalthir stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "About ten derro soldiers are guarding the obelisk chamber.",
+    "source_quote": "about ten derro guarded the obelisk chamber",
+    "subject": "derro guard count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zubrisca is always accompanied by four bodyguards.",
+    "source_quote": "leader-type figure named Zubriska, always surrounded by four bodyguards",
+    "subject": "Zubrisca bodyguard count",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The faerzress stopped working approximately six or seven months prior to the session.",
+    "source_quote": "Some six or seven months ago the faerzress blinked out",
+    "subject": "faerzress blink timing",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The flumph's home has been corrupted over the past year.",
+    "source_quote": "corrupted over the past year",
+    "subject": "corruption duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides not to face roughly ten derro without taking a long rest first.",
+    "source_quote": "decides against facing roughly ten derro without a long rest",
+    "subject": "derro confrontation decision",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The group of derro guarding the obelisk consists of about ten creatures.",
+    "source_quote": "About ten derro are in the obelisk area",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session date is indicated as 017.05.",
+    "source_quote": "Negotiations with the Keepers of the Flame 017.05",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party faces ten derro without having taken a long rest.",
+    "source_quote": "Facing ten derro without a long rest seemed unwise",
+    "subject": "derro count",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Keepers of the Flame are closer to the party than the Gray Ghost lair.",
+    "source_quote": "They went first to the Keepers of the Flame, who were closer",
+    "subject": "Gray Ghost lair distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar initially offers 2,000 gold pieces for the retrieval of the egg.",
+    "source_quote": "He offers 2,000 gold pieces",
+    "subject": "initial payment offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar sets the payment terms at 30% up front and 70% on delivery.",
+    "source_quote": "insisted on 30% up front and 70% on delivery",
+    "subject": "payment terms",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar concedes an extra 1,000 gold pieces after the party raises a confidentiality rider.",
+    "source_quote": "conceded an extra thousand",
+    "subject": "payment increase",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar's refusal of the double fee (4,000 gp) implies the original agreed fee was 2,000 gp.",
+    "source_quote": "He refuses 4,000",
+    "subject": "Themberchaud's share of the fee",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The final upfront payment settled is 1,100 gold pieces.",
+    "source_quote": "settled the upfront terms at 1,100 gold pieces",
+    "subject": "upfront payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party splits the 1,100 gp upfront payment evenly at 275 gold pieces per person.",
+    "source_quote": "which the party split evenly at 275 apiece",
+    "subject": "gold split",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 on his first Persuasion check against Gartokkar.",
+    "source_quote": "Thorin's Persuasion rolls come in at 15",
+    "subject": "Thorin's first persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 14 on his second Persuasion check against Gartokkar.",
+    "source_quote": "and 14",
+    "subject": "Thorin's second persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rolls a 7 in opposition to Thorin's Persuasion attempts.",
+    "source_quote": "against the GM's 7",
+    "subject": "Gartokkar's resistance roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 13 on his Intimidation check.",
+    "source_quote": "Thorin's Intimidation rolls a 13",
+    "subject": "Thorin's intimidation",
+    "quote_verified": true
+  }
+]

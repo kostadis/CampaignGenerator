@@ -1,0 +1,177 @@
+[
+  {
+    "type": "location",
+    "fact": "The guard tower falls silent after the skirmish.",
+    "source_quote": "The guard tower fell silent save for the ragged breathing of the survivors",
+    "subject": "guard tower",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners befriended by the party joined the fight in the guard tower.",
+    "source_quote": "the prisoners they had befriended joined the fight",
+    "subject": "prisoners join fight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party strips the tower of short swords, hand crossbows, armor, one hundred feet of rope, and six bags of caltrops.",
+    "source_quote": "stripping the tower of everything useful: short swords, hand crossbows, armor, one hundred feet of rope, and six bags of caltrops",
+    "subject": "looting tower",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party acquires six bags of caltrops intended to obstruct pursuit.",
+    "source_quote": "six bags of caltrops that could be scattered to obstruct pursuit",
+    "subject": "six bags of caltrops",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party acquires one hundred feet of rope from the tower.",
+    "source_quote": "one hundred feet of rope",
+    "subject": "one hundred feet of rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party acquires short swords from the tower.",
+    "source_quote": "stripping the tower of everything useful: short swords",
+    "subject": "short swords",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party acquires hand crossbows from the tower.",
+    "source_quote": "stripping the tower of everything useful: short swords, hand crossbows",
+    "subject": "hand crossbows",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party acquires armor from the tower.",
+    "source_quote": "stripping the tower of everything useful: short swords, hand crossbows, armor",
+    "subject": "armor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin claims a short sword, studded leather armor, and a shield.",
+    "source_quote": "Thorin claimed a short sword, studded leather armor, and a shield",
+    "subject": "Thorin claims equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin acquires a shield.",
+    "source_quote": "Thorin claimed a short sword, studded leather armor, and a shield",
+    "subject": "Thorin's shield",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin acquires studded leather armor.",
+    "source_quote": "Thorin claimed a short sword, studded leather armor, and a shield",
+    "subject": "Thorin's studded leather armor",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin acquires a short sword.",
+    "source_quote": "Thorin claimed a short sword, studded leather armor, and a shield",
+    "subject": "Thorin's short sword",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes one hundred feet of rope.",
+    "source_quote": "Gyrgum kept rope and a bag of caltrops",
+    "subject": "Gyrgum takes rope",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes a bag of caltrops.",
+    "source_quote": "Gyrgum kept rope and a bag of caltrops",
+    "subject": "Gyrgum takes caltrops",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gives up the hand crossbow he considered taking because his spells are more effective.",
+    "source_quote": "Gyrgum gives up the hand crossbow he had considered taking because his spells and cantrips are more effective",
+    "subject": "Gyrgum abandons crossbow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz briefly considered leather armor before realizing he lacked the training to cast effectively while wearing it.",
+    "source_quote": "Daz briefly considered leather armor before realizing that he lacked the training to cast effectively while wearing it",
+    "subject": "Daz considers armor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz abandons the idea of wearing leather armor due to lack of proficiency.",
+    "source_quote": "Daz initially takes leather armor, then learns that he has no armor proficiency and abandons the idea",
+    "subject": "Daz abandons armor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir declines the available weapons because they would make him less effective.",
+    "source_quote": "Zalthir declined the available weapons because they would make him less effective rather than more",
+    "subject": "Zalthir declines weapons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The prisoners are mourning Prince Derendil.",
+    "source_quote": "mourning Prince Derendil",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners are armed and ready to continue their flight into the Underdark.",
+    "source_quote": "the prisoners nevertheless stood armed at last, ready to continue their flight into the darkness of the Underdark",
+    "subject": "prisoners armed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is proficient only with simple weapons.",
+    "source_quote": "Gyrgum is proficient only with simple weapons",
+    "subject": "Gyrgum weapon proficiency",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group discusses how armor proficiency affects spellcasters.",
+    "source_quote": "The group discusses how armor proficiency affects spellcasters",
+    "subject": "armor proficiency discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The conversation turns to multi-classing, specifically fighter levels for armor training.",
+    "source_quote": "The conversation turns to multi-classing. A level of fighter would grant armor training",
+    "subject": "multi-classing discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party still lacks its original belongings, including Thorin\u2019s giant\u2019s-tooth pendant.",
+    "source_quote": "still without its original belongings, including Thorin\u2019s giant\u2019s-tooth pendant",
+    "subject": "missing pendant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin\u2019s giant\u2019s-tooth pendant has not been recovered.",
+    "source_quote": "including Thorin\u2019s giant\u2019s-tooth pendant",
+    "subject": "Thorin\u2019s giant\u2019s-tooth pendant",
+    "quote_verified": true
+  }
+]

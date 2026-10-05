@@ -1,0 +1,212 @@
+[
+  {
+    "type": "monster",
+    "fact": "A flumph is a small floating creature encountered around a bend in the passage.",
+    "source_quote": "Around a bend in the passage they encountered something none of them had ever seen before: a flumph. The small floating creature",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph spoke directly into the party's minds.",
+    "source_quote": "The small floating creature spoke directly into their minds",
+    "subject": "flumph telepathy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph chided the party for staring at it blankly.",
+    "source_quote": "spoke directly into their minds and chided them for staring at it blankly",
+    "subject": "flumph scolding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph feeds on the background psionic energy radiated by evil creatures.",
+    "source_quote": "It introduced itself as a being that fed on the background psionic energy radiated by evil creatures",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph unleashed a torrent of vivid, distressing psychic visions upon the party.",
+    "source_quote": "the flumph unleashed a torrent of vivid, distressing psychic visions upon them",
+    "subject": "flumph psychic visions",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A shrine to Demogorgon appeared in the visions shown by the flumph.",
+    "source_quote": "They saw a shrine to Demogorgon",
+    "subject": "shrine to Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is the deity of the shrine shown in the flumph's visions.",
+    "source_quote": "They saw a shrine to Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A broken magical shard appeared in the visions, being worked upon near a dark obelisk.",
+    "source_quote": "a broken magical shard being worked upon near a dark obelisk",
+    "subject": "magical shard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A dark obelisk appeared in the visions near the broken magical shard.",
+    "source_quote": "a broken magical shard being worked upon near a dark obelisk",
+    "subject": "dark obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A stolen red dragon egg appeared in the visions, being subjected to cruel experiments.",
+    "source_quote": "and a stolen red dragon egg being subjected to cruel experiments",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The visions depicted a red dragon, implied by the stolen egg.",
+    "source_quote": "and a stolen red dragon egg being subjected to cruel experiments",
+    "subject": "red dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph announced it felt much better after unburdening itself at the party's expense.",
+    "source_quote": "the flumph announced cheerfully that it felt much better, having unburdened itself entirely at the party's expense",
+    "subject": "flumph unburdening",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin named the flumph's behavior \"trauma dumping\".",
+    "source_quote": "Thorin promptly named the habit: it had \"trauma dumped\" on them",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A cave opens off to the south from the main passage.",
+    "source_quote": "A cave opens off to the south, and the party decides to glance into it \"carefully.\"",
+    "subject": "cave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stealthily scouts ahead with a Stealth roll of 26.",
+    "source_quote": "Zalthir stealthily scouts ahead with a Stealth roll of 26",
+    "subject": "Zalthir scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states his own stealth abilities are essentially non-existent.",
+    "source_quote": "Thorin notes that his own stealth abilities \"are essentially non-existent\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Three myconid adults, standing five feet tall, were dancing in the natural cave.",
+    "source_quote": "Three myconid adults stand five feet tall and the sprouts are half that height",
+    "subject": "myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconid sprouts, half the height of the adults, were dancing in the natural cave.",
+    "source_quote": "the sprouts are half that height",
+    "subject": "myconid sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One small sprout stood apart from the rest, moving less frantically than the others.",
+    "source_quote": "One small sprout stands apart from the rest, its movement not nearly as frantic",
+    "subject": "myconid sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The myconids were dancing to a silent tune in the natural cave.",
+    "source_quote": "In the natural cave, several fungal creatures dance to a silent tune",
+    "subject": "myconid dancing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party's myconid friend taught them that myconids do not dance.",
+    "source_quote": "The party recalls what their myconid friend taught them: \"myconids don't dance\"",
+    "subject": "myconid friend",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Two larger ape-like creatures identified as quaggoth spore servants were present.",
+    "source_quote": "The scouts identify two larger ape-like creatures as quaggoth spore servants",
+    "subject": "quaggoth spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The quaggoth spore servants were covered in mushroom growths and yellow mold.",
+    "source_quote": "covered in mushroom growths and yellow mold",
+    "subject": "quaggoth spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Yellow mold was growing on the quaggoth spore servants.",
+    "source_quote": "covered in mushroom growths and yellow mold",
+    "subject": "yellow mold",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM noted that myconids are not relentlessly violent and might be talked to.",
+    "source_quote": "The GM notes that myconids are not relentlessly violent and might be talked to",
+    "subject": "GM note on myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz worried that the fungal creatures could turn the party into spore servants.",
+    "source_quote": "Daz worries they could turn the party into spore servants",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "It was reminded to Daz that myconids typically have to kill you first to make you a spore servant.",
+    "source_quote": "and is reminded that \"typically, they have to kill you first\"",
+    "subject": "reminder about spore servants",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to avoid the fungal creatures for now.",
+    "source_quote": "The party decides to avoid the fungal creatures for now",
+    "subject": "avoiding fungal creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party flagged the fungal creatures to raise with their contacts later.",
+    "source_quote": "and flags them to raise with their contacts later",
+    "subject": "raising fungal creatures with contacts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party resumed following the trail east.",
+    "source_quote": "They then resume following the trail east",
+    "subject": "resuming trail",
+    "quote_verified": true
+  }
+]

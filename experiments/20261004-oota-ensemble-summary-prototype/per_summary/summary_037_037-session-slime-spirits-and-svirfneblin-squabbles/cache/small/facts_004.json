@@ -1,0 +1,198 @@
+[
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger is a three-foot-tall spirit who once defended Blingdenstone against Drow, oozes, and other Underdark threats.",
+    "source_quote": "Burrow Warden Jadger, a three-foot-tall spirit who had once defended Blingdenstone against the Drow, oozes, and countless other Underdark threats.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger identifies Zalthir as a potentially excellent asset because the monk carried no weapons.",
+    "source_quote": "Jadger identified Zalthir as a potentially excellent asset because the monk carried no weapons.",
+    "subject": "Jadger identifies Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Burrow Wardens had been Blingdenstone's first and last line of defense.",
+    "source_quote": "the Burrow Wardens had been Blingdenstone's first and last line of defense",
+    "subject": "Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Most of the original Burrow Wardens died during the Drow invasion.",
+    "source_quote": "most dying during the Drow invasion",
+    "subject": "Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The rest of the original Burrow Wardens died during the gnomes' flight from the city.",
+    "source_quote": "the rest during the gnomes' flight from the city",
+    "subject": "Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger has taken it upon himself to establish a new generation of Wardens since Blingdenstone's recapture.",
+    "source_quote": "Since Blingdenstone's recapture, he had taken it upon himself to establish a new generation of Wardens",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger is secretly training promising young gnomes.",
+    "source_quote": "was secretly training promising young gnomes",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger offers the party a bargain where he answers one question for every ghost they put to rest in the community.",
+    "source_quote": "Jadger offered the party a bargain: for every ghost they put to rest in the community, he would answer one question.",
+    "subject": "Jadger's bargain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek counts as the party's first completed task for Jadger's bargain.",
+    "source_quote": "Pelek counted as their first completed task",
+    "subject": "Pelek completed task",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger knows of two more ghosts the party could help if they want further answers.",
+    "source_quote": "Jadger knew of two more ghosts they could help if they wanted further answers.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party became anxious about accidentally wasting their lone question.",
+    "source_quote": "The party immediately became anxious about accidentally wasting their lone question",
+    "subject": "Party anxiety",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger indignantly clarifies that he is not a trivial genie.",
+    "source_quote": "Jadger indignantly clarified, \u201cI'm not some trivial genie. I am Burrow Warden Jadger.\u201d",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger assures the party he knows things about the Underdark that other people have forgotten were things.",
+    "source_quote": "He assured them that he knew things about the Underdark \u201cthat other people have forgotten were things.\u201d",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to ask Jadger how best to deal with the ooze infestation.",
+    "source_quote": "The party chose to ask Jadger how best to deal with the ooze infestation.",
+    "subject": "Party question selection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger explains that oozes are normally solitary creatures that stay in their own corners unless disturbed.",
+    "source_quote": "Jadger explained that oozes were normally solitary creatures that stayed in their own corners unless disturbed",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger states that a large, coordinated mass of oozes is profoundly abnormal.",
+    "source_quote": "a large, coordinated mass of them was profoundly abnormal",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger's initial advice is to send a carefully organized strike force to investigate what is directing the oozes' behavior.",
+    "source_quote": "His initial advice was to send a carefully organized strike force to investigate what was directing this behavior.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger offers further clarification in exchange for a demonstration of a monk technique he could teach his young trainees.",
+    "source_quote": "Jadger offered further clarification in exchange for a demonstration of a monk technique he could teach his young trainees",
+    "subject": "Monk technique exchange",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir obliges Jadger by demonstrating a monk technique.",
+    "source_quote": "Zalthir obliged",
+    "subject": "Zalthir demonstrates technique",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger is impressed by Zalthir's demonstration.",
+    "source_quote": "impressing the ghost",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jadger begins mimicking the movements with his fists in all the wrong ways.",
+    "source_quote": "although Jadger began mimicking the movements with his fists in all the wrong ways",
+    "subject": "Jadger mimics technique",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger explains that devils make deals, personally corrupting people who seek ungodly power.",
+    "source_quote": "\u201cDevils make deals,\u201d personally corrupting people who seek ungodly power",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger explains that demons imbue benighted souls with terrifying power and delight in the widespread destruction they cause.",
+    "source_quote": "while demons imbue benighted souls with terrifying power and then delight in the widespread destruction they cause",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger advises the party to search for the person or thing motivating the oozes.",
+    "source_quote": "He advised the party to search for the person or thing motivating the oozes.",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger does not believe Juiblex is directly controlling the oozes.",
+    "source_quote": "He did not believe Juiblex was directly controlling them",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger believes Juiblex probably empowered a proxy or intermediate agent to control the oozes.",
+    "source_quote": "instead, the demon had probably empowered a proxy or intermediate agent",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jadger recommends that the party speak with a young gnome he is mentoring once they gather evidence.",
+    "source_quote": "Jadger also recommended that, once they gathered evidence, they speak with a young gnome he was mentoring",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The young gnome Jadger is mentoring will soon become the leader of the new Burrow Wardens.",
+    "source_quote": "who would soon become the leader of the new Burrow Wardens",
+    "subject": "Mentored young gnome",
+    "quote_verified": true
+  }
+]

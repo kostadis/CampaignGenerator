@@ -1,0 +1,296 @@
+[
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron is a merchant whom the party previously saved from an assassination attempt.",
+    "source_quote": "The party then paid a visit to Werz Saltbaron, the merchant they had previously saved from an assassination attempt.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron greeted the party with surprise and relief that they were still alive.",
+    "source_quote": "He greeted them with genuine surprise and relief that they were still alive.",
+    "subject": "Werz greets party",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz Saltbaron rewarded each member of the group with an obsidian gemstone worth ten gold pieces.",
+    "source_quote": "rewarding each member of the group with an obsidian gemstone worth ten gold pieces.",
+    "subject": "obsidian gemstone",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir asks whether the gem reward includes the flumph and the ghost.",
+    "source_quote": "Zalthir asks whether \"each\" includes the flumph and the ghost.",
+    "subject": "Zalthir asks about gems",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph plays with its gem using its tentacles, gets bored, and drops it.",
+    "source_quote": "The flumph plays with its gem using its tentacles, gets bored, and drops it",
+    "subject": "Flumph drops gem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz picks up the gemstone dropped by the flumph.",
+    "source_quote": "Daz picks it up.",
+    "subject": "Daz picks up gem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost cannot pick up its gemstone.",
+    "source_quote": "The ghost can't pick up its gem",
+    "subject": "Ghost cannot pick up gem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost insists that Gyrgum deposit its gemstone in his grave in Blingdenstone.",
+    "source_quote": "insists that Gyrgum, who carries his bones, deposit it in his grave in Blingdenstone.",
+    "subject": "Ghost requests burial",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests the ghost haunt the gem, but this idea fails because Gyrgum claims he already tried it.",
+    "source_quote": "Gyrgum's idea that the ghost haunt the gem fails: \"Trust me, I tried.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron offers to cover the party's lodging expenses at the local tavern.",
+    "source_quote": "do not worry about those fees. They considered them covered.",
+    "subject": "Werz covers lodging",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz perceives that Werz is being overly flattering to set up a request for a favor, rolling a 17 on insight.",
+    "source_quote": "Daz perceives that Werz is being overly flattering to set up a request for a favor (Daz rolled 17 on insight",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron claims to have no idea why he is on the Empty-Scabbard Killers' list of targets.",
+    "source_quote": "claimed to have no idea why",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states that he thought the assassin's guild was a children's story until they tried to kill him.",
+    "source_quote": "\"I'd heard there was an assassin's guild, but thought it was a children's story until, well, they tried to kill me.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron reveals a suspicious depth of knowledge about how assassins operate.",
+    "source_quote": "\"assassins are not your enemy. They are professionals.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reads that Werz Saltbaron knows way too much about working with assassins.",
+    "source_quote": "Daz rolls an 18 and reads that Werz \"knows way too much about working with assassins.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz theorizes that Werz Saltbaron might be in the find out phase.",
+    "source_quote": "Daz theorizes Werz \"might be in the find out phase.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests Werz Saltbaron may have stiffed an assassin on the bill.",
+    "source_quote": "Gyrgum suggests he may have stiffed an assassin on the bill.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron claims the Stone Guard would consider the existence of the assassin's guild a children's tale.",
+    "source_quote": "He says \"they would never believe me. They would consider it a children's tale.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking has decided that the weaponsmithing monopoly will be held only by his family's clan.",
+    "source_quote": "The Deepking has decided the weaponsmithing monopoly will be held only by his family's clan.",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown more paranoid because of his friend Shal.",
+    "source_quote": "He has grown more paranoid because of his friend Shal",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "People who compete with the Deepking's trade have been disappearing.",
+    "source_quote": "\"people have been disappearing\u2026 People who compete with his trade.\"",
+    "subject": "Disappearing competitors",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron admits he might have helped some clans sell goods on the down low.",
+    "source_quote": "\"if I did help some clans sell some goods on the down low, that's no reason to kill me.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that Werz Saltbaron's admission sounds like reason enough to be killed.",
+    "source_quote": "Gyrgum: \"It sounds like it was reason enough.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Werz Saltbaron suggests Clan Ironhead might also be the one hiring the assassins.",
+    "source_quote": "Werz suggests Clan Ironhead might also be the one hiring the assassins.",
+    "subject": "Clan Ironhead suspicion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron attempts to hire the party to eliminate the assassins targeting him, offering future trade favors in Blingdenstone as compensation.",
+    "source_quote": "offering future trade favors in Blingdenstone as compensation.",
+    "subject": "Werz hires party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests Werz hire the assassins to kill other assassins.",
+    "source_quote": "Thorin: \"Why don't you hire the assassins to kill the assassins?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states that hiring assassins to kill assassins would be expensive.",
+    "source_quote": "Werz: \"That would be expensive.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin accuses Werz of using the party as cut-rate assassins.",
+    "source_quote": "Thorin: \"So you're just using us as cut-rate assassins.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum proposes using Werz Saltbaron as bait to catch the next assassin.",
+    "source_quote": "Gyrgum proposes using Werz as bait to catch the next assassin.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron refuses to act as bait because he claims not to be a heroic individual.",
+    "source_quote": "Werz refuses: \"I'm not that kind of heroic individual.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron notes that the party arrived with gnomes and that some members do not look like they belong in the Underdark.",
+    "source_quote": "Werz notes the party arrived with gnomes, that \"some of you don't look like you belong in the Underdark,\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron suggests the party may end up in Blingdenstone needing a favor.",
+    "source_quote": "that they may end up in Blingdenstone needing a favor.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Members of the Stone Guard have recently begun accepting bribes.",
+    "source_quote": "Werz also reveals that members of the Stone Guard have recently been taking bribes",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard was previously noted for their absolute integrity and were described as very boring.",
+    "source_quote": "\"The Stone Guards were always noted for their absolute integrity\u2026 They were very boring that way.\"",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron places the corruption of the Stone Guard in the same timeline as the rest of the city's recent craziness.",
+    "source_quote": "He places the change in the same timeline as the rest of the city's recent craziness",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron suggests the party could offer the guards money if they get into trouble.",
+    "source_quote": "suggests the party could always offer the guards money if they get into trouble.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron warns that he would not tell Errde about the bribes if he wanted to keep his head.",
+    "source_quote": "He adds that he \"wouldn't tell Errde this if I wanted to keep my head.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron clarifies that the assassins must stop being a problem for him while he remains alive.",
+    "source_quote": "the assassins must stop being a problem for him, \"But with me still alive.\"",
+    "subject": "Werz clarifies terms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron frames the arrangement as trade based on comparative advantage.",
+    "source_quote": "\"A comparative advantage, I am told, is a property that results in better outcomes for everyone.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Werz Saltbaron warns that Gracklstugh is a tinderbox where the right information could ignite all-out war.",
+    "source_quote": "Werz warns the party that the city is a tinderbox, and that providing the right information to the right people at the right time could ignite an all-out war.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if telling everybody everything would be bad.",
+    "source_quote": "Thorin: \"So telling everybody everything would be bad?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states that the party has already been paid not to tell people about the situation.",
+    "source_quote": "Gyrgum: \"We've already been paid not to tell them about it.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

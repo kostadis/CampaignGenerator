@@ -1,0 +1,5237 @@
+[
+  {
+    "type": "date",
+    "subject": "end of the month",
+    "fact": "Jimjar's bet concerns events occurring before the end of the month.",
+    "source_quote": "before the end of the month, the party would have to equip an army with acid-resistant gear",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8810,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "date",
+    "subject": "morning",
+    "fact": "Morning arrives after the rest, and everyone has recovered.",
+    "source_quote": "By morning, everyone had recovered their strength",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 933,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "arrival at Blingdenstone",
+    "fact": "Jimjar declares, 'We've arrived at Blingdenstone!' at the top of the stairs.",
+    "source_quote": "At the top, Jimjar happily declared, \u201cWe've arrived at Blingdenstone!\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2745,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "arrival at Darklake shores",
+    "fact": "The party arrives on the shores of the Darklake, wet and cold.",
+    "source_quote": "The party arrived on the shores of the Darklake drenched, cold, and miserable",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 115,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "bet terms accepted",
+    "fact": "The group accepts that Jimjar means a genuine army for the bet.",
+    "source_quote": "but accepts that Jimjar means a genuine army.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13158,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "bet terms debate",
+    "fact": "The group debates whether one acid-resistant party member qualifies as an \u201carmy of one.\u201d",
+    "source_quote": "The group debates the exact terms, including whether one acid-resistant party member could qualify as an \u201carmy of one,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13038,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "climbing the staircase",
+    "fact": "Jimjar, Spiderbait, and smaller members of the company climb the stairs comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2599,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Daz's compliment",
+    "fact": "Daz's compliment pleases the gnomes and earns him recognition for handling the exchange particularly well.",
+    "source_quote": "The compliment pleases the gnomes and earns Daz recognition for handling the exchange particularly well.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17687,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Daz's diplomacy",
+    "fact": "Daz responds to a gnome's warning about defenses by stating he feels safer because of them.",
+    "source_quote": "Daz answered that the powerful fortifications made him feel safer and thanked them for hosting the group.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15426,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Daz's escape narrative",
+    "fact": "Daz explained that the group escaped their captors.",
+    "source_quote": "had escaped their captors",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 5239,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Daz's explanation",
+    "fact": "Daz explained that the group had been detained and exploited against their will.",
+    "source_quote": "the group had been detained and exploited against their will",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 5177,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Daz's explanation",
+    "fact": "Daz explains that the party gathered other good people seeking safe companions and a better destination.",
+    "source_quote": "had gathered other good people seeking safe companions and a better destination.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 5270,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Daz's gathering",
+    "fact": "Daz explained that the group had gathered other good people seeking safe companions and a better destination.",
+    "source_quote": "had gathered other good people seeking safe companions and a better destination",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 5270,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "description of Glabbagool",
+    "fact": "A party member summarizes Glabbagool's dependability by saying, \u201cHe's been solid.\u201d",
+    "source_quote": "another summarizes his dependability with, \u201cHe's been solid.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10637,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "difficult terrain for larger travelers",
+    "fact": "The closely spaced steps count as difficult terrain for the party\u2019s larger members.",
+    "source_quote": "while the closely spaced steps count as difficult terrain for the party\u2019s larger members",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 3372,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "dwarven movement on stairs",
+    "fact": "Dwarves are close enough to gnome size that they were not similarly hindered by the closely spaced steps.",
+    "source_quote": "Dwarves are close enough to gnome size that they are not similarly hindered",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 3462,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "entry into Blingdenstone",
+    "fact": "Jimjar vouches for the travelers, causing the guards to open the gate and admit the entire company, including Glabbagool.",
+    "source_quote": "After Jimjar vouches for the travelers, the guards agree to open the gate and admit the entire company, including Glabbagool.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16779,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "entry into Blingdenstone",
+    "fact": "The guards permit the entire group, including Glabbagool, to enter Blingdenstone.",
+    "source_quote": "The guards ultimately permitted the entire group to enter, but urged them to consult Chief Dorbo Diggermattock",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14986,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "explanation to guards",
+    "fact": "The party explained that Glabbagool had saved their lives, fought other slimy creatures, and can clean weapons.",
+    "source_quote": "explaining that he had saved their lives, fought other slimy creatures on their behalf, and could even clean the guards\u2019 weapons.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7162,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "fifty-gold-piece wager",
+    "fact": "Jimjar offered Daz a fifty-gold-piece wager that the party would have to equip an army with acid-resistant gear before the end of the month.",
+    "source_quote": "Jimjar then offered Daz a remarkably specific fifty-gold-piece wager that, before the end of the month, the party would have to equip an army with acid-resistant gear.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8735,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "fungal wedding bet",
+    "fact": "Jimjar adds a side bet that the ingredients for acid-resistant weapons will be recovered from a fungal wedding celebration.",
+    "source_quote": "He followed it with a side bet that the ingredients for those weapons would have to be recovered from a fungal wedding celebration",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8903,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "gate opening",
+    "fact": "The guards open the gate and admit the entire company, including Glabbagool, into Blingdenstone.",
+    "source_quote": "the guards agree to open the gate and admit the entire company, including Glabbagool",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16819,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Glabbagool accepts warning",
+    "fact": "Glabbagool accepted the party's warning that squeezing through the gate would be rude.",
+    "source_quote": "but accepted the party\u2019s warning that doing so would be rude.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7405,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Glabbagool arrival",
+    "fact": "Glabbagool takes longer than the others to ascend the gnome-sized stairs and appears after the initial questioning has begun.",
+    "source_quote": "Glabbagool takes longer than the others to ascend the gnome-sized stairs and appears only after the initial questioning has begun.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10122,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "gnome reaction",
+    "fact": "The gnomes are delighted by Daz's compliment and recognize him for handling the exchange well.",
+    "source_quote": "The compliment pleases the gnomes and earns Daz recognition for handling the exchange particularly well",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17687,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guard inquiry",
+    "fact": "A party member pulls aside a guard to ask if there is something special about Jimjar.",
+    "source_quote": "A party member quietly pulls aside a guard and asks whether there is something special about Jimjar.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13966,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guard observation",
+    "fact": "The party can see through the main gate to eight gnomes guarding the passage beyond.",
+    "source_quote": "the party can see through it to the eight gnomes guarding the passage beyond",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4309,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guards astonished",
+    "fact": "The guards are astonished that a gelatinous cube can speak.",
+    "source_quote": "The guards were astonished that a gelatinous cube could speak",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7468,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guards panic",
+    "fact": "The gnomes panic and prepare to attack the gelatinous cube upon Glabbagool's arrival.",
+    "source_quote": "The gnomes panicked and prepared to attack the gelatinous cube",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7072,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guards panic",
+    "fact": "The guards panic and ready themselves to attack upon Glabbagool's arrival.",
+    "source_quote": "His arrival throws the guards into panic. They ready themselves to attack",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10255,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guards' realization",
+    "fact": "The guards are surprised to discover that Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "bewildering the guards further when they realized he was an orc cleric of Bahamut.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4854,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guards' realization",
+    "fact": "The guards were bewildered when they realized Gyrgum was an orc cleric.",
+    "source_quote": "bewildering the guards further when they realized he was an orc cleric of Bahamut",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4854,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guard's statement on oozes",
+    "fact": "A guard insists that gelatinous cubes are not sentient and cannot be friends.",
+    "source_quote": "When a guard insists that gelatinous cubes are not sentient and cannot be friends",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10807,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "guards' surprise",
+    "fact": "The guards are surprised to discover that Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "bewildering the guards further when they realized he was an orc cleric of Bahamut",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4854,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Gyrgum's retort",
+    "fact": "Gyrgum counters the guard's prejudice by claiming that orcs only tell the truth.",
+    "source_quote": "Gyrgum countered, \u201cBut I am an orc, and everyone knows that orcs only tell the truth,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4767,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "head guard challenge",
+    "fact": "The head guard demanded to know who the travelers were and why they had come.",
+    "source_quote": "Their leader demanded to know who the travelers were and why they had come.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4600,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "head guard questioning",
+    "fact": "The head guard demands to know who the travelers are and why they have come.",
+    "source_quote": "Their leader demanded to know who the travelers were and why they had come.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4600,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar bet 1",
+    "fact": "Jimjar makes a fifty-gold-piece bet that the party will need to equip an army with acid-resistant gear before the end of the month.",
+    "source_quote": "Jimjar makes a fifty-gold-piece bet that, before the end of the month, the party will need to equip an army with acid-resistant gear.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12902,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar concession",
+    "fact": "Jimjar concedes that demon lords naturally symbolize different corrupting forces of power.",
+    "source_quote": "before conceding that demon lords naturally symbolize different corrupting forces of power.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12298,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar declares arrival",
+    "fact": "Jimjar declares the party's arrival at Blingdenstone from the top of the stairs.",
+    "source_quote": "At the top, Jimjar happily declared, \u201cWe've arrived at Blingdenstone!\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2745,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar denial",
+    "fact": "Jimjar emphatically denies that the situation is a political allegory.",
+    "source_quote": "Jimjar answers emphatically, \u201cNo!\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12263,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar new bet attempt",
+    "fact": "Jimjar unsuccessfully tries to start a new bet about Gyrgum.",
+    "source_quote": "unsuccessfully tried to start another bet about whether Gyrgum would take the bet",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 624,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar reaction",
+    "fact": "Jimjar's expression changes as though he is remembering something painful at the mention of Juiblex.",
+    "source_quote": "At the demon lord\u2019s name, Jimjar\u2019s expression changes as though he is remembering something painful.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11957,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar redirection",
+    "fact": "Jimjar redirects questions toward Chief Dorbo and Quartermaster Senni to explain the situation.",
+    "source_quote": "Jimjar redirects further questions toward Chief Dorbo and Quartermaster Senni, suggesting that they explain what is happening.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13837,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's bet",
+    "fact": "Jimjar offers Daz a fifty-gold-piece wager regarding the need to equip an army with acid-resistant gear.",
+    "source_quote": "Jimjar then offered Daz a remarkably specific fifty-gold-piece wager that, before the end of the month, the party would have to equip an army with acid-resistant gear",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8735,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's bet",
+    "fact": "Jimjar wagers that someone will demand a rest.",
+    "source_quote": "He immediately wagered that someone would demand a rest.",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 383,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's defense of Daz",
+    "fact": "Jimjar claims Daz is interested in exploration and growth rather than domination or world conquest.",
+    "source_quote": "insisting Daz was interested in exploration and growth rather than domination or world conquest",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4977,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar side bet",
+    "fact": "Jimjar adds a side bet that the party will have to recover ingredients for weapons from a fungal wedding celebration.",
+    "source_quote": "Jimjar adds a side bet that they will have to recover the ingredients for those weapons from a fungal wedding celebration.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13216,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's joke",
+    "fact": "Jimjar jokingly claims Daz has been reading The Up in the Overbright.",
+    "source_quote": "Jimjar jokingly claims Daz has been reading a popular book called *The Up in the Overbright*",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6430,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's reassurance",
+    "fact": "Jimjar reassured the guards that Daz is interested in exploration and growth rather than domination.",
+    "source_quote": "he's really a really nice guy. He's all about exploring and growing, not about domination and world conquest.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6317,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's wager",
+    "fact": "Jimjar offers a wager that no one wants to know what is happening because they prefer surprises.",
+    "source_quote": "Jimjar tries to turn the party\u2019s request for information into another wager, offering to bet that no one wants to know what is happening because they prefer surprises.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 3631,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's wager",
+    "fact": "Jimjar tries to turn the party\u2019s request for information into a wager, betting that no one wants to know what is happening.",
+    "source_quote": "Jimjar tries to turn the party\u2019s request for information into another wager, offering to bet that no one wants to know what is happening",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 3631,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar's wager proposal",
+    "fact": "Jimjar tries to turn the party\u2019s request for information into a wager, offering to bet that no one wants to know what is happening.",
+    "source_quote": "Jimjar tries to turn the party\u2019s request for information into another wager, offering to bet that no one wants to know what is happening",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 3631,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar wins bet",
+    "fact": "Jimjar celebrates winning his bet.",
+    "source_quote": "Excellent. I made\u2014I won, I won my bet",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 499,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Jimjar wins bet",
+    "fact": "Jimjar claims victory for winning his bet about the rest.",
+    "source_quote": "\u201cExcellent. I made\u2014I won, I won my bet.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 498,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "joke about Glabbagool",
+    "fact": "A party member jokes that Glabbagool can clean the guards' weapons.",
+    "source_quote": "One party member jokes that Glabbagool can clean the guards\u2019 weapons",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10561,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "long rest",
+    "fact": "The party settles in for a full night\u2019s long rest.",
+    "source_quote": "the party settled in for a full night\u2019s rest",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 735,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "long rest decision",
+    "fact": "The party agrees to take a long rest.",
+    "source_quote": "Once the party agreed to take a long rest",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 440,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "long rest duration",
+    "fact": "The party takes a full night's long rest to recover strength.",
+    "source_quote": "the party settled in for a full night\u2019s rest",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 735,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "march to Blingdenstone",
+    "fact": "The party begins a day-long march to Blingdenstone.",
+    "source_quote": "ready for the day-long march to Blingdenstone",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 991,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "Maze description",
+    "fact": "A gnome explains that the Maze forces attackers through twisty tunnels with deadly traps.",
+    "source_quote": "it's important to make them go through lots of twisty tunnels with deadly traps that you can kill them in",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17235,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "new bet attempt",
+    "fact": "Jimjar tries to start a bet about whether Gyrgum will bet with him.",
+    "source_quote": "unsuccessfully tried to start another bet about whether Gyrgum would take the bet",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 624,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "oozapalooza",
+    "fact": "The abnormal activity of the oozes is dubbed an 'oozapalooza.'",
+    "source_quote": "The new activity was more like an \u201coozapalooza.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7986,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "party agrees to rest",
+    "fact": "The party agrees to take a long rest.",
+    "source_quote": "Once the party agreed to take a long rest",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 440,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "party defense of Glabbagool",
+    "fact": "The party explains that Glabbagool is an ally to the guards.",
+    "source_quote": "until the party urgently explains that he is an ally.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10329,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "party intervention",
+    "fact": "The party intervened to stop the guards from attacking Glabbagool.",
+    "source_quote": "but the party intervened",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7136,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "party observation on bets",
+    "fact": "The party observes that people start telling Jimjar things if he makes enough bets with them.",
+    "source_quote": "\u201cIf you make enough bets with enough people, they start telling you things.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8657,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "party reassurance",
+    "fact": "The party reassures Glabbagool that he is their favorite gelatinous cube.",
+    "source_quote": "The party reassures him that he is their favorite gelatinous cube.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14459,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "party warning",
+    "fact": "The party warns Glabbagool that squeezing through the gate would be considered rude.",
+    "source_quote": "\u201cPlease don't. That would be considered rude amongst people.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11069,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "pursuit check",
+    "fact": "The party confirms no one is pursuing them.",
+    "source_quote": "With no one pursuing them",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 708,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "recovery",
+    "fact": "The party recovers their strength after the long rest.",
+    "source_quote": "By morning, everyone had recovered their strength",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 933,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "request for help",
+    "fact": "Jimjar assures the party that the people of Blingdenstone might help them reach the surface.",
+    "source_quote": "might be persuaded to help",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 3023,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "side bet",
+    "fact": "Jimjar offered a side bet that the ingredients for those weapons would have to be recovered from a fungal wedding celebration.",
+    "source_quote": "He followed it with a side bet that the ingredients for those weapons would have to be recovered from a fungal wedding celebration.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8903,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "staircase traversal",
+    "fact": "Jimjar, Spiderbait, and the smaller members of the company climbed the staircase comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2599,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "staircase traversal difficulty",
+    "fact": "The staircase stairs were difficult terrain for the larger travelers.",
+    "source_quote": "while the stairs were difficult terrain for the larger travelers",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2679,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "event",
+    "subject": "travel to Blingdenstone",
+    "fact": "The party prepares for a day-long march to Blingdenstone the next morning.",
+    "source_quote": "ready for the day-long march to Blingdenstone",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 991,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "fact",
+    "subject": "dwarves on the staircase",
+    "fact": "Dwarves are close enough to gnome size that they are not hindered by the staircase.",
+    "source_quote": "Dwarves are close enough to gnome size that they are not similarly hindered",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 3462,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Bahamut",
+    "fact": "Gyrgum is identified as an orc cleric of Bahamut.",
+    "source_quote": "he was an orc cleric of Bahamut",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4904,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Blingdenstone inhabitants",
+    "fact": "The inhabitants of Blingdenstone know routes out of the Underdark and might be persuaded to help the party reach the surface.",
+    "source_quote": "its inhabitants knew routes out of the Underdark and might be persuaded to help",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2970,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Demogorgon",
+    "fact": "Jimjar contrasted Juiblex with Demogorgon's carnage.",
+    "source_quote": "Demogorgon\u2019s carnage",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8476,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "drow",
+    "fact": "The drow previously owned Blingdenstone.",
+    "source_quote": "the city had belonged to the gnomes, then the drow",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2834,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Dwarves",
+    "fact": "Dwarves compete with gnomes for the same finite underground resources.",
+    "source_quote": "Gnomes and dwarves compete for the same finite underground resources, creating friction between the two cultures.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17964,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "gnome guards",
+    "fact": "Eight gnome guards are waiting behind the gate at Blingdenstone.",
+    "source_quote": "Eight gnome guards waited behind it.",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4563,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "gnome guards",
+    "fact": "Eight gnome guards waited behind the gate.",
+    "source_quote": "Eight gnome guards waited behind it.",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 4563,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "gnome guards",
+    "fact": "The gnome guards clarify that Blingdenstone is suffering from a serious ooze problem.",
+    "source_quote": "they clarified that Blingdenstone was suffering from a serious ooze problem",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7590,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "gnome guards",
+    "fact": "The gnome guards initially claim Blingdenstone is suffering from a serious fungi problem.",
+    "source_quote": "After briefly and mistakenly referring to a fungi problem",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7531,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Gnomes",
+    "fact": "Gnomes can become allies with dwarves against deeper Underdark threats.",
+    "source_quote": "could become allies against deeper Underdark threats",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15781,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Gnomes",
+    "fact": "Gnomes compete with dwarves for the same finite underground resources.",
+    "source_quote": "Gnomes and dwarves compete for the same finite underground resources, creating friction between the two cultures.",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 17964,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "gnomes",
+    "fact": "The gnomes own Blingdenstone.",
+    "source_quote": "belonged to the gnomes, then the drow, and then the gnomes again",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2847,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "gnomes and dwarves",
+    "fact": "Gnomes and dwarves can become allies against deeper Underdark threats.",
+    "source_quote": "but could become allies against deeper Underdark threats.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15777,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "gnomes and dwarves",
+    "fact": "Gnomes and dwarves compete for the same finite underground resources.",
+    "source_quote": "The two peoples competed for the same finite underground resources",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15654,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "inhabitants of Blingdenstone",
+    "fact": "The inhabitants of Blingdenstone know routes out of the Underdark.",
+    "source_quote": "its inhabitants knew routes out of the Underdark",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2970,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Juiblex",
+    "fact": "Jimjar described Juiblex as an unrivaled obscenity that dissolves everything into an unstructured mess.",
+    "source_quote": "an unrivaled obscenity that dissolved everything into an unstructured mess.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8336,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Juiblex",
+    "fact": "Jimjar described Juiblex as embodying the corrupted nature of the Abyss.",
+    "source_quote": "embodying the corrupted nature of the Abyss",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8288,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Juiblex",
+    "fact": "Jimjar described Juiblex as the demon lord of oozes and shapeless things.",
+    "source_quote": "Jimjar described Juiblex as the demon lord of oozes and shapeless things",
+    "quote_verified": false,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": null,
+    "scene_index": null,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Orcus",
+    "fact": "Jimjar contrasted Juiblex with Orcus's endless death.",
+    "source_quote": "and Orcus\u2019s endless death.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8498,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "surrounding gnomes",
+    "fact": "The surrounding gnomes treat Jimjar with peculiar deference.",
+    "source_quote": "the surrounding gnomes treated him with peculiar deference",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9251,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "faction",
+    "subject": "Zuggtmoy",
+    "fact": "Jimjar contrasted Juiblex with Zuggtmoy's corruption through decay.",
+    "source_quote": "He contrasted Juiblex with Zuggtmoy\u2019s corruption through decay",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8412,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "Blingdenstone belongs to the gnomes.",
+    "source_quote": "the city had belonged to the gnomes",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2834,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "Blingdenstone is currently a mess.",
+    "source_quote": "Blingdenstone was now \u201ca little bit of a mess,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2922,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "Blingdenstone is currently described as 'a little bit of a mess.'",
+    "source_quote": "Although Blingdenstone was now \u201ca little bit of a mess,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2913,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "Blingdenstone is located a day's journey from the shores of the Darklake.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 288,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "Blingdenstone is suffering from a serious ooze problem.",
+    "source_quote": "they clarified that Blingdenstone was suffering from a serious ooze problem.",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 7590,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "Blingdenstone previously belonged to the gnomes, then the drow, and then the gnomes again.",
+    "source_quote": "He explained that the city had belonged to the gnomes, then the drow, and then the gnomes again",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 2816,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "Jimjar describes Blingdenstone as currently being \u201ca little bit of a mess.\u201d",
+    "source_quote": "Although Blingdenstone was now \u201ca little bit of a mess\u201d",
+    "quote_verified": false,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": null,
+    "scene_index": null,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "The inhabitants of Blingdenstone know routes out of the Underdark.",
+    "source_quote": "its inhabitants knew routes out of the Underdark",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2970,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone",
+    "fact": "The party has arrived at Blingdenstone hoping for help and fellowship.",
+    "source_quote": "Daz concludes that the group has found itself at Blingdenstone looking for the same kind of aid and fellowship.",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small",
+      "sweep"
+    ],
+    "n_samples": 3,
+    "quote_offset": 6787,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone approach",
+    "fact": "The approach to Blingdenstone ends at a long, tedious staircase built for three-foot-tall people.",
+    "source_quote": "The approach to the city ended at a long, tedious staircase built for three-foot-tall people.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2505,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone distance",
+    "fact": "The party is a day's journey from the outskirts of Blingdenstone.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 288,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone gate construction",
+    "fact": "The main gate of Blingdenstone is built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine.",
+    "source_quote": "main gate, built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4134,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone main gate",
+    "fact": "The main gate is built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine.",
+    "source_quote": "The party reaches the main gate, built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine.",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 4112,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone's Maze",
+    "fact": "The Maze is a defensive network of twisting, trapped tunnels intended to slow and kill invading armies.",
+    "source_quote": "a defensive network of twisting, trapped tunnels intended to slow and kill invading armies",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15264,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone Staircase",
+    "fact": "The approach to Blingdenstone ends at a long, tedious staircase built for three-foot-tall people.",
+    "source_quote": "ended at a long, tedious staircase built for three-foot-tall people",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2530,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone staircase difficulty",
+    "fact": "The staircase counts as difficult terrain for the party\u2019s larger members.",
+    "source_quote": "stairs were difficult terrain for the larger travelers",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2689,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Blingdenstone staircase dimensions",
+    "fact": "The staircase approaching Blingdenstone was built to suit three-foot-tall people.",
+    "source_quote": "staircase built for three-foot-tall people",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2555,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "Darklake Shores",
+    "fact": "The party has landed on the shores of the Darklake after their journey through the water.",
+    "source_quote": "The party arrived on the shores of the Darklake",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 115,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "fungal wedding celebration",
+    "fact": "The ingredients for acid-resistant weapons must be recovered from a fungal wedding celebration.",
+    "source_quote": "the ingredients for those weapons would have to be recovered from a fungal wedding celebration",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8939,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "main gate",
+    "fact": "The main gate is built from steel and mithril.",
+    "source_quote": "The party reaches the main gate, built from steel and mithril,",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4112,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "main gate",
+    "fact": "The main gate is plated with adamantine.",
+    "source_quote": "and plated with adamantine.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4227,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "main gate",
+    "fact": "The main gate is reinforced with magical and magic-resistant alloys.",
+    "source_quote": "reinforced with magical and magic-resistant alloys,",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4175,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "massive gate",
+    "fact": "The massive gate is made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine.",
+    "source_quote": "The party reached a massive gate made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine.",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small",
+      "sweep"
+    ],
+    "n_samples": 3,
+    "quote_offset": 4432,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "staircase",
+    "fact": "The approach to the city ends at a long, tedious staircase.",
+    "source_quote": "The approach to the city ended at a long, tedious staircase built for three-foot-tall people.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2505,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "staircase",
+    "fact": "The staircase is built for three-foot-tall people.",
+    "source_quote": "built for three-foot-tall people",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2565,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "location",
+    "subject": "The Maze",
+    "fact": "The Maze is a defensive network of twisting, trapped tunnels intended to slow and kill invading armies.",
+    "source_quote": "the Maze, a defensive network of twisting, trapped tunnels intended to slow and kill invading armies",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 15254,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "gelatinous cubes",
+    "fact": "Gelatinous cubes cannot reproduce rapidly and take a long time to grow.",
+    "source_quote": "cannot do so rapidly and take a long time to grow",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9748,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "gelatinous cubes",
+    "fact": "Gelatinous cubes reproduce by leaving a smaller cube behind.",
+    "source_quote": "gelatinous cubes reproduce by leaving a smaller cube behind",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9683,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "gnome guards",
+    "fact": "Eight gnomes are guarding the passage beyond the gate.",
+    "source_quote": "the party can see through it to the eight gnomes guarding the passage beyond",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4309,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "gnomes (guards)",
+    "fact": "The gnome guards panicked and prepared to attack the gelatinous cube.",
+    "source_quote": "The gnomes panicked and prepared to attack the gelatinous cube",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7072,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "oozes",
+    "fact": "Ordinary oozes are quiet creatures that wait for food to come to them.",
+    "source_quote": "Ordinary oozes, he said, were quiet creatures that waited for food to come to them.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7902,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "oozes",
+    "fact": "The oozes in the region are unusually agitated and eager to expand.",
+    "source_quote": "all unusually agitated and eager to expand.",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 7858,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "ordinary oozes",
+    "fact": "Ordinary oozes are quiet creatures that wait for food.",
+    "source_quote": "Ordinary oozes, he said, were quiet creatures that waited for food to come to them",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7902,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "smaller cube",
+    "fact": "The smaller cube Glabbagool left behind could not speak.",
+    "source_quote": "but it could not speak",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9858,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "monster",
+    "subject": "smaller gelatinous cube",
+    "fact": "The smaller gelatinous cube Glabbagool left behind could not speak.",
+    "source_quote": "but it could not speak.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9858,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Blingdenstone gnomes",
+    "fact": "The other gnomes treat Jimjar with peculiar deference.",
+    "source_quote": "the other gnomes treat him with peculiar deference.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13619,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Chief Dorbo",
+    "fact": "Chief Dorbo is identified by Jimjar as someone who can explain what is happening.",
+    "source_quote": "Jimjar redirects further questions toward Chief Dorbo",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13837,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Chief Dorbo Diggermattock",
+    "fact": "Chief Dorbo Diggermattock is the city official the party is recommended to see for full permission regarding Glabbagool.",
+    "source_quote": "recommend that the party report to Chief Dorbo Diggermattock and Quartermaster Senni",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16918,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Chief Dorbo Diggermattock",
+    "fact": "The guards advise the party to report to Chief Dorbo Diggermattock to obtain full permission for Glabbagool\u2019s presence.",
+    "source_quote": "report to Chief Dorbo Diggermattock and Quartermaster Senni to obtain full permission for Glabbagool\u2019s presence",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16943,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Chief Dorbo Diggermattock",
+    "fact": "The guards recommend the party consult Chief Dorbo Diggermattock for permission to keep Glabbagool in the city.",
+    "source_quote": "urged them to consult Chief Dorbo Diggermattock and Quartermaster Senni for full permission to keep Glabbagool in the city",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15049,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz cautions Eldeth that people raised in the cult of Lolth might be redeemable people shaped by a terrible environment.",
+    "source_quote": "Daz cautioned that even those raised knowing nothing but that cult might be redeemable people shaped by a terrible environment.",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 16270,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz cautions that even those raised knowing nothing but Lolth\u2019s cult might be redeemable people shaped by a terrible environment.",
+    "source_quote": "Daz cautioned that even those raised knowing nothing but that cult might be redeemable people shaped by a terrible environment.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16270,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz explains that the group had been detained against their will by captors who wanted to exploit them.",
+    "source_quote": "Daz explains that the party had been detained against their will, not for wrongdoing but so their captors could exploit them.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6564,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz is a drow.",
+    "source_quote": "You are a drow",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4723,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz observed that if Jimjar makes enough bets, people start telling him things.",
+    "source_quote": "Daz observed, \u201cIf you make enough bets with enough people, they start telling you things.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8643,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz observes that if you make enough bets with enough people, they start telling you things.",
+    "source_quote": "Daz observed, \u201cIf you make enough bets with enough people, they start telling you things.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8643,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz previously mentioned Juiblex.",
+    "source_quote": "Daz\u2019s earlier information about Juiblex",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8074,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz states that he feels safer hanging out with the gnomes because of their powerful defenses.",
+    "source_quote": "I mean, actually, I feel safer hanging out with you guys because of your powerful defenses. Thank you for hosting us.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17566,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz states that the city's powerful fortifications make him feel safer.",
+    "source_quote": "I mean, actually, I feel safer hanging out with you guys because of your powerful defenses",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17566,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz states that the party gathered other travelers seeking good companions and a safer destination after escaping.",
+    "source_quote": "After escaping, they gathered other travelers seeking good companions and a safer destination.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6690,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz thanks the gnomes for hosting the group.",
+    "source_quote": "Thank you for hosting us",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17658,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "Daz's tactful compliment delighted the gnomes.",
+    "source_quote": "His tactful compliment delighted the gnomes.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15532,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Daz",
+    "fact": "One guard distrusts Daz, claiming that drow lie.",
+    "source_quote": "One guard immediately distrusted Daz, saying, \u201cYou are a drow, and we know that drow lie.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4676,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Demogorgon",
+    "fact": "Demogorgon represents carnage.",
+    "source_quote": "Demogorgon\u2019s carnage",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8476,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Demogorgon",
+    "fact": "Jimjar states that Demogorgon represents relentless damage and carnage.",
+    "source_quote": "Demogorgon represents relentless damage and carnage",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12517,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth acknowledges that Daz's example convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil needs to be rethought.",
+    "source_quote": "Eldeth acknowledged that his example had convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil and worthy of massacre was something she needed to rethink",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 16398,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth acknowledges that her culture\u2019s reflexive treatment of entire peoples as inherently evil and worthy of massacre needs to be rethought.",
+    "source_quote": "Eldeth acknowledged that his example had convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil and worthy of massacre was something she needed to rethink.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16398,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth admits she was raised with the prejudice that \u201cThe only good drow is a dead drow.\u201d",
+    "source_quote": "she had been raised to believe \u201cThe only good drow is a dead drow,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 16050,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth considers gnomes clever with magic and gems but not particularly formidable fighters.",
+    "source_quote": "Eldeth admitted that she considered gnomes clever with magic and gems but not particularly formidable fighters.",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 15835,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth describes gnomes as less formidable fighters but very clever in their use of magic and gems.",
+    "source_quote": "describing them as less formidable fighters but very clever in their use of magic and gems.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 18223,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth now believes the true enemy is the fanatical cult of Lolth rather than every individual drow.",
+    "source_quote": "She now believed the true enemy was the fanatical cult of Lolth rather than every individual drow.",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 16171,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth reflects on her inherited prejudice toward drow.",
+    "source_quote": "The conversation prompted Eldeth to reflect on her inherited prejudice toward drow.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15948,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth tells Daz that she has learned to understand that not every drow is evil.",
+    "source_quote": "Eldeth says, \u201cDaz, I want you to know that I have learned to understand that not every drow is evil.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 18456,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Eldeth",
+    "fact": "Eldeth tells Daz that she was raised to believe \u201cThe only good drow is a dead drow.\u201d",
+    "source_quote": "She told Daz that she had been raised to believe \u201cThe only good drow is a dead drow,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16032,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "An unknown event caused Glabbagool to begin thinking and talking.",
+    "source_quote": "an unknown event caused him to begin thinking and talking",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7742,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool accepts the party's warning that squeezing through the gate would be rude.",
+    "source_quote": "accepted the party\u2019s warning that doing so would be rude",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7409,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool agrees not to squeeze through the gate.",
+    "source_quote": "Glabbagool readily agrees not to do it.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11131,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool becomes alarmed when gelatinous cubes are described as easy to kill.",
+    "source_quote": "Glabbagool becomes alarmed when gelatinous cubes are described as easy to kill",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14263,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool began thinking and talking after the unknown event.",
+    "source_quote": "but then, yes, I started to think and talking.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11421,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool believes he might be the only speaking gelatinous cube in the universe.",
+    "source_quote": "Glabbagool believed he might be the only speaking gelatinous cube in the universe.",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 9882,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool contrasts the current behavior with the normal ooze disposition of being quiet and waiting for things.",
+    "source_quote": "\u201cYou know, Oozes, we're a very quiet group. We just sort of sit there and wait for things to come to us. We don't go after things.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11713,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool described the new ooze activity as an 'oozapalooza.'",
+    "source_quote": "The new activity was more like an \u201coozapalooza.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7986,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool explained that gelatinous cubes reproduce by leaving a smaller cube behind.",
+    "source_quote": "He explained that gelatinous cubes reproduce by leaving a smaller cube behind",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9665,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool explains that gelatinous cube offspring take a long time to grow.",
+    "source_quote": "and the offspring take a long time to grow.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14709,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool explains that gelatinous cube reproduction cannot be repeated rapidly.",
+    "source_quote": "but it cannot be repeated rapidly",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14675,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool explains that gelatinous cube reproduction occurs by leaving behind a smaller cube.",
+    "source_quote": "He explains that reproduction occurs by leaving behind a smaller cube",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14604,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool explains that he used to be an unsentient creature.",
+    "source_quote": "I used to be a pretty dumb, you know, unsentient creature",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11309,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool finished climbing the stairs and appeared behind the party.",
+    "source_quote": "Glabbagool finally finished climbing the stairs and appeared behind the party.",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 6993,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool greeted the party cheerfully.",
+    "source_quote": "Glabbagool greeted them cheerfully",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 7292,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool has noticed far more oozes in the region since he gained sentience.",
+    "source_quote": "Since then, he had noticed far more oozes in the region",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 7801,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool insists that he should not be killed because he is friendly.",
+    "source_quote": "\u201cI shouldn't be killed. I'm friendly.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14355,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool insists that he will only eat dead garbage and not living creatures.",
+    "source_quote": "I will only eat dead garbage. I will not eat living creatures.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14393,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool is being kept in the city, which requires specific permission from the leaders.",
+    "source_quote": "full permission to keep Glabbagool in the city",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 15125,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool offers to squeeze through the gate instead of having it opened.",
+    "source_quote": "You don't have to open the gate on my behalf. I can just squeeze right through.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10965,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool once left a smaller cube behind because he was lonely.",
+    "source_quote": "He had once left such a cube behind because he was lonely",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 9799,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool once left behind a smaller cube because he was bored and lonely.",
+    "source_quote": "Glabbagool once left behind a smaller cube because he was bored and lonely",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14755,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool reports seeing many more oozes than usual.",
+    "source_quote": "He reports seeing many more oozes than usual.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11471,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool reports that the other oozes did not attack him because they recognized him as one of their own.",
+    "source_quote": "They never attacked him because they recognized him as one of their own",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11517,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool reports that the other oozes were agitated and driven to roam and grow.",
+    "source_quote": "but they were agitated and driven to roam and grow.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11590,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool stated he could squeeze through the gate without it being opened.",
+    "source_quote": "explained that he could squeeze through the gate without it being opened",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 7331,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool stated that gelatinous cubes cannot reproduce rapidly and take a long time to grow.",
+    "source_quote": "but cannot do so rapidly and take a long time to grow.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9744,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool states he is happy to see the guards.",
+    "source_quote": "I am really happy to see you.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10935,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool states that something happened to him, though he does not know what.",
+    "source_quote": "until something happened. I don't know what happened",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11367,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool was once an unintelligent creature before an unknown event caused him to begin thinking and talking.",
+    "source_quote": "he had once been an unintelligent creature until an unknown event caused him to begin thinking and talking.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7693,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "Glabbagool was once an unintelligent creature.",
+    "source_quote": "he had once been an unintelligent creature",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7693,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "The party claims Glabbagool defended them against other slimy creatures.",
+    "source_quote": "defended them against other slimy creatures",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10475,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "The party claims Glabbagool has traveled with them ever since the life-or-death situation.",
+    "source_quote": "and has traveled with them ever since.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10520,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "The party claims Glabbagool helped them through a life-or-death situation.",
+    "source_quote": "Glabbagool helped them through a life-or-death situation",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10417,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool",
+    "fact": "The party explains that they feed Glabbagool the remains of their enemies rather than living creatures.",
+    "source_quote": "The party explains that they feed Glabbagool the remains of their enemies rather than living creatures.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 10701,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Glabbagool's offspring",
+    "fact": "The smaller cube Glabbagool created could not speak.",
+    "source_quote": "but it could not speak.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9858,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnome guard",
+    "fact": "One guard expresses distrust toward Daz, stating that drow lie.",
+    "source_quote": "One guard immediately distrusted Daz, saying, \u201cYou are a drow, and we know that drow lie.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4676,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnome guard",
+    "fact": "One guard stated a distrust of Daz, claiming drow are liars.",
+    "source_quote": "You are a drow, and we know that drow lie.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4723,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnome guard count",
+    "fact": "Eight gnomes are guarding the passage beyond the gate.",
+    "source_quote": "see through it to the eight gnomes guarding the passage beyond",
+    "quote_verified": true,
+    "passes": [
+      "temporal"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4323,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnome guards",
+    "fact": "Eight gnome guards waited behind the gate.",
+    "source_quote": "Eight gnome guards waited behind it",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4563,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnomes at the gate",
+    "fact": "There are eight gnomes guarding the passage beyond the main gate.",
+    "source_quote": "the party can see through it to the eight gnomes guarding the passage beyond.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4309,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnomes (guards)",
+    "fact": "A guard admitted Jimjar looked very familiar but could not place where he had seen him.",
+    "source_quote": "the guard admitted Jimjar looked very familiar but could not place where he had seen him",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9361,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnomes (guards)",
+    "fact": "The guards were astonished that a gelatinous cube could speak.",
+    "source_quote": "The guards were astonished that a gelatinous cube could speak.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 7468,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "gnomes (guards)",
+    "fact": "The surrounding gnomes treated Jimjar with peculiar deference.",
+    "source_quote": "while the surrounding gnomes treated him with peculiar deference.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9245,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "guard",
+    "fact": "A guard admits that Jimjar looks very familiar but cannot place where he has seen him.",
+    "source_quote": "the guard admitted Jimjar looked very familiar but could not place where he had seen him",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9361,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "guard",
+    "fact": "The guard says Jimjar looks very familiar but cannot remember where he has seen him.",
+    "source_quote": "The guard says Jimjar looks very familiar but cannot remember where he has seen him.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14067,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "guards",
+    "fact": "The guards correct themselves, stating they have an ooze problem.",
+    "source_quote": "then correct themselves: \u201cWe have an ooze problem.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11233,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "guards",
+    "fact": "The guards initially claim to have a serious fungi problem.",
+    "source_quote": "The guards initially claim to have a serious fungi problem",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11173,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum concludes that sleeping might explain why he feels refreshed.",
+    "source_quote": "concluded that it might explain why closing his eyes sometimes left him feeling refreshed",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 842,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum confirms his true nature to the guards, saying, \u201cTis true. You see me truly.\u201d",
+    "source_quote": "Gyrgum answers their disbelief with, \u201cTis true. You see me truly.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 5994,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum countered the guard's accusation by stating that orcs only tell the truth.",
+    "source_quote": "But I am an orc, and everyone knows that orcs only tell the truth,",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4786,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum counters the guard's prejudice by claiming that orcs only tell the truth.",
+    "source_quote": "Gyrgum countered, \u201cBut I am an orc, and everyone knows that orcs only tell the truth,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4767,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "realized he was an orc cleric of Bahamut",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "small"
+    ],
+    "n_samples": 2,
+    "quote_offset": 4895,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum is unfamiliar with the concept of a long rest.",
+    "source_quote": "Gyrgum puzzled over the unfamiliar idea of a \u201clong rest\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 781,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum puzzles over the concept of a long rest.",
+    "source_quote": "Gyrgum puzzled over the unfamiliar idea of a \u201clong rest\u201d",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 781,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Gyrgum",
+    "fact": "Gyrgum reflects that closing his eyes sometimes leaves him feeling refreshed.",
+    "source_quote": "it might explain why closing his eyes sometimes left him feeling refreshed",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 857,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "head guard",
+    "fact": "The head guard demands to know who the travelers are and why they have come.",
+    "source_quote": "Their leader demanded to know who the travelers were and why they had come.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 4600,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "An attempt to read Jimjar revealed he knew far too many precise details.",
+    "source_quote": "An attempt to read him revealed that he knew far too many precise details",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9170,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "At the top of the stairs, Jimjar happily declares the group's arrival at Blingdenstone.",
+    "source_quote": "At the top, Jimjar happily declared, \u201cWe've arrived at Blingdenstone!\u201d",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2745,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar admits he had a miscalculation regarding who accepted his wager.",
+    "source_quote": "Jimjar admitted to a \u201cslight miscalculation,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 573,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar admits he made a miscalculation because no one had actually accepted his wager.",
+    "source_quote": "Jimjar admitted to a \u201cslight miscalculation\u201d",
+    "quote_verified": false,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": null,
+    "scene_index": null,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar announces that Blingdenstone is a day's journey from their current location.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone. I know it for sure this time.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 288,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar announces that the party is one day away from Blingdenstone.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone. I know it for sure this time.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 288,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar asserts that Daz is interested in exploration and growth rather than domination.",
+    "source_quote": "Jimjar tries to reassure the guards about Daz: \u201cYes, yes, yes, his name harkens to the words Menzoberranzan, but he's really a really nice guy. He's all about exploring and growing, not about domination and world conquest.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6204,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar claimed he knew so much because he collects information and makes bets.",
+    "source_quote": "When asked how he knew so much, Jimjar maintained that he was merely someone who collected information and made bets.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8525,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar claims he is merely someone who collects information and makes bets.",
+    "source_quote": "Jimjar maintained that he was merely someone who collected information and made bets",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8557,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar claims that Blingdenstone is a town where everybody knows everything about it.",
+    "source_quote": "Jimjar claims, \u201cBlingdenstone is one of those towns that everybody knows everything about.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13743,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar claims to simply collect information and make bets.",
+    "source_quote": "\u201cI just happen to be someone who collects information and makes bets.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12730,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar climbs the stairs comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2599,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar denies any association with demon lords.",
+    "source_quote": "Jimjar denies any association with demon lords",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12671,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar initially responds to being asked who he is with the phrase \u201cWanna bet?\u201d",
+    "source_quote": "Jimjar initially responds with his habitual \u201cWanna bet?\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6080,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar initially responds to the guard's question with his habitual catchphrase.",
+    "source_quote": "Jimjar initially responds with his habitual \u201cWanna bet?\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6080,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar introduced himself to the guards as another friend of the party.",
+    "source_quote": "before presenting himself as merely another friend of the party.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6137,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar is thrilled to be close to home.",
+    "source_quote": "Jimjar was thrilled to be so close to home",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 231,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar knows far too many precise details about the party's future.",
+    "source_quote": "An attempt to read him revealed that he knew far too many precise details",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9170,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar presents himself as merely another friend of the party.",
+    "source_quote": "before presenting himself as merely another friend of the party.",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 6137,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar responded to the guard's inquiry with his habitual phrase 'Wanna bet?'.",
+    "source_quote": "Jimjar initially responds with his habitual \u201cWanna bet?\u201d",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6080,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar's expression shifted as though he were remembering something painful when Juiblex was named.",
+    "source_quote": "At the demon lord\u2019s name, Jimjar\u2019s expression shifted as though he were remembering something painful",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8115,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "Jimjar's expression shifted to remember something painful when Juiblex's name was mentioned.",
+    "source_quote": "At the demon lord\u2019s name, Jimjar\u2019s expression shifted as though he were remembering something painful.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8115,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Jimjar",
+    "fact": "The party suspects Jimjar is a concealed dignitary.",
+    "source_quote": "reinforcing the impression that their gambling companion was some kind of concealed dignitary",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9451,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Juiblex",
+    "fact": "Jimjar states that Juiblex turns everything into a shapeless, structureless mess.",
+    "source_quote": "Juiblex turns everything into a shapeless, structureless mess.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12606,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Juiblex",
+    "fact": "Juiblex embodies the corrupted nature of the Abyss.",
+    "source_quote": "embodying the corrupted nature of the Abyss",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8288,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Juiblex",
+    "fact": "Juiblex is an unrivaled obscenity that dissolves everything into an unstructured mess.",
+    "source_quote": "an unrivaled obscenity that dissolved everything into an unstructured mess",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8336,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Juiblex",
+    "fact": "Juiblex is identified as the demon lord of oozes and shapeless things.",
+    "source_quote": "Jimjar identifies Juiblex as \u201cthe demon lord of oozes and shapeless things,\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 12060,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Juiblex",
+    "fact": "Juiblex represents the corrupted nature of the Abyss and \u201cunrivaled obscenity.\u201d",
+    "source_quote": "representing the corrupted nature of the Abyss and \u201cunrivaled obscenity.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12137,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Lolth",
+    "fact": "Eldeth identifies the fanatical cult of Lolth as the true enemy, rather than every individual drow.",
+    "source_quote": "the true enemy was the fanatical cult of Lolth rather than every individual drow.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16188,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Menzoberranzan",
+    "fact": "Daz's name is stated by Jimjar to harken to the words Menzoberranzan.",
+    "source_quote": "his name harkens to the words Menzoberranzan",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6267,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Orcus",
+    "fact": "Jimjar states that Orcus represents endless death.",
+    "source_quote": "Orcus represents endless death",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12570,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Orcus",
+    "fact": "Orcus represents endless death.",
+    "source_quote": "Orcus\u2019s endless death",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8502,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Quartermaster Senni",
+    "fact": "Quartermaster Senni is identified by Jimjar as someone who can explain what is happening.",
+    "source_quote": "and Quartermaster Senni, suggesting that they explain what is happening.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13891,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Quartermaster Senni",
+    "fact": "Quartermaster Senni is the city official the party is recommended to see for an explanation of Blingdenstone\u2019s ooze crisis.",
+    "source_quote": "report to Chief Dorbo Diggermattock and Quartermaster Senni",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16943,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Quartermaster Senni",
+    "fact": "The guards advise the party to report to Quartermaster Senni to learn more about the city\u2019s troubles.",
+    "source_quote": "report to Chief Dorbo Diggermattock and Quartermaster Senni to obtain full permission for Glabbagool\u2019s presence and learn more about the city\u2019s troubles",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 16943,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Quartermaster Senni",
+    "fact": "The guards recommend the party consult Quartermaster Senni for an explanation of Blingdenstone\u2019s ooze crisis.",
+    "source_quote": "Quartermaster Senni ... for an explanation of Blingdenstone\u2019s ooze crisis",
+    "quote_verified": false,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": null,
+    "scene_index": null,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Spiderbait",
+    "fact": "Spiderbait climbs the stairs comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 2599,
+    "scene_index": 1,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "unnamed gnome guard",
+    "fact": "The gnome explains that their defenses make enemies go through twisty tunnels with deadly traps to kill them in.",
+    "source_quote": "Well, if you're being attacked by an army, it's important to make them go through lots of twisty tunnels with deadly traps that you can kill them in.",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17192,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "unnamed gnome guard",
+    "fact": "The gnome points toward Daz while warning against funny business.",
+    "source_quote": "He points toward Daz while warning against \u201cfunny business.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 17473,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Zuggtmoy",
+    "fact": "Jimjar states that Zuggtmoy embodies decay that drains goodness from things.",
+    "source_quote": "Zuggtmoy embodies decay that drains goodness from things",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 12459,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "npc",
+    "subject": "Zuggtmoy",
+    "fact": "Zuggtmoy embodies corruption through decay.",
+    "source_quote": "Zuggtmoy\u2019s corruption through decay",
+    "quote_verified": true,
+    "passes": [
+      "sweep"
+    ],
+    "n_samples": 1,
+    "quote_offset": 8439,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "object",
+    "subject": "The Up in the Overbright",
+    "fact": "Jimjar claims Daz has been reading a popular book called The Up in the Overbright.",
+    "source_quote": "Jimjar jokingly claims Daz has been reading a popular book called *The Up in the Overbright*",
+    "quote_verified": true,
+    "passes": [
+      "large",
+      "sweep"
+    ],
+    "n_samples": 2,
+    "quote_offset": 6430,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "object",
+    "subject": "The Up in the Overbright",
+    "fact": "The Up in the Overbright is a popular book.",
+    "source_quote": "he was reading a popular book called *The Up in the Overbright*",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 5088,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "Daz and Juiblex",
+    "fact": "The party recalls that Daz previously mentioned Juiblex.",
+    "source_quote": "The party recalls that Daz previously mentioned Juiblex.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11900,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "Eldeth's evolving prejudice",
+    "fact": "Eldeth accepts that her views on the inherent evil of certain peoples need to be reconsidered as the group proceeds deeper into Blingdenstone.",
+    "source_quote": "She accepts that it is something she personally should continue thinking about as the group proceeds deeper into Blingdenstone.",
+    "quote_verified": true,
+    "passes": [
+      "large"
+    ],
+    "n_samples": 1,
+    "quote_offset": 19269,
+    "scene_index": 5,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "gelatinous cube army",
+    "fact": "Discussion turns to whether Glabbagool could create a gelatinous-cube army.",
+    "source_quote": "Discussion turns to whether Glabbagool could create a gelatinous-cube army.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14528,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "Jimjar as concealed dignitary",
+    "fact": "The guards' reaction reinforced the impression that Jimjar is a concealed dignitary.",
+    "source_quote": "reinforcing the impression that their gambling companion was some kind of concealed dignitary.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9451,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "Jimjar foresight",
+    "fact": "The party wonders if Jimjar uses wagers to give instructions because he already knows what will happen.",
+    "source_quote": "The specificity of the prediction makes the party wonder whether Jimjar is using wagers as an indirect way of giving them instructions because he already knows what will happen.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13341,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "Jimjar identity",
+    "fact": "The guard is not lying, leaving the party with the impression that Jimjar is some sort of VIP.",
+    "source_quote": "The guard is not lying, leaving the party with the impression that Jimjar is \u201csome sort of VIP something.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 14154,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "Jimjar knowledge",
+    "fact": "An investigation confirms that Jimjar knows far too much precise information.",
+    "source_quote": "An investigation confirms that Jimjar knows far too much precise information.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 13521,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "Jimjar's true identity",
+    "fact": "The party suspects Jimjar's bets are a way of telling them what needs to be done.",
+    "source_quote": "The party began to suspect that Jimjar\u2019s bets were his way of telling them what needed to be done without directly explaining himself.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 9035,
+    "scene_index": 3,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "oozapalooza",
+    "fact": "The abnormal gathering of oozes is dubbed an \u201coozapalooza.\u201d",
+    "source_quote": "The abnormal gathering is dubbed an \u201coozapalooza.\u201d",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 11847,
+    "scene_index": 4,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "party's goal",
+    "fact": "The group is at Blingdenstone looking for aid and fellowship.",
+    "source_quote": "the group has found itself at Blingdenstone looking for the same kind of aid and fellowship.",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 6806,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "party's history",
+    "fact": "The party was detained and exploited against their will by captors.",
+    "source_quote": "the group had been detained and exploited against their will, had escaped their captors",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 5177,
+    "scene_index": 2,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  },
+  {
+    "type": "thread",
+    "subject": "pursuit",
+    "fact": "No one is pursuing the party.",
+    "source_quote": "With no one pursuing them",
+    "quote_verified": true,
+    "passes": [
+      "small"
+    ],
+    "n_samples": 1,
+    "quote_offset": 708,
+    "scene_index": 0,
+    "source": {
+      "kind": "summary",
+      "path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+      "chapter": 35,
+      "heading_chapter": 35
+    }
+  }
+]

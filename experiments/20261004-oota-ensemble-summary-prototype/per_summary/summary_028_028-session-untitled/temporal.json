@@ -1,0 +1,352 @@
+[
+  {
+    "type": "object",
+    "fact": "The fist-sized quartz crystals shed a dim light in a 10-foot radius.",
+    "source_quote": "shed a dim light in a 10-foot radius",
+    "subject": "quartz light radius",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The flash created by bursting a quartz crystal covers a 10-foot radius.",
+    "source_quote": "burst into a blinding flash in a 10-foot radius",
+    "subject": "quartz flash radius",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Creatures caught in the quartz flash must make a DC 10 Constitution save to avoid being blinded.",
+    "source_quote": "must make a DC 10 Constitution save",
+    "subject": "quartz save DC",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The blindness caused by the quartz flash lasts for one minute.",
+    "source_quote": "blinded for a minute",
+    "subject": "quartz blindness duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum concludes and Sarith agrees that the crystals should be thrown at least 10 feet away.",
+    "source_quote": "throw it at least 10 feet",
+    "subject": "quartz throw distance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 19 on his Arcana check.",
+    "source_quote": "Daz rolled a 19 on Arcana",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party pocketed twelve of the glowing quartz stones.",
+    "source_quote": "pocketing twelve of the glowing stones",
+    "subject": "harvested quartz stones",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party encounters two desperate survivors, Fuurm and Baedora.",
+    "source_quote": "encounters two desperate survivors",
+    "subject": "survivor count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 22 on his Investigation check.",
+    "source_quote": "Daz rolls a 22 on Investigation",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 24 on his Insight check.",
+    "source_quote": "Daz rolls a 24 on Insight",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two wretched figures, one man and one woman, are found huddled in the dark.",
+    "source_quote": "the party had come across two wretched figures huddled in the dark",
+    "subject": "former prisoners",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 22 on Investigation to identify the former prisoners.",
+    "source_quote": "Daz rolled a 22 on Investigation",
+    "subject": "crystal investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collects twelve quartz crystals in total.",
+    "source_quote": "The party collects twelve quartz crystals in total",
+    "subject": "quartz crystals count",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The group spends several days traveling through the Underdark, with significant events occurring on the first and sixth days.",
+    "source_quote": "Days of travel followed.",
+    "subject": "session duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crystal is thrown at shrieker fungi from a distance of 10 feet, but has no effect.",
+    "source_quote": "A crystal is thrown at the shriekers from a safe distance... The crystal lands 10 feet away",
+    "subject": "crystal throw range",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth must pass a DC 16 Survival check to cover the party's tracks through the fungus cavern.",
+    "source_quote": "It takes a DC 16 Survival check.",
+    "subject": "survival check difficulty",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a survival skill modifier of +6 and rolled a 12 on his check.",
+    "source_quote": "Gyrgum's own roll is a 12... Eldeth, who has the party's best Survival at +6.",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party encounters another crystal cluster on approximately the sixth day of their journey.",
+    "source_quote": "On about the sixth day the party passes another crystal cluster",
+    "subject": "crystal cluster discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The drow pursuit level is currently at one.",
+    "source_quote": "the pursuit level is now one",
+    "subject": "pursuit status",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum wagers the crystals will prove useful, and Jimjar accepts the bet.",
+    "source_quote": "Gyrgum obliged, wagering that the crystals would come in handy after all, and a startled Jimjar took it.",
+    "subject": "crystal bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A character succeeds on an Arcana check with a result of 24 to confirm the tomb's origins.",
+    "source_quote": "where a 24 on Arcana confirmed this was truly Brysis's Netherese tomb",
+    "subject": "Arcana check at tomb entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party arrives at the tomb after several days of travel.",
+    "source_quote": "After several days of travel, the party arrives at the entrance to the Lost Tomb of Khaem.",
+    "subject": "elapsed travel time",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The staircase descending from the tomb entrance plunges over one hundred feet into the earth.",
+    "source_quote": "descended a long staircase that plunged over a hundred feet into the earth",
+    "subject": "tomb staircase depth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reports a passive Perception score of 15 and an Investigation score of 17.",
+    "source_quote": "Daz reports passive Perception 15 and Investigation 17",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party observes the tomb has remained intact for several thousand years.",
+    "source_quote": "after thousands of years",
+    "subject": "tomb age",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolls a natural 1 on an Investigation check.",
+    "source_quote": "Zalthir rolls a natural 1 on Investigation",
+    "subject": "Zalthir Investigation roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 17 on an Arcana check.",
+    "source_quote": "Gyrgum rolls a 17 on Arcana",
+    "subject": "Gyrgum Arcana roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz inspects the altar with an Arcana result of 16, finding no arcane significance.",
+    "source_quote": "Daz examines the altar but finds no arcane significance (Arcana 16)",
+    "subject": "Daz altar inspection",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four stone sarcophagi are present in the chamber, each bearing a sculpted likeness of a robed figure.",
+    "source_quote": "dominated by four stone sarcophagi",
+    "subject": "stone sarcophagi",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A die roll determined the party's direction; Gyrgum's player rolled an 18.",
+    "source_quote": "Gyrgum's player rolls an 18",
+    "subject": "die roll for direction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The condition for going east was a roll of 11 or greater.",
+    "source_quote": "11 or greater, and we'll go east",
+    "subject": "eastern path check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's player took about seven tries to cast the shroud of magical darkness on Roll20.",
+    "source_quote": "The darkness takes Zalthir's player about seven tries to cast in Roll20",
+    "subject": "darkness casting attempts",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four specters emerged from the sarcophagi to attack the party.",
+    "source_quote": "Four specters emerged from the sarcophagi",
+    "subject": "specter count",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The specters have 22 HP each.",
+    "source_quote": "The specters have only 22 HP each",
+    "subject": "specter HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir killed one specter after hitting for 11 and then 9 damage.",
+    "source_quote": "He hits for 11 and 9, spends a focus point for extra attacks, kills one, then hits a second for 9",
+    "subject": "specter death (Zalthir)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's hit-point maximum was lowered by a total of 12 points (2, then 10) due to life-draining touches.",
+    "source_quote": "lower his hit-point maximum (by 2, then by 10)",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's maximum HP is reduced by 12 until he takes a long rest.",
+    "source_quote": "His maximum is down 12 in total until a long rest",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz took 5 damage from a specter that Zalthir also hit for 9.",
+    "source_quote": "He sends two missiles into one specter (10 damage) and one into another (5 damage)... then hits a second for 9",
+    "subject": "specter hit on Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The DC for Gyrgum's attempt to turn the undead was DC 15 Wisdom.",
+    "source_quote": "The save is DC 15 Wisdom",
+    "subject": "turn undead DC",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A specter hit Zalthir for 6 necrotic damage.",
+    "source_quote": "A specter hits Zalthir for 6 necrotic damage",
+    "subject": "specter hit on Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin killed one specter with a hit for 12 damage.",
+    "source_quote": "Thorin's longsword +1 hits for 12 and kills one specter",
+    "subject": "specter death (Thorin)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit another specter for 11 damage, leaving it alive.",
+    "source_quote": "then hits another for 11, which leaves it alive",
+    "subject": "specter hit (Thorin)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dealt 13 damage to the remaining specter to finish it off.",
+    "source_quote": "He lands 13 damage, then finishes it",
+    "subject": "specter death (Zalthir final)",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gold censer with platinum filigree was found in the southeast sarcophagus.",
+    "source_quote": "the northeast sarcophagus holds two gold bracelets and the southeast a gold censer with platinum filigree",
+    "subject": "gold censer location",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The hole in the floor beneath the rolled-aside sarcophagus is a four-foot square.",
+    "source_quote": "a four-foot square hole",
+    "subject": "hidden passage dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a third-level Magic Missile that deals 20 damage to the wraith.",
+    "source_quote": "five darts of pure force for 20 damage",
+    "subject": "magic missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The third-level Magic Missile consists of five darts.",
+    "source_quote": "five darts of pure force",
+    "subject": "magic missile darts",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A 5e fireball fills a 20-foot radius around its point.",
+    "source_quote": "a 5e fireball fills a 20-foot radius",
+    "subject": "fireball radius",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower chamber is 30 feet below the room above, correcting an initial estimate of 150 feet.",
+    "source_quote": "corrects himself to 30 feet below the room above",
+    "subject": "chamber depth correction",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The GM initially estimated the chamber was 150 feet deep.",
+    "source_quote": "The GM gives 150 feet",
+    "subject": "chamber depth initial estimate",
+    "quote_verified": true
+  }
+]

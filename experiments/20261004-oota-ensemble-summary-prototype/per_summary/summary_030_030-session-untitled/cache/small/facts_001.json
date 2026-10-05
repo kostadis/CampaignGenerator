@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "The party ventures deeper into the vast caverns surrounding Neverlight Grove.",
+    "source_quote": "The party ventured deeper into the vast caverns surrounding Neverlight Grove.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The underground landscape is filled with towering, psychedelically colored mushrooms that glow with strange, inviting light.",
+    "source_quote": "filled with towering, psychedelically colored mushrooms that glowed with strange, inviting light",
+    "subject": "cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM introduces a new, larger map to convey the true scale of the area.",
+    "source_quote": "The GM introduced a new, larger map to convey the true scale of the area",
+    "subject": "map swap",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is a surly predator lurking in the rocky, mossy terrain to the south.",
+    "source_quote": "The party ventured deeper into the vast caverns surrounding Neverlight Grove. ... Their quarry was a Grick Alpha, a surly predator lurking in the rocky, mossy terrain to the south.",
+    "subject": "Grick Alpha",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub warns the party that a Shambling Mound also lurks nearby.",
+    "source_quote": "Loobamub warned them that a Shambling Mound also lurked nearby",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub instructs the party to kill the Shambling Mound if found.",
+    "source_quote": "if you do find that, kill it. We don't reanimate shambling mounds.",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Shambling Mound is a massive creature of living swamp matter.",
+    "source_quote": "A Shambling Mound is a massive creature of living swamp matter.",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Shambling Mound does not walk around but flops down as if it were part of a mossy swamp.",
+    "source_quote": "It does not walk around but flops down as if it were part of a mossy swamp.",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz devises a strategy to locate the Shambling Mound by freezing small sections of mossy ground in a checkerboard pattern.",
+    "source_quote": "Daz devised an unusual strategy. Advancing slowly within Shape Water's 30-foot range, he froze small sections of the mossy ground in a checkerboard pattern",
+    "subject": "Daz's strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Shape Water has a range of 30 feet.",
+    "source_quote": "within Shape Water's 30-foot range",
+    "subject": "Shape Water",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Shape Water only freezes water that has no creature in it.",
+    "source_quote": "The spell only freezes water that has no creature in it",
+    "subject": "Shape Water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party advances cautiously toward the Grick Alpha's location.",
+    "source_quote": "The party advanced cautiously",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin takes the lead in the party's formation.",
+    "source_quote": "Thorin in front, \"because that's what he does\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer glowed fiercely in the dark because the magical blade refuses to tolerate the absence of light.",
+    "source_quote": "Dawnbringer glowed fiercely in the dark, since the magical blade refuses to tolerate the absence of light.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposes freezing the mound itself, but the GM rules that cantrips do not work that way.",
+    "source_quote": "Daz first proposes freezing the mound itself. The GM rules that cantrips do not work that way.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz realizes that a patch of ground failing to freeze with Shape Water would reveal the mound.",
+    "source_quote": "Daz then realizes that Shape Water only freezes water with no creature in it, so a patch that fails to freeze would reveal the mound.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the party of the Shambling Mound's resistances.",
+    "source_quote": "Zalthir reminds the party of the mound's resistances.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz considers Magic Missile and Maximilian's Earthen Grasp as follow-up spells.",
+    "source_quote": "Daz considers Magic Missile and Maximilian's Earthen Grasp as follow-ups",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is resistant, not immune, to cold and fire.",
+    "source_quote": "the GM confirms that the mound is only resistant, not immune, to cold and fire",
+    "subject": "Shambling Mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha is disturbed by the party freezing its surroundings and wakes up.",
+    "source_quote": "The Grick Alpha, disturbed by the party freezing its surroundings, wakes",
+    "subject": "Grick Alpha wakes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha bares its teeth and claws and emerges to confront the party.",
+    "source_quote": "bares its teeth and claws, then emerges to confront them",
+    "subject": "Grick Alpha confronts",
+    "quote_verified": true
+  }
+]

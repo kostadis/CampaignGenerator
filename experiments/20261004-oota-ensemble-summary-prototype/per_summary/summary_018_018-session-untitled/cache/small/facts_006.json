@@ -1,0 +1,156 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum offers an optional NDA to Werz Saltbaron to keep their dealings secret.",
+    "source_quote": "Gyrgum offered an optional NDA \u2014 which Werz heard as a \"Non-Demonic Agreement\"",
+    "subject": "NDA negotiation start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost says \"boo\" to intimidate Werz Saltbaron into signing the NDA.",
+    "source_quote": "the ghost said \"boo.\"",
+    "subject": "ghost intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states he will gladly sign the contract because it will be enforced by a fearsome ghost.",
+    "source_quote": "Werz: \"I will gladly sign such a contract, especially if it will be enforced by a fearsome ghost like this.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum drafts a formal contract with his fancy pen.",
+    "source_quote": "Gyrgum drafts a formal contract with his fancy pen",
+    "subject": "contract drafting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposes the NDA price starts at 1,250 gold pieces but offers it for 1,000.",
+    "source_quote": "normally our NDA comes for the low, low price of 1,250 gold. But today\u2026 we'd be willing to go down to a flat thousand gold pieces.",
+    "subject": "Daz price proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he almost blurted out how much money Daz has, but failed his save.",
+    "source_quote": "Thorin: \"I almost blurted out how much money you got, but I missed the save.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party raises the NDA price from 1,000 to 1,100 gold pieces after Werz haggles.",
+    "source_quote": "The party raises the price from 1,000 to 1,100 gold pieces after he questions their initial offer.",
+    "subject": "price increase",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron calls the 1,000 gold piece price a form of highway robbery.",
+    "source_quote": "Werz attempts to haggle, \"A thousand gold pieces. This is a form of highway robbery.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron backpedals, stating he thought it would be insulting to accept the first offer.",
+    "source_quote": "Werz backpedals: \"I thought it would be insulting for me to accept your first offer.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron pays the 1,100 gold piece fee, concluding the NDA.",
+    "source_quote": "Werz pays the 1,100 gold piece fee and the NDA is concluded.",
+    "subject": "NDA concluded",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Werz Saltbaron provides information about Clan Ironhead.",
+    "source_quote": "Werz provides information about various Duergar clans, including Clan Ironhead",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a clan of armorsmiths who complain their stores have been raided recently.",
+    "source_quote": "Clan Thrazgad is another clan of armorsmiths who complain their stores have been raided recently.",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xundom will back the Deepking if there is a contest for power.",
+    "source_quote": "Clan Xundom will back the Deepking if there's any contest for power.",
+    "subject": "Clan Xundom",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party presses Werz Saltbaron on the fact that only the NDA's price was negotiated, not the job itself.",
+    "source_quote": "The party presses Werz on the fact that only the NDA's price was negotiated, never the job itself.",
+    "subject": "job clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz Saltbaron offers his services to Blingdenstone in exchange for the party removing the assassins targeting him.",
+    "source_quote": "Werz says the deal is that they remove the assassins and he offers his services to Blingdenstone.",
+    "subject": "assassin deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron protests that the party has bled him dry and he has to maintain his profit margins.",
+    "source_quote": "He protests, \"You've bled me dry,\" and says he has to maintain his profit margins.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states they can refund the money and expose Werz Saltbaron's activities.",
+    "source_quote": "Daz: \"Well, we can refund the money and let everybody know what you're up to.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz Saltbaron gives the party five special gems as a symbol of good faith.",
+    "source_quote": "Werz gives the party five special gems as a symbol of good faith",
+    "subject": "special gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The special gems are valued at 100 gold pieces each.",
+    "source_quote": "Daz asks their value, and it is put at 100 GP each.",
+    "subject": "special gems",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron suggests the party talk to their Gnomish friends about why the gems are special.",
+    "source_quote": "Werz: \"before you sell these gems, I suggest you talk to your Gnomish friends and ask them why these are special.\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he is hoping the gems are not cursed.",
+    "source_quote": "Gyrgum: \"I'm hoping they're not cursed.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to deal with the assassins targeting Werz Saltbaron in exchange for his influence and trade favors in Blingdenstone.",
+    "source_quote": "The party agrees to deal with the assassins targeting Werz in exchange for his influence and trade favors in Blingdenstone.",
+    "subject": "party agreement",
+    "quote_verified": true
+  }
+]

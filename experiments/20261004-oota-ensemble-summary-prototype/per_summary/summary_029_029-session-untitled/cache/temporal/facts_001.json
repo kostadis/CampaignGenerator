@@ -1,0 +1,93 @@
+[
+  {
+    "type": "location",
+    "fact": "Gyrgum aims Tasha's Caustic Brew as a five-foot-wide stream.",
+    "source_quote": "five-foot stream of Tasha's Caustic Brew",
+    "subject": "Dawnbringer stream width",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spell Tasha's Caustic Brew is aimed as a five-foot-wide stream.",
+    "source_quote": "aimed as a five-foot-wide stream",
+    "subject": "Caustic Brew stream width",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls three separate attacks, dealing 10, 10, and 3 damage for a total of 23.",
+    "source_quote": "Two hit for 10 each and one for 3, a total of 23",
+    "subject": "Daz attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals a total of 23 damage with Scorching Ray.",
+    "source_quote": "a total of 23, which earned him",
+    "subject": "Daz attack damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis was imprisoned for a millennium.",
+    "source_quote": "she will not be defeated after a millennium of imprisonment",
+    "subject": "Brysis imprisonment duration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is down 12 maximum hit points.",
+    "source_quote": "He is already down 12 maximum hit points",
+    "subject": "Daz max HP status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Lingering acid deals 4d4 damage at the start of Brysis's turn.",
+    "source_quote": "The acid deals 4d4 at the start of her turn",
+    "subject": "Brysis acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis had only three hit points left before being destroyed.",
+    "source_quote": "she had only three hit points left",
+    "subject": "Brysis HP status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis is destroyed by the lingering effects of caustic acid.",
+    "source_quote": "she was destroyed before she could make good on his threat",
+    "subject": "Brysis death",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a +2 sword that adds 1d8 damage against undead.",
+    "source_quote": "adds 1d8 against undead",
+    "subject": "Dawnbringer weapon properties",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Scorching Ray using his last 2nd-level spell slot.",
+    "source_quote": "casts Scorching Ray with his last 2nd-level slot",
+    "subject": "Daz spell slot usage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis takes 23 damage from Scorching Ray.",
+    "source_quote": "landing 10, 10, and 3 for 23 damage",
+    "subject": "Brysis damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis is defeated after the application of acid damage.",
+    "source_quote": "Brysis was destroyed before she could make good on his threat",
+    "subject": "Brysis defeat",
+    "quote_verified": false
+  }
+]

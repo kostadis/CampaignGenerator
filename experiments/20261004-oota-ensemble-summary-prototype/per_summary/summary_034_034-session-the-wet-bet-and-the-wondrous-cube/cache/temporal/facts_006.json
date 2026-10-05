@@ -1,0 +1,79 @@
+[
+  {
+    "type": "location",
+    "fact": "There are seven niches carved into the walls of the temple fountain room.",
+    "source_quote": "Seven niches lined the walls",
+    "subject": "temple fountain niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Only one niche admits water through a crack.",
+    "source_quote": "one admitted water through a crack",
+    "subject": "temple fountain water niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The two niches flanking the water niche are empty.",
+    "source_quote": "the two beside it were empty",
+    "subject": "temple fountain empty niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Four niches contain strange, formless sculptures.",
+    "source_quote": "four contained strange, formless sculptures",
+    "subject": "temple fountain sculpture niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Only a pair of clawed stone feet from the broken statue remains recognizable.",
+    "source_quote": "only a pair of clawed stone feet still recognizable",
+    "subject": "broken statue features",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four gray oozes appear from the formless sculptures in the niches.",
+    "source_quote": "Gray ooze... Zalthir rapidly destroyed each creature",
+    "subject": "gray oozes",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers 112 silver pieces in the fountain.",
+    "source_quote": "discovered a hidden cache of treasure: 112 silver pieces",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers three gold pieces in the fountain.",
+    "source_quote": "112 silver pieces, three gold pieces",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers one drow dagger in the fountain.",
+    "source_quote": "a drow dagger",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovers one vial of oil of slipperiness in the fountain.",
+    "source_quote": "a vial of oil of slipperiness",
+    "subject": "fountain treasure cache",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party must wait several days for the absorbed valuables to pass through Glabbagool.",
+    "source_quote": "wait several days for the valuables to pass through him",
+    "subject": "treasure digestion",
+    "quote_verified": true
+  }
+]

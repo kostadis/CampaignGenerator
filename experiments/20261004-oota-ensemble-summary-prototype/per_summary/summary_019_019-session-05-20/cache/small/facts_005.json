@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "The chamber is vast and contains a great rocky mesa at its center.",
+    "source_quote": "The chamber that greeted them was vast and breathtaking... and shafts of pale white light fell upon a great rocky mesa at the cavern's center.",
+    "subject": "Obelisk Chamber",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "Crude ramps wind upward to the mesa's topmost tiers, which are connected by a sturdy bridge.",
+    "source_quote": "Crude ramps wound upward to the mesa's topmost tiers, which were connected by a sturdy bridge.",
+    "subject": "Obelisk Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber is illuminated by pulsing faerzress energy and the soft glow of bioluminescent fungi.",
+    "source_quote": "Faerzress energy pulsed through the air alongside the soft glow of bioluminescent fungi",
+    "subject": "Obelisk Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg sits atop one of the mesa's tiers.",
+    "source_quote": "Atop one tier sat the dragon egg",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A fifty-foot-tall obelisk of smooth black metal looms atop the other tier of the mesa.",
+    "source_quote": "atop the other loomed a fifty-foot-tall obelisk of smooth black metal",
+    "subject": "obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The obelisk's surface is marred by imperfections as though pieces had been chipped away over time.",
+    "source_quote": "its surface marred by only a handful of imperfections, as though pieces of it had been chipped away over time.",
+    "subject": "obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a female derro standing beside the obelisk.",
+    "source_quote": "Beside the obelisk stood a female derro named Plinki",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki stroked the obelisk's surface with reverent intensity, scribbling notes and paying no attention to the armed group entering her chamber.",
+    "source_quote": "stroking its surface with the reverent intensity of a scientist on the edge of a great discovery... scribbling notes in a small book and paying no attention whatsoever to the armed group that had just walked into her chamber.",
+    "subject": "Plinki observing obelisk",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki has a crowd of minions, some of whom are possibly invisible or hidden.",
+    "source_quote": "She had a crowd of minions, some possibly invisible or hidden.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM pointed out that the party could destroy the egg and report that to Themberchaud instead of retrieving it.",
+    "source_quote": "The DM pointed out that the party didn't strictly need the egg; they could destroy it and report that to Themberchaud.",
+    "subject": "DM suggestion regarding egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is mentioned as a party who could be reported to regarding the egg's status.",
+    "source_quote": "they could destroy it and report that to Themberchaud.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum strode forward and announced himself as a cleric of the dragon god Bahamut come to worship at the egg.",
+    "source_quote": "Gyrgum, drawn irresistibly toward the egg by his devotion to Bahamut, strode boldly forward and announced himself as a cleric of the dragon god come to worship at the egg.",
+    "subject": "Gyrgum bluff",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric of Bahamut.",
+    "source_quote": "announced himself as a cleric of the dragon god come to worship at the egg... Gyrgum, drawn irresistibly toward the egg by his devotion to Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Plinki declared that Demogorgon sent Gyrgum to acknowledge the greatness of her achievement.",
+    "source_quote": "she declared that Demogorgon himself had sent this holy man to acknowledge the greatness of her achievement",
+    "subject": "Plinki's reaction to bluff",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki scrambled down from the mesa to greet Gyrgum.",
+    "source_quote": "she scrambled down from the mesa to greet him.",
+    "subject": "Plinki greets Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is the entity Plinki believes sent Gyrgum.",
+    "source_quote": "she declared that Demogorgon himself had sent this holy man",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki led Gyrgum toward the egg and eagerly explained her work.",
+    "source_quote": "Plinki eagerly explained her work as she led Gyrgum toward the egg.",
+    "subject": "Plinki explains work",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The dragon egg was stolen from the Keepers of the Flame.",
+    "source_quote": "The egg had been stolen from the Keepers of the Flame, she said",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki has spent untold hours using the obelisk's power to infuse the egg with demonic energy in honor of Demogorgon.",
+    "source_quote": "she had spent untold hours using the obelisk's power to infuse it with demonic energy in honor of Demogorgon.",
+    "subject": "Egg infusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki showed Gyrgum intricate incantations she had inscribed across the egg's surface.",
+    "source_quote": "She showed him the intricate incantations she had inscribed across the egg's surface",
+    "subject": "Incantations inscribed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a natural 20 on Arcana and read the egg's etchings.",
+    "source_quote": "Earlier, Daz had rolled a natural 20 on Arcana and read the egg's etchings",
+    "subject": "Daz Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The egg's etchings indicate it will hatch a two-headed dragon, likely possessed by some demonic power.",
+    "source_quote": "it would hatch a two-headed dragon, likely possessed by some demonic power.",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin previously mistook the egg's etchings for festival decorations.",
+    "source_quote": "Thorin had taken the same etchings for festival decorations.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum cast Bless on his companions.",
+    "source_quote": "Gyrgum casts Bless on his companions \"in my magnanimity.\"",
+    "subject": "Gyrgum casts Bless",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki dismissed Gyrgum's companions as \"not important.\"",
+    "source_quote": "Plinki dismisses them as \"not important.\"",
+    "subject": "Plinki dismisses party",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The events take place in session 019.05.",
+    "source_quote": "### The Obelisk Chamber 019.05",
+    "subject": "session reference",
+    "quote_verified": true
+  }
+]

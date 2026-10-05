@@ -1,0 +1,233 @@
+[
+  {
+    "type": "npc",
+    "fact": "Werz hands over five unusual gems as a gesture of good faith for the assassin job.",
+    "source_quote": "Werz handed over five unusual gems, suggesting they ask their gnomish companions why they were special",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar had heard Werz's name in Blingdenstone and believes Werz is honest about being worth trading with.",
+    "source_quote": "Jimjar had heard Werz's name in Blingdenstone and thinks Werz is probably honest about being worth trading with",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine is a gnomish alchemist in Blingdenstone who would pay handsomely for the empty spell gems.",
+    "source_quote": "a gnomish alchemist named Kazook Pickshine would pay handsomely for them",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar identifies the gems as empty spell gems used in Blingdenstone's magical defenses.",
+    "source_quote": "he identified them as empty spell gems \u2014 the very kind used in the magical defenses of Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar notes that the gems are considered 'kind of banal gems' to anyone other than Kazook Pickshine.",
+    "source_quote": "but that to anyone else they are \"kind of banal gems\"",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The party returns to Ghohlbrorn's Lair to collect ordered magical equipment.",
+    "source_quote": "Back at Ghohlbrorn's Lair, the party collected the magical equipment they had previously ordered",
+    "subject": "Ghohlbrorn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin acquires a new +1 longsword at a 10% discount.",
+    "source_quote": "a +1 longsword for Thorin, paid for at a 10% discount out of pooled party funds",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's order included splint armor, a +1 longsword, and darts.",
+    "source_quote": "Thorin's order had been splint armor, a +1 longsword if possible, and darts",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin argues that breeding violent quaggoths is eugenics with sentient people, which is wrong.",
+    "source_quote": "Thorin: \"That's eugenics\u2026 But with sentient people, that's wrong.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks Stool how Rumpadump will ensure the party does not get hurt.",
+    "source_quote": "Thorin: \"How will he make sure we don't get hurt?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin plans to tell the assassins that radical transparency would solve everything.",
+    "source_quote": "Thorin plans to tell the assassins radical transparency would solve everything",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir receives two enchanted tattoos.",
+    "source_quote": "two enchanted tattoos for Zalthir",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recalls seeing an unhappy myconid sprout near dancing myconids in the caverns below.",
+    "source_quote": "Zalthir recalled an unhappy myconid sprout he had seen near a group of strangely dancing myconids in the caverns below",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that Rumpadump looked depressed, while the other myconids were shaking or dancing and looked concerning.",
+    "source_quote": "Zalthir notes Rumpadump looked depressed, \"but the other ones were shaking or dancing and looked concerning.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the group that there were many myconids and a scary ape-like creature.",
+    "source_quote": "Zalthir reminds the group there were a lot of myconids \"and like the scary ape thing.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool recognizes the unhappy sprout as his friend Rumpadump.",
+    "source_quote": "Stool recognised it as his friend Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool pleads with the party to drop everything and save Rumpadump.",
+    "source_quote": "pleaded with the party to drop everything and save him",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool states that myconids do not attack people unnecessarily, but will attack back if attacked.",
+    "source_quote": "Myconids don't attack people unnecessarily\u2026 But if you attack us, we attack back",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool contrasts the civilized Prince Derendil with most quaggoths, which he calls brutish and savage.",
+    "source_quote": "Stool contrasts the \"very civilized\" Prince Derendil with most quaggoths, which he calls brutish and savage",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool argues that quaggoths are bred to be violent, comparing them to mushroom strains bred for flavor.",
+    "source_quote": "Stool: \"It's in their nature to be violent. They are bred to be violent,\" comparing them to mushroom strains the myconids breed for flavor",
+    "subject": "Stool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Stool says that if Rumpadump is worried, something is very worrisome.",
+    "source_quote": "Stool: \"If Rumpadump is worried, something is very worrisome.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool fears other members of his circle may be at Rumpadump's location.",
+    "source_quote": "He fears other members of his circle may be there too",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool asks if the party can drop everything to find Rumpadump right now.",
+    "source_quote": "asks, \"Can we drop everything and go find out right now?\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool promises that Rumpadump will ensure the party does not get hurt.",
+    "source_quote": "Stool: \"I promise you, Rumpadump will make sure we don't get hurt.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool states that everyone has a purpose in the circle.",
+    "source_quote": "Stool: \"Everyone has a purpose in the circle.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool states that he trusts Rumpadump.",
+    "source_quote": "Stool: \"I trust Rumpadump.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares breeding quaggoths for violence to the breeding of orange carrots.",
+    "source_quote": "Daz: \"It is how we ended up with orange carrots.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wants to deal with the assassins before rescuing Rumpadump.",
+    "source_quote": "Gyrgum wanted to deal with the assassins first",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests discovering the assassins before going to rescue Rumpadump.",
+    "source_quote": "Gyrgum: \"We're a lot of layers deep already\u2026 What if we do that after we discover the assassins?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests that a radical transparent approach would be telling the assassins not to kill Werz or be killed.",
+    "source_quote": "Gyrgum: \"Radically transparent would probably be: you don't kill him, or we'll kill you.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum thinks the empty spell gems might be valuable to him depending on their usage.",
+    "source_quote": "Gyrgum, as a cleric, thinks they might be valuable to him depending on how they can be used",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is Stool's friend who was seen looking depressed among dancing myconids.",
+    "source_quote": "Stool recognised it as his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil is referenced by Stool as a 'very civilized' individual in contrast to most quaggoths.",
+    "source_quote": "Stool contrasts the \"very civilized\" Prince Derendil with most quaggoths",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  }
+]

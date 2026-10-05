@@ -1,0 +1,1311 @@
+[
+  {
+    "type": "npc",
+    "fact": "Daz's takeover of leadership came from exhaustion with political maneuvering rather than ambition.",
+    "source_quote": "Daz\u2014whose takeover had come from exhaustion with political maneuvering rather than ambition",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recognized that Dorbo's accommodation was a political play to use Daz as a fall guy.",
+    "source_quote": "The chief had found a convenient fall guy: if the operation failed, he could blame the drow who had seized control; if it succeeded, he could claim that supporting Daz had been his own design.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz remained determined to involve Clan Goldwhisker in the operation.",
+    "source_quote": "Daz remained determined to involve the Goldwhiskers",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argued that involving Clan Goldwhisker ensured warning if the Pudding King operation failed.",
+    "source_quote": "Daz remained determined to involve the Goldwhiskers so everyone would have warning if the Pudding King operation failed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argued that Clan Goldwhisker's political status could be settled only if they survived the operation.",
+    "source_quote": "as he argued, their political status could be settled only if they survived",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni supported Daz's appeal to common purpose.",
+    "source_quote": "Senni supported the appeal to common purpose",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz stated, \"It's important for us to have a common outcome and a common drive to that outcome. The rest of the commonality would be a nice-to-have.\"",
+    "source_quote": "It's important for us to have a common outcome and a common drive to that outcome. The rest of the commonality would be a nice-to-have.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compared Dorbo's conduct to a classic vice president move.",
+    "source_quote": "Daz compared Dorbo's conduct to \u201ca classic vice president move.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo became accommodating to Daz to position himself to blame Daz if the operation failed or claim credit if it succeeded.",
+    "source_quote": "if the operation failed, he could blame the drow who had seized control; if it succeeded, he could claim that supporting Daz had been his own design",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party confirmed they would recruit Clan Goldwhisker directly.",
+    "source_quote": "The party confirmed that they would recruit Clan Goldwhisker directly.",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gnome bureaucrats began taking notes on Daz's pronouncements.",
+    "source_quote": "The bureaucrats began taking notes on Daz's pronouncements",
+    "subject": "bureaucrats note-taking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Papers shuffled around the chamber as officials prepared to justify their implementation of Daz's leadership.",
+    "source_quote": "papers shuffled around the chamber, each official seemingly preparing to explain how faithfully implementing Daz's leadership had produced any eventual success",
+    "subject": "paper shuffling",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz's leadership aphorisms inspired jokes about a future airport business book titled along the lines of Everything I Needed to Know About Business, I Learned from Playing D&D.",
+    "source_quote": "inspiring jokes about a future airport business book titled along the lines of Everything I Needed to Know About Business, I Learned from Playing D&D",
+    "subject": "Daz business book joke",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin opens the eastern door of the bureaucratic hub.",
+    "source_quote": "The eastern door opened into a kitchen",
+    "subject": "exploring eastern door",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The kitchen is a workplace break room located behind the eastern door of the bureaucratic hub.",
+    "source_quote": "a kitchen or break room",
+    "subject": "kitchen",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome chef initially mistakes the group for the newly hired heroes.",
+    "source_quote": "where a gnome chef mistook the group for the newly hired heroes",
+    "subject": "gnome chef",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome chef agrees to provide the party with a snack.",
+    "source_quote": "The chef eventually agreed to provide a snack.",
+    "subject": "gnome chef",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asserts that their agreement includes board and unlimited access to the snack room.",
+    "source_quote": "Yes, the deal includes board. Unlimited access to the snack room, I believe, was one of the things I had to do.",
+    "subject": "Thorin asserts deal terms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party describes the space as a 'micro kitchen', causing a misunderstanding where the chef's chicken is referred to as 'micro'.",
+    "source_quote": "prompting a misunderstanding about calling the chef's chicken \u201cmicro.\u201d",
+    "subject": "micro chicken misunderstanding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo insists that the party leave the kitchen to eat elsewhere.",
+    "source_quote": "Chief Dorbo insisted they eat elsewhere, at the Foaming Mug",
+    "subject": "Dorbo evicts party from kitchen",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo directs the party to the Foaming Mug for dining.",
+    "source_quote": "at the Foaming Mug, where there were tables and chairs suitable for larger visitors.",
+    "subject": "Dorbo directs party to Foaming Mug",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo clarifies that Thorin's taller companions, not Thorin himself, are the concern regarding seating.",
+    "source_quote": "After noticing Thorin's height, he clarified that Thorin's taller companions were the real concern.",
+    "subject": "Dorbo clarifies size concern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The other unexplored door leads toward Chief Dorbo's private quarters.",
+    "source_quote": "The other unexplored door led toward Chief Dorbo's private quarters.",
+    "subject": "exploring other door",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo intercepts the party before they enter his private quarters.",
+    "source_quote": "Dorbo intercepted the party",
+    "subject": "Dorbo intercepts party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo denies having acid-resistant armor in his private quarters.",
+    "source_quote": "No, I do not have acid-resistant armor in my private quarters.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo lists his private quarters as containing a desk, a couch, a bed, and private space.",
+    "source_quote": "I've got a desk. I've got a couch. I've got a bed.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool volunteers to squeeze into Chief Dorbo's private quarters to investigate.",
+    "source_quote": "Glabbagool volunteered to squeeze through and investigate",
+    "subject": "Glabbagool offers to squeeze in",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party declines Glabbagool's offer to inspect the private quarters to avoid antagonizing Chief Dorbo.",
+    "source_quote": "the party decided it was not yet time to antagonize their host that thoroughly.",
+    "subject": "party declines search",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gnome chef asks Glabbagool to clean the kitchen floor.",
+    "source_quote": "asked whether Glabbagool could clean the kitchen floor",
+    "subject": "Glabbagool tasked with cleaning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is delighted by the chance to be useful and productive.",
+    "source_quote": "Glabbagool was delighted by the chance to be useful and productive",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin declares he will now call Glabbagool 'Roomba'.",
+    "source_quote": "Thorin declared, \u201cOkay, so I'm going to now call Glabbagool Roomba from now on.\u201d",
+    "subject": "Thorin nicknames Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The table discusses the legendary origin of gelatinous cubes as dungeon-cleaning creatures created to remove abandoned corpses and treasure.",
+    "source_quote": "legendary origin of gelatinous cubes as dungeon-cleaning creatures created to remove abandoned corpses and treasure",
+    "subject": "gelatinous cube origin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Goldwhisker Warrens have massive, monumental double doors that are roughly fifty feet tall.",
+    "source_quote": "massive, monumental double doors leading to the Goldwhisker Warrens",
+    "subject": "Goldwhisker Warrens",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The double doors leading to the Goldwhisker Warrens are locked.",
+    "source_quote": "a pair of locked double doors",
+    "subject": "Goldwhisker Warrens doors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered sending Glabbagool under the doors to scout, claiming he was cleaning.",
+    "source_quote": "They considered sending Glabbagool underneath under the pretext that he was cleaning",
+    "subject": "considered scouting via Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rejected sending Glabbagool under the doors because the inhabitants might mistake him for a hostile ooze and kill him.",
+    "source_quote": "rejected the idea because the inhabitants might mistake him for a hostile ooze",
+    "subject": "rejected Glabbagool scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Someone in the party suggested knocking on the doors.",
+    "source_quote": "Someone finally proposed the radical alternative of simply knocking",
+    "subject": "knocking suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The suggestion to knock received the response, \"Oh, well, that's a remarkable idea.\"",
+    "source_quote": "Oh, well, that's a remarkable idea",
+    "subject": "reaction to knocking suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz announced through the doors that the party intends to rid the Warrens and the grotto in the general vicinity of the slime problem and needs the Goldwhiskers' help.",
+    "source_quote": "Hi, we're here to uh rid the Warrens and the grotto in the general vicinity of the slime problem. We're gonna need your help.",
+    "subject": "Daz announces purpose",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz claimed that they are all getting together and have sorted it all out.",
+    "source_quote": "we're all getting together and we've sorted it all out",
+    "subject": "Daz claims coordination",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard was startled by the party's announcement and told them not to leave.",
+    "source_quote": "A startled guard told them not to leave",
+    "subject": "Goldwhisker Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard scampered away to consult Chief Chipgrin.",
+    "source_quote": "scampered away to consult Chief Chipgrin",
+    "subject": "guard consults Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin wants the party brought inside.",
+    "source_quote": "Chief Chipgrin wanted them brought inside",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The inhabitants of the Goldwhisker Warrens are wererats.",
+    "source_quote": "the wererats might mistake him for a hostile ooze",
+    "subject": "Goldwhisker clan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin is seated atop a rise carpeted with soft, well-manicured green moss.",
+    "source_quote": "Chief Chipgrin seated atop a rise carpeted with soft, well-manicured green moss",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin is flanked by two giant rats and numerous guards.",
+    "source_quote": "he was flanked by two giant rats and numerous guards",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin sits on a stone chair draped with a cave badger pelt.",
+    "source_quote": "His stone chair was draped with a cave badger pelt",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Chipgrin initially assumes the Diggermattocks sent the party to drive his clan out.",
+    "source_quote": "Chipgrin immediately assumed that the Diggermattocks had sent the party to drive his clan out",
+    "subject": "Chipgrin's assumption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explains to Chipgrin that the party wants to escape the Underdark and needs help fighting oozes.",
+    "source_quote": "Daz instead explained that the party wanted to escape the Underdark and had learned that helping Blingdenstone defeat its ooze infestation would secure that aid",
+    "subject": "Daz's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz offers to arrange the conversation Chief Chipgrin wants with Chief Dorbo.",
+    "source_quote": "Daz offered to arrange the conversation Chipgrin had long wanted with Chief Dorbo",
+    "subject": "meeting offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz imposes strict conditions on the meeting with Dorbo, forbidding political maneuvering or recrimination.",
+    "source_quote": "the meeting would be for cooperation, not political maneuvering, positioning, recrimination, or opportunities to say \u201cI told you so.\u201d",
+    "subject": "meeting conditions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz threatens to leave and let the gnomes deal with the oozes themselves if conditions aren't met.",
+    "source_quote": "Otherwise, the party would leave and allow the gnomes to deal with the oozes themselves",
+    "subject": "ultimatum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin remarks that Daz takes Drow negotiation difficulty to the next level.",
+    "source_quote": "I've been told that Drow are a difficult group to negotiate with, but you take it to the next level",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz clarifies that he is asking for help rather than negotiating.",
+    "source_quote": "It's not a negotiation. I'm here to ask you for your help",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin agrees to join the fight against the oozes.",
+    "source_quote": "Chief Chipgrin agreed to join the fight",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin refuses to place Clan Goldwhisker under Chief Dorbo's command.",
+    "source_quote": "refused to place the Clan Goldwhisker under Dorbo's command",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin refuses to participate in a \"grand crusade\" that might lead to slaughter.",
+    "source_quote": "refused to place the Clan Goldwhisker under Dorbo's command or participate in a \u201cgrand crusade\u201d designed to send his people to slaughter",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the party will formulate the plan and make operational decisions.",
+    "source_quote": "Daz clarified that the party would formulate the plan and make the operational decisions",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz accepts personal responsibility for any Goldwhisker deaths resulting from party decisions.",
+    "source_quote": "He personally accepted responsibility if Goldwhisker fighters died because of those choices",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz acknowledges that Chipgrin could seek vengeance against him later.",
+    "source_quote": "even acknowledging that Chipgrin could seek vengeance against him afterward",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses no ambition beyond eliminating the threat and leaving Blingdenstone.",
+    "source_quote": "Daz had no ambition beyond eliminating the threat and leaving Blingdenstone",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Chipgrin agrees to attend a broader meeting of clan leaders.",
+    "source_quote": "producing a moment of \u201cshock and awe\u201d among his listeners before he agreed to attend a broader meeting of the clan leaders",
+    "subject": "agreement reached",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker agrees to fight against the oozes.",
+    "source_quote": "Chipgrin agreed that he had only ever wanted Dorbo to speak with him and promised that the Goldwhiskers would fight",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is the leader whose meeting Chief Chipgrin desired.",
+    "source_quote": "the conversation Chipgrin had long wanted with Chief Dorbo",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Diggermattocks are gnomes who Chipgrin suspected sent the party.",
+    "source_quote": "Chipgrin immediately assumed that the Diggermattocks had sent the party",
+    "subject": "Diggermattocks",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two giant rats are flanking Chief Chipgrin.",
+    "source_quote": "he was flanked by two giant rats",
+    "subject": "giant rats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin disclosed that he knows about the Pudding King.",
+    "source_quote": "Chipgrin disclosed, \u201cI know about the Pudding King.\u201d",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin knew the Pudding King when the gnome worked in the tunnels.",
+    "source_quote": "He had known the Pudding King when the gnome worked in the tunnels",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin knows who the Pudding King is, what he is doing, and where he can be found.",
+    "source_quote": "Chipgrin knew who the Pudding King was, what he was doing, and where he could be found.",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King's fall is rooted in vengeance, pride, madness, resentment at being ignored, and demonic power.",
+    "source_quote": "The Pudding King's fall appeared rooted in vengeance, pride, madness, resentment at being ignored, and demonic power",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King's preexisting malice and grievances were amplified by demonic power rather than replaced.",
+    "source_quote": "demonic power had amplified his preexisting malice and grievances.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhisker kin witnessed the Pudding King after his return.",
+    "source_quote": "Goldwhisker kin had witnessed him after his return.",
+    "subject": "Goldwhisker kin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concluded that the Pudding King was not necessarily replaced outright by a demon.",
+    "source_quote": "They concluded that the Pudding King had not necessarily been replaced outright.",
+    "subject": "Pudding King analysis",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The process of demons empowering resentful people is jokingly described as being promoted to one's \u201clevel of malice.\u201d",
+    "source_quote": "This process was jokingly described as being promoted to one's \u201clevel of malice.\u201d",
+    "subject": "level of malice theory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chipgrin asked the party if they had noticed anything strange about Blingdenstone's other gnomes.",
+    "source_quote": "Chipgrin asked whether the party had noticed anything strange about Blingdenstone's other gnomes.",
+    "subject": "Chipgrin's inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party recognized an abnormal rise in greed and aggression among the gnomes of Blingdenstone.",
+    "source_quote": "they recognized that greed and aggression had become unusually pronounced throughout the settlement.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo's obsession with money appears especially unhinged given the existential danger facing the settlement.",
+    "source_quote": "Dorbo's obsession with money appeared especially unhinged given the existential danger.",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party shared a theory concerning Juiblex, the demon lord of oozes.",
+    "source_quote": "The party shared its theory concerning Juiblex, the demon lord of oozes.",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The demonic corruption is centered on the Pudding King but is bleeding outward into the entire community.",
+    "source_quote": "the corruption was centered on the Pudding King but \u201cbleeding through\u201d into the broader community.",
+    "subject": "Demonic influence in Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party witnessed demonic effects in Gracklstugh.",
+    "source_quote": "demonic corruption they had already witnessed in Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party witnessed demonic effects in Neverlight Grove.",
+    "source_quote": "demonic corruption they had already witnessed in Gracklstugh, Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party witnessed demonic corruption among the kuo-toa.",
+    "source_quote": "demonic corruption they had already witnessed in Gracklstugh, Neverlight Grove, and among the kuo-toa",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A moot is scheduled to convene within a few hours.",
+    "source_quote": "everyone agreed to convene a moot within a few hours",
+    "subject": "moot convening",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz used a forceful appeal to prevent the returning leaders from immediately derailing the negotiations.",
+    "source_quote": "After Daz used a forceful appeal to prevent the returning leaders from immediately derailing the negotiations",
+    "subject": "Daz's appeal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is an attendee of the moot.",
+    "source_quote": "The gathering included Chief Dorbo",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni is an attendee of the moot.",
+    "source_quote": "Senni",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin is an attendee of the moot.",
+    "source_quote": "Chief Chipgrin and his Goldwhiskers",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Nomi Pathshutter is an attendee of the moot.",
+    "source_quote": "Nomi Pathshutter",
+    "subject": "Nomi Pathshutter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik Tapfinger is an attendee of the moot.",
+    "source_quote": "Gurnik Tapfinger",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine is an attendee of the moot.",
+    "source_quote": "Kazook Pickshine",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly Burrow Warden Uth-Jadger is an attendee of the moot.",
+    "source_quote": "the ghostly Burrow Warden Uth-Jadger",
+    "subject": "Burrow Warden Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Chief Chipgrin returned with his Goldwhisker entourage.",
+    "source_quote": "Chief Chipgrin returned with his Goldwhisker entourage",
+    "subject": "Goldwhiskers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was buried at the temple connected to Gurnik.",
+    "source_quote": "Gurnik was remembered as the cleric connected to the temple where Pelek had been buried",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni asks Daz to call the meeting to order.",
+    "source_quote": "Since you are leading us, why don't you call the meeting to order, Daz?",
+    "subject": "Senni asks Daz to lead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz formally calls the meeting to order.",
+    "source_quote": "Daz formally called the meeting to order",
+    "subject": "Daz calls meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz is prompted to explain what the party had discovered and what everyone was supposed to do.",
+    "source_quote": "prompted to explain what the party had discovered and what everyone was supposed to do",
+    "subject": "Daz explains plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz reports that an amphitheater filled with oozes and slimes lies beneath Blingdenstone.",
+    "source_quote": "Daz reported that an amphitheater filled with oozes and slimes lay beneath Blingdenstone",
+    "subject": "ooze threat revealed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Pudding King appears to be occupied or influenced heavily by a demon of oozes.",
+    "source_quote": "the Pudding King appeared to be \u201coccupied and or influenced heavily by a demon, demon of oozes,\u201d",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The corruption is already affecting the city's leaders.",
+    "source_quote": "warned that the corruption was already affecting the city's leaders",
+    "subject": "corruption warning",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party possesses magic that might let them remove the Pudding King directly.",
+    "source_quote": "The party possessed magic that might let them remove the Pudding King directly",
+    "subject": "Pudding King removal magic",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposes that every able-bodied fighter stage a full-scale attack on the ooze gathering.",
+    "source_quote": "Daz proposed that every able-bodied fighter stage a full-scale attack on the ooze gathering",
+    "subject": "distraction plan proposed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to covertly seize the Pudding King while the attack occurs.",
+    "source_quote": "while the party covertly seized the Pudding King and ended his control",
+    "subject": "covert seizure plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Uth-Jadger exclaims \"Bravo, Bravo\" in praise of the plan.",
+    "source_quote": "Uth-Jadger rose and exclaimed, \u201cBravo, Bravo.\u201d",
+    "subject": "Uth-Jadger praises plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Uth-Jadger praises the plan as displaying the technical brilliance once associated with the Burrow Wardens.",
+    "source_quote": "praised the plan as displaying the technical brilliance once associated with the Burrow Wardens",
+    "subject": "Uth-Jadger invokes Burrow Wardens",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Uth-Jadger asks whether anyone doubts that the settlement can prevail only if it fights together.",
+    "source_quote": "asking whether anyone doubted that the settlement could prevail only if it fought together",
+    "subject": "Uth-Jadger questions unity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The leaders begin proposing strategic modifications and side quests.",
+    "source_quote": "The leaders then began proposing strategic modifications and side quests.",
+    "subject": "strategic proposal session",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo suggests that the army attack from the Temple of the Steadfast Stone.",
+    "source_quote": "Dorbo suggested that the army attack from the Temple of the Steadfast Stone",
+    "subject": "Dorbo's strategic proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo argues that attacking from the Temple of the Steadfast Stone would redirect the oozes away from Blingdenstone's populated areas.",
+    "source_quote": "redirecting the oozes away from Blingdenstone's populated areas",
+    "subject": "southern attack rationale",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Temple of the Steadfast Stone stands within the Rockblight.",
+    "source_quote": "The temple stood within the Rockblight",
+    "subject": "Temple of the Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Temple of the Steadfast Stone had fallen under hostile influence.",
+    "source_quote": "the temple there had fallen under hostile influence",
+    "subject": "Temple of the Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Temple of the Steadfast Stone must first be cleansed before it can be used as a staging area.",
+    "source_quote": "and would first need to be cleansed",
+    "subject": "temple cleansing requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger warns that someone would first have to cleanse the area.",
+    "source_quote": "Uth-Jadger warned that someone would first have to \u201ccleanse the area.\u201d",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The district surrounding the Temple of the Steadfast Stone is known as the Rockblight.",
+    "source_quote": "The surrounding district was known as the Rockblight",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik Tapfinger produces a red spell gem containing the Hallow spell.",
+    "source_quote": "Gurnik Tapfinger produced a red spell gem containing the Hallow spell",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The red spell gem contains the Hallow spell.",
+    "source_quote": "red spell gem containing the Hallow spell",
+    "subject": "red spell gem",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The menhir is located in the Temple of the Steadfast Stone.",
+    "source_quote": "temple's menhir",
+    "subject": "menhir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The red spell gem must be placed in the temple's menhir.",
+    "source_quote": "explained that it must be placed in the temple's menhir",
+    "subject": "gem placement plan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Ogr\u00e9moch's Bane would likely ignore the party until the gem was placed.",
+    "source_quote": "Ogr\u00e9moch's Bane would likely ignore the party until the gem was placed.",
+    "subject": "Ogr\u00e9moch's Bane",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ogr\u00e9moch's Bane would send servants to dislodge the gem once it is placed.",
+    "source_quote": "Ogr\u00e9moch's Bane would then send servants to dislodge the gem",
+    "subject": "servants attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party must defend the menhir against waves of enemies.",
+    "source_quote": "forcing the party to defend it until its power awakened three temple guardians",
+    "subject": "defend the menhir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gem's power would awaken three temple guardians.",
+    "source_quote": "awakened three temple guardians",
+    "subject": "awaken guardians",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The awakened guardians and the gem's power would cleanse and protect the temple.",
+    "source_quote": "cleansed the site",
+    "subject": "cleansing the site",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz used insight to confirm that Gurnik was omitting the dangerous part of the task in his initial description.",
+    "source_quote": "Daz used his insight to confirm that Gurnik was omitting the dangerous part when he initially described the task",
+    "subject": "Gurnik's description",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine represents the Miners' Guild.",
+    "source_quote": "Kazook Pickshine, representing the Miners' Guild, expressed concern",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine warned that ooze acid could destroy the soldiers' weapons and armor.",
+    "source_quote": "Kazook Pickshine warned that ooze acid could destroy the soldiers' weapons and armor.",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Kazook Pickshine possesses a formula capable of protecting equipment from acid corrosion.",
+    "source_quote": "He possessed a formula capable of protecting equipment",
+    "subject": "protective treatment formula",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The protective treatment formula requires a large quantity of ingredients from Neverlight Grove.",
+    "source_quote": "needed a large quantity of ingredients from Neverlight Grove.",
+    "subject": "protective treatment ingredients",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Kazook Pickshine acts as the representative for the Miners' Guild.",
+    "source_quote": "Kazook Pickshine, representing the Miners' Guild, expressed concern",
+    "subject": "Miners' Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is the source of ingredients needed for the equipment protective treatment.",
+    "source_quote": "needed a large quantity of ingredients from Neverlight Grove.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Salt is proposed as a trade good to exchange for high-quality weapons from Gracklstugh.",
+    "source_quote": "Blingdenstone could send salt to Gracklstugh in exchange for high-quality replacement weapons.",
+    "subject": "salt",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "High-quality replacement weapons are available from Gracklstugh in exchange for salt.",
+    "source_quote": "in exchange for high-quality replacement weapons.",
+    "subject": "high-quality replacement weapons",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh might no longer exist in a useful form.",
+    "source_quote": "Gracklstugh might no longer exist in a useful form",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party left Gracklstugh on less than ideal terms.",
+    "source_quote": "they had not left the city on ideal terms.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The leaders acknowledged that the adventurers could decline the journey to Gracklstugh.",
+    "source_quote": "The leaders acknowledged that the adventurers could decline the journey",
+    "subject": "trade proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The leaders suggested a gnome caravan could attempt the salt trade with Gracklstugh.",
+    "source_quote": "let a gnome caravan attempt the trade.",
+    "subject": "trade proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokingly suggested the gnomes could \"DoorDash\" the shipment.",
+    "source_quote": "The party jokingly suggested that the gnomes could simply \u201cDoorDash\u201d the shipment.",
+    "subject": "party joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni favored obtaining Earth Elementals to protect the fighters.",
+    "source_quote": "Senni favored obtaining Earth Elementals because their presence would better protect the fighters.",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker refused to act as cannon fodder.",
+    "source_quote": "Clan Goldwhisker refused to act as cannon fodder",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker demanded that Diggermattocks and elemental support commit to the battle to agree to fight.",
+    "source_quote": "unless the Diggermattocks and elemental support also committed to the battle.",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger stated that other Burrow Warden spirits would join the coming fight.",
+    "source_quote": "Uth-Jadger said that other Burrow Warden spirits would join the coming fight",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger stated that the spirits' participation depends on the party dealing with a separate task.",
+    "source_quote": "if the party dealt with a quest on their behalf.",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Burrow Warden spirits are willing to join the coming fight.",
+    "source_quote": "other Burrow Warden spirits would join the coming fight",
+    "subject": "Burrow Warden spirits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo's committee offered a Stone of Controlling Earth Elementals to the party.",
+    "source_quote": "Dorbo's committee offered a Stone of Controlling Earth Elementals as payment",
+    "subject": "Stone of Controlling Earth Elementals offer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Stone of Controlling Earth Elementals can summon an Earth Elemental friendly to the user.",
+    "source_quote": "The stone could summon an Earth Elemental friendly to the user",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The summoned Earth Elemental remains friendly for roughly an hour.",
+    "source_quote": "friendly to the user and their companions for roughly an hour.",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Stone of Controlling Earth Elementals was offered as payment for cleansing the Rockblight.",
+    "source_quote": "payment for cleansing the Rockblight",
+    "subject": "Rockblight quest proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Stone of Controlling Earth Elementals was offered as payment for defeating Ogr\u00e9moch's Bane.",
+    "source_quote": "and defeating Ogr\u00e9moch's Bane.",
+    "subject": "Rockblight quest proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir stated that he does not want to enslave an Earth Elemental.",
+    "source_quote": "Zalthir said, \u201cI don't want to enslave an Earth Elemental.\u201d",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo's committee sweetened the Rockblight proposal by offering the Stone of Controlling Earth Elementals.",
+    "source_quote": "Chief Dorbo's committee sweetened the Rockblight proposal by offering the party a Stone of Controlling Earth Elementals.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party objected to the language of control in the elemental proposal.",
+    "source_quote": "The party objected to the language of control.",
+    "subject": "party objection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asked whether Blingdenstone possessed \"stones of befriending Earth Elementals\".",
+    "source_quote": "They asked whether Blingdenstone possessed \u201cstones of befriending Earth Elementals\u201d",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group imagined freeing the elemental by giving it its own control stone.",
+    "source_quote": "imagined handing the elemental its own control stone",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group compared freeing the elemental via a control stone to \"giving Dobby a sock\".",
+    "source_quote": "\u201clike giving Dobby a sock\u201d",
+    "subject": "party speculation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party speculated that repeated summoning might call the same individual elemental each time.",
+    "source_quote": "speculated that repeated summoning might call the same individual elemental each time",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party believed Glabbagool and a prospective Earth Elemental would have things in common.",
+    "source_quote": "Glabbagool and the prospective elemental were expected to have things in common",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party joked that maintaining a good \"summoner score\" could pair them with desirable elementals.",
+    "source_quote": "jokes about maintaining a good \u201csummoner score\u201d",
+    "subject": "party joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir does not wear armor.",
+    "source_quote": "As a monk who did not wear armor, Zalthir was less worried about corrosion",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 17 on a d20 to decide between caution and reckless action.",
+    "source_quote": "He rolled a 17, selecting caution.",
+    "subject": "Thorin rolls d20",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to cleanse the Rockblight to earn elemental support and the Stone of Controlling Earth Elementals.",
+    "source_quote": "The group therefore chose to cleanse the Rockblight first, earning both elemental support for the battle and the Stone of Controlling Earth Elementals.",
+    "subject": "quest selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to visit Neverlight Grove for acid-protection ingredients.",
+    "source_quote": "They would also revisit Neverlight Grove for the acid-protection ingredients.",
+    "subject": "quest selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rejects the Gracklstugh option.",
+    "source_quote": "They explicitly rejected the Gracklstugh option",
+    "subject": "quest rejection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is assigned to assist Uth-Jadger and the Burrow Warden ghosts.",
+    "source_quote": "the party assigned Glabbagool, Eldeth, and Jimjar to assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is assigned to assist Uth-Jadger and the Burrow Warden ghosts.",
+    "source_quote": "the party assigned Glabbagool, Eldeth, and Jimjar to assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is assigned to assist Uth-Jadger and the Burrow Warden ghosts.",
+    "source_quote": "the party assigned Glabbagool, Eldeth, and Jimjar to assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger appears disappointed that his ghosts have not been prioritized for the quest.",
+    "source_quote": "When Uth-Jadger looked disappointed that his ghosts had not been prioritized",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Burrow Warden ghosts are being assisted by Glabbagool, Eldeth, and Jimjar.",
+    "source_quote": "assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Burrow Warden ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Cleansing the Rockblight grants the party the Stone of Controlling Earth Elementals.",
+    "source_quote": "earning both elemental support for the battle and the Stone of Controlling Earth Elementals.",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party identifies cleansing the Rockblight as their first task to acquire an elemental ally.",
+    "source_quote": "The main party selected cleansing the Rockblight as its first task because acquiring an elemental ally would make their arrival at later objectives more impressive.",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party plans to collect acid-protection ingredients from Neverlight Grove.",
+    "source_quote": "collect the acid-protection ingredients from Neverlight Grove.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party rejects visiting Gracklstugh due to its uncertain condition and their troubled history there.",
+    "source_quote": "rejected the Gracklstugh route because of the city's uncertain condition and their troubled history there.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Pudding King confrontation is identified as the conclusion of the campaign's first major part.",
+    "source_quote": "The Pudding King confrontation was identified as the conclusion of the campaign's first major part",
+    "subject": "Pudding King operation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The second part of the campaign will involve confronting the demons themselves.",
+    "source_quote": "the second would involve confronting the demons themselves.",
+    "subject": "second campaign part",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party divides its forces into a group handling Rockblight/Neverlight Grove and a group assisting the ghosts.",
+    "source_quote": "Glabbagool, Eldeth, and Jimjar would assist Uth-Jadger and the other Burrow Warden ghosts while the main group dealt with the Rockblight and Neverlight Grove.",
+    "subject": "party division",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party initially describes the assignment of the three party members as sending them to 'fight the ghosts' before correcting it.",
+    "source_quote": "The assignment was initially described as sending them to \u201cfight the ghosts,\u201d then corrected to helping the ghosts.",
+    "subject": "mischaracterization of assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz observes that having the entire gnome army killed would reflect poorly on the party.",
+    "source_quote": "Daz observed that having the entire army killed would \u201cnot look good on us.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party selected the Rockblight cleansing as the next immediate expedition.",
+    "source_quote": "The session ended with the Rockblight cleansing selected as the next immediate expedition.",
+    "subject": "Rockblight cleansing selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session concluded with plans for the next session focused on cleansing the Rockblight and preparing the Steadfast Stone.",
+    "source_quote": "The Dungeon Master confirmed that the next session would begin with the effort to cleanse the Rockblight and prepare the Steadfast Stone.",
+    "subject": "session conclusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided not to travel to Gracklstugh.",
+    "source_quote": "The party would not travel to Gracklstugh.",
+    "subject": "Gracklstugh avoidance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool, Eldeth, and Jimjar are assigned to handle the Burrow Warden matter.",
+    "source_quote": "Glabbagool, Eldeth, and Jimjar handling the Burrow Warden matter",
+    "subject": "party division",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The principal characters are assigned to pursue elemental and acid-resistance objectives.",
+    "source_quote": "the principal characters pursued the elemental and acid-resistance objectives",
+    "subject": "principal characters objective",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz insisted he is not the decision maker, stating he only refused to tolerate political doublespeak.",
+    "source_quote": "I'm not the decision maker. I just couldn't put up with the BS anymore.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz claimed to be a true leader.",
+    "source_quote": "Daz replied, \"I'm a true leader.\"",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz seized command when political doublespeak made action impossible but deferred to the group for meaningful decisions.",
+    "source_quote": "Daz had seized command when political doublespeak made action impossible, yet deferred to the group once meaningful decisions had to be made.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A player noted that Daz demonstrated a desire to take charge but deferred to the committee when decisions became crucial.",
+    "source_quote": "Daz kind of demonstrated that I want to take charge. And then when the decisions become crucial, he's deferring to committee.",
+    "subject": "player",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone's competing factions supported the party's plan.",
+    "source_quote": "the party finally had a plan\u2014long in coming, but supported by Blingdenstone's competing factions",
+    "subject": "Blingdenstone's competing factions",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Steadfast Stone is to be prepared in the next session.",
+    "source_quote": "prepare the Steadfast Stone",
+    "subject": "Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Glabbagool, Eldeth, and Jimjar are handling the Burrow Warden matter.",
+    "source_quote": "Glabbagool, Eldeth, and Jimjar handling the Burrow Warden matter",
+    "subject": "Burrow Warden matter",
+    "quote_verified": true
+  }
+]

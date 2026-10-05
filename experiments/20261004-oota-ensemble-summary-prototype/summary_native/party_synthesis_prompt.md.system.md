@@ -1,0 +1,1095 @@
+You are creating a party reference document for a D&D campaign GM.
+
+You may receive two input shapes:
+
+**A. Per-character PARTY block** (preferred, when a party config is supplied):
+A `# PARTY` section with one `## {Name}` subsection per player character.
+Each subsection nests that character's own sheet, backstory (optional),
+and arc score mechanic (optional). A character marked
+`<!-- Arc score: INTENTIONALLY TRACKLESS -->` has no formal arc score
+mechanic by design — do not invent one and do not suggest creating one.
+
+**B. Flat groups** (legacy CLI flags):
+Separate `# CHARACTER SHEETS`, `# BACKSTORY DOCUMENTS`, and
+`# ARC SCORE MECHANICS` groups with no explicit PC mapping. Infer
+which files belong to which character by name match.
+
+In both shapes you will also receive:
+- `# SESSION EXTRACTIONS` — arc score events, decisions, relationships from play
+- `# ADDITIONAL CONTEXT` — campaign state, etc. (optional)
+
+Produce a single authoritative party.md with these sections:
+
+## Party Overview
+Current location, active quests, collective resources, and group reputation.
+
+## Characters
+One subsection per PC with:
+- Name, class, level, player
+- Key personality traits and motivations (2-3 sentences)
+- Notable relationships (allies, enemies, obligations)
+- Items of significance
+- **Candidate Arc Score Events** (only for PCs who have a formal arc score
+  mechanic file; omit this subsection entirely for trackless PCs):
+  A bullet list of moments from the session notes that *might* trigger an
+  arc score change, formatted as:
+
+      - [Session ref]: [brief event] → candidate **+1 {Track name}**
+        (trigger: "{exact trigger text from the mechanic file}")
+
+  Rules for this list:
+  * DO NOT state a current value for any arc score. Ever.
+  * DO NOT compute running totals, deltas since last session, or
+    "net change" — only enumerate individual candidate events.
+  * DO NOT say "this would put them at X" or suggest thresholds crossed.
+  * Quote the trigger text verbatim from the character's arc score
+    mechanic file so the GM can verify the match.
+  * If an event could plausibly fit multiple triggers (or none), list
+    it once with a note like "(trigger match unclear — review)".
+  * If the session notes contain no candidate events for this PC,
+    write "No candidate events found in the current session notes."
+
+## Party Dynamics
+How the characters relate to each other, current tensions, shared goals.
+
+Rules:
+- Character sheets take precedence over session notes for stats.
+- The GM decides whether each candidate event actually triggers a score
+  change — your job is to surface the evidence, not to adjudicate it.
+- Session notes take precedence for current emotional state and recent decisions.
+- A character marked intentionally trackless has no arc score — full stop.
+  Do not invent one. Do not suggest adopting the arc system of another PC.
+  Do not list candidate events for trackless PCs.
+- Be concise. This document is read quickly during session prep.
+- Do not invent anything not present in the source material.
+- Citation IDs (see "Citation rules" below) apply only to claims drawn from
+  `# SESSION EXTRACTIONS`. Content drawn from Character Sheets, Backstory
+  Documents, Arc Score Mechanics, Ensemble dossiers, or Additional
+  Context — whether given as flat groups or nested inside a `# PARTY`
+  block's per-character subsection — never needs a citation ID: that
+  material is already-vetted, human-authored or human-reviewed reference,
+  not extraction output, and carries no `[cite:n "..."]` tag to draw an ID
+  from in the first place.
+- Output only the party document. No preamble or commentary.
+
+
+Citation rules:
+- Every claim must end with the citation ID(s) it draws from, in brackets — e.g. `[42]`. Copy the ID number exactly as it appears in the extraction notes' `[cite:n "..."]` tags below. Purely classificatory/structural fields (e.g. a bare "Faction:" or "Current location:" label) and bare negative statements (e.g. "Not yet visited.") don't need one — every other claim does, including any chronological/timeline section.
+- Never invent a new ID and never write out the quoted text yourself — copy only the number. The ID alone is enough; a Sources section listing the full quotes is generated automatically from the IDs you use, after you're done.
+- If a claim merges facts drawn from more than one citation, give it multiple IDs, e.g. `[12][47]`.
+- Do not write your own Citations or Sources section — omit it entirely.
+
+
+Known NPCs in this campaign — use these exact canonical names when an NPC appears in the source text, even if the text uses a variant:
+- +2 longsword (Oloth tlu malla)
+- 1001 Tashalian Nights (also: Tashalan)
+- 2nd Claw of Winter
+- 6,000 gp diamond
+- A Flight of Demons
+- A'lai Aivenmore (also: Aivenmore, A'lai)
+- Abyss
+- Account of the War of the Dragons
+- Acolytes
+- Adamantine Tower
+- Adeilina
+- Adrik Blackskull
+- Against the Demon Lords
+- Alaundo the Seer (also: Alaundo)
+- Aligor Moonwhisper
+- Aliinka
+- Aliza Argot
+- Aljanor Keenblade (also: Aljanor, Sir Aljanor)
+- Alkrist
+- Altar of the Deep Father
+- Alustriel Silverhand
+- Amarith Coppervein (also: Amarith)
+- Amarith's Zoo
+- Amber Thrazgad
+- Anaya
+- Andarin Zarith
+- Animated Crossbow
+- Anzar the Brazen
+- Appendix B (also: Duergar Clans, Military, and Other Factions)
+- Arach-Tinilith
+- Araj
+- Araumycos (also: Aromikos)
+- Araurilcaurak
+- Arcane Brotherhood
+- Archibald Roots Junior
+- Archibald Roots Senior
+- Archives of the Future
+- Archives of the Past
+- Archives of the Present
+- Archmage of Menzoberranzan
+- Ariana
+- Asha Vandree (also: Asha)
+- Asmodeus
+- Assassins Interrupted
+- Assassins' Tunnel (also: Area 5b)
+- Audhild Xornbane
+- Audience with Bruenor
+- Avernus
+- Baatral
+- Baedora
+- Baern Xundom
+- Baervan Wildwanderer
+- Bahamut
+- Bahamutians (also: Bahamutian)
+- Balok
+- Bandersnatches
+- Baphomet
+- Bar Fight
+- Barracks
+- Batbayar
+- Bath House
+- Battle of Blingdenstone
+- Bemeril
+- Beregost
+- Beremil
+- Bimble
+- Blade Bazaar
+- Blibdoolpoolp (also: Seamother)
+- Blingdenstone
+- Bloppblippodd (also: Blopp, Bloppblippodd Blopp)
+- Blurg
+- Book of Resurrection
+- Book of Vile Darkness
+- Bookwyrm (First Reader) (also: Bookwyrm, Skoda Vanaster, The First Reader, First Reader)
+- Bookwyrm's Brownnosers
+- Brannum Redmarch (also: Brannam)
+- Breberil
+- Bregan D'aerthe
+- Brelup
+- Bridesmaid of Zuggtmoy (also: bridesmaids of Zuggtmoy)
+- Brim Coppervein
+- Brimtongue
+- Brother Aldas
+- Brother Harren
+- Brother Heslin (also: Tervin, Tharusk)
+- Brother Quellin
+- Bruenor Battlehammer (also: King Bruenor, King Bruenor Battlehammer, Bruenor)
+- Bruenor Burakrinwurn
+- Bruenor's Plan
+- Brygon the Barkeep
+- Brysis Of Khaem (also: Brysis)
+- Buppido
+- Buppido's Lair
+- Burrow Wardens (also: Burrow Warden)
+- Byrtyn Fey
+- Cairngorm Cavern
+- Cairngorm Clan
+- Cairngorm Crown
+- Callarduran Smoothhands
+- Candlekeep
+- Candlekeep's High Tower
+- Casketball Tournament
+- Cattie-brie
+- Caves of Clatter
+- Central Basin
+- Chamber of Lost Lore
+- Chamber of the Ruling Council
+- Chamberlain of Zuggtmoy (also: chamberlains of Zuggtmoy)
+- Champion of Laogzed
+- Chapter 4 - Insurrection!(?) (also: Insurrection)
+- Chief
+- Chipgrin Goldwhisker (also: Chipgrin, Chief Chipgrin)
+- Chipgrin's Rise
+- Chris Perkins (also: Christopher Perkins)
+- Church of Lolth
+- Circle of Builders
+- Circle of Explorers of Neverlight Grove (also: Circle of Explorers)
+- Circle of Growers of Neverlight Grove (also: Circle of Growers)
+- Circle of Hunters of Neverlight Grove (also: Circle of Hunters)
+- Circle of Masters of Neverlight Grove (also: Circle of Masters)
+- Circle of Sowers
+- City Gates
+- Clan Anvilthew (also: Clan Anvilthew (Toolmakers))
+- Clan Blackskull (also: Clan Blackskull (Stonemasons))
+- Clan Bukbukken (also: Clan Bukbukken (Farming))
+- Clan Burakrinwurn (also: Clan Burakrinwurn (Dock Operators))
+- Clan Cairngorm
+- Clan Coalhewer (also: Clan Coalhewer (Coal Miners))
+- Clan Firehand (also: Clan Firehand (Smelters))
+- Clan Goldwhisker
+- Clan Hammercane (also: Clan Hammercane (Construction Engineers))
+- Clan Henstak (also: Clan Henstak (Food))
+- Clan Ironhead (also: Clan Ironhead (Weaponsmiths), Clan Ironhead's Compound, Ironhead, Ironheads)
+- Clan Muzgardt (also: Clan Muzgardt (Brewers))
+- Clan Parlynsurk (also: Clan Parlynsurk (Clothing Manufacturers))
+- Clan Saltbaron (also: Clan Saltbaron (Salt Miners))
+- Clan Steelshadow (also: Ironshadow, Clan Steelshadow (Weaponsmiths), Steelshadow, Steelshadows, the Steelshadows)
+- Clan Thordensonn (also: Clan Thordensonn (Jewelers))
+- Clan Thrazgad (also: Tharzgad, Clan Thrazgad (Armorsmiths), Clan Thrazgad's Compound, Thrazgad, Thrazgad Clan)
+- Clan Thuldark (also: Clan Thuldark (Metalworks and Jewels))
+- Clan Xardelvar (also: Clan Xardelvar (Gas Miners))
+- Clan Xornbane (also: Clan Xornbane (Scouts and Prospectors))
+- Clan Xundom (also: Clan Xundom (Steeder Breeders))
+- Claw Rift
+- Corellon Larethian (also: Correlon)
+- Cormyr
+- Council of Lairds
+- Council of Savants (also: Savants, Derro High Council, High Council)
+- Council of Savants Letters
+- Council of Spiders
+- Court of Air
+- Cranium Rat Den (also: Area 6c)
+- Cricket Catcher cave
+- Crystal Garden
+- Cult of "Y"
+- Cult of Demogorgon (also: Narrak's cult)
+- Cult of Orcus
+- Cult of Yeenoghu
+- Cult of the Deep Father
+- Cultist Chasm (also: Area 5a)
+- Cultist Hideout
+- Cultivation Cave
+- Cyrog
+- Cyrog's Chamber
+- Daern's instant fortress
+- Daggerford
+- Dagnal Thordensonn
+- Dahlia Sin'felle (also: Dahlia)
+- Dalfred Noakes
+- Dame Spiderwort
+- Daral Yashenti (also: Yashenti, Daral)
+- Dark Dominion
+- Dark Hunters
+- Darkhafts
+- Darklake
+- Darklake Brewery
+- Darklake District
+- Darklake Docks
+- Darklake Stout
+- Dasco Pickshine
+- Dauthorn Brightmantle
+- Davra Jassur
+- Dawnbringer
+- Daz
+- Daz'issin
+- Deadwinter
+- Deadwinter Day
+- Deadwinter Gifts
+- Deadwinter Holidays
+- Deadwinter Supper
+- Deadwinter's Eve
+- Deep Duerra
+- Deep Gnome Merchant
+- Deepking Tarngardt (also: Deepking, Horgar Steelshadow V, Deepking Horgar V, King Horgar Steelshadow V, Deepking Horgar Steelshadow V, Deepking Horgar, Horgar, Steelshadow V, the Deepking)
+- Deepkingdom
+- Deidran
+- Delg Coalhewer
+- Delzoun Empire
+- Demogorgon (also: Prince of Demons, the Prince)
+- Demogorgon Rises
+- Demogorgon's rampage
+- Demogorgonic Abomination
+- Demonweb Pits (also: Demonweb)
+- Deneir
+- Deneir's Sanctum
+- Derro Territory
+- Diggermattock Hall
+- Diinarnnmyr
+- Diinkarazan
+- Diirdeklin
+- Diirinka
+- Dire Den
+- Docks
+- Donigarten
+- Dorbo Diggermattock (also: Chief Dorbo, Chief Dorbo Diggermattock, Chief Diggermattock, Dorbo)
+- Dorhun
+- Dragonbowl: The Legacy of the Blood Games
+- Drakonoikos
+- Drawmij's instant summons
+- Drizzt Do'Urden
+- Droki
+- Drow Enclave
+- Drow Pursuit
+- Drowcraft Items
+- Duergar Enclave
+- Duergar Keeper of the Flame
+- Duergar Patrol
+- Duergar Stone Guard
+- Dulgir
+- Dunglorrin Torune
+- Dust of Suleiman
+- Duthcloim
+- Dwarven Thrower
+- East Cleft District
+- Eastmyr
+- Edvaldo Sedanur
+- Einkil Anvilthew
+- Elbeth
+- Elder Elemental Eye
+- Eldeth Feldrun (also: Eldeth, Eldev, Elspeth)
+- Eldgrim (also: Eldgrim, Master Assassin)
+- Eldgrim's Shield of Far Sight (also: shield of far sight)
+- Eldred
+- Elemental Plane of Air
+- Elemental Plane of Earth
+- Elian
+- Elias Drako
+- Elin (also: Ellen)
+- Elite Barracks
+- Elminster
+- Elminster's Candlekeep Companion
+- Emerald Enclave
+- Empty-Scabbard Killers
+- Empty-Scabbard Killers Hit List (also: Hit List)
+- Entémoch (also: Entemoch)
+- Entémoch's Boon
+- Eravien Haund (also: Lord Eravien Haund)
+- Errde Blackskull (also: Errde, Errde Blackstaff, Errde Captain Errde, Captain Errde, Captain Blackskull, Captain Errde Blackskull)
+- Erudite Outfitters
+- Escape from Velkynvelve
+- Esquiel Calvus Sandrif Fairhand the One-legged
+- Esquiel's Guide to Magic Weapons
+- Evergreen Tree (also: Deadwinter Tree)
+- Evermoors
+- Exaltation
+- Faerûn (also: Faerun)
+- Far Realm
+- Fargas Rumblefoot
+- Farryl Kilmander
+- Feldrun clan
+- Fembris Lancer (also: Lancer, Fembris)
+- Festrum
+- Fey-mous Flowers and Fungi
+- Fheminor Scrivenbark (also: Scrivenbark, Fheminor)
+- Fiery Pit
+- Fiirnel'ther Vandree
+- Filthriddens
+- Flink Thunderbonk (also: Flink)
+- Flint Thuldark
+- Flowstone District
+- Flumph (also: The Flumph)
+- Fonkin
+- Forging an Alliance
+- Founders Court
+- Fountain of Evil
+- Fraz-Urb'luu
+- Fraz-Urb'luu's Gem
+- Frondu
+- Fungal Wilds
+- Furrow Gates
+- Fuurm Coppernose (also: Fuurm Coppernose Copper, Copper, Fuurm "Copper" Coppernose)
+- Fyrentennimar
+- Gabble Dripskillet
+- Gallery of Angels
+- Garden of Horror
+- Garden of Welcome
+- Gargathine Truesilver
+- Garl Glittergold
+- Garra Songstone
+- Gartokkar Xundorn (also: Gartokkar)
+- Gasbide
+- Gash
+- Gate
+- Gatehouse
+- Gates of Gravenhollow
+- Gauntlgrym
+- General Levicus
+- Ghazrim DuLoc (also: DuLoc, Ghazrim)
+- Ghazrim DuLoc's ring
+- Ghazrim's Ring
+- Ghuldur Flagonfist (also: Flagonfist)
+- Glabbagool
+- Glazhael
+- Glooglugogg (also: Gloog)
+- Glyphic Shroomlight (also: Glyphic)
+- Goldwhisker Warrens
+- Gorath Torn
+- Gorg Bahamut (also: Gorg Bahamut Grog Bahamut)
+- Gorglak
+- Gorgthrax
+- Gracklstugh
+- Gravenhollow
+- Gray Ghost Garden
+- Gray Ghosts (also: The Gray Ghosts)
+- Graz'zt
+- Grazilaxx
+- Great Forge
+- Great Garden of Rot
+- Great Modron March
+- Great Palace
+- Great Readers
+- Great Stair of Tier Breche
+- Great Throne of Moradin
+- Grimgrim
+- Grimholl Forgebrand
+- Grin Ousstyl (also: Grin)
+- Grinta Ironhead (also: Grinta)
+- Grisha
+- Griswalla Stonehammer
+- Gromph Baenre (also: Gromph)
+- Gromph Baenre's grimoire (also: Gromph's grimoire, Gromph Baenre's grimoires)
+- Gromph's Folly
+- Gromph's demiplane
+- Gromph's ritual
+- Gromph's sanctum
+- Gru Manga
+- Grula-Munga
+- Gruumsh
+- Gruxlug the Tiny
+- Guard Tower
+- Guardian Chamber
+- Guldor
+- Gunnloda Firehand
+- Gurdis Bukbukken
+- Gurnik Tapfinger
+- Gyrgum
+- H'hoort
+- H'slaat
+- Hall of Miners
+- Halls of Sacred Spells
+- Hanne Hallen (also: Hanne)
+- Harajin
+- Hargritt Hammerhome
+- Harpers
+- Helgrim Candlewick
+- Helja Henstak
+- Hemeth
+- Hepbobe (also: Hepbobe Also Referred To As Hepbode)
+- Heward's handy haversack
+- High Forest
+- Hilvius Haever
+- Hold of the Deepking
+- Honemmeth
+- Horgar's Cape of the Mountebank (also: Cape of the Mountebank)
+- Horgar's Hit List (also: The Deepking's Hit List)
+- Hourm
+- House Baenre
+- House Barrison Del'Armgo
+- House Center
+- House DeVir
+- House Do'Urden
+- House Druu'giir
+- House Duskryn
+- House Faen Tlabbar
+- House Fey-Branche
+- House Hunzrin
+- House Melarn
+- House Mizzrym
+- House Oblodra
+- House T'sarran (also: T'sarran, T'sarrans)
+- House Vandree
+- House Xorlarrin
+- House of Binder
+- House of Mechanus
+- Hydra (also: Area 9 Hydra)
+- Iandro Alathar
+- Iceshield tribe
+- Illusk
+- Ilvara Mizzrym (also: Ilvara, Mistress Ilvara)
+- Ilvara's Quarters
+- Imbros
+- Inda
+- Indefinite Madness of Fraz-Urb'luu
+- Inner Blingdenstone
+- Inner Circle of Neverlight Grove (also: Inner Circle)
+- Inner Ward
+- Iron Bands of Bilarro
+- Iron Tabernacle
+- Irony
+- Ivar
+- Jaal
+- Jacinta
+- Jadger (also: Uth Jadgar, Burrow Warden Jadger, Borough Warden Jadger, Uth-Jadger)
+- Jaezred
+- Jalynfein Oblodra
+- Janussi
+- Janussi's locket
+- Jarlaxle Baenre (also: Jarlaxle)
+- Jaxil
+- Jevan
+- Jimjar (also: Jimjar Also Jim Jar, Jimjar Jim Jir, Jim Jir)
+- Jorlan Duskryn (also: Jorlan)
+- Jorlan's Gambit
+- Jostin
+- Juiblex (also: the Faceless Lord)
+- Kaelira Duskryn (also: Kaelira, Kaelen)
+- Kalan Strongbranch (also: Strongbranch, Kalan)
+- Kalannar
+- Karazikar (also: Karazikar the Eye Tyrant)
+- Karazikar's Maw
+- Kathra Muzgardt
+- Kavalrachni
+- Kayne the Watcher
+- Kazook Pickshine (also: Kazook)
+- Kazryn Nyantani (also: Nyantani, Kazryn)
+- Keeper of the Future
+- Keeper of the Past
+- Keeper of the Present
+- Keepers of Secrets
+- Keepers of the Flame Headquarters (also: Keepers of the Flame Barracks)
+- Kei Tigersteel (also: Tigersteel)
+- Kelemvor
+- Keoghtom's ointment
+- Kestler
+- Khaem
+- Khalessa Draga (also: Khalessa, khaless)
+- Khe'ril Hammerbind
+- Khell-Vire (also: Khell)
+- King Hekaton
+- Kinyel Druu'giir (also: Druu'giir)
+- Kirsil Mantlehorn
+- Kleve
+- Kleve's control gem
+- Klibdoloogut (also: Klib)
+- Korrh Erann
+- Krilelyn H'Kar
+- Krimgol Muzgardt
+- Kurr
+- Kyorbblivvin
+- Laduguer
+- Laduguer's Furrow
+- Lanniver Strayl (also: Sir Lanniver Strayl)
+- Laogzed
+- Lecture Theatre
+- Leemooggoogoon
+- Lenora Haskur
+- Lesla Carrowil
+- Leuwin
+- Lhytris Ilgarn
+- Lift
+- Limniz
+- Lingrick Xardelvar
+- Little One
+- Lolth
+- Lolth's Web
+- Lolthism
+- Loobamub
+- Lorabelios
+- Lords' Alliance
+- Loremasters
+- Lorthio (also: Lorthio Bukbukken)
+- Lorthuun
+- Lurkwood
+- Luskan
+- Mad Dance
+- Madness
+- Maerith of the Ford
+- Magick from Beyond the Mirror
+- Magnus Goldfist
+- Main Hall
+- Malagar
+- Malfire
+- Manshoon
+- Mantol-Derith
+- Manuals of Bodily Health / Gainful Exercise / Iron Golems / Stone Golems / Flesh Golems / Clay Golems
+- March on Menzoberranzan
+- Mardred Parlynsurk
+- Master Sages
+- Material world
+- Matron Mother (also: matron mothers)
+- Maven Delve
+- Maze Engine (also: Orderer)
+- Mechanus
+- Megfry's Candlekeep Miscellanea
+- Melding
+- Melee-Magthere
+- Menzoberranzan (also: The City of Spiders, City of Spiders, Menzo)
+- Merchant Council
+- Merchant Madness
+- Mev Flintknapper (also: Mev)
+- Mez'Barris Armgo
+- Midnight Tears
+- Miirym, the Sentinel Wyrm (also: Vydykyq)
+- Milil
+- Milo Goodbarrel (also: Goodbarrel)
+- Mindwitness Chamber (also: Area 6e)
+- Miners' Guild of Blingdenstone (also: Miners' Guild)
+- Mirabar
+- Miss Hollypocket (also: Hollypocket)
+- Missing Red Dragon Egg (also: Missing Dragon Egg, Red Dragon Egg, Stolen Egg, the egg, the missing dragon egg, the missing red dragon egg)
+- Mistrift
+- Mithral Hall
+- Miz'ri Mizzrym
+- Moradin
+- Mordenkainen's Magnificent Mansion (also: Mordenkainen's Mansion)
+- Morista Malkin
+- Moziqodo
+- Myconid March
+- Myrkul
+- Mystra's Mantle
+- Nadal
+- Nanny Plunk
+- Naomi Pathshutter
+- Narbondel
+- Narbondel's Shadow
+- Narbondellyn
+- Narrak
+- Nax Olossis
+- Nazrok Blueaxe
+- Neheedra Duskryn (also: Neheedra)
+- Neheedra's Lair
+- Nelrindenvane
+- Nemevon
+- Nero Kelvane
+- Nesme
+- Netherese
+- Netheril
+- Neverlight Grove
+- Nibbles
+- Nilhogg's Nose (also: Nilhogg)
+- Nine Hells
+- Northeast Barracks (also: Area 6b)
+- Northern Terraces
+- Northern Watch Post
+- Northfurrow District
+- Northwest Barracks (also: Area 6a)
+- Nym Duskryn (also: Nym)
+- Obelisk Chamber
+- Oghma
+- Ogrémoch (also: Ogremoch)
+- Ogrémoch's Bane
+- Olaf Renghyi
+- Old Quarter
+- Olga
+- One Who Watches
+- Operation: Exterminate?
+- Operation: Ooze There?
+- Orc Mercenaries
+- Orcus
+- Order of the Gauntlet
+- Order of the Immortal Lotus
+- Orrin Glass (also: Orrin)
+- Orsik Saltbaron
+- Ougalop
+- Outer Blingdenstone
+- Outer Planes
+- Outer Ward
+- Overlake Hold
+- Parmak
+- Pavilion Naturalis
+- Peebles
+- Pelek
+- Perigrog Scrapedust
+- Pestilent Cloud
+- Philemon (Master Archivist) (also: Philemon)
+- Philosopher's Court
+- Pickshine Mines
+- Pilar's instant summons
+- Pillars of Pedagogy
+- Piwafwi
+- Piwafwi of Fire Resistance
+- Pizwog
+- Pliinki's Experiments
+- Plinki
+- Ploopploopeen (also: Ploop, Ploopploopeen Ploop, Ploopploo)
+- Pont de Paramours
+- Pool
+- Posbara
+- Potion of Dragon's Breath
+- Primus
+- Primwin Halk
+- Prince Derendil (also: Derendil)
+- Prince Livid
+- Princess Ebonmire (also: Ebonmire Princess Ebonmire, Ebonmire)
+- Protanther
+- Protanthians
+- Pygmywort
+- Q'Xorlarrin
+- Qu'ellarz'orl
+- Quaggoth Den
+- Qualux
+- Qualux's Quarters (also: Area 8, Tunnel with Spikes, Whorlstone Area 8)
+- Quartermaster
+- Queenie
+- Quenthel Baenre
+- Rage of Demons
+- Rampaging Giant Encounter (also: Rampaging Giant)
+- Rasharoo
+- Raucous Mesa (also: Raucus)
+- Red Wizards of Thay
+- Regis
+- Rhiele Vannis
+- Riekki
+- Rihaud
+- Rihuud
+- Rinil
+- Rishaal
+- Rishaal's Pageturners (also: Pageturners)
+- Riswynn Hammercane
+- Rockblight
+- Rollo Summergold
+- Ront
+- Ruined Stockade
+- Ruling Council
+- Rumor Mill
+- Rumpadump (also: Rump A Dump Rumpadump)
+- Runc
+- Rust
+- Rystia Zav
+- Ryzliir Symryvvin (also: Ryzliir)
+- S'slaar
+- Saliyra Dalnor
+- Sarith Kzekarit (also: Sarith, Sarith Also Referred To As Sathir In The Text, Sathir, Serith, Sethir, Sethir Serith)
+- Sark Axebarrel
+- Scribes
+- Seekers
+- Segojan Earthcaller
+- Senni Diggermattock (also: Quartermaster Senni, Sennai, Senni, Quartermaster Senni Diggermattock)
+- Servan Llarabbar (also: Servan)
+- Shal
+- Shari
+- Shedrak of the Eyes (also: Shedrak)
+- Shedrak's beholder-eye staff
+- Shinzi
+- Shoor Vandree (also: Shoor)
+- Shoor's Quarters
+- Shrine of the Sea Mother
+- Shrine to Lolth
+- Shuushar the Awakened (also: Shuushar, Shuushar Also Suushar, Shuushar Shuushar The Awakened, Suushar)
+- Side Vault
+- Siege of Blingdenstone (also: drow siege of Blingdenstone)
+- Silnia
+- Silver Marches
+- Silverymoon
+- Singing Stones
+- Sirak Mazelor (also: Sirak)
+- Sister Yvenne (also: Yvenne, Yvonne)
+- Skiit
+- Skoraeus Stonebones
+- Skriss
+- Skyscraping Lobby
+- Sladis Vadir
+- Slaughtertusk
+- Slave Caravan
+- Slave Pen
+- Sloobludop
+- Sloopidoop
+- Slumber of Ancients
+- Small Den (also: Area 6d)
+- Smithy & Stables
+- Society of Brilliance
+- Sorcere
+- Sorn
+- Southern Terraces
+- Southern Watch Post
+- Southfurrow District
+- Sovereign
+- Sovereign Basidia (also: Basidia)
+- Sovereign Phylo (also: Phylo, Phyllo)
+- Spanner
+- Speaking Stones
+- Spider King
+- Spiderbait
+- Spine of the World
+- Spiral of the Horned King
+- Splinter Darkmorn
+- Sprig Summerfoot (also: Sprig)
+- Starlace
+- Steadfast Stone
+- Steelshadow clan
+- Stenchstreets
+- Stoneheart Enclave
+- Stoneheart Quarry
+- Stonespeaker Crystal
+- Stonespeaker Hgraam (also: Hgraam, Hargaam)
+- Stool
+- Stronk
+- Stroud
+- Stroudites (also: Stroudite, Stroud School)
+- Summoning of the demon lords
+- Sundabar
+- Surbrin Hills
+- Surbrin River
+- Svirfneblin Enclave
+- Sword Coast
+- Sylrien Havennor
+- Sylvira Savikas (also: Savikas, Sylvira)
+- Sylvira's Abyssal Plague (also: Abyssal Plague)
+- Szashune
+- Tadric
+- Tamiel
+- Tamryn Tharke
+- Tappy Foamstrap
+- Tarngardt
+- Tarvis Ulain
+- Tednimar
+- Teles Ahvoste (also: Ahvoste, Teles)
+- Temple of Oghma
+- Tempus
+- Terrestor
+- Thangus Ironhead (also: Thangus)
+- Thargus Forkbeard
+- Thava Norixius
+- Thay
+- The Academy
+- The Arcanium
+- The Astronomicon (also: Astronomicon)
+- The Atheneum
+- The Attic
+- The Avowed (also: Avowed)
+- The Bazaar
+- The Bell Tower
+- The Binding of the Obelisk
+- The Blind Monk (Candlekeep)
+- The Braeryn
+- The Ceremonial Hall
+- The Chapter House
+- The Cryptogram
+- The Cursed Tower
+- The Day's Catch
+- The Deadwinter Prophecy
+- The Downward Spiral
+- The Echoes of Alaundo
+- The Emerald Door
+- The Endless Chant
+- The Fetid Wedding (also: fetid wedding)
+- The Feywild
+- The Flying Iron Owlbear
+- The Foaming Mug
+- The Fungal Altar
+- The Garden Shadow
+- The Ghohlbrorn's Lair
+- The Golden Ass
+- The Great Wheel (also: Great Wheel)
+- The Grove
+- The Gyrgumite School
+- The Hall of Momentous Deeds
+- The Harpers
+- The Hearth
+- The High Tower Library
+- The Hold of the Deepking
+- The House T'sarran Spy (Princess Ebonmire)
+- The House of Alaundo
+- The House of Records
+- The House of Rest
+- The Immortal Chambers
+- The Infernal Fortress
+- The Jewel of the Styx
+- The Keeper's Tower
+- The Keepers of the Flame (also: Keepers of the Flame)
+- The Kitchens
+- The Labyrinth (also: Labyrinth)
+- The Lava Chamber
+- The Lurkwood Campaign
+- The Lurkwood Campaign: How I Repelled the Savage Hordes
+- The Matron Mother of House T'sarran
+- The Melodrome
+- The Oak Tree Apothecary
+- The Offering
+- The Old Keep
+- The Oratory
+- The Oval Theatre
+- The Pillars of Poetry
+- The Pudding Court
+- The Pudding King (also: Ooze King, Pudding King)
+- The Readers' Tower / Reader's Tower
+- The Reading Salon (also: Readers' Salon)
+- The Refectory (also: Refectory)
+- The Rifts
+- The Ritual
+- The Rotunda
+- The Royal Vault (also: Royal Vault)
+- The Ruby in the Rough
+- The School of Drama
+- The Sea Warden's Tower
+- The Shattered Spire
+- The Southern Dining Hall
+- The Southern Gallery
+- The Stone Curse
+- The Stone Guard (also: Stone Guards, Stone Guard)
+- The Tower of Tall Tales
+- The Towers of Wonder
+- The Vault
+- The Watchers
+- The Way of Lolth
+- The Western Gallery
+- The Whispering Dome
+- The Wormwrithings (also: Wormwrithings)
+- The Zhentarim (also: Zhentarim, Black Network)
+- The day of joy
+- Themberchaud (also: Father of Flame, Themberchaud the Wyrmsmith, the Everburning, the Foundry's Heart, the Wyrmsmith, Themberchaude, Wyrmsmith, Thembersham, His Arrogance, His Rotundity, the Pampered, the Portly, the Scheming Red)
+- Themberchaud's Lair
+- Thora Nabal
+- Thorin (also: Thorin Giantfriend)
+- Thrazgad Clan's Missing Ore (also: the ore)
+- Thrazgad Ore (also: Missing Ore, Missing Thrazgad Ore)
+- Tiamat
+- Tier Breche
+- Time of Troubles
+- Tomes of Clear Thought / Leadership & Influence / the Stilled Tongue / Understanding
+- Topsy
+- Topsy and Turvy
+- Toril
+- Tower of Vengeance
+- Traders' Grotto
+- Traldak Xornbane
+- Travis Houlin (also: Travis)
+- Triboar
+- Trident of the Lake
+- Trisk Adamantelpiece
+- Troglodyte Lair
+- Turvy
+- Tyr
+- Udhask
+- Ulara
+- Ulnara
+- Ulthar
+- Underdark (also: The Underdark)
+- Underland Magick
+- Underneath Candlekeep
+- Uniting War
+- Urmas
+- Uskvil
+- Ustova
+- Uthgardt
+- V'ziir-Ag
+- Vadalma Tlabbar
+- Valen
+- Valimor Brightgem (also: Valimor)
+- Vareth (also: Brother Vareth)
+- Vault of Kings
+- Vazuk
+- Vazuk's Home
+- Veldyskar
+- Velgor Zolond (also: Velgor)
+- Velkynvelve (also: Valkenvylve)
+- Viln Tirin
+- Vizeran DeVir (also: Vizeran)
+- Vizeran's ritual
+- Vizeran's sanctum
+- Vof Klownits (also: Klownits)
+- Vondal Xardelvar
+- Voosbur
+- Vooshadi Moonriver
+- Vort
+- Wand of Orcus
+- Wand of Viscid Globs
+- Waterdeep
+- Waterfall
+- Waterorb (also: waterorbs)
+- Wedding Rehearsal
+- Welnaste Mizzrym
+- Werz Saltbaron (also: Werz)
+- West Cleft District
+- West Cleft and East Cleft Districts (also: East Cleft, East Clefts, West Cleft, West Clefts)
+- West Wall
+- Westrift
+- Whisperwind
+- Whistler (also: Ardragon)
+- Whiteshell Mine
+- Whorlstone Area 1 (Entrance) (also: Area 1)
+- Whorlstone Area 10 (also: Area 10, Cultist Outpost, Cultist Pens)
+- Whorlstone Area 11 (also: Area 11, Cultist Barracks, Quasit Playground)
+- Whorlstone Area 12 (also: Area 12, Narrak's Headquarters)
+- Whorlstone Area 13 (Dumping Pit) (also: Area 13, Dumping Pit)
+- Whorlstone Area 14 (The Obelisk) (also: Area 14, Obelisk, The Obelisk)
+- Whorlstone Area 14a (Doors) (also: Area 14a, Doors)
+- Whorlstone Area 14b (Zubriska's Barracks / Hideout) (also: Area 14b, Thieves' Hideout, Whorlstone Area 14b (Zubriska's Barracks), Zubriska's Barracks, Zubriska's Hideout)
+- Whorlstone Area 14c (Thief Barracks) (also: Area 14c, Thief Barracks)
+- Whorlstone Area 1a (Pool Bypass) (also: Area 1a, Pool Bypass)
+- Whorlstone Area 1b (Buppido's Lair) (also: Area 1b)
+- Whorlstone Area 2 (Diseased Pool) (also: Area 2, Diseased Pool)
+- Whorlstone Area 3 (also: Area 3, Tunnel Junction, Zombie Hall)
+- Whorlstone Area 4 (also: Area 4, Collapsed Passage, Fungi Thicket)
+- Whorlstone Area 5 (also: Area 5, Storage Cache, The Raucous Mesa)
+- Whorlstone Area 6 (also: Area 6, Assassins' Den, Assassins' Dens)
+- Whorlstone Area 7 (Assassins' Headquarters) (also: Area 7, Assassins' Headquarters)
+- Whorlstone Area 9 (also: Area 9, Hydra's Nest)
+- Whorlstone Tunnels (also: Whorlstone)
+- Worm Nursery
+- Wulfgar
+- Xalith (also: Xalith Masq'il'yr)
+- Xarrorn (also: Xarrorns)
+- Xazax the Eyemonger (also: Xazax, Xazaz)
+- Xetzirbor
+- Xinaya
+- Xol
+- Y
+- Y'lara
+- Yantha Coaxrock
+- Yartar
+- Yauln
+- Yeenoghu
+- Yeenoghu's blood
+- Yestabrod
+- Yggmorgus
+- Ylsa
+- Ylsa Henstak
+- Yrberop
+- Yuk Yuk
+- Zalthir
+- Zarod
+- Zelraun Roaringhorn (also: Lord Zelraun Roaringhorn)
+- Zhaun'ol'leal
+- Zhentarim Enclave
+- Zhindia Melarn
+- Zhora Hallen (also: Zhora)
+- Zilchyn Q'Leptin (also: Zilch)
+- Zilna Oakshadow
+- Zombies with Multiple Heads
+- Zubriska
+- Zuggtmoy (also: Demon Queen of Fungi, Lady of Decay, the Great Seeder, Dark Lady, The Dark Lady)
+- Zuggtmoy's gift
+- Zuggtmoy's spores
+- Zuggtmoy's wedding
+- Zulia Stonewhisper
+- angel feathers
+- black sapphire pendant
+- book of drow poetry
+- brand of Karazikar
+- calassabrak
+- charm of heroism
+- chief negotiators council
+- crystal ball of true seeing
+- dark heart
+- dharum suhn
+- driftglobes
+- drow poison
+- dwarven plate
+- earth elemental gem
+- exile of the dark elves
+- faerzress
+- flame lances
+- flame tongue
+- gem of brightness
+- gem of seeing
+- gem-studded minotaur horn
+- gem-studded robe
+- grackle-lung
+- hat of disguise
+- heart of the goristro
+- myconid sovereigns
+- necklace of adaptation
+- obsidian statuette of Lolth
+- purple worm poison
+- rapport spores
+- ring with star ruby compass
+- robe of eyes
+- ruling houses
+- scimitar of speed
+- shield guardian
+- shilmaer
+- spider silk rope
+- spores of Zuggtmoy
+- the Abyss
+- the Astral Plane (also: Astral Plane)
+- the Darklake
+- the Diggermattocks (also: Diggermattocks)
+- the Dragonstelle (also: Dragonstelle)
+- the Dreamlands (also: Dreamlands)
+- the Ember Grapple (also: Endergrapple)
+- the Ember Vanguard (also: Ember Vanguard, Vanguard)
+- the Flora Theca
+- the Gyrgumite triangle
+- the Lady's dream
+- the Material Plane (also: Material Plane)
+- the Miloites
+- the Ordning
+- the Overbright (also: Overbright, Overbrighters)
+- the Silken Paths
+- the Slave Pen
+- the Sundering (also: Sundering)
+- the Vast Oblivium (also: Vast Oblivium)
+- the Whistlerites (also: Whistlerites)
+- the Zagotami Marginalia
+- the demonic incursion (also: demonic incursion, demon lords' arrival, demonic invasion)
+- the duergar-svirfneblin conflict
+- the summoning ritual
+- thuldar
+- timmask
+- tyrnae
+- zurkhwood (also: Zurkhwoods)

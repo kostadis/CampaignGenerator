@@ -1,0 +1,184 @@
+[
+  {
+    "type": "event",
+    "fact": "The cell door was left open in the morning.",
+    "source_quote": "the cell door had been left open",
+    "subject": "cell door left open",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a small myconid sprout who has become an unlikely ally to the prisoners.",
+    "source_quote": "Stool, the small myconid sprout who had become an unlikely ally",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool scatters rapport spores throughout the cell to establish a telepathic link.",
+    "source_quote": "Stool happily scatters rapport spores throughout the cell, establishing a telepathic link among the prisoners",
+    "subject": "rapport spores deployed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Rapport spores allow affected creatures to communicate telepathically for an hour.",
+    "source_quote": "The spores allow affected creatures to communicate for an hour",
+    "subject": "rapport spores",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Rapport spores function within roughly thirty feet of Stool.",
+    "source_quote": "The link initially connects creatures gathered near Stool and remains usable within roughly thirty feet",
+    "subject": "rapport spores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is a dwarf warrior.",
+    "source_quote": "Thorin, the dwarf warrior",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin possesses a pendant fashioned from a giant's tooth which serves as a family memento.",
+    "source_quote": "Thorin, the dwarf warrior, felt the absence of his family\u2019s memento \u2014 a pendant fashioned from a giant\u2019s tooth",
+    "subject": "Thorin's pendant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners debate making a straight dash for freedom or detouring to the guard tower\u2019s armory.",
+    "source_quote": "The group debated whether to make a straight dash for freedom or risk a detour to the guard tower\u2019s armory",
+    "subject": "escape strategy debate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The prisoners' confiscated personal belongings are held in Ilvara\u2019s quarters.",
+    "source_quote": "Their confiscated personal belongings were held elsewhere, in Ilvara\u2019s quarters",
+    "subject": "gear location discussed",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The outpost\u2019s interior chambers are dimly illuminated by lanterns containing phosphorescent fungi.",
+    "source_quote": "The outpost\u2019s interior chambers were dimly illuminated by lanterns containing phosphorescent fungi",
+    "subject": "drow outpost interior",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The exterior of the drow outpost remains dark.",
+    "source_quote": "the exterior remained dark",
+    "subject": "drow outpost exterior",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow conscripts in the nearby barracks are inattentive and accustomed to uneventful duty.",
+    "source_quote": "The drow in the nearby barracks were inattentive conscripts accustomed to uneventful duty",
+    "subject": "drow conscripts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow guards at the lookout are watching outward rather than back toward the prison.",
+    "source_quote": "the guards at the lookout watched outward rather than back toward the prison",
+    "subject": "drow lookouts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group determines that ordinary footsteps might pass unnoticed, but screams, fire, or forced doors would alert the outpost.",
+    "source_quote": "Ordinary footsteps might pass unnoticed, but a scream, a burst of fire, or the sound of the massive cell door being forced would bring the outpost down upon the prisoners",
+    "subject": "stealth assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group settles on a cautious infiltration of the guard post with the others ready to charge if it fails.",
+    "source_quote": "The group therefore settled on a cautious infiltration of the guard post, with everyone else ready to charge if the attempt failed",
+    "subject": "infiltration plan set",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil offers to provide muscle for the mission.",
+    "source_quote": "Prince Derendil offered muscle rather than subtlety",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido argues that the divine plan requires someone else to secure weapons first.",
+    "source_quote": "Buppido argued that the \u201cdivine plan\u201d required somebody else to secure the weapons first",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir volunteers to approach the guard post due to his high stealth capability.",
+    "source_quote": "Zalthir, the group\u2019s most capable infiltrator, went forward with Daz",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz accompanies Zalthir to use magical tricks if they are discovered.",
+    "source_quote": "went forward with Daz, whose magical tricks might salvage the situation if they were discovered",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Dungeon Master confirms Zalthir's fiery breath can ignite a five-foot area but is limited to two uses per long rest.",
+    "source_quote": "confirms that Zalthir\u2019s fiery breath can ignite a five-foot area... though he can use the ability only twice per long rest",
+    "subject": "Zalthir's ability clarified",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The group rejects sending Prince Derendil ahead because Quaggoths working the outpost would react badly.",
+    "source_quote": "The group considers sending Prince Derendil ahead because Quaggoths work in the outpost, but rejects the idea as likely to produce havoc and noise",
+    "subject": "Prince Derendil rejected",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolls disastrously and trips as he enters the guard post.",
+    "source_quote": "Zalthir tripped as he entered",
+    "subject": "Zalthir fails stealth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls poorly and kicks a can while trying to catch Zalthir.",
+    "source_quote": "Daz\u2019s attempt to catch him only kicked a can across the floor",
+    "subject": "Daz fails stealth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two drow guards were idly playing cards before being alerted.",
+    "source_quote": "Two drow who had been idly playing cards looked up from their game",
+    "subject": "drow guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow guards notice Zalthir and Daz, shattering the hope of a quiet escape.",
+    "source_quote": "Two drow who had been idly playing cards looked up from their game... the hope of a quiet escape shattered",
+    "subject": "stealth broken",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The plan changes instantly from stealth to a charge as the guards are alerted.",
+    "source_quote": "With the guards alerted and the telepathic link carrying the news back to the prisoners, the plan changes instantly from stealth to a charge",
+    "subject": "plan changes to charge",
+    "quote_verified": true
+  }
+]

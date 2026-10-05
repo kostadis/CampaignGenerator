@@ -1,0 +1,121 @@
+[
+  {
+    "type": "event",
+    "fact": "The derro cultists abandon their chanting and begin shouting 'die, die, die'.",
+    "source_quote": "Having abandoned their chanting for cries of \"die, die, die\"",
+    "subject": "ritual abandonment",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir conjured a sphere of impenetrable shadow at the heart of the ritual chamber.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "ritual chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists are attempting a ritual to create a two-headed giant.",
+    "source_quote": "derro cultists who were attempting a ritual to create a two-headed giant",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists are navigating the zone of magical darkness.",
+    "source_quote": "the derro cultists scrambled to navigate it",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum maintains a spell that causes acidic pain to three derro enemies at the start of their turns.",
+    "source_quote": "Gyrgum maintains a spell that causes acidic pain to three of the derro enemies at the start of their turns",
+    "subject": "Gyrgum's acid spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro enemy takes 5 damage from Gyrgum's acid spell before moving.",
+    "source_quote": "One takes 5 damage before moving",
+    "subject": "derro damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro warrior charges out of the zone of darkness to locate the source of the magical attacks.",
+    "source_quote": "A derro warrior charges out of Zalthir's zone of darkness to locate the source of the magical attacks",
+    "subject": "derro charge",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Underdark dwellers know to run in a straight line to reach the edge of innate darkness cast by drow.",
+    "source_quote": "Underdark dwellers know to run in a straight line until they reach its edge",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro drove a hooked spear into Gyrgum.",
+    "source_quote": "One of them found Gyrgum and drove a hooked spear into the cleric",
+    "subject": "Gyrgum hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes 2 points of damage from the spear blow.",
+    "source_quote": "Gyrgum is struck by a hooked spear and takes 2 points of damage",
+    "subject": "Gyrgum damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The force of the spear blow sends Gyrgum crashing to the ground, knocking him prone.",
+    "source_quote": "the force of the blow sent him crashing to the ground",
+    "subject": "Gyrgum prone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fails a DC 9 Strength save against the spear blow.",
+    "source_quote": "The spear blow forces a DC 9 Strength save, which Gyrgum fails",
+    "subject": "Gyrgum strength save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The trauma of the blow shatters Gyrgum's concentration.",
+    "source_quote": "The trauma shattered Gyrgum's concentration",
+    "subject": "Gyrgum concentration failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The corrosive magic Gyrgum was sustaining flickers and dies.",
+    "source_quote": "the corrosive magic he had been sustaining over the cultists flickered and died",
+    "subject": "acid spell ended",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An ettin is present in the combat zone alongside the derro cultists.",
+    "source_quote": "The party continues its battle against a group of derro cultists and an ettin",
+    "subject": "ettin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro warrior drove a hooked spear into Gyrgum.",
+    "source_quote": "One of them found Gyrgum and drove a hooked spear into the cleric",
+    "subject": "derro warrior",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric.",
+    "source_quote": "drove a hooked spear into the cleric",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "Zalthir conjured a sphere of impenetrable shadow at the heart of the ritual chamber.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "ritual chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists abandon their chanting and charge blindly outward, crying 'die, die, die'.",
+    "source_quote": "Having abandoned their chanting for cries of 'die, die, die,' some charged blindly outward",
+    "subject": "derro cultists",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists attempt a ritual to create a two-headed giant.",
+    "source_quote": "derro cultists who were attempting a ritual to create a two-headed giant",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro cultists abandon their ritual chanting in favor of melee combat.",
+    "source_quote": "Having abandoned their chanting for cries of 'die, die, die'",
+    "subject": "derro ritual",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of impenetrable shadow in the center of the room.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "Zalthir's darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro warrior runs in a straight line from the darkness to find the source of the magical attacks.",
+    "source_quote": "A derro warrior charges out of Zalthir's zone of darkness to locate the source of the magical attacks",
+    "subject": "derro movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro warrior drives a hooked spear into Gyrgum.",
+    "source_quote": "One of them found Gyrgum and drove a hooked spear into the cleric",
+    "subject": "Spear Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The force of the spear blow sends Gyrgum crashing to the ground.",
+    "source_quote": "the force of the blow sent him crashing to the ground",
+    "subject": "Gyrgum Knocked Down",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's concentration is shattered, causing the corrosive magic to die.",
+    "source_quote": "The trauma shattered Gyrgum's concentration, and the corrosive magic he had been sustaining over the cultists flickered and died",
+    "subject": "Acid Spell Ends",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum takes 2 points of damage from the hooked spear.",
+    "source_quote": "Gyrgum is struck by a hooked spear and takes 2 points of damage",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum fails a DC 9 Strength save and is knocked prone.",
+    "source_quote": "The spear blow forces a DC 9 Strength save, which Gyrgum fails. He is knocked prone.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum fails his concentration check, ending his spell effects.",
+    "source_quote": "Gyrgum also fails his concentration check, prematurely ending his ongoing magical effects on the enemies",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum had been sustaining corrosive magic over the cultists prior to being struck.",
+    "source_quote": "Gyrgum maintains a spell that causes acidic pain to three of the derro enemies at the start of their turns",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three derro enemies take 5 damage from Gyrgum's spell before moving.",
+    "source_quote": "One takes 5 damage before moving",
+    "subject": "derro enemies",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow cast darkness innately, so Underdark dwellers are not frightened by it.",
+    "source_quote": "drow cast darkness innately, so Underdark dwellers know to run in a straight line until they reach its edge",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow who did not know how to navigate darkness are long dead.",
+    "source_quote": "the drow that didn't figure this out are long dead",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An ettin is present in the battle alongside the derro cultists.",
+    "source_quote": "The party continues its battle against a group of derro cultists and an ettin",
+    "subject": "ettin",
+    "quote_verified": true
+  }
+]

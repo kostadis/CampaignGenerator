@@ -1,0 +1,212 @@
+[
+  {
+    "type": "npc",
+    "fact": "Daz recognizes the dancing of the Myconids as completely unnatural for their kind.",
+    "source_quote": "a frantic, crazed manner that Daz recognized as completely unnatural for their kind",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Several Myconids are dancing in a frantic, crazed manner in a natural cave.",
+    "source_quote": "Several Myconids were dancing in a frantic, crazed manner",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three of the Myconids stand five feet tall.",
+    "source_quote": "Three of them stand five feet tall",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The other Myconids are half as tall as the three tall ones.",
+    "source_quote": "while the others are half as tall",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One small Myconid stands apart from the rest with movements that are not nearly as frantic.",
+    "source_quote": "One of the small ones stands apart from \u2026 the rest. Its movements are not nearly as frantic.",
+    "subject": "Myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The dancing Myconids ignore both the party and Stool's bouncing.",
+    "source_quote": "The other Myconids ignore both the party and Stool's bouncing.",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two large, ape-like creatures covered in yellow mold and mushroom growths are hunched near the dancing Myconids.",
+    "source_quote": "Two large, ape-like creatures covered in yellow mold and mushroom growths were hunched nearby",
+    "subject": "ape-like creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is a drow emissary traveling with the party.",
+    "source_quote": "Sarith, the drow emissary traveling with the party",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith became agitated the moment the dancing Myconids came into view.",
+    "source_quote": "became agitated the moment the dancing Myconids came into view",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith lurched forward as if drawn to the Myconids, wanting to join in.",
+    "source_quote": "He lurched forward as if drawn to them, wanting to join in.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir hauled Sarith back around the corner.",
+    "source_quote": "hauled him back around the corner.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith grew much more agitated the moment he had line of sight to the Myconids.",
+    "source_quote": "notices that Sarith grew much more agitated the moment the Myconids came into view",
+    "subject": "Sarith's agitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is an expert grappler.",
+    "source_quote": "Zalthir, an expert grappler",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir successfully grappled Sarith to prevent him from rushing into the potentially infectious area.",
+    "source_quote": "Zalthir successfully grapples Sarith to prevent him from rushing into the potentially infectious area.",
+    "subject": "Zalthir grappling Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception of 14.",
+    "source_quote": "Gyrgum, with a passive perception of 14",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz notes that the effects are clearly reaching beyond 30 feet.",
+    "source_quote": "Daz notes that effects are clearly reaching beyond 30 feet",
+    "subject": "Daz's analysis",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump appears calm and studious, unlike the other frantic Myconids.",
+    "source_quote": "Rumpadump appeared, calm and studious where the others were frantic",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool erupted with excitement at the reunion with Rumpadump.",
+    "source_quote": "Stool erupted with excitement at the reunion",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool said 'I found you. I found you. I found you.'",
+    "source_quote": "\"I found you. I found you. I found you.\"",
+    "subject": "Stool's greeting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump said simply: 'something is not right here.'",
+    "source_quote": "Rumpadump said simply: \"something is not right here.\"",
+    "subject": "Rumpadump's statement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump explained what had happened in measured, careful terms.",
+    "source_quote": "He explained what had happened in measured, careful terms:",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrived at a natural cave.",
+    "source_quote": "They arrived at a natural cave",
+    "subject": "natural cave",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural cave contains fungal creatures dancing and ape-like creatures hunched nearby.",
+    "source_quote": "Several Myconids were dancing ... Two large, ape-like creatures covered in yellow mold and mushroom growths were hunched nearby",
+    "subject": "natural cave",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party entered a natural cave where fungal creatures were dancing.",
+    "source_quote": "The party enters a natural cave where several fungal creatures are dancing to a silent, frantic tune.",
+    "subject": "arrival at cave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool spots Rumpadump and moves excitedly to meet him.",
+    "source_quote": "Stool spots Rumpadump, who appears calmer than the other dancing Myconids, and moves excitedly to meet him.",
+    "subject": "Stool spotting Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz notes that Myconids are famous for many things, but dancing is not one of them.",
+    "source_quote": "they are \"famous for many things, but dancing is not one of them.\"",
+    "subject": "unnatural dancing",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz concludes this is not a Myconid type of thing going on here.",
+    "source_quote": "\"this is not a Myconid type of thing going on here.\"",
+    "subject": "unnatural dancing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM clarifies that Sarith wanted to join in, not necessarily act aggressively.",
+    "source_quote": "DM says: \"He wanted to join in.\"",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM frames Stool and Rumpadump as the jumpy/excited kid and the calm/studious kid.",
+    "source_quote": "DM frames the pair as the jumpy, excited kid and the calm, studious kid",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM compares the dynamic of Stool and Rumpadump to himself and Zalthir.",
+    "source_quote": "\"kind of like me and Zalthir.\"",
+    "subject": "DM",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,254 @@
+[
+  {
+    "type": "event",
+    "fact": "The party leaves the Whorlstone Tunnels and returns to the Darklake District of Gracklstugh.",
+    "source_quote": "They left the Whorlstone Tunnels and returned to the Darklake District of Gracklstugh",
+    "subject": "party leaves Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's ghost is kept invisible to prevent people from panicking.",
+    "source_quote": "Their ghost was kept invisible, since people tend to panic at the sight of ghosts",
+    "subject": "ghost invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn is the intense head of the Keepers of the Flame.",
+    "source_quote": "Gartokkar Xundorn, the intense head of the order",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar pulls the party aside into a separate chamber the moment he spots them.",
+    "source_quote": "He pulled them aside into a separate chamber the moment he spotted them",
+    "subject": "Gartokkar pulls party aside",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph projects a vivid image of the egg directly into Gartokkar's mind.",
+    "source_quote": "The flumph projected a vivid image of the egg directly into Gartokkar's mind",
+    "subject": "flumph projects egg image",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar tasks the party with retrieving the egg.",
+    "source_quote": "he immediately demanded to know why they had not simply brought it back. He tasked the party with retrieving the egg",
+    "subject": "Gartokkar demands egg retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar requests a small statuette of Demogorgon from the Gray Ghost lair.",
+    "source_quote": "He also wanted a small statuette of Demogorgon from the Gray Ghost lair",
+    "subject": "Gartokkar requests Demogorgon statuette",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar requests any incriminating paperwork from the Gray Ghost lair.",
+    "source_quote": "and any incriminating paperwork",
+    "subject": "Gartokkar requests paperwork",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum accepts the opening offer of 2,000 gold pieces.",
+    "source_quote": "Gyrgum first accepted the opening offer of 2,000 gold pieces",
+    "subject": "Gyrgum accepts offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar rejects Gyrgum's acceptance and insists on 30% up front and 70% on delivery.",
+    "source_quote": "Gartokkar himself rejected the terms and insisted on 30% up front and 70% on delivery",
+    "subject": "Gartokkar rejects terms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party raises a confidentiality rider to keep the egg secret from Themberchaud.",
+    "source_quote": "The party then raised a confidentiality rider ensuring that the dragon Themberchaud would be kept ignorant of the egg's existence",
+    "subject": "confidentiality rider raised",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar agrees to the confidentiality rider after a moment of madness.",
+    "source_quote": "After a flash of murderous madness, Gartokkar agreed, muttering that what Themberchaud didn't know couldn't hurt him",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin demands double payment for the discretion of keeping the egg secret.",
+    "source_quote": "Thorin demanded double for the discretion",
+    "subject": "Thorin demands double",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hints to Gartokkar that there are other bidders.",
+    "source_quote": "Daz hinted at other bidders",
+    "subject": "Daz hints at bidders",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar concedes an extra thousand gold pieces.",
+    "source_quote": "Gartokkar... conceded an extra thousand",
+    "subject": "Gartokkar offers extra gold",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A failed attempt at intimidation settles the upfront payment at 1,100 gold pieces.",
+    "source_quote": "A failed attempt at intimidation settled the upfront terms at 1,100 gold pieces",
+    "subject": "payment finalized",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party splits the 1,100 gold pieces evenly at 275 apiece.",
+    "source_quote": "which the party split evenly at 275 apiece",
+    "subject": "gold split",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party receives official badges that allow their companions to accompany them on the mission.",
+    "source_quote": "They also received official badges that would allow their companions to accompany them on the mission",
+    "subject": "official badges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar enumerates in detail every cave, rock, tunnel, and pool in the Underdark where the party might hide.",
+    "source_quote": "Gartokkar fixed the party with a cold, furious stare and enumerated, in exhaustive detail, every cave, rock, tunnel, and pool in the Underdark where they might think to hide",
+    "subject": "Gartokkar's threat",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party exits the Whorlstone Tunnels.",
+    "source_quote": "They left the Whorlstone Tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to the Darklake District of Gracklstugh.",
+    "source_quote": "returned to the Darklake District of Gracklstugh",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party visits the Keepers of the Flame because they are closer than other contacts.",
+    "source_quote": "They went first to the Keepers of the Flame, who were closer",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud expects to be kept ignorant of the egg's existence due to the confidentiality rider.",
+    "source_quote": "ensuring that the dragon Themberchaud would be kept ignorant of the egg's existence",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gartokkar intends to use the recovered items to persuade the Deepking to wage holy war against the Gray Ghosts.",
+    "source_quote": "persuade the Deepking to wage holy war against the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar believes the recovered items will persuade the Deepking to wage holy war.",
+    "source_quote": "persuade the Deepking to wage holy war against the Gray Ghosts",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar experiences a moment of depraved mad insanity when the confidentiality rider is raised.",
+    "source_quote": "After a flash of murderous madness, Gartokkar agreed",
+    "subject": "Gartokkar's madness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar is concerned that a leak about the egg could destroy his leverage over Themberchaud.",
+    "source_quote": "Gartokkar is 'shitting bricks.' A leak about the egg's survival and corruption could destroy his leverage over Themberchaud.",
+    "subject": "Gartokkar's leverage concern",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar hands over a bag of gold to the party.",
+    "source_quote": "Gartokkar hands over the bag of gold",
+    "subject": "bag of gold",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph is a telepathic companion floating behind the party.",
+    "source_quote": "with their telepathic companion floating along behind them",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar demands to know if the stolen red dragon egg has been found.",
+    "source_quote": "demands to know if the stolen red dragon egg has been found",
+    "subject": "Gartokkar asks about egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum argues that nobody asked them to bring the egg and that carrying it is dangerous.",
+    "source_quote": "Gyrgum points out that nobody asked them to, and that carrying the egg of a large dangerous creature makes the adults 'even more dangerous.'",
+    "subject": "Gyrgum's justification",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar reminds the party that they agreed to be agents of Themberchaud.",
+    "source_quote": "Gartokkar reminds them they agreed to be agents of Themberchaud",
+    "subject": "Gartokkar reminds party of role",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar offers badges so the party's companions can work with them.",
+    "source_quote": "Gartokkar offers badges so their own companions can work with them",
+    "subject": "badge offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls 15 and 14 on Persuasion checks against a DC of 7.",
+    "source_quote": "Thorin's Persuasion rolls come in at 15 and 14 (Charisma 8) against the GM's 7.",
+    "subject": "Thorin's persuasion rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls 13 on Intimidation checks, with an advantage reroll that does not help.",
+    "source_quote": "Thorin's Intimidation rolls a 13 and the advantage reroll doesn't help.",
+    "subject": "Thorin's intimidation rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The inscriptions on the egg, combined with the statuette and paperwork, are intended to persuade the Deepking to wage holy war.",
+    "source_quote": "which together with the inscriptions on the egg could persuade the Deepking to wage holy war against the Gray Ghosts",
+    "subject": "Deepking's war",
+    "quote_verified": true
+  }
+]

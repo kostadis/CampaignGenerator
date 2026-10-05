@@ -1,0 +1,268 @@
+[
+  {
+    "type": "location",
+    "fact": "The West Cleft exit is a narrow and suffocating corridor carved from bedrock.",
+    "source_quote": "a narrow and suffocating corridor carved from bedrock",
+    "subject": "West Cleft exit",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar guards in runic armor are patrolling the area under a state of lockdown.",
+    "source_quote": "Duergar guards in runic armor patrolling the area under a state of lockdown",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Duergar guard confronts the party, questioning their identities.",
+    "source_quote": "A guard confronts the group, questioning their identities",
+    "subject": "guard confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard identifies each party member's species as drow, orc, dwarf, and not a red dragonborn.",
+    "source_quote": "identifies each member's species in turn: drow, orc, dwarf, and \"not a red dragonborn.\"",
+    "subject": "guard species identification",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Exaggerated descriptions of the 'Ember Vanguard' are circulating through the city.",
+    "source_quote": "comparing them to the exaggerated descriptions of the 'Ember Vanguard' circulating through the city",
+    "subject": "Ember Vanguard rumors",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "There is a discrepancy between the party's appearance and rumors of a red dragonborn and an old, wizened drow.",
+    "source_quote": "discrepancy between the party's actual appearance and the rumors of a red dragonborn and an old, wizened drow",
+    "subject": "rumor discrepancy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin feigns total ignorance of the Ember Vanguard.",
+    "source_quote": "Thorin and Gyrgum feign total ignorance of the Ember Vanguard.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum feigns total ignorance of the Ember Vanguard.",
+    "source_quote": "Thorin and Gyrgum feign total ignorance of the Ember Vanguard.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests getting back to town before trouble starts.",
+    "source_quote": "\"we better get back to town before they show up and there's trouble.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The passage is 30 feet long and 20 feet wide, with gates and sentries at each end.",
+    "source_quote": "a 30-foot passage, 20 feet wide, with a gate at each end and sentries on the gates",
+    "subject": "30-foot passage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Gorglak stands alone in the middle of the passage.",
+    "source_quote": "the captain stands alone \"very toughly\" in the middle",
+    "subject": "Captain Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir notices five invisible Duergar positioned in the hallway.",
+    "source_quote": "Zalthir notices five invisible Duergar positioned in the hallway",
+    "subject": "invisible Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The invisible Duergar are ready to strike.",
+    "source_quote": "ready to strike",
+    "subject": "invisible Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Gorglak is a scarred Duergar loyal to the Deepking.",
+    "source_quote": "Captain Gorglak, a scarred Duergar loyal to the Deepking",
+    "subject": "Captain Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Gorglak maintains the lockdown.",
+    "source_quote": "who maintains the lockdown",
+    "subject": "Captain Gorglak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Captain Gorglak wears a clenched-fist pendant.",
+    "source_quote": "his clenched-fist pendant",
+    "subject": "clenched-fist pendant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pendant is a generic symbol of loyalty to the Deepking.",
+    "source_quote": "identifies his clenched-fist pendant as a generic symbol of loyalty to the Deepking",
+    "subject": "clenched-fist pendant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spent his monastery years reading history books to avoid childcare duties.",
+    "source_quote": "Zalthir had spent his monastery years reading history books to avoid childcare duties",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak demands proof that the party are not agents or prey of the Ember Vanguard.",
+    "source_quote": "Gorglak demands proof that the party are not agents or prey of the Ember Vanguard",
+    "subject": "Gorglak's demand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak states that the area has been put under lockdown.",
+    "source_quote": "\"This area has been put under lockdown.\"",
+    "subject": "lockdown statement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak states that no one from that side of the district will enter the city of the Duergar.",
+    "source_quote": "\"no one from that side of the district will enter the city of the Duergar.\"",
+    "subject": "entry restriction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to use their Stone Guard pass to gain entry.",
+    "source_quote": "They carry both Keeper of the Flame and Stone Guard passes, and choose the Stone Guard pass",
+    "subject": "pass selection",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party carries a Keeper of the Flame pass.",
+    "source_quote": "They carry both Keeper of the Flame and Stone Guard passes",
+    "subject": "Keeper of the Flame pass",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party carries a Stone Guard pass.",
+    "source_quote": "They carry both Keeper of the Flame and Stone Guard passes",
+    "subject": "Stone Guard pass",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Stone Guard pass does not mention the Ember Vanguard.",
+    "source_quote": "Neither pass mentions the Ember Vanguard, since that name was invented after they were issued",
+    "subject": "Stone Guard pass",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Keeper of the Flame pass does not mention the Ember Vanguard.",
+    "source_quote": "Neither pass mentions the Ember Vanguard, since that name was invented after they were issued",
+    "subject": "Keeper of the Flame pass",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak demands the party lay down weapons and magic items for inspection.",
+    "source_quote": "Gorglak demands they lay down weapons and magic items for inspection",
+    "subject": "inspection demand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gorglak demands the party speak the Stone Guard's secret salute.",
+    "source_quote": "and speak the Stone Guard's secret salute",
+    "subject": "salute demand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz realizes Gorglak is looking for a bribe.",
+    "source_quote": "Daz realizes Gorglak is looking for a bribe",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's insight roll was 15.",
+    "source_quote": "Daz's insight roll was 15",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party prepares a contingency plan involving magical teleportation.",
+    "source_quote": "the party prepares a contingency plan involving magical teleportation",
+    "subject": "contingency plan",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Everything but the egg could be hidden with sleight of hand.",
+    "source_quote": "Everything but the egg could be hidden with sleight of hand",
+    "subject": "hidden items",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz plans to Misty Step past the guards and proclaim himself divinely chosen.",
+    "source_quote": "Daz would carry the egg and other incriminating items, Misty Step past the guards, and proclaim himself divinely chosen",
+    "subject": "Daz's diversion plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz plans to carry the egg and other incriminating items.",
+    "source_quote": "Daz would carry the egg and other incriminating items",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offered to provide a booming voice or tremors to sell the divinely chosen act.",
+    "source_quote": "Gyrgum offered a booming voice or tremors to sell it",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes name-dropping their special mission for the Stone Guard.",
+    "source_quote": "Thorin proposes name-dropping their special mission for the Stone Guard",
+    "subject": "Thorin's proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls the specific rituals of Bahamut.",
+    "source_quote": "Gyrgum recalls the specific rituals of Bahamut to help the party prepare for the Stone Guard's secret salute",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The history check regarding Bahamut's rituals gives advantage on persuading, intimidating, or performing the salute.",
+    "source_quote": "The history check gives advantage on persuading, intimidating, or performing the salute",
+    "subject": "rituals recall",
+    "quote_verified": true
+  }
+]

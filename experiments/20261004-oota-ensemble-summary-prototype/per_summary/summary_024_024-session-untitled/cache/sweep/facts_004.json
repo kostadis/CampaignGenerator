@@ -1,0 +1,219 @@
+[
+  {
+    "type": "object",
+    "fact": "The Rituals of the Two-Headed Beast is a volume of dark texts found in the ritual chamber.",
+    "source_quote": "Chief among them was a volume called The Rituals of the Two-Headed Beast",
+    "subject": "The Rituals of the Two-Headed Beast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak is dead, as a key is retrieved from around his neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Narrak's death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is referenced as the source of the key and had been reading the volume on rituals.",
+    "source_quote": "which Narrak had been reading",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers a quiet prayer to Bahamut before removing a key from around Narrak's neck.",
+    "source_quote": "Gyrgum offered a quiet prayer to Bahamut before removing a key from around Narrak's neck",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bahamut is referenced by Gyrgum as the recipient of a quiet prayer.",
+    "source_quote": "offered a quiet prayer to Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum retrieves a key from around Narrak's neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "retrieving key from Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks about a two-foot-tall statue.",
+    "source_quote": "Thorin asks about the two-foot-tall statue",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A two-foot-tall statue is present in the ritual chamber but does not come alive.",
+    "source_quote": "The GM clarifies that it does not come alive",
+    "subject": "two-foot-tall statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses the recovered key to carefully open an iron chest, standing well to the side.",
+    "source_quote": "Thorin used the key to carefully open an iron chest, standing well to the side",
+    "subject": "opening iron chest",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The iron chest matches the style of the recovered key.",
+    "source_quote": "The key matches the style of an iron chest",
+    "subject": "iron chest",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A small leather bag containing currency is found inside the iron chest.",
+    "source_quote": "Inside were 45 gold and 15 silver pieces in a small leather bag",
+    "subject": "small leather bag",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There are 45 gold pieces inside the small leather bag.",
+    "source_quote": "45 gold and 15 silver pieces in a small leather bag",
+    "subject": "gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There are 15 silver pieces inside the small leather bag.",
+    "source_quote": "45 gold and 15 silver pieces in a small leather bag",
+    "subject": "silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Five doses of Keoghtom's Ointment are found in the chest, described as a rare and powerful healing salve.",
+    "source_quote": "five doses of Keoghtom's Ointment, a rare and powerful healing salve",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party enters the ointment into their shared spreadsheet.",
+    "source_quote": "The party enters the ointment into its shared spreadsheet",
+    "subject": "inventorying ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party debates the pronunciation of Keoghtom's Ointment, noting the DM has not decided it.",
+    "source_quote": "A pronunciation debate follows: \"Look, even the DM hasn't decided how to pronounce it.\"",
+    "subject": "pronunciation debate",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party discusses the political implications of having killed two members of the Council of Savants.",
+    "source_quote": "The party discusses the political implications of having killed two members of the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The king is referenced as having been working with assassins to kill members of her clan.",
+    "source_quote": "the king has been working with the assassins to kill members of her clan",
+    "subject": "King",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The assassins are referenced as working with the king.",
+    "source_quote": "working with the assassins to kill members of her clan",
+    "subject": "Assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Members of the king's clan are referenced as targets of the assassins.",
+    "source_quote": "kill members of her clan",
+    "subject": "King's clan",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a red dragon egg.",
+    "source_quote": "the red dragon egg",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The keepers of the flame are referenced as a group that the red dragon egg would help.",
+    "source_quote": "would help the keepers of the flame or the red dragon",
+    "subject": "keepers of the flame",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a couple of passes that allow them to walk out with their evidence.",
+    "source_quote": "a couple of passes. It should allow you to just walk out of here with all that evidence in backpacks",
+    "subject": "passes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin jokes about installing democracy.",
+    "source_quote": "Thorin jokes about regime change and \"installing democracy\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum counters Thorin's joke by noting that installing a system of chaos would be straightforward.",
+    "source_quote": "Gyrgum counters that \"if we wanted to install some sort of system of chaos, that would be straightforward.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar makes a bet that the party will want to hold on to some of the collected items for later.",
+    "source_quote": "Jimjar wagers that the party will want to hold on to the evidence it has collected: \"I'll make you a bet. You'll want to hold on to some of these for later.\"",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member protests the implication of eating the egg, causing others to look at him funny.",
+    "source_quote": "A party member protests, \"Oh, I wasn't planning to, you know, just like eat the egg or anything,\" and \"everybody kind of looks at you funny.\"",
+    "subject": "egg consumption protest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool tugs at Zalthir's sleeve and reminds him that they need to rescue Rumpadump.",
+    "source_quote": "Then the small fungal creature Stool tugged at Zalthir's sleeve and reminded him... that they still needed to go rescue Rumpadump",
+    "subject": "Stool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is referenced as the character Stool tugs at the sleeve of.",
+    "source_quote": "tugged at Zalthir's sleeve",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is referenced as a friend who needs to be rescued.",
+    "source_quote": "rescue their friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ends because the GM's audio became unintelligible.",
+    "source_quote": "The session ends here because the GM's audio became unintelligible",
+    "subject": "session end",
+    "quote_verified": true
+  }
+]

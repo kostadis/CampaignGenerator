@@ -1,0 +1,128 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum offers an optional NDA, which Werz interprets as a \"Non-Demonic Agreement,\" to keep their dealings secret.",
+    "source_quote": "Gyrgum offered an optional NDA \u2014 which Werz heard as a \"Non-Demonic Agreement\"",
+    "subject": "NDA offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum stares knowingly at the ghost, causing the ghost to say \"boo.\"",
+    "source_quote": "Gyrgum stared knowingly at the ghost, and the ghost said \"boo.\"",
+    "subject": "ghost intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron agrees to sign the contract because it will be enforced by the ghost.",
+    "source_quote": "I will gladly sign such a contract, especially if it will be enforced by a fearsome ghost like this.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum drafts a formal contract with his fancy pen while Daz helps set the price.",
+    "source_quote": "Gyrgum drafts a formal contract with his fancy pen while Daz helps set the price.",
+    "subject": "contract drafting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz sets a list price of 1,250 gold pieces for the NDA.",
+    "source_quote": "Daz set a \"list price\" of 1,250 gold pieces",
+    "subject": "price setting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz offers the NDA for a flat thousand gold pieces.",
+    "source_quote": "generously offered it at a flat thousand",
+    "subject": "initial discount offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The price of the NDA is raised to eleven hundred gold pieces after Werz calls it highway robbery.",
+    "source_quote": "the price was immediately raised to eleven hundred",
+    "subject": "price increase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz pays the 1,100 gold piece fee and the NDA is concluded.",
+    "source_quote": "Werz paid without further argument, having learned his lesson.",
+    "subject": "NDA payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz provides information about various Duergar clans, including Clan Ironhead, Clan Thrazgad, and Clan Xundom.",
+    "source_quote": "Werz provides information about various Duergar clans, including Clan Ironhead, Clan Thrazgad, and Clan Xundom.",
+    "subject": "Werz reveals Duergar clans",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a clan of armorsmiths who complain their stores have been raided recently.",
+    "source_quote": "Clan Thrazgad is another clan of armorsmiths who complain their stores have been raided recently.",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xundom will back the Deepking if there's any contest for power.",
+    "source_quote": "Clan Xundom will back the Deepking if there's any contest for power.",
+    "subject": "Clan Xundom",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party presses Werz on the fact that only the NDA's price was negotiated, never the job itself.",
+    "source_quote": "The party presses Werz on the fact that only the NDA's price was negotiated, never the job itself.",
+    "subject": "job clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz states the deal is that the party removes the assassins in exchange for his services to Blingdenstone.",
+    "source_quote": "Werz says the deal is that they remove the assassins and he offers his services to Blingdenstone.",
+    "subject": "job terms stated",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz gives the party five special gems as a symbol of good faith.",
+    "source_quote": "Werz gives the party five special gems as a symbol of good faith",
+    "subject": "gems offered",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The five special gems are valued at 100 GP each.",
+    "source_quote": "Daz asks their value, and it is put at 100 GP each.",
+    "subject": "special gems",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Werz hints that the gems are of particular interest to gnomes and suggests asking Gnomish friends why they are special.",
+    "source_quote": "before you sell these gems, I suggest you talk to your Gnomish friends and ask them why these are special.",
+    "subject": "gnomish interest in gems",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to deal with the assassins targeting Werz in exchange for his influence and trade favors in Blingdenstone.",
+    "source_quote": "The party agrees to deal with the assassins targeting Werz in exchange for his influence and trade favors in Blingdenstone.",
+    "subject": "assassin deal struck",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin almost blurted out the NDA's price but missed the save.",
+    "source_quote": "Thorin: \"I almost blurted out how much money you got, but I missed the save.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

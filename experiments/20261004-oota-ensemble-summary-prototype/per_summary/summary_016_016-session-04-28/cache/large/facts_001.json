@@ -1,0 +1,142 @@
+[
+  {
+    "type": "event",
+    "fact": "All party members advance to 4th level.",
+    "source_quote": "everyone advanced to 4th level",
+    "subject": "character leveling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Intelligence score increases to 19.",
+    "source_quote": "Daz's Intelligence reaches 19",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum temporarily raises a score to 19.",
+    "source_quote": "Gyrgum bumps a score to 19 \"at least temporarily\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has not taken a long rest since the skeleton fight.",
+    "source_quote": "The party has not taken a long rest since the fight",
+    "subject": "rest status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost with a gruesome cleaved head.",
+    "source_quote": "A ghost with a gruesome cleaved head emerged from the ground",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spot where the ghost emerged is marked on the map as \"Buppido's resting place\".",
+    "source_quote": "The spot is marked on the map as \"Buppido's resting place\"",
+    "subject": "Buppido's resting place",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a deep gnome traveler from Blingdenstone.",
+    "source_quote": "Pelek, a deep gnome traveler from Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's mother named him after an actor who appeared in Blingdenstone.",
+    "source_quote": "his mother named him after an actor who showed up in Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is a derro who was previously friends with Pelek.",
+    "source_quote": "he had once been friends with a derro named Buppido",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was trapped in the caverns for approximately a year.",
+    "source_quote": "trapped in the caverns ever since, which he reckoned was about a year",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek attempted to possess Buppido but failed.",
+    "source_quote": "he had even tried to possess Buppido, and the effort failed entirely",
+    "subject": "attempted possession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wraps Pelek's bones and stores them in his pack.",
+    "source_quote": "Gyrgum wrapped them up and tucked them into his pack",
+    "subject": "bone collection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek asks the party to carry his bones to his ancestral home in Blingdenstone.",
+    "source_quote": "collect his specific bones and carry them back to Blingdenstone, where they could be buried in his ancestral home",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fumbles an intimidation attempt against Pelek.",
+    "source_quote": "Thorin pressed the ghost on what the party got out of the deal and fumbled an intimidation attempt badly",
+    "subject": "intimidation attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 1 on his intimidation check against Pelek.",
+    "source_quote": "Thorin rolls a 1",
+    "subject": "intimidation rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek laughs off Thorin and Daz's intimidation attempts.",
+    "source_quote": "Pelek laughs both off",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek advises the party to claim the drow among them has no ties to Menzoberranzan at Blingdenstone gates.",
+    "source_quote": "they must make absolutely clear that the drow among them had no ties to Menzoberranzan",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's severed hand was animated by tunnel magic and scuttled away while wearing an obsidian ring.",
+    "source_quote": "strange magic pervading the tunnels had animated his severed hand, which had scuttled away... still wearing his obsidian ring",
+    "subject": "obsidian ring",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's spirit binds to the party and travels alongside them.",
+    "source_quote": "Pelek's spirit drifted alongside them as a companion, bound to wherever his remains traveled",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek does not gain levels but acts as a companion whose thoughts are audible to the party.",
+    "source_quote": "Pelek does not gain levels but is now effectively a companion whose thoughts the party hear",
+    "subject": "Pelek",
+    "quote_verified": true
+  }
+]

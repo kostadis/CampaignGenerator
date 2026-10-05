@@ -1,0 +1,331 @@
+[
+  {
+    "type": "monster",
+    "fact": "Several non-sentient gelatinous cubes emerge from rocks in the Traders' Grotto.",
+    "source_quote": "Several non-sentient gelatinous cubes squeeze out from among the rocks in the Traders' Grotto",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Panicked gnomes point toward Glabbagool, who tries to explain he is not one of the attackers.",
+    "source_quote": "Panicked gnomes point toward Glabbagool, who tries to explain that he is not one of the attackers",
+    "subject": "glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states he has no objection to destroying the newcomers.",
+    "source_quote": "Glabbagool says he has no objection to destroying the newcomers",
+    "subject": "glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool provides tactical advice to avoid being engulfed by the cubes.",
+    "source_quote": "Asked for tactical advice, Glabbagool replies, \u201cYeah, just don't get engulfed by them.\u201d",
+    "subject": "glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool advises using acid protection and pulling engulfed victims free quickly.",
+    "source_quote": "He adds that anyone with acid protection should use it and that an engulfed victim should be pulled free quickly",
+    "subject": "glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The merchant stalls and their goods constrain the safe placement of area attacks.",
+    "source_quote": "The party notices that the merchant stalls and their goods constrain where Daz can safely place an area attack",
+    "subject": "traders' grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir closes with one cube and strikes it twice for heavy damage.",
+    "source_quote": "Zalthir acts first, closing with one cube and striking it twice for heavy damage",
+    "subject": "zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir retreats from a cube to avoid its pseudopod.",
+    "source_quote": "Remembering the cube's pseudopod, Zalthir retreats",
+    "subject": "zalthir retreats",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cube's opportunity attack against Zalthir is made at disadvantage and misses.",
+    "source_quote": "The cube's opportunity attack is made at disadvantage and misses",
+    "subject": "cube opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One cube advances and engulfs a gnome.",
+    "source_quote": "One cube advances and engulfs a gnome",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stays at least fifteen feet from the nearest cube and attacks with two thrown darts.",
+    "source_quote": "Thorin stays at least fifteen feet from the nearest cube and attacks with two thrown darts",
+    "subject": "thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses Vex to gain an advantage on his follow-up attack.",
+    "source_quote": "using Vex to gain an advantage on his follow-up attack",
+    "subject": "thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to use focused fire to take down cubes one at a time.",
+    "source_quote": "The party calls for focused fire: \u201cLet's take him down one at a time.\u201d",
+    "subject": "combat strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum moves roughly thirty feet away and raises his holy symbol.",
+    "source_quote": "Gyrgum moves roughly thirty feet away, raises his holy symbol",
+    "subject": "gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum focuses divine energy into Divine Spark.",
+    "source_quote": "and focuses divine energy into Divine Spark",
+    "subject": "divine spark cast",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first cube takes necrotic damage but withstands the worst of the effect.",
+    "source_quote": "Although the first cube withstands the worst of the effect, it still takes necrotic damage",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "More cubes advance and another gnome is engulfed.",
+    "source_quote": "More cubes advance, and another gnome is engulfed",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Multiple trapped gnomes manage to escape the cubes and flee.",
+    "source_quote": "multiple victims manage to escape and flee",
+    "subject": "gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One gnome dies and begins dissolving inside a cube.",
+    "source_quote": "one gnome dies and begins dissolving inside a cube",
+    "subject": "gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A gnome is killed by the gelatinous cubes.",
+    "source_quote": "one gnome dies and begins dissolving inside a cube",
+    "subject": "gnome deaths",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The remaining merchants dash in every direction.",
+    "source_quote": "The remaining merchants dash in every direction",
+    "subject": "gnome merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Some merchants become confused when they encounter Glabbagool.",
+    "source_quote": "with some becoming confused when they encounter Glabbagool",
+    "subject": "gnome merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool moves slowly toward the combat to show he is on 'team sentience.'",
+    "source_quote": "Glabbagool begins slowly moving toward the combat to show that he is on \u201cteam sentience.\u201d",
+    "subject": "glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz centers a Fireball to catch all three cubes without striking merchants or their goods.",
+    "source_quote": "Daz centers a Fireball where it can catch all three cubes without striking merchants or their goods",
+    "subject": "fireball cast",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gelatinous cubes suffer severe fire damage, with one partially avoiding the blast.",
+    "source_quote": "One cube partially avoids the blast, while the others suffer severe fire damage",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz moves away after casting Fireball to maintain distance.",
+    "source_quote": "Daz moves away after casting to maintain his distance",
+    "subject": "daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks how close the next dawn is.",
+    "source_quote": "Zalthir asks how close the next dawn is",
+    "subject": "zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The next dawn is determined to be about an hour away.",
+    "source_quote": "A fortuitous time determination places dawn about an hour away",
+    "subject": "next dawn",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir's Eldritch Claw Tattoo recharges at dawn.",
+    "source_quote": "his Eldritch Claw Tattoo recharges then",
+    "subject": "eldritch claw tattoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir activates the Eldritch Claw Tattoo, growing tentacle-like claws from his hands.",
+    "source_quote": "Zalthir activates the tattoo, growing tentacle-like claws from his hands and extending the reach of his attacks",
+    "subject": "tattoo activation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool comments on Zalthir's new claws.",
+    "source_quote": "Glabbagool sees the manifestation and says, \u201cYou've got pseudopods too.\u201d",
+    "subject": "glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool earnestly asks Zalthir if he is an ooze.",
+    "source_quote": "Glabbagool then earnestly asks, \u201cAre you an ooze?\u201d",
+    "subject": "glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir replies that he is an 'aspiring ooze.'",
+    "source_quote": "Zalthir answers, \u201cNo, no, just an aspiring ooze. Let's say that.\u201d",
+    "subject": "zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One cube is destroyed by Zalthir's ranged strikes.",
+    "source_quote": "Zalthir's ranged strikes destroy one cube",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A cube is damaged by Zalthir's ranged strikes.",
+    "source_quote": "Zalthir's ranged strikes ... damage another",
+    "subject": "gelatinous cube",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin advances to bring the most damaged cube within dart range.",
+    "source_quote": "Thorin advances to bring the most damaged cube within dart range",
+    "subject": "thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer criticizes Thorin's cautious ranged attacks.",
+    "source_quote": "Dawnbringer criticizes Thorin's cautious ranged attacks by asking, \u201cIs that the best you can do?\u201d",
+    "subject": "dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin refuses to wade into acid to impress Dawnbringer.",
+    "source_quote": "Thorin refuses to wade into acid merely to impress the weapon",
+    "subject": "thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin insists his relationship with Dawnbringer is purely platonic.",
+    "source_quote": "insists that his relationship with Dawnbringer is \u201cpurely platonic.\u201d",
+    "subject": "thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A cube dashes toward the party but cannot attack.",
+    "source_quote": "A cube dashes toward the party but, having spent its effort on movement, cannot attack",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum repeats Divine Spark.",
+    "source_quote": "Gyrgum repeats Divine Spark",
+    "subject": "divine spark repeat",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The cube fails its Constitution save and takes full necrotic impact from Divine Spark.",
+    "source_quote": "This time the cube fails its Constitution save and takes the full necrotic impact",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a second Fireball, catching the remaining cubes without harming bystanders.",
+    "source_quote": "Daz painstakingly measures another safe blast point and casts a second Fireball, catching the remaining cubes without harming bystanders",
+    "subject": "second fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One cube is dissolved by the second explosion.",
+    "source_quote": "The second explosion dissolves one cube",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The final cube is reduced to a single hit point.",
+    "source_quote": "and reduces the final cube to a single hit point",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes the last cube with his extended eldritch claw.",
+    "source_quote": "Zalthir uses his extended eldritch claw to finish the last cube",
+    "subject": "final cube killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin complains about Zalthir finishing the cube before him.",
+    "source_quote": "Thorin complains, \u201cDamn it. Let me have this.\u201d",
+    "subject": "thorin",
+    "quote_verified": true
+  }
+]

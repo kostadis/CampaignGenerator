@@ -1,0 +1,247 @@
+[
+  {
+    "type": "monster",
+    "fact": "Three derro cultists are affected by the acidic pain spell.",
+    "source_quote": "Gyrgum maintains a spell that causes acidic pain to three of the derro enemies",
+    "subject": "derro cultists count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro enemy takes 5 damage from the acidic pain spell.",
+    "source_quote": "One takes 5 damage before moving",
+    "subject": "derro acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum takes 2 points of damage from a hooked spear.",
+    "source_quote": "Gyrgum is struck by a hooked spear and takes 2 points of damage",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spear blow forces a DC 9 Strength save on Gyrgum.",
+    "source_quote": "The spear blow forces a DC 9 Strength save",
+    "subject": "Gyrgum prone check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is knocked prone.",
+    "source_quote": "which Gyrgum fails. He is knocked prone",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's eldritch tattoo tentacles stretch fifteen feet into the darkness.",
+    "source_quote": "stretched fifteen feet into the darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga hits Thorin for 13 damage.",
+    "source_quote": "Grula-Munga struck back hard, hitting Thorin for 13 damage",
+    "subject": "Grula-Munga strike on Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thorin has an Armor Class of 18.",
+    "source_quote": "rolling 14 and 11 against his AC 18",
+    "subject": "Thorin's Armor Class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tattoo strikes hit Grula-Munga for 8 and 5 damage.",
+    "source_quote": "hits for 8 and 5",
+    "subject": "Zalthir's tattoo strikes on Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga's hit points are reduced to 41 after Zalthir's initial tattoo strikes.",
+    "source_quote": "The ettin is then at 41 hit points",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point to deal an additional 12 damage to Grula-Munga.",
+    "source_quote": "Zalthir spends a focus point for a third hit of 12",
+    "subject": "Zalthir's third tattoo strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 8 damage to Grula-Munga with his longsword.",
+    "source_quote": "Thorin presses the advantage against the massive ettin with his longsword, attacking with advantage and dealing 8 damage",
+    "subject": "Thorin's attack on Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz strikes down a weakened derro cultist with three bolts of Magic Missile.",
+    "source_quote": "He unleashed all three glowing darts of Magic Missile on a single weakened derro cultist and strikes him down",
+    "subject": "Daz's killing blow",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A derro hits Gyrgum with a spear for 5 damage.",
+    "source_quote": "A derro hits Gyrgum with a spear for 5 damage.",
+    "subject": "derro spear damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak fails a check against DC 14 to break free of the earthen hand.",
+    "source_quote": "Narrak tries to break free of the earthen hand but fails against Daz's DC 14.",
+    "subject": "earthen hand check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga lands a battle-axe blow on Thorin for 13 damage.",
+    "source_quote": "Grula-Munga lands a battle-axe blow on Thorin for 13 damage",
+    "subject": "Grula-Munga axe damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga misses her second swing on a 16.",
+    "source_quote": "then misses her second swing on a 16.",
+    "subject": "Grula-Munga second swing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tentacle strikes for 11 damage twice, slaying the ettin.",
+    "source_quote": "Zalthir's tentacle strikes, 11 and 11 damage, finally slay the two-headed beast.",
+    "subject": "Zalthir tentacle damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir turns his tentacles on Narrak for 11 damage.",
+    "source_quote": "Zalthir turns his tentacles on Narrak for 11 damage.",
+    "subject": "Zalthir tentacle damage on Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew",
+    "subject": "derro acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Second Wind as a bonus action to heal 11 hit points.",
+    "source_quote": "Thorin attacks Narrak using his blindsight and uses Second Wind as a bonus action to heal 11.",
+    "subject": "Thorin Second Wind heal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak fails the Strength save against the magical earthen hand.",
+    "source_quote": "Narrak fails the Strength save",
+    "subject": "Narrak strength save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak takes 5 damage and remains restrained by the magical earthen hand.",
+    "source_quote": "and takes 5 damage, and remains restrained.",
+    "subject": "Narrak restraint damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak attempts to strike Thorin with a spear at disadvantage.",
+    "source_quote": "Narrak attempts to strike Thorin with a spear at disadvantage",
+    "subject": "Narrak spear attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir brings Narrak down to 17 hit points.",
+    "source_quote": "Zalthir brings him down to 17 hit points",
+    "subject": "Zalthir final damage on Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits a derro with his mace for 9 damage.",
+    "source_quote": "Gyrgum casts True Strike and hits a derro with his mace for 9 damage.",
+    "subject": "Gyrgum mace damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals the fatal blow to Narrak for 9 damage.",
+    "source_quote": "Thorin deals the fatal blow for 9 damage.",
+    "subject": "Narrak final damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Narrak was hit for 11 damage by Zalthir's tentacles, 5 damage by the earthen hand, and 9 damage by Thorin's final blow.",
+    "source_quote": "Zalthir turns his tentacles on Narrak for 11 damage... Narrak fails the Strength save and takes 5 damage... Thorin deals the fatal blow for 9 damage",
+    "subject": "Narrak",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga was slain by Zalthir's tentacle strikes dealing 11 damage each.",
+    "source_quote": "Zalthir's tentacle strikes, 11 and 11 damage, finally slay the two-headed beast",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The acid-coated derro died after taking 6 more acid damage.",
+    "source_quote": "The acid-coated derro takes 6 more acid damage from Gyrgum's brew and dies",
+    "subject": "acid-coated derro",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The iron chest contains 45 gold pieces.",
+    "source_quote": "45 gold and 15 silver pieces",
+    "subject": "gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The iron chest contains 15 silver pieces.",
+    "source_quote": "45 gold and 15 silver pieces",
+    "subject": "silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The iron chest contains five doses of Keoghtom's Ointment.",
+    "source_quote": "alongside five doses of Keoghtom's Ointment",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The statue in the chamber is two feet tall.",
+    "source_quote": "the two-foot-tall statue",
+    "subject": "stone statue height",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a couple of passes that allow them to leave with their evidence.",
+    "source_quote": "a couple of passes that would let them walk out with all of it",
+    "subject": "travel passes",
+    "quote_verified": true
+  }
+]

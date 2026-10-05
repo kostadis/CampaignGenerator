@@ -1,0 +1,100 @@
+[
+  {
+    "type": "location",
+    "fact": "The party arrives at a gate deep within the caverns of Blingdenstone.",
+    "source_quote": "The party arrived at a gate deep within the caverns of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The squeaky-voiced guard confirms that the party escaped from Velkynvelve.",
+    "source_quote": "A squeaky-voiced guard confirms the party\u2019s history: \u201cSo you escaped from Velkynvelve from the Drow. Is this correct?\u201d",
+    "subject": "squeaky-voiced guard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is questioned about escaping from Velkynvelve.",
+    "source_quote": "So you escaped from Velkynvelve from the Drow. Is this correct?",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The guards ask if the party escaped from the Drow.",
+    "source_quote": "So you escaped from Velkynvelve from the Drow. Is this correct?",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant failed to read the latest report all the way through.",
+    "source_quote": "the visibly embarrassed sergeant had not read the latest report all the way through",
+    "subject": "sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The officer publicly admonishes the sergeant by saying 'Shame on you'.",
+    "source_quote": "The officer publicly admonishes the sergeant: \u201cShame on you,\u201d",
+    "subject": "public admonishment of sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is the chief of Clan Diggermattock.",
+    "source_quote": "Chief Dorbo of Clan Diggermattock",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock took the territory from the Drow.",
+    "source_quote": "Clan Diggermattock had taken this territory from the Drow",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Standing orders require escapees from the Drow to be escorted immediately to Chief Dorbo.",
+    "source_quote": "Standing orders required any escapees from the Drow to be escorted immediately to Chief Dorbo of Clan Diggermattock",
+    "subject": "standing order",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo wants to question the party to better prepare defenses.",
+    "source_quote": "Chief Dorbo wanted to question the party so the deep gnomes could better prepare their defenses",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Svirfneblin routinely view Drow escapees as valuable sources of information.",
+    "source_quote": "The Svirfneblin routinely view Drow escapees as valuable sources of information about a long-term enemy",
+    "subject": "Svirfneblin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A party member mentions the Duergar in the context of deep-seated conspiracies.",
+    "source_quote": "Not everything is a deep-seated conspiracy. That\u2019s the Drow. The Duergar",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party agrees to accompany the guards to Diggermattock Hall.",
+    "source_quote": "The party agrees to accompany the guards to Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check establishes that the guard's request is sincere.",
+    "source_quote": "An insight check established that the request was sincere and contained no malevolence",
+    "subject": "insight check",
+    "quote_verified": true
+  }
+]

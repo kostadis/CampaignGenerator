@@ -1,0 +1,100 @@
+[
+  {
+    "type": "npc",
+    "fact": "Buppido is standing before a makeshift altar constructed of bones and skulls.",
+    "source_quote": "He stood before a makeshift altar constructed of bones and skulls",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido's hands are wiped clean on his vest.",
+    "source_quote": "his hands wiped clean on his vest",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido declares that the party's arrival was destined.",
+    "source_quote": "the party had been delivered to him by destiny itself",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido demands the party worship him as their leader.",
+    "source_quote": "Buppido claims to have a divine mission and demands the party worship him as their leader",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido seizes a hooked spear and lunges at the party.",
+    "source_quote": "seized a hooked spear, and lunged at them",
+    "subject": "Buppido's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of skeletons rises from the shadows to defend Buppido's shrine.",
+    "source_quote": "his skeletal servants rising from the shadows to join the assault",
+    "subject": "skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The skeletons surround the party.",
+    "source_quote": "A group of skeletons rises to defend Buppido's shrine, surrounding the party.",
+    "subject": "skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 on initiative.",
+    "source_quote": "Thorin keeps a 15 on initiative",
+    "subject": "Thorin's initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a spell targeting a 20-foot cube to force a Dexterity save, marking three skeletons.",
+    "source_quote": "Daz targets a 20-foot cube and forces a Dexterity save, and three skeletons are marked",
+    "subject": "Daz's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of darkness to disorient the attackers.",
+    "source_quote": "Zalthir conjures a sphere of darkness to disorient the attackers",
+    "subject": "Zalthir's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has 13 hit points.",
+    "source_quote": "Buppido has only 13 hit points",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits a skeleton with advantage for 4 damage.",
+    "source_quote": "He hits one with advantage for 4 damage",
+    "subject": "Thorin's melee attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin engages the skeletons in melee combat.",
+    "source_quote": "Thorin engages the skeletons in melee combat as the battle begins",
+    "subject": "Thorin's stance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he intends to tank hits.",
+    "source_quote": "I'll tank it and take some hits",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "type": "object",
+    "fact": "The Stonespeaker Crystal has 10 charges.",
+    "source_quote": "It has 10 charges",
+    "subject": "Stonespeaker Crystal charges",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using the Speak with Dead ability on the crystal costs four charges.",
+    "source_quote": "Speak with dead costs four charges",
+    "subject": "Stonespeaker Crystal speak with dead cost",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using the Speak with Animals ability on the crystal costs two charges.",
+    "source_quote": "speak with animals costs two",
+    "subject": "Stonespeaker Crystal speak with animals cost",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Attunement to the crystal cannot happen until tomorrow, after a long rest.",
+    "source_quote": "Attunement can't happen until tomorrow, after a long rest.",
+    "subject": "crystal attunement delay",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has an Intelligence score of 17.",
+    "source_quote": "Daz has INT 17",
+    "subject": "Daz Intelligence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has an Intelligence score of 14.",
+    "source_quote": "Thorin has INT 14",
+    "subject": "Thorin Intelligence",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,100 @@
+[
+  {
+    "type": "event",
+    "fact": "One hour passes into the march through the Underdark.",
+    "source_quote": "They had barely been walking an hour",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz froze when his passive perception caught something wrong in the darkness behind the group.",
+    "source_quote": "Daz and Zalthir both froze. Their passive perception caught something wrong in the darkness behind them",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir froze when his passive perception caught something wrong in the darkness behind the group.",
+    "source_quote": "Daz and Zalthir both froze. Their passive perception caught something wrong in the darkness behind them",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a natural 20 on a follow-up insight roll.",
+    "source_quote": "one came up a natural 20",
+    "subject": "Zalthir insight roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 17 on a follow-up insight roll.",
+    "source_quote": "Daz rolled a 17",
+    "subject": "Daz insight roll",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The figures stalking the party are Drow scouts from the prison they escaped.",
+    "source_quote": "The figures stalking them were scouts from the very prison they had escaped",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A full Drow hunting party is likely close behind the scouts.",
+    "source_quote": "where scouts moved, a full hunting party was never far behind",
+    "subject": "Drow prison hunting party",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Drow scouts have the party's scent.",
+    "source_quote": "The scouts seemed to have their scent",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a natural 20 on a history check.",
+    "source_quote": "A natural-20 history check reminded Zalthir",
+    "subject": "Zalthir history roll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir recalls a musty tome from his monastery.",
+    "source_quote": "reminded Zalthir of a musty tome from his monastery",
+    "subject": "musty tome",
+    "quote_verified": true
+  },
+  {
+    "type": "fact",
+    "fact": "The musty tome teaches that killing the scouts would not stop the main force.",
+    "source_quote": "taught that killing the scouts would not stop the main force",
+    "subject": "musty tome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool cannot use mind-control on Drow because he has only four spores.",
+    "source_quote": "Stool cannot mind-control drow, since he has only four spores",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool urged the party to run.",
+    "source_quote": "Stool urged running",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to flee rather than risk an ambush.",
+    "source_quote": "the decision was made quickly: they would run",
+    "subject": "party decision to flee",
+    "quote_verified": true
+  }
+]

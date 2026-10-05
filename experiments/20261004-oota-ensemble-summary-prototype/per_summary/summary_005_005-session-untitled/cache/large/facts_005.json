@@ -1,0 +1,198 @@
+[
+  {
+    "type": "npc",
+    "fact": "Stool can move only 10 feet.",
+    "source_quote": "Stool could move only 10 feet",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has 8 Strength.",
+    "source_quote": "Gyrgum, with 8 Strength",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hands Stool up to Thorin.",
+    "source_quote": "So Gyrgum handed Stool up to Thorin",
+    "subject": "Stool handed to Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin carries Stool on his back.",
+    "source_quote": "who took the fungus on his back",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin refers to carrying Stool as 'Yoda style'.",
+    "source_quote": "We're doing this Yoda style",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool grabs onto Thorin for dear life.",
+    "source_quote": "Stool \"grabs onto you for dear life.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool releases a cloud of rapport spores to create a telepathic link.",
+    "source_quote": "Stool released a cloud of rapport spores that wove a telepathic link between them",
+    "subject": "rapport spores released",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses both his action and bonus action to dash, sprinting ahead of the main group.",
+    "source_quote": "Zalthir used both his action and bonus action to dash, sprinting ahead of the main group",
+    "subject": "Zalthir dashes ahead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir searches the rocky terrain and finds a natural alcove on a roll of 17.",
+    "source_quote": "He searched the rocky terrain on a roll of 17 and found a natural alcove",
+    "subject": "Zalthir finds alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural alcove gives the whole party advantage on its stealth check.",
+    "source_quote": "that would give the whole party advantage on its stealth check",
+    "subject": "natural alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir points the group to the hiding spot over the telepathic link.",
+    "source_quote": "Zalthir points the group to the spot over the telepathic \"party line.\"",
+    "subject": "Zalthir points out spot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum dashes to the hiding place.",
+    "source_quote": "Gyrgum dashed to the hiding place",
+    "subject": "Gyrgum dashes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gains two temporary hit points from a dash ability called Adrenaline Rush.",
+    "source_quote": "gaining two temporary hit points from a dash ability",
+    "subject": "Gyrgum gains temporary HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Thaumaturgy to make the ground tremble.",
+    "source_quote": "used Thaumaturgy to set the ground trembling",
+    "subject": "Gyrgum casts Thaumaturgy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 9 on his complication roll, resulting in no complication.",
+    "source_quote": "Thorin and Gyrgum each roll a 9 on their complication rolls, and no complication occurs.",
+    "subject": "Thorin complication roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 9 on his complication roll, resulting in no complication.",
+    "source_quote": "Thorin and Gyrgum each roll a 9 on their complication rolls, and no complication occurs.",
+    "subject": "Gyrgum complication roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Drow pursuers encounter a sudden drop in the tunnel.",
+    "source_quote": "The drow hit a sudden drop in the tunnel",
+    "subject": "drow encounter drop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Drow make their Dexterity save and avoid falling into the pit.",
+    "source_quote": "but made their Dexterity save and avoided the hole",
+    "subject": "drow Dex save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz dashes into the hiding spot.",
+    "source_quote": "Daz dashed into the hiding spot last",
+    "subject": "Daz dashes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 9 on his complication roll.",
+    "source_quote": "and rolls a 9 on his complication",
+    "subject": "Daz complication roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin warns that he is at minus one on stealth.",
+    "source_quote": "Thorin warns he is at minus one on stealth",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's group stealth check against DC 12 holds.",
+    "source_quote": "The party's group stealth check against DC 12 held",
+    "subject": "group stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Drow scouts lose the scent of the party.",
+    "source_quote": "the scouts lost the scent",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Drow scouts double back and disappear down a different corridor.",
+    "source_quote": "The scouts doubled back and disappeared down a different corridor",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party shares a breath of relief after the scouts leave.",
+    "source_quote": "the party allowed themselves one quiet, shared breath of relief",
+    "subject": "party relief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir warns the party via telepathic link that they must move faster to avoid capture.",
+    "source_quote": "Zalthir reminded them, through the telepathic link, that they needed to move faster and keep moving",
+    "subject": "Zalthir warns party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir states that at their current pace, the Drow will keep catching up.",
+    "source_quote": "\"If we go at this pace, they'll keep catching up.\"",
+    "subject": "Zalthir pace warning",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party flees down dark corridors in the Underdark, increasing the distance from 90 to 160 feet from the scouts.",
+    "source_quote": "The party flees down the dark corridors... Starting 90 feet apart, the GM worked the gap out to 160 feet",
+    "subject": "Underdark tunnels",
+    "quote_verified": false
+  }
+]

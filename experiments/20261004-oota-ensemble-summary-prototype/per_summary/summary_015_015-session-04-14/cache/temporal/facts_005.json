@@ -1,0 +1,37 @@
+[
+  {
+    "type": "monster",
+    "fact": "Hundreds of Derro inhabit the West Cleft District.",
+    "source_quote": "muttering, screaming, and raving of hundreds of Derro filled the air",
+    "subject": "derro population",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceilings in the Whorlstone Tunnels rise about 50 feet.",
+    "source_quote": "The ceilings in the tunnels rise about 50 feet",
+    "subject": "Whorlstone Tunnels ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceilings in the narrow tunnels drop to 25 feet.",
+    "source_quote": "and drop to 25 in the narrow tunnels",
+    "subject": "Narrow tunnel ceiling height",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party acquires one bigwig and one pygmywort each.",
+    "source_quote": "The party took one of each",
+    "subject": "bigwigs and pygmyworts acquired",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Droki moves with an unnatural, almost magical speed.",
+    "source_quote": "moved with an unnatural, almost magical speed",
+    "subject": "droki movement speed",
+    "quote_verified": true
+  }
+]

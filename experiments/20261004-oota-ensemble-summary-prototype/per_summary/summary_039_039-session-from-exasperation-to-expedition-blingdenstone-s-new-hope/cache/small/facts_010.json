@@ -1,0 +1,135 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir does not wear armor.",
+    "source_quote": "As a monk who did not wear armor, Zalthir was less worried about corrosion",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 17 on a d20 to decide between caution and reckless action.",
+    "source_quote": "He rolled a 17, selecting caution.",
+    "subject": "Thorin rolls d20",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to cleanse the Rockblight to earn elemental support and the Stone of Controlling Earth Elementals.",
+    "source_quote": "The group therefore chose to cleanse the Rockblight first, earning both elemental support for the battle and the Stone of Controlling Earth Elementals.",
+    "subject": "quest selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to visit Neverlight Grove for acid-protection ingredients.",
+    "source_quote": "They would also revisit Neverlight Grove for the acid-protection ingredients.",
+    "subject": "quest selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rejects the Gracklstugh option.",
+    "source_quote": "They explicitly rejected the Gracklstugh option",
+    "subject": "quest rejection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is assigned to assist Uth-Jadger and the Burrow Warden ghosts.",
+    "source_quote": "the party assigned Glabbagool, Eldeth, and Jimjar to assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is assigned to assist Uth-Jadger and the Burrow Warden ghosts.",
+    "source_quote": "the party assigned Glabbagool, Eldeth, and Jimjar to assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is assigned to assist Uth-Jadger and the Burrow Warden ghosts.",
+    "source_quote": "the party assigned Glabbagool, Eldeth, and Jimjar to assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger appears disappointed that his ghosts have not been prioritized for the quest.",
+    "source_quote": "When Uth-Jadger looked disappointed that his ghosts had not been prioritized",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Burrow Warden ghosts are being assisted by Glabbagool, Eldeth, and Jimjar.",
+    "source_quote": "assist Uth-Jadger and the other Burrow Warden ghosts",
+    "subject": "Burrow Warden ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Cleansing the Rockblight grants the party the Stone of Controlling Earth Elementals.",
+    "source_quote": "earning both elemental support for the battle and the Stone of Controlling Earth Elementals.",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party identifies cleansing the Rockblight as their first task to acquire an elemental ally.",
+    "source_quote": "The main party selected cleansing the Rockblight as its first task because acquiring an elemental ally would make their arrival at later objectives more impressive.",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party plans to collect acid-protection ingredients from Neverlight Grove.",
+    "source_quote": "collect the acid-protection ingredients from Neverlight Grove.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party rejects visiting Gracklstugh due to its uncertain condition and their troubled history there.",
+    "source_quote": "rejected the Gracklstugh route because of the city's uncertain condition and their troubled history there.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Pudding King confrontation is identified as the conclusion of the campaign's first major part.",
+    "source_quote": "The Pudding King confrontation was identified as the conclusion of the campaign's first major part",
+    "subject": "Pudding King operation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The second part of the campaign will involve confronting the demons themselves.",
+    "source_quote": "the second would involve confronting the demons themselves.",
+    "subject": "second campaign part",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party divides its forces into a group handling Rockblight/Neverlight Grove and a group assisting the ghosts.",
+    "source_quote": "Glabbagool, Eldeth, and Jimjar would assist Uth-Jadger and the other Burrow Warden ghosts while the main group dealt with the Rockblight and Neverlight Grove.",
+    "subject": "party division",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party initially describes the assignment of the three party members as sending them to 'fight the ghosts' before correcting it.",
+    "source_quote": "The assignment was initially described as sending them to \u201cfight the ghosts,\u201d then corrected to helping the ghosts.",
+    "subject": "mischaracterization of assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz observes that having the entire gnome army killed would reflect poorly on the party.",
+    "source_quote": "Daz observed that having the entire army killed would \u201cnot look good on us.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

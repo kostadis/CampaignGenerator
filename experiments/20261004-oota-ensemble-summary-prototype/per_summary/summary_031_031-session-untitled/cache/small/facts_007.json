@@ -1,0 +1,107 @@
+[
+  {
+    "type": "location",
+    "fact": "The Circle of the Masters is located beyond the Garden of Welcome and is dominated by a towering mushroom.",
+    "source_quote": "Beyond the Garden of Welcome stands the Circle of the Masters, dominated by a towering mushroom.",
+    "subject": "Circle of the Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining heads planted in the garden begin to croak and groan, joining the horrible song.",
+    "source_quote": "The remaining heads planted in the garden begin to croak and groan, joining the horrible song.",
+    "subject": "victims joining the song",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recognizes a musical sympathy between the sound in the cavern and the discordant cacophony he perceived in Yrberop's mind.",
+    "source_quote": "Thorin recognizes a musical sympathy between this sound and the discordant cacophony he perceived in Yrberop's mind.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop's mind contained a discordant cacophony that Thorin perceived.",
+    "source_quote": "the discordant cacophony he perceived in Yrberop's mind",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin observes that the party's reluctance to approach is similar to audience members in a horror film shouting at the characters not to continue.",
+    "source_quote": "Thorin observing that an audience watching a horror film would be shouting at them not to continue",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A parade of vaguely humanoid creatures covered in luminescent lichen and tumescent growths on decaying flesh appears through the mist.",
+    "source_quote": "Through the mist, the party observes a parade of vaguely humanoid creatures covered in luminescent lichen and tumescent growths on decaying flesh.",
+    "subject": "humanoid creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The voices of the humanoid creatures stab into the party's minds and sound equally insane and gleeful.",
+    "source_quote": "Their voices stab into the party's minds and sound equally insane and gleeful.",
+    "subject": "humanoid creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A telepathic chant echoes in the party's minds announcing the wedding of Zuggtmoy to Araumycos.",
+    "source_quote": "A telepathic chant echoes in their minds, announcing the wedding of Zuggtmoy to Araumycos.",
+    "subject": "telepathic chant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is described as the Demon Queen of Fungi and the Lady of Decay.",
+    "source_quote": "Zuggtmoy herself \u2014 the Demon Queen of Fungi, the Lady of Decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Araumycos is the groom in the wedding hymn celebrating the union with Zuggtmoy.",
+    "source_quote": "a wedding hymn celebrating the union of Zuggtmoy and Araumycos",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wedding hymn promises that Zuggtmoy's joyous spores will spread and that the bride and groom will become one 'till death do part'.",
+    "source_quote": "promising that her joyous spores would spread to all the world below and above... becoming one till death do part",
+    "subject": "wedding hymn",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes about whether they are wedding crashers, wedding gifts, guests, or the feast.",
+    "source_quote": "The party jokes about whether they are wedding crashers, wedding gifts, guests, or the feast.",
+    "subject": "party banter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's bridesmaids emerge from the mist.",
+    "source_quote": "Zuggtmoy's bridesmaids emerge from the mist.",
+    "subject": "Zuggtmoy's bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party confirms that Zuggtmoy is the same demon lady Thorin previously encountered.",
+    "source_quote": "The party confirms that she is the same demon lady Thorin previously encountered.",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ends with Zuggtmoy and her procession walking toward the party.",
+    "source_quote": "The session ends with Zuggtmoy and her procession walking toward the party.",
+    "subject": "procession advances",
+    "quote_verified": true
+  }
+]

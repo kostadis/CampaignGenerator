@@ -1,0 +1,296 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin is assigned to a water-hauling work detail.",
+    "source_quote": "Thorin's work detail gathered small barrels from the head of the waterfall",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin sings a folk giant song while hauling water.",
+    "source_quote": "Thorin sings a folk giant song while they work",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Water vents through a crack in the cavern ceiling, pours between stalactites, and falls into a pool.",
+    "source_quote": "water vented through a crack in the cavern ceiling, poured between the stalactites, and fell into a twenty-foot-deep pool",
+    "subject": "Velkynvelve waterfall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The pool at the bottom of the waterfall is twenty feet deep.",
+    "source_quote": "fell into a twenty-foot-deep pool",
+    "subject": "Velkynvelve waterfall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The pool joins an underground river that travels for miles.",
+    "source_quote": "before joining an underground river that travels for miles",
+    "subject": "Velkynvelve underground river",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin realizes that sliding down the waterfall into the pool is a safe escape route.",
+    "source_quote": "someone could slide down the waterfall into the pool below without being injured",
+    "subject": "waterfall escape route",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil is assigned to a water-hauling work detail with Thorin.",
+    "source_quote": "Thorin's work detail gathered small barrels from the head of the waterfall",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is assigned to a water-hauling work detail.",
+    "source_quote": "Thorin, Prince Derendil, and Ront are tasked with hauling small water barrels",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ilvara is a high priestess who commands Velkynvelve.",
+    "source_quote": "Mistress Ilvara, the cruel high priestess who commanded Velkynvelve",
+    "subject": "Mistress Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Prince Derendil are sent to Mistress Ilvara.",
+    "source_quote": "he and Prince Derendil were sent to Mistress Ilvara",
+    "subject": "trip to Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The upper level is accessed by a steep rope bridge.",
+    "source_quote": "crossed a steep rope bridge into the upper level of the largest hanging tower",
+    "subject": "upper level of the largest hanging tower",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The shrine is a circular chamber covered in dark silken mats with pale web strands woven in silvery thread.",
+    "source_quote": "Dark silken mats covered the circular chamber, patterned with pale web strands woven in silvery thread",
+    "subject": "shrine to Lolth",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A broad zurkhwood pedestal supports a lifelike ten-foot-tall sculpted spider.",
+    "source_quote": "At its center stood a broad zurkhwood pedestal supporting a lifelike ten-foot-tall sculpted spider",
+    "subject": "spider idol",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The spider idol's eight eyes are polished jet, four small and four large.",
+    "source_quote": "Its eight eyes were polished jet\u2014four small and four large",
+    "subject": "spider idol eyes",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Heavy silver candlesticks holding thick black candles flank the altar.",
+    "source_quote": "the altar was flanked by heavy silver candlesticks holding thick black candles",
+    "subject": "silver candlesticks",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Pillows and cushions are heaped behind the altar in the shrine.",
+    "source_quote": "Pillows and cushions were heaped behind the altar",
+    "subject": "shrine to Lolth",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A rope ladder leads down from the shrine into Ilvara's private quarters.",
+    "source_quote": "A rope ladder led down from the shrine into Ilvara's private quarters",
+    "subject": "Ilvara's private quarters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shoor Vandree is Ilvara's favored lieutenant.",
+    "source_quote": "Ilvara sat in smug comfort alongside her favored lieutenant, Shoor Vandree",
+    "subject": "Shoor Vandree",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Ilvara orders the prisoners to bring water to her bathtub.",
+    "source_quote": "She ordered the prisoners to bring the water to her bathtub",
+    "subject": "Ilvara's order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil declares he should be treated with dignity.",
+    "source_quote": "When Prince Derendil declared that he should be treated with dignity",
+    "subject": "Derendil's confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ilvara draws a knife and threatens to deal with Prince Derendil.",
+    "source_quote": "Ilvara drew a knife and made it clear that \u201cif he wants to be dealt with, he can be dealt with\u201d",
+    "subject": "Ilvara's threat",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Prince Derendil backs down from the confrontation.",
+    "source_quote": "prompting the usual amount of backing down",
+    "subject": "Derendil's retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin senses that the drow seem near insanity.",
+    "source_quote": "Thorin sensed that something about the drow at Velkynvelve seemed \u201ccrazily off,\u201d almost as though they were hovering near insanity",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin notices a treasure chest in Ilvara's chamber.",
+    "source_quote": "He also noticed a treasure chest in Ilvara's chamber",
+    "subject": "treasure chest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thorin notices a descending passage leading toward Shoor's Quarters.",
+    "source_quote": "another descending passage that led toward Shoor's Quarters",
+    "subject": "passage to Shoor's Quarters",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The work detail is not permitted to explore the passage to Shoor's Quarters.",
+    "source_quote": "the work detail was not permitted to explore it",
+    "subject": "passage to Shoor's Quarters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum performs forced labor in the kitchen.",
+    "source_quote": "Gyrgum turned his forced labor into an unexpected triumph",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The dining hall holds four circular zurkhwood tables with five chairs apiece.",
+    "source_quote": "The dining hall held four circular zurkhwood tables with five chairs apiece",
+    "subject": "kitchen dining hall",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The kitchen stores fresh and dried fungi, dried fruit, cheese, preserved meat, and clay jars of spices.",
+    "source_quote": "stores of fresh and dried fungi, dried fruit, cheese, preserved meat, and clay jars of spices",
+    "subject": "kitchen supplies",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A heavy iron brazier provides heat and dim light in the kitchen.",
+    "source_quote": "A heavy iron brazier provided heat and dim light",
+    "subject": "iron brazier",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Four drow are eating, gambling, and amusing themselves in the kitchen.",
+    "source_quote": "Four drow were eating, gambling, and amusing themselves when Gyrgum arrived",
+    "subject": "four drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow answer Gyrgum in Undercommon.",
+    "source_quote": "When he attempted to speak to them, they answered in Undercommon",
+    "subject": "language barrier",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar explains the content of the drow's insults to Gyrgum.",
+    "source_quote": "Shuushar explained that, for the sake of his spiritual and mental balance",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum manipulates and sizzles ingredients to create a visually impressive meal.",
+    "source_quote": "Gyrgum used his performance skills to turn the preparation itself into a spectacle, manipulating and sizzling the ingredients into a meal",
+    "subject": "Gyrgum's meal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow praise Gyrgum, judging that he is perhaps not a worthless excrement.",
+    "source_quote": "Their translated praise amounted to the judgment that perhaps he was not \u201ca worthless excrement\u201d",
+    "subject": "drow praise",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy talks about Gyrgum's meal.",
+    "source_quote": "Topsy and Turvy could not stop talking about the meal afterward",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy talks about Gyrgum's meal.",
+    "source_quote": "Topsy and Turvy could not stop talking about the meal afterward",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar declares that Gyrgum's cooking might lead the kuo-toa to imagine a god who looks like Gyrgum.",
+    "source_quote": "even Shuushar declared that the cooking had penetrated his calm demeanor and might lead his own people, the kuo-toa, to imagine a god who looked like Gyrgum",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states that he aspires to godlike affectation.",
+    "source_quote": "Gyrgum answered, \u201cGodlike affectation is what I aspire to, sir.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cleans chamber pots around the lower pool and underground river.",
+    "source_quote": "Daz cleans chamber pots around the lower pool and underground river",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains a clearer understanding of the lower cavern's layout.",
+    "source_quote": "he gains a clearer understanding of the lower cavern's layout",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Topsy and Turvy steal two knives for the party during the second kitchen shift.",
+    "source_quote": "On the second kitchen shift, Topsy and Turvy exploit the distraction created by Gyrgum's popular cooking to steal two knives for the party",
+    "subject": "knife theft",
+    "quote_verified": true
+  }
+]

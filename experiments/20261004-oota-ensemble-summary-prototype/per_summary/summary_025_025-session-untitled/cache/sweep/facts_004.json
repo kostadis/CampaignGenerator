@@ -1,0 +1,338 @@
+[
+  {
+    "type": "npc",
+    "fact": "Voosbur is a Myconid who released strange spores.",
+    "source_quote": "A Myconid named Voosbur had released strange spores",
+    "subject": "Voosbur",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Voosbur released strange spores in the Neverlight Grove.",
+    "source_quote": "Voosbur had released strange spores back in their home, the Neverlight Grove",
+    "subject": "spore release",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Neverlight Grove is the home of the Myconids.",
+    "source_quote": "their home, the Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party materialized in the Whorlstone Caverns after walking through fungi.",
+    "source_quote": "materialized here in the Whorlstone Caverns",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool loudly disputed Rumpadump's theory that mushrooms caused the madness.",
+    "source_quote": "Stool loudly disputed this theory",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is found by Rumpadump.",
+    "source_quote": "So I see you found my friend Stool",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool repeatedly states that he found Rumpadump.",
+    "source_quote": "I found you. I found you. I found you",
+    "subject": "Stool's greeting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump observes that something is not right.",
+    "source_quote": "something is not right here",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump points out Voosbur as one of the tall Myconids.",
+    "source_quote": "He points out Voosbur, one of the tall Myconids",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump worries that the infection may have spread to Myconids back home.",
+    "source_quote": "I'm worried that they might have infected the rest of my Myconids back home",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump urges the party to help him return to the Neverlight Grove.",
+    "source_quote": "Stool, we need to get there. Can these people help us get there?",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group materialized in the caverns after walking through fungi following Voosbur's spore release.",
+    "source_quote": "we walked through some fungi and ended up here",
+    "subject": "fungal teleportation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump avoided infection by not eating the mushrooms.",
+    "source_quote": "I did not eat the silly mushrooms",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The mushrooms gathered by the party are identified as the same ones Rumpadump claims to have avoided eating.",
+    "source_quote": "These were the same growy-shrinky mushrooms the party had gathered",
+    "subject": "growy-shrinky mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump claims that Stool does not think things through carefully.",
+    "source_quote": "Rumpadump says Stool doesn't think things through carefully",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The dancing Myconids can still communicate.",
+    "source_quote": "Rumpadump confirms the dancers can still communicate",
+    "subject": "dancing Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The dancing Myconids carry no weapons.",
+    "source_quote": "They carry no weapons",
+    "subject": "dancing Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two apes are present and are described as dangerous-looking.",
+    "source_quote": "the only dangerous-looking things are the two apes",
+    "subject": "apes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The apes are located far away.",
+    "source_quote": "which are far away",
+    "subject": "apes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith speaks of a Dark Lady calling to him.",
+    "source_quote": "Sarith begins speaking of a 'Dark Lady' calling to him",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith describes visions of the Dark Lady.",
+    "source_quote": "He talks of the dark lady, \"the visions of the dark lady and the dark lady this and the dark lady that.\"",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith shows signs of increasing mental instability.",
+    "source_quote": "showing signs of increasing mental instability",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's arcana checks came up empty.",
+    "source_quote": "The party's arcana checks came up empty",
+    "subject": "arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz apparently skipped sections of his drow training related to arcana.",
+    "source_quote": "Daz had apparently skipped those sections of his drow training",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum drew on his training as a cleric of Bahamut.",
+    "source_quote": "Gyrgum, however, drew on his training as a cleric of Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 23 on a religion check.",
+    "source_quote": "rolled a 23 on religion",
+    "subject": "religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi.",
+    "source_quote": "the Dark Lady was Zuggtmoy, the Demon Queen of Fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Lady of Rot and Decay.",
+    "source_quote": "Lady of Rot and Decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum recognizes the Dark Lady reference as a citation to Zuggtmoy.",
+    "source_quote": "He recognized the reference: the Dark Lady was Zuggtmoy",
+    "subject": "Zuggtmoy's influence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy desires to infect the living with her spores.",
+    "source_quote": "whose sole desire is to infect the living with her spores",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy transforms victims into mindless servants.",
+    "source_quote": "and transform them into mindless servants",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy transforms victims eventually into decomposing hosts for her fungi.",
+    "source_quote": "and eventually into decomposing hosts for her fungi",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls Zuggtmoy's servants become decomposing hosts for mushrooms, mold, and fungi.",
+    "source_quote": "He also recalls her title, Lady of Rot and Decay, and that her servants eventually become \"decomposing hosts for the mushrooms mold and other fungi that she spa[w]ns.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled an 8 on a follow-up religion check.",
+    "source_quote": "A follow-up religion check (8) gives Gyrgum nothing new",
+    "subject": "religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 16 on an arcana check.",
+    "source_quote": "Daz's arcana check (16)",
+    "subject": "arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls that demonic infection normally requires proximity to the demonic power.",
+    "source_quote": "Daz recalled that such infection normally required proximity to the demonic power",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that the dancing Myconids do not look like a demonic power.",
+    "source_quote": "and these guys definitely don't look like a demonic power",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party wonders if the true source of the influence is at the Grove.",
+    "source_quote": "The party wondered whether the true source lay at the very Grove they were being asked to visit",
+    "subject": "source of infection",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party notes Sarith had never been mentally stable.",
+    "source_quote": "they noted he had never been mentally stable",
+    "subject": "Sarith's stability",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is abroad.",
+    "source_quote": "Since Demogorgon was already abroad",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party concludes it seems entirely possible Zuggtmoy is also abroad.",
+    "source_quote": "it seemed entirely possible Zuggtmoy was too",
+    "subject": "Zuggtmoy's presence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign dwells in the Neverlight Grove.",
+    "source_quote": "The Myconid Sovereign who dwells in the Grove",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Myconid Sovereign holds the accumulated knowledge of all his predecessors.",
+    "source_quote": "holds the accumulated knowledge of all his predecessors",
+    "subject": "Myconid Sovereign",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Myconid Sovereign might know a way out of the Underdark.",
+    "source_quote": "might even know a way out of the Underdark entirely",
+    "subject": "way out",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Reaching the Neverlight Grove requires leaving Gracklstugh.",
+    "source_quote": "Reaching the Grove, however, would mean leaving Gracklstugh first",
+    "subject": "leaving Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz likes the Myconids.",
+    "source_quote": "Daz likes the Myconids",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Daz considers the Myconids the only peaceful people in the Underdark.",
+    "source_quote": "as \"the only peaceful people down here in the Underdark.\"",
+    "subject": "Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is currently in or near Gracklstugh.",
+    "source_quote": "leaving Gracklstugh first",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,219 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud is described as too fat and lazy to notice the party's absence for years.",
+    "source_quote": "Themberchaud is \"too fat and lazy.\" It would take him years to realise the party isn't coming back.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud would likely burn the city to cinders if he learned of the egg.",
+    "source_quote": "The red dragon hungered for information and would likely burn the city to cinders if he learned of the egg.",
+    "subject": "Themberchaud threat assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses a strong preference for avoiding conflict with red dragons.",
+    "source_quote": "Gyrgum was \"a big fan of not pissing off red dragons.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the leader of the Stone Guard.",
+    "source_quote": "The Stone Guard's leader wanted proof that the Council of Savants was behind the city's corruption.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would march on the king if she learned the king supports the Assassin's Guild.",
+    "source_quote": "She would almost certainly march on the king himself if she learned the full truth: the Assassin's Guild \"that doesn't exist\" was actually being supported by the king.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would try to kill all derro if told only about their demonic dealings.",
+    "source_quote": "If she were told only about the derro and their demonic dealings, she would try to kill all the derro.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are led by Gartokkar and are close to the king.",
+    "source_quote": "Led by Gartokkar and close to the king, they simply wanted their egg returned.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are looking for an excuse to commit genocide against the derro.",
+    "source_quote": "They were also looking for an excuse to go genocidal on the derro.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame intend to pursue the party to the end of time if the egg is not returned.",
+    "source_quote": "They had made it abundantly clear they would pursue the party \"to the end of time\" if it was not returned.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want to hatch the dragon egg to use the resulting dragon against another dragon.",
+    "source_quote": "The Keepers wanted to hatch the egg to have a dragon of their own to take on the other dragon.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is the leader of the Keepers of the Flame.",
+    "source_quote": "Led by Gartokkar and close to the king, they simply wanted their egg returned.",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The assassin gangster was a man who wanted to be scrubbed from the assassins' list.",
+    "source_quote": "The party had already dealt with the man who wanted to be scrubbed from the assassins' list.",
+    "subject": "The assassin gangster",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party holds documentation on the Assassin's Guild that its owners believe was burned.",
+    "source_quote": "Daz notes they hold documentation on the Assassin's Guild that its owners don't know about, \"because we burn the table and they think it's burned.\"",
+    "subject": "Assassin's Guild documentation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is a weaponsmithing clan.",
+    "source_quote": "Clan Ironhead, a weaponsmithing clan that would happily deal with the gnomes if the Deepking were removed.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is the faction most supportive of the gnome kingdoms.",
+    "source_quote": "Zalthir asked which faction was most pro-gnome. The answer was Clan Ironhead",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "New leadership in Gracklstugh would be friendlier to the gnome kingdoms, whose trade is currently blocked by the king.",
+    "source_quote": "if something happened to the Deepking, new leadership would be far friendlier to the gnome kingdoms, whose trade the current king was blocking.",
+    "subject": "regime change benefit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a Religion check for 18 to determine the dragon egg's status.",
+    "source_quote": "he rolled his dragon check with Religion instead, for an 18.",
+    "subject": "Gyrgum's dragon check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempted a Nature check first, rolling a 12 with a -1 modifier.",
+    "source_quote": "Gyrgum had only a \u22121 in Nature... He first rolled Nature (a 12, with a \u22121 modifier)",
+    "subject": "Gyrgum's Nature check",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg will hatch of its own accord in forty-four weeks.",
+    "source_quote": "the DM ruled that the egg would hatch of its own accord in forty-four weeks.",
+    "subject": "Dragon Egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg is possessed by a demon.",
+    "source_quote": "it was corrupted by a demon that possessed it. It \"might be possessed by a demon. Details.\"",
+    "subject": "Dragon Egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's lesser restoration spell would not lift the demonic corruption from the egg.",
+    "source_quote": "Lesser restoration would not lift the demonic corruption",
+    "subject": "Lesser Restoration attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Removing the demonic corruption from the egg would require research.",
+    "source_quote": "and removing it would take research.",
+    "subject": "Purging research",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum resolves to consult his superiors at the Church of Bahamut regarding demonic dragons.",
+    "source_quote": "As a follower of Bahamut, Gyrgum resolved to consult his superiors about demonic dragons.",
+    "subject": "Gyrgum's consultation plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expressed a wish for the party to have a baby dragon of their own.",
+    "source_quote": "Thorin wished aloud for a little baby dragon of their own.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a dragonborn who felt dissed by Thorin's comment about a baby dragon.",
+    "source_quote": "Zalthir the dragonborn standing right there... Zalthir was \"feeling a little bit like, you know, dissed right now\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin apologised to Zalthir for the comment about the baby dragon.",
+    "source_quote": "Thorin apologised, saying he hadn't realised it came out that way.",
+    "subject": "Thorin's apology",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to return the egg to Gartokkar in exchange for safe passage.",
+    "source_quote": "They would return the egg to Gartokkar. Gartokkar would probably let them leave the city in exchange",
+    "subject": "Party's final decision",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party hopes to parlay the return of the egg into rights to buy minerals for the gnomes.",
+    "source_quote": "and the egg might be parlayed into rights to buy the minerals the gnomes wanted.",
+    "subject": "Mineral trade rights",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to tell the Keepers of the Flame that they found no evidence of who was behind the theft.",
+    "source_quote": "They would tell the Keepers they had found no evidence of who was behind the theft.",
+    "subject": "Keepers' deception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to hide the list connecting the Deepking to the Assassin's Guild from Errde Blackskull.",
+    "source_quote": "The incriminating list connecting the Deepking to the Assassin's Guild would stay hidden from Errde's volatile temper.",
+    "subject": "Hidden assassination list",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir hopes to leave Clan Ironhead in a stronger position before departing.",
+    "source_quote": "Clan Ironhead was the one faction Zalthir hoped to leave in a stronger position.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

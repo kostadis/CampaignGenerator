@@ -1,0 +1,16 @@
+[
+  {
+    "type": "date",
+    "fact": "Buppido spent the last five days constructing his list of insults.",
+    "source_quote": "spent the last five days constructing this long list",
+    "subject": "Buppido insult list duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido's stream of insults lasts for approximately 20 minutes.",
+    "source_quote": "The tirade runs about 20 minutes",
+    "subject": "Buppido tirade duration",
+    "quote_verified": true
+  }
+]

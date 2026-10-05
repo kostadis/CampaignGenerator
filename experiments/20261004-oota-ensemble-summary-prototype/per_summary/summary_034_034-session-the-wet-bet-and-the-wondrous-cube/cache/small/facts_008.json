@@ -1,0 +1,128 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz proposes using Shape Water to redirect water inside five-foot cubes to create pockets containing no water.",
+    "source_quote": "Daz proposed a more promising use of Shape Water: redirect the water inside five-foot cubes to create pockets containing no water.",
+    "subject": "Shape Water strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "By maintaining two effects at once, Daz creates a moving, ten-foot-long refuge.",
+    "source_quote": "By maintaining two effects at once, Daz could create a moving, ten-foot-long refuge.",
+    "subject": "air pocket mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin mentions his potion of spider climb, but notes the chamber\u2019s ten-foot ceiling offers little advantage.",
+    "source_quote": "Thorin mentioned his potion of spider climb, but the chamber\u2019s ten-foot ceiling offered little advantage.",
+    "subject": "Thorin's spider climb potion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool states he does not need to breathe.",
+    "source_quote": "\u201cOh, that\u2019s totally fine. I don\u2019t breathe.\u201d",
+    "subject": "Glabbagool's breathing status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool promises to grab and digest any party members who perish.",
+    "source_quote": "He also cheerfully promised, \u201cIf any of you were to perish, I will absolutely grab you and digest you.\u201d",
+    "subject": "Glabbagool's digestion promise",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool agrees to wait long enough for surviving party members to attempt a resurrection.",
+    "source_quote": "After negotiation, he agreed to wait long enough for the surviving party members to attempt a resurrection.",
+    "subject": "resurrection negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool causes more of the ceiling to collapse, doubling the volume of water entering the complex.",
+    "source_quote": "Glabbagool caused more of the ceiling to collapse, doubling the volume of water entering the complex.",
+    "subject": "ceiling collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ceiling breach reveals the diverted underground river feeding the flood.",
+    "source_quote": "The breach nevertheless revealed the diverted underground river that was feeding the flood.",
+    "subject": "river revelation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party swims upward for approximately thirty feet through the opened passage.",
+    "source_quote": "They then swim upward for approximately 30 feet through the opened passage.",
+    "subject": "escape swim",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party breaks the surface in a large cavern and resumes their journey.",
+    "source_quote": "They broke the surface in a large cavern and resumed their journey.",
+    "subject": "large cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar declares that the situation did not end in tears.",
+    "source_quote": "Jimjar immediately declared, \u201cSee, it did not end in tears.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims he found a shortcut to Blingdenstone rather than getting the party lost.",
+    "source_quote": "Jimjar then reframed the entire detour as a convenient shortcut to Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin promises Jimjar ten silver pieces once they emerge from Glabbagool.",
+    "source_quote": "Thorin ... agreed to settle the wager by promising Jimjar ten of the silver pieces once they emerged from Glabbagool",
+    "subject": "wager settlement",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party reaches level 6 due to their successful escape.",
+    "source_quote": "Their successful escape also brought them to level 6.",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz gains another third-level spell slot, an additional known spell, and the Sculpt Spells feature.",
+    "source_quote": "Daz gains another third-level spell slot, an additional known spell, and the Sculpt Spells feature.",
+    "subject": "Daz level benefits",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The large cavern places the group on the route to Blingdenstone.",
+    "source_quote": "The cavern places the group conveniently on the route to Blingdenstone.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party retains Glabbagool as a new companion.",
+    "source_quote": "The party retains Glabbagool as a new companion.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party jokes that Daz's spell effectively renamed him \"Moses.\"",
+    "source_quote": "The party jokes that the spell has effectively renamed Daz \u201cMoses.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

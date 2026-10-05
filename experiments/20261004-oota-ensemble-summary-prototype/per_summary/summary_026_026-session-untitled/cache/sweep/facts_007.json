@@ -1,0 +1,261 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir rolls a 24 on a stealth check.",
+    "source_quote": "Zalthir rolled a 24",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party fails the DC 14 stealth check despite the darkness granting advantage.",
+    "source_quote": "the group as a whole missed the DC 14 check",
+    "subject": "stealth failure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolls normally for stealth despite his armor normally imposing disadvantage.",
+    "source_quote": "Thorin still rolls normally, since his armor normally imposes disadvantage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum claims his stealth check is his cleverest and most secret technique.",
+    "source_quote": "This is my cleverest and most secret technique, my stealth check",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The visible Derro assassin states that the Derro Council sent Gray Ghosts to exact revenge for the deaths of their High Council members.",
+    "source_quote": "He declared that the Derro Council had sent its Gray Ghosts to exact revenge for the deaths of their High Council members",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The visible Derro assassin claims the derro know exactly who the party is.",
+    "source_quote": "We know who it is, even if the rest of this city doesn't know who it is",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The visible Derro assassin admits they might have misdirected others to ensure they get their revenge.",
+    "source_quote": "And maybe we told them it looked like that so that we would get our revenge",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro Council sent Gray Ghosts to exact revenge for the deaths of their High Council members.",
+    "source_quote": "He declared that the Derro Council had sent its Gray Ghosts to exact revenge for the deaths of their High Council members",
+    "subject": "Derro Council",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are Derro assassins sent to cause chaos.",
+    "source_quote": "a bunch of gray ghosts, assassins who've been sent out to try to cause chaos",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Invisible figures close in on the party from all sides as the leader speaks.",
+    "source_quote": "Before the words had fully left his mouth, invisible figures closed in from all sides",
+    "subject": "ambush begins",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are five Derro assassins in total.",
+    "source_quote": "There are five derro in total, four of them invisible",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four of the Derro assassins are invisible, imposing disadvantage on attacks against them.",
+    "source_quote": "four of them invisible, which imposes disadvantage on attacks against them",
+    "subject": "Invisible Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir cuts down the visible leader of the Derro assassins.",
+    "source_quote": "Zalthir moved with lethal speed, cutting down the visible leader",
+    "subject": "Zalthir kills leader",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir cuts down a second hidden Derro attacker before they could react.",
+    "source_quote": "cutting down the visible leader and a second hidden attacker before they could react",
+    "subject": "Zalthir kills hidden attacker",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts the newly learned Spirit Guardians spell.",
+    "source_quote": "Gyrgum called upon the power of his faith, casting the newly learned Spirit Guardians",
+    "subject": "Spirit Guardians cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Spectral angelic guardians erupt around Gyrgum, tearing through two more assassins.",
+    "source_quote": "A swarm of spectral, angelic guardians erupted around him, tearing through two more assassins",
+    "subject": "Spirit Guardians effect",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The first Derro killed by Spirit Guardians fails its Wisdom save and takes 17 damage.",
+    "source_quote": "The first derro fails its Wisdom save and takes 17 damage",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The second Derro killed by Spirit Guardians moves into the emanation, fails its save, and takes 15 damage.",
+    "source_quote": "It fails its save (DC 15, derro at \u22123) and takes 15 damage",
+    "subject": "Derro assassin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finishes the last Derro attacker with a decisive two-attack sequence.",
+    "source_quote": "Thorin finished the last of them with a decisive two-attack sequence",
+    "subject": "Thorin kills final attacker",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the final attacker for 8 damage.",
+    "source_quote": "He hits for 8, then kills with his new second attack",
+    "subject": "Thorin damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "All five Derro assassins are dead.",
+    "source_quote": "All five Derro lay dead",
+    "subject": "Derro defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz whistles while the party searches the fallen Derro.",
+    "source_quote": "Daz whistled while they searched",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz's whistling is a nod to Whistler, a character from a past campaign who always searched bodies.",
+    "source_quote": "Whistler would always search all bodies",
+    "subject": "Whistler",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a fuzzy lucky foot of indeterminate origin on one of the bodies.",
+    "source_quote": "a fuzzy lucky foot of indeterminate origin",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum claims the lucky foot.",
+    "source_quote": "Gyrgum claimed",
+    "subject": "Gyrgum takes lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he can always use the lucky foot.",
+    "source_quote": "I'm claiming the lucky foot. I can always use that",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a handful of coins on the fallen Derro.",
+    "source_quote": "They found a handful of coins",
+    "subject": "coins",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 3 gp and 8 sp.",
+    "source_quote": "One body carried 3 gp and 8 sp",
+    "subject": "coin pouch 1",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 10 cp.",
+    "source_quote": "another 10 cp",
+    "subject": "coin pouch 2",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 12 sp.",
+    "source_quote": "a third 12 sp",
+    "subject": "coin pouch 3",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a letter bearing the seal of the Council of Savants.",
+    "source_quote": "they found a letter bearing the seal of the Council of Savants",
+    "subject": "letter",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants ordered the Gray Ghosts to strike down the Duergar who brought the Ember Vanguard into the city.",
+    "source_quote": "The letter ordered the Gray Ghosts to strike down the Duergar who had brought the Ember Vanguard into the city",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard was brought into the city by the Duergar.",
+    "source_quote": "the Duergar who had brought the Ember Vanguard into the city",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin concludes the Ember Vanguard is now enemy number one.",
+    "source_quote": "Thorin concludes the Ember Vanguard is now \"enemy number one\"",
+    "subject": "Ember Vanguard status change",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The decision on whether to leave, hide, or stage the Derro bodies is left open for the next session.",
+    "source_quote": "Whether to leave the bodies, hide them, or stage them is left open for next session",
+    "subject": "body disposal",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The party attempts to slip away toward the Darklake District.",
+    "source_quote": "slip away toward the Darklake District",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh has a web of political conspiracy festering beneath its streets.",
+    "source_quote": "laying bare the web of political conspiracy festering beneath Gracklstugh's streets",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  }
+]

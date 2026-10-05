@@ -1,0 +1,1535 @@
+[
+  {
+    "type": "npc",
+    "fact": "Jimjar is a deep gnome guide.",
+    "source_quote": "Jimjar, the deep gnome guide",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar defended his navigational choices as the party emerged from a detour.",
+    "source_quote": "Jimjar, the deep gnome guide, found himself defending his navigational choices",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party emerged from an unexpected detour through the Underdark.",
+    "source_quote": "the party emerged from yet another unexpected detour through the Underdark",
+    "subject": "underdark detour",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Jimjar claims that shifting passages are to be expected in the Underdark.",
+    "source_quote": "shifting passages were to be expected",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar suggests finding an exit through their current location is convenient, implying it is a shortcut to Blingdenstone.",
+    "source_quote": "finding an exit through their current location was remarkably convenient\u2014perhaps even a shortcut to their destination of Blingdenstone",
+    "subject": "shortcut claim",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is the party's destination.",
+    "source_quote": "their destination of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is a dwarf with a Strength of 18.",
+    "source_quote": "Thorin points out that he has a Strength of 18 and is a dwarf",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin enjoys digging, comparing himself to a dachshund in that regard.",
+    "source_quote": "Thorin points out that he has a Strength of 18 and is a dwarf who enjoys digging, \u201cKind of like a dachshund in that way,\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin predicts that the current path will end in tears.",
+    "source_quote": "Thorin immediately predicted, \u201cYeah, this will end in tears.\u201d",
+    "subject": "Thorin's prediction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers to place a small wager.",
+    "source_quote": "Jimjar responds in character by asking, \u201cDo you want to bet?\u201d and offers to place a small wager.",
+    "subject": "wager offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin clarifies that 'end in tears' means an unfortunate event will occur, not literally that someone will cry.",
+    "source_quote": "Thorin carefully clarified the terms: \u201cBy end in tears, what I mean is not literally that somebody will cry, but rather there will be some unfortunate event before we get back on our way.\u201d",
+    "subject": "definition of 'end in tears'",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The bet regarding the path ending in tears is accepted.",
+    "source_quote": "With the definition settled, the bet was accepted.",
+    "subject": "wager accepted",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The alternate passage at their current location is blocked by extensive rubble.",
+    "source_quote": "the alternate passage is blocked by extensive rubble",
+    "subject": "rubble blockage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin acknowledges the obstruction is too extensive for him to clear despite his strength.",
+    "source_quote": "but the obstruction is too extensive to clear",
+    "subject": "failed clearing attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar urges Thorin to lead them onward.",
+    "source_quote": "Jimjar urges him onward: \u201cLead on, lead on, fair Thorin.\u201d",
+    "subject": "Jimjar's urging",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "At the next intersection, the group briefly struggles to remember their destination is Blingdenstone.",
+    "source_quote": "At the next intersection, the group briefly struggles to remember that their destination is Blingdenstone.",
+    "subject": "destination amnesia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin chooses the left branch at the next intersection based on a coin flip.",
+    "source_quote": "Thorin chooses the left branch by chance: \u201cSo I rolled a D2, otherwise known as flip a coin, and it came up one. So I say we go left.\u201d",
+    "subject": "route selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a D2 to determine the party's course at the first intersection.",
+    "source_quote": "So I rolled a D2, otherwise known as flip a coin",
+    "subject": "Thorin rolls D2",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The first intersection is where Thorin decides the party turns left.",
+    "source_quote": "At the first intersection, Thorin left their course to chance.",
+    "subject": "first intersection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The left passage is 10 feet high.",
+    "source_quote": "The chosen route led into a 10-foot-high passage",
+    "subject": "left passage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The walls of the left passage glisten with dark, dripping water.",
+    "source_quote": "whose walls glistened with dark, dripping water.",
+    "subject": "left passage walls",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin refuses to step into the pool due to fear of 'creepy crawlies'.",
+    "source_quote": "Thorin initially refused to step into the pool because \u201ccreepy crawlies will come out and get me,\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's examination reveals the water in the pool is rising at an alarming rate.",
+    "source_quote": "his examination revealed an even greater danger: the water was rising at an alarming rate.",
+    "subject": "water rising discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz investigates the flooding and confirms the entire complex is leaking.",
+    "source_quote": "Daz investigated further and confirmed that the entire complex was leaking.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A tremor cracked an underground reservoir or river into the cave system.",
+    "source_quote": "A tremor had cracked an underground reservoir or river into the cave system",
+    "subject": "tremor damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar remarks on the poetic possibilities of the current wager.",
+    "source_quote": "The discovery prompted Jimjar to appreciate the poetic possibilities of the wager",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar says the bet is appropriate due to tears and water.",
+    "source_quote": "\u201cWhat an appropriate bet. Tears, water.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thorin notes the square, constructed chamber beyond the pool is more likely to offer an exit.",
+    "source_quote": "Thorin argued that the square, constructed chamber beyond the pool was more likely to offer an exit than the natural cave passage",
+    "subject": "square constructed chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rushes forward toward the constructed chamber.",
+    "source_quote": "the party rushed forward.",
+    "subject": "party rushes forward",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin leads the party through the water.",
+    "source_quote": "As Thorin led them through the water",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A gray ooze emerges in the water exactly as Thorin predicted.",
+    "source_quote": "a gray ooze emerged exactly as he had predicted.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he wishes he had lost the bet to Thorin.",
+    "source_quote": "Jimjar admitted, \u201cI really wished I had lost this bet, Thorin,\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin observes that there is something creepy crawly in the water as he predicted.",
+    "source_quote": "Thorin observed, \u201cOkay, so not only is the water, but there\u2019s also something creepy crawly in the water, as I predicted.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir destroys the gray ooze with two powerful unarmed blows.",
+    "source_quote": "Zalthir stepped forward and destroyed the creature with two powerful unarmed blows",
+    "subject": "Zalthir kills gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is destroyed by Zalthir before anyone else can act.",
+    "source_quote": "destroyed the creature with two powerful unarmed blows before anyone else could act.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is described as a weapon of light and is not made of metal.",
+    "source_quote": "Dawnbringer is not made of metal; it is described as a weapon of light, \u201cas a lightsaber,\u201d",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir chooses to punch the creature directly.",
+    "source_quote": "Zalthir chooses the direct approach: \u201cWell, I see no reason not to punch it a lot.\u201d",
+    "subject": "Zalthir's punch decision",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is immune to grappling because it can ooze through holds.",
+    "source_quote": "Grappling is rejected because the creature could simply ooze through any hold.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gray oozes can destroy nonmagical ammunition.",
+    "source_quote": "The party remembers that gray oozes can destroy nonmagical ammunition",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gray oozes can progressively damage nonmagical metal weapons and armor.",
+    "source_quote": "and progressively damage nonmagical metal weapons and armor.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes for 10 damage, then 12 more, killing the ooze.",
+    "source_quote": "Zalthir strikes for 10 damage, then 12 more, killing the ooze",
+    "subject": "Zalthir's damage output",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that the encounter added magical armor to his desired equipment list.",
+    "source_quote": "Thorin notes that the encounter has added magical armor to his growing list of desirable equipment.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asks if they are committed to a slow death due to drowning.",
+    "source_quote": "Jimjar asking whether they are now committed to \u201ca slow death due to drowning.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses a die roll to determine the next course of action.",
+    "source_quote": "Thorin uses another die roll to settle the decision",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that a roll greater than 10 is always the most reckless action.",
+    "source_quote": "\u201cGreater than 10 is always the most reckless action.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin searches for a mechanism to close a door behind the party and finds nothing.",
+    "source_quote": "Thorin searches for a mechanism that could close a door behind them. He notices nothing.",
+    "subject": "door mechanism search",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A gelatinous cube contains suspended remains of a drow, a dark metal mace, and scattered coins.",
+    "source_quote": "The objects were suspended inside a gelatinous cube with two visible eyes",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gelatinous cube has two visible eyes.",
+    "source_quote": "suspended inside a gelatinous cube with two visible eyes",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The cube introduces itself as Glabbagool.",
+    "source_quote": "He introduced himself as Glabbagool",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states he was recently an average garden variety gelatinous cube.",
+    "source_quote": "until recently he had been \u201can average garden variety gelatinous cube,\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool explains that he now possesses the ability to think and see.",
+    "source_quote": "Now, inexplicably, he could think and see.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool admits he knows little about the world.",
+    "source_quote": "readily admitted that he knew little about the world.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool does not know which route leads upward.",
+    "source_quote": "He also had no idea which route led upward",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool had spent much of his brief sentient life standing in place and deciding where to go.",
+    "source_quote": "having spent much of his brief sentient life standing in place and deciding where to go",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool observes that adventurers collect food for cubes.",
+    "source_quote": "adventurers \u201ccollect food\u201d for cubes\u2014or, more accurately, deposit it.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool notices the rising water and considers it awkward.",
+    "source_quote": "Glabbagool has noticed the rising water and considers it awkward",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool has no suggestion for avoiding the rising water.",
+    "source_quote": "but he has no suggestion for avoiding it",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is surprised to learn that sentient beings differ in intelligence and awareness.",
+    "source_quote": "Glabbagool is surprised to learn that sentient beings differ in intelligence and awareness",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he thought everybody was sentient in the same way.",
+    "source_quote": "\u201cI thought everybody was sentient in the same way.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool offers to dispose of unwanted objects dropped on the floor.",
+    "source_quote": "\u201cIf you ever decide you want to get rid of something, just drop it on the floor and I\u2019ll be happy to eat it.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool asks if the party will be upset if they die and he eats them.",
+    "source_quote": "\u201cYou won\u2019t be upset if you all die and I eat you, right?\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool insists he would never want to promote the party's demise.",
+    "source_quote": "Glabbagool insists he would never want to promote their demise.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool becomes especially excited about talking to his new friend Thorin.",
+    "source_quote": "becomes especially excited about talking to his new friend Thorin",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin enters the area while actively searching for more oozes and probing suspicious pools.",
+    "source_quote": "Thorin enters while actively searching for more oozes and probing suspicious pools.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin introduces himself to the creature.",
+    "source_quote": "Thorin introduces himself",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin invites Glabbagool to join the expedition, promising companionship, adventure, and a reliable supply of food.",
+    "source_quote": "Thorin invites him to join the expedition, promising companionship, adventure, and a reliable supply of food.",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tosses Glabbagool a lucky foot from his backpack.",
+    "source_quote": "Gyrgum tossed Glabbagool a lucky foot that he had been carrying in his backpack",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers a lucky foot to Glabbagool.",
+    "source_quote": "Gyrgum instead offers him a lucky foot from his backpack",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A dark metal mace is suspended inside the gelatinous cube.",
+    "source_quote": "the remains of a drow, a dark metal mace, and scattered coins",
+    "subject": "dark metal mace",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Scattered coins are suspended inside the gelatinous cube.",
+    "source_quote": "the remains of a drow, a dark metal mace, and scattered coins",
+    "subject": "scattered coins",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party admits uncertainty over what creature the lucky foot originally came from.",
+    "source_quote": "The party admits uncertainty over what creature the foot originally came from",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The associated ghost reacts angrily if the ghost bones are fed to Glabbagool.",
+    "source_quote": "the associated ghost reacts angrily",
+    "subject": "ghost bones",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remains of a drow are suspended inside the gelatinous cube.",
+    "source_quote": "the remains of a drow",
+    "subject": "drow remains",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow suspended inside Glabbagool is nearly digested.",
+    "source_quote": "The drow suspended inside him is nearly digested",
+    "subject": "drow remains",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Drow are referenced as remains found inside the cube.",
+    "source_quote": "the remains of a drow",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A ghost reacts angrily to the feeding of ghost bones.",
+    "source_quote": "the associated ghost reacts angrily",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool gained sentience and can now think and speak.",
+    "source_quote": "previously a normal cube but gained sentience and can now think and speak",
+    "subject": "Glabbagool gains sentience",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool accepts the invitation to join the expedition.",
+    "source_quote": "Glabbagool accepted",
+    "subject": "Glabbagool joins party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum tosses a lucky foot to Glabbagool.",
+    "source_quote": "Gyrgum tossed Glabbagool a lucky foot",
+    "subject": "Gyrgum feeds Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool absorbs the lucky foot and declares it tasty.",
+    "source_quote": "The cube absorbed it and declared it tasty",
+    "subject": "Glabbagool eats lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides against feeding Glabbagool the ghost bones.",
+    "source_quote": "The party decides against feeding him the ghost bones",
+    "subject": "party declines to feed ghost bones",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees that Glabbagool may eat them after they die by natural causes.",
+    "source_quote": "provided Glabbagool allowed natural causes to do the killing",
+    "subject": "party agrees to be eaten after death",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The passage is a narrow corridor that is completely blocked by Glabbagool's body.",
+    "source_quote": "completely blocked the narrow corridor behind him",
+    "subject": "water-filled passage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze has ten-foot-by-ten-foot-by-ten-foot dimensions.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is killed by Toll the Dead.",
+    "source_quote": "Daz then cast Toll the Dead, inflicting 18 points of necrotic damage and destroying it.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze suffers 18 points of necrotic damage from Toll the Dead.",
+    "source_quote": "inflicting 18 points of necrotic damage and destroying it.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze moves only about ten feet per round.",
+    "source_quote": "gray oozes move only about ten feet per round",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin throws darts into the pools of water before approaching them.",
+    "source_quote": "Thorin, expecting more oozes, threw darts into the pools before approaching.",
+    "subject": "Thorin throwing darts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes the gray ooze twice with darts.",
+    "source_quote": "Thorin struck a gray ooze twice with darts",
+    "subject": "Thorin striking ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin withdraws before the ooze can reach his armor.",
+    "source_quote": "and withdrew before it could reach his armor.",
+    "subject": "Thorin withdrawing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool completely blocks the narrow corridor with his body.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body completely blocked the narrow corridor",
+    "subject": "Glabbagool blocking corridor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead.",
+    "source_quote": "Daz then cast Toll the Dead",
+    "subject": "Daz casting Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ooze fails its Wisdom saving throw.",
+    "source_quote": "The ooze fails its Wisdom saving throw",
+    "subject": "Ooze failing save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ooze is killed by the necrotic damage.",
+    "source_quote": "suffers 18 necrotic damage, killing it.",
+    "subject": "Ooze killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tells Glabbagool where he should stand in future encounters.",
+    "source_quote": "Thorin tells Glabbagool where he should stand in future encounters",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is willing to call the wager a draw on account of Glabbagool\u2019s company.",
+    "source_quote": "Thorin was willing to call it a draw on account of Glabbagool\u2019s company",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool\u2019s body completely blocks the narrow corridor.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body completely blocked the narrow corridor",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool separates Thorin from the rest of the party.",
+    "source_quote": "separating Thorin from the rest of the party.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he should be in the back.",
+    "source_quote": "Glabbagool drew the obvious tactical lesson: \u201cPerhaps I should be in the back.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz initially considers casting Magic Missile.",
+    "source_quote": "Daz finds a position beside Glabbagool and initially considers Magic Missile.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz conserves the spell slot before casting.",
+    "source_quote": "After conserving the spell slot, Daz instead casts Toll the Dead.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asks if the wager can be declared a mulligan because they met a charming friend.",
+    "source_quote": "Jimjar asked whether the \u201ctears\u201d wager might be declared a mulligan because they had met such a charming and humorous friend.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The temple continues to fill with water like a poorly draining bathtub.",
+    "source_quote": "the temple continued filling \u201csort of like a bathtub that doesn\u2019t drain well.\u201d",
+    "subject": "temple filling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The water continues rising but not yet dangerously.",
+    "source_quote": "The water continues rising, though not yet dangerously",
+    "subject": "water rising",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin uses darts to strike the ooze.",
+    "source_quote": "Thorin struck a gray ooze twice with darts",
+    "subject": "darts",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's first dart hits the gray ooze for 8 damage.",
+    "source_quote": "His first dart hits a gray ooze for 8 damage",
+    "subject": "darts",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's second dart inflicts another 8 damage.",
+    "source_quote": "and a second hit inflicts another 8.",
+    "subject": "darts",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz casts Toll the Dead to destroy the ooze.",
+    "source_quote": "Daz then cast Toll the Dead, inflicting 18 points of necrotic damage",
+    "subject": "Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz considers but does not cast Magic Missile.",
+    "source_quote": "initially considers Magic Missile. After conserving the spell slot, Daz instead casts Toll the Dead.",
+    "subject": "Magic Missile",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party and Jimjar reconsider their bet regarding the wager.",
+    "source_quote": "The party and Jimjar briefly reconsidered their bet.",
+    "subject": "wager",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Jimjar requests that the wager be declared a mulligan.",
+    "source_quote": "Jimjar asked whether the \u201ctears\u201d wager might be declared a mulligan",
+    "subject": "mulligan request",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Thorin agrees to call the bet a draw.",
+    "source_quote": "Thorin was willing to call it a draw on account of Glabbagool\u2019s company",
+    "subject": "draw agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party continues into the water-filled passage.",
+    "source_quote": "The enlarged company continued into another water-filled passage.",
+    "subject": "party",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The rest of the party cannot pass through Glabbagool's body.",
+    "source_quote": "The rest of the party cannot pass through his ten-foot-by-ten-foot-by-ten-foot body",
+    "subject": "party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin is briefly isolated on the far side of the corridor.",
+    "source_quote": "leaving Thorin briefly isolated on the far side.",
+    "subject": "Thorin isolated",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recognizes that gray oozes can be escaped if kept at a distance.",
+    "source_quote": "can be escaped if kept at a distance.",
+    "subject": "Tactical lesson",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin relies on a virtual die to select a path at a junction.",
+    "source_quote": "Thorin again relied on a virtual die to select a path",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin falls into a concealed pit trap but catches the edge.",
+    "source_quote": "He spotted it just late enough to fall, but managed to catch the edge",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin hauls himself out of the pit, aided by his strength.",
+    "source_quote": "A second effort allows him to scramble out, aided substantially by his strength",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes retreating roughly 25 feet to draw the creature into a larger chamber.",
+    "source_quote": "Thorin proposes retreating roughly 25 feet and drawing it into a larger chamber",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin elects to continue down the passage because unexplored alternatives are equally uncertain.",
+    "source_quote": "Thorin elects to continue down the passage because the unexplored alternatives are equally uncertain",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin searches carefully for additional traps after his near fall.",
+    "source_quote": "he makes a point of searching much more carefully for additional traps",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin throws a dart at a patch of water to test it.",
+    "source_quote": "Before proceeding, he throws a dart at another patch of water",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool consumes the remains of the black pudding.",
+    "source_quote": "Glabbagool eagerly consumed the remains",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is delighted by consuming the remains.",
+    "source_quote": "Glabbagool is delighted to consume the remains",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A black pudding climbs out of the pit after Thorin falls.",
+    "source_quote": "a black pudding began climbing from the pit",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is slow and has no ranged attacks.",
+    "source_quote": "Because the creature is slow and has no ranged attacks",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is defeated by ranged attacks while the party maintains distance.",
+    "source_quote": "destroying it with ranged attacks",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is destroyed and its remains are consumed.",
+    "source_quote": "defeats the pudding without allowing it to catch them",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party destroys the black pudding using ranged attacks.",
+    "source_quote": "kept the slow creature beyond melee range while destroying it with ranged attacks",
+    "subject": "black pudding destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin falls into a concealed pit trap.",
+    "source_quote": "Thorin\u2019s passive perception fails to detect a concealed pit trap",
+    "subject": "Thorin falls into pit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin scrambles out of the pit using a second effort.",
+    "source_quote": "A second effort allows him to scramble out",
+    "subject": "Thorin escapes pit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party retreats to a larger chamber to fight the black pudding.",
+    "source_quote": "the party retreated to a larger chamber and kept the slow creature beyond melee range",
+    "subject": "retreat to larger chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The pit is empty when the party returns to it.",
+    "source_quote": "When the party later returns to the pit, it is empty",
+    "subject": "pit returns empty",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Juiblex is a demon lord associated with oozes.",
+    "source_quote": "the demon lord Juiblex was associated with oozes",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An Arcana check reveals information about Juiblex and black pudding splitting mechanics.",
+    "source_quote": "An Arcana check reminded the party that the demon lord Juiblex was associated with oozes",
+    "subject": "Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party reaffirms the rule against splitting up.",
+    "source_quote": "reaffirming that \u201cIt\u2019s always a bad idea to split the party.\u201d",
+    "subject": "the party",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party defeats the black pudding without being caught.",
+    "source_quote": "The group executes the strategy successfully and defeats the pudding without allowing it to catch them",
+    "subject": "the party",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The junction contains four western passages and one eastern route.",
+    "source_quote": "a junction with four passages heading west and a fifth route to the east",
+    "subject": "junction",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin uses a dart to test a patch of water.",
+    "source_quote": "he throws a dart at another patch of water",
+    "subject": "dart",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a d5 to select a western passage.",
+    "source_quote": "Thorin uses another virtual die\u2014this time a d5\u2014to select one of the western passages",
+    "subject": "d5 roll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party reached a door leading into a temple chamber containing a stone fountain and seven niches.",
+    "source_quote": "the party reached a door leading into a temple chamber. Inside stood a stone fountain filled with shallow, brackish water.",
+    "subject": "Temple Fountain Room",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone fountain is filled with shallow, brackish water.",
+    "source_quote": "Inside stood a stone fountain filled with shallow, brackish water.",
+    "subject": "stone fountain",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rubble of a broken statue lies atop a central pedestal, with only a pair of clawed stone feet still recognizable.",
+    "source_quote": "The rubble of a broken statue lay atop a central pedestal, with only a pair of clawed stone feet still recognizable.",
+    "subject": "broken statue",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Seven niches line the walls of the chamber.",
+    "source_quote": "Seven niches lined the walls:",
+    "subject": "seven niches",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Four of the seven niches contain strange, formless sculptures.",
+    "source_quote": "and four contained strange, formless sculptures.",
+    "subject": "formless sculptures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Skeletons lie in the chamber.",
+    "source_quote": "Skeletons also lay in the chamber",
+    "subject": "skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered removing the skeletons' weapons as a precaution against animation.",
+    "source_quote": "prompting the party to consider removing their weapons as a precaution against animation.",
+    "subject": "removing weapons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool suggested that he scout the room because oozes cannot go through him.",
+    "source_quote": "the party accepted Glabbagool\u2019s suggestion that he scout. \u201cWell, you know, the oozes can\u2019t go through me,\u201d he reasoned.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin told Glabbagool that they would sing his praises at the tavern once they get out of the Underdark.",
+    "source_quote": "Thorin told him, \u201cWe would sing your praises at the tavern once we get out of the Underdark,\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool possesses a newly acquired lucky foot.",
+    "source_quote": "his newly acquired lucky foot",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party pointed out that Glabbagool's newly acquired lucky foot might assist him.",
+    "source_quote": "the others pointed out that his newly acquired lucky foot",
+    "subject": "lucky foot",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A gray ooze materialized when Glabbagool touched one of the formless sculptures.",
+    "source_quote": "When he touched one of the formless sculptures, it materialized into a gray ooze.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rushed in and punched the first gray ooze apart.",
+    "source_quote": "Zalthir rushed in and punched the ooze apart.",
+    "subject": "Zalthir kills gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir rapidly destroyed each creature as it appeared.",
+    "source_quote": "Zalthir rapidly destroyed each creature as it appeared,",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir killed the remaining gray oozes that appeared from the sculptures.",
+    "source_quote": "Glabbagool touches each sculpture in turn, and Zalthir quickly punches each resulting ooze to death.",
+    "subject": "gray oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool absorbed the debris from the destroyed oozes until the floor was perfectly clean.",
+    "source_quote": "Glabbagool methodically absorbed the debris until the floor was perfectly clean.",
+    "subject": "cleaning the floor",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool reported that the remains of the oozes were not very tasty.",
+    "source_quote": "the remains were \u201cnot very tasty.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered 112 silver pieces in the fountain.",
+    "source_quote": "discovered a hidden cache of treasure: 112 silver pieces",
+    "subject": "112 silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered three gold pieces in the fountain.",
+    "source_quote": "three gold pieces",
+    "subject": "three gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered a drow dagger in the fountain.",
+    "source_quote": "a drow dagger",
+    "subject": "drow dagger",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Glabbagool discovered a vial of oil of slipperiness in the fountain.",
+    "source_quote": "and a vial of oil of slipperiness.",
+    "subject": "vial of oil of slipperiness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool absorbed the treasure found in the fountain.",
+    "source_quote": "Unfortunately, he absorbed all of it.",
+    "subject": "absorbing treasure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concluded they would have to wait several days for the valuables to pass through Glabbagool.",
+    "source_quote": "The party concluded that they would have to wait several days for the valuables to pass through him,",
+    "subject": "waiting for valuables",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party joked that Glabbagool had become a cube of holding.",
+    "source_quote": "joking that Glabbagool had become \u201ca cube of holding\u201d",
+    "subject": "cube of holding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party compared Glabbagool to a convenience-store time safe.",
+    "source_quote": "or a convenience-store time safe.",
+    "subject": "convenience-store time safe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party retraced its path and chose the eastern route.",
+    "source_quote": "Rather than investigate the remaining western passages, the party retraced its path and chooses the eastern route.",
+    "subject": "choosing eastern route",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Eastern Passageway 034.07 has a 10-foot-high ceiling with cracks through which water streams.",
+    "source_quote": "Streams entered through cracks in the 10-foot-high ceiling",
+    "subject": "Eastern Passageway 034.07",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The water in the passageway is rising at a rate of approximately one foot per hour.",
+    "source_quote": "the party estimated that the water was rising by roughly one foot per hour",
+    "subject": "water rising",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin applies his dwarven knowledge of caves and geology to the formation of the wall.",
+    "source_quote": "Thorin applies his dwarven knowledge of caves and geology to the formation",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin identifies himself as a \"dwarf dwarf\" in response to a joke.",
+    "source_quote": "prompts his reply, \u201cI\u2019m a dwarf dwarf.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalls that the cracks in the wall may be worth investigating.",
+    "source_quote": "Thorin recalls that the cracks themselves may be worth investigating",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bets that a massive quantity of water waits behind the stone.",
+    "source_quote": "Jimjar advises, \u201cLet\u2019s not focus on the how we got here. Let\u2019s focus on the way out.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar advises the party to focus on finding a way out rather than analyzing how they got there.",
+    "source_quote": "Jimjar responds, \u201cI\u2019m willing to bet you that that rock formation has a massive amount of water behind it.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is a dwarf who examines the site and performs a geological assessment.",
+    "source_quote": "Eldeth, another dwarf, examines the site and performs a more successful geological assessment",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth believes an underground river is breaking through the stone.",
+    "source_quote": "She believes an underground river is breaking through the stone",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth recalls stories of trapped people escaping disasters by breaking through stone and swimming through resulting passages.",
+    "source_quote": "She also supplied the grim counterpoint: \u201cI didn\u2019t hear about all the people who did that and drowned anymore.\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool is a creature who cannot squeeze through a space as narrow as one inch like some oozes can.",
+    "source_quote": "Glabbagool cannot use the ability possessed by some oozes to squeeze through a space as narrow as one inch",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determines that the Shape Water spell can affect a five-foot cube.",
+    "source_quote": "Daz determines that the spell can affect a five-foot cube",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determines that the non-instantaneous effect of Shape Water can last for an hour.",
+    "source_quote": "that its non-instantaneous effect can last for an hour",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determines that two Shape Water effects can be maintained at once.",
+    "source_quote": "and that two such effects can be maintained at once",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reminds Jimjar that nobody had accepted his previous wager.",
+    "source_quote": "Thorin points out that nobody accepted this new bet",
+    "subject": "Thorin's bet reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party compares Eldeth's stories to the logical fallacy of hearing only about bombers that returned from battle.",
+    "source_quote": "The party recognizes the survivor bias, comparing it to reports from bombers that returned from battle",
+    "subject": "Survivor bias comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin mentions having a potion of spider climb in his possession.",
+    "source_quote": "Thorin mentions having a potion of spider climb",
+    "subject": "Potion of spider climb",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group plans to create two adjacent five-foot air pockets using Shape Water to move through the water in sequence.",
+    "source_quote": "The resulting plan is to create two adjacent five-foot pockets and move through them in sequence",
+    "subject": "Shape Water plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin actively searches for traps while the party proceeds down the eastern passageway.",
+    "source_quote": "proceeds down the eastern passageway while Thorin actively searches for traps",
+    "subject": "Trap search",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Fountain Chamber was explored but proved not to be the expected exit.",
+    "source_quote": "The fountain chamber proved not to be the expected exit",
+    "subject": "Fountain Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An underground river is breaking through the rock of the wall.",
+    "source_quote": "Eldeth examined the site and recognized the signs of an underground river breaking through the rock",
+    "subject": "underground river",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The group is in a chamber with a ten-foot ceiling within the flooding complex.",
+    "source_quote": "the chamber\u2019s ten-foot ceiling offered little advantage",
+    "subject": "Flooding Complex 034.08",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin mentioned his possession of a potion of spider climb.",
+    "source_quote": "Thorin mentioned his potion of spider climb",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin has a potion of spider climb.",
+    "source_quote": "Thorin mentioned his potion of spider climb",
+    "subject": "potion of spider climb",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposes a strategy using the Shape Water spell to create air pockets.",
+    "source_quote": "Daz proposed a more promising use of Shape Water: redirect the water inside five-foot cubes to create pockets containing no water",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz redirects water inside five-foot cubes to create pockets containing no water.",
+    "source_quote": "redirect the water inside five-foot cubes to create pockets containing no water",
+    "subject": "Shape Water application",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz maintains two effects at once to create a moving, ten-foot-long refuge.",
+    "source_quote": "By maintaining two effects at once, Daz could create a moving, ten-foot-long refuge",
+    "subject": "air pocket movement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he does not breathe.",
+    "source_quote": "\u201cOh, that\u2019s totally fine. I don\u2019t breathe.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool promises to grab and digest any party members who perish.",
+    "source_quote": "\u201cIf any of you were to perish, I will absolutely grab you and digest you.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool agrees to wait long enough for surviving party members to attempt a resurrection.",
+    "source_quote": "he agreed to wait long enough for the surviving party members to attempt a resurrection",
+    "subject": "resurrection negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool expresses gladness to help.",
+    "source_quote": "says, \u201cI\u2019m always glad to help.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool causes more of the ceiling to collapse.",
+    "source_quote": "Glabbagool caused more of the ceiling to collapse",
+    "subject": "ceiling collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ceiling collapse doubles the volume of water entering the complex.",
+    "source_quote": "doubling the volume of water entering the complex",
+    "subject": "water influx doubled",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The breach reveals the diverted underground river that was feeding the flood.",
+    "source_quote": "revealed the diverted underground river that was feeding the flood",
+    "subject": "diverted underground river",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party swims upward for approximately thirty feet through the opened passage.",
+    "source_quote": "swam upward for approximately thirty feet",
+    "subject": "swimming upward",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party breaks the surface in a large cavern.",
+    "source_quote": "They broke the surface in a large cavern",
+    "subject": "large cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar declares that the escape did not end in tears.",
+    "source_quote": "Jimjar immediately declared, \u201cSee, it did not end in tears.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin maintains that shenanigans occurred.",
+    "source_quote": "Thorin maintained that there had unquestionably been shenanigans",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin promises Jimjar ten silver pieces once they emerge from Glabbagool.",
+    "source_quote": "agreed to settle the wager by promising Jimjar ten of the silver pieces once they emerged from Glabbagool",
+    "subject": "wager settled",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin owes Jimjar ten silver pieces as the result of a wager.",
+    "source_quote": "promising Jimjar ten of the silver pieces once they emerged from Glabbagool",
+    "subject": "ten silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar reframes the detour as a shortcut to Blingdenstone.",
+    "source_quote": "Jimjar then reframed the entire detour as a convenient shortcut to Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asserts that he found the shortcut rather than getting the party lost.",
+    "source_quote": "\u201cJust so we\u2019re on the same page, I did not get us lost. That\u2019s the important thing is that I found us a shortcut, right?\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is currently on the route to Blingdenstone.",
+    "source_quote": "The cavern places the group conveniently on the route to Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gains a level and reaches level 6.",
+    "source_quote": "Their successful escape also brought them to level 6",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains another third-level spell slot upon reaching level 6.",
+    "source_quote": "Daz gains another third-level spell slot",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains an additional known spell upon reaching level 6.",
+    "source_quote": "Daz gains another third-level spell slot, an additional known spell",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains the Sculpt Spells feature upon reaching level 6.",
+    "source_quote": "and the Sculpt Spells feature",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group notes that Sculpt Spells permits effects such as Fireball to spare selected allies.",
+    "source_quote": "The group notes that Sculpt Spells permits effects such as Fireball to spare selected allies caught within the area",
+    "subject": "Sculpt Spells noted",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party retains Glabbagool as a new companion.",
+    "source_quote": "The party retains Glabbagool as a new companion",
+    "subject": "the party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool becomes a companion of the party.",
+    "source_quote": "The party retains Glabbagool as a new companion",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air pockets are described as a tight fit for the entire group.",
+    "source_quote": "though it is a tight fit for the entire group",
+    "subject": "air pockets",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes that the spell has effectively renamed Daz \u201cMoses.\u201d",
+    "source_quote": "The party jokes that the spell has effectively renamed Daz \u201cMoses.\u201d",
+    "subject": "Moses joke",
+    "quote_verified": true
+  }
+]

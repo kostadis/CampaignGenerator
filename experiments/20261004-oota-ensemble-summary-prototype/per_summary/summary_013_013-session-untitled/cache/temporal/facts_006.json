@@ -1,0 +1,65 @@
+[
+  {
+    "type": "object",
+    "fact": "Captain Errde promises each party member 350 gold pieces' worth of equipment from her armory.",
+    "source_quote": "earn each of them 350 gold pieces' worth of equipment from her armory",
+    "subject": "total equipment promise",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Errde advances 175 gold pieces' worth of equipment to each party member.",
+    "source_quote": "Errde advanced 175 gold pieces' worth of equipment to each of them",
+    "subject": "down payment equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The remaining 175 gold pieces' worth of equipment is to be paid upon completion of the job.",
+    "source_quote": "with the remaining 175 to follow on completion",
+    "subject": "remainder payment equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled an 18 on persuasion to secure the down payment.",
+    "source_quote": "He then rolled an 18 on persuasion",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a passive perception of 14.",
+    "source_quote": "Daz's passive perception of 14 tells him",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Splint armor costs 200 gp.",
+    "source_quote": "splint (too expensive at 200 gp)",
+    "subject": "splint armor price",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Plate armor costs 1,500 gp.",
+    "source_quote": "plate (1,500 gp)",
+    "subject": "plate armor price",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Chain mail costs 75 gp.",
+    "source_quote": "settled on chain mail (75 gp)",
+    "subject": "chain mail price",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Each dart costs 5 cp.",
+    "source_quote": "twenty darts (5 cp each, about 1 gp)",
+    "subject": "dart price",
+    "quote_verified": true
+  }
+]

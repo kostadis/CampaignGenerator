@@ -1,0 +1,65 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz maneuvers to within 30 feet of the dragon egg.",
+    "source_quote": "Daz maneuvers to within 30 feet of the egg",
+    "subject": "Daz movement",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session takes place on the 6th day of the 1st Tenday of Marpenoth 1495.",
+    "source_quote": "019.06",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception score of 14.",
+    "source_quote": "With a passive perception of 14, Gyrgum notices the cultists closing in around him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The DM identified four distinct camps among Bahamut's clerics regarding the corrupted egg.",
+    "source_quote": "The DM asks Gemini and relays four camps among Bahamut's clerics",
+    "subject": "Bahamut's clerics",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tiers in the chamber are 10 feet high.",
+    "source_quote": "The tiers are 10 feet high",
+    "subject": "Chamber tiers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir maneuvers across the high tiers to stand directly next to Plinki.",
+    "source_quote": "Zalthir maneuvers himself across the high tiers to stand directly next to Plinki",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The allied crew is set to act on initiative count 10.",
+    "source_quote": "The allied crew is set to act on initiative 10",
+    "subject": "Allied crew",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled 14 on his initiative.",
+    "source_quote": "Gyrgum rolled 14 initiative",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum acts after Zalthir in the initiative order.",
+    "source_quote": "and acts after Zalthir",
+    "subject": "Initiative sequence",
+    "quote_verified": true
+  }
+]

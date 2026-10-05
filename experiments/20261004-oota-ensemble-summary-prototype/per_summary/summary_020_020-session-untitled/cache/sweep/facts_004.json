@@ -1,0 +1,198 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir delivers the killing blow to the Master Thief, ending the rogue's resistance.",
+    "source_quote": "Zalthir delivered the killing blow to the Master Thief, finally ending the rogue's stubborn resistance",
+    "subject": "Master Thief defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Master Thief is dead, killed by Zalthir.",
+    "source_quote": "Zalthir delivered the killing blow to the Master Thief",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes a Derro warrior and pushes him off a ten-foot ledge, causing him to crash to his death.",
+    "source_quote": "Zalthir strikes a Derro and pushes him off a ten-foot ledge, killing him instantly.",
+    "subject": "Derro pushed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro warrior is dead, falling to his death after being pushed off a ledge.",
+    "source_quote": "pushes him off a ten-foot ledge, sending him crashing to his death below",
+    "subject": "Derro warrior",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The spy possesses glowing eyes due to being possessed by the ghost ally.",
+    "source_quote": "possessing him entirely and causing his eyes to glow with an eerie inner light",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost ally possesses the spy, taking control of his body.",
+    "source_quote": "the ghost ally swept across the cavern and plunged into the spy's body, possessing him entirely",
+    "subject": "spy possessed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party stands victorious with the stolen red dragon egg in their possession, having spirited it away beneath Daz's robes.",
+    "source_quote": "the party stood victorious, the stolen red dragon egg safely in their possession",
+    "subject": "egg secured",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The red dragon egg is a stolen item currently held by the party, previously concealed under Daz's robes.",
+    "source_quote": "the stolen red dragon egg safely in their possession",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was run by the GM during the session because his player was absent.",
+    "source_quote": "Daz's player was absent this session, so the GM ran Daz",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remains prone from the previous round but avoids significant injury due to poor enemy coordination.",
+    "source_quote": "Still prone from the last round, Gyrgum is attacked again but avoids significant injury due to the cultists' poor coordination.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses a healing word to mend his own wounds while staying clear of the main fray.",
+    "source_quote": "Gyrgum scrambles to his feet and uses a healing word to mend his own wounds while staying clear of the main fray.",
+    "subject": "Gyrgum healed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes an opportunity attack against the Master Thief, dealing 11 damage and halting his movement.",
+    "source_quote": "Thorin's OA deals 11; the thief hits the ghost for 17 and disengages, but Zalthir's player points out that a Sentinel hit drops his speed to zero",
+    "subject": "Thorin OA",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief strikes the ghost for 17 damage before disengaging.",
+    "source_quote": "the thief hits the ghost for 17 and disengages",
+    "subject": "Master Thief hits ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is secretly more expressive than usual because no one can see his face in the darkness.",
+    "source_quote": "Zalthir is secretly more expressive than usual, since no one can see his face in the darkness.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down another Derro with his longsword for 12 damage.",
+    "source_quote": "Thorin cuts down another Derro with his longsword",
+    "subject": "Derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Another Derro is dead, cut down by Thorin.",
+    "source_quote": "Thorin cuts down another Derro with his longsword",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party helpers hit the spy once for 4 damage.",
+    "source_quote": "The party helpers finally hit the spy once for four",
+    "subject": "party helpers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses a magical earthen hand to restrain the spy, dealing 8 damage.",
+    "source_quote": "Daz uses a magical earthen hand to restrain the spy, though the spy eventually breaks free",
+    "subject": "Daz restrains spy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three Derro swing at Thorin screaming \"the egg, the egg\" but all three miss.",
+    "source_quote": "Three Derro swing at Thorin screaming \"the egg, the egg\"",
+    "subject": "Derro attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grabs and kills two more Derro.",
+    "source_quote": "Zalthir grabs and kills two more Derro",
+    "subject": "Zalthir kills Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two more Derro are dead, killed by Zalthir.",
+    "source_quote": "Zalthir grabs and kills two more Derro",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cries out for assistance as he is cornered by the spy.",
+    "source_quote": "Daz cries out for assistance as he is cornered by the spy.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The possessed spy refuses to fight because he does not want to let go of the new body.",
+    "source_quote": "He's just got possession of a new body. He doesn't want to let go of it.",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum strikes a remaining enemy with his mace for 3 damage despite disadvantage.",
+    "source_quote": "The mace hits despite disadvantage, for three",
+    "subject": "Gyrgum attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills the last Derro for 9 damage.",
+    "source_quote": "Thorin then kills the last Derro for nine",
+    "subject": "last Derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last Derro is dead, killed by Thorin.",
+    "source_quote": "Thorin then kills the last Derro for nine",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM promises photos of his family's Santorini house, which was bought by his grandfather 70 years ago.",
+    "source_quote": "he promises photos of his family's Santorini house, bought by his grandfather 70 years ago",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Santorini house is a location belonging to the GM's family, bought by his grandfather 70 years ago.",
+    "source_quote": "photos of his family's Santorini house, bought by his grandfather 70 years ago",
+    "subject": "Santorini house",
+    "quote_verified": true
+  }
+]

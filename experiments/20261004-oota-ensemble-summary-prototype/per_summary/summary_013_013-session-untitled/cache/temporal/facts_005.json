@@ -1,0 +1,37 @@
+[
+  {
+    "type": "faction",
+    "fact": "There are quiet duergar drinking inside the brewery.",
+    "source_quote": "Gyrgum... still glimpsed quiet duergar drinking cheaper beer",
+    "subject": "duergar at brewery",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "There are three non-duergar patrons (a halfling, a human, and a drow) drinking outside the brewery.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow",
+    "subject": "non-duergar patrons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 3 on a stealth check while trying to peek inside the brewery.",
+    "source_quote": "Gyrgum tried to peek inside and rolled a 3 on stealth",
+    "subject": "gyrgum stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum bought a round of drinks for the halfling, then later a second mug out of gratitude.",
+    "source_quote": "Gyrgum bought a round for the talkative halfling... and later a second mug \"out of gratitude.\"",
+    "subject": "halfling drinks",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The party can currently attract only two factions: the Stone Guard and the Keepers of the Flame.",
+    "source_quote": "the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame",
+    "subject": "available factions",
+    "quote_verified": true
+  }
+]

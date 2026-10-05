@@ -1,0 +1,128 @@
+[
+  {
+    "type": "location",
+    "fact": "The party arrives at Gracklstugh, a Duergar city.",
+    "source_quote": "At last, weary and battle-worn, the party arrived at Gracklstugh.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar have no love for the Drow.",
+    "source_quote": "The Duergar had no love for the Drow",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar's draconian laws keep all foreigners in line.",
+    "source_quote": "their draconian laws kept all foreigners in line",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh offers a measure of safety from Drow pursuit.",
+    "source_quote": "offering a measure of safety from any Drow pursuit",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar trade actively with other subterranean and surface races.",
+    "source_quote": "The duergar also traded actively with other subterranean and surface races",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is said to be the ideal place to sell stolen gear and buy better equipment.",
+    "source_quote": "The city's Blade Bazaar was said to be the ideal place to sell stolen gear, buy better equipment",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a place to find traders or explorers heading to the surface world.",
+    "source_quote": "and find traders or explorers heading to the surface world",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum voices concern about the laws against foreigners.",
+    "source_quote": "Gyrgum voiced some concern about those laws against foreigners",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth advises the group to enter Gracklstugh quietly through the docks.",
+    "source_quote": "advised them to enter quietly through the docks",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth warns that it is not the time or place for heroics.",
+    "source_quote": "warned the group that this was \"not the time or place for heroics\"",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth notes that guards guard the doors, not the docks.",
+    "source_quote": "because \"The guards guard the doors, not the docks.\"",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The boats glide toward the dark harbor.",
+    "source_quote": "As the boats glided toward the dark harbor",
+    "subject": "dark harbor",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party discusses what Brannum Redmarch might be worth as a ransom.",
+    "source_quote": "the party also began to discuss what Brannum Redmarch might be worth as a ransom",
+    "subject": "ransom of Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin points out that they never promised to let Brannum Redmarch go.",
+    "source_quote": "Thorin pointed out that they had never promised to let him go",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch tried to sell the party out.",
+    "source_quote": "anyway he had tried to sell them first",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has 27 platinum pieces.",
+    "source_quote": "They also counted up their funds: 27 platinum pieces",
+    "subject": "party funds",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has 1,100 gold pieces.",
+    "source_quote": "and 1,100 gold pieces",
+    "subject": "party funds",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir mistakes their funds for a small fortune in platinum.",
+    "source_quote": "which Zalthir briefly mistook for a small fortune in platinum",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "type": "date",
+    "fact": "The events take place in session 026.04.",
+    "source_quote": "### A Giant's Gratitude 026.04",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hgraam gives the party a reward of five hundred gold pieces.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "Hgraam reward",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a 13 on his persuasion check to convince Hgraam.",
+    "source_quote": "Thorin's persuasion roll (13, with advantage as a giant-friend) held.",
+    "subject": "Thorin persuasion roll",
+    "quote_verified": true
+  }
+]

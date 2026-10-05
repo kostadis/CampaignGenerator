@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "The Stone Giant cavern is the location where Hgraam is contending with a cursed giant.",
+    "source_quote": "The party decided their first stop would be the cavern of the stone giants.",
+    "subject": "Stone Giant cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the leader of the stone giants.",
+    "source_quote": "Their reasoning was that Hgraam and his kin were the most level-headed of all the factions they had dealt with beneath Gracklstugh.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is contending with a brother who has succumbed to the two-headed curse.",
+    "source_quote": "They found Hgraam already contending with another of his brothers who had succumbed to the two-headed curse, his massive form twisted and confused.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A two-headed giant is physically twisted and confused by the curse.",
+    "source_quote": "his massive form twisted and confused",
+    "subject": "two-headed giant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The two-headed statue is a ritualistic item recovered from the Derro.",
+    "source_quote": "Thorin presented the stone giant leader with the ritualistic two-headed statue they had recovered.",
+    "subject": "two-headed statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin presents the two-headed statue to Hgraam.",
+    "source_quote": "Thorin presented the stone giant leader with the ritualistic two-headed statue they had recovered.",
+    "subject": "statue presentation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin explains that the Derro used dark rituals to drive the giants into a rampage.",
+    "source_quote": "He explained that the Derro had been using dark rituals to drive the giants into a rampage.",
+    "subject": "Thorin's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro are blamed by Hgraam for using rituals to cause giants to rampage.",
+    "source_quote": "Hgraam blames the derro and begins probing whether a ruling-faction member was behind it",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro ruling council is a faction that Hgraam suspects may be behind the rituals.",
+    "source_quote": "Hgraam probed whether the ritual was the work of the derro ruling council.",
+    "subject": "derro ruling council",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests the party claim they do not know who the Derro were.",
+    "source_quote": "Zalthir suggests: \"Say that these are crazy derro and they were screaming and chanting. We don't know what the deal was.\"",
+    "subject": "Zalthir's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls persuasion with advantage as a giant-friend and gets a 13.",
+    "source_quote": "Thorin rolls persuasion with advantage as a giant-friend and gets a 13.",
+    "subject": "Thorin's persuasion roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is described as a giant-friend.",
+    "source_quote": "Thorin rolls persuasion with advantage as a giant-friend and gets a 13.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam declares he can begin to cure his afflicted kin with the statue.",
+    "source_quote": "Hgraam accepted the statue gravely, declaring that with it he could begin to cure his afflicted kin.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam urges the party to be patient and let the stones speak before acting.",
+    "source_quote": "But perhaps this is a sign that we should be patient and let the stones speak before we act.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam presses five hundred gold pieces into the party's hands as a reward.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "payment of 500 gold",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Five hundred gold pieces are given to the party as a reward by Hgraam.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "five hundred gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard are growing increasingly agitated.",
+    "source_quote": "He warned them, however, that the Stone Guard was growing increasingly agitated.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam urges the party to leave the cavern while he consults the stones, closing it to outsiders.",
+    "source_quote": "He urged them to leave the cavern while he consulted the stones in silence, closing it to outsiders.",
+    "subject": "closing the cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam does not know the location of the Overbright.",
+    "source_quote": "Thorin asks whether Hgraam knows a way to the Overbright. Hgraam does not know where it is, or whether it exists",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam has been told by 'little people' that the Overbright exists.",
+    "source_quote": "Although I have been told by little people like you that it does.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam refers to dwarves as 'little people'.",
+    "source_quote": "The DM noted that dwarves who are not giant-friends take offense at being called \"little people.\"",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Dwarves who are not giant-friends take offense at being called 'little people'.",
+    "source_quote": "The DM noted that dwarves who are not giant-friends take offense at being called \"little people.\"",
+    "subject": "dwarves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam warns the party to be careful around the Stone Guard.",
+    "source_quote": "I suggest you be careful around them.",
+    "subject": "Hgraam's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Gracklstugh cavern is being closed to the outside by Hgraam.",
+    "source_quote": "I'm afraid we must close this Gracklstugh cavern to the outside while I ponder what the stones will say.",
+    "subject": "Gracklstugh cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone giants are considered the most level-headed of the factions dealt with beneath Gracklstugh.",
+    "source_quote": "Their reasoning was that Hgraam and his kin were the most level-headed of all the factions they had dealt with beneath Gracklstugh.",
+    "subject": "Stone giants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city located above the factions mentioned in the session.",
+    "source_quote": "beneath Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  }
+]

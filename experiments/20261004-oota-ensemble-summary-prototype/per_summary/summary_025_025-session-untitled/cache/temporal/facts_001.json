@@ -1,0 +1,58 @@
+[
+  {
+    "type": "event",
+    "fact": "Every derro in the Whorlstone Caverns area is dead.",
+    "source_quote": "With every derro in the caves dead",
+    "subject": "derro status",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Only one ritual statue was completed before the party interrupted the ritual.",
+    "source_quote": "Only one ritual statue was completed.",
+    "subject": "ritual statue count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party interrupted the ritual while working on the second statue.",
+    "source_quote": "The party interrupted the ritual on the second.",
+    "subject": "ritual interruption sequence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is identified as the 28th of his lineage.",
+    "source_quote": "Themberchaud is \"Themberchaud the 28th.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The city of Gracklstugh contains 10,000 duergar.",
+    "source_quote": "a city of 10,000 duergar",
+    "subject": "Gracklstugh population",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party members are fourth level characters.",
+    "source_quote": "only fourth level",
+    "subject": "party level",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's character wanted to burn the place down.",
+    "source_quote": "Thorin's player rolls a die (15+ = burn it down) to decide whether his character wants to burn the place down.",
+    "subject": "Thorin's character",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party earned favors with two duergar.",
+    "source_quote": "Thorin also recalls the two duergar the party earned a favor with.",
+    "subject": "duergar favor count",
+    "quote_verified": true
+  }
+]

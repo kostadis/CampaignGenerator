@@ -1,0 +1,135 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin opens the eastern door of the bureaucratic hub.",
+    "source_quote": "The eastern door opened into a kitchen",
+    "subject": "exploring eastern door",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The kitchen is a workplace break room located behind the eastern door of the bureaucratic hub.",
+    "source_quote": "a kitchen or break room",
+    "subject": "kitchen",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome chef initially mistakes the group for the newly hired heroes.",
+    "source_quote": "where a gnome chef mistook the group for the newly hired heroes",
+    "subject": "gnome chef",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gnome chef agrees to provide the party with a snack.",
+    "source_quote": "The chef eventually agreed to provide a snack.",
+    "subject": "gnome chef",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asserts that their agreement includes board and unlimited access to the snack room.",
+    "source_quote": "Yes, the deal includes board. Unlimited access to the snack room, I believe, was one of the things I had to do.",
+    "subject": "Thorin asserts deal terms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party describes the space as a 'micro kitchen', causing a misunderstanding where the chef's chicken is referred to as 'micro'.",
+    "source_quote": "prompting a misunderstanding about calling the chef's chicken \u201cmicro.\u201d",
+    "subject": "micro chicken misunderstanding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo insists that the party leave the kitchen to eat elsewhere.",
+    "source_quote": "Chief Dorbo insisted they eat elsewhere, at the Foaming Mug",
+    "subject": "Dorbo evicts party from kitchen",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo directs the party to the Foaming Mug for dining.",
+    "source_quote": "at the Foaming Mug, where there were tables and chairs suitable for larger visitors.",
+    "subject": "Dorbo directs party to Foaming Mug",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo clarifies that Thorin's taller companions, not Thorin himself, are the concern regarding seating.",
+    "source_quote": "After noticing Thorin's height, he clarified that Thorin's taller companions were the real concern.",
+    "subject": "Dorbo clarifies size concern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The other unexplored door leads toward Chief Dorbo's private quarters.",
+    "source_quote": "The other unexplored door led toward Chief Dorbo's private quarters.",
+    "subject": "exploring other door",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Dorbo intercepts the party before they enter his private quarters.",
+    "source_quote": "Dorbo intercepted the party",
+    "subject": "Dorbo intercepts party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo denies having acid-resistant armor in his private quarters.",
+    "source_quote": "No, I do not have acid-resistant armor in my private quarters.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo lists his private quarters as containing a desk, a couch, a bed, and private space.",
+    "source_quote": "I've got a desk. I've got a couch. I've got a bed.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool volunteers to squeeze into Chief Dorbo's private quarters to investigate.",
+    "source_quote": "Glabbagool volunteered to squeeze through and investigate",
+    "subject": "Glabbagool offers to squeeze in",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party declines Glabbagool's offer to inspect the private quarters to avoid antagonizing Chief Dorbo.",
+    "source_quote": "the party decided it was not yet time to antagonize their host that thoroughly.",
+    "subject": "party declines search",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gnome chef asks Glabbagool to clean the kitchen floor.",
+    "source_quote": "asked whether Glabbagool could clean the kitchen floor",
+    "subject": "Glabbagool tasked with cleaning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is delighted by the chance to be useful and productive.",
+    "source_quote": "Glabbagool was delighted by the chance to be useful and productive",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin declares he will now call Glabbagool 'Roomba'.",
+    "source_quote": "Thorin declared, \u201cOkay, so I'm going to now call Glabbagool Roomba from now on.\u201d",
+    "subject": "Thorin nicknames Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The table discusses the legendary origin of gelatinous cubes as dungeon-cleaning creatures created to remove abandoned corpses and treasure.",
+    "source_quote": "legendary origin of gelatinous cubes as dungeon-cleaning creatures created to remove abandoned corpses and treasure",
+    "subject": "gelatinous cube origin",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,149 @@
+[
+  {
+    "type": "location",
+    "fact": "The Eastern Passageway 034.07 has a 10-foot-high ceiling with cracks through which water streams.",
+    "source_quote": "Streams entered through cracks in the 10-foot-high ceiling",
+    "subject": "Eastern Passageway 034.07",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The water in the passageway is rising at a rate of approximately one foot per hour.",
+    "source_quote": "the party estimated that the water was rising by roughly one foot per hour",
+    "subject": "water rising",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin applies his dwarven knowledge of caves and geology to the formation of the wall.",
+    "source_quote": "Thorin applies his dwarven knowledge of caves and geology to the formation",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin identifies himself as a \"dwarf dwarf\" in response to a joke.",
+    "source_quote": "prompts his reply, \u201cI\u2019m a dwarf dwarf.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalls that the cracks in the wall may be worth investigating.",
+    "source_quote": "Thorin recalls that the cracks themselves may be worth investigating",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bets that a massive quantity of water waits behind the stone.",
+    "source_quote": "Jimjar advises, \u201cLet\u2019s not focus on the how we got here. Let\u2019s focus on the way out.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar advises the party to focus on finding a way out rather than analyzing how they got there.",
+    "source_quote": "Jimjar responds, \u201cI\u2019m willing to bet you that that rock formation has a massive amount of water behind it.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is a dwarf who examines the site and performs a geological assessment.",
+    "source_quote": "Eldeth, another dwarf, examines the site and performs a more successful geological assessment",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth believes an underground river is breaking through the stone.",
+    "source_quote": "She believes an underground river is breaking through the stone",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth recalls stories of trapped people escaping disasters by breaking through stone and swimming through resulting passages.",
+    "source_quote": "She also supplied the grim counterpoint: \u201cI didn\u2019t hear about all the people who did that and drowned anymore.\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool is a creature who cannot squeeze through a space as narrow as one inch like some oozes can.",
+    "source_quote": "Glabbagool cannot use the ability possessed by some oozes to squeeze through a space as narrow as one inch",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determines that the Shape Water spell can affect a five-foot cube.",
+    "source_quote": "Daz determines that the spell can affect a five-foot cube",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determines that the non-instantaneous effect of Shape Water can last for an hour.",
+    "source_quote": "that its non-instantaneous effect can last for an hour",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determines that two Shape Water effects can be maintained at once.",
+    "source_quote": "and that two such effects can be maintained at once",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reminds Jimjar that nobody had accepted his previous wager.",
+    "source_quote": "Thorin points out that nobody accepted this new bet",
+    "subject": "Thorin's bet reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party compares Eldeth's stories to the logical fallacy of hearing only about bombers that returned from battle.",
+    "source_quote": "The party recognizes the survivor bias, comparing it to reports from bombers that returned from battle",
+    "subject": "Survivor bias comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin mentions having a potion of spider climb in his possession.",
+    "source_quote": "Thorin mentions having a potion of spider climb",
+    "subject": "Potion of spider climb",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group plans to create two adjacent five-foot air pockets using Shape Water to move through the water in sequence.",
+    "source_quote": "The resulting plan is to create two adjacent five-foot pockets and move through them in sequence",
+    "subject": "Shape Water plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin actively searches for traps while the party proceeds down the eastern passageway.",
+    "source_quote": "proceeds down the eastern passageway while Thorin actively searches for traps",
+    "subject": "Trap search",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Fountain Chamber was explored but proved not to be the expected exit.",
+    "source_quote": "The fountain chamber proved not to be the expected exit",
+    "subject": "Fountain Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An underground river is breaking through the rock of the wall.",
+    "source_quote": "Eldeth examined the site and recognized the signs of an underground river breaking through the rock",
+    "subject": "underground river",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,121 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldeth warns that the evidence of their harvest would be plain to any Drow tracker.",
+    "source_quote": "Eldeth warned that the evidence of their harvest would be plain to any Drow tracker worth their salt",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth explains that cutting the crystals out leaves obvious gaps showing someone was harvesting.",
+    "source_quote": "cutting the crystals out leaves obvious gaps showing someone was harvesting",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is eager to harvest the crystals, calling them a prank.",
+    "source_quote": "Gyrgum is eager (\"they sound like a great prank\")",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir devises a plan to gather some crystals and smash others to disguise the site as a battlefield.",
+    "source_quote": "Zalthir suggests a plan to gather some crystals and smash others to make the area look like a battlefield rather than a harvest site.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses a shroud of magical darkness to cover the party's activities.",
+    "source_quote": "Under the cover of his shroud of magical darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party smashes the remaining crystals under the cover of magical darkness.",
+    "source_quote": "the party smashed the remaining crystals",
+    "subject": "crystal smashing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The smashing scatters destruction to make the area look like a battle site.",
+    "source_quote": "They scattered destruction across the area so it would look like a battle had taken place rather than a careful harvest.",
+    "subject": "deception plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is allowed to join in smashing the crystals.",
+    "source_quote": "Gyrgum is allowed to join the smashing",
+    "subject": "Gyrgum smashing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth uses her survival skills to mask the party's tracks.",
+    "source_quote": "Eldeth then used her considerable skill to mask the party's tracks",
+    "subject": "Eldeth masking tracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Drow pursuers are left confused by the masked tracks.",
+    "source_quote": "the Drow pursuers who had been closing in were left with little more than confusion",
+    "subject": "Drow confusion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collects twelve quartz crystals, referred to as light crystals.",
+    "source_quote": "The party collects twelve quartz crystals in total, which the GM tells them to just call \"light crystals.\"",
+    "subject": "quartz crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is a former prisoner of the Drow found in the dark.",
+    "source_quote": "Daz rolled a 22 on Investigation and spotted the telltale symbols marking them as former prisoners (slaves) of the Drow.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is a former prisoner of the Drow found with Fuurm.",
+    "source_quote": "the telltale symbols marking them as former prisoners (slaves) of the Drow",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a drow.",
+    "source_quote": "raised a glowing crystal like a weapon the moment he spotted Daz, a drow",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm raises a glowing crystal like a weapon upon spotting Daz.",
+    "source_quote": "raised a glowing crystal like a weapon the moment he spotted Daz",
+    "subject": "Fuurm raises crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm declares that he and Baedora are not going back.",
+    "source_quote": "his voice cracking as he declared that he and his companion, Baedora, were not going back.",
+    "subject": "Fuurm speaks",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party gathers quartz crystals at this site.",
+    "source_quote": "The party collects twelve quartz crystals in total",
+    "subject": "crystal harvest site",
+    "quote_verified": true
+  }
+]

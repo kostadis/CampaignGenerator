@@ -1,0 +1,58 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 13 on a Persuasion check to convince Themberchaud to visit the docks.",
+    "source_quote": "Gyrgum's Persuasion roll was a middling 13",
+    "subject": "persuasion check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is newly level five.",
+    "source_quote": "Zalthir, newly level five",
+    "subject": "Zalthir level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a natural 3 plus a bonus d10 on an Acrobatics check and fails to secure himself.",
+    "source_quote": "Thorin rolls a natural 3 +4, then uses a 1d10 boost and still fails",
+    "subject": "thorin acrobatics check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 19 on Acrobatics to catch the rope thrown by Jimjar.",
+    "source_quote": "Gyrgum catches it with a 19 on Acrobatics",
+    "subject": "gyrgum acrobatics check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party faces DC 13 Athletics or Acrobatics checks during the dragon's maneuver.",
+    "source_quote": "It called for DC 13 Athletics or Acrobatics checks",
+    "subject": "dc difficulty",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a natural 20 on Insight to determine the crowd's perception.",
+    "source_quote": "Daz rolled a natural 20 on Insight",
+    "subject": "daz insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "In the rumor spread by the citizens, Daz is believed to be an 18th-level mage.",
+    "source_quote": "In rumor, Daz is an 18th-level mage able to cast Meteor Swarm",
+    "subject": "Daz rumor level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rolls 15, 15, and 18 on Investigation and Insight to observe the duergar.",
+    "source_quote": "The party rolls Investigation and Insight (15, 15, 18)",
+    "subject": "crowd perception checks",
+    "quote_verified": true
+  }
+]

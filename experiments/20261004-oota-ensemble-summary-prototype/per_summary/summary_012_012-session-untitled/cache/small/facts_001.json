@@ -1,0 +1,163 @@
+[
+  {
+    "type": "location",
+    "fact": "The party arrives in Gracklstugh after traveling across the Darklake.",
+    "source_quote": "the party finally tied up their boat at the grim duergar city of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh emits an acrid heat and the light of countless forges reflects off the dark water.",
+    "source_quote": "A wave of acrid heat slammed against their faces as the light of countless forges reflected off the dark water",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The streets of Gracklstugh are crowded with drow, svirfneblin, derro, orcs, and other races.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is a duergar arms dealer whom the party rescued.",
+    "source_quote": "Hemeth, the duergar arms dealer they had rescued",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth warns the party that non-duergar are permitted only in the Darklake district.",
+    "source_quote": "Hemeth, the duergar arms dealer they had rescued, warned them that non-duergar were permitted only in the Darklake district",
+    "subject": "Hemeth's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth warns the party that the city's laws are swift and merciless.",
+    "source_quote": "warned them that non-duergar were permitted only in the Darklake district, and that the city's laws were swift and merciless",
+    "subject": "Hemeth's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar guards can turn invisible at will.",
+    "source_quote": "Guards who could turn invisible at will",
+    "subject": "Duergar Guards",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Theft in Gracklstugh is punishable by death on the spot with no trial.",
+    "source_quote": "enforced a code where theft was punishable by death on the spot, no trial required",
+    "subject": "Duergar Guards",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Any duergar in sight counts as instant reinforcements against troublemakers.",
+    "source_quote": "any duergar in sight counted as instant reinforcements",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Corruption among duergar is very rare.",
+    "source_quote": "Corruption among them is very rare",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar are described as grim, austere, and methodical.",
+    "source_quote": "Duergar are described as grim, austere and methodical",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "If word gets out that the party are escaped slaves, slavers might repossess them or sell them back to the drow.",
+    "source_quote": "if word got out they were escaped slaves, slavers might try to repossess them or sell them back to the drow",
+    "subject": "Escaped slave status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin objects to being called slaves, claiming they were merely temporarily detained.",
+    "source_quote": "Thorin objected that they had merely been \"temporarily detained.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's goals are to resupply with better weapons and armor.",
+    "source_quote": "Their goals were clear: resupply with better weapons and armor",
+    "subject": "Party objectives",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party seeks information to find a way out of the Underdark.",
+    "source_quote": "and find information that might lead them out of the Underdark for good",
+    "subject": "Escape route",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lost tomb is marked on the dwarf's map and lies on the longer route from Gracklstugh.",
+    "source_quote": "The longer route ran from Gracklstugh to the lost tomb marked on the dwarf's map",
+    "subject": "Lost tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is a possible exit point from the Underdark, located after the lost tomb on the longer route.",
+    "source_quote": "and from there to Blingdenstone, a possible exit point",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gracklstugh was a detour to re-equip because the party is low on weapons and gear.",
+    "source_quote": "Gracklstugh was a detour to re-equip, because the party is low on weapons and gear",
+    "subject": "Route discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party is currently level 3.",
+    "source_quote": "The party is level 3",
+    "subject": "Party level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to head to the Blade Bazaar to trade and purchase supplies.",
+    "source_quote": "The party decides to head to the Blade Bazaar to trade and purchase supplies",
+    "subject": "Destination decision",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake district is fully enclosed by walls.",
+    "source_quote": "The district is fully enclosed by walls",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Staying within the Darklake district ensures safety for the party.",
+    "source_quote": "So as long as you stay in the district, all will be safe",
+    "subject": "Darklake district",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM advises the party not to steal anything to avoid attracting attention.",
+    "source_quote": "The GM notes they don't want to attract attention: \"Don't try to steal anything.\"",
+    "subject": "GM warning",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,380 @@
+[
+  {
+    "type": "event",
+    "fact": "The party resumes their audience with Errde Blackskull.",
+    "source_quote": "the party resumed their audience with Errde",
+    "subject": "audience resumes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin delivers the party's report to Errde Blackskull using disarming bluntness.",
+    "source_quote": "Thorin, newly committed to a philosophy of radical candor, delivered their report with disarming bluntness",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph shares psychic impressions of the caverns below with Errde Blackskull.",
+    "source_quote": "while the flumph shared its psychic impressions of the caverns below",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph complains that repeated trauma dumping is no longer satisfying.",
+    "source_quote": "The flumph complained that repeated trauma dumping had become \"no longer as satisfying.\"",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph states it no longer feels the trauma from past events.",
+    "source_quote": "now that I've done it several times, it's no longer as satisfying. I don't feel the trauma anymore.",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph asks the party to cause it new trauma.",
+    "source_quote": "It asks the party to cause some trauma \u2014 \"Not on me.\"",
+    "subject": "flumph request",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull concludes that the Gray Ghosts and the Council of Savants are working in concert.",
+    "source_quote": "Errde concluded that the Gray Ghosts and the Council of Savants were working in concert.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that proximity does not constitute partnership between the Gray Ghosts and the Council of Savants.",
+    "source_quote": "Daz pushed back that being near each other does not make them partners",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull concedes that the party presents a logical conundrum.",
+    "source_quote": "Errde conceded \"you present a conundrum.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull demands the party return to the Whorlstone Caverns with documented evidence.",
+    "source_quote": "She then demanded the party return to the Whorlstone Caverns with proper documented evidence.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Errde Blackskull demands the party return to the Whorlstone Caverns to gather evidence.",
+    "source_quote": "return to the Whorlstone Caverns with proper documented evidence",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull agrees to arm Jimjar, Spiderbait, and Eldeth with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "she agreed to arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "armor agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull agrees to provide Jimjar with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull agrees to provide Spiderbait with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull agrees to provide Eldeth with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy and Turvy are currently missing.",
+    "source_quote": "Topsy and Turvy... have disappeared for now",
+    "subject": "Topsy and Turvy",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy and Turvy are capable of wearing splint mail.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail",
+    "subject": "Topsy and Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy and Turvy are hard to hurt due to being wererats.",
+    "source_quote": "they may have come back... as wererats they are hard to hurt",
+    "subject": "Topsy and Turvy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull decides that Stool will receive no equipment.",
+    "source_quote": "Stool received nothing.",
+    "subject": "Stool exclusion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool has not been provided with weapons or armor by Errde Blackskull.",
+    "source_quote": "Stool received nothing.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz proposes a cover story involving talking to other factions first.",
+    "source_quote": "Daz proposed a cover story: be seen talking to other factions first.",
+    "subject": "cover story proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull agrees that the proposed cover story is a fantastic idea.",
+    "source_quote": "Errde called it \"a fantastic idea\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull suggests the party visit Clan Ironhead and Clan Xardelvar.",
+    "source_quote": "suggested the party visit Clan Ironhead and Clan Xardelvar",
+    "subject": "clan directive",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Visiting the clans is intended to make the party appear to be working against the Deepking rather than for the Stone Guard.",
+    "source_quote": "so it would appear they were working against the Deepking rather than for the Stone Guard.",
+    "subject": "Deepking alliance disguise",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party keeps the red dragon egg secret from Errde Blackskull.",
+    "source_quote": "the party kept the red dragon egg a secret",
+    "subject": "egg secrecy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull notices the red dragon egg in the flumph's visions.",
+    "source_quote": "Errde noticed the egg in the flumph's visions",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull fails to identify the egg in the visions as the one lost by the Keepers of the Flame.",
+    "source_quote": "could not imagine it was the very egg the Keepers of the Flame had lost.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz decides not to mention the egg to Errde Blackskull.",
+    "source_quote": "Daz: \"I'm not going to mention the egg.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses a desire to tell Errde Blackskull about the egg.",
+    "source_quote": "Thorin: \"I'm like, we should tell him about the egg.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the party that they were asked not to tell anyone about the egg.",
+    "source_quote": "Zalthir reminds them they were asked not to tell anyone.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a natural 20 on his 'blurt' mechanic and chooses not to speak.",
+    "source_quote": "Thorin, under his new dice-driven \"blurt\" rule, rolled a 20 and held his tongue.",
+    "subject": "blurt roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull asks Daz why the party did not bring the papers when they knew the evidence was insufficient.",
+    "source_quote": "Errde asks Daz why, knowing the evidence was insufficient, they didn't bring the papers.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz explains that the caves are less safe than before and the party returned for air and a reset.",
+    "source_quote": "Daz: \"The caves are not as safe as they used to be\u2026 we came back up to get some fresh air, reset.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states the party is looking for reinforcements.",
+    "source_quote": "Gyrgum: \"Yeah, we're looking for some reinforcements too.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull cannot send Duergar reinforcements to the party.",
+    "source_quote": "Errde cannot send Duergar reinforcements",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull proposes a joint solution utilizing the party's crew and her weapons.",
+    "source_quote": "Errde... proposes: \"You've got a crew, and I have weapons. Perhaps we can work together to solve our collective problems.\"",
+    "subject": "joint solution proposal",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull praises Daz for the type of thinking needed to lead operations.",
+    "source_quote": "Errde praises Daz: \"That is the kind of thinking that is needed to lead these kinds of operations.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses uncertainty about being the leader.",
+    "source_quote": "Daz: \"I don't know that I'm the leader, but.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses not to mention their work for the Keepers of the Flame.",
+    "source_quote": "The party chooses not to mention that they also work for the Keepers of the Flame.",
+    "subject": "exclusive agreement check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if the agreement is exclusive.",
+    "source_quote": "Thorin: \"this is not an exclusive agreement, right?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum checks his current agreements against other obligations.",
+    "source_quote": "Gyrgum: \"Here, let me check it against my other agreements.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull asks when the party will have more information.",
+    "source_quote": "Errde asks when she'll have more information, \"So tomorrow evening?\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz responds that the timeline depends on circumstances.",
+    "source_quote": "Daz: \"It depends.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull stresses that the purpose of the mission must be kept secret.",
+    "source_quote": "She stresses that \"it is crucially important that the purpose of your mission be kept secret.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks Errde Blackskull to enumerate who she does not want informed.",
+    "source_quote": "Thorin: \"Who exactly do you not want us to tell, just so we know? Could you enumerate them?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is forbidden from taking weapon orders directly.",
+    "source_quote": "Clan Ironhead is forbidden from taking weapon orders directly",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead may only take surplus work from Clan Steelshadow.",
+    "source_quote": "may only take surplus work from Clan Steelshadow",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is openly opposed to the Deepking.",
+    "source_quote": "It is openly opposed to the Deepking.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull explains that talking to Clan Ironhead will make it clear the party is working against the king.",
+    "source_quote": "Errde: \"Talking to them will make it clear that you're working against the king. Thus, no one would suspect we would be allied with each other.\"",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing.",
+    "source_quote": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over.",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar has been chafing at new rules and regulations.",
+    "source_quote": "They have been chafing at new rules and regulations.",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes Clan Xardelvar as advocating for smaller government.",
+    "source_quote": "Gyrgum: \"They're advocating for smaller government.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull marks Clan Ironhead and Clan Xardelvar on the map.",
+    "source_quote": "Errde marks both clans on the map.",
+    "subject": "map marking",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Clan Xardelvar is located in the bottom left-hand corner of the map.",
+    "source_quote": "Clan Xardelvar is in the bottom left-hand corner.",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  }
+]

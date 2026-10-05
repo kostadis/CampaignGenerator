@@ -1,0 +1,366 @@
+[
+  {
+    "type": "npc",
+    "fact": "The GM stepped out of the fiction to remind the party of their real goal in Gracklstugh.",
+    "source_quote": "The GM stepped briefly out of the fiction to remind the party that their real goal in Gracklstugh was to get equipment and get out",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to Gracklstugh from the Whorlstone Tunnels.",
+    "source_quote": "They left the Whorlstone Tunnels and returned to the Darklake District of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake District is a location within Gracklstugh where the party visits the Keepers of the Flame.",
+    "source_quote": "returned to the Darklake District of Gracklstugh",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party exits the Whorlstone Tunnels to return to the city.",
+    "source_quote": "They left the Whorlstone Tunnels and returned to the Darklake District of Gracklstugh",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party's ghost companion is kept invisible to prevent panic among the locals.",
+    "source_quote": "Their ghost was kept invisible, since people tend to panic at the sight of ghosts",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph floats along behind the party.",
+    "source_quote": "with their telepathic companion floating along behind them",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party visits the Keepers of the Flame in the Darklake District.",
+    "source_quote": "They went first to the Keepers of the Flame, who were closer",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn is the intense head of the Keepers of the Flame.",
+    "source_quote": "sought out Gartokkar Xundorn, the intense head of the order",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar pulls the party into a separate chamber immediately upon seeing them.",
+    "source_quote": "He pulled them aside into a separate chamber the moment he spotted them",
+    "subject": "Gartokkar pulls party aside",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph projects a vivid image of the egg directly into Gartokkar's mind.",
+    "source_quote": "The flumph projected a vivid image of the egg directly into Gartokkar's mind",
+    "subject": "flumph projects image",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar demands to know why the party did not simply bring the egg back.",
+    "source_quote": "he immediately demanded to know why they had not simply brought it back",
+    "subject": "Gartokkar demands egg return",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar tasks the party with retrieving the egg.",
+    "source_quote": "He tasked the party with retrieving the egg",
+    "subject": "Gartokkar tasks party",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar tasks the party with retrieving the egg.",
+    "source_quote": "He tasked the party with retrieving the egg",
+    "subject": "egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar wants a small statuette of Demogorgon from the Gray Ghost lair.",
+    "source_quote": "He also wanted a small statuette of Demogorgon from the Gray Ghost lair",
+    "subject": "Gartokkar tasks statuette retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A small statuette of Demogorgon is located in the Gray Ghost lair.",
+    "source_quote": "a small statuette of Demogorgon from the Gray Ghost lair",
+    "subject": "statuette of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar wants any incriminating paperwork found in the Gray Ghost lair.",
+    "source_quote": "and any incriminating paperwork",
+    "subject": "incriminating paperwork",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The inscriptions on the egg are intended to help persuade the Deepking.",
+    "source_quote": "which together with the inscriptions on the egg could persuade the Deepking",
+    "subject": "inscriptions on the egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is the authority who could be persuaded to wage holy war against the Gray Ghosts.",
+    "source_quote": "could persuade the Deepking to wage holy war against the Gray Ghosts",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking could be persuaded to wage holy war against the Gray Ghosts.",
+    "source_quote": "wage holy war against the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum accepts the opening offer of 2,000 gold pieces quickly.",
+    "source_quote": "Gyrgum first accepted the opening offer of 2,000 gold pieces far too quickly",
+    "subject": "Gyrgum accepts offer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The initial offer from Gartokkar was 2,000 gold pieces.",
+    "source_quote": "the opening offer of 2,000 gold pieces",
+    "subject": "2,000 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum accepted the opening offer of 2,000 gold pieces far too quickly.",
+    "source_quote": "Gyrgum first accepted the opening offer of 2,000 gold pieces far too quickly",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar rejects the initial terms and insists on 30% up front and 70% on delivery.",
+    "source_quote": "Gartokkar himself rejected the terms and insisted on 30% up front and 70% on delivery",
+    "subject": "Gartokkar rejects terms",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party raises a confidentiality rider regarding Themberchaud's ignorance of the egg.",
+    "source_quote": "The party then raised a confidentiality rider ensuring that the dragon Themberchaud would be kept ignorant of the egg's existence",
+    "subject": "confidentiality rider",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a dragon who is to be kept ignorant of the egg's existence.",
+    "source_quote": "ensuring that the dragon Themberchaud would be kept ignorant of the egg's existence",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "After a moment of murderous madness, Gartokkar agrees to the confidentiality rider.",
+    "source_quote": "After a flash of murderous madness, Gartokkar agreed, muttering that what Themberchaud didn't know couldn't hurt him",
+    "subject": "Gartokkar agrees to secrecy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin demands double payment for discretion.",
+    "source_quote": "Thorin demanded double for the discretion",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz hints that there are other bidders for the egg.",
+    "source_quote": "Daz hinted at other bidders",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar concedes an extra thousand gold pieces due to fear of a leak.",
+    "source_quote": "Gartokkar, sweating over the political disaster a leak would cause, conceded an extra thousand",
+    "subject": "Gartokkar concedes extra thousand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A failed attempt at intimidation settles the upfront terms at 1,100 gold pieces.",
+    "source_quote": "A failed attempt at intimidation settled the upfront terms at 1,100 gold pieces",
+    "subject": "failed intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party receives 1,100 gold pieces upfront.",
+    "source_quote": "settled the upfront terms at 1,100 gold pieces",
+    "subject": "1,100 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party splits the gold evenly at 275 apiece.",
+    "source_quote": "which the party split evenly at 275 apiece",
+    "subject": "party splits gold",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party receives official badges allowing their companions to accompany them.",
+    "source_quote": "They also received official badges that would allow their companions to accompany them on the mission",
+    "subject": "official badges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar enumerates every cave, rock, tunnel, and pool in the Underdark as potential hiding spots for the party.",
+    "source_quote": "Gartokkar fixed the party with a cold, furious stare and enumerated, in exhaustive detail, every cave, rock, tunnel, and pool in the Underdark",
+    "subject": "Gartokkar enumerates hiding spots",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Underdark contains numerous caves, rocks, tunnels, and pools mentioned by Gartokkar.",
+    "source_quote": "enumerated, in exhaustive detail, every cave, rock, tunnel, and pool in the Underdark",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party exits the Whorlstone Tunnels with the flumph and the ghost.",
+    "source_quote": "The party exits the Whorlstone Tunnels with the flumph and the ghost",
+    "subject": "party leaves Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The situation prompts GM jokes about invisible people colliding.",
+    "source_quote": "which prompts GM jokes about invisible people colliding",
+    "subject": "GM jokes about invisible people",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sees the Keepers before Themberchaud, who expects to be filled in on everything.",
+    "source_quote": "see the Keepers before Themberchaud, who expects to be filled in on everything",
+    "subject": "party sees Keepers before Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar rushes up and steers the party to a chamber.",
+    "source_quote": "Gartokkar Xundorn rushes up, steers them to a chamber in a building away from the cavern",
+    "subject": "Gartokkar rushes up",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar finds the telepathic projection of the egg image pleasant.",
+    "source_quote": "which he finds \"quite pleasant, actually.\"",
+    "subject": "Gartokkar finds image pleasant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum points out that nobody asked them to bring the egg.",
+    "source_quote": "Gyrgum points out that nobody asked them to",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar reminds the party they agreed to be agents of Themberchaud.",
+    "source_quote": "Gartokkar reminds them they agreed to be agents of Themberchaud",
+    "subject": "Gartokkar reminds party of agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar offers badges so the party's companions can work with them.",
+    "source_quote": "When the party asks for help, Gartokkar offers badges so their own companions can work with them",
+    "subject": "Gartokkar offers badges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar considers the flumph's mind-reading enough to earn more help but not enough to sway the Deepking.",
+    "source_quote": "He considers the flumph's mind-reading enough to earn the party more help, but not enough to sway the Deepking",
+    "subject": "Gartokkar assesses flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar is offended by Gyrgum's eager acceptance of the advance.",
+    "source_quote": "Gyrgum's eager acceptance as a full advance offends him",
+    "subject": "Gyrgum offends Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin adds an exclusivity rider to the negotiation.",
+    "source_quote": "Thorin adds an \"exclusivity rider\"",
+    "subject": "Thorin adds exclusivity rider",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Persuasion rolls come in at 15 and 14 against the GM's 7.",
+    "source_quote": "Thorin's Persuasion rolls come in at 15 and 14 (Charisma 8) against the GM's 7",
+    "subject": "Thorin Persuasion rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar refuses the offer of 4,000 gold pieces.",
+    "source_quote": "He refuses 4,000 but offers an extra 1,000",
+    "subject": "Gartokkar refuses 4,000",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party pushes for a total of 4,000 gold pieces which Gartokkar refuses.",
+    "source_quote": "He refuses 4,000 but offers an extra 1,000",
+    "subject": "4,000 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 13 on Intimidation which does not help.",
+    "source_quote": "Thorin's Intimidation rolls a 13 and the advantage reroll doesn't help",
+    "subject": "Thorin Intimidation roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar hands over the bag of gold and the badges.",
+    "source_quote": "Gartokkar hands over the bag of gold and the badges for the party's companions",
+    "subject": "Gartokkar hands over gold and badges",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar hands over a bag of gold to the party.",
+    "source_quote": "Gartokkar hands over the bag of gold",
+    "subject": "bag of gold",
+    "quote_verified": true
+  }
+]

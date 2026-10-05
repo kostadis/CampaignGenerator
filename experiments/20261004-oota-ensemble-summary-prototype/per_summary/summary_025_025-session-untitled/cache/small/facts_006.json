@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "The Spore Glade is a bioluminescent area where towering mushrooms glow in radiant hues.",
+    "source_quote": "towering mushrooms glowed in radiant hues",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ground of the Spore Glade pulses softly beneath the feet as if breathing.",
+    "source_quote": "the ground pulsed softly beneath their feet as if breathing",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Delicate spores drift lazily through the air in the Spore Glade.",
+    "source_quote": "Delicate spores drifted lazily through the air",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The scent in the Spore Glade is earthy and sweet with an intoxicating undercurrent that makes the head swim.",
+    "source_quote": "The scent was earthy and sweet, with an intoxicating undercurrent that made the head swim",
+    "subject": "The Spore Glade",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin runs through the glade and brushes against the glowing fungi.",
+    "source_quote": "Thorin ran through and brushed a few things on the way",
+    "subject": "Thorin touches fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The glowing fungi pulse brighter when touched by Thorin.",
+    "source_quote": "the glowing fungi pulsed brighter when touched",
+    "subject": "fungi reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Vine Wood is a damp and oppressive maze of thick, twisting vines covered in translucent slime.",
+    "source_quote": "a damp and oppressive maze of thick, twisting vines covered in translucent slime",
+    "subject": "The Vine Wood",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The vines in the Vine Wood twitch and sway with an almost sentient awareness.",
+    "source_quote": "The vines twitched and swayed with an almost sentient awareness",
+    "subject": "The Vine Wood",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ground in the Vine Wood is tangled with root-like growths that seem to reach upward.",
+    "source_quote": "the ground beneath was tangled with root-like growths that seemed to reach upward",
+    "subject": "The Vine Wood",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum roll a 7 on their group stealth check in the Vine Wood.",
+    "source_quote": "their group stealth check came up a mere 7",
+    "subject": "stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vines in the Vine Wood begin to advance toward Thorin and Gyrgum with grasping urgency.",
+    "source_quote": "the vines began to advance toward them, slow at first and then with sudden, grasping urgency",
+    "subject": "vines advance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Gyrgum burst through the exit of the Vine Wood.",
+    "source_quote": "burst through the exit at the very last moment",
+    "subject": "escape",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vines collapse behind Thorin and Gyrgum in a crushing wave as they exit.",
+    "source_quote": "the vines collapsed behind them in a crushing wave",
+    "subject": "vines collapse",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin runs through the glade, brushing things and causing the fungi to react.",
+    "source_quote": "Thorin ran through and brushed a few things on the way",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player announces he has to leave at seven.",
+    "source_quote": "Gyrgum's player announces he has to leave at seven",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's player decides to run rather than move carefully in the Spore Glade.",
+    "source_quote": "He runs, not super carefully, brushing a few things",
+    "subject": "Thorin's decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum states he is trying to observe rather than participate.",
+    "source_quote": "I'm trying to observe here, not participate",
+    "subject": "Gyrgum's observation",
+    "quote_verified": true
+  }
+]

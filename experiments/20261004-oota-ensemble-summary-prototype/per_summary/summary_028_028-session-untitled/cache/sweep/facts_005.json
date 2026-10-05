@@ -1,0 +1,254 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin's name is used to determine the direction the party travels via a die roll.",
+    "source_quote": "a direction chosen by die roll in Thorin's honour",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party presses east through a side door into a new chamber.",
+    "source_quote": "The party pressed east through a side door",
+    "subject": "entering sarcophagi chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The sarcophagi chamber is dominated by four stone sarcophagi.",
+    "source_quote": "entered a chamber dominated by four stone sarcophagi",
+    "subject": "sarcophagi chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone sarcophagi bear the sculpted likeness of a robed figure in repose.",
+    "source_quote": "each bearing the sculpted likeness of a robed figure in repose",
+    "subject": "stone sarcophagi",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The northeast sarcophagus rests on hidden stone rollers.",
+    "source_quote": "the northeast sarcophagus rested on hidden stone rollers",
+    "subject": "hidden stone rollers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The hangers-on stay outside the sarcophagi chamber.",
+    "source_quote": "The hangers-on stayed outside",
+    "subject": "hangers-on",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir draws his shroud of magical darkness across the room.",
+    "source_quote": "Zalthir drew his shroud of magical darkness across the room",
+    "subject": "casting magical darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls the sarcophagus aside.",
+    "source_quote": "Thorin rolled the sarcophagus aside",
+    "subject": "rolling sarcophagus aside",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four specters tear free from the sarcophagi.",
+    "source_quote": "Four specters tore free from the sarcophagi",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The specters launch themselves at the party.",
+    "source_quote": "launched themselves at the party",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A distant voice cries out 'No, you must save me.'",
+    "source_quote": "the distant voice cried, \"No, you must save me.\"",
+    "subject": "unidentified voice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes one of the spirits down in a flurry of blows before it could react.",
+    "source_quote": "striking one of the spirits down in a flurry of blows before it could react",
+    "subject": "Zalthir kills specter",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One specter is dead, killed by Zalthir's flurry of blows.",
+    "source_quote": "striking one of the spirits down in a flurry of blows before it could react",
+    "subject": "specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes a volley of magical force at the remaining specters.",
+    "source_quote": "Daz unleashed a volley of magical force at the remaining specters",
+    "subject": "Daz casts missiles",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Specters strike Daz twice with life-draining touches.",
+    "source_quote": "but the specters struck him twice with life-draining touches",
+    "subject": "Daz drained",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's hit-point maximum fell by 12 total, leaving him badly weakened.",
+    "source_quote": "His hit-point maximum fell by 2, then by 10 more, leaving him badly weakened",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum raised his holy symbol and called upon Bahamut's power to drive the undead back.",
+    "source_quote": "Gyrgum raised his holy symbol and called upon Bahamut's power to drive the undead back",
+    "subject": "Gyrgum turns undead",
+    "quote_verified": true
+  },
+  {
+    "type": "deity",
+    "fact": "Gyrgum calls upon Bahamut's power during the fight.",
+    "source_quote": "called upon Bahamut's power to drive the undead back",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Every remaining specter shrugged off the divine energy from Gyrgum.",
+    "source_quote": "but every remaining specter shrugged off the divine energy",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gyrgum wonders if Bahamut is displeased about the dragon egg.",
+    "source_quote": "whether the god was still displeased about the dragon egg",
+    "subject": "dragon egg displeasure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down another specter with his enchanted longsword.",
+    "source_quote": "Thorin stepped in with his enchanted longsword and cut down another specter",
+    "subject": "Thorin kills specter",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin wields an enchanted longsword in combat.",
+    "source_quote": "Thorin stepped in with his enchanted longsword",
+    "subject": "enchanted longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A second specter is dead, killed by Thorin's longsword.",
+    "source_quote": "Thorin stepped in with his enchanted longsword and cut down another specter",
+    "subject": "specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes the rest of the specters with a relentless series of strikes.",
+    "source_quote": "Zalthir finished the rest with a relentless series of strikes",
+    "subject": "Zalthir finishes specters",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remaining specters are dead, killed by Zalthir's strikes.",
+    "source_quote": "Zalthir finished the rest with a relentless series of strikes",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One specter pauses mid-fight to correct Zalthir that it is a specter, not a ghost.",
+    "source_quote": "One of them paused mid-fight to correct Zalthir that it was a specter, not a ghost",
+    "subject": "specter correction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party loots the sarcophagi.",
+    "source_quote": "the party looted the sarcophagi",
+    "subject": "looting sarcophagi",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gold bracelets are found in the sarcophagi.",
+    "source_quote": "found a respectable haul: gold bracelets",
+    "subject": "gold bracelets",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A fancy walking stick is found in the sarcophagi.",
+    "source_quote": "a fancy walking stick",
+    "subject": "fancy walking stick",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A gold censer worked with platinum filigree is found in the sarcophagi.",
+    "source_quote": "a gold censer worked with platinum filigree",
+    "subject": "gold censer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 27 on Arcana.",
+    "source_quote": "Daz then rolled a 27 on Arcana",
+    "subject": "Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz determines that these undead would reform every 24 hours.",
+    "source_quote": "these kinds of undead did not stay dead. They would reform every 24 hours",
+    "subject": "undead reform warning",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A four-foot square hole lies beneath the sarcophagus Thorin rolled aside.",
+    "source_quote": "Beneath the sarcophagus Thorin had rolled aside lay a four-foot square hole dropping down into the darkness below",
+    "subject": "square hole",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is an orc.",
+    "source_quote": "Gyrgum answers \"I'm an orc, not a giant,\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The GM notes there is nowhere to spend money until they reach the Neverlight Grove.",
+    "source_quote": "nowhere to spend money until they reach the Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A hole in the south wall is described as just an artifact of the assets.",
+    "source_quote": "A hole in the south wall turns out to be \"just an artifact of the assets.\"",
+    "subject": "south wall",
+    "quote_verified": true
+  }
+]

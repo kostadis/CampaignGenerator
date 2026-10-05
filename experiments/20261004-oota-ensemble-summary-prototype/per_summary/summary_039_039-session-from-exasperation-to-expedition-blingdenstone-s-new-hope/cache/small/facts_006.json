@@ -1,0 +1,114 @@
+[
+  {
+    "type": "npc",
+    "fact": "Chipgrin disclosed that he knows about the Pudding King.",
+    "source_quote": "Chipgrin disclosed, \u201cI know about the Pudding King.\u201d",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin knew the Pudding King when the gnome worked in the tunnels.",
+    "source_quote": "He had known the Pudding King when the gnome worked in the tunnels",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin knows who the Pudding King is, what he is doing, and where he can be found.",
+    "source_quote": "Chipgrin knew who the Pudding King was, what he was doing, and where he could be found.",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King's fall is rooted in vengeance, pride, madness, resentment at being ignored, and demonic power.",
+    "source_quote": "The Pudding King's fall appeared rooted in vengeance, pride, madness, resentment at being ignored, and demonic power",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King's preexisting malice and grievances were amplified by demonic power rather than replaced.",
+    "source_quote": "demonic power had amplified his preexisting malice and grievances.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhisker kin witnessed the Pudding King after his return.",
+    "source_quote": "Goldwhisker kin had witnessed him after his return.",
+    "subject": "Goldwhisker kin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concluded that the Pudding King was not necessarily replaced outright by a demon.",
+    "source_quote": "They concluded that the Pudding King had not necessarily been replaced outright.",
+    "subject": "Pudding King analysis",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The process of demons empowering resentful people is jokingly described as being promoted to one's \u201clevel of malice.\u201d",
+    "source_quote": "This process was jokingly described as being promoted to one's \u201clevel of malice.\u201d",
+    "subject": "level of malice theory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chipgrin asked the party if they had noticed anything strange about Blingdenstone's other gnomes.",
+    "source_quote": "Chipgrin asked whether the party had noticed anything strange about Blingdenstone's other gnomes.",
+    "subject": "Chipgrin's inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party recognized an abnormal rise in greed and aggression among the gnomes of Blingdenstone.",
+    "source_quote": "they recognized that greed and aggression had become unusually pronounced throughout the settlement.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo's obsession with money appears especially unhinged given the existential danger facing the settlement.",
+    "source_quote": "Dorbo's obsession with money appeared especially unhinged given the existential danger.",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party shared a theory concerning Juiblex, the demon lord of oozes.",
+    "source_quote": "The party shared its theory concerning Juiblex, the demon lord of oozes.",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The demonic corruption is centered on the Pudding King but is bleeding outward into the entire community.",
+    "source_quote": "the corruption was centered on the Pudding King but \u201cbleeding through\u201d into the broader community.",
+    "subject": "Demonic influence in Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party witnessed demonic effects in Gracklstugh.",
+    "source_quote": "demonic corruption they had already witnessed in Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party witnessed demonic effects in Neverlight Grove.",
+    "source_quote": "demonic corruption they had already witnessed in Gracklstugh, Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party witnessed demonic corruption among the kuo-toa.",
+    "source_quote": "demonic corruption they had already witnessed in Gracklstugh, Neverlight Grove, and among the kuo-toa",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  }
+]

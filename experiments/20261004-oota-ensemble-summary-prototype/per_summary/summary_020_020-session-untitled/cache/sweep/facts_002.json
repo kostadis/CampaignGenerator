@@ -1,0 +1,44 @@
+[
+  {
+    "type": "event",
+    "fact": "Plinki is dead.",
+    "source_quote": "With Plinki dead, the battle shifted, but the danger was far from over.",
+    "subject": "Plinki's death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Master Thief is a skilled Derro who shrugs off multiple blows during the battle.",
+    "source_quote": "A skilled derro Master Thief proved to be a tenacious foe, shrugging off blow after blow",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir repeatedly grapples and wrestles the Master Thief across the battlefield.",
+    "source_quote": "as Zalthir repeatedly grappled and wrestled him across the battlefield.",
+    "subject": "Zalthir grappling Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lands a punishing strike on the Master Thief that roots the thief in place.",
+    "source_quote": "Thorin's sentinel instincts snapped into action, landing a punishing strike that rooted the thief in place.",
+    "subject": "Thorin rooting Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses teleportation magic to vanish from the fray while concealing an egg.",
+    "source_quote": "Daz, ever calculating, had already used a burst of teleportation magic to vanish from the fray, secretly concealing the egg beneath his robes",
+    "subject": "Daz teleporting with egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is described as ever calculating.",
+    "source_quote": "Daz, ever calculating, had already used a burst of teleportation magic",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

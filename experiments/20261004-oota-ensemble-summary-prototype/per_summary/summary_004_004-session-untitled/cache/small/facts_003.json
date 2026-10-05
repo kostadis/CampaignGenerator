@@ -1,0 +1,303 @@
+[
+  {
+    "type": "monster",
+    "fact": "A gray ooze emerges from the water near the escape route.",
+    "source_quote": "A gray ooze emerged near the escape route",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze strikes Thorin for a punishing blow.",
+    "source_quote": "The creature struck Thorin for a punishing blow",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze moves far more slowly than the party.",
+    "source_quote": "the companions realized that the ooze moved far more slowly than they did",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is left thrashing futilely behind the fleeing party.",
+    "source_quote": "leaving it thrashing futilely behind them",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gray ooze attacks Thorin and deals twelve points of damage.",
+    "source_quote": "The gray ooze attacks Thorin first and deals twelve points of damage.",
+    "subject": "gray ooze damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is struck by the gray ooze.",
+    "source_quote": "The creature struck Thorin for a punishing blow",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth warns Thorin that the gray ooze's corrosive body can devour his armor.",
+    "source_quote": "Eldeth warned that its corrosive body could devour his newly acquired armor",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth warns Thorin that gray oozes eat armor.",
+    "source_quote": "Eldeth warns Thorin that gray oozes eat armor, strengthening his desire to preserve his newly acquired chain shirt.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin possesses a newly acquired chain shirt.",
+    "source_quote": "strengthening his desire to preserve his newly acquired chain shirt",
+    "subject": "chain shirt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wants to fight back against the ooze.",
+    "source_quote": "Although Thorin wanted to fight back",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin chooses to flee after recognizing the ooze is slower than the party.",
+    "source_quote": "Thorin wants to strike back but chooses to flee after recognizing that the ooze is much slower than the party.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum disengages and runs rather than fighting the ooze.",
+    "source_quote": "Gyrgum disengages and runs rather than attempting to fight the ooze.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith favors fleeing toward the Darklake.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar favors fleeing toward the Darklake.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz follows the fleeing party after confirming there is no need to fight the giant spiders.",
+    "source_quote": "Daz follows after confirming that there is no need to fight the giant spiders overhead.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Giant spiders are overhead during the escape.",
+    "source_quote": "no need to fight the giant spiders overhead.",
+    "subject": "giant spiders",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companions disengage and run, leaving the gray ooze behind.",
+    "source_quote": "One after another they disengaged and ran, leaving it thrashing futilely behind them.",
+    "subject": "party disengagement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A badly wounded vrock descends from the battle above.",
+    "source_quote": "A badly wounded vrock descended from the battle above",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vrock lands directly beside the fleeing prisoners.",
+    "source_quote": "landed directly beside the fleeing prisoners",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vrock is badly wounded.",
+    "source_quote": "A badly wounded vrock descended from the battle above",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront refuses to run from the vrock.",
+    "source_quote": "Ront refused to run",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is motivated by humiliation from imprisonment and a desire to prove himself.",
+    "source_quote": "Humiliated by his imprisonment and determined to prove himself a powerful warrior",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront attacks the vrock with his great axe.",
+    "source_quote": "the orc attacked with his great axe",
+    "subject": "Ront attacks vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront deals a solid blow to the demon.",
+    "source_quote": "dealt the demon a solid blow",
+    "subject": "Ront damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ront's blow deals nine points of damage.",
+    "source_quote": "Ront's blow deals nine points of damage",
+    "subject": "Ront damage count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vrock is left looking even more wounded after Ront's attack.",
+    "source_quote": "leaves the vrock looking even more wounded.",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar refuses to follow Ront into the battle.",
+    "source_quote": "Shuushar refused to follow him into the suicidal battle.",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool follows Shuushar away from the danger.",
+    "source_quote": "Stool follows Shuushar away from the danger.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock kills Ront with its talons.",
+    "source_quote": "The vrock answered with its talons and killed Ront.",
+    "subject": "vrock kills Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is dead.",
+    "source_quote": "killed Ront.",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock menaces Daz with its beak.",
+    "source_quote": "It then menaced Daz with its beak",
+    "subject": "vrock menaces Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock takes flight and flies away.",
+    "source_quote": "before taking flight",
+    "subject": "vrock departs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock decides Daz is not worth the effort of killing.",
+    "source_quote": "apparently deciding that the wizard was not worth the effort of killing.",
+    "subject": "vrock decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The survivors sprint into the tunnels and become free.",
+    "source_quote": "The survivors sprinted into the tunnels, and just like that, they were free.",
+    "subject": "escape completion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realizes they are stranded deep in the Underdark without food, water, money, or a map.",
+    "source_quote": "they were stranded deep in the Underdark without food, water, money, or a map",
+    "subject": "stranded status",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is uncertain whether the former prisoners accompanying the party will remain allies.",
+    "source_quote": "accompanied by former prisoners who might or might not remain allies",
+    "subject": "former prisoner loyalty",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has the ability to see through darkness for 120 feet.",
+    "source_quote": "Daz took what comfort he could from his ability to see through darkness for 120 feet.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that his darkvision lets him see many threats before they kill him.",
+    "source_quote": "Daz notes that his 120-foot darkvision should at least let him see many threats before they kill him.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A rock tumbles nearby as the fugitives bunch together.",
+    "source_quote": "A rock tumbles nearby as the fugitives bunch together along their chosen escape route.",
+    "subject": "rock tumble",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party flees into the tunnels of the Underdark.",
+    "source_quote": "The party successfully flees into the tunnels of the Underdark.",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party considers fleeing toward the Darklake.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The route toward Menzoberranzan is one of the options considered during the escape.",
+    "source_quote": "rather than heading along the route toward Menzoberranzan.",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party navigates a battlefield filled with drow.",
+    "source_quote": "The party navigates a chaotic battlefield filled with demons and drow",
+    "subject": "drow",
+    "quote_verified": true
+  }
+]

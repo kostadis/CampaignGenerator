@@ -1,0 +1,296 @@
+[
+  {
+    "type": "monster",
+    "fact": "A squad of duergar militia accompanies the party in the street battle.",
+    "source_quote": "alongside a squad of duergar militia",
+    "subject": "duergar militia size",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two of the duergar guards magically enlarge themselves to confront the stone giant.",
+    "source_quote": "Two of the duergar guards swelled to enormous size",
+    "subject": "enlarged duergar count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two of the duergar guards do not magically enlarge themselves.",
+    "source_quote": "two of them unleashed sprays of fire",
+    "subject": "non-enlarged duergar count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fire sprays from the duergar deal 23 points of damage total to the stone giant.",
+    "source_quote": "unleashed sprays of fire that scorched the giant's rocky hide for 23 points of damage",
+    "subject": "duergar fire damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the duergar fire spray damage rolls was 13.",
+    "source_quote": "The damage rolls come to 13 and 10, for 23 points total",
+    "subject": "giant damage roll 13",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second of the duergar fire spray damage rolls was 10.",
+    "source_quote": "The damage rolls come to 13 and 10, for 23 points total",
+    "subject": "giant damage roll 10",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One duergar takes 19 damage from the stone giant's great club.",
+    "source_quote": "One duergar takes 19 damage",
+    "subject": "duergar damage from giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The stone giant rolls a 14 with disadvantage against Zalthir's AC 15 and misses.",
+    "source_quote": "it rolls a 14 against Zalthir's AC 15 and misses",
+    "subject": "giant attack on Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has an Armor Class of 15.",
+    "source_quote": "Zalthir's AC 15",
+    "subject": "Zalthir AC",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin scores a 16 on a nature/history/survival check to identify the giant's madness.",
+    "source_quote": "Thorin makes a nature/history/survival check (16)",
+    "subject": "Thorin skill check",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has 34 hit points remaining at the point of identification.",
+    "source_quote": "The giant is at 34 hit points at this point",
+    "subject": "stone giant HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Magic Missile deals 6 damage due to rolling a one.",
+    "source_quote": "Daz strikes the giant with Magic Missile but rolls a one, dealing 6 damage",
+    "subject": "Daz damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks three times, missing twice and hitting for 5 damage once.",
+    "source_quote": "He misses, hits for 5 damage, then misses",
+    "subject": "Zalthir attack sequence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends one focus point during his third attack attempt.",
+    "source_quote": "spending a focus point on the third",
+    "subject": "Zalthir resource usage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits again with his short sword for 6 damage after his critical hit.",
+    "source_quote": "uses Action Surge and hits again for 6 more damage",
+    "subject": "Thorin critical damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant Rihuud is reduced from 34 hit points to 8 hit points before being killed.",
+    "source_quote": "wore the giant down from 34 hit points to 8",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant Rihuud is killed by the duergar militia.",
+    "source_quote": "delivered a lethal blow, killing the stone giant",
+    "subject": "Rihuud",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The duergar militia delivers the killing blow to the stone giant Rihuud, ending the encounter.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant.",
+    "subject": "Rihuud death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a +1 modifier for Intimidation.",
+    "source_quote": "his modifier there is +1",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a -1 modifier for Persuasion (or other social skills implied as inferior to Intimidation).",
+    "source_quote": "versus -1 on the others",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum's mace hits for 1 damage.",
+    "source_quote": "Gyrgum's mace hits for 1 damage",
+    "subject": "Gyrgum's mace damage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The GM states that 100 hit points on a rhinoceros is different from 100 hit points on a human fighter.",
+    "source_quote": "100 hit points on a rhinoceros is different from 100 hit points on a human fighter",
+    "subject": "Rhino/Human HP comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The duergar soldiers shrink back to their normal size.",
+    "source_quote": "The duergar soldiers shrink back to their normal size",
+    "subject": "duergar size change",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Cairngorm Cavern is located in Gracklstugh and serves as the site where stone giants commune with the stone.",
+    "source_quote": "communing with the stone deep in Cairngorm Cavern",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorhun is a stone giant and an apprentice to Stonespeaker Hgraam.",
+    "source_quote": "Dorhun, a stone giant and fellow apprentice to the revered Stonespeaker Hgraam",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rihuud was a stone giant apprentice who went mad and sprouted a second head.",
+    "source_quote": "sprouted a second head while communing with the stone",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar soldiers shrink back to their normal size with an audible pop.",
+    "source_quote": "the duergar soldiers shrank back to their normal size with an audible pop",
+    "subject": "duergar soldiers shrink",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard duergar belong to a different clan from the first group of militia encountered.",
+    "source_quote": "The party notices the \"Stone Guard\" duergar belong to a different clan from the first group",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "There are quiet duergar drinking inside the brewery.",
+    "source_quote": "Gyrgum... still glimpsed quiet duergar drinking cheaper beer",
+    "subject": "duergar at brewery",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "There are three non-duergar patrons (a halfling, a human, and a drow) drinking outside the brewery.",
+    "source_quote": "Among the non-duergar outside were a halfling, a human, and a drow",
+    "subject": "non-duergar patrons",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 3 on a stealth check while trying to peek inside the brewery.",
+    "source_quote": "Gyrgum tried to peek inside and rolled a 3 on stealth",
+    "subject": "gyrgum stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum bought a round of drinks for the halfling, then later a second mug out of gratitude.",
+    "source_quote": "Gyrgum bought a round for the talkative halfling... and later a second mug \"out of gratitude.\"",
+    "subject": "halfling drinks",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The party can currently attract only two factions: the Stone Guard and the Keepers of the Flame.",
+    "source_quote": "the only two factions they can currently attract are the Stone Guard and the Keepers of the Flame",
+    "subject": "available factions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Captain Errde promises each party member 350 gold pieces' worth of equipment from her armory.",
+    "source_quote": "earn each of them 350 gold pieces' worth of equipment from her armory",
+    "subject": "total equipment promise",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Errde advances 175 gold pieces' worth of equipment to each party member.",
+    "source_quote": "Errde advanced 175 gold pieces' worth of equipment to each of them",
+    "subject": "down payment equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The remaining 175 gold pieces' worth of equipment is to be paid upon completion of the job.",
+    "source_quote": "with the remaining 175 to follow on completion",
+    "subject": "remainder payment equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled an 18 on persuasion to secure the down payment.",
+    "source_quote": "He then rolled an 18 on persuasion",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a passive perception of 14.",
+    "source_quote": "Daz's passive perception of 14 tells him",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Splint armor costs 200 gp.",
+    "source_quote": "splint (too expensive at 200 gp)",
+    "subject": "splint armor price",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Plate armor costs 1,500 gp.",
+    "source_quote": "plate (1,500 gp)",
+    "subject": "plate armor price",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Chain mail costs 75 gp.",
+    "source_quote": "settled on chain mail (75 gp)",
+    "subject": "chain mail price",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Each dart costs 5 cp.",
+    "source_quote": "twenty darts (5 cp each, about 1 gp)",
+    "subject": "dart price",
+    "quote_verified": true
+  }
+]

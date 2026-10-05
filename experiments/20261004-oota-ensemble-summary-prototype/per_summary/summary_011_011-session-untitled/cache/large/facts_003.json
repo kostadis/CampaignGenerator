@@ -1,0 +1,156 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a 15-foot shroud of magical darkness around the beholder zombie, leaving enough of it visible for companions to target.",
+    "source_quote": "Zalthir moved with fluid precision, conjuring a 15-foot shroud of magical darkness around the creature while keeping just enough of it visible for his companions to target.",
+    "subject": "Zalthir creates darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the beholder zombie with his bare fists, landing a critical hit.",
+    "source_quote": "He struck the zombie with his bare fists in a series of devastating blows, landing one thunderous critical hit that sent a shudder through the floating monstrosity.",
+    "subject": "Zalthir unarmed strikes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fights from inside the magical darkness where the blinded creature cannot see him, gaining advantage on attacks.",
+    "source_quote": "Thorin fought from inside the darkness, where the blinded creature could not see him, and hammered it with advantage.",
+    "subject": "Thorin fights in darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a feinting attack that leaves the beholder zombie vexed.",
+    "source_quote": "He used a feinting attack that left the zombie vexed",
+    "subject": "Thorin feint",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts a Hill Strike to knock the beholder zombie prone, but the effect fails because the creature is immune to being knocked prone.",
+    "source_quote": "tried a Hill Strike to knock it prone, only to learn that a floating beholder zombie is immune to being knocked prone.",
+    "subject": "Thorin Hill Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missiles on the beholder zombie, dealing 15 damage.",
+    "source_quote": "Daz unleashed a barrage of Magic Missiles for 15 damage",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels divine power to scorch the undead from within.",
+    "source_quote": "Gyrgum channeled divine power to scorch the undead from within.",
+    "subject": "Gyrgum Divine Spark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie hits Gyrgum with a ray of sickly light for 10 damage, poisoning him.",
+    "source_quote": "A ray of sickly light, which the DM compared to a Dalek, hit Gyrgum for 10 damage and poisoned him.",
+    "subject": "Beholder Zombie ray attack on Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie strikes Daz with a beam, leaving him paralyzed and helpless after a failed saving throw.",
+    "source_quote": "Another beam struck Daz, who missed the save by a single point and was left paralyzed and helpless.",
+    "subject": "Beholder Zombie ray attack on Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool, Hemeth, and the companion crew row hard toward the fight and raise their crossbows to fire a volley.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight. The crew raised their crossbows and let fly a first volley.",
+    "subject": "Crew joins fight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The beholder zombie bites Zalthir for 16 damage.",
+    "source_quote": "The zombie bit Zalthir for 16 damage",
+    "subject": "Beholder Zombie bites Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempts to Turn Undead, but the beholder zombie succeeds on its saving throw.",
+    "source_quote": "Gyrgum's attempt to Turn Undead failed against the creature's saving throw.",
+    "subject": "Gyrgum Turn Undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The combined fire of the crew's second volley and Zalthir's assault causes the beholder zombie to crumple and explode into ash.",
+    "source_quote": "The crew's second volley, combined with Zalthir's relentless assault, finally proved too much for the undead horror. The beholder zombie shuddered, crumpled, and exploded into ash",
+    "subject": "Beholder Zombie killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's paralysis ends when the beholder zombie dies.",
+    "source_quote": "and Daz's paralysis ended with its death.",
+    "subject": "Daz paralysis ends",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The beholder zombie is dead, having exploded into ash after taking damage from the party and the crew.",
+    "source_quote": "The beholder zombie shuddered, crumpled, and exploded into ash, its threat extinguished at last",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Cure Wounds on Zalthir, restoring 15 of the 16 hit points he lost to the zombie's bite.",
+    "source_quote": "Gyrgum moved quickly to Zalthir's side and cast Cure Wounds, restoring 15 of the 16 hit points the monk had lost to the creature's savage bite.",
+    "subject": "Gyrgum Cure Wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party turns to Brannum and demands the truth about the shortcut he had chosen.",
+    "source_quote": "the party turned back to Brannum and demanded the truth about the shortcut he had chosen.",
+    "subject": "Interrogation of Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum's initial answer about the shortcut is determined to be false by Thorin's insight check.",
+    "source_quote": "Thorin called his first answer \"bullshit,\" and an insight check proved him right.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a monk.",
+    "source_quote": "restoring 15 of the 16 hit points the monk had lost to the creature's savage bite",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is part of the companion crew that joined the fight against the beholder zombie.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is part of the companion crew that joined the fight against the beholder zombie.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight.",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle with the beholder zombie takes place in the dark waters of the Darklake.",
+    "source_quote": "in the dark waters of the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  }
+]

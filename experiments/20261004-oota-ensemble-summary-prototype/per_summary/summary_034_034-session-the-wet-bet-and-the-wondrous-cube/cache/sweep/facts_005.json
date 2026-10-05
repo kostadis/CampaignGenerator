@@ -1,0 +1,177 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin relies on a virtual die to select a path at a junction.",
+    "source_quote": "Thorin again relied on a virtual die to select a path",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin falls into a concealed pit trap but catches the edge.",
+    "source_quote": "He spotted it just late enough to fall, but managed to catch the edge",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin hauls himself out of the pit, aided by his strength.",
+    "source_quote": "A second effort allows him to scramble out, aided substantially by his strength",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes retreating roughly 25 feet to draw the creature into a larger chamber.",
+    "source_quote": "Thorin proposes retreating roughly 25 feet and drawing it into a larger chamber",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin elects to continue down the passage because unexplored alternatives are equally uncertain.",
+    "source_quote": "Thorin elects to continue down the passage because the unexplored alternatives are equally uncertain",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin searches carefully for additional traps after his near fall.",
+    "source_quote": "he makes a point of searching much more carefully for additional traps",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin throws a dart at a patch of water to test it.",
+    "source_quote": "Before proceeding, he throws a dart at another patch of water",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool consumes the remains of the black pudding.",
+    "source_quote": "Glabbagool eagerly consumed the remains",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is delighted by consuming the remains.",
+    "source_quote": "Glabbagool is delighted to consume the remains",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A black pudding climbs out of the pit after Thorin falls.",
+    "source_quote": "a black pudding began climbing from the pit",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is slow and has no ranged attacks.",
+    "source_quote": "Because the creature is slow and has no ranged attacks",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is defeated by ranged attacks while the party maintains distance.",
+    "source_quote": "destroying it with ranged attacks",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is destroyed and its remains are consumed.",
+    "source_quote": "defeats the pudding without allowing it to catch them",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party destroys the black pudding using ranged attacks.",
+    "source_quote": "kept the slow creature beyond melee range while destroying it with ranged attacks",
+    "subject": "black pudding destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin falls into a concealed pit trap.",
+    "source_quote": "Thorin\u2019s passive perception fails to detect a concealed pit trap",
+    "subject": "Thorin falls into pit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin scrambles out of the pit using a second effort.",
+    "source_quote": "A second effort allows him to scramble out",
+    "subject": "Thorin escapes pit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party retreats to a larger chamber to fight the black pudding.",
+    "source_quote": "the party retreated to a larger chamber and kept the slow creature beyond melee range",
+    "subject": "retreat to larger chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The pit is empty when the party returns to it.",
+    "source_quote": "When the party later returns to the pit, it is empty",
+    "subject": "pit returns empty",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Juiblex is a demon lord associated with oozes.",
+    "source_quote": "the demon lord Juiblex was associated with oozes",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An Arcana check reveals information about Juiblex and black pudding splitting mechanics.",
+    "source_quote": "An Arcana check reminded the party that the demon lord Juiblex was associated with oozes",
+    "subject": "Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party reaffirms the rule against splitting up.",
+    "source_quote": "reaffirming that \u201cIt\u2019s always a bad idea to split the party.\u201d",
+    "subject": "the party",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party defeats the black pudding without being caught.",
+    "source_quote": "The group executes the strategy successfully and defeats the pudding without allowing it to catch them",
+    "subject": "the party",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The junction contains four western passages and one eastern route.",
+    "source_quote": "a junction with four passages heading west and a fifth route to the east",
+    "subject": "junction",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin uses a dart to test a patch of water.",
+    "source_quote": "he throws a dart at another patch of water",
+    "subject": "dart",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a d5 to select a western passage.",
+    "source_quote": "Thorin uses another virtual die\u2014this time a d5\u2014to select one of the western passages",
+    "subject": "d5 roll",
+    "quote_verified": true
+  }
+]

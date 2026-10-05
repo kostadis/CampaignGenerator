@@ -1,0 +1,233 @@
+[
+  {
+    "type": "location",
+    "fact": "The Whorlstone Caverns are located deep within the area beneath the city of Gracklstugh.",
+    "source_quote": "Deep within the Whorlstone Caverns beneath the city of Gracklstugh",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a city populated by 10,000 duergar.",
+    "source_quote": "only fourth level in a city of 10,000 duergar",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Every derro in the caves is dead.",
+    "source_quote": "With every derro in the caves dead",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a two-headed dragon egg tied to the cult of Demogorgon.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon.",
+    "subject": "two-headed dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a ritual statue connected to the affliction causing stone giants to sprout second heads.",
+    "source_quote": "A ritual statue connected to the affliction causing stone giants to sprout second heads.",
+    "subject": "ritual statue",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Only one ritual statue was completed.",
+    "source_quote": "Only one ritual statue was completed.",
+    "subject": "ritual statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party interrupted the ritual on the second statue.",
+    "source_quote": "The party interrupted the ritual on the second.",
+    "subject": "interrupting ritual",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is the entity to whom the two-headed dragon egg is tied via cult allegiance.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon.",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The cult of Demogorgon is linked to the possession of the two-headed dragon egg.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon.",
+    "subject": "cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is the ruler of Gracklstugh who is allied with assassins.",
+    "source_quote": "The Deepking himself was allied with assassins",
+    "subject": "Deepking",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is revealed to be specifically Themberchaud the 28th.",
+    "source_quote": "Proof that Themberchaud is in fact \"Themberchaud the 28th.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gartokkar is the head of the Keepers of the Flame.",
+    "source_quote": "give the egg to Gartokkar, the head of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is the head of the Keepers of the Flame.",
+    "source_quote": "give the egg to Gartokkar, the head of the Keepers of the Flame",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Assassins are allied with the Deepking and are trying to wipe out the opposition.",
+    "source_quote": "The Deepking himself was allied with assassins trying to wipe out the opposition.",
+    "subject": "assassins",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir proposed a dead man's switch to ensure information release if the party is captured or killed.",
+    "source_quote": "Zalthir proposed a dead man's switch, some way to ensure the information would be released if the party were captured or killed.",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a member of the party.",
+    "source_quote": "Zalthir proposed a dead man's switch",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar urged the party to hold onto the evidence for future use rather than hand it over.",
+    "source_quote": "Jimjar urged them to hold onto everything for future use rather than hand it over too soon.",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player agreed with Jimjar's instinct to keep the evidence.",
+    "source_quote": "Gyrgum's player agrees: \"Yeah, that's always my instinct.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum summarized the plan to hand over the egg and leave Gracklstugh.",
+    "source_quote": "Gyrgum summarizes the plan: hand over the egg and get out of Gracklstugh",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin floated going to a merchant they had helped.",
+    "source_quote": "Thorin floated going to the merchant they had helped",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin worries the merchant might betray them.",
+    "source_quote": "he worried the merchant might betray them",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player rolled a die to decide if his character wants to burn the place down.",
+    "source_quote": "Thorin's player rolls a die (15+ = burn it down) to decide whether his character wants to burn the place down.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool pleads with the party to find his friend Rumpadump.",
+    "source_quote": "while Stool pleads with them to find his friend Rumpadump.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is Stool's friend.",
+    "source_quote": "find his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is absent from the current location.",
+    "source_quote": "Stool continues to insist that the party must go find his friend Rumpadump.",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's player described their political leverage as 'Epstein level dirt on everybody'.",
+    "source_quote": "\"Epstein level dirt on everybody,\" as Daz's player put it.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a member of the party.",
+    "source_quote": "\"Epstein level dirt on everybody,\" as Daz's player put it.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The merchant helped the party previously, or was helped by them.",
+    "source_quote": "Thorin floated going to the merchant they had helped",
+    "subject": "merchant",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The merchant owns the assassin's office.",
+    "source_quote": "He suggests telling the merchant \"we got the assassin's office back\"",
+    "subject": "merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Two duergar owe the party a favor.",
+    "source_quote": "Thorin also recalls the two duergar the party earned a favor with.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's player rolled a die where 15+ meant burning the place down.",
+    "source_quote": "Thorin's player rolls a die (15+ = burn it down) to decide whether his character wants to burn the place down.",
+    "subject": "burn roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The roll for burning the place came up short.",
+    "source_quote": "The roll comes up short",
+    "subject": "burn roll failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM confirmed every derro in the area is dead.",
+    "source_quote": "The DM confirms every derro in the area is dead",
+    "subject": "derro elimination",
+    "quote_verified": true
+  }
+]

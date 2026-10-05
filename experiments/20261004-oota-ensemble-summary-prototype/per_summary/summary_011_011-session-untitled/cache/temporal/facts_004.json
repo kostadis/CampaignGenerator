@@ -1,0 +1,30 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum restores 15 hit points to Zalthir, who had lost 16.",
+    "source_quote": "restoring 15 of the 16 hit points lost",
+    "subject": "healing Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir had lost 16 hit points from the zombie's bite before being healed.",
+    "source_quote": "restoring 15 of the 16 hit points lost",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Two of Brannum's boats had previously vanished and never returned.",
+    "source_quote": "two of his boats had never come back",
+    "subject": "lost boats count",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The interrogation and discovery occur immediately following the battle.",
+    "source_quote": "Following the battle, the party interrogates",
+    "subject": "elapsed time",
+    "quote_verified": true
+  }
+]

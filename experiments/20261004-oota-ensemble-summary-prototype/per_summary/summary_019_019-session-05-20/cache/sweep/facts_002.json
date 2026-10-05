@@ -1,0 +1,240 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldgrim is a duergar soulblade and the boss of the Empty-Scabbard Killers.",
+    "source_quote": "a formidable duergar soulblade named Eldgrim, who presided over a chamber guarded by several more of his deadly kin",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust escorted the group to meet the assassins' boss.",
+    "source_quote": "Rust escorted the group to meet the assassins' boss",
+    "subject": "Rust",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rust is a duergar sentry belonging to the Empty-Scabbard Killers.",
+    "source_quote": "Rust and his quiet companion Bob, two duergar sentries belonging to the Empty-Scabbard Killers",
+    "subject": "Rust",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bob is Rust's quiet companion and a duergar sentry.",
+    "source_quote": "Rust and his quiet companion Bob, two duergar sentries belonging to the Empty-Scabbard Killers",
+    "subject": "Bob",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grimgrim stood silently while Rust went to check with his boss.",
+    "source_quote": "Rust goes off to check with his boss, leaving Grimgrim standing silently",
+    "subject": "Grimgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is a merchant currently on the assassins' list of targets.",
+    "source_quote": "if the party eliminated the Demogorgon worshippers plaguing the caverns, Eldgrim would personally see to it that a merchant named Werz was removed from the assassins' list of targets",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz wants the assassins to stop targeting him.",
+    "source_quote": "The answers: Werz wants them to stop targeting him",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde wants information from the party.",
+    "source_quote": "Errde wants information",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz pressed Eldgrim on the subject of Werz.",
+    "source_quote": "Daz then pressed him on Werz",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz floated a longer-term plan to pit power-seekers against each other.",
+    "source_quote": "Daz floats a longer-term plan: pit the power-seekers against each other, \"like that scene in Lord of the Rings.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz balks at paying to solve Eldgrim's problem.",
+    "source_quote": "Daz balks at paying to solve Eldgrim's problem",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the party can do business.",
+    "source_quote": "Daz: \"I think we can do business.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin replies sarcastically to Eldgrim's first offer.",
+    "source_quote": "Thorin replies sarcastically, which Eldgrim takes as refreshing honesty",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for a talisman of passage that could double as proof.",
+    "source_quote": "Thorin asks for a talisman of passage that could double as proof",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin mentions an 'imbued value' of 180 gold.",
+    "source_quote": "Thorin chips in with the math: an \"imbued value\" of 180 gold",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir checks the quest log to determine if the goal is to kill or identify the assassins.",
+    "source_quote": "Zalthir checks the \"quest log\": is the goal to kill the assassins, or just identify them?",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph told the party that the assassins dislike the cultists.",
+    "source_quote": "Flumph had already told them the assassins dislike the cultists",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph is thrilled at the prospect of new trauma.",
+    "source_quote": "Flumph is thrilled at the prospect of \"some kind of new trauma that I could absorb,\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Flumph remembers there is a mind flayer inside and stays out to pick up traumatic vibes.",
+    "source_quote": "until he remembers there's a mind flayer inside. He stays out to \"pick up any traumatic vibes.\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are led by Eldgrim.",
+    "source_quote": "Rust escorted the group to meet the assassins' boss, a formidable duergar soulblade named Eldgrim",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party has obligations to satisfy regarding the Stone Guard.",
+    "source_quote": "The party discusses obtaining proof of the assassins' existence to satisfy their obligations to the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Eldgrim's chamber is guarded by several duergar soulblades.",
+    "source_quote": "who presided over a chamber guarded by several more of his deadly kin",
+    "subject": "Eldgrim's chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three duergar soulblades are present with Eldgrim.",
+    "source_quote": "The DM notes he is \"tougher than your average Soul Blade,\" with three more soulblades present",
+    "subject": "duergar soulblade",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A mind flayer is present inside the area the party is negotiating.",
+    "source_quote": "until he remembers there's a mind flayer inside",
+    "subject": "mind flayer",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party seeks to reach the derro.",
+    "source_quote": "Eldgrim was pragmatic and businesslike ... His first offer was only free passage through his territory to reach the derro",
+    "subject": "derro",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Demogorgon worshippers are plaguing the caverns.",
+    "source_quote": "if the party eliminated the Demogorgon worshippers plaguing the caverns",
+    "subject": "Demogorgon cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim agreed to remove Werz from the hit list for free if the party eliminated the Demogorgon worshippers.",
+    "source_quote": "Eldgrim agrees to remove Werz from the list for free if the party successfully eliminates the Demogorgon worshippers in the caverns",
+    "subject": "deal struck",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim initially quoted 200 gold pieces to whitelist Werz, or 20 gold if the party handled the Demogorgon problem.",
+    "source_quote": "Eldgrim quoted 200 gold pieces to \"whitelist\" Werz, or 20 gold pieces if the party dealt with his Demogorgon problem",
+    "subject": "price negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim's first offer was only free passage through his territory to reach the derro.",
+    "source_quote": "His first offer was only free passage through his territory to reach the derro",
+    "subject": "first offer rejected",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Eldgrim considers the Demogorgon worshippers his problem.",
+    "source_quote": "if the party dealt with his Demogorgon problem",
+    "subject": "Demogorgon problem",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin asks for a talisman of passage that could serve as proof of the assassins' existence.",
+    "source_quote": "Thorin asks for a talisman of passage that could double as proof",
+    "subject": "talisman of passage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Eldgrim states that a signed paper would be dismissed as a forgery.",
+    "source_quote": "he warned that even a signed paper would be dismissed as a forgery",
+    "subject": "signed paper",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM reminds the party that mind flayers communicate telepathically.",
+    "source_quote": "The DM reminds the party that mind flayers communicate telepathically",
+    "subject": "DM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz references a scene from Lord of the Rings when suggesting pitting enemies against each other.",
+    "source_quote": "\"like that scene in Lord of the Rings.\"",
+    "subject": "Lord of the Rings reference",
+    "quote_verified": true
+  }
+]

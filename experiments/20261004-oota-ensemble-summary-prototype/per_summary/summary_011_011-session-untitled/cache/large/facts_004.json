@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch confesses that the route was a shortcut his crew used regularly.",
+    "source_quote": "This route had once been a quick shortcut his crew used regularly",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch's crew had lost two boats that never returned.",
+    "source_quote": "two of his boats had never come back",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch had assumed the crew of the lost boats abandoned him.",
+    "source_quote": "Brannum had assumed that crew had simply abandoned him",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch realizes with horror that the lost crew met a horrible fate upon seeing the bone pyramid.",
+    "source_quote": "Brannum had assumed that crew had simply abandoned him, until he saw the bone pyramid and realized, with dawning horror, that they had not",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch asks where the lost crew members are if they are dead.",
+    "source_quote": "\"If they're dead, where are they?\" he asked",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confronts Brannum Redmarch about his dishonesty regarding the route's safety.",
+    "source_quote": "The party confronts Brannum Redmarch, calling out his dishonesty regarding the safety of the route",
+    "subject": "interrogation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin calls Brannum Redmarch's initial claim of 'the fast way' bullshit.",
+    "source_quote": "Thorin calls \"bullshit\"",
+    "subject": "Thorin's outburst",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "An insight check confirms that Thorin's accusation against Brannum is correct.",
+    "source_quote": "and an insight check confirms it",
+    "subject": "insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts a healing spell on Zalthir, restoring 15 of the 16 hit points lost from a zombie's bite.",
+    "source_quote": "Gyrgum casts a healing spell to mend Zalthir's severe wounds from the zombie's bite, restoring 15 of the 16 hit points lost",
+    "subject": "healing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has severe wounds from a zombie's bite that are partially healed by Gyrgum.",
+    "source_quote": "Gyrgum casts a healing spell to mend Zalthir's severe wounds from the zombie's bite",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin accuses Brannum Redmarch of dishonesty.",
+    "source_quote": "Thorin calls \"bullshit\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz peers into the water and finds the sunken wrecks of Brannum's lost boats.",
+    "source_quote": "Daz peered over the side into the dark water below and found the grim answer: the sunken wrecks of Brannum's lost boats rested on the lakebed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz observes bodies moving among the sunken wrecks.",
+    "source_quote": "and bodies moved among them, possibly zombies",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is hesitant to set foot on the islet.",
+    "source_quote": "but the party hesitated to set foot on it",
+    "subject": "islet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Mending on the damaged hull of the boat.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull",
+    "subject": "Mending cantrip",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Find Traps on the islet and finds none.",
+    "source_quote": "The curious cleric also cast Find Traps on the islet and found none",
+    "subject": "Find Traps",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The boat's hull was damaged and is mended by Gyrgum.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull",
+    "subject": "boat hull",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sunken wrecks of Brannum's lost boats are resting on the lakebed.",
+    "source_quote": "the sunken wrecks of Brannum's lost boats rested on the lakebed",
+    "subject": "sunken boats",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Bodies are moving among the sunken wrecks in the water.",
+    "source_quote": "and bodies moved among them, possibly zombies",
+    "subject": "body in water",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The DM suggests the bodies moving in the water are possibly zombies.",
+    "source_quote": "and bodies moved among them, possibly zombies",
+    "subject": "zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Brannum questions the location of the lost crew members if they are dead, as no boat is recovered.",
+    "source_quote": "\"If they're dead, where are they?\" he asked. There were bones, but there was no boat",
+    "subject": "missing crew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "No further attacks have occurred after the initial encounter.",
+    "source_quote": "nothing has attacked again",
+    "subject": "attack status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Mending and Find Traps during the investigation.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull. The curious cleric also cast Find Traps on the islet",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

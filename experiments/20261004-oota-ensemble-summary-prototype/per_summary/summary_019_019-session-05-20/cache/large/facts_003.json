@@ -1,0 +1,149 @@
+[
+  {
+    "type": "npc",
+    "fact": "Daz spots papers on Eldgrim's desk.",
+    "source_quote": "He had already spotted papers on Eldgrim's desk",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz flatters Eldgrim by proposing to write a book about the Empty-Scabbard Killers to lure him to his desk.",
+    "source_quote": "Flattering Eldgrim with talk of writing a book and immortalizing the fame of the Empty-Scabbard Killers, he persuaded the assassin leader to walk over to his desk",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim signs a piece of parchment for Daz.",
+    "source_quote": "persuaded the assassin leader to walk over to his desk and sign his name on a piece parchment",
+    "subject": "Eldgrim",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim is flattered by Daz's offer to write a book about his group.",
+    "source_quote": "Eldgrim was \"actually kind of flattered.\"",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin questions the logic of the Empty-Scabbard Killers' name to create a distraction.",
+    "source_quote": "Thorin \u2014 genuinely baffled by the logic of a group of killers who carried empty scabbards \u2014 blurted out his confusion aloud",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A soulblade manifests a shimmering psionic weapon in response to Thorin's question.",
+    "source_quote": "prompting one of the soulblades to manifest a shimmering psionic weapon in wordless explanation",
+    "subject": "soulblade psionic manifestation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz steals a document bearing the royal seal of Gracklstugh and the Deepking's signature from Eldgrim's desk.",
+    "source_quote": "he slipped away a document bearing the royal seal of Gracklstugh and the signature of the Deepking himself",
+    "subject": "document theft",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen document proves the crown is secretly in league with the Empty-Scabbard Killers.",
+    "source_quote": "proof that the crown was secretly in league with the assassins",
+    "subject": "royal contract",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim has a low passive perception score.",
+    "source_quote": "Aided by Eldgrim's \"awful\" passive perception",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The DM warns that the assassins will not discover the theft immediately, describing the urgency as a clock rather than an immediate consequence.",
+    "source_quote": "the DM warned that \"there's a clock,\" though the assassins would not work it out \"like tomorrow.\"",
+    "subject": "assassins' timeline",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz fakes a violent coughing fit to create a distraction.",
+    "source_quote": "Daz staged a violent coughing fit",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir breathes fire onto Eldgrim's desk at Daz's cue.",
+    "source_quote": "when Zalthir came over to help him he thumped the dragonborn hard in the chest \u2014 Zalthir's cue to breathe a gout of fire directly onto the desk",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining papers on Eldgrim's desk are burned by Zalthir's fire.",
+    "source_quote": "The remaining papers went up in flames.",
+    "subject": "evidence destruction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim banishes the party from the Empty-Scabbard Killers' territory under threat of death.",
+    "source_quote": "Eldgrim erupted in fury, cursing the party and ordering them out of his territory under threat of death",
+    "subject": "Eldgrim's banishment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldgrim threatens that the Empty-Scabbard Killers will kill the party if they return.",
+    "source_quote": "warning that if they ever returned, the Empty-Scabbard Killers would deal with them the way they should have from the start",
+    "subject": "Eldgrim",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party exits the lair and arrives at an intersection near the obelisk chamber entrances.",
+    "source_quote": "The party exits the lair, passing by invisible guards, and arrives at an intersection near the main and side entrances of the obelisk chamber.",
+    "subject": "party exit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two invisible guards fist-bump the party as they leave the lair.",
+    "source_quote": "The invisible soulblades fist-bump the party on the way out.",
+    "subject": "invisible guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz says goodbye to the invisible soulblades, promising to return soon.",
+    "source_quote": "Daz, to two more soulblades: \"Thanks. It was great doing business with you guys. We'll be back soon. Hopefully with. Or not.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes \"Plausible deniability\" as the group's name.",
+    "source_quote": "Thorin proposes \"Plausible deniability\" as the group's long-needed name",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Empty-Scabbard Killers are led by Eldgrim.",
+    "source_quote": "Eldgrim, the boss of the Empty-Scabbard Killers",
+    "subject": "Empty-Scabbard Killers",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM declares the Werz objective complete if the party deals with the Demogorgon cultists.",
+    "source_quote": "Assuming the party deals with the Demogorgon cultists, the DM declares the Werz objective done",
+    "subject": "Werz objective",
+    "quote_verified": true
+  }
+]

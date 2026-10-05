@@ -1,0 +1,60 @@
+[
+  {
+    "type": "location",
+    "fact": "The assassination takes place approximately 30 feet away from the party.",
+    "source_quote": "The attack happens about 30 feet away.",
+    "subject": "assassination distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals nine damage to an assassin with a magical energy attack.",
+    "source_quote": "tore into one of the attackers for nine damage",
+    "subject": "Daz magical strike",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir conjures a sphere of magical darkness with a 15-foot radius or diameter.",
+    "source_quote": "Zalthir conjured a sphere of impenetrable magical darkness",
+    "source_quote_alt": "Zalthir conjures a 15-foot sphere of magical darkness",
+    "subject": "Zalthir darkness sphere size",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two masked, hooded assassins attack the merchant.",
+    "source_quote": "Two figures suddenly shimmered into visibility beside him: masked, hooded assassins",
+    "subject": "assassin count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lands a precise blow dealing six damage using a Precision Attack.",
+    "source_quote": "Thorin salvaged a miss with a Precision Attack and landed a precise blow for six damage.",
+    "subject": "Thorin precision attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant takes six damage from an assassin's attack.",
+    "source_quote": "the other continues to wound the merchant for six damage",
+    "subject": "merchant injury",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals two points of radiant damage with his mace.",
+    "source_quote": "dealing two points of radiant damage",
+    "subject": "Gyrgum radiant strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires three rays of fire dealing four and six damage respectively.",
+    "source_quote": "Daz fires three rays of fire into the magical darkness",
+    "source_quote_alt": "Rays for four and six damage finish the assassin",
+    "subject": "Daz scorching rays",
+    "quote_verified": true
+  }
+]

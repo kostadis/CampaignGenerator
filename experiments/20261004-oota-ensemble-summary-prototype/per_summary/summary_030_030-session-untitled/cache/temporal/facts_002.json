@@ -1,0 +1,149 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir deals 29 damage with unarmed strikes.",
+    "source_quote": "He landed a relentless series of unarmed strikes for 29 damage",
+    "subject": "Zalthir unarmed strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha resists Zalthir's Stunning Strike with a roll of 14.",
+    "source_quote": "Stunning Strike (DC 13 Constitution), but the Grick Alpha resists it with a 14",
+    "subject": "Grick Alpha Stunning Strike resistance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first unarmed strike deals 8 magical bludgeoning damage.",
+    "source_quote": "His first strike hits (25 to hit) for 8 magical bludgeoning damage",
+    "subject": "Zalthir first strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's subsequent strikes deal 9 and 12 damage.",
+    "source_quote": "spends a focus point for two more attacks, hitting for 9 and 12",
+    "subject": "Zalthir subsequent strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha takes 13 damage from Daz's fireball.",
+    "source_quote": "The Grick made its save and took only 13 damage",
+    "subject": "Grick Alpha fireball damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz notes the fireball could have dealt 26 damage.",
+    "source_quote": "\"That could have been 26.\"",
+    "subject": "Grick Alpha potential fireball damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha makes a DC 15 Dexterity save against the fireball.",
+    "source_quote": "The Grick makes its DC 15 Dexterity save",
+    "subject": "Grick Alpha fireball save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 9 radiant damage with Dawnbringer.",
+    "source_quote": "he hits for 9 radiant damage",
+    "subject": "Thorin first damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 6 radiant damage on his second hit.",
+    "source_quote": "and then 6.",
+    "subject": "Thorin second damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha makes a DC 15 Dexterity save against Tasha's Caustic Brew.",
+    "source_quote": "The Grick makes its DC 15 Dexterity save and takes no damage",
+    "subject": "Grick Alpha Caustic Brew save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha's tentacle attack would have dealt 15 damage if it hit.",
+    "source_quote": "Its tentacle attack would have dealt 15 damage",
+    "subject": "Grick Alpha missed damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha misses all three of its attacks against Zalthir.",
+    "source_quote": "all three of its attacks miss",
+    "subject": "Grick Alpha missed attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 13 damage with an attack of opportunity.",
+    "source_quote": "Zalthir's attack of opportunity hit for 13",
+    "subject": "Zalthir attack of opportunity",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha attempts to flee the battle.",
+    "source_quote": "attempted a desperate decision to flee",
+    "subject": "Grick Alpha flee attempt",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Grick Alpha is killed by Thorin's blow as it flees.",
+    "source_quote": "Thorin's blow finished it as it ran",
+    "subject": "Grick Alpha death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Grick Alpha is dead, killed by Thorin as it attempted to flee.",
+    "source_quote": "Thorin's blow finished it as it ran",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Grick Alpha's hide can be fashioned into a cloak in six days.",
+    "source_quote": "harvested the creature's tough, camouflaged hide, which could be fashioned in six days",
+    "subject": "Grick hide crafting time",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Daz angles a 20-foot radius fireball to avoid his ally.",
+    "source_quote": "Daz angles the 20-foot radius to avoid Zalthir",
+    "subject": "Fireball radius",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Tasha's Caustic Brew affects a five-foot-wide line.",
+    "source_quote": "Tasha's Caustic Brew along a five-foot-wide line",
+    "subject": "Caustic Brew width",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has an Armor Class of 18.",
+    "source_quote": "attempts to retaliate against Thorin (AC 18)",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has an Armor Class of 16.",
+    "source_quote": "turns on Zalthir (AC 16)",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

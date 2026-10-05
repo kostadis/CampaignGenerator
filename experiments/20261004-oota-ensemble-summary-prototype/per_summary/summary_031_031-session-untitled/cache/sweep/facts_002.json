@@ -1,0 +1,331 @@
+[
+  {
+    "type": "npc",
+    "fact": "Basidia is a myconid sovereign who guides the party through the Neverlight Grove.",
+    "source_quote": "Basidia, the myconid sovereign who had been guiding the party through the Neverlight Grove",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe is the obsessive leader of the Circle of Growers.",
+    "source_quote": "They then met Hebopbe, the obsessive leader of the Circle of Growers",
+    "subject": "Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum appears visibly confused when Hebopbe explains that myconids are herbivores.",
+    "source_quote": "a distinction that left Gyrgum visibly confused",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin compares the myconid agricultural arrangement to a mammal eating other mammals.",
+    "source_quote": "Thorin compared the arrangement to a mammal eating other mammals",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is a sovereign responsible for political upheaval in the colony.",
+    "source_quote": "Hebopbe was indifferent to the political upheaval caused by the sovereign Phylo",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop is the leader of the circle mound where new myconids are spored and grown.",
+    "source_quote": "The mound's leader, Yrberop, was visibly infected",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a nervous and energetic myconid scout who advocates for a nomadic way of life.",
+    "source_quote": "where they met Rumpadump, a nervous and energetic myconid scout who advocated passionately for a nomadic way of life",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is a companion of the party who behaves strangely by placing no bets.",
+    "source_quote": "Meanwhile, their companion Jimjar had been behaving strangely \u2014 hinting at a coming wedding and, most tellingly, placing no bets at all",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Growers is led by Hebopbe and cultivates specific fungi for food.",
+    "source_quote": "Hebopbe, the obsessive leader of the Circle of Growers, who proudly explained that myconids were herbivores who cultivated specific fungi for food",
+    "subject": "Circle of Growers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Explorers is led by Rumpadump and consists of scouts, patrols, pathfinders, and visionaries.",
+    "source_quote": "He described the explorers as the colony's scouts, patrols, pathfinders, and visionaries beyond the boundaries of Neverlight Grove",
+    "subject": "Circle of Explorers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids are a sentient species with varied tastes, cooking styles, and agricultural practices.",
+    "source_quote": "explaining that they were a sentient species with their own varied tastes, cooking styles, and agricultural practices",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Neverlight Grove is the location of the myconid colony the party tours.",
+    "source_quote": "guiding the party through the Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Overbright is mentioned as a destination where myconids plan to spread happiness, which the party knows would be fatal or unnatural for them.",
+    "source_quote": "He spoke excitedly of sending myconids into the Overbright, something the party knew should be fatal or deeply unnatural for them",
+    "subject": "Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is the final stop of the tour, which the party suspects involves demonic sacrifice.",
+    "source_quote": "Their final stop before the Garden of Welcome was the Circle of Explorers",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The circle mound is where new myconids are spored and grown, featuring a forest of awakened zurkhwood trees nearby.",
+    "source_quote": "Next, the party visited the circle mound where new myconids were spored and grown",
+    "subject": "circle mound",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi.",
+    "source_quote": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Newly spored myconids are only a few inches tall and not yet aware.",
+    "source_quote": "Basidia showed them newly spored myconids only a few inches tall, not yet aware but soon to mature into myconid sprouts",
+    "subject": "myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The zurkhwood trees in the forest near the circle mound are awakened and sentient.",
+    "source_quote": "passing through a forest that includes awakened, sentient zurkhwood trees",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zuggtmoy is a demonic entity praised by Yrberop and Phylo, described in feminine terms and associated with a coming wedding.",
+    "source_quote": "He spoke excitedly of sending myconids into the Overbright... Yrberop praises the \u201cgreat Zuggtmoy\u201d",
+    "subject": "Zuggtmoy",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The party suspects the Garden of Welcome visit is intended to make them sacrifices to a demon.",
+    "source_quote": "The party increasingly suspected that the promised visit to the Garden of Welcome was intended to make them sacrifices to a demon",
+    "subject": "demon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia reveals that Hebopbe has been infected by strange evil spores.",
+    "source_quote": "What Basidia quietly revealed, however, was that Hebopbe had already been infected by the strange evil spores spreading through the colony",
+    "subject": "Hebopbe infected",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe is infected by strange evil spores.",
+    "source_quote": "Hebopbe has already been infected by the strange evil spores spreading through the colony",
+    "subject": "Hebopbe",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop is visibly infected and sways to discordant internal music.",
+    "source_quote": "The mound's leader, Yrberop, was visibly infected and swayed to discordant internal music that no one else could hear",
+    "subject": "Yrberop infected",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop is infected and hears a chaotic cacophony through his mind.",
+    "source_quote": "Yrberop, was visibly infected and swayed to discordant internal music that no one else could hear \u2014 a chaotic, painful cacophony",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin connects the noise Yrberop hears to his own dark memory of a demonic presence.",
+    "source_quote": "Thorin, drawing on a dark memory of his own time spent in the presence of something deeply wrong, felt certain that the noise and the evil he had encountered before were connected",
+    "subject": "Thorin recognizes threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop croons a lullaby to the newly spored myconids that praises Zuggtmoy and her wedding.",
+    "source_quote": "Yrberop lost interest in the conversation and began crooning a lullaby to the newly spored myconids",
+    "subject": "Yrberop sings lullaby",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo previously described Zuggtmoy in reverent, feminine terms and stated she must be experienced firsthand.",
+    "source_quote": "Phylo had previously described Zuggtmoy in reverent, specifically feminine terms and claimed that she could answer any question, but refused to explain what she was",
+    "subject": "Phylo quote",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo describes Zuggtmoy in feminine terms and claims she can answer any question.",
+    "source_quote": "Phylo had previously described Zuggtmoy in reverent, specifically feminine terms and claimed that she could answer any question",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump has prepared escape routes and hidden nutrient caches in the exit tunnels.",
+    "source_quote": "He had already prepared escape routes and hidden nutrient caches in the exit tunnels in case Basidia chose to abandon the grove",
+    "subject": "Rumpadump escape prep",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Nutrient caches are hidden in the exit tunnels for a potential nomadic migration.",
+    "source_quote": "hidden nutrient caches in the exit tunnels",
+    "subject": "nutrient caches",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump offers the party a way into the Garden of Welcome through a secret passageway.",
+    "source_quote": "It was Rumpadump who offered the party a way into the Garden of Welcome through a secret passageway",
+    "subject": "Rumpadump secret passageway",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers to bet that he was never infected by spores when challenged.",
+    "source_quote": "When challenged, Jimjar returned briefly to form by offering to bet that he had never been infected by spores",
+    "subject": "Jimjar bets",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is not infected by the strange spores.",
+    "source_quote": "Basidia confirmed that he was not infected",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party accepts Rumpadump's offer to investigate the Garden of Welcome immediately.",
+    "source_quote": "The party accepts immediately, comparing the decision to turning to the obviously fatal page of a choose-your-own-adventure book",
+    "subject": "party enters passage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party compares their decision to enter the secret passageway to turning to the fatal page of a choose-your-own-adventure book.",
+    "source_quote": "comparing the decision to turning to the obviously fatal page of a choose-your-own-adventure book",
+    "subject": "choose-your-own-adventure book",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Phylo's guided tour is scheduled for the morning.",
+    "source_quote": "without waiting for Phylo's guided tour in the morning",
+    "subject": "morning",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Yrberop mentions a 'great plan' by a 'great cedar' to bring happiness to all.",
+    "source_quote": "Yrberop speaks cryptically about a \u201cgreat plan\u201d by a \u201cgreat cedar\u201d to bring happiness to all",
+    "subject": "great plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The lullaby and Phylo's hints reference a coming wedding between Zuggtmoy and a 'great body'.",
+    "source_quote": "His lullaby praises Zuggtmoy, her wedding to the \u201cgreat body,\u201d and the invitation extended to every myconid",
+    "subject": "Zuggtmoy wedding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia uses rapport spores to link the party telepathically, shielding them from the corrupting spores in Yrberop's mind.",
+    "source_quote": "Basidia, rather than Yrberop, is responsible for the rapport spores linking the party, so the telepathic contact does not itself expose them to the corrupting spores",
+    "subject": "rapport spores",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe stops his detailed explanation of farming yields upon realizing the party is losing interest.",
+    "source_quote": "He nearly launches into a detailed explanation of farming yields before recognizing the party's fading interest and deferring the lecture",
+    "subject": "Hebopbe defers lecture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia bluntly prompts the party to ask Hebopbe about Phylo.",
+    "source_quote": "Basidia bluntly prompts the party to ask Hebopbe about Phylo, demonstrating little talent for discretion",
+    "subject": "Basidia prompts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe points out the terraces and cultivation program supplying the colony.",
+    "source_quote": "Hebopbe proudly points out the terraces and extensive cultivation program that keeps the colony supplied with varied food",
+    "subject": "Hebopbe shows food",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Newly spored myconids will mature into myconid sprouts.",
+    "source_quote": "newly spored myconids only a few inches tall, not yet aware but soon to mature into myconid sprouts",
+    "subject": "myconid sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo refuses to explain Zuggtmoy, stating one must experience it firsthand.",
+    "source_quote": "One cannot be told what the great Zuggtmoy is. One must experience it firsthand.",
+    "subject": "Zuggtmoy quote",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump trusts only Basidia and the party because Basidia vouches for them.",
+    "source_quote": "Rumpadump trusted only Basidia and, by extension, the party, and he made no secret of his fear that something terrible was unfolding in the grove",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump observes the colony changes further and for the worse upon each return from an expedition.",
+    "source_quote": "Every time he returned from an expedition, he found the colony changed further and for the worse",
+    "subject": "Rumpadump colony change",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar explains his lack of bets by claiming weddings make people unhappy.",
+    "source_quote": "Jimjar claims that nothing is wrong beyond the general truth that \u201canytime there's a wedding, you know, people get unhappy.\u201d",
+    "subject": "Jimjar excuse",
+    "quote_verified": true
+  }
+]

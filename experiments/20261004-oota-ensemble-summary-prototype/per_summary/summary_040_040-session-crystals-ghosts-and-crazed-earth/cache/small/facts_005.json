@@ -1,0 +1,107 @@
+[
+  {
+    "type": "location",
+    "fact": "The Rockblight is dark, damp, and chill, with rubble, shallow streams, and pools of difficult terrain.",
+    "source_quote": "The Rockblight was dark, damp, and chill, with rubble, shallow streams, and pools of difficult terrain.",
+    "subject": "The Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The connecting tunnels resemble those of Inner Blingdenstone but are empty.",
+    "source_quote": "The Rockblight\u2019s connecting tunnels resembled those of Inner Blingdenstone but were empty",
+    "subject": "The Rockblight connecting tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The crystal caverns are illuminated by bioluminescent fungi and semi-transparent crystal formations that cast a kaleidoscope of colors.",
+    "source_quote": "bioluminescent fungi shone through semi-transparent crystal formations, casting a kaleidoscope of colors across the walls",
+    "subject": "Crystal Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party discovered a stone statue of a deep gnome cowering beside a crystal outgrowth.",
+    "source_quote": "They discovered a stone statue of a deep gnome cowering beside a crystal outgrowth",
+    "subject": "Petrified Deep Gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The petrified deep gnome holds a broken crystal toward its face.",
+    "source_quote": "holding a broken crystal toward its face",
+    "subject": "Petrified Deep Gnome's crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal protects against creatures with gaze attacks when viewed through, acting like sunglasses against a Medusa.",
+    "source_quote": "looking through the crystals protected against creatures capable of harming or petrifying victims with their gaze\u2014effectively making the crystals magical sunglasses against a Medusa",
+    "subject": "Petrified Deep Gnome's crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a natural 20 on an Arcana check which, combined with Daz's expertise, revealed the crystals' protective properties.",
+    "source_quote": "Thorin\u2019s natural 20, combined with Daz\u2019s arcane expertise, revealed that looking through the crystals protected against creatures capable of harming or petrifying victims with their gaze",
+    "subject": "Thorin's Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party warned Glabbagool not to eat the crystals.",
+    "source_quote": "The party warned Glabbagool not to eat the crystals.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party collected portable crystals of several colors.",
+    "source_quote": "The party collected portable crystals in several colors.",
+    "subject": "crystal collection",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collected a teal crystal among the portable crystals.",
+    "source_quote": "including a teal one",
+    "subject": "Teal crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Thorin began a long technical discussion about crystal growth, color, and spell interactions.",
+    "source_quote": "Daz and Thorin nearly launched into a much longer discussion about crystal growth, color, and interactions with different spells.",
+    "subject": "Daz and Thorin's discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz noted that different crystal colors could produce different effects when combined with particular spells.",
+    "source_quote": "Daz noted that different colors could still produce different effects when combined with particular spells.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalled that a crystal\u2019s magic depended more on where and how it grew.",
+    "source_quote": "Thorin recalled that a crystal\u2019s magic depended more on where and how it grew",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to explore first before heading to the temple to the northeast or east.",
+    "source_quote": "The party knew the temple lay to the northeast or east but chose to explore first",
+    "subject": "party route decision",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party possesses portable crystals to protect against gaze attacks during their exploration.",
+    "source_quote": "so they could raise them to their faces if confronted by a gaze-wielding creature",
+    "subject": "Gaze-protected exploration",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "type": "location",
+    "fact": "Dawnbringer emits genuine sunlight in a fifteen-foot radius.",
+    "source_quote": "fifteen-foot radius",
+    "subject": "Dawnbringer sunlight radius",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three clustered creatures were badly burned by Daz's fireball.",
+    "source_quote": "badly burned three clustered creatures",
+    "subject": "burned creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith has transformed into a mindless drow spore servant after his head exploded.",
+    "source_quote": "his head exploded and he rose as a mindless drow spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin activated Dawnbringer to emit actual sunlight.",
+    "source_quote": "Thorin activates Dawnbringer, emitting actual sunlight",
+    "subject": "Dawnbringer activation",
+    "quote_verified": true
+  }
+]

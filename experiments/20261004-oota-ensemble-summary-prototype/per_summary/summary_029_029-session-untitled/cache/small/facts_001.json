@@ -1,0 +1,247 @@
+[
+  {
+    "type": "location",
+    "fact": "The party stands before a stone sarcophagus in the Lost Tomb of Khaem.",
+    "source_quote": "The party stood before the stone sarcophagus of Brysis",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis is a withered, mummified undead creature inside a stone sarcophagus.",
+    "source_quote": "the withered, mummified remains within",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his action to pry open the lid of Brysis's sarcophagus.",
+    "source_quote": "Zalthir had spent his action opening it",
+    "subject": "Sarcophagus opened",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Opening the sarcophagus prevents Brysis from hiding inside it.",
+    "source_quote": "so that Brysis could no longer hide inside",
+    "subject": "Brysis exposed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A sentient sword rests atop Brysis's remains in the sarcophagus.",
+    "source_quote": "Resting atop the ancient corpse was a sword",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer speaks and pleads to be rescued from her imprisonment.",
+    "source_quote": "pleading desperately to be rescued from its long imprisonment: \"You can't leave me here. Please.\"",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wishes the sword had been a less squeaky talking mace.",
+    "source_quote": "Gyrgum groaned at yet another talking magic sword and wished she had been a less squeaky talking mace",
+    "subject": "Zalthir and Gyrgum dialogue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir tells the sword she could have been a glove since he is a monk.",
+    "source_quote": "Zalthir, a monk with no use for bladed weapons, said she could at least have been a glove",
+    "subject": "Zalthir and Dawnbringer dialogue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer demands Zalthir bring the fighter to her.",
+    "source_quote": "she demanded, \"wait, you're a monk. Get the fighter over here.\"",
+    "subject": "Dawnbringer and Zalthir dialogue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The battle against Brysis is fought in a shroud of magical darkness.",
+    "source_quote": "fought largely in a shroud of magical darkness that blinded friend and foe alike",
+    "subject": "Combat darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves his orb of darkness over Thorin.",
+    "source_quote": "Zalthir moved his orb of darkness over Thorin",
+    "subject": "Zalthir moves darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends focus points to strike twice with advantage from inside the darkness.",
+    "source_quote": "spent focus points to strike twice with advantage from inside it",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum saves his last Turn Undead use as a potential escape option.",
+    "source_quote": "He held back on the GM's advice, saving his last use in case the party needed a quick getaway",
+    "subject": "Gyrgum prepares turn undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum decides not to cast Guiding Bolt because it would be at disadvantage.",
+    "source_quote": "He also passed on Guiding Bolt, which would have fired blind at disadvantage",
+    "subject": "Gyrgum passes on Guiding Bolt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Tasha's Caustic Brew as a five-foot-wide stream past Zalthir.",
+    "source_quote": "threaded a five-foot stream of Tasha's Caustic Brew past Zalthir",
+    "subject": "Gyrgum casts Tasha's Caustic Brew",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis fails her saving throw against Tasha's Caustic Brew.",
+    "source_quote": "Brysis blew the saving throw",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Acid clings to Brysis and causes ongoing damage.",
+    "source_quote": "acid clung to her and kept eating away at her",
+    "subject": "Acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires three scorching rays into the darkness at Brysis.",
+    "source_quote": "Daz, unable to see his target, fired three scorching rays into the darkness anyway",
+    "subject": "Daz casts Scorching Ray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two of Daz's rays hit for 10 damage each and one for 3 damage.",
+    "source_quote": "Two hit for 10 each and one for 3, a total of 23",
+    "subject": "Scorching Ray hits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis rages that she will not be defeated after a millennium of imprisonment.",
+    "source_quote": "Brysis raged that she would not be defeated after a millennium of imprisonment",
+    "subject": "Brysis speaks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz retreats up the tunnel to avoid being turned into a specter by Brysis.",
+    "source_quote": "Daz retreated up the tunnel so the creature could not turn him into a specter out of revenge",
+    "subject": "Daz retreats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is currently down 12 maximum hit points.",
+    "source_quote": "He is already down 12 maximum hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brysis is destroyed by the lingering acid before she can retaliate.",
+    "source_quote": "Brysis was resistant to acid, but she had only three hit points left, and she was destroyed before she could make good on his threat",
+    "subject": "Brysis destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis is destroyed, ending the battle.",
+    "source_quote": "she was destroyed before she could make good on his threat",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin reaches into the sarcophagus and pulls free the sentient sword.",
+    "source_quote": "he reached into the sarcophagus and pulled free the sentient sword",
+    "subject": "Thorin grabs sword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "When Thorin grasps her hilt, Dawnbringer ignites into a blade of pure radiance.",
+    "source_quote": "The moment he grasped the hilt, a blade of pure radiance blazed to life",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer identifies herself as a legendary sword.",
+    "source_quote": "The sword announced herself with \"Dawnbringer here! Let me show you what I can do!\"",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer deals radiant damage instead of slashing damage.",
+    "source_quote": "deals radiant damage instead of slashing",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer adds 1d8 damage against undead.",
+    "source_quote": "adds 1d8 against undead",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer grants the lesser restoration effect.",
+    "source_quote": "grants lesser restoration",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Igniting Dawnbringer's blade costs a bonus action.",
+    "source_quote": "igniting the blade costs a bonus action",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Brysis speaks her final words to Dawnbringer before being destroyed.",
+    "source_quote": "Brysis managed only \"not done, Dawnbringer.\"",
+    "subject": "Brysis",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is able to read.",
+    "source_quote": "She could even read",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum marvels that the sword can read.",
+    "source_quote": "Gyrgum to marvel, \"Wow, a sword that can read.\"",
+    "subject": "Gyrgum and Dawnbringer dialogue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer responds to Gyrgum's comment with a pointed \"seriously?\"",
+    "source_quote": "The sword's response was a pointed \"seriously?\"",
+    "subject": "Dawnbringer response",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin is seated atop a rise carpeted with soft, well-manicured green moss.",
+    "source_quote": "Chief Chipgrin seated atop a rise carpeted with soft, well-manicured green moss",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Chief Chipgrin's stone chair is draped with a cave badger pelt.",
+    "source_quote": "His stone chair was draped with a cave badger pelt",
+    "subject": "stone chair",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two giant rats are flanking Chief Chipgrin.",
+    "source_quote": "flanked by two giant rats",
+    "subject": "giant rats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin assumes the party was sent by the Diggermattocks to drive his clan out.",
+    "source_quote": "Chipgrin immediately assumed that the Diggermattocks had sent the party to drive his clan out",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Chief Chipgrin believes the Diggermattocks sent the party to drive the Clan Goldwhisker out.",
+    "source_quote": "You were sent by the Diggermattocks because they want us out, right?",
+    "subject": "Diggermattocks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz explains that the party wants to escape the Underdark.",
+    "source_quote": "Daz instead explained that the party wanted to escape the Underdark",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party learned that helping Blingdenstone defeat its ooze infestation would secure aid for escaping the Underdark.",
+    "source_quote": "had learned that helping Blingdenstone defeat its ooze infestation would secure that aid",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin has long wanted a conversation with Chief Dorbo.",
+    "source_quote": "Daz offered to arrange the conversation Chipgrin had long wanted with Chief Dorbo",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz offers to arrange the meeting between Chipgrin and Dorbo under the condition that it is for cooperation only.",
+    "source_quote": "Daz offered to arrange the conversation Chipgrin had long wanted with Chief Dorbo, but imposed strict conditions",
+    "subject": "negotiation offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz states the meeting must not involve political maneuvering, positioning, recrimination, or 'I told you so' opportunities.",
+    "source_quote": "the meeting would be for cooperation, not political maneuvering, positioning, recrimination, or opportunities to say \u201cI told you so.\u201d",
+    "subject": "Daz's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz states that if the conditions are not met, the party will leave and allow the gnomes to deal with the oozes themselves.",
+    "source_quote": "Otherwise, the party would leave and allow the gnomes to deal with the oozes themselves",
+    "subject": "Daz's threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin remarks that Daz takes negotiation difficulty to the next level.",
+    "source_quote": "I've been told that Drow are a difficult group to negotiate with, but you take it to the next level.",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz clarifies that he is asking for help, not negotiating.",
+    "source_quote": "It's not a negotiation. I'm here to ask you for your help.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin agrees to join the fight against the oozes.",
+    "source_quote": "Chief Chipgrin agreed to join the fight",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin refuses to place Clan Goldwhisker under Chief Dorbo's command.",
+    "source_quote": "refused to place the Clan Goldwhisker under Dorbo's command",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin refuses to participate in a 'grand crusade' designed to send his people to slaughter.",
+    "source_quote": "refused to place the Clan Goldwhisker under Dorbo's command or participate in a \u201cgrand crusade\u201d designed to send his people to slaughter",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker will not be placed under Chief Dorbo's command.",
+    "source_quote": "refused to place the Clan Goldwhisker under Dorbo's command",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz clarifies that the party will formulate the plan and make operational decisions.",
+    "source_quote": "Daz clarified that the party would formulate the plan and make the operational decisions",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz personally accepts responsibility if Goldwhisker fighters die due to party choices.",
+    "source_quote": "He personally accepted responsibility if Goldwhisker fighters died because of those choices",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz acknowledges that Chipgrin could seek vengeance against him afterward.",
+    "source_quote": "even acknowledging that Chipgrin could seek vengeance against him afterward",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states he has no ambition beyond eliminating the threat and leaving Blingdenstone.",
+    "source_quote": "Daz had no ambition beyond eliminating the threat and leaving Blingdenstone",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Chief Chipgrin agrees to the arrangement and promises to attend a broader meeting of clan leaders.",
+    "source_quote": "producing a moment of \u201cshock and awe\u201d among his listeners before he agreed to attend a broader meeting of the clan leaders",
+    "subject": "agreement reached",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz instructs Chipgrin to gather every able-bodied fighter and attend a meeting with Dorbo and Blingdenstone's other clan leaders.",
+    "source_quote": "Daz instructed Chipgrin to gather every able-bodied fighter and attend a meeting with Dorbo and Blingdenstone's other clan leaders",
+    "subject": "meeting instruction",
+    "quote_verified": true
+  }
+]

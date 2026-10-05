@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin made a successful check (16) based on his familiarity with giant-kind to reveal the stone giant had gone mad.",
+    "source_quote": "Thorin drew on his deep familiarity with giant-kind and made a successful check (a 16) that revealed the terrible truth: this creature had not chosen violence but had gone mad",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin urged the party and the duergar militia to bring the giant down without killing it.",
+    "source_quote": "Thorin urged the party and the duergar militia alike to bring the giant down without killing him",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir attacked the stone giant with a focus point.",
+    "source_quote": "Zalthir attacked with a focus point",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attacked the stone giant with a critical hit and Action Surge.",
+    "source_quote": "Thorin followed with his crit and Action Surge",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum charged in to attack the stone giant with his mace.",
+    "source_quote": "Gyrgum charged in with his mace",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum moved out of the darkness into melee range because he was more daring than he normally would be.",
+    "source_quote": "Gyrgum is \"more daring than Gyrgum normally would be.\" He moves out of the darkness into melee range",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's mace hit the stone giant for 1 damage.",
+    "source_quote": "Gyrgum's mace hits for 1 damage",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum used two-weapon fighting with the flat of his hand axe but missed.",
+    "source_quote": "He then uses two-weapon fighting with the flat of his hand axe and misses",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalled Gygax's interpretation regarding hit points.",
+    "source_quote": "Gygax's interpretation: \"100 hit points on a rhinoceros is different from 100 hit points on a human fighter.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempted to intimidate or persuade the duergar militia to spare the giant's life but failed.",
+    "source_quote": "Thorin's plea to the militia failed",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin chose to use intimidation because his modifier was +1, compared to -1 on other skills.",
+    "source_quote": "He goes with intimidation because his modifier there is +1, versus -1 on the others",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin spoke funeral words over the dead giant to save face in case the stone giants took offense.",
+    "source_quote": "Thorin spoke funeral words over the body to save face in case the giants took offense",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia ignored Thorin's plea and delivered the killing blow to the stone giant.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia was bound by a rigid code and unable to distinguish friend from foe inside Zalthir's magical darkness.",
+    "source_quote": "The militia, bound by their rigid code and unable to tell friend from foe inside Zalthir's magical darkness that blanketed part of the street",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar soldiers shrunk back to their normal size with a popping sound as combat ended.",
+    "source_quote": "The duergar soldiers shrink back to their normal size with the \"usual popping sound\"",
+    "subject": "duergar soldiers",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rihuud is the stone giant who was killed in the battle.",
+    "source_quote": "The giant, later identified as Rihuud, crumpled to the stone floor of the city",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant was brought down from 34 hit points to 8 by non-lethal attacks.",
+    "source_quote": "The party switched to non-lethal weapon attacks and wore the giant down from 34 hit points to 8",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant is dead, killed by the duergar militia.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum used his mace to attack the stone giant.",
+    "source_quote": "Gyrgum charged in with his mace",
+    "subject": "Gyrgum's mace",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum used the flat of his hand axe for two-weapon fighting.",
+    "source_quote": "He then uses two-weapon fighting with the flat of his hand axe",
+    "subject": "Gyrgum's hand axe",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Part of the city street was blanketed in Zalthir's magical darkness.",
+    "source_quote": "inside Zalthir's magical darkness that blanketed part of the street",
+    "subject": "city street",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical darkness cast by Zalthir lifted after the giant died.",
+    "source_quote": "The darkness lifted",
+    "subject": "Zalthir's darkness lifts",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gygax is a source cited by Gyrgum regarding the interpretation of hit points.",
+    "source_quote": "Gygax's interpretation: \"100 hit points on a rhinoceros is different from 100 hit points on a human fighter.\"",
+    "subject": "Gygax",
+    "quote_verified": true
+  }
+]

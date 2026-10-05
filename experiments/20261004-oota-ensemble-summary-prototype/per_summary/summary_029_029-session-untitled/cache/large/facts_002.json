@@ -1,0 +1,219 @@
+[
+  {
+    "type": "event",
+    "fact": "The party searched the tomb after defeating Brysis.",
+    "source_quote": "With Brysis defeated, the party searched the tomb.",
+    "subject": "searching the tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A thin gold sheath covers the sarcophagus.",
+    "source_quote": "found a thin gold sheath covering the sarcophagus",
+    "subject": "gold sheath",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gold sheath is worth 250 gold pieces.",
+    "source_quote": "worth 250 gold pieces",
+    "subject": "gold sheath",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pried loose the thin gold covering from Brysis's sarcophagus.",
+    "source_quote": "The party pries loose a thin gold covering from Brysis's sarcophagus",
+    "subject": "gold sheath removal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party discovered a chest that had been rendered completely invisible by magic.",
+    "source_quote": "a chest that had been rendered completely invisible by magic",
+    "subject": "invisible chest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cast Faerie Fire to strip away the enchantment on the chest.",
+    "source_quote": "Daz's Faerie Fire stripped away the enchantment.",
+    "subject": "Faerie Fire cast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz initially called the spell 'Faerie Fly' and was corrected.",
+    "source_quote": "He first calls it \"Faerie Fly\" and is corrected.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party compared their sleight of hand abilities.",
+    "source_quote": "The party compares sleight of hand.",
+    "subject": "sleight of hand check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has the worst sleight of hand in the group, with a modifier of -1.",
+    "source_quote": "Thorin has the worst sleight of hand in the group... Thorin has the worst at -1",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin was eager to open the chest despite his poor skill.",
+    "source_quote": "he is eager to do it anyway.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir volunteered to open the chest, stating he would 'take one for the team'.",
+    "source_quote": "Zalthir volunteers (\"I'll do it. I'll take one for the team.\")",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir successfully opened the chest.",
+    "source_quote": "Zalthir ... successfully opens the chest.",
+    "subject": "chest opening",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The contents of the chest were invisible and had to be dumped onto the floor.",
+    "source_quote": "Its contents were themselves invisible and had to be dumped onto the floor.",
+    "subject": "chest contents revealed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained 4,000 silver pieces.",
+    "source_quote": "They held 4,000 silver pieces",
+    "subject": "silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained 1,200 gold pieces.",
+    "source_quote": "1,200 gold pieces",
+    "subject": "gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained eleven zircons.",
+    "source_quote": "eleven zircons",
+    "subject": "zircons",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The zircons are worth 50 gold each.",
+    "source_quote": "eleven zircons worth 50 gold each",
+    "subject": "zircons",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained a necklace of fireballs.",
+    "source_quote": "a necklace of fireballs",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The necklace has four beads.",
+    "source_quote": "The necklace has four beads.",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Each bead can be thrown as a fireball.",
+    "source_quote": "Each can be thrown as a fireball",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "All four beads can be detached and thrown at once.",
+    "source_quote": "or all four can be detached and thrown at once.",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum claimed the necklace of fireballs.",
+    "source_quote": "Gyrgum claims the necklace",
+    "subject": "necklace claimed",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained a philter of love.",
+    "source_quote": "a philter of love",
+    "subject": "philter of love",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest contained a potion of greater healing.",
+    "source_quote": "a potion of greater healing",
+    "subject": "potion of greater healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that consumables belong to the whole party.",
+    "source_quote": "The GM ruled that consumables belong to the whole party.",
+    "subject": "loot distribution",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz moved the money into D&D Beyond's new party inventory tab.",
+    "source_quote": "Daz moved the money into D&D Beyond's new party inventory tab.",
+    "subject": "inventory update",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer is revealed to speak, read, and understand Common.",
+    "source_quote": "Dawnbringer is revealed to speak, read, and understand Common.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer responded to Gyrgum's comments with a flat 'seriously?'.",
+    "source_quote": "the sword answers with a flat \"seriously?\"",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum quipped about needing an invisible key.",
+    "source_quote": "Gyrgum quips, \"Does anyone have an invisible key?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum made comments about Dawnbringer reading.",
+    "source_quote": "This prompts Gyrgum's \"a sword that can read\" and \"They've upgraded these things\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum pointed out the new party inventory tab in D&D Beyond.",
+    "source_quote": "Gyrgum points out D&D Beyond's new party inventory tab",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

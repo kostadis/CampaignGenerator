@@ -1,0 +1,149 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir devised a plan to capture the Pudding King by Shadow Stepping to him, grappling him, and flying away.",
+    "source_quote": "Zalthir nevertheless devised the core of a workable plan. In dim light, he could Shadow Step up to sixty feet, reach the Pudding King, grapple him, and fly away with him.",
+    "subject": "Zalthir's plan",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Green slime clings to the ceiling of the Pudding King's chamber.",
+    "source_quote": "Green slime clinging to the ceiling complicated the escape",
+    "subject": "green slime",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Green slime could fall onto Zalthir as he passes underneath it during the aerial escape.",
+    "source_quote": "because it could fall onto Zalthir as he passed underneath",
+    "subject": "slime hazard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Incapacitating the Pudding King could release hundreds of uncontrolled oozes to wander Blingdenstone.",
+    "source_quote": "the Pudding King\u2019s incapacitation could release hundreds of uncontrolled oozes to wander through Blingdenstone in search of food",
+    "subject": "Pudding King incapacitation risk",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A large coordinated distraction is necessary to contain the ooze army.",
+    "source_quote": "A large, coordinated distraction\u2014and defenders ready to contain the ooze army\u2014would therefore be necessary.",
+    "subject": "distraction requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered using fireballs to aid in the capture plan.",
+    "source_quote": "The party considered fireballs",
+    "subject": "fireball consideration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered collapsing rubble to contain the oozes.",
+    "source_quote": "collapsing rubble",
+    "subject": "rubble collapse consideration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered sealing the caves to contain the oozes.",
+    "source_quote": "sealing the caves",
+    "subject": "cave sealing consideration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool warned that oozes can squeeze through extremely small gaps.",
+    "source_quote": "Glabbagool warned that oozes could squeeze through extremely small gaps",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offered to motivate Blingdenstone\u2019s troops with a speech.",
+    "source_quote": "Gyrgum offered to motivate Blingdenstone\u2019s troops with a speech",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum imagined a rallying cry beginning with 'We will fight them in the pudding court. We will fight them on the rubble. We will fight them by the glowing pool.'",
+    "source_quote": "imagining a rallying cry that began, \u201cWe will fight them in the pudding court. We will fight them on the rubble. We will fight them by the glowing pool.\u201d",
+    "subject": "Gyrgum's speech draft",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party concluded they needed the city\u2019s army.",
+    "source_quote": "They concluded that they needed the city\u2019s army",
+    "subject": "Blingdenstone army",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party considered asking Clan Goldwhisker to participate.",
+    "source_quote": "The party also considers asking Clan Goldwhisker to participate.",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party hopes the common war against the oozes provides an opportunity for reconciliation with Clan Goldwhisker.",
+    "source_quote": "might even provide \u201can opportunity for reconciliation.\u201d",
+    "subject": "Goldwhisker reconciliation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to report to Dorbo first.",
+    "source_quote": "They decide to report to Dorbo first",
+    "subject": "report to Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to secure the Goldwhiskers\u2019 aid as part of a coordinated response.",
+    "source_quote": "then secure the Goldwhiskers\u2019 aid as part of a coordinated response.",
+    "subject": "Goldwhisker aid strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir can Shadow Step up to sixty feet in dim light.",
+    "source_quote": "In dim light, he could Shadow Step up to sixty feet",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The throne chamber is dim enough for Zalthir's infiltration.",
+    "source_quote": "The throne chamber is dim enough for the infiltration",
+    "subject": "Pudding King's chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Three gelatinous cubes previously caused damage in the Traders\u2019 Grotto.",
+    "source_quote": "contrast the hundreds gathered in the cavern with the damage caused by only three gelatinous cubes in the Traders\u2019 Grotto",
+    "subject": "Traders\u2019 Grotto",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party recognized that improvised rubble barriers are unreliable because oozes move through small spaces.",
+    "source_quote": "Glabbagool praises the idea but warns that oozes can move through extremely small spaces, making an improvised rubble barrier unreliable.",
+    "subject": "containment plan revision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Proper containment would require sealed walls, Blingdenstone\u2019s labor, organization, and advance knowledge.",
+    "source_quote": "Proper containment would require sealed walls and therefore Blingdenstone\u2019s labor, organization, and advance knowledge of the situation.",
+    "subject": "proper containment requirements",
+    "quote_verified": true
+  }
+]

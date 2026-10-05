@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir retrieves the spider medallion from Xinaya's bloated, fungal hand while she is still alive.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand while she was still alive",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya warns the party that those infected by the spores have only days to find a cure before sharing her fate.",
+    "source_quote": "The dying drow warned the party that those infected by the spores had only days to find a cure before sharing her fate",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya states that it is too late for her to be cured.",
+    "source_quote": "Asked whether she can still be cured, Xinaya answers, \u201cIt is too late for me.\u201d",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum considers using lesser restoration on Xinaya but determines she is beyond its power.",
+    "source_quote": "Gyrgum considered lesser restoration... but she was too far gone",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum briefly considers revivify for Xinaya but notes he has no third-level spell slots remaining.",
+    "source_quote": "Gyrgum briefly considers revivify as well, though he has no third-level spell slots remaining",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin consults quietly with Dawnbringer regarding the decision to grant Xinaya's request.",
+    "source_quote": "Thorin consulted quietly with Dawnbringer",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin delivers a mercy kill to Xinaya at her own request.",
+    "source_quote": "Thorin... delivers a mercy kill to Xinaya at her own request to end her suffering",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin characterizes his relationship with Dawnbringer as an unexpected marriage.",
+    "source_quote": "Thorin described his bond with the blade as a marriage he had not requested but intended to honor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer is a sentient blade that Thorin treats as an equal partner in decisions.",
+    "source_quote": "Thorin asks Dawnbringer whether it agrees with granting Xinaya's request, treating the sword as an equal partner in the decision",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The spider medallion is retrieved from Xinaya's hand by Zalthir.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand",
+    "subject": "spider medallion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Xinaya's hand is described as bloated and fungal.",
+    "source_quote": "Xinaya's bloated, fungal hand",
+    "subject": "Xinaya's hand",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Sarith transformed into a spore servant.",
+    "source_quote": "Sarith... whose head had exploded during his transformation into a spore servant",
+    "subject": "spore servant",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The spore servant's head exploded during Sarith's transformation.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is the party's former companion.",
+    "source_quote": "The party discovers the remains of their former companion Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith's head exploded during his transformation.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya is killed by Thorin and Dawnbringer via mercy kill.",
+    "source_quote": "together they granted her the merciful death she had begged for",
+    "subject": "Xinaya's death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is dead, having received a mercy kill from Thorin and Dawnbringer.",
+    "source_quote": "together they granted her the merciful death she had begged for",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith transformed into a spore servant, resulting in his head exploding.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith's transformation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is dead, his head having exploded during his transformation into a spore servant.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a sentient blade wielded by Thorin.",
+    "source_quote": "Thorin, wielding Dawnbringer and consulting with the sentient blade",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin and Dawnbringer act together to grant Xinaya's mercy kill.",
+    "source_quote": "Thorin, wielding Dawnbringer and consulting with the sentient blade, delivers a mercy kill to Xinaya",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Those infected by the spores have only a few days to find a cure.",
+    "source_quote": "those infected by the spores had only days to find a cure before sharing her fate",
+    "subject": "spore infection cure timeline",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Magic on the scale of a wish is stated as potentially the only way to restore someone in Xinaya's condition.",
+    "source_quote": "only magic on the scale of a wish might have restored her",
+    "subject": "wish-level magic requirement",
+    "quote_verified": true
+  }
+]

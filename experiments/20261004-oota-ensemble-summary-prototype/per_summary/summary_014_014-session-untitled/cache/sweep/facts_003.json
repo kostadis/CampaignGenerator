@@ -1,0 +1,114 @@
+[
+  {
+    "type": "location",
+    "fact": "The party moves through the stone corridors of Gracklstugh.",
+    "source_quote": "they set off through the stone corridors of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are an organization in Gracklstugh that the party visits.",
+    "source_quote": "Daz, curious about the dragon and the Keepers of the Flame, insisted they first pay the Keepers a visit",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is down to five hit points.",
+    "source_quote": "Daz is down to five hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar notes that the party is equipped and ready to head toward Blingdenstone.",
+    "source_quote": "Jimjar notes that the party is equipped and ready to head toward Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is the destination the party intends to travel to.",
+    "source_quote": "Jimjar urges the group to gather their things and make for Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The Topsy-Turvy twins quietly slipped away from the shared room during the night.",
+    "source_quote": "the party woke to find that the Topsy-Turvy twins had quietly slipped away during the night",
+    "subject": "Topsy-Turvy twins",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks if the Topsy-Turvy twins were the wererats.",
+    "source_quote": "Zalthir asks, \"Were they the wererats?\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Wererats are a creature type referenced in connection with the Topsy-Turvy twins.",
+    "source_quote": "Zalthir asks, \"Were they the wererats?\"",
+    "subject": "wererats",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido looks cranky.",
+    "source_quote": "Buppido still looks cranky",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recounts Orwell's *Down and Out in Paris and London*.",
+    "source_quote": "Gyrgum recounts Orwell's Down and Out in Paris and London",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Orwell is the author of the book *Down and Out in Paris and London*.",
+    "source_quote": "Gyrgum recounts Orwell's Down and Out in Paris and London",
+    "subject": "Orwell",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party spends five copper pieces per person for the night in the shared room.",
+    "source_quote": "The party spends the night in a shared room with bunk beds for five copper pieces per person",
+    "subject": "lodging cost",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The shared room contains bunk beds.",
+    "source_quote": "After a night spent crammed into a shared room with bunk beds",
+    "subject": "bunk beds",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The rest of the party's crew was put up in the same establishment.",
+    "source_quote": "The establishment is where the rest of their crew had been put up",
+    "subject": "crew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to visit the Keepers of the Flame before leaving the city.",
+    "source_quote": "The rest of the party agreed, and they set off through the stone corridors of Gracklstugh",
+    "subject": "decision to visit Keepers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar is cool with the plan to visit the Keepers of the Flame.",
+    "source_quote": "Jimjar is \"cool with that.\"",
+    "subject": "Jimjar's agreement",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,163 @@
+[
+  {
+    "type": "monster",
+    "fact": "A gray ooze emerges near the escape route and strikes Thorin for twelve points of damage.",
+    "source_quote": "A gray ooze emerged near the escape route... The creature struck Thorin for a punishing blow",
+    "subject": "gray ooze",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The gray ooze deals twelve points of damage to Thorin.",
+    "source_quote": "The gray ooze attacks Thorin first and deals twelve points of damage.",
+    "subject": "Thorin attacked",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin wears newly acquired armor that Eldeth warns the gray ooze could devour.",
+    "source_quote": "Eldeth warned that its corrosive body could devour his newly acquired armor",
+    "subject": "Thorin's armor",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party members disengage and run from the gray ooze because it is slower than they are.",
+    "source_quote": "One after another they disengaged and ran, leaving it thrashing futilely behind them.",
+    "subject": "Party disengages",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith favors fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar favors fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "source_quote": "Sarith and Shuushar favor fleeing toward the Darklake rather than heading along the route toward Menzoberranzan.",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum disengages and runs rather than attempting to fight the gray ooze.",
+    "source_quote": "Gyrgum disengages and runs rather than attempting to fight the ooze.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz follows the others after confirming there is no need to fight the giant spiders overhead.",
+    "source_quote": "Daz follows after confirming that there is no need to fight the giant spiders overhead.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wants to strike back but chooses to flee after recognizing the gray ooze is much slower than the party.",
+    "source_quote": "Thorin wants to strike back but chooses to flee after recognizing that the ooze is much slower than the party.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A badly wounded vrock descends from the battle above and lands beside the fleeing prisoners.",
+    "source_quote": "A badly wounded vrock descended from the battle above and landed directly beside the fleeing prisoners.",
+    "subject": "vrock descends",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The vrock demon is badly wounded but lands beside the group before they leave the battlefield.",
+    "source_quote": "A badly wounded vrock descended from the battle above and landed directly beside the fleeing prisoners.",
+    "subject": "vrock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is forced to disengage because the vrock lands directly beside him.",
+    "source_quote": "Daz is forced to disengage because the vrock lands directly beside him.",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Ront refuses to run and attacks the vrock with his great axe to prove himself as a warrior.",
+    "source_quote": "Ront refused to run... the orc attacked with his great axe and dealt the demon a solid blow.",
+    "subject": "Ront",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Ront deals nine points of damage to the vrock with his great axe.",
+    "source_quote": "Ront's blow deals nine points of damage and leaves the vrock looking even more wounded.",
+    "subject": "Ront attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shuushar refuses to follow Ront into the fight against the vrock.",
+    "source_quote": "Shuushar refused to follow him into the suicidal battle.",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool follows Shuushar away from the danger.",
+    "source_quote": "Shuushar refuses to follow Ront into the fight, while Stool follows Shuushar away from the danger.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock strikes Ront down with its talons and kills him.",
+    "source_quote": "The vrock retaliates against Ront, striking him down with its talons and killing him.",
+    "subject": "Ront killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ront is dead, killed by the vrock's talons.",
+    "source_quote": "The vrock retaliates against Ront, striking him down with its talons and killing him.",
+    "subject": "Ront",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vrock menaces Daz with its beak before taking flight.",
+    "source_quote": "It then menaced Daz with its beak before taking flight",
+    "subject": "vrock flies",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The survivors sprint into the tunnels of the Underdark to escape.",
+    "source_quote": "The survivors sprinted into the tunnels... The party successfully flees into the tunnels of the Underdark.",
+    "subject": "Underdark tunnels",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party is stranded in the Underdark without food, water, money, or a map.",
+    "source_quote": "they were stranded deep in the Underdark without food, water, money, or a map",
+    "subject": "survival resources",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is unsure which former prisoners remain allies.",
+    "source_quote": "accompanied by former prisoners who might or might not remain allies",
+    "subject": "prisoner alliances",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has darkvision with a range of 120 feet.",
+    "source_quote": "Daz took what comfort he could from his ability to see through darkness for 120 feet.",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

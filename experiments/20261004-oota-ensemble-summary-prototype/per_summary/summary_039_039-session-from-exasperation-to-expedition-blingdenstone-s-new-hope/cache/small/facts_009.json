@@ -1,0 +1,233 @@
+[
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine represents the Miners' Guild.",
+    "source_quote": "Kazook Pickshine, representing the Miners' Guild, expressed concern",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine warned that ooze acid could destroy the soldiers' weapons and armor.",
+    "source_quote": "Kazook Pickshine warned that ooze acid could destroy the soldiers' weapons and armor.",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Kazook Pickshine possesses a formula capable of protecting equipment from acid corrosion.",
+    "source_quote": "He possessed a formula capable of protecting equipment",
+    "subject": "protective treatment formula",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The protective treatment formula requires a large quantity of ingredients from Neverlight Grove.",
+    "source_quote": "needed a large quantity of ingredients from Neverlight Grove.",
+    "subject": "protective treatment ingredients",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Kazook Pickshine acts as the representative for the Miners' Guild.",
+    "source_quote": "Kazook Pickshine, representing the Miners' Guild, expressed concern",
+    "subject": "Miners' Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is the source of ingredients needed for the equipment protective treatment.",
+    "source_quote": "needed a large quantity of ingredients from Neverlight Grove.",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Salt is proposed as a trade good to exchange for high-quality weapons from Gracklstugh.",
+    "source_quote": "Blingdenstone could send salt to Gracklstugh in exchange for high-quality replacement weapons.",
+    "subject": "salt",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "High-quality replacement weapons are available from Gracklstugh in exchange for salt.",
+    "source_quote": "in exchange for high-quality replacement weapons.",
+    "subject": "high-quality replacement weapons",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh might no longer exist in a useful form.",
+    "source_quote": "Gracklstugh might no longer exist in a useful form",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party left Gracklstugh on less than ideal terms.",
+    "source_quote": "they had not left the city on ideal terms.",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The leaders acknowledged that the adventurers could decline the journey to Gracklstugh.",
+    "source_quote": "The leaders acknowledged that the adventurers could decline the journey",
+    "subject": "trade proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The leaders suggested a gnome caravan could attempt the salt trade with Gracklstugh.",
+    "source_quote": "let a gnome caravan attempt the trade.",
+    "subject": "trade proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokingly suggested the gnomes could \"DoorDash\" the shipment.",
+    "source_quote": "The party jokingly suggested that the gnomes could simply \u201cDoorDash\u201d the shipment.",
+    "subject": "party joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni favored obtaining Earth Elementals to protect the fighters.",
+    "source_quote": "Senni favored obtaining Earth Elementals because their presence would better protect the fighters.",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker refused to act as cannon fodder.",
+    "source_quote": "Clan Goldwhisker refused to act as cannon fodder",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker demanded that Diggermattocks and elemental support commit to the battle to agree to fight.",
+    "source_quote": "unless the Diggermattocks and elemental support also committed to the battle.",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger stated that other Burrow Warden spirits would join the coming fight.",
+    "source_quote": "Uth-Jadger said that other Burrow Warden spirits would join the coming fight",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger stated that the spirits' participation depends on the party dealing with a separate task.",
+    "source_quote": "if the party dealt with a quest on their behalf.",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Burrow Warden spirits are willing to join the coming fight.",
+    "source_quote": "other Burrow Warden spirits would join the coming fight",
+    "subject": "Burrow Warden spirits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo's committee offered a Stone of Controlling Earth Elementals to the party.",
+    "source_quote": "Dorbo's committee offered a Stone of Controlling Earth Elementals as payment",
+    "subject": "Stone of Controlling Earth Elementals offer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Stone of Controlling Earth Elementals can summon an Earth Elemental friendly to the user.",
+    "source_quote": "The stone could summon an Earth Elemental friendly to the user",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The summoned Earth Elemental remains friendly for roughly an hour.",
+    "source_quote": "friendly to the user and their companions for roughly an hour.",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Stone of Controlling Earth Elementals was offered as payment for cleansing the Rockblight.",
+    "source_quote": "payment for cleansing the Rockblight",
+    "subject": "Rockblight quest proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Stone of Controlling Earth Elementals was offered as payment for defeating Ogr\u00e9moch's Bane.",
+    "source_quote": "and defeating Ogr\u00e9moch's Bane.",
+    "subject": "Rockblight quest proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir stated that he does not want to enslave an Earth Elemental.",
+    "source_quote": "Zalthir said, \u201cI don't want to enslave an Earth Elemental.\u201d",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo's committee sweetened the Rockblight proposal by offering the Stone of Controlling Earth Elementals.",
+    "source_quote": "Chief Dorbo's committee sweetened the Rockblight proposal by offering the party a Stone of Controlling Earth Elementals.",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party objected to the language of control in the elemental proposal.",
+    "source_quote": "The party objected to the language of control.",
+    "subject": "party objection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asked whether Blingdenstone possessed \"stones of befriending Earth Elementals\".",
+    "source_quote": "They asked whether Blingdenstone possessed \u201cstones of befriending Earth Elementals\u201d",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group imagined freeing the elemental by giving it its own control stone.",
+    "source_quote": "imagined handing the elemental its own control stone",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group compared freeing the elemental via a control stone to \"giving Dobby a sock\".",
+    "source_quote": "\u201clike giving Dobby a sock\u201d",
+    "subject": "party speculation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party speculated that repeated summoning might call the same individual elemental each time.",
+    "source_quote": "speculated that repeated summoning might call the same individual elemental each time",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party believed Glabbagool and a prospective Earth Elemental would have things in common.",
+    "source_quote": "Glabbagool and the prospective elemental were expected to have things in common",
+    "subject": "party speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party joked that maintaining a good \"summoner score\" could pair them with desirable elementals.",
+    "source_quote": "jokes about maintaining a good \u201csummoner score\u201d",
+    "subject": "party joke",
+    "quote_verified": true
+  }
+]

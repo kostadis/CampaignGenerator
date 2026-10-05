@@ -1,0 +1,184 @@
+[
+  {
+    "type": "event",
+    "fact": "A squad of duergar militia joins the party to fight the stone giant.",
+    "source_quote": "the party found themselves alongside a squad of duergar militia",
+    "subject": "duergar militia joined",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia act very official.",
+    "source_quote": "act very official",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar militia are on the party's side.",
+    "source_quote": "are on the party's side",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has two heads.",
+    "source_quote": "stone giant with two heads",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has a rocky hide.",
+    "source_quote": "giant's rocky hide",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant currently has 34 hit points.",
+    "source_quote": "The giant is at 34 hit points at this point",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has gone mad.",
+    "source_quote": "madness that had overtaken him",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stone giants are unforgiving of those who kill their kind.",
+    "source_quote": "Stone giants are particularly unforgiving of those who kill their kind",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two duergar guards magically enlarge themselves to enormous size.",
+    "source_quote": "Two of the duergar guards swelled to enormous size",
+    "subject": "duergar enlarge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two duergar unleash sprays of fire at the giant.",
+    "source_quote": "two of them unleashed sprays of fire",
+    "subject": "duergar fire attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fire sprays deal 23 points of damage to the giant.",
+    "source_quote": "scorched the giant's rocky hide for 23 points of damage",
+    "subject": "giant damaged by fire",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's club hit one duergar for 19 damage.",
+    "source_quote": "hitting one duergar for 19 damage",
+    "subject": "duergar damaged",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's second swing narrowly misses Zalthir.",
+    "source_quote": "narrowly missing Zalthir",
+    "subject": "Zalthir evade giant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir has an AC of 15.",
+    "source_quote": "against Zalthir's AC 15",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum calls upon his divine power through his holy symbol.",
+    "source_quote": "Gyrgum called upon his divine power through his holy symbol",
+    "subject": "Gyrgum divine channel",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin recognizes the giant has likely gone mad via a check.",
+    "source_quote": "Thorin makes a nature/history/survival check (16) and recognizes the giant has likely gone mad",
+    "subject": "Thorin identification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz strikes the giant with Magic Missile.",
+    "source_quote": "Daz strikes the giant with Magic Missile",
+    "subject": "Daz magic missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz deals 6 damage with Magic Missile.",
+    "source_quote": "dealing 6 damage",
+    "subject": "Daz damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir declares non-lethal damage.",
+    "source_quote": "Zalthir declares non-lethal damage",
+    "subject": "Zalthir non-lethal declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks three times.",
+    "source_quote": "attacks three times",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point on his third attack.",
+    "source_quote": "spending a focus point on the third",
+    "subject": "Zalthir focus point",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits the giant for 5 damage.",
+    "source_quote": "hits for 5 damage",
+    "subject": "Zalthir hits giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin scores a critical hit with his short sword.",
+    "source_quote": "Thorin landed a critical hit with his short sword",
+    "subject": "Thorin critical hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Action Surge to strike again.",
+    "source_quote": "used Action Surge to strike again",
+    "subject": "Thorin action surge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the giant for 6 more damage.",
+    "source_quote": "hits again for 6 more damage",
+    "subject": "Thorin second hit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle with the stone giant takes place in the streets of Gracklstugh.",
+    "source_quote": "The streets of Gracklstugh erupted into chaos",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  }
+]

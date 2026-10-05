@@ -1,0 +1,254 @@
+[
+  {
+    "type": "npc",
+    "fact": "Basidia noticed that Sarith is infected with spores she does not recognize.",
+    "source_quote": "She had noticed that Sarith was infected with spores she did not recognize",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia fears that Phylo has been similarly infected with unknown spores.",
+    "source_quote": "She feared that Phylo had been similarly infected",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Phylo restructured the grove's seven circles so that members meld only within their own circle.",
+    "source_quote": "He had restructured the grove's seven circles so that members melded only within their own circle",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Phylo created a new inner circle and a Circle of Masters.",
+    "source_quote": "He had also created a new inner circle and a Circle of Masters",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Masters is taking most of the zurkh carcasses the hunters bring in.",
+    "source_quote": "The Circle of Masters was taking most of the zurkh carcasses the hunters brought in",
+    "subject": "Circle of Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Masters is sending groups of myconids outside the grove without telling anyone.",
+    "source_quote": "sending groups of myconids outside the grove without telling anyone",
+    "subject": "Circle of Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia gave the party a moldy scroll case holding a scroll of protection against fiends.",
+    "source_quote": "Basidia gave the party a moldy scroll case holding a scroll of protection against fiends",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia offered potions and treasure to the party if they investigate the Garden of Welcome.",
+    "source_quote": "She also offered potions brewed from the grove's molds, plus treasure, if they would investigate the Garden of Welcome on her behalf",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia refuses to go to the Garden of Welcome herself for fear of falling to corruption.",
+    "source_quote": "She could not go herself for fear of falling to the same corruption that had claimed her close friend and co-sovereign",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is a co-sovereign and close friend of Basidia who has fallen to corruption.",
+    "source_quote": "fear of falling to the same corruption that had claimed her close friend and co-sovereign",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia warns the party not to stay long in Neverlight Grove.",
+    "source_quote": "Basidia warns the party not to stay long in Neverlight Grove",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A previous group of travelers disappeared after visiting the Garden of Welcome and were never seen again.",
+    "source_quote": "a previous group of travelers disappeared after visiting the Garden of Welcome and were never seen again",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo plans to take the party to the Garden of Welcome tomorrow.",
+    "source_quote": "Phylo plans to take the party to the Garden of Welcome tomorrow",
+    "subject": "Phylo's plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is infected with unknown spores that Basidia cannot identify.",
+    "source_quote": "Basidia notices that Sarith is infected with unknown spores she does not recognize",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls Rumpadump's report about Yggmorgus releasing strange spores.",
+    "source_quote": "Daz recalls Rumpadump's early report of Yggmorgus releasing strange spores",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump reported that Yggmorgus was releasing strange spores.",
+    "source_quote": "Rumpadump's early report of Yggmorgus releasing strange spores",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yggmorgus is releasing strange spores.",
+    "source_quote": "Yggmorgus releasing strange spores",
+    "subject": "Yggmorgus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks that there are no magical solutions to social problems.",
+    "source_quote": "Gyrgum remarks that \"there's no magical solutions to social problems\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers to cast lesser restoration on Phylo.",
+    "source_quote": "He also offers to cast lesser restoration on Phylo",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia tells Gyrgum that if he could convince Phylo to take the restoration, perhaps he would.",
+    "source_quote": "Basidia answers, \"If you could convince him, perhaps\"",
+    "subject": "Basidia",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia tells Zalthir that Phylo is not well.",
+    "source_quote": "She replies: \"Phylo is not well\"",
+    "subject": "Basidia",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The scroll comes in a moldy scroll case.",
+    "source_quote": "It comes in a moldy scroll case",
+    "subject": "Scroll of protection against fiends",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The scroll lasts five minutes.",
+    "source_quote": "It lasts five minutes",
+    "subject": "Scroll of protection against fiends",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia brews potions in gourd-like mushrooms.",
+    "source_quote": "She brews potions in gourd-like mushrooms",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia can brew common or uncommon potions in eight hours.",
+    "source_quote": "common or uncommon in eight hours",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia can brew rare potions in two days.",
+    "source_quote": "rare in two days",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks Basidia for a mark of their authority.",
+    "source_quote": "Zalthir asks for a mark of their authority",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia tells Zalthir her word is enough for authority.",
+    "source_quote": "Basidia says her word is enough",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia accompanies the party everywhere except the Garden of Welcome to vouch for their authority.",
+    "source_quote": "She will accompany them everywhere except the Garden of Welcome",
+    "subject": "Basidia vouching for party",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party begins a tour of the various circles in Neverlight Grove.",
+    "source_quote": "The party begins a tour of the various circles",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The circles include hunters, explorers, sowers, builders, growers, the inner circle, and the Circle of Masters.",
+    "source_quote": "The seven circles are hunters, explorers, sowers, builders, and growers, plus the new inner circle and Circle of Masters",
+    "subject": "Myconid Circles",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Each circle gathers around a circle mound of rock and soil.",
+    "source_quote": "Each circle gathers around a circle mound of rock and soil",
+    "subject": "Circle Mounds",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Phylo claims the segregation of circles is for efficiency and a higher level of communal harmony.",
+    "source_quote": "Phylo claims this is for efficiency and \"a higher level of communal harmony\"",
+    "subject": "Phylo",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Phylo and his allies ignore Basidia's objections to the circle segregation.",
+    "source_quote": "Phylo and his allies ignore Basidia's objections",
+    "subject": "Phylo and allies",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Phylo and his allies promise that exciting changes are coming.",
+    "source_quote": "promise that \"exciting changes are coming\"",
+    "subject": "Phylo and allies",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Only sovereigns can recognize the strange spores, so Rumpadump cannot provide further insight.",
+    "source_quote": "The GM notes that only sovereigns can recognize spores this way, so Rumpadump cannot help",
+    "subject": "Yggmorgus connection",
+    "quote_verified": true
+  }
+]

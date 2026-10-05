@@ -1,0 +1,1066 @@
+[
+  {
+    "type": "event",
+    "fact": "The party arrives on the shores of the Darklake.",
+    "source_quote": "The party arrived on the shores of the Darklake drenched, cold, and miserable",
+    "subject": "arrival at Darklake shores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar announces that the party is one day away from Blingdenstone.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone. I know it for sure this time.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar wagers that someone will demand a rest.",
+    "source_quote": "He immediately wagered that someone would demand a rest.",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to take a long rest.",
+    "source_quote": "Once the party agreed to take a long rest",
+    "subject": "long rest decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar claims victory for winning his bet about the rest.",
+    "source_quote": "\u201cExcellent. I made\u2014I won, I won my bet.\u201d",
+    "subject": "Jimjar wins bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he made a miscalculation because no one had actually accepted his wager.",
+    "source_quote": "Jimjar admitted to a \u201cslight miscalculation\u201d",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar tries to start a bet about whether Gyrgum will bet with him.",
+    "source_quote": "unsuccessfully tried to start another bet about whether Gyrgum would take the bet",
+    "subject": "new bet attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is unfamiliar with the concept of a long rest.",
+    "source_quote": "Gyrgum puzzled over the unfamiliar idea of a \u201clong rest\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum reflects that closing his eyes sometimes leaves him feeling refreshed.",
+    "source_quote": "it might explain why closing his eyes sometimes left him feeling refreshed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recovers their strength after the long rest.",
+    "source_quote": "By morning, everyone had recovered their strength",
+    "subject": "recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "No one is pursuing the party.",
+    "source_quote": "With no one pursuing them",
+    "subject": "pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The approach to Blingdenstone ends at a long, tedious staircase built for three-foot-tall people.",
+    "source_quote": "The approach to the city ended at a long, tedious staircase built for three-foot-tall people.",
+    "subject": "Blingdenstone approach",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar, Spiderbait, and the smaller members of the company climbed the staircase comfortably.",
+    "source_quote": "Jimjar, Spiderbait, and the smaller members of the company climbed comfortably",
+    "subject": "staircase traversal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The staircase stairs were difficult terrain for the larger travelers.",
+    "source_quote": "while the stairs were difficult terrain for the larger travelers",
+    "subject": "staircase traversal difficulty",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dwarves are close enough to gnome size that they were not similarly hindered by the closely spaced steps.",
+    "source_quote": "Dwarves are close enough to gnome size that they are not similarly hindered",
+    "subject": "dwarven movement on stairs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar declares, 'We've arrived at Blingdenstone!' at the top of the stairs.",
+    "source_quote": "At the top, Jimjar happily declared, \u201cWe've arrived at Blingdenstone!\u201d",
+    "subject": "arrival at Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar tries to turn the party\u2019s request for information into a wager, betting that no one wants to know what is happening.",
+    "source_quote": "Jimjar tries to turn the party\u2019s request for information into another wager, offering to bet that no one wants to know what is happening",
+    "subject": "Jimjar's wager",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone previously belonged to the gnomes, then the drow, and then the gnomes again.",
+    "source_quote": "He explained that the city had belonged to the gnomes, then the drow, and then the gnomes again",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is currently described as 'a little bit of a mess.'",
+    "source_quote": "Although Blingdenstone was now \u201ca little bit of a mess,\u201d",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The inhabitants of Blingdenstone know routes out of the Underdark and might be persuaded to help the party reach the surface.",
+    "source_quote": "its inhabitants knew routes out of the Underdark and might be persuaded to help",
+    "subject": "Blingdenstone inhabitants",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The main gate is built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine.",
+    "source_quote": "The party reaches the main gate, built from steel and mithril, reinforced with magical and magic-resistant alloys, and plated with adamantine.",
+    "subject": "Blingdenstone main gate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party can see through the main gate to eight gnomes guarding the passage beyond.",
+    "source_quote": "the party can see through it to the eight gnomes guarding the passage beyond",
+    "subject": "guard observation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The massive gate is made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine.",
+    "source_quote": "massive gate made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine",
+    "subject": "massive gate",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Eight gnome guards waited behind the gate.",
+    "source_quote": "Eight gnome guards waited behind it.",
+    "subject": "gnome guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The head guard demands to know who the travelers are and why they have come.",
+    "source_quote": "Their leader demanded to know who the travelers were and why they had come.",
+    "subject": "head guard questioning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a drow.",
+    "source_quote": "You are a drow",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One guard distrusts Daz, claiming that drow lie.",
+    "source_quote": "One guard immediately distrusted Daz, saying, \u201cYou are a drow, and we know that drow lie.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "realized he was an orc cleric of Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum counters the guard's prejudice by claiming that orcs only tell the truth.",
+    "source_quote": "Gyrgum countered, \u201cBut I am an orc, and everyone knows that orcs only tell the truth,\u201d",
+    "subject": "Gyrgum's retort",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards are surprised to discover that Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "bewildering the guards further when they realized he was an orc cleric of Bahamut",
+    "subject": "guards' surprise",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar initially responds to being asked who he is with the phrase \u201cWanna bet?\u201d",
+    "source_quote": "Jimjar initially responds with his habitual \u201cWanna bet?\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar presents himself as merely another friend of the party.",
+    "source_quote": "before presenting himself as merely another friend of the party.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar claims Daz is interested in exploration and growth rather than domination or world conquest.",
+    "source_quote": "insisting Daz was interested in exploration and growth rather than domination or world conquest",
+    "subject": "Jimjar's defense of Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Up in the Overbright is a popular book.",
+    "source_quote": "he was reading a popular book called *The Up in the Overbright*",
+    "subject": "The Up in the Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar jokingly claims Daz has been reading The Up in the Overbright.",
+    "source_quote": "Jimjar jokingly claims Daz has been reading a popular book called *The Up in the Overbright*",
+    "subject": "Jimjar's joke",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party has arrived at Blingdenstone hoping for help.",
+    "source_quote": "They had arrived at Blingdenstone hoping for help.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party was detained and exploited against their will by captors.",
+    "source_quote": "the group had been detained and exploited against their will, had escaped their captors",
+    "subject": "party's history",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explains that the party gathered other good people seeking safe companions and a better destination.",
+    "source_quote": "had gathered other good people seeking safe companions and a better destination.",
+    "subject": "Daz's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The group is at Blingdenstone looking for aid and fellowship.",
+    "source_quote": "the group has found itself at Blingdenstone looking for the same kind of aid and fellowship.",
+    "subject": "party's goal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool finished climbing the stairs and appeared behind the party.",
+    "source_quote": "Glabbagool finally finished climbing the stairs and appeared behind the party.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gnome guards panicked and prepared to attack the gelatinous cube.",
+    "source_quote": "The gnomes panicked and prepared to attack the gelatinous cube",
+    "subject": "gnomes (guards)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party intervened to stop the guards from attacking Glabbagool.",
+    "source_quote": "but the party intervened",
+    "subject": "party intervention",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party explained that Glabbagool had saved their lives, fought other slimy creatures, and can clean weapons.",
+    "source_quote": "explaining that he had saved their lives, fought other slimy creatures on their behalf, and could even clean the guards\u2019 weapons.",
+    "subject": "explanation to guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool greeted the party cheerfully.",
+    "source_quote": "Glabbagool greeted them cheerfully",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool stated he could squeeze through the gate without it being opened.",
+    "source_quote": "explained that he could squeeze through the gate without it being opened",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool accepted the party's warning that squeezing through the gate would be rude.",
+    "source_quote": "but accepted the party\u2019s warning that doing so would be rude.",
+    "subject": "Glabbagool accepts warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guards were astonished that a gelatinous cube could speak.",
+    "source_quote": "The guards were astonished that a gelatinous cube could speak.",
+    "subject": "gnomes (guards)",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is suffering from a serious ooze problem.",
+    "source_quote": "they clarified that Blingdenstone was suffering from a serious ooze problem.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool was once an unintelligent creature before an unknown event caused him to begin thinking and talking.",
+    "source_quote": "he had once been an unintelligent creature until an unknown event caused him to begin thinking and talking.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool noticed far more oozes in the region since becoming sentient.",
+    "source_quote": "Since then, he had noticed far more oozes in the region",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The oozes in the region are unusually agitated and eager to expand.",
+    "source_quote": "all unusually agitated and eager to expand.",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Ordinary oozes are quiet creatures that wait for food to come to them.",
+    "source_quote": "Ordinary oozes, he said, were quiet creatures that waited for food to come to them.",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool described the new ooze activity as an 'oozapalooza.'",
+    "source_quote": "The new activity was more like an \u201coozapalooza.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar's expression shifted to remember something painful when Juiblex's name was mentioned.",
+    "source_quote": "At the demon lord\u2019s name, Jimjar\u2019s expression shifted as though he were remembering something painful.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Jimjar described Juiblex as the demon lord of oozes and shapeless things.",
+    "source_quote": "Jimjar described Juiblex as the demon lord of oozes and shapeless things",
+    "subject": "Juiblex",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Jimjar described Juiblex as embodying the corrupted nature of the Abyss.",
+    "source_quote": "embodying the corrupted nature of the Abyss",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Jimjar described Juiblex as an unrivaled obscenity that dissolves everything into an unstructured mess.",
+    "source_quote": "an unrivaled obscenity that dissolved everything into an unstructured mess.",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Jimjar contrasted Juiblex with Zuggtmoy's corruption through decay.",
+    "source_quote": "He contrasted Juiblex with Zuggtmoy\u2019s corruption through decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Jimjar contrasted Juiblex with Demogorgon's carnage.",
+    "source_quote": "Demogorgon\u2019s carnage",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Jimjar contrasted Juiblex with Orcus's endless death.",
+    "source_quote": "and Orcus\u2019s endless death.",
+    "subject": "Orcus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claimed he knew so much because he collects information and makes bets.",
+    "source_quote": "When asked how he knew so much, Jimjar maintained that he was merely someone who collected information and made bets.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz observed that if Jimjar makes enough bets, people start telling him things.",
+    "source_quote": "Daz observed, \u201cIf you make enough bets with enough people, they start telling you things.\u201d",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offered Daz a fifty-gold-piece wager that the party would have to equip an army with acid-resistant gear before the end of the month.",
+    "source_quote": "Jimjar then offered Daz a remarkably specific fifty-gold-piece wager that, before the end of the month, the party would have to equip an army with acid-resistant gear.",
+    "subject": "fifty-gold-piece wager",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offered a side bet that the ingredients for those weapons would have to be recovered from a fungal wedding celebration.",
+    "source_quote": "He followed it with a side bet that the ingredients for those weapons would have to be recovered from a fungal wedding celebration.",
+    "subject": "side bet",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party suspects Jimjar's bets are a way of telling them what needs to be done.",
+    "source_quote": "The party began to suspect that Jimjar\u2019s bets were his way of telling them what needed to be done without directly explaining himself.",
+    "subject": "Jimjar's true identity",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "An attempt to read Jimjar revealed he knew far too many precise details.",
+    "source_quote": "An attempt to read him revealed that he knew far too many precise details",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The surrounding gnomes treated Jimjar with peculiar deference.",
+    "source_quote": "while the surrounding gnomes treated him with peculiar deference.",
+    "subject": "gnomes (guards)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard admitted Jimjar looked very familiar but could not place where he had seen him.",
+    "source_quote": "the guard admitted Jimjar looked very familiar but could not place where he had seen him",
+    "subject": "gnomes (guards)",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The guards' reaction reinforced the impression that Jimjar is a concealed dignitary.",
+    "source_quote": "reinforcing the impression that their gambling companion was some kind of concealed dignitary.",
+    "subject": "Jimjar as concealed dignitary",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool explained that gelatinous cubes reproduce by leaving a smaller cube behind.",
+    "source_quote": "He explained that gelatinous cubes reproduce by leaving a smaller cube behind",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool stated that gelatinous cubes cannot reproduce rapidly and take a long time to grow.",
+    "source_quote": "but cannot do so rapidly and take a long time to grow.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool once left a smaller cube behind because he was lonely.",
+    "source_quote": "He had once left such a cube behind because he was lonely",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The smaller gelatinous cube Glabbagool left behind could not speak.",
+    "source_quote": "but it could not speak.",
+    "subject": "smaller gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool believes he might be the only speaking gelatinous cube in the universe.",
+    "source_quote": "Glabbagool believed he might be the only speaking gelatinous cube in the universe.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool takes longer than the others to ascend the gnome-sized stairs and appears after the initial questioning has begun.",
+    "source_quote": "Glabbagool takes longer than the others to ascend the gnome-sized stairs and appears only after the initial questioning has begun.",
+    "subject": "Glabbagool arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards panic and ready themselves to attack upon Glabbagool's arrival.",
+    "source_quote": "His arrival throws the guards into panic. They ready themselves to attack",
+    "subject": "guards panic",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party explains that Glabbagool is an ally to the guards.",
+    "source_quote": "until the party urgently explains that he is an ally.",
+    "subject": "party defense of Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party claims Glabbagool helped them through a life-or-death situation.",
+    "source_quote": "Glabbagool helped them through a life-or-death situation",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party claims Glabbagool defended them against other slimy creatures.",
+    "source_quote": "defended them against other slimy creatures",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party claims Glabbagool has traveled with them ever since the life-or-death situation.",
+    "source_quote": "and has traveled with them ever since.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member jokes that Glabbagool can clean the guards' weapons.",
+    "source_quote": "One party member jokes that Glabbagool can clean the guards\u2019 weapons",
+    "subject": "joke about Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member summarizes Glabbagool's dependability by saying, \u201cHe's been solid.\u201d",
+    "source_quote": "another summarizes his dependability with, \u201cHe's been solid.\u201d",
+    "subject": "description of Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party explains that they feed Glabbagool the remains of their enemies rather than living creatures.",
+    "source_quote": "The party explains that they feed Glabbagool the remains of their enemies rather than living creatures.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A guard insists that gelatinous cubes are not sentient and cannot be friends.",
+    "source_quote": "When a guard insists that gelatinous cubes are not sentient and cannot be friends",
+    "subject": "guard's statement on oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states he is happy to see the guards.",
+    "source_quote": "I am really happy to see you.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool offers to squeeze through the gate instead of having it opened.",
+    "source_quote": "You don't have to open the gate on my behalf. I can just squeeze right through.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party warns Glabbagool that squeezing through the gate would be considered rude.",
+    "source_quote": "\u201cPlease don't. That would be considered rude amongst people.\u201d",
+    "subject": "party warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool agrees not to squeeze through the gate.",
+    "source_quote": "Glabbagool readily agrees not to do it.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guards initially claim to have a serious fungi problem.",
+    "source_quote": "The guards initially claim to have a serious fungi problem",
+    "subject": "guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guards correct themselves, stating they have an ooze problem.",
+    "source_quote": "then correct themselves: \u201cWe have an ooze problem.\u201d",
+    "subject": "guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool explains that he used to be an unsentient creature.",
+    "source_quote": "I used to be a pretty dumb, you know, unsentient creature",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that something happened to him, though he does not know what.",
+    "source_quote": "until something happened. I don't know what happened",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool began thinking and talking after the unknown event.",
+    "source_quote": "but then, yes, I started to think and talking.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool reports seeing many more oozes than usual.",
+    "source_quote": "He reports seeing many more oozes than usual.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool reports that the other oozes did not attack him because they recognized him as one of their own.",
+    "source_quote": "They never attacked him because they recognized him as one of their own",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool reports that the other oozes were agitated and driven to roam and grow.",
+    "source_quote": "but they were agitated and driven to roam and grow.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool contrasts the current behavior with the normal ooze disposition of being quiet and waiting for things.",
+    "source_quote": "\u201cYou know, Oozes, we're a very quiet group. We just sort of sit there and wait for things to come to us. We don't go after things.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The abnormal gathering of oozes is dubbed an \u201coozapalooza.\u201d",
+    "source_quote": "The abnormal gathering is dubbed an \u201coozapalooza.\u201d",
+    "subject": "oozapalooza",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party recalls that Daz previously mentioned Juiblex.",
+    "source_quote": "The party recalls that Daz previously mentioned Juiblex.",
+    "subject": "Daz and Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar's expression changes as though he is remembering something painful at the mention of Juiblex.",
+    "source_quote": "At the demon lord\u2019s name, Jimjar\u2019s expression changes as though he is remembering something painful.",
+    "subject": "Jimjar reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Juiblex is identified as the demon lord of oozes and shapeless things.",
+    "source_quote": "Jimjar identifies Juiblex as \u201cthe demon lord of oozes and shapeless things,\u201d",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Juiblex represents the corrupted nature of the Abyss and \u201cunrivaled obscenity.\u201d",
+    "source_quote": "representing the corrupted nature of the Abyss and \u201cunrivaled obscenity.\u201d",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar emphatically denies that the situation is a political allegory.",
+    "source_quote": "Jimjar answers emphatically, \u201cNo!\u201d",
+    "subject": "Jimjar denial",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar concedes that demon lords naturally symbolize different corrupting forces of power.",
+    "source_quote": "before conceding that demon lords naturally symbolize different corrupting forces of power.",
+    "subject": "Jimjar concession",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar states that Zuggtmoy embodies decay that drains goodness from things.",
+    "source_quote": "Zuggtmoy embodies decay that drains goodness from things",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar states that Demogorgon represents relentless damage and carnage.",
+    "source_quote": "Demogorgon represents relentless damage and carnage",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar states that Orcus represents endless death.",
+    "source_quote": "Orcus represents endless death",
+    "subject": "Orcus",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar states that Juiblex turns everything into a shapeless, structureless mess.",
+    "source_quote": "Juiblex turns everything into a shapeless, structureless mess.",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar denies any association with demon lords.",
+    "source_quote": "Jimjar denies any association with demon lords",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims to simply collect information and make bets.",
+    "source_quote": "\u201cI just happen to be someone who collects information and makes bets.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party observes that people start telling Jimjar things if he makes enough bets with them.",
+    "source_quote": "\u201cIf you make enough bets with enough people, they start telling you things.\u201d",
+    "subject": "party observation on bets",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar makes a fifty-gold-piece bet that the party will need to equip an army with acid-resistant gear before the end of the month.",
+    "source_quote": "Jimjar makes a fifty-gold-piece bet that, before the end of the month, the party will need to equip an army with acid-resistant gear.",
+    "subject": "Jimjar bet 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group debates whether one acid-resistant party member qualifies as an \u201carmy of one.\u201d",
+    "source_quote": "The group debates the exact terms, including whether one acid-resistant party member could qualify as an \u201carmy of one,\u201d",
+    "subject": "bet terms debate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group accepts that Jimjar means a genuine army for the bet.",
+    "source_quote": "but accepts that Jimjar means a genuine army.",
+    "subject": "bet terms accepted",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar adds a side bet that the party will have to recover ingredients for weapons from a fungal wedding celebration.",
+    "source_quote": "Jimjar adds a side bet that they will have to recover the ingredients for those weapons from a fungal wedding celebration.",
+    "subject": "Jimjar side bet",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party wonders if Jimjar uses wagers to give instructions because he already knows what will happen.",
+    "source_quote": "The specificity of the prediction makes the party wonder whether Jimjar is using wagers as an indirect way of giving them instructions because he already knows what will happen.",
+    "subject": "Jimjar foresight",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "An investigation confirms that Jimjar knows far too much precise information.",
+    "source_quote": "An investigation confirms that Jimjar knows far too much precise information.",
+    "subject": "Jimjar knowledge",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The other gnomes treat Jimjar with peculiar deference.",
+    "source_quote": "the other gnomes treat him with peculiar deference.",
+    "subject": "Blingdenstone gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims that Blingdenstone is a town where everybody knows everything about it.",
+    "source_quote": "Jimjar claims, \u201cBlingdenstone is one of those towns that everybody knows everything about.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar redirects questions toward Chief Dorbo and Quartermaster Senni to explain the situation.",
+    "source_quote": "Jimjar redirects further questions toward Chief Dorbo and Quartermaster Senni, suggesting that they explain what is happening.",
+    "subject": "Jimjar redirection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo is identified by Jimjar as someone who can explain what is happening.",
+    "source_quote": "Jimjar redirects further questions toward Chief Dorbo",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Quartermaster Senni is identified by Jimjar as someone who can explain what is happening.",
+    "source_quote": "and Quartermaster Senni, suggesting that they explain what is happening.",
+    "subject": "Quartermaster Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member pulls aside a guard to ask if there is something special about Jimjar.",
+    "source_quote": "A party member quietly pulls aside a guard and asks whether there is something special about Jimjar.",
+    "subject": "guard inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guard says Jimjar looks very familiar but cannot remember where he has seen him.",
+    "source_quote": "The guard says Jimjar looks very familiar but cannot remember where he has seen him.",
+    "subject": "guard",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The guard is not lying, leaving the party with the impression that Jimjar is some sort of VIP.",
+    "source_quote": "The guard is not lying, leaving the party with the impression that Jimjar is \u201csome sort of VIP something.\u201d",
+    "subject": "Jimjar identity",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool becomes alarmed when gelatinous cubes are described as easy to kill.",
+    "source_quote": "Glabbagool becomes alarmed when gelatinous cubes are described as easy to kill",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool insists that he should not be killed because he is friendly.",
+    "source_quote": "\u201cI shouldn't be killed. I'm friendly.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool insists that he will only eat dead garbage and not living creatures.",
+    "source_quote": "I will only eat dead garbage. I will not eat living creatures.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reassures Glabbagool that he is their favorite gelatinous cube.",
+    "source_quote": "The party reassures him that he is their favorite gelatinous cube.",
+    "subject": "party reassurance",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Discussion turns to whether Glabbagool could create a gelatinous-cube army.",
+    "source_quote": "Discussion turns to whether Glabbagool could create a gelatinous-cube army.",
+    "subject": "gelatinous cube army",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool explains that gelatinous cube reproduction occurs by leaving behind a smaller cube.",
+    "source_quote": "He explains that reproduction occurs by leaving behind a smaller cube",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool explains that gelatinous cube reproduction cannot be repeated rapidly.",
+    "source_quote": "but it cannot be repeated rapidly",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool explains that gelatinous cube offspring take a long time to grow.",
+    "source_quote": "and the offspring take a long time to grow.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool once left behind a smaller cube because he was bored and lonely.",
+    "source_quote": "Glabbagool once left behind a smaller cube because he was bored and lonely",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The smaller cube Glabbagool created could not speak.",
+    "source_quote": "but it could not speak.",
+    "subject": "Glabbagool's offspring",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool believes he is the only speaking gelatinous cube in the universe.",
+    "source_quote": "\u201cI think I'm the only one in the entire universe that can speak.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards open the gate and admit the entire company, including Glabbagool, into Blingdenstone.",
+    "source_quote": "the guards agree to open the gate and admit the entire company, including Glabbagool",
+    "subject": "gate opening",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo Diggermattock is the city official the party is recommended to see for full permission regarding Glabbagool.",
+    "source_quote": "recommend that the party report to Chief Dorbo Diggermattock and Quartermaster Senni",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Quartermaster Senni is the city official the party is recommended to see for an explanation of Blingdenstone\u2019s ooze crisis.",
+    "source_quote": "report to Chief Dorbo Diggermattock and Quartermaster Senni",
+    "subject": "Quartermaster Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Maze is a defensive network of twisting, trapped tunnels intended to slow and kill invading armies.",
+    "source_quote": "the Maze, a defensive network of twisting, trapped tunnels intended to slow and kill invading armies",
+    "subject": "The Maze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A gnome explains that the Maze forces attackers through twisty tunnels with deadly traps.",
+    "source_quote": "it's important to make them go through lots of twisty tunnels with deadly traps that you can kill them in",
+    "subject": "Maze description",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the city's powerful fortifications make him feel safer.",
+    "source_quote": "I mean, actually, I feel safer hanging out with you guys because of your powerful defenses",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz thanks the gnomes for hosting the group.",
+    "source_quote": "Thank you for hosting us",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gnomes are delighted by Daz's compliment and recognize him for handling the exchange well.",
+    "source_quote": "The compliment pleases the gnomes and earns Daz recognition for handling the exchange particularly well",
+    "subject": "gnome reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes compete with dwarves for finite underground resources.",
+    "source_quote": "The two peoples competed for the same finite underground resources",
+    "subject": "Gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes can become allies with dwarves against deeper Underdark threats.",
+    "source_quote": "could become allies against deeper Underdark threats",
+    "subject": "Gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth considers gnomes clever with magic and gems but not particularly formidable fighters.",
+    "source_quote": "Eldeth admitted that she considered gnomes clever with magic and gems but not particularly formidable fighters",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth tells Daz that she has learned to understand that not every drow is evil.",
+    "source_quote": "Eldeth says, \u201cDaz, I want you to know that I have learned to understand that not every drow is evil.\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth admits she was raised with the prejudice that \u201cThe only good drow is a dead drow.\u201d",
+    "source_quote": "\u201cThe only good drow is a dead drow.\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth believes the true enemy is the cult of Lolth rather than every individual drow.",
+    "source_quote": "believed the true enemy was the fanatical cult of Lolth rather than every individual drow",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that those raised in the cult of Lolth might be redeemable people shaped by a terrible environment.",
+    "source_quote": "Daz cautioned that even those raised knowing nothing but that cult might be redeemable people shaped by a terrible environment",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth acknowledges that Daz's example convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil needs to be rethought.",
+    "source_quote": "Eldeth acknowledged that his example had convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil and worthy of massacre was something she needed to rethink",
+    "subject": "Eldeth",
+    "quote_verified": true
+  }
+]

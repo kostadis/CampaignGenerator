@@ -1,0 +1,156 @@
+[
+  {
+    "type": "npc",
+    "fact": "Brannum slumps down in the boat and confesses about the route's dangers.",
+    "source_quote": "Slumping down in the boat, Brannum finally confessed.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum claims the route was a quick shortcut his crew used regularly.",
+    "source_quote": "This route had once been a quick shortcut his crew used regularly",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum states that two of his boats had never come back from this route.",
+    "source_quote": "but two of his boats had never come back",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum cites a survivor's claim of an evil altar at this location.",
+    "source_quote": "One survivor had claimed there was some kind of evil altar here",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum initially assumed the missing crews had abandoned him.",
+    "source_quote": "and Brannum had assumed that crew had simply abandoned him",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum sees the bone pyramid and realizes his crews met a horrible fate.",
+    "source_quote": "until he saw the bone pyramid and realized, with dawning horror, that they had not.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum asks where the dead crew members are, noting the absence of their boat.",
+    "source_quote": "\"If they're dead, where are they?\" he asked. There were bones, but there was no boat.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz peers into the water and finds the sunken wrecks of Brannum's lost boats on the lakebed.",
+    "source_quote": "Daz peered over the side into the dark water below and found the grim answer: the sunken wrecks of Brannum's lost boats rested on the lakebed",
+    "subject": "Boat Discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Bodies, possibly zombies, are seen moving among the sunken boat wrecks.",
+    "source_quote": "and bodies moved among them, possibly zombies.",
+    "subject": "zombies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Mending on the boat's damaged hull.",
+    "source_quote": "Gyrgum used his Mending cantrip on the damaged hull.",
+    "subject": "Hull Repair",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Find Traps on the islet and finds none.",
+    "source_quote": "The curious cleric also cast Find Traps on the islet and found none",
+    "subject": "Trap Check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party hesitates to set foot on the islet.",
+    "source_quote": "but the party hesitated to set foot on it.",
+    "subject": "Party Hesitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts a healing spell on Zalthir to mend wounds from a zombie's bite.",
+    "source_quote": "Gyrgum casts a healing spell to mend Zalthir's severe wounds from the zombie's bite",
+    "subject": "Zalthir Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir restores 15 of the 16 hit points lost to the zombie's bite.",
+    "source_quote": "restoring 15 of the 16 hit points lost.",
+    "subject": "Zalthir Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suffered severe wounds from a zombie's bite.",
+    "source_quote": "Zalthir's severe wounds from the zombie's bite",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum claims he was only trying to go 'the fast way.'",
+    "source_quote": "Brannum first claims he was only trying to go \"the fast way,\"",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum states that other boats reported attacks here which he dismissed as rumor.",
+    "source_quote": "and that other boats had reported attacks here that he dismissed as rumor.",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confronts Brannum Redmarch regarding the safety of the route.",
+    "source_quote": "The party confronts Brannum Redmarch, calling out his dishonesty regarding the safety of the route.",
+    "subject": "Brannum Confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin calls 'bullshit' during the confrontation with Brannum.",
+    "source_quote": "Thorin calls \"bullshit,\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check confirms Brannum is being dishonest.",
+    "source_quote": "and an insight check confirms it.",
+    "subject": "Insight Check",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party hesitates to set foot on the islet.",
+    "source_quote": "the party hesitated to set foot on it.",
+    "subject": "Islet",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The attack may be a trigger rather than continuous, as nothing has attacked again.",
+    "source_quote": "The DM notes the attack may be a trigger rather than continuous, since nothing has attacked again.",
+    "subject": "Attack Trigger",
+    "quote_verified": true
+  }
+]

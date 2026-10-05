@@ -1,0 +1,135 @@
+[
+  {
+    "type": "event",
+    "fact": "A merchant interrupts a sale to threaten Gyrgum with death, then resumes the sale as if nothing happened.",
+    "source_quote": "the merchant broke off mid-sale to threaten to kill him, then carried on as if nothing had happened",
+    "subject": "merchant threat interruption",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The duergar merchants in Gracklstugh are behaving erratically and nonsensically.",
+    "source_quote": "the party notices the increasingly erratic and nonsensical behavior of the duergar merchants throughout the bazaar",
+    "subject": "duergar merchants",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 15 on Insight and senses 'there's something off' about a duergar merchant.",
+    "source_quote": "Gyrgum rolls Insight (15) and senses \"there's something off\"",
+    "subject": "Gyrgum insight check",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "A duergar merchant constantly asks the opinion of a twin brother who does not exist.",
+    "source_quote": "The party observes a duergar merchant constantly asking the opinion of a non-existent twin brother",
+    "subject": "invisible twin merchant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders if the duergar are speaking to invisible duergar.",
+    "source_quote": "Gyrgum wonders whether they are talking to invisible duergar",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks if the duergar can see into the Ethereal Plane, comparing them to people who see dead people.",
+    "source_quote": "Daz wonders whether they can see into the Ethereal Plane: \"Is it like they see dead people?\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A duergar confirms that the merchant speaking to a twin is an only child.",
+    "source_quote": "Another duergar confirms: \"there's no twin brother. He's an only child.\"",
+    "subject": "confirming duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Several duergar merchants quote different prices for the same items repeatedly, insisting the buyers change the terms.",
+    "source_quote": "Several duergar merchants give different prices to buy or sell every time they are asked about the same items, insisting it is the buyers who are changing the terms",
+    "subject": "price-fluctuating merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A duergar merchant turns completely invisible in the middle of a transaction but continues speaking.",
+    "source_quote": "A duergar merchant suddenly turns invisible in the middle of a transaction but keeps speaking as if nothing has happened",
+    "subject": "invisibility mid-transaction",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The invisible duergar merchant is described as 'slightly not quite there'.",
+    "source_quote": "something very odd about everybody's behavior as if they're slightly not quite there",
+    "subject": "invisible duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum senses something deeply wrong with the duergar of the city.",
+    "source_quote": "Gyrgum senses something deeply wrong with the duergar of the city",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum steps outside the Blade Bazaar just as a stone giant arrives.",
+    "source_quote": "Gyrgum senses something deeply wrong with the duergar of the city, then steps outside the bazaar and looks around just as the stone giant arrives",
+    "subject": "Gyrgum leaves bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stone giant arrives at the Blade Bazaar.",
+    "source_quote": "looks around just as the stone giant arrives",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum and Hemeth leave to go on an errand marked by an arrow on the map.",
+    "source_quote": "Brannum and Hemeth go off on their errand, marked by an arrow on the map",
+    "subject": "Brannum and Hemeth errand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum leaves with Hemeth to perform an errand.",
+    "source_quote": "Brannum and Hemeth go off on their errand, marked by an arrow on the map",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth leaves with Brannum to perform an errand.",
+    "source_quote": "Brannum and Hemeth go off on their errand, marked by an arrow on the map",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party perceives a creeping madness in Gracklstugh similar to the frenzy of the kuo-toa.",
+    "source_quote": "The creeping madness that had haunted the party throughout their time in the Underdark seemed to have seeped into the very stones of Gracklstugh itself",
+    "subject": "Underdark madness",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a city in the Underdark inhabited by duergar and stone giants.",
+    "source_quote": "seeped into the very stones of Gracklstugh itself... duergar merchants... stone giant arrives",
+    "subject": "Gracklstugh",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Blade Bazaar is a market in Gracklstugh where merchants sell scrolls and goods.",
+    "source_quote": "While Gyrgum haggled for his scrolls... duergar merchants throughout the bazaar",
+    "subject": "Blade Bazaar",
+    "quote_verified": false
+  }
+]

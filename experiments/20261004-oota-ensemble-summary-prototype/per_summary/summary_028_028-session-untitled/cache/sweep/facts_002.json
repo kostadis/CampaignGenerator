@@ -1,0 +1,191 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldeth warned that the evidence of their harvest would be plain to any Drow tracker worth their salt.",
+    "source_quote": "Eldeth warned that the evidence of their harvest would be plain to any Drow tracker worth their salt",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir devised a clever solution to mask the harvest evidence.",
+    "source_quote": "so Zalthir devised a clever solution",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party smashed the remaining crystals under the cover of magical darkness.",
+    "source_quote": "Under the cover of his shroud of magical darkness, the party smashed the remaining crystals",
+    "subject": "smashing crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The shroud of magical darkness is cast by Zalthir to cover the party's actions.",
+    "source_quote": "Under the cover of his shroud of magical darkness",
+    "subject": "shroud of magical darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party scattered destruction across the area to simulate a battle.",
+    "source_quote": "They scattered destruction across the area so it would look like a battle had taken place",
+    "subject": "scattering destruction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth used her considerable skill to mask the party's tracks.",
+    "source_quote": "Eldeth then used her considerable skill to mask the party's tracks",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Drow pursuers were left with little more than confusion after Eldeth masked the tracks.",
+    "source_quote": "the Drow pursuers who had been closing in were left with little more than confusion",
+    "subject": "Drow pursuers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith was explaining the crystals before the party encountered the two figures.",
+    "source_quote": "Even before the harvest, while Sarith was still explaining the crystals",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party came across two wretched figures huddled in the dark.",
+    "source_quote": "the party had come across two wretched figures huddled in the dark",
+    "subject": "encountering two figures",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The two wretched figures consist of a man and a woman in tattered clothes.",
+    "source_quote": "a man and a woman in tattered clothes",
+    "subject": "two wretched figures",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 22 on Investigation.",
+    "source_quote": "Daz rolled a 22 on Investigation",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz spotted the telltale symbols marking the figures as former prisoners of the Drow.",
+    "source_quote": "and spotted the telltale symbols marking them as former prisoners (slaves) of the Drow",
+    "subject": "spotting symbols",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is the man among the two wretched figures.",
+    "source_quote": "The man, Fuurm, raised a glowing crystal",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is the companion of Fuurm.",
+    "source_quote": "he and his companion, Baedora, were not going back",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm raised a glowing crystal like a weapon the moment he spotted Daz.",
+    "source_quote": "raised a glowing crystal like a weapon the moment he spotted Daz",
+    "subject": "Fuurm raising crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm declared that he and Baedora were not going back.",
+    "source_quote": "his voice cracking as he declared that he and his companion, Baedora, were not going back",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is identified as a drow.",
+    "source_quote": "spotted Daz, a drow",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party discusses the risks of harvesting quartz crystals.",
+    "source_quote": "The party discusses the risks of harvesting quartz crystals",
+    "subject": "quartz crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth explains that cutting the crystals out leaves obvious gaps.",
+    "source_quote": "Eldeth explains that cutting the crystals out leaves obvious gaps showing someone was harvesting",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses eagerness regarding the crystal harvesting plan.",
+    "source_quote": "Gyrgum is eager",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests gathering some crystals and smashing others to simulate a battlefield.",
+    "source_quote": "Zalthir suggests a plan to gather some crystals and smash others to make the area look like a battlefield",
+    "subject": "Zalthir's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth concedes that smashing crystals would be something completely different from harvesting.",
+    "source_quote": "Eldeth concedes that smashing crystals left, right, and center",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum points out that smashing the crystals would blind them.",
+    "source_quote": "Gyrgum points out that smashing the crystals would blind them",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party adopts the idea of using Zalthir's darkness to avoid blindness from smashing crystals.",
+    "source_quote": "and the idea of using Zalthir's darkness follows",
+    "subject": "using darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is allowed to join the smashing of the crystals.",
+    "source_quote": "and Gyrgum is allowed to join the smashing",
+    "subject": "Gyrgum smashing crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collects twelve quartz crystals in total.",
+    "source_quote": "The party collects twelve quartz crystals in total",
+    "subject": "light crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The GM instructs the party to call the collected quartz crystals 'light crystals'.",
+    "source_quote": "which the GM tells them to just call",
+    "subject": "light crystals",
+    "quote_verified": true
+  }
+]

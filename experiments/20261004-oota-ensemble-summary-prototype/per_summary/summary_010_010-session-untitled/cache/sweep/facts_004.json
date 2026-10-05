@@ -1,0 +1,198 @@
+[
+  {
+    "type": "faction",
+    "fact": "The last duergar is captured alive after being knocked unconscious by a feinting strike.",
+    "source_quote": "the enlarged slaver knocked unconscious rather than killed",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The duergar prisoner returned to his normal small size as the magic faded.",
+    "source_quote": "As the magic faded, the duergar shrank back to his normal small size.",
+    "subject": "duergar prisoner",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin delivered a twelve-point feinting strike against the enlarged duergar.",
+    "source_quote": "Thorin delivered a twelve-point feinting strike",
+    "subject": "Thorin's feinting strike",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido cheerfully offered his services as an expert interrogator.",
+    "source_quote": "Buppido cheerfully offered his services as an expert interrogator",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith declared himself an expert in questioning techniques as a guard of Lolth.",
+    "source_quote": "Sarith, not to be outdone, declared that as one of Lolth's own guards he too was an expert in questioning techniques.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Lolth is referenced by Sarith as the deity whose guards he serves.",
+    "source_quote": "as one of Lolth's own guards",
+    "subject": "Lolth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith admitted that Daz's questioning techniques had been impressive recently.",
+    "source_quote": "He then paused to allow that Daz's techniques had been most impressive of late.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait was rescued by the party but remained deeply shaken.",
+    "source_quote": "Spiderbait, rescued but deeply shaken",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait stated he would leave the party at the next opportunity.",
+    "source_quote": "made it clear he would leave at the next opportunity",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait noted that his best friend was dead.",
+    "source_quote": "He quietly noted that his best friend was dead",
+    "subject": "Spiderbait's best friend",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Spiderbait noted he had been attacked by a demon lord.",
+    "source_quote": "he had been attacked by a demon lord",
+    "subject": "demon lord",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party captured the duergar keelboat.",
+    "source_quote": "The duergar keelboat was captured",
+    "subject": "duergar keelboat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest on the duergar keelboat contained 1,100 gold pieces.",
+    "source_quote": "the chest aboard yielded 1,100 gold pieces",
+    "subject": "gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest on the duergar keelboat contained a magical alchemy jug.",
+    "source_quote": "along with a remarkable magical alchemy jug",
+    "subject": "alchemy jug",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The alchemy jug holds a gallon and weighs 12 pounds whether full or empty.",
+    "source_quote": "The jug holds a gallon, weighs 12 pounds full or empty",
+    "subject": "alchemy jug",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The alchemy jug can be set to produce a chosen liquid until dawn.",
+    "source_quote": "can be set to produce a chosen liquid until dawn",
+    "subject": "alchemy jug",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party celebrated solving their water supply problem with the alchemy jug.",
+    "source_quote": "The adventurers celebrated solving their water supply problem",
+    "subject": "water supply solved",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party discussed producing mayonnaise instead of acid or poison to make their weapons 'more delicious.'",
+    "source_quote": "producing mayonnaise instead of the more tactical acid or poison, reasoning that it would make their weapons \"more delicious.\"",
+    "subject": "mayonnaise discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was enthusiastic about fish with mayonnaise and a fungus cake sandwich.",
+    "source_quote": "Daz was enthusiastic about fish with mayonnaise and a \"fungus cake, mayonnaise, fungus cake\" sandwich.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party secured two casks of harvested fungi for food.",
+    "source_quote": "The group also secured two casks of harvested fungi",
+    "subject": "casks of harvested fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party set their sights on Gracklstugh as their destination.",
+    "source_quote": "the party set their sights on Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM stated the captive is more interested in profit than in being a hero.",
+    "source_quote": "the captive was, like many folks, more interested in profit than in being a hero",
+    "subject": "duergar prisoner",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin told Spiderbait that they saved him.",
+    "source_quote": "Thorin: \"We saved you, Spiderbait.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait said he would get out of there at the next place he could.",
+    "source_quote": "Spiderbait: \"next place I can get out of here, I'm getting out of here.\"",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir noted that the gold meant they could pay back Spiderbait.",
+    "source_quote": "Zalthir notes the gold means they can pay back Spiderbait.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirmed the alchemy jug's liquid choice resets each dawn.",
+    "source_quote": "The GM confirms the liquid choice resets each dawn",
+    "subject": "dawn reset",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM ruled that mayonnaise stays stable for two weeks.",
+    "source_quote": "He rules mayonnaise stays stable for two weeks",
+    "subject": "mayonnaise stability",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM remarked that mayonnaise on mushrooms with a little bit of acid makes tartar sauce.",
+    "source_quote": "The GM riffs that mayonnaise on mushrooms, with \"a little bit of acid, just a little bit,\" makes tartar sauce",
+    "subject": "tartar sauce discussion",
+    "quote_verified": true
+  }
+]

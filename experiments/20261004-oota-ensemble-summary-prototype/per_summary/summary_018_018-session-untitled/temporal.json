@@ -1,0 +1,275 @@
+[
+  {
+    "type": "date",
+    "fact": "The ordered magic items are scheduled to arrive the next morning.",
+    "source_quote": "The magic items the party had ordered would not arrive until the next morning.",
+    "subject": "magic item arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party travels to the Stone Guard headquarters immediately rather than waiting for the next morning.",
+    "source_quote": "so the party went to the Stone Guard straight away.",
+    "subject": "travel to Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the captain of the Stone Guard.",
+    "source_quote": "Errde Blackskull, the captain of the Stone Guard.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is invisible during the meeting with Errde Blackskull.",
+    "source_quote": "The ghost was invisible again",
+    "subject": "Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph is very impressed, concerned, and excited during the meeting.",
+    "source_quote": "very impressed with all the things that it's seeing and very concerned, but very excited.",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The character Daz has a Intelligence score of 19.",
+    "source_quote": "he has a 19 Intelligence",
+    "subject": "Daz's Intelligence",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The character Daz has a Charisma score of 10.",
+    "source_quote": "only a 10 Charisma",
+    "subject": "Daz's Charisma",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The character Daz has a Wisdom score of 14.",
+    "source_quote": "(and 14 Wisdom)",
+    "subject": "Daz's Wisdom",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The audience with Errde Blackskull occurs on the evening of the day following the party's return from the Whorlstone Caverns, with the next update expected 'tomorrow evening'.",
+    "source_quote": "Errde asks when she'll have more information, \"So tomorrow evening?\"",
+    "subject": "session duration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is a leader associated with the Stone Guard faction.",
+    "source_quote": "Errde Blackskull (continued)",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One flumph accompanies the party and shares psychic impressions with Errde.",
+    "source_quote": "the flumph shared its psychic impressions",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled a natural 20 on a dice-driven check to hold his tongue during the meeting.",
+    "source_quote": "Thorin rolls a 20 and does not blurt",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses one red dragon egg which they keep secret from Errde.",
+    "source_quote": "the party kept the red dragon egg a secret",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is armed by Errde with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is armed by Errde with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is armed by Errde with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is a wererat capable of wearing splint mail who has disappeared.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a wererat capable of wearing splint mail who has disappeared.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool received no weapons from Errde.",
+    "source_quote": "Stool received nothing",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is openly opposed to the Deepking and forbidden from taking weapon orders directly.",
+    "source_quote": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow. It is openly opposed to the Deepking.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing.",
+    "source_quote": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over.",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish a cover story.",
+    "source_quote": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish their cover as dissidents against the Deepking.",
+    "subject": "visit to rival clans",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz sets the initial list price for the Non-Demonic Agreement at 1,250 gold pieces.",
+    "source_quote": "Daz set a \"list price\" of 1,250 gold pieces",
+    "subject": "NDA initial price setting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz offers the Non-Demonic Agreement at a discounted flat price of 1,000 gold pieces.",
+    "source_quote": "offered it at a flat thousand",
+    "subject": "NDA discounted price offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The price of the Non-Demonic Agreement is raised to 1,100 gold pieces after Werz attempts to haggle.",
+    "source_quote": "the price was immediately raised to eleven hundred",
+    "subject": "NDA price increase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz pays the final agreed fee of 1,100 gold pieces for the Non-Demonic Agreement.",
+    "source_quote": "Werz pays the 1,100 gold piece fee",
+    "subject": "NDA final payment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz gives the party five special gems as a symbol of good faith.",
+    "source_quote": "Werz gives the party five special gems",
+    "subject": "gem count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The five special gems are valued at 100 GP each.",
+    "source_quote": "Daz asks their value, and it is put at 100 GP each",
+    "subject": "gem value",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz hands over five unusual gems to the party as a gesture of good faith for an assassin job.",
+    "source_quote": "Werz handed over five unusual gems",
+    "subject": "Werz's payment to party",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The five gems are empty spell gems used in Blingdenstone's magical defenses.",
+    "source_quote": "identified them as empty spell gems \u2014 the very kind used in the magical defenses of Blingdenstone",
+    "subject": "Werz's gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gems are not worth 100 gp each to anyone other than Kazook Pickshine.",
+    "source_quote": "Sold to anyone other than Kazook, the gems are not really worth 100 gp each",
+    "subject": "Gem value",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party visits Ghohlbrorn's Lair to collect previously ordered magical items.",
+    "source_quote": "Back at Ghohlbrorn's Lair, the party collected the magical equipment they had previously ordered",
+    "subject": "Ghohlbrorn's Lair",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir acquires two enchanted tattoos.",
+    "source_quote": "two enchanted tattoos for Zalthir",
+    "subject": "Zalthir's tattoos",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin acquires a +1 longsword.",
+    "source_quote": "a +1 longsword for Thorin",
+    "subject": "Thorin's longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical items were purchased at a 10% discount out of pooled party funds.",
+    "source_quote": "paid for at a 10% discount out of pooled party funds",
+    "subject": "item purchase discount",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's equipment cost 900 gold pieces.",
+    "source_quote": "Thorin's cost came to 900 gold pieces",
+    "subject": "Thorin's total cost",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party had 616 gp on hand to help pay for the items.",
+    "source_quote": "616 gp on hand",
+    "subject": "party cash on hand",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party included a recent 275 gp advance in their pooled funds.",
+    "source_quote": "the recent 275 gp advance",
+    "subject": "party advance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool compares the trust of Rumpadump to the moral equivalent of an eight-year-old's trust.",
+    "source_quote": "moral equivalent of an eight-year-old's trust in a mushroom friend",
+    "subject": "Stool",
+    "quote_verified": true
+  }
+]

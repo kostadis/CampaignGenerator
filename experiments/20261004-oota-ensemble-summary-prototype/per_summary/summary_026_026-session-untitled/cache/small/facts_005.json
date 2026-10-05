@@ -1,0 +1,156 @@
+[
+  {
+    "type": "location",
+    "fact": "The party decided this location would be their first stop in the caverns.",
+    "source_quote": "The party decided their first stop would be the cavern of the stone giants.",
+    "subject": "Stone Giant cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party arrives at the Stone Giant cavern.",
+    "source_quote": "The party arrives at the Stone Giant cavern",
+    "subject": "party arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is currently dealing with an afflicted brother who has succumbed to the two-headed curse.",
+    "source_quote": "They found Hgraam already contending with another of his brothers who had succumbed to the two-headed curse",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Hgraam's brother is twisted and confused due to the curse, described as having 'gotten a little bit loopy.'",
+    "source_quote": "his massive form twisted and confused",
+    "subject": "two-headed giant brother",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The two-headed giant brother is currently with Hgraam in the cavern.",
+    "source_quote": "They found Hgraam already contending with another of his brothers",
+    "subject": "two-headed giant brother",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin presents Hgraam with the ritualistic two-headed statue.",
+    "source_quote": "Thorin presented the stone giant leader with the ritualistic two-headed statue they had recovered.",
+    "subject": "statue presentation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The two-headed statue was recovered from the Derro.",
+    "source_quote": "statue they had recovered ... the Derro had been using dark rituals",
+    "subject": "two-headed statue",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin tells Hgraam that the Derro were using dark rituals to drive giants into a rampage.",
+    "source_quote": "He explained that the Derro had been using dark rituals to drive the giants into a rampage.",
+    "subject": "Thorin's explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Hgraam probes whether the ritual was the work of the derro ruling council.",
+    "source_quote": "Hgraam probed whether the ritual was the work of the derro ruling council.",
+    "subject": "Derro council involvement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses not to confirm specific council involvement, adhering to Zalthir's suggestion.",
+    "source_quote": "The party chose the \"we don't know who they were\" defense",
+    "subject": "party's vague response",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggested the party claim ignorance about the Derro's specific affiliations.",
+    "source_quote": "Zalthir suggests: \"Say that these are crazy derro and they were screaming and chanting. We don't know what the deal was.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds on a persuasion check (13) to maintain the party's vague stance.",
+    "source_quote": "Thorin's persuasion roll (13, with advantage as a giant-friend) held.",
+    "subject": "persuasion check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam gravely accepts the statue.",
+    "source_quote": "Hgraam accepted the statue gravely",
+    "subject": "Hgraam accepts statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam uses the statue to begin a cure for his afflicted kin.",
+    "source_quote": "declaring that with it he could begin to cure his afflicted kin.",
+    "subject": "cure initiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam gives the party five hundred gold pieces as a reward.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands as a reward.",
+    "subject": "reward payment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party receives 500 gold pieces from the giants.",
+    "source_quote": "He pressed five hundred gold pieces into the party's hands",
+    "subject": "500 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is becoming increasingly agitated.",
+    "source_quote": "the stone guard have become more agitated recently",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam closes the Gracklstugh cavern to outsiders while he consults the stones.",
+    "source_quote": "I'm afraid we must close this Gracklstugh cavern to the outside while I ponder what the stones will say.",
+    "subject": "cavern closure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks Hgraam if he knows a way to the Overbright.",
+    "source_quote": "Thorin asks whether Hgraam knows a way to the Overbright.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam states he does not know where the Overbright is, or if it exists.",
+    "source_quote": "Hgraam does not know where it is, or whether it exists",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam mentions that 'little people' have told him the Overbright exists.",
+    "source_quote": "Although I have been told by little people like you that it does.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM noted that dwarves who are not giant-friends take offense at being called 'little people.'",
+    "source_quote": "The DM noted that dwarves who are not giant-friends take offense at being called \"little people.\"",
+    "subject": "DM note on terminology",
+    "quote_verified": true
+  }
+]

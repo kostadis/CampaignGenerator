@@ -1,0 +1,233 @@
+[
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull is a captain in the Stone Guard.",
+    "source_quote": "Captain Errde Blackskull of the Stone Guard",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull arrived from the direction of the prison with a small escort.",
+    "source_quote": "arrived from the direction of the prison with a small escort",
+    "subject": "Errde's arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull expected the party to accompany her.",
+    "source_quote": "she expected them to accompany her",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull implied that she could have arrested the party if she desired.",
+    "source_quote": "if she wanted them arrested she would have brought a whole platoon",
+    "subject": "Errde's threat implication",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull loudly announced to the surrounding air that the meeting was merely friendly and not a recruitment.",
+    "source_quote": "loudly announced to the surrounding air, and to any invisible listeners, that this was merely a friendly discussion",
+    "subject": "Errde's public announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Captain Errde Blackskull met the party in her front office.",
+    "source_quote": "In her front office, over pastries",
+    "subject": "Stone Guard front office",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempted to spare the stone giant's life.",
+    "source_quote": "singled out Thorin's attempt to spare the stone giant's life",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro.",
+    "source_quote": "A derro named Droki",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki has been evading Stone Guard patrols with suspicious ease.",
+    "source_quote": "had been evading Stone Guard patrols with suspicious ease",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki appears to know in advance where Stone Guard patrols will be.",
+    "source_quote": "as though he always knew in advance where they would be",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki lives in the West Cleft District.",
+    "source_quote": "He lived in the volatile West Cleft District",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is volatile.",
+    "source_quote": "the volatile West Cleft District",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Stone Guards enter the West Cleft District only in force.",
+    "source_quote": "where the guards entered only in force",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull asked the party to follow Droki and report back, seize him for questioning, or kill him and bring evidence.",
+    "source_quote": "She asked the party to follow him and report back, or better, to seize him for questioning, or failing that to kill him and bring evidence of his activities.",
+    "subject": "Droki mission assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Captain Errde Blackskull believes there is corruption within the Council of Savants.",
+    "source_quote": "involving corruption within the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Captain Errde Blackskull believes there is corruption among the clan lairds.",
+    "source_quote": "and among the clan lairds",
+    "subject": "Clan lairds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull promised 350 gold pieces' worth of equipment from her armory to each party member if they exposed the conspiracy.",
+    "source_quote": "She promised that exposing it would earn each of them 350 gold pieces' worth of equipment from her armory",
+    "subject": "Errde's reward offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull promised safe passage out of the city when the party's work was done.",
+    "source_quote": "plus safe passage out of the city when their work was done",
+    "subject": "Errde's safe passage offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin pressed Captain Errde Blackskull twice on whether the job bound them to the Stone Guard.",
+    "source_quote": "Thorin pressed her twice on whether this bound them to the Stone Guard.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull stated the job would be for the city.",
+    "source_quote": "She insisted it would \"of course, be for the city.\"",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz observed that the bazaar's strange merchants broke every rule of the authoritarian society.",
+    "source_quote": "whose passive perception told him the bazaar's strange merchants broke every rule of this authoritarian society",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled an 18 on persuasion.",
+    "source_quote": "He then rolled an 18 on persuasion",
+    "subject": "Daz's persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull advanced 175 gold pieces' worth of equipment to each party member.",
+    "source_quote": "Errde advanced 175 gold pieces' worth of equipment to each of them",
+    "subject": "Errde's advance payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining 175 gold pieces' worth of equipment was promised on completion of the task.",
+    "source_quote": "with the remaining 175 to follow on completion",
+    "subject": "Errde's remaining payment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde Blackskull revealed she was aware drow were hunting the party.",
+    "source_quote": "she revealed that she was already aware drow were hunting the party",
+    "subject": "Captain Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Captain Errde Blackskull offered her protection against the drow hunting the party.",
+    "source_quote": "offered her protection against them as an additional incentive",
+    "subject": "Errde's protection offer",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Nothing Captain Errde Blackskull said forbade the party from hearing out the Keepers of the Flame.",
+    "source_quote": "Nothing she said forbade them from also hearing out the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin priced splint armor.",
+    "source_quote": "Thorin priced splint",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin priced plate armor.",
+    "source_quote": "Thorin ... priced ... plate",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin settled on chain mail and twenty darts.",
+    "source_quote": "settled on chain mail and twenty darts",
+    "subject": "Thorin's equipment selection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The other party members deferred their scrolls and potions to next time.",
+    "source_quote": "The others deferred their scrolls and potions to next time",
+    "subject": "Party's deferred purchases",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ended just before the GM was about to run an encounter.",
+    "source_quote": "The session ended just before the GM was about to run an encounter",
+    "subject": "Session end",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone giants of Cairngorm Cavern are expecting a visit from the party.",
+    "source_quote": "the stone giants of Cairngorm Cavern expecting a visit",
+    "subject": "Stone giants of Cairngorm Cavern",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,128 @@
+[
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard quietly withdraws from the cauldron chamber area.",
+    "source_quote": "the Ember Vanguard quietly withdrew and took the western path",
+    "subject": "Ember Vanguard withdrawal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard chooses to take the western path.",
+    "source_quote": "the Ember Vanguard quietly withdrew and took the western path",
+    "subject": "route choice",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber contains scrap iron cages holding three resting cave bears.",
+    "source_quote": "scrap iron cages holding three resting cave bears",
+    "subject": "caged bear chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber has a heavy, unpleasant musk.",
+    "source_quote": "A heavy, unpleasant musk fills the air",
+    "subject": "caged bear chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spiral path is marked by small stone pylons and circles toward a tent and a large cauldron.",
+    "source_quote": "A spiral path marked by small stone pylons circles in toward a tent and a large cauldron",
+    "subject": "spiral path",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A tent is located near the center of the spiral path, near the large cauldron.",
+    "source_quote": "circles in toward a tent and a large cauldron near the center",
+    "subject": "tent",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A large cauldron is situated near the center of the spiral path.",
+    "source_quote": "a tent and a large cauldron near the center",
+    "subject": "cauldron",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Small stone pylons mark the spiral path.",
+    "source_quote": "A spiral path marked by small stone pylons",
+    "subject": "stone pylons",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three cave bears are resting in scrap iron cages.",
+    "source_quote": "scrap iron cages holding three resting cave bears",
+    "subject": "cave bear",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The cave bears are considered a real risk by the party.",
+    "source_quote": "the bears were a real risk",
+    "subject": "cave bear",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Two derro cultists stand at the cauldron.",
+    "source_quote": "Two derro cultists stand at the cauldron",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are regarded by the dwarves as a race of dwarves corrupted by the mind flayers.",
+    "source_quote": "the dwarves' contempt for the derro as a race of dwarves corrupted by the mind flayers",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are described as dwarves corrupted by the mind flayers.",
+    "source_quote": "a race of dwarves corrupted by the mind flayers",
+    "subject": "mind flayers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro cultists mention a 'prince' who is 'always hungry'.",
+    "source_quote": "Says the prince is hungry, always hungry",
+    "subject": "the prince",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro cultists express devotion to Demogorgon.",
+    "source_quote": "their devotion to Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro recites a cryptic poem about a smooth obsidian scale from the Underdark.",
+    "source_quote": "recited a cryptic, almost poetic speech about a scale \"smooth as polished obsidian\" that \"came from the deep, deep, deep\"",
+    "subject": "derro poem recitation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The derro stops partway through the poem, corrects himself, and starts again.",
+    "source_quote": "He then stopped, corrected himself, and started again",
+    "subject": "derro poem correction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests the party could come back to the cauldron chamber another time.",
+    "source_quote": "Gyrgum suggesting they could \"come back here another time\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  }
+]

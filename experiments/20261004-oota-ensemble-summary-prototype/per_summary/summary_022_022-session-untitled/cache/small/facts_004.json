@@ -1,0 +1,51 @@
+[
+  {
+    "type": "location",
+    "fact": "The Cauldron Chamber contains a spiral path marked by small stone pylons circling toward a tent and a large cauldron.",
+    "source_quote": "A spiral path marked by small stone pylons circles in toward a tent and a large cauldron near the center.",
+    "subject": "Cauldron Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three resting cave bears are held in scrap iron cages in the chamber.",
+    "source_quote": "chamber with scrap iron cages holding three resting cave bears",
+    "subject": "cave bears",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A heavy, unpleasant musk fills the air in the chamber with the bears.",
+    "source_quote": "A heavy, unpleasant musk fills the air.",
+    "subject": "Cauldron Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Two derro cultists stand at the cauldron, talking while apparently ignoring each other.",
+    "source_quote": "Two derro cultists stand at the cauldron, both talking while apparently ignoring each other.",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro mutters that the mastery demands contributions for the presents because the prince is hungry.",
+    "source_quote": "The mastery demands so many contributions for the presents. Says the prince is hungry, always hungry.",
+    "subject": "derro chant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro recites a cryptic poem about a smooth obsidian scale pulled from the deepest part of the Underdark where voices sing of two heads.",
+    "source_quote": "One derro recites a cryptic poem about a smooth obsidian scale pulled from the deepest part of the Underdark, where voices sing of two heads.",
+    "subject": "derro recitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro stops partway through the poem, corrects himself, and starts again.",
+    "source_quote": "He stops partway, corrects himself, and starts again",
+    "subject": "derro correction",
+    "quote_verified": true
+  }
+]

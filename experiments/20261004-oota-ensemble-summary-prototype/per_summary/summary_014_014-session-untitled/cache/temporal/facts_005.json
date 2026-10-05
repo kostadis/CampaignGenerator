@@ -1,0 +1,23 @@
+[
+  {
+    "type": "object",
+    "fact": "The party found eighteen silver pieces on the bodies of the assassins.",
+    "source_quote": "finding eighteen silver pieces",
+    "subject": "silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a pair of bloodstained gloves on the bodies of the assassins.",
+    "source_quote": "a pair of bloodstained gloves",
+    "subject": "bloodstained gloves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses Arcane Recovery to regain one second-level spell slot.",
+    "source_quote": "Daz used Arcane Recovery to regain a second-level spell slot",
+    "subject": "Daz Arcane Recovery",
+    "quote_verified": true
+  }
+]

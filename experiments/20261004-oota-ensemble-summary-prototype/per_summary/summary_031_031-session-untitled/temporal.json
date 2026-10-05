@@ -1,0 +1,170 @@
+[
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a legendary sentient gilded longsword.",
+    "source_quote": "Dawnbringer, a gilded longsword",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer was trapped in the dark for millennia.",
+    "source_quote": "trapped for millennia",
+    "subject": "Dawnbringer trap duration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a plus-two weapon.",
+    "source_quote": "Dawnbringer is a plus-two weapon",
+    "subject": "Dawnbringer weapon bonus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A bonus action causes a blade of pure radiance to spring from or disappear into Dawnbringer's hilt.",
+    "source_quote": "a bonus action causes a blade of pure radiance to spring from it or disappear",
+    "subject": "Dawnbringer activation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer deals an additional 1d8 damage against undead.",
+    "source_quote": "deals an additional 1d8 damage against undead",
+    "subject": "Dawnbringer undead damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer can cast lesser restoration once each day.",
+    "source_quote": "cast lesser restoration once each day",
+    "subject": "Dawnbringer spell casting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia leads the party on a tour of the colony's various circles in the Neverlight Grove.",
+    "source_quote": "Basidia, the myconid sovereign who had been guiding the party through the Neverlight Grove, led them on a tour of the colony's various circles.",
+    "subject": "tour of the circles",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The investigation into the Garden of Welcome is delayed until the morning, prompting an immediate nighttime alternative.",
+    "source_quote": "without waiting for Phylo's guided tour in the morning",
+    "subject": "tour duration",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The newly spored myconids are only a few inches tall and not yet aware.",
+    "source_quote": "newly spored myconids only a few inches tall, not yet aware",
+    "subject": "newly spored myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi.",
+    "source_quote": "Hebopbe proudly points out the terraces and extensive cultivation program",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar places no bets at all, which is described as tellingly strange behavior for him.",
+    "source_quote": "placing no bets at all",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar claims he has never been infected by spores.",
+    "source_quote": "offering to bet that he had never been infected by spores",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is located on a plateau rising high above the surrounding terraces of the grove.",
+    "source_quote": "The plateau rose high above the rest of the grove",
+    "subject": "Garden of Welcome topography",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The heads of creatures from a dozen different Underdark races are emerging from the soil in the Garden of Welcome.",
+    "source_quote": "the heads of creatures from a dozen different Underdark races",
+    "subject": "heads count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Half of Xinaya's face is rotted into a bed for scores of tiny mushrooms.",
+    "source_quote": "Half of Xinaya's face has rotted into a bed for scores of tiny mushrooms",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Phylo's planned tour of the Garden of Welcome is scheduled for the following morning.",
+    "source_quote": "before Phylo can conduct his planned tour the following morning",
+    "subject": "Phylo tour timing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two adult myconids emerge to attack the party alongside the larval creature.",
+    "source_quote": "Two adult myconids and drow spore servants",
+    "subject": "myconid adults count",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Dawnbringer emits genuine sunlight in a fifteen-foot radius.",
+    "source_quote": "fifteen-foot radius",
+    "subject": "Dawnbringer sunlight radius",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three clustered creatures were badly burned by Daz's fireball.",
+    "source_quote": "badly burned three clustered creatures",
+    "subject": "burned creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith has transformed into a mindless drow spore servant after his head exploded.",
+    "source_quote": "his head exploded and he rose as a mindless drow spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin activated Dawnbringer to emit actual sunlight.",
+    "source_quote": "Thorin activates Dawnbringer, emitting actual sunlight",
+    "subject": "Dawnbringer activation",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Those infected by spores have only a few days to find a cure before dying.",
+    "source_quote": "had only days to find a cure",
+    "subject": "spore infection duration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has no third-level spell slots remaining.",
+    "source_quote": "he has no third-level spell slots remaining",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of the Masters is dominated by a towering mushroom.",
+    "source_quote": "dominated by a towering mushroom",
+    "subject": "Circle of the Masters mushroom",
+    "quote_verified": true
+  }
+]

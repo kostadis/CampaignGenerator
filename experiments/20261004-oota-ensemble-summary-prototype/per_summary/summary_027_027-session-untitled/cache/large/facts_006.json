@@ -1,0 +1,114 @@
+[
+  {
+    "type": "location",
+    "fact": "The Hidden Shore is a desolate, lonely beach.",
+    "source_quote": "arrived at a desolate, lonely beach",
+    "subject": "Hidden Shore",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sarith identifies the Hidden Shore as the path toward the Lost Tomb of Khaem.",
+    "source_quote": "Sarith identified as the path toward the Lost Tomb of Khaem",
+    "subject": "Hidden Shore",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Lost Tomb of Khaem is the destination the party is heading toward.",
+    "source_quote": "path toward the Lost Tomb of Khaem",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith identifies the beach as the path toward the Lost Tomb of Khaem.",
+    "source_quote": "Sarith identified as the path toward the Lost Tomb of Khaem",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is a gnome the party rescued from spider webs long ago.",
+    "source_quote": "Fargas Rumblefoot, the gnome they rescued in the spider webs long ago",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party learned about the Lost Tomb of Khaem from Fargas Rumblefoot.",
+    "source_quote": "They had heard about the tomb from Fargas Rumblefoot",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith points out there is no one on the beach to sell the boat to.",
+    "source_quote": "Sarith looked at the empty beach and said no",
+    "subject": "boat disposal decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith proposes sinking the boat to hide their arrival.",
+    "source_quote": "proposed sinking it",
+    "subject": "boat disposal proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sinks their own boat beneath the dark waters.",
+    "source_quote": "The party scuttled their own boat, letting it sink beneath the dark waters",
+    "subject": "boat sinking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to use the spell Mending to repair the boat upon their return.",
+    "source_quote": "with the plan to use magic to repair it upon their return",
+    "subject": "boat repair plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum punches a hole in the boat to sink it.",
+    "source_quote": "Gyrgum happily punches the hole",
+    "subject": "Gyrgum punches boat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith leads the group away from the shore into the Underdark tunnels.",
+    "source_quote": "Sarith led the group away from the shore and back into the winding, lightless tunnels of the Underdark",
+    "subject": "departure from shore",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM notes that the Drow will eventually come looking for the party.",
+    "source_quote": "The DM notes the Drow will eventually come looking",
+    "subject": "Drow tracking",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is concerned about being tracked by the Gray Ghosts.",
+    "source_quote": "Concerned about being tracked by the Drow or the Gray Ghosts",
+    "subject": "Gray Ghosts tracking",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The journey to the Hidden Shore took four days.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "journey duration",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stirge swarm was encountered during the journey, though the text states the rest of the journey passed without incident, implying the swarm was resolved or avoided prior to this specific arrival scene.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "stirge swarm",
+    "quote_verified": true
+  }
+]

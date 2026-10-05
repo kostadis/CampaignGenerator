@@ -1,0 +1,58 @@
+[
+  {
+    "type": "location",
+    "fact": "The Goldwhisker Warrens are accessed through massive double doors roughly fifty feet tall.",
+    "source_quote": "massive\u2014roughly fifty feet tall\u2014and \u201cmonumental\u201d",
+    "subject": "Goldwhisker Warrens",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party considered sending Glabbagool under the doors to scout but rejected the idea due to fear of hostile reaction.",
+    "source_quote": "They considered sending Glabbagool underneath under the pretext that he was cleaning, but worried the wererats might mistake him for a hostile ooze and kill him.",
+    "subject": "scouting decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is an ooze who the party considered using to scout under the doors.",
+    "source_quote": "They considered sending Glabbagool underneath under the pretext that he was cleaning",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Goldwhiskers are wererats who guard the entrance to the Warrens.",
+    "source_quote": "worried the wererats might mistake him for a hostile ooze and kill him.",
+    "subject": "Goldwhiskers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz announced the party's intention to rid the warrens, grotto, and surrounding area of the slime problem.",
+    "source_quote": "Daz called through the doors: \u201cHi, we're here to uh rid the Warrens and the grotto in the general vicinity of the slime problem.",
+    "subject": "announcement to guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz stated the party needed the Goldwhiskers' help.",
+    "source_quote": "We're gonna need your help.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A guard told the party not to leave and went to report to Chief Chipgrin.",
+    "source_quote": "One told the party not to go anywhere and scampered off to report.",
+    "subject": "guard reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin requested that the party be brought inside after the initial announcement.",
+    "source_quote": "a voice announced that Chief Chipgrin wanted them brought inside.",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  }
+]

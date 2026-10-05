@@ -1,0 +1,86 @@
+[
+  {
+    "type": "date",
+    "fact": "The party travels through the Underdark for several days.",
+    "source_quote": "After several days of careful travel",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest in the caverns.",
+    "source_quote": "The party takes a long rest in the caverns",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains all his hit points.",
+    "source_quote": "Gyrgum regains all his hit points",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains his spells.",
+    "source_quote": "spells",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains his Channel Divinity uses.",
+    "source_quote": "Channel Divinity uses",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth uses her knowledge of the terrain to obscure the party's trail.",
+    "source_quote": "Eldeth uses her knowledge of the terrain to obscure the party's trail",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth brings the news that the drow pursuit has been broken.",
+    "source_quote": "Eldeth brought welcome news: the drow pursuit had finally been broken",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's pursuit rating drops to zero.",
+    "source_quote": "the party's pursuit rating dropped to zero",
+    "subject": "drow pursuit broken",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM warns that the hunters will eventually pick up the trail again.",
+    "source_quote": "the hunters would eventually pick up the trail again",
+    "subject": "drow pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is hopeful that their incredible actions will prevent the drow from finding them.",
+    "source_quote": "Daz was hopeful: \"Maybe we'll be doing something so incredible they won't be able to find us.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The narrow tunnels give way to something breathtaking.",
+    "source_quote": "the narrow tunnels gave way to something breathtaking",
+    "subject": "narrow tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Two more days of travel pass.",
+    "source_quote": "Two more days of travel pass",
+    "subject": "travel duration",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,100 @@
+[
+  {
+    "type": "event",
+    "fact": "The party's group stealth check failed to meet a DC of 14.",
+    "source_quote": "the group as a whole missed the DC 14 check",
+    "subject": "stealth check failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a 24 on his stealth check.",
+    "source_quote": "Zalthir rolled a 24",
+    "subject": "stealth roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Darkness granted the party advantage on stealth checks.",
+    "source_quote": "They moved under the darkness, which gave them advantage on stealth",
+    "subject": "stealth advantage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are five derro assassins in total.",
+    "source_quote": "There are five derro in total",
+    "subject": "derro assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four of the derro assassins are invisible.",
+    "source_quote": "five derro in total, four of them invisible",
+    "subject": "derro assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Spirit Guardians dealt 17 radiant damage to the first derro.",
+    "source_quote": "takes 17 damage",
+    "subject": "Spirit Guardians damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Spirit Guardians dealt 15 radiant damage to the second derro.",
+    "source_quote": "takes 15 damage",
+    "subject": "Spirit Guardians damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit the final attacker for 8 damage.",
+    "source_quote": "He hits for 8",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Spirit Guardians spell creates a 15-foot emanation.",
+    "source_quote": "The spell creates a 15-foot emanation",
+    "subject": "Spirit Guardians area",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second derro made its Wisdom save against a DC of 15.",
+    "source_quote": "It fails its save (DC 15",
+    "subject": "derro wisdom save",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "One body carried 3 gp and 8 sp.",
+    "source_quote": "One body carried 3 gp and 8 sp",
+    "subject": "derro loot 1",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Another body carried 10 cp.",
+    "source_quote": "another 10 cp",
+    "subject": "derro loot 2",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A third body carried 12 sp.",
+    "source_quote": "a third 12 sp",
+    "subject": "derro loot 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "All five derro assassins are dead.",
+    "source_quote": "All five Derro lay dead.",
+    "subject": "derro assassins",
+    "quote_verified": true
+  }
+]

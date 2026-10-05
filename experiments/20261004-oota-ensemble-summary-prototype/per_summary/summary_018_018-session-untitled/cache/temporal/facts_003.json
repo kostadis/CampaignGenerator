@@ -1,0 +1,100 @@
+[
+  {
+    "type": "date",
+    "fact": "The audience with Errde Blackskull occurs on the evening of the day following the party's return from the Whorlstone Caverns, with the next update expected 'tomorrow evening'.",
+    "source_quote": "Errde asks when she'll have more information, \"So tomorrow evening?\"",
+    "subject": "session duration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is a leader associated with the Stone Guard faction.",
+    "source_quote": "Errde Blackskull (continued)",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One flumph accompanies the party and shares psychic impressions with Errde.",
+    "source_quote": "the flumph shared its psychic impressions",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled a natural 20 on a dice-driven check to hold his tongue during the meeting.",
+    "source_quote": "Thorin rolls a 20 and does not blurt",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses one red dragon egg which they keep secret from Errde.",
+    "source_quote": "the party kept the red dragon egg a secret",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is armed by Errde with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is armed by Errde with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is armed by Errde with medium armor, short swords, shortbows, and shields.",
+    "source_quote": "arm the party's companions \u2014 Jimjar, Spiderbait, and Eldeth \u2014 with medium armor, short swords, shortbows, and shields",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Topsy is a wererat capable of wearing splint mail who has disappeared.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Topsy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Turvy is a wererat capable of wearing splint mail who has disappeared.",
+    "source_quote": "Topsy and Turvy, who could wear splint mail, have disappeared for now",
+    "subject": "Turvy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool received no weapons from Errde.",
+    "source_quote": "Stool received nothing",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is openly opposed to the Deepking and forbidden from taking weapon orders directly.",
+    "source_quote": "Clan Ironhead is forbidden from taking weapon orders directly and may only take surplus work from Clan Steelshadow. It is openly opposed to the Deepking.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing.",
+    "source_quote": "Clan Xardelvar fears the Deepking will deem their work too similar to weaponsmithing and take it over.",
+    "subject": "Clan Xardelvar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish a cover story.",
+    "source_quote": "Errde directs the party to visit Clan Ironhead and Clan Xardelvar to establish their cover as dissidents against the Deepking.",
+    "subject": "visit to rival clans",
+    "quote_verified": true
+  }
+]

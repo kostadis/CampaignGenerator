@@ -1,0 +1,226 @@
+[
+  {
+    "type": "date",
+    "fact": "The voyage across the Darklake begins.",
+    "source_quote": "Voyage Across the Darklake 027.05",
+    "subject": "Voyage Day 1",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is identified as a known exit from the current area.",
+    "source_quote": "Blingdenstone was the known exit",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb lies on the way to Blingdenstone.",
+    "source_quote": "the tomb lay on the way",
+    "subject": "The tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The tomb is four days' travel by boat from the party's current location.",
+    "source_quote": "the tomb was four days' travel by boat",
+    "subject": "Travel time to tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir proposes raiding the tomb first for treasure to aid against demonic threats, then dealing with the Myconid circle.",
+    "source_quote": "raid the tomb first for a demon-slaying treasure, then deal with the troubled Myconid circle",
+    "subject": "Zalthir's proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Neverlight Grove is the home of the Myconids, specifically where Stool and Rumpadump long to return.",
+    "source_quote": "Neverlight Grove is the Myconid home where Stool and Rumpadump longed to return",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool insists that nothing bad could happen at the circle and that it is under control.",
+    "source_quote": "Stool and Rumpadump insist nothing bad could happen and it is all under control",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump insists that nothing bad could happen at the circle and that it is under control.",
+    "source_quote": "Stool and Rumpadump insist nothing bad could happen and it is all under control",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith feels a compulsion to go to the Neverlight Grove.",
+    "source_quote": "Sarith feels a compulsion to go to the Grove",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is curious about the Myconid home and views dealing with demons as part of the job.",
+    "source_quote": "dealing with demons is kind of part of the part of the job description, isn't it?",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir expects they will be roped into the demonic problem if they go to the Myconid Grove.",
+    "source_quote": "Zalthir expects they will be roped into the demonic problem if they go",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar wagers an empty shell gem that the Neverlight Grove's 'circle of joy' will reveal itself to be a circle of 'unwilling vows'.",
+    "source_quote": "Jimjar made a new wager, betting an empty shell gem that the Neverlight Grove's 'circle of joy' would reveal itself to be a circle of 'unwilling vows'",
+    "subject": "Jimjar's bet",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum accepts Jimjar's wager.",
+    "source_quote": "Gyrgum took the bet",
+    "subject": "Gyrgum takes bet",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "An empty shell gem is used as the wager in Jimjar's bet.",
+    "source_quote": "betting an empty shell gem",
+    "subject": "Empty shell gem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is the gnome rescued from spider webs who mentioned the Lost Tomb of Khaem.",
+    "source_quote": "Lost Tomb of Khaem mentioned by Fargas Rumblefoot, the gnome they rescued in the spider webs",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is dead.",
+    "source_quote": "Buppido is dead",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts a spell to shroud the boat in darkness, which lasts up to 10 minutes.",
+    "source_quote": "Zalthir offers to shroud the boat in darkness. The DM rules the spell lasts up to 10 minutes",
+    "subject": "Zalthir shrouds boat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls with disadvantage in chain mail for stealth and gets a 15.",
+    "source_quote": "Thorin rolls with disadvantage in chain mail and gets 15",
+    "subject": "Thorin stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls with advantage for stealth but slips and makes noise.",
+    "source_quote": "Daz rolls with advantage for his drow paranoia but slips and makes noise",
+    "subject": "Daz stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The stirge ambush occurs on the third day of travel.",
+    "source_quote": "Three days into their voyage across the vast, dark subterranean waters",
+    "subject": "Voyage Day 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A swarm of stirges descends from the cavern ceiling onto the boat.",
+    "source_quote": "ambushed by a swarm of stirges that descended from the cavern ceiling above",
+    "subject": "Stirges",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stirges have AC 14, 2 hit points each, and a 1d4+3 piercing bite.",
+    "source_quote": "hideous things resembling a cross between an oversized bat and a monstrous mosquito, with AC 14, 2 hit points each, and a 1d4+3 piercing bite",
+    "subject": "Stirge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir unleashes a 15-foot cone of searing fire that incinerates three stirges mid-air.",
+    "source_quote": "Zalthir unleashed a 15-foot cone of searing fire that incinerated three of the creatures mid-air",
+    "subject": "Zalthir fire cone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir misses a punch but kills a fourth stirge with a second attack.",
+    "source_quote": "punched down another",
+    "subject": "Zalthir punch kill",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a shimmering barrier of force to deflect a stirge diving at him.",
+    "source_quote": "Daz conjured a shimmering barrier of force to deflect one that dove straight at him",
+    "subject": "Daz force shield",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down two stirges in rapid succession with his longsword.",
+    "source_quote": "Thorin drew his longsword and cut down two more in rapid succession",
+    "subject": "Thorin sword strikes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stirge latches onto Gyrgum and begins draining his blood.",
+    "source_quote": "Gyrgum struggled to pry one loose that had latched onto him and begun to drain his blood",
+    "subject": "Stirge 5",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts True Strike and attempts to strike the attached stirge with a hand axe but misses.",
+    "source_quote": "Gyrgum casts True Strike and attempts to strike the creature attached to him with a hand axe but misses",
+    "subject": "Gyrgum hand axe",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Stool is safe from the stirges because he has no blood.",
+    "source_quote": "Stool and Rumpadump are safe from the stirges because they have no blood",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rumpadump is safe from the stirges because he has no blood.",
+    "source_quote": "Stool and Rumpadump are safe from the stirges because they have no blood",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires a volley of unerring magical bolts that strike the remaining stirges.",
+    "source_quote": "Daz finally ended the encounter by firing a volley of unerring magical bolts that struck the last of the creatures",
+    "subject": "Daz magical bolts",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stirges are dead, leaving a bloody mess across the deck.",
+    "source_quote": "leaving a bloody mess across the deck",
+    "subject": "Stirges",
+    "quote_verified": true
+  }
+]

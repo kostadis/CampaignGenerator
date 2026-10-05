@@ -1,0 +1,51 @@
+[
+  {
+    "type": "date",
+    "fact": "The party spends three days underground before emerging from the Whorlstone Caverns to the surface.",
+    "source_quote": "Then, after three days underground, they made their way out of the Whorlstone Caverns.",
+    "subject": "travel duration to surface",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reaches fifth level.",
+    "source_quote": "They rose to fifth level, and Daz finally gained Fireball.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz gains access to third-level spells, including Fireball.",
+    "source_quote": "Daz reaches fifth level and gains third-level spells, including Fireball.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has nine preparable spells and ten spells in his spellbook.",
+    "source_quote": "Daz reconciles his \"prepared 7 of 9 (10 known)\" count: nine preparable spells, ten in his spellbook.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's longsword has a +8 bonus to hit.",
+    "source_quote": "Thorin's longsword is now +8 to hit",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rises to fifth level, gaining third-level spell access.",
+    "source_quote": "They rose to fifth level, and Daz finally gained Fireball.",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The journey out of the Whorlstone Caverns to the surface takes three days.",
+    "source_quote": "Then, after three days underground, they made their way out of the Whorlstone Caverns.",
+    "subject": "Whorlstone Caverns travel time",
+    "quote_verified": true
+  }
+]

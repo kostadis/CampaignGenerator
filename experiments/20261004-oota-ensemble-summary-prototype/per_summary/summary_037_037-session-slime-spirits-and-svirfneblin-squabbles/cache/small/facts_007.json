@@ -1,0 +1,226 @@
+[
+  {
+    "type": "location",
+    "fact": "Several non-sentient gelatinous cubes emerge from the rocks in the Traders' Grotto.",
+    "source_quote": "several non-sentient gelatinous cubes oozed out of the rocks",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gelatinous cubes are non-sentient creatures that ooze out of the rocks.",
+    "source_quote": "several non-sentient gelatinous cubes oozed out of the rocks",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is blamed by gnomes for the arrival of the gelatinous cubes.",
+    "source_quote": "some pointed accusingly at Glabbagool",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool denies being one of the attackers.",
+    "source_quote": "tried to explain that he was not one of the attackers",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool describes the attacking cubes as 'mindless, silly creatures'.",
+    "source_quote": "He dismissed the hostile cubes as \u201cmindless, silly creatures\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool claims the mindless cubes give intelligent gelatinous cubes a bad name.",
+    "source_quote": "giving intelligent gelatinous cubes a bad name",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool advises the party to use acid protection if available.",
+    "source_quote": "to use acid protection if they had it",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool advises pulling out trapped party members quickly.",
+    "source_quote": "to pull out anyone who became trapped as quickly as possible",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes a gelatinous cube with two powerful blows.",
+    "source_quote": "Zalthir rushed forward, struck one cube with two powerful blows",
+    "subject": "Zalthir first strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir retreats before a gelatinous cube's pseudopod can hit him.",
+    "source_quote": "dashed back before its pseudopod could hit him",
+    "subject": "Zalthir retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin throws darts at the gelatinous cubes while keeping his distance.",
+    "source_quote": "Thorin kept his distance and hurled darts",
+    "subject": "Thorin darts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels Divine Spark as necrotic force.",
+    "source_quote": "Gyrgum raised his holy symbol and channeled Divine Spark as necrotic force",
+    "subject": "Gyrgum Divine Spark",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gelatinous cubes engulf gnome merchants.",
+    "source_quote": "engulfing gnome merchants",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Some gnome victims struggle free from the gelatinous cubes.",
+    "source_quote": "Some victims managed to struggle free",
+    "subject": "gnome escape",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A gnome dies and begins dissolving inside a gelatinous cube.",
+    "source_quote": "one gnome died and began dissolving inside a cube",
+    "subject": "gnome death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The dead gnome is inside a gelatinous cube, dissolving.",
+    "source_quote": "one gnome died and began dissolving inside a cube",
+    "subject": "dead gnome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool moves toward the battle to prove he is on 'team sentience'.",
+    "source_quote": "Glabbagool began making his way toward the battle to demonstrate that he was firmly on \u201cteam sentience.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz places a Fireball among the gelatinous cubes.",
+    "source_quote": "Daz carefully placed a Fireball among the cubes",
+    "subject": "Daz Fireball 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One gelatinous cube partially avoids the first Fireball.",
+    "source_quote": "one partially avoided the blast",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Most gelatinous cubes take the full force of the first Fireball.",
+    "source_quote": "the others took its full force",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir activates his Eldritch Claw Tattoo, causing tentacle-like extensions to grow from his hands.",
+    "source_quote": "Zalthir then activated his Eldritch Claw Tattoo, causing tentacle-like extensions to grow from his hands",
+    "subject": "Zalthir Eldritch Claw Tattoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool asks Zalthir if he is an ooze.",
+    "source_quote": "Glabbagool exclaimed, \u201cYou've got pseudopods too,\u201d and sincerely asked whether Zalthir was an ooze",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir answers that he is an 'aspiring ooze'.",
+    "source_quote": "Zalthir answered, \u201cNo, no, just an aspiring ooze. Let's say that\u201d",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin moves closer to throw darts at the gelatinous cubes.",
+    "source_quote": "Thorin moved closer to keep throwing darts",
+    "subject": "Thorin darts 2",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer questions Thorin's combat performance.",
+    "source_quote": "despite Dawnbringer questioning his performance",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum strikes again with Divine Spark.",
+    "source_quote": "Gyrgum struck again with Divine Spark",
+    "subject": "Gyrgum Divine Spark 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz positions a second Fireball to catch the remaining cubes without hitting allies.",
+    "source_quote": "Daz positioned a second Fireball to catch the remaining cubes without hitting anyone else",
+    "subject": "Daz Fireball 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The second Fireball dissolves one gelatinous cube.",
+    "source_quote": "The blast dissolved one cube",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last gelatinous cube is left with a single hit point.",
+    "source_quote": "left the last with a single hit point",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes the last gelatinous cube with his eldritch claw from afar.",
+    "source_quote": "Zalthir casually finished it from afar with his eldritch claw",
+    "subject": "Zalthir kill",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last gelatinous cube is killed by Zalthir.",
+    "source_quote": "Zalthir casually finished it from afar with his eldritch claw",
+    "subject": "last gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin complains that he was denied the killing blow.",
+    "source_quote": "Thorin complained, \u201cDamn it. Let me have this.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

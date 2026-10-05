@@ -1,0 +1,275 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum restores 14 hit points to himself using Channel Divinity.",
+    "source_quote": "Gyrgum used Channel Divinity to heal himself by 14 hit points",
+    "subject": "Channel Divinity healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gives the remaining 6 hit points from Channel Divinity to Eldeth Feldrun.",
+    "source_quote": "He gave the remaining 6 to their badly wounded dwarf companion",
+    "subject": "Channel Divinity healing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Before healing, Eldeth Feldrun was down to 14 hit points.",
+    "source_quote": "Eldeth Feldrun, who had been down to 14 hit points",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The healing brings both Gyrgum and Eldeth Feldrun to approximately 20 hit points.",
+    "source_quote": "bringing them both to about 20",
+    "subject": "Post-healing state",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session notes identify this location as Pit 022.02, implying a 22-day journey from the starting point.",
+    "source_quote": "The Pit of Decomposed Flesh 022.02",
+    "subject": "travel time to Pit",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The entire Ember Vanguard group consists of sixteen people.",
+    "source_quote": "all sixteen of the group would need to succeed",
+    "subject": "Ember Vanguard group size",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit the derro cultist has 13 hit points.",
+    "source_quote": "He appears to have 13 hit points.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The hulking zombie accompanying Ulnara has approximately 22 hit points.",
+    "source_quote": "Zombies here have about 22 hit points.",
+    "subject": "Ulnara's zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Ulnara and her zombie emerged from about 80 feet away.",
+    "source_quote": "from about 80 feet away",
+    "subject": "Ulnara's position",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three enormous cave bears are resting in cages in the chamber east of the double doors.",
+    "source_quote": "Three enormous cave bears rested in cages",
+    "subject": "cave bear count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two insane derro stand at the large cauldron in the center of the chamber.",
+    "source_quote": "Two insane derro stood at the cauldron",
+    "subject": "derro count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are three resting cave bears in scrap iron cages.",
+    "source_quote": "chamber with scrap iron cages holding three resting cave bears",
+    "subject": "cave bears",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two derro cultists stand at the cauldron.",
+    "source_quote": "Two derro cultists stand at the cauldron",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party encountered the derro patrol approximately 100 feet down the path.",
+    "source_quote": "About 100 feet down that path, a derro patrol spotted them.",
+    "subject": "encounter distance",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The patrol consists of four derro guards.",
+    "source_quote": "The party encounters a patrol of four derro guards",
+    "subject": "derro patrol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro patrol was located in the western tunnels.",
+    "source_quote": "encounters a patrol of four derro guards about 100 feet away in the western tunnels",
+    "subject": "derro patrol encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro have an Intelligence score of 3.",
+    "source_quote": "the derro have intelligence and wisdom of 3",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro have a Wisdom score of 3.",
+    "source_quote": "the derro have intelligence and wisdom of 3",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro have a Perception score of 7.",
+    "source_quote": "and a perception of 7",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled a 19 for initiative.",
+    "source_quote": "Thorin won initiative with a 19",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a 19 for initiative, placing him first in the order.",
+    "source_quote": "Initiative order:\n  - Thorin 19",
+    "subject": "Thorin initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The allied crew rolled a 10 for initiative.",
+    "source_quote": "Initiative order:\n  - Thorin 19\n  - allies 10",
+    "subject": "Allies initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 7 for initiative.",
+    "source_quote": "Initiative order:\n  - Thorin 19\n  - allies 10\n  - Daz 7",
+    "subject": "Daz initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 2 for initiative.",
+    "source_quote": "Initiative order:\n  - Thorin 19\n  - allies 10\n  - Daz 7\n  - Gyrgum 2",
+    "subject": "Gyrgum initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's longsword hit for 6 damage.",
+    "source_quote": "His longsword hits (13) for 6 damage",
+    "subject": "Thorin longsword hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The allied crew attacks for 8 and 4 damage.",
+    "source_quote": "The allied crew attacks twice, for 8 and 4 damage",
+    "subject": "Allied crew attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir landed a critical unarmed strike for 12 damage.",
+    "source_quote": "lands a critical unarmed strike for 12 damage",
+    "subject": "Zalthir critical strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum has an Armor Class of 14.",
+    "source_quote": "I handily parry with my 14 armor class",
+    "subject": "Gyrgum AC check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin dealt 7 damage to kill his opponent.",
+    "source_quote": "Thorin kills his opponent with another 7 damage",
+    "subject": "Thorin kill damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack dealt 7 damage to derro number four.",
+    "source_quote": "Thorin's opportunity attack deals 7",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro had 6 hit points before being targeted by Daz.",
+    "source_quote": "two at the derro with 6 hit points",
+    "subject": "derro 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro had 8 hit points before being targeted by Daz.",
+    "source_quote": "one at the derro with 8",
+    "subject": "derro 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro was dropped to 3 hit points by Daz's magic missiles.",
+    "source_quote": "dropping it to 3",
+    "subject": "derro 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a 2 and a 1 on his attacks.",
+    "source_quote": "the GM rolls a 2 and a 1",
+    "subject": "Zalthir roll failures",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hit with a 13 to kill the last derro.",
+    "source_quote": "Gyrgum casts True Strike on his mace and hits with a 13",
+    "subject": "Gyrgum final hit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception score of 14.",
+    "source_quote": "Gyrgum, with a passive perception of 14",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural platform in the center of the chamber is five feet high.",
+    "source_quote": "five-foot natural platform",
+    "subject": "ritual platform height",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session pauses briefly due to a technical crash.",
+    "source_quote": "The session pauses briefly when the GM's Roll20 container crashes",
+    "subject": "session interruption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's group stealth check rolls are 18, 16, and 7, plus Zalthir.",
+    "source_quote": "The group stealth check comes in at 18, 16, and 7, plus Zalthir",
+    "subject": "party stealth checks",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,121 @@
+[
+  {
+    "type": "npc",
+    "fact": "Buppido is a derro who has succumbed to madness.",
+    "source_quote": "the Derro they found was not the one they had known",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido declares that his faithful have arrived to receive his divine truth and that the party was delivered to him by destiny.",
+    "source_quote": "He declared that his faithful had finally arrived to receive his divine truth",
+    "subject": "Buppido's declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Buppido constructed a makeshift altar out of bones and skulls.",
+    "source_quote": "a makeshift altar constructed of bones and skulls",
+    "subject": "makeshift altar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido wipes his hands clean on his vest before attacking.",
+    "source_quote": "his hands wiped clean on his vest",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido's eyes are gleaming with terrifying and absolute conviction.",
+    "source_quote": "his eyes gleaming with a terrifying and absolute conviction",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido demands the party worship him as their leader.",
+    "source_quote": "demands the party worship him as their leader",
+    "subject": "demand for worship",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks for clarification on whether the party can fight Buppido if needed.",
+    "source_quote": "Just to be clear, we can take him if we need to, right?",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido flies into a psychotic rage and attacks the party with a hooked spear.",
+    "source_quote": "Buppido flies into a psychotic rage and attacks with a hooked spear",
+    "subject": "Buppido's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of skeletons rises to defend Buppido's shrine and surrounds the party.",
+    "source_quote": "A group of skeletons rises to defend Buppido's shrine, surrounding the party",
+    "subject": "skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has 13 hit points.",
+    "source_quote": "Buppido has only 13 hit points",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled a 15 on initiative.",
+    "source_quote": "Thorin keeps a 15 on initiative",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a spell to outline enemies in glowing light.",
+    "source_quote": "Daz casts a spell to outline the enemies in glowing light",
+    "subject": "Daz's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of darkness to disorient the attackers.",
+    "source_quote": "Zalthir conjures a sphere of darkness to disorient the attackers",
+    "subject": "Zalthir's spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz targets a 20-foot cube, forcing a Dexterity save that marks three skeletons.",
+    "source_quote": "Daz targets a 20-foot cube and forces a Dexterity save, and three skeletons are marked",
+    "subject": "skeletons marked",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin engages the skeletons in melee combat.",
+    "source_quote": "Thorin engages the skeletons in melee combat",
+    "subject": "Thorin's melee engagement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits a skeleton with advantage for 4 damage.",
+    "source_quote": "He hits one with advantage for 4 damage",
+    "subject": "Thorin's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states his intent to tank the encounter and take hits.",
+    "source_quote": "I'll tank it and take some hits",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

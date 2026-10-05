@@ -1,0 +1,352 @@
+[
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron negotiates a Non-Demonic Agreement (NDA) with the party to keep their dealings secret.",
+    "source_quote": "Negotiating the Non-Demonic Agreement 018.05",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron hears Gyrgum's offer of an NDA as a 'Non-Demonic Agreement'.",
+    "source_quote": "Gyrgum offered an optional NDA \u2014 which Werz heard as a \"Non-Demonic Agreement\"",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron asks whether any curses or demonic possession are involved in the agreement.",
+    "source_quote": "Werz asks whether any curses or demonic possession are involved.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states he will sign the contract because it will be enforced by a fearsome ghost.",
+    "source_quote": "I will gladly sign such a contract, especially if it will be enforced by a fearsome ghost like this.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron calls a thousand gold pieces a form of highway robbery.",
+    "source_quote": "This is a form of highway robbery.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron claims he thought it would be insulting to accept the party's first offer.",
+    "source_quote": "I thought it would be insulting for me to accept your first offer.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron pays 1,100 gold pieces for the NDA.",
+    "source_quote": "Werz pays the 1,100 gold piece fee and the NDA is concluded.",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron provides information about various Duergar clans.",
+    "source_quote": "Werz provides information about various Duergar clans",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states the deal is for the party to remove assassins targeting him.",
+    "source_quote": "Werz says the deal is that they remove the assassins",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron offers his services to Blingdenstone.",
+    "source_quote": "he offers his services to Blingdenstone",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron complains that the party has bled him dry.",
+    "source_quote": "You've bled me dry",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron states he has to maintain his profit margins.",
+    "source_quote": "says he has to maintain his profit margins",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron gives the party five special gems as a symbol of good faith.",
+    "source_quote": "Werz gives the party five special gems as a symbol of good faith",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron hints that the gems are of particular interest to gnomes.",
+    "source_quote": "hinting they are of particular interest to gnomes",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz Saltbaron suggests talking to Gnomish friends to learn why the gems are special before selling them.",
+    "source_quote": "before you sell these gems, I suggest you talk to your Gnomish friends and ask them why these are special",
+    "subject": "Werz Saltbaron",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers an optional NDA using the ghost's presence as leverage.",
+    "source_quote": "Gyrgum offered an optional NDA \u2014 which Werz heard as a \"Non-Demonic Agreement\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum stares knowingly at the ghost when Werz asks about curses.",
+    "source_quote": "Gyrgum stared knowingly at the ghost",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks which of them looks craftiest.",
+    "source_quote": "Gyrgum asks which of them looks craftiest",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum drafts a formal contract with his fancy pen.",
+    "source_quote": "Gyrgum drafts a formal contract with his fancy pen",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum hopes the gems are not cursed.",
+    "source_quote": "I'm hoping they're not cursed.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz sets a list price of 1,250 gold pieces for the NDA.",
+    "source_quote": "Daz set a \"list price\" of 1,250 gold pieces",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz offers the NDA at a flat thousand gold pieces.",
+    "source_quote": "generously offered it at a flat thousand",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz recalls that the last NDA brought in about another thousand gold.",
+    "source_quote": "Daz recalls the last NDA brought in about another thousand gold",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz proposes starting the price at 1,250 gold pieces.",
+    "source_quote": "proposes starting at 1,250",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states they won't be bound by any secret if Werz questions the offer.",
+    "source_quote": "Okay, then that's fine\u2026 We won't be bound by any sort of secret.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks the value of the gems given by Werz.",
+    "source_quote": "Daz asks their value",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz threatens to refund the money and reveal Werz's activities.",
+    "source_quote": "Well, we can refund the money and let everybody know what you're up to.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin nearly blurts out how much money Daz has but misses the saving throw.",
+    "source_quote": "I almost blurted out how much money you got, but I missed the save.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin waxes philosophical about how radical candor builds trust.",
+    "source_quote": "Thorin waxes philosophical about how radical candor builds trust",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin says Werz is better off not paying.",
+    "source_quote": "says Werz is better off not paying",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost says 'boo' after Gyrgum stares at it.",
+    "source_quote": "the ghost said \"boo.\"",
+    "subject": "Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM notes that Daz comes from a society of people who price everything.",
+    "source_quote": "The GM notes Daz \"does come from a society of people who price everything.\"",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offers an optional NDA to Werz.",
+    "source_quote": "Gyrgum offered an optional NDA",
+    "subject": "NDA Negotiation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost says 'boo' in response to Gyrgum's stare.",
+    "source_quote": "the ghost said \"boo.\"",
+    "subject": "Ghost Boo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The price of the NDA is raised from 1,000 to 1,100 gold pieces after Werz haggles.",
+    "source_quote": "The party raises the price from 1,000 to 1,100 gold pieces",
+    "subject": "Price Hike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz pays 1,100 gold pieces for the NDA.",
+    "source_quote": "Werz pays the 1,100 gold piece fee",
+    "subject": "Payment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Werz gives the party five special gems.",
+    "source_quote": "Werz gives the party five special gems as a symbol of good faith",
+    "subject": "Gems Given",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to deal with assassins targeting Werz in exchange for influence and trade favors.",
+    "source_quote": "The party agrees to deal with the assassins targeting Werz in exchange for his influence and trade favors in Blingdenstone.",
+    "subject": "Deal Struck",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum drafts a formal contract using his fancy pen.",
+    "source_quote": "Gyrgum drafts a formal contract with his fancy pen",
+    "subject": "NDA Contract",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Werz gives the party five special gems worth 100 GP each.",
+    "source_quote": "Werz gives the party five special gems as a symbol of good faith",
+    "subject": "Special Gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz asks for the value of the gems.",
+    "source_quote": "Daz asks their value",
+    "subject": "Special Gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The value of each gem is put at 100 GP.",
+    "source_quote": "it is put at 100 GP each",
+    "subject": "Special Gems",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party deals with Werz Saltbaron in the context of influencing trade and politics in Blingdenstone.",
+    "source_quote": "The party agrees to deal with the assassins targeting Werz in exchange for his influence and trade favors in Blingdenstone.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is a Duergar clan discussed by Werz Saltbaron.",
+    "source_quote": "Werz provides information about various Duergar clans, including Clan Ironhead",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a Duergar clan of armorsmiths.",
+    "source_quote": "Clan Thrazgad is another clan of armorsmiths",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad complains their stores have been raided recently.",
+    "source_quote": "Clan Thrazgad is another clan of armorsmiths who complain their stores have been raided recently.",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xundom is a Duergar clan.",
+    "source_quote": "Werz provides information about various Duergar clans, including Clan Ironhead, Clan Thrazgad, and Clan Xundom.",
+    "subject": "Clan Xundom",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Xundom will back the Deepking if there is a contest for power.",
+    "source_quote": "Clan Xundom will back the Deepking if there's any contest for power.",
+    "subject": "Clan Xundom",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Werz Saltbaron provides information about various Duergar clans.",
+    "source_quote": "Werz provides information about various Duergar clans",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Clan Xundom will back the Deepking in a contest for power.",
+    "source_quote": "Clan Xundom will back the Deepking if there's any contest for power.",
+    "subject": "Deepking",
+    "quote_verified": true
+  }
+]

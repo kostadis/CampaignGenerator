@@ -1,0 +1,198 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek states that Droki passes through the area roughly once a day.",
+    "source_quote": "Pelek told them that Droki passed through once a day",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek slips through the narrow stone cracks to scout ahead.",
+    "source_quote": "Pelek slips through the narrow stone cracks to scout ahead",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reports that the tunnel continues for some distance with nobody there.",
+    "source_quote": "He reports that the tunnel continues for some distance with nobody there",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek notes that he cannot go far because he is tied to his bones.",
+    "source_quote": "Tied to his bones, he cannot go far.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek says, \"I knew I would be of use to you, fellows\".",
+    "source_quote": "\"I knew I would be of use to you, fellows\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki leaves a messy trail of food scraps behind him.",
+    "source_quote": "Following the messy trail of food scraps Droki left behind",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM describes Droki as \"a litter bug.\"",
+    "source_quote": "The DM describes Droki as \"a litter bug.\"",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is noted to pass through the area roughly once a day.",
+    "source_quote": "Pelek told them that Droki passed through once a day",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum eats one of the magical shrinking mushrooms growing nearby.",
+    "source_quote": "even after Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests Droki may just be obsessive-compulsive.",
+    "source_quote": "Gyrgum suggests Droki may just be obsessive-compulsive",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses a desire to cast mending to seal the cracks instead of smashing through.",
+    "source_quote": "Gyrgum's contrarian streak wants to cast mending to seal the cracks instead",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz sees the pool as a chance to shine with Shape Water.",
+    "source_quote": "Daz sees it as his chance to shine with Shape Water",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls an 11 on Investigation.",
+    "source_quote": "Investigation rolls: Daz 11",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests continuing on Droki's path first and circling back if needed.",
+    "source_quote": "Zalthir suggests continuing on Droki's path first and circling back if needed",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes growing large to \"Hulk smash\" through the wall.",
+    "source_quote": "Thorin proposes growing large and \"Hulk smash[ing]\" through",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The massive cavern is filled with a deep, black pool of water stretching nearly a hundred feet across.",
+    "source_quote": "massive cavern filled with a deep, black pool of water stretching nearly a hundred feet across",
+    "subject": "massive cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Nothing can be seen beneath the surface of the black water in the pool.",
+    "source_quote": "nothing can be seen beneath the surface of the black water",
+    "subject": "massive cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The solid rock wall is riddled with narrow cracks.",
+    "source_quote": "solid rock wall riddled with narrow cracks",
+    "subject": "solid rock wall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cracks in the wall are too small for any of the party members to squeeze through.",
+    "source_quote": "The cracks were far too small for any of them to squeeze through",
+    "subject": "solid rock wall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Through the cracks in the wall, a tunnel running about 30 feet is visible.",
+    "source_quote": "Through the cracks the party can see a tunnel running about 30 feet",
+    "subject": "tunnel behind wall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The caverns were once described as \"a hippie place.\"",
+    "source_quote": "The DM warns that the caverns, once \"a hippie place,\" are now held by groups",
+    "subject": "caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pushes southeast following Droki's messy trail of food scraps.",
+    "source_quote": "Following the messy trail of food scraps Droki left behind, the party pushed southeast",
+    "subject": "following Droki's trail",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reaches a massive cavern with a large pool.",
+    "source_quote": "until they reached a massive cavern filled with a deep, black pool of water",
+    "subject": "reaching the pool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum eats a shrinking mushroom in an attempt to pass through the cracks.",
+    "source_quote": "even after Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "attempting to squeeze through cracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Investigation checks reveal no secret doors in the wall.",
+    "source_quote": "There are no secret doors",
+    "subject": "investigation of wall",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Magical shrinking mushrooms are growing nearby the cracks.",
+    "source_quote": "magical shrinking mushrooms growing nearby",
+    "subject": "shrinking mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Droki is characterized by the DM as a litter bug.",
+    "source_quote": "The DM describes Droki as \"a litter bug.\"",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The caverns are held by people plotting against the Deepking.",
+    "source_quote": "the caverns were now held by people plotting against the Deepking",
+    "subject": "Deepking plot",
+    "quote_verified": true
+  }
+]

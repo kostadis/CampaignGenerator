@@ -1,0 +1,30 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir's attack of opportunity against the fleeing Grick Alpha deals 13 damage.",
+    "source_quote": "hits for 13",
+    "subject": "attack of opportunity damage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gyrgum's Spirit Guardians effect swirls around him in a 15-foot radius.",
+    "source_quote": "swirled around him in a 15-foot radius",
+    "subject": "Spirit Guardians radius",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cloak crafted from the Grick Alpha's hide will be ready after six days.",
+    "source_quote": "The cloak will be ready after six days.",
+    "subject": "grick cloak crafting duration",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gyrgum summons spectral platinum dragons with his Spirit Guardians spell.",
+    "source_quote": "summoning spectral platinum dragons",
+    "subject": "Spirit Guardians effect",
+    "quote_verified": true
+  }
+]

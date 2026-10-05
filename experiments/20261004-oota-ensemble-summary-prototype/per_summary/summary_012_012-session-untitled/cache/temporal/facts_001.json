@@ -1,0 +1,23 @@
+[
+  {
+    "type": "event",
+    "fact": "The party traveled across the Darklake for many days before arriving at Gracklstugh.",
+    "source_quote": "After many grueling days of travel across the Darklake",
+    "subject": "travel across the Darklake",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Crowds in Gracklstugh include drow, svirfneblin, derro, and orcs, among other races.",
+    "source_quote": "Drow, svirfneblin, derro, orcs and other races moved through the crowds",
+    "subject": "Gracklstugh race diversity",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party is currently level 3.",
+    "source_quote": "The party is level 3 and \"close, but not quite\" to leveling up.",
+    "subject": "party",
+    "quote_verified": true
+  }
+]

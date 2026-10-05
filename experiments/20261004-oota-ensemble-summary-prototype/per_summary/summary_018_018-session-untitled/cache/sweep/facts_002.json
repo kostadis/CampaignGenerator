@@ -1,0 +1,324 @@
+[
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the setting for the political deliberations.",
+    "source_quote": "The conversation turned to the broader political landscape of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown increasingly erratic.",
+    "source_quote": "The Deepking had grown increasingly erratic",
+    "subject": "The Deepking",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Steelshadow holds all weapons contracts in Gracklstugh due to the Deepking's decision.",
+    "source_quote": "His decision to grant all weapons contracts exclusively to his own clan, Clan Steelshadow",
+    "subject": "Clan Steelshadow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Deepking granted all weapons contracts exclusively to Clan Steelshadow.",
+    "source_quote": "grant all weapons contracts exclusively to his own clan, Clan Steelshadow",
+    "subject": "weapon contracts granted",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud is a red dragon whose fire is essential to Gracklstugh's industrial output.",
+    "source_quote": "Themberchaud the red dragon, whose fire was essential to the city's industrial output",
+    "subject": "Themberchaud",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame manage Themberchaud and have convinced him he is the real power in the city.",
+    "source_quote": "convinced by his handlers in the Keepers of the Flame that he was the real power in the city",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud has recently started to grow up and noticed things might not be as they seem.",
+    "source_quote": "started to grow up and noticed that maybe things aren't as they seem",
+    "subject": "Themberchaud growing up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar has become frantic about the dragon egg.",
+    "source_quote": "That was why Gartokkar had become so frantic about the dragon egg",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Without Themberchaud, the Keepers of the Flame might face a layoff.",
+    "source_quote": "Without Themberchaud, the Keepers of the Flame might face \"a layoff.\"",
+    "subject": "layoff threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz points out that the party has never actually seen evidence the Derro are behind the chaos.",
+    "source_quote": "Daz pointed out that the party had never actually seen evidence the Derro were behind any of this",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin warns against giving Errde air cover to go on a slaughter rampage.",
+    "source_quote": "Thorin warned against giving Errde \"air cover to go on a slaughter rampage.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is one of the factions in Gracklstugh.",
+    "source_quote": "The party analyzes the motivations of the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard and Keepers of the Flame are inclined toward a violent pacification mission against the Derro.",
+    "source_quote": "Both factions seem inclined toward a violent 'pacification mission' against the Derro",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests pretending to have evidence that incriminates the evil vizier.",
+    "source_quote": "Zalthir: \"Are you suggesting we set up the evil vizier so we just pretend we have evidence that incriminates him?\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Duergar are implied to potentially kill Derro if the Deepking loses power.",
+    "source_quote": "factions \"would be more busy trying to grab power than they would be killing Derro.\"",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Killing Themberchaud is considered an option but would hurt the city's ability to produce goods.",
+    "source_quote": "Killing Themberchaud is always an option, but it would hurt the city's ability to produce goods",
+    "subject": "killing Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks whether the party wants to get involved in office politics or leave town.",
+    "source_quote": "Thorin asks whether the party wants to get involved in \"office politics\" or grab what they can and leave town.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Keepers of the Flame have formally threatened permanent hostility if betrayed.",
+    "source_quote": "the Keepers of the Flame had formally threatened permanent hostility if betrayed",
+    "subject": "permanent hostility threat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests faking their deaths.",
+    "source_quote": "Thorin: \"So we could fake our death.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow are currently pursuing the party.",
+    "source_quote": "I mean, we already have the Drow after us.",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that they are probably safe because everybody wants to kill them.",
+    "source_quote": "Daz argues that since everybody wants to kill them, they are probably safe.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM comments that Daz's argument is a very Drow thing to say.",
+    "source_quote": "GM: \"That's a very Drow thing to say.\"",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes they could get Errde to arm their companions, say yes, and then leave.",
+    "source_quote": "Zalthir notes that at worst, they can get Errde to arm their companions, say yes, and then leave.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde is in a position to arm the party's companions.",
+    "source_quote": "they can get Errde to arm their companions",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum argues they should at least carry through with the beginning of what they were paid to do.",
+    "source_quote": "Gyrgum: \"I feel like we should at least carry through with the beginning of what we got paid to do.\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes a personal philosophy of radical candor.",
+    "source_quote": "Thorin proposes a new personal philosophy of 'radical candor'",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin identifies himself as chaotic neutral.",
+    "source_quote": "I mean, I'm chaotic neutral.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum says that Thorin's philosophy seems like a great way to get killed.",
+    "source_quote": "Gyrgum: \"That seems like a great way to get killed.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin trusts the party because he does not read people well.",
+    "source_quote": "But I also trust you all because I know I don't read people well.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminds Daz that in Drow society, information is power, and hoarding information is power.",
+    "source_quote": "The GM reminds Daz that in Drow society, \"information is power, and hoarding information is power\".",
+    "subject": "GM reminds Daz about Drow society",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz considers staying quiet and steering things with subtle misdirection or exaggerations.",
+    "source_quote": "Daz considers staying quiet and steering things with \"subtle misdirection or subtle exaggerations\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The dangerous social climate being discussed is that of the Underdark.",
+    "source_quote": "in the dangerous social climate of the Underdark",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a 19 Intelligence.",
+    "source_quote": "Daz concedes he has a 19 Intelligence",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a 10 Charisma.",
+    "source_quote": "but only a 10 Charisma",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a 14 Wisdom.",
+    "source_quote": "and 14 Wisdom",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM points out that Intelligence and the ability to manipulate people are not necessarily the same thing.",
+    "source_quote": "The GM points out that \"Intelligence and being able to manipulate people are not necessarily the same thing.\"",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party's only truly paid job involves finding out what is going on with the egg and retrieving it.",
+    "source_quote": "Their only truly paid job was to find out what was going on with the egg, retrieve it",
+    "subject": "Dragon Egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is nominally in charge of Derro society.",
+    "source_quote": "their being nominally in charge of Derro society",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's paid job includes investigating the Council of Savants.",
+    "source_quote": "investigate the Council of Savants",
+    "subject": "investigate Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he is into solving mysteries anyway.",
+    "source_quote": "Gyrgum: \"See, I'm into solving mysteries anyway.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido descended into madness.",
+    "source_quote": "The group reflects on Buppido's descent into madness",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pre-asylum Buppido resented the Council of Savants for their perceived subservience to the Duergar.",
+    "source_quote": "earlier resentment of the Council of Savants for their perceived subservience to the Duergar",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido felt the Council of Savants were simply a mechanism of control by the duergar.",
+    "source_quote": "simply a mechanism of control by the duergar.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido came to see himself as on a mission from God to free the Derro.",
+    "source_quote": "He came to see himself as on a \"mission from God\" to free the Derro.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM quotes Buppido's justification as \"I am the force of history.\"",
+    "source_quote": "\"I am the force of history.\"",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz references the white mice in The Hitchhiker's Guide to the Galaxy as an example of subtle manipulation.",
+    "source_quote": "like the white mice in The Hitchhiker's Guide to the Galaxy",
+    "subject": "The Hitchhiker's Guide to the Galaxy",
+    "quote_verified": false
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "type": "event",
+    "fact": "The party takes a long rest in the caverns to recover their strength.",
+    "source_quote": "The party takes a long rest in the caverns to recover their strength.",
+    "subject": "party rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum regains all his hit points, spells, and Channel Divinity uses.",
+    "source_quote": "Gyrgum regains all his hit points, spells, and Channel Divinity uses.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth uses her knowledge of the terrain to obscure the party's trail as they travel.",
+    "source_quote": "Eldeth uses her knowledge of the terrain to obscure the party's trail as they travel.",
+    "subject": "trail obscuring",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Each successful Wisdom check made by Eldeth obscures the trail.",
+    "source_quote": "Each successful Wisdom check obscures the trail.",
+    "subject": "wisdom checks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth informs the party that the drow pursuit has finally been broken.",
+    "source_quote": "the drow pursuit had finally been broken.",
+    "subject": "drow pursuit broken",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's pursuit rating drops to zero.",
+    "source_quote": "the party's pursuit rating dropped to zero.",
+    "subject": "pursuit rating drop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM warns that the hunters will eventually pick up the trail again.",
+    "source_quote": "\"Don't worry, they'll eventually pick up your trail again.\"",
+    "subject": "GM warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz expresses hope that their incredible actions will prevent them from being found.",
+    "source_quote": "Daz was hopeful: \"Maybe we'll be doing something so incredible they won't be able to find us.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The narrow tunnels give way to a breathtaking area.",
+    "source_quote": "the narrow tunnels gave way to something breathtaking.",
+    "subject": "tunnel transition",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Two more days of travel pass after the pursuit is broken.",
+    "source_quote": "Two more days of travel pass.",
+    "subject": "travel duration",
+    "quote_verified": true
+  }
+]

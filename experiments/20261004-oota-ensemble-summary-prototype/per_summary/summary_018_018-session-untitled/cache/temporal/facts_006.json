@@ -1,0 +1,79 @@
+[
+  {
+    "type": "event",
+    "fact": "Werz hands over five unusual gems to the party as a gesture of good faith for an assassin job.",
+    "source_quote": "Werz handed over five unusual gems",
+    "subject": "Werz's payment to party",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The five gems are empty spell gems used in Blingdenstone's magical defenses.",
+    "source_quote": "identified them as empty spell gems \u2014 the very kind used in the magical defenses of Blingdenstone",
+    "subject": "Werz's gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gems are not worth 100 gp each to anyone other than Kazook Pickshine.",
+    "source_quote": "Sold to anyone other than Kazook, the gems are not really worth 100 gp each",
+    "subject": "Gem value",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party visits Ghohlbrorn's Lair to collect previously ordered magical items.",
+    "source_quote": "Back at Ghohlbrorn's Lair, the party collected the magical equipment they had previously ordered",
+    "subject": "Ghohlbrorn's Lair",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir acquires two enchanted tattoos.",
+    "source_quote": "two enchanted tattoos for Zalthir",
+    "subject": "Zalthir's tattoos",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin acquires a +1 longsword.",
+    "source_quote": "a +1 longsword for Thorin",
+    "subject": "Thorin's longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical items were purchased at a 10% discount out of pooled party funds.",
+    "source_quote": "paid for at a 10% discount out of pooled party funds",
+    "subject": "item purchase discount",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's equipment cost 900 gold pieces.",
+    "source_quote": "Thorin's cost came to 900 gold pieces",
+    "subject": "Thorin's total cost",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party had 616 gp on hand to help pay for the items.",
+    "source_quote": "616 gp on hand",
+    "subject": "party cash on hand",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party included a recent 275 gp advance in their pooled funds.",
+    "source_quote": "the recent 275 gp advance",
+    "subject": "party advance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool compares the trust of Rumpadump to the moral equivalent of an eight-year-old's trust.",
+    "source_quote": "moral equivalent of an eight-year-old's trust in a mushroom friend",
+    "subject": "Stool",
+    "quote_verified": true
+  }
+]

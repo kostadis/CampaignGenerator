@@ -1,0 +1,170 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek is being interred in the cemetery.",
+    "source_quote": "Pelek's Interment",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Temple of the Ruby in the Rough is dedicated to Segojan Earthcaller.",
+    "source_quote": "Temple of the Ruby in the Rough, dedicated to Segojan Earthcaller",
+    "subject": "Temple of the Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cemetery is beside the Temple of the Ruby in the Rough.",
+    "source_quote": "cemetery beside the Temple of the Ruby in the Rough",
+    "subject": "cemetery",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glyphic Shroomlight is a priest.",
+    "source_quote": "There they met Glyphic Shroomlight, a priest",
+    "subject": "Glyphic Shroomlight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glyphic Shroomlight was initially hesitant to inter Pelek's remains.",
+    "source_quote": "who was initially hesitant to inter the remains of someone he did not know",
+    "subject": "Glyphic Shroomlight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glyphic Shroomlight made an exception to inter Pelek after his ghost materialized.",
+    "source_quote": "quickly made an exception",
+    "subject": "Glyphic Shroomlight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum jingled the bag of bones to prove possession of Pelek's remains.",
+    "source_quote": "Gyrgum jingled the bag to establish that he did, in fact, possess Pelek's bones",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool remained upstairs to prevent accidents among the graves.",
+    "source_quote": "asking only that Glabbagool remain upstairs to prevent accidents among the graves",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool offered to help clean if needed.",
+    "source_quote": "Glabbagool agreed: \u201cOkay. But if you need anything cleaned, I'm here.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was murdered by Buppido.",
+    "source_quote": "murdered by \u201cBuppido, who is really an annoying person.\u201d",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is described by Pelek as an annoying person.",
+    "source_quote": "Buppido, who is really an annoying person",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek feared he was permanently lost and doomed to torment people forever.",
+    "source_quote": "He had feared that he was permanently lost and doomed to torment people forever",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The catacombs are located below the temple.",
+    "source_quote": "He directed the party to the catacombs below",
+    "subject": "catacombs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum found a quiet corner and scooped out a shallow resting place for the remains.",
+    "source_quote": "Gyrgum found a quiet corner where the remains would not be stepped on, scooped out a shallow resting place",
+    "subject": "Pelek's burial ritual",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum planted a gold coin with the bones to serve as the foundation for Pelek's word.",
+    "source_quote": "planted a gold coin with the bones as the foundation for his word",
+    "subject": "gold coin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's spirit faded away after the goodbyes.",
+    "source_quote": "his spirit faded away",
+    "subject": "Pelek's passing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Segojan Earthcaller is the Svirfneblin god of deep earth and nature.",
+    "source_quote": "Segojan Earthcaller, the Svirfneblin god of deep earth and nature",
+    "subject": "Segojan Earthcaller",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The burial chambers contain numerous sealed tombs.",
+    "source_quote": "burial chambers containing numerous sealed tombs",
+    "subject": "burial chambers",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There is a large skull decoration at the north end of the burial chambers.",
+    "source_quote": "a large skull decoration at the north end",
+    "subject": "skull decoration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek stated that any burial location is acceptable to him.",
+    "source_quote": "Just, you know, put the bones down, cover them up with some dirt, and I'll be fine.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek confirmed he intends to go to the afterlife after being buried.",
+    "source_quote": "Yes, I plan to go to wherever I'm supposed to go next.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek expressed relief at ending his journey.",
+    "source_quote": "Pelek expressed profound relief at reaching the end of his journey",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Another ghost materializes after Pelek's departure.",
+    "source_quote": "The peace lasts only a moment before another ghost materializes",
+    "subject": "another ghost appears",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The appearance of the second ghost reinforces the observation that graveyards tend to acquire ghosts.",
+    "source_quote": "reinforcing the observation that graveyards tend to acquire ghosts",
+    "subject": "ghosts in graveyards",
+    "quote_verified": true
+  }
+]

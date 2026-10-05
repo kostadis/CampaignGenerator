@@ -1,0 +1,37 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz casts a third-level Magic Missile that deals 20 damage to the wraith.",
+    "source_quote": "five darts of pure force for 20 damage",
+    "subject": "magic missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The third-level Magic Missile consists of five darts.",
+    "source_quote": "five darts of pure force",
+    "subject": "magic missile darts",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A 5e fireball fills a 20-foot radius around its point.",
+    "source_quote": "a 5e fireball fills a 20-foot radius",
+    "subject": "fireball radius",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower chamber is 30 feet below the room above, correcting an initial estimate of 150 feet.",
+    "source_quote": "corrects himself to 30 feet below the room above",
+    "subject": "chamber depth correction",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The GM initially estimated the chamber was 150 feet deep.",
+    "source_quote": "The GM gives 150 feet",
+    "subject": "chamber depth initial estimate",
+    "quote_verified": true
+  }
+]

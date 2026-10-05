@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "The chamber is vast, containing a central rocky mesa with crude ramps winding upward and a bridge connecting its topmost tiers.",
+    "source_quote": "a great rocky mesa at the cavern's center. Crude ramps wound upward to the mesa's topmost tiers, which were connected by a sturdy bridge",
+    "subject": "The Obelisk Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The obelisk is a fifty-foot-tall structure of smooth black metal with a handful of imperfections as though pieces had been chipped away.",
+    "source_quote": "a fifty-foot-tall obelisk of smooth black metal, its surface marred by only a handful of imperfections, as though pieces of it had been chipped away over time",
+    "subject": "the obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A dragon egg sits atop one of the mesa's tiers.",
+    "source_quote": "Atop one tier sat the dragon egg",
+    "subject": "the dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a female derro who is stroking the obelisk's surface with reverent intensity.",
+    "source_quote": "Beside the obelisk stood a female derro named Plinki, stroking its surface with the reverent intensity of a scientist on the edge of a great discovery",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Plinki scribbles notes in a small book while observing the obelisk.",
+    "source_quote": "scribbling notes in a small book",
+    "subject": "Plinki's notebook",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Plinki has a crowd of minions, some of whom are possibly invisible or hidden.",
+    "source_quote": "She had a crowd of minions, some possibly invisible or hidden",
+    "subject": "Plinki's minions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is referenced as a contact to whom the party could report the destruction of the egg.",
+    "source_quote": "they could destroy it and report that to Themberchaud",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric of the dragon god Bahamut.",
+    "source_quote": "Gyrgum, drawn irresistibly toward the egg by his devotion to Bahamut... announced himself as a cleric of the dragon god",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum announces himself to Plinki as a cleric of Bahamut come to worship at the egg.",
+    "source_quote": "announced himself as a cleric of the dragon god come to worship at the egg",
+    "subject": "Gyrgum's bluff",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is referenced by Plinki as the entity who sent Gyrgum to acknowledge her achievement.",
+    "source_quote": "she declared that Demogorgon himself had sent this holy man to acknowledge the greatness of her achievement",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are the original owners from whom the dragon egg was stolen.",
+    "source_quote": "The egg had been stolen from the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Intricate incantations have been inscribed across the surface of the dragon egg.",
+    "source_quote": "she showed him the intricate incantations she had inscribed across the egg's surface",
+    "subject": "demonic incantations",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a natural 20 on Arcana to read the egg's etchings.",
+    "source_quote": "Earlier, Daz had rolled a natural 20 on Arcana and read the egg's etchings",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The egg's etchings indicate it will hatch a two-headed dragon, likely possessed by a demonic power.",
+    "source_quote": "it would hatch a two-headed dragon, likely possessed by some demonic power",
+    "subject": "egg's hatching prediction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin initially interpreted the egg's etchings as festival decorations.",
+    "source_quote": "Thorin had taken the same etchings for festival decorations",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Bless on his companions, claiming magnanimity.",
+    "source_quote": "Gyrgum casts Bless on his companions \"in my magnanimity.\"",
+    "subject": "Gyrgum casts Bless",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states that the dragon egg is demonic.",
+    "source_quote": "Zalthir: \"Well, it's also demonic.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

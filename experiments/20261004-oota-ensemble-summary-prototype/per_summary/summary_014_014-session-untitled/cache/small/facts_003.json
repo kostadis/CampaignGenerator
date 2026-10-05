@@ -1,0 +1,107 @@
+[
+  {
+    "type": "date",
+    "fact": "The events of this session occur after a night spent in a shared room.",
+    "source_quote": "After a night spent crammed into a shared room",
+    "subject": "session 014.03",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party spent the night in a shared room with bunk beds.",
+    "source_quote": "crammed into a shared room with bunk beds",
+    "subject": "shared lodging house",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party paid five copper pieces per person for the lodging.",
+    "source_quote": "for five copper pieces per person",
+    "subject": "lodging cost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Topsy-Turvy twins quietly slipped away during the night.",
+    "source_quote": "the Topsy-Turvy twins had quietly slipped away during the night",
+    "subject": "Topsy-Turvy twins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party woke to find the Topsy-Turvy twins were gone.",
+    "source_quote": "the party woke to find that the Topsy-Turvy twins had quietly slipped away",
+    "subject": "twins disappearance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks if the Topsy-Turvy twins were wererats.",
+    "source_quote": "Zalthir asks, \"Were they the wererats?\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar urges the group to gather their things and head to Blingdenstone.",
+    "source_quote": "Jimjar urged the group to gather their things and make for Blingdenstone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar notes that the party is equipped and ready to leave.",
+    "source_quote": "pointing out that they were finally equipped and ready to leave",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has five hit points.",
+    "source_quote": "Daz is down to five hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz insists the party visit the Keepers of the Flame before leaving.",
+    "source_quote": "But Daz, curious about the dragon and the Keepers of the Flame, insisted they first pay the Keepers a visit",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz argues that gathering intelligence is as important as stocking up.",
+    "source_quote": "gathering intelligence is just as important as stocking up",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar agrees to visit the Keepers of the Flame.",
+    "source_quote": "Jimjar is \"cool with that.\"",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido looks cranky.",
+    "source_quote": "Buppido still looks cranky",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recounts George Orwell's Down and Out in Paris and London.",
+    "source_quote": "Gyrgum recounts Orwell's Down and Out in Paris and London",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party sets off through the stone corridors of Gracklstugh.",
+    "source_quote": "and they set off through the stone corridors of Gracklstugh",
+    "subject": "party departure preparation",
+    "quote_verified": true
+  }
+]

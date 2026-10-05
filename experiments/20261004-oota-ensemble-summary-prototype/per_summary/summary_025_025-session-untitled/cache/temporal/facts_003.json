@@ -1,0 +1,44 @@
+[
+  {
+    "type": "monster",
+    "fact": "Several Myconids are dancing in a frantic manner.",
+    "source_quote": "Several Myconids were dancing in a frantic, crazed manner",
+    "subject": "myconid count",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Three of the Myconids stand five feet tall.",
+    "source_quote": "Three stood five feet tall",
+    "subject": "large myconid height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The other Myconids are half the height of the larger ones.",
+    "source_quote": "the others half that",
+    "subject": "small myconid height",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two large, ape-like creatures are hunched near the dancing Myconids.",
+    "source_quote": "Two large, ape-like creatures covered in yellow mold",
+    "subject": "ape-like creatures count",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The effects influencing Sarith's agitation reach beyond 30 feet.",
+    "source_quote": "effects are clearly reaching beyond 30 feet",
+    "subject": "magic range",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception of 14.",
+    "source_quote": "passive perception of 14",
+    "subject": "Gyrgum passive perception",
+    "quote_verified": true
+  }
+]

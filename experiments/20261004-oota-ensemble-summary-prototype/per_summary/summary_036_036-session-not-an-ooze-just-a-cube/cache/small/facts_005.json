@@ -1,0 +1,191 @@
+[
+  {
+    "type": "npc",
+    "fact": "Glabbagool is pleased by being distinguished from other oozes.",
+    "source_quote": "Glabbagool is pleased by this distinction",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool declares, \u201cI knew there was a reason I was just better than them.\u201d",
+    "source_quote": "declares, \u201cI knew there was a reason I was just better than them.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool requires an explanation of shambling mounds because he has never seen or heard of one.",
+    "source_quote": "Glabbagool requires an explanation because he has never seen or heard of one",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool initially understands a shambling mound as a rock that walks around.",
+    "source_quote": "a shambling mound sounds like a rock that somehow walks around",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member begins explaining shambling mounds from book learning.",
+    "source_quote": "A party member begins explaining from book learning",
+    "subject": "shambling mound lore",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member reminds the group they previously fought a shambling mound.",
+    "source_quote": "reminded that the group has actually fought one before: \u201cActually, you faced one, if you recall correctly.\u201d",
+    "subject": "party reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party remembers using fire during their previous encounter with a shambling mound.",
+    "source_quote": "The party remembers using fire during that encounter",
+    "subject": "past shambling mound encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool asks if the shambling mound had stuff inside it when it blew up.",
+    "source_quote": "Glabbagool asks, \u201cSo does it have a lot of stuff inside of it when it blew up?\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party explains that they recovered no notable treasure from the shambling mound.",
+    "source_quote": "The party explains that they recovered no notable treasure from the shambling mound",
+    "subject": "treasure recovery explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party explains that shambling mounds do not clean up areas by engulfing and retaining loose objects.",
+    "source_quote": "it does not clean up an area by engulfing and retaining loose objects",
+    "subject": "shambling mound behavior explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool learns that object retention is distinctive to gelatinous cubes.",
+    "source_quote": "Glabbagool learns that this behavior is distinctive to gelatinous cubes",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool learns that ordinary oozes likely do not retain objects in the same fashion as gelatinous cubes.",
+    "source_quote": "ordinary oozes likely do not retain objects in the same fashion",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool reveals prior experience with oozes.",
+    "source_quote": "He reveals prior experience with oozes",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool characterizes oozes as \u201cvery not talkative.\u201d",
+    "source_quote": "characterizes them as \u201cvery not talkative.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he does not eat oozes.",
+    "source_quote": "Glabbagool answers, \u201cNo, no, I don\u2019t eat oozes",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he sometimes punches oozes.",
+    "source_quote": "I mean, I do punch them sometimes, but no, I don\u2019t eat oozes.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool extends a pseudopod to demonstrate his ability to punch things.",
+    "source_quote": "Glabbagool extends a pseudopod as a demonstration",
+    "subject": "pseudopod demonstration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool confirms that he has the ability to absorb things.",
+    "source_quote": "he answers, \u201cI could do that too.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The session ends with the party located in Diggermattock Hall.",
+    "source_quote": "the session ends with the party in Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The clan will help the party reach the Overbright.",
+    "source_quote": "help them reach the Overbright",
+    "subject": "Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The clan asks the party to address Blingdenstone\u2019s ooze infestation.",
+    "source_quote": "having been asked to address Blingdenstone\u2019s ooze infestation",
+    "subject": "ooze infestation request",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The clan requires the ooze infestation to be addressed before they will help the party reach the Overbright.",
+    "source_quote": "before the clan will help them reach the Overbright",
+    "subject": "clan",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party previously fought a shambling mound.",
+    "source_quote": "the group has actually fought one before",
+    "subject": "shambling mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Shambling mounds do not engulf and retain loose objects to clean up areas.",
+    "source_quote": "it does not clean up an area by engulfing and retaining loose objects",
+    "subject": "shambling mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Object retention is distinctive behavior of gelatinous cubes.",
+    "source_quote": "this behavior is distinctive to gelatinous cubes",
+    "subject": "gelatinous cube",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Ordinary oozes likely do not retain objects in the same fashion as gelatinous cubes.",
+    "source_quote": "ordinary oozes likely do not retain objects in the same fashion",
+    "subject": "ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party has been asked to address Blingdenstone\u2019s ooze infestation as a condition for clan assistance.",
+    "source_quote": "asked to address Blingdenstone\u2019s ooze infestation before the clan will help them",
+    "subject": "blingdenstone ooze infestation",
+    "quote_verified": true
+  }
+]

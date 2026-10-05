@@ -1,0 +1,114 @@
+[
+  {
+    "type": "location",
+    "fact": "The Maze is a defensive network of twisting, trapped tunnels intended to slow and kill invading armies.",
+    "source_quote": "a defensive network of twisting, trapped tunnels intended to slow and kill invading armies",
+    "subject": "Blingdenstone's Maze",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards permit the entire group, including Glabbagool, to enter Blingdenstone.",
+    "source_quote": "The guards ultimately permitted the entire group to enter, but urged them to consult Chief Dorbo Diggermattock",
+    "subject": "entry into Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guards recommend the party consult Chief Dorbo Diggermattock for permission to keep Glabbagool in the city.",
+    "source_quote": "urged them to consult Chief Dorbo Diggermattock and Quartermaster Senni for full permission to keep Glabbagool in the city",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The guards recommend the party consult Quartermaster Senni for an explanation of Blingdenstone\u2019s ooze crisis.",
+    "source_quote": "Quartermaster Senni ... for an explanation of Blingdenstone\u2019s ooze crisis",
+    "subject": "Quartermaster Senni",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is being kept in the city, which requires specific permission from the leaders.",
+    "source_quote": "full permission to keep Glabbagool in the city",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz responds to a gnome's warning about defenses by stating he feels safer because of them.",
+    "source_quote": "Daz answered that the powerful fortifications made him feel safer and thanked them for hosting the group.",
+    "subject": "Daz's diplomacy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's tactful compliment delighted the gnomes.",
+    "source_quote": "His tactful compliment delighted the gnomes.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes and dwarves compete for the same finite underground resources.",
+    "source_quote": "The two peoples competed for the same finite underground resources",
+    "subject": "gnomes and dwarves",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gnomes and dwarves can become allies against deeper Underdark threats.",
+    "source_quote": "but could become allies against deeper Underdark threats.",
+    "subject": "gnomes and dwarves",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth considers gnomes clever with magic and gems but not particularly formidable fighters.",
+    "source_quote": "Eldeth admitted that she considered gnomes clever with magic and gems but not particularly formidable fighters.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth reflects on her inherited prejudice toward drow.",
+    "source_quote": "The conversation prompted Eldeth to reflect on her inherited prejudice toward drow.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth was raised with the belief that the only good drow is a dead drow.",
+    "source_quote": "she had been raised to believe \u201cThe only good drow is a dead drow,\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth now believes the true enemy is the fanatical cult of Lolth rather than every individual drow.",
+    "source_quote": "She now believed the true enemy was the fanatical cult of Lolth rather than every individual drow.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cautions Eldeth that people raised in the cult of Lolth might be redeemable people shaped by a terrible environment.",
+    "source_quote": "Daz cautioned that even those raised knowing nothing but that cult might be redeemable people shaped by a terrible environment.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth acknowledges that Daz's example convinced her to rethink her culture's reflexive treatment of entire peoples as inherently evil.",
+    "source_quote": "Eldeth acknowledged that his example had convinced her that her culture\u2019s reflexive treatment of entire peoples as inherently evil ... was something she needed to rethink.",
+    "subject": "Eldeth",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "Eldeth accepts that her views on the inherent evil of certain peoples need to be reconsidered as the group proceeds deeper into Blingdenstone.",
+    "source_quote": "She accepts that it is something she personally should continue thinking about as the group proceeds deeper into Blingdenstone.",
+    "subject": "Eldeth's evolving prejudice",
+    "quote_verified": true
+  }
+]

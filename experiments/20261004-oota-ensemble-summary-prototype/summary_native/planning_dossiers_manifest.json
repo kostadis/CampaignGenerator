@@ -1,0 +1,167 @@
+{
+  "selection": "NPC last seen in chapters 67-70 OR n_facts >= 10",
+  "count": 23,
+  "dossiers": [
+    {
+      "file": "npcs_a_lai_aivenmore.md",
+      "subject": "A'lai Aivenmore",
+      "n_facts": 8,
+      "chapters": "57-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_alaundo_the_seer.md",
+      "subject": "Alaundo the Seer",
+      "n_facts": 2,
+      "chapters": "69-70",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_batbayar.md",
+      "subject": "Batbayar",
+      "n_facts": 1,
+      "chapters": "67-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_buppido.md",
+      "subject": "Buppido",
+      "n_facts": 12,
+      "chapters": "2-18",
+      "reason": "recurring"
+    },
+    {
+      "file": "npcs_edvaldo_sedanur.md",
+      "subject": "Edvaldo Sedanur",
+      "n_facts": 3,
+      "chapters": "68-70",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_eldeth_feldrun.md",
+      "subject": "Eldeth Feldrun",
+      "n_facts": 24,
+      "chapters": "2-55",
+      "reason": "recurring"
+    },
+    {
+      "file": "npcs_glabbagool.md",
+      "subject": "Glabbagool",
+      "n_facts": 30,
+      "chapters": "34-69",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_iron_owlbear_guardian.md",
+      "subject": "Iron Owlbear Guardian",
+      "n_facts": 1,
+      "chapters": "68-68",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_jimjar.md",
+      "subject": "Jimjar",
+      "n_facts": 33,
+      "chapters": "2-48",
+      "reason": "recurring"
+    },
+    {
+      "file": "npcs_kalan_strongbranch.md",
+      "subject": "Kalan Strongbranch",
+      "n_facts": 10,
+      "chapters": "56-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_manshoon.md",
+      "subject": "Manshoon",
+      "n_facts": 3,
+      "chapters": "64-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_manshoon_simulacrum.md",
+      "subject": "Manshoon (simulacrum)",
+      "n_facts": 1,
+      "chapters": "68-68",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_manshoon_simulacrum_b9870242.md",
+      "subject": "Manshoon (Simulacrum)",
+      "n_facts": 2,
+      "chapters": "69-70",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_miirym.md",
+      "subject": "Miirym",
+      "n_facts": 1,
+      "chapters": "67-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_miirym_the_sentinel_wyrm_the_spectral_silver_dragon.md",
+      "subject": "Miirym, the Sentinel Wyrm \u2014 the Spectral Silver Dragon",
+      "n_facts": 1,
+      "chapters": "68-68",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_modrons.md",
+      "subject": "Modrons",
+      "n_facts": 1,
+      "chapters": "67-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_sarith_kzekarit.md",
+      "subject": "Sarith Kzekarit",
+      "n_facts": 13,
+      "chapters": "3-31",
+      "reason": "recurring"
+    },
+    {
+      "file": "npcs_spanner.md",
+      "subject": "Spanner",
+      "n_facts": 1,
+      "chapters": "67-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_stool.md",
+      "subject": "Stool",
+      "n_facts": 16,
+      "chapters": "2-32",
+      "reason": "recurring"
+    },
+    {
+      "file": "npcs_sylvira_savikas.md",
+      "subject": "Sylvira Savikas",
+      "n_facts": 6,
+      "chapters": "57-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_tadric.md",
+      "subject": "Tadric",
+      "n_facts": 6,
+      "chapters": "57-67",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_the_flying_iron_owlbear.md",
+      "subject": "The Flying Iron Owlbear",
+      "n_facts": 1,
+      "chapters": "69-69",
+      "reason": "recent"
+    },
+    {
+      "file": "npcs_vecna.md",
+      "subject": "Vecna",
+      "n_facts": 1,
+      "chapters": "70-70",
+      "reason": "recent"
+    }
+  ]
+}

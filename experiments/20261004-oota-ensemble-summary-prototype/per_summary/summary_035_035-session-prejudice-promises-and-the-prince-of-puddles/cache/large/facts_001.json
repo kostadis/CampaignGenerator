@@ -1,0 +1,114 @@
+[
+  {
+    "type": "event",
+    "fact": "The party arrives on the shores of the Darklake, wet and cold.",
+    "source_quote": "The party arrived on the shores of the Darklake drenched, cold, and miserable",
+    "subject": "arrival at Darklake Shores",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party has landed on the shores of the Darklake after their journey through the water.",
+    "source_quote": "The party arrived on the shores of the Darklake",
+    "subject": "Darklake Shores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is thrilled to be close to home.",
+    "source_quote": "Jimjar was thrilled to be so close to home",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar announces that Blingdenstone is a day's journey from their current location.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone. I know it for sure this time.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar wagers that someone will demand a rest.",
+    "source_quote": "He immediately wagered that someone would demand a rest",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to take a long rest.",
+    "source_quote": "Once the party agreed to take a long rest",
+    "subject": "party agrees to rest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar celebrates winning his bet.",
+    "source_quote": "Excellent. I made\u2014I won, I won my bet",
+    "subject": "Jimjar wins bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he had a miscalculation regarding who accepted his wager.",
+    "source_quote": "Jimjar admitted to a \u201cslight miscalculation,\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar unsuccessfully tries to start a new bet about Gyrgum.",
+    "source_quote": "unsuccessfully tried to start another bet about whether Gyrgum would take the bet",
+    "subject": "Jimjar new bet attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party confirms no one is pursuing them.",
+    "source_quote": "With no one pursuing them",
+    "subject": "pursuit check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party settles in for a full night\u2019s long rest.",
+    "source_quote": "the party settled in for a full night\u2019s rest",
+    "subject": "long rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum puzzles over the concept of a long rest.",
+    "source_quote": "Gyrgum puzzled over the unfamiliar idea of a \u201clong rest\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum concludes that sleeping might explain why he feels refreshed.",
+    "source_quote": "concluded that it might explain why closing his eyes sometimes left him feeling refreshed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Morning arrives after the rest, and everyone has recovered.",
+    "source_quote": "By morning, everyone had recovered their strength",
+    "subject": "morning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party begins a day-long march to Blingdenstone.",
+    "source_quote": "ready for the day-long march to Blingdenstone",
+    "subject": "march to Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Blingdenstone is located a day's journey from the shores of the Darklake.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  }
+]

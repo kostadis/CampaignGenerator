@@ -1,0 +1,86 @@
+[
+  {
+    "type": "location",
+    "fact": "The Goldwhisker Warrens have massive, monumental double doors that are roughly fifty feet tall.",
+    "source_quote": "massive, monumental double doors leading to the Goldwhisker Warrens",
+    "subject": "Goldwhisker Warrens",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The double doors leading to the Goldwhisker Warrens are locked.",
+    "source_quote": "a pair of locked double doors",
+    "subject": "Goldwhisker Warrens doors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered sending Glabbagool under the doors to scout, claiming he was cleaning.",
+    "source_quote": "They considered sending Glabbagool underneath under the pretext that he was cleaning",
+    "subject": "considered scouting via Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rejected sending Glabbagool under the doors because the inhabitants might mistake him for a hostile ooze and kill him.",
+    "source_quote": "rejected the idea because the inhabitants might mistake him for a hostile ooze",
+    "subject": "rejected Glabbagool scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Someone in the party suggested knocking on the doors.",
+    "source_quote": "Someone finally proposed the radical alternative of simply knocking",
+    "subject": "knocking suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The suggestion to knock received the response, \"Oh, well, that's a remarkable idea.\"",
+    "source_quote": "Oh, well, that's a remarkable idea",
+    "subject": "reaction to knocking suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz announced through the doors that the party intends to rid the Warrens and the grotto in the general vicinity of the slime problem and needs the Goldwhiskers' help.",
+    "source_quote": "Hi, we're here to uh rid the Warrens and the grotto in the general vicinity of the slime problem. We're gonna need your help.",
+    "subject": "Daz announces purpose",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz claimed that they are all getting together and have sorted it all out.",
+    "source_quote": "we're all getting together and we've sorted it all out",
+    "subject": "Daz claims coordination",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard was startled by the party's announcement and told them not to leave.",
+    "source_quote": "A startled guard told them not to leave",
+    "subject": "Goldwhisker Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guard scampered away to consult Chief Chipgrin.",
+    "source_quote": "scampered away to consult Chief Chipgrin",
+    "subject": "guard consults Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Chipgrin wants the party brought inside.",
+    "source_quote": "Chief Chipgrin wanted them brought inside",
+    "subject": "Chief Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The inhabitants of the Goldwhisker Warrens are wererats.",
+    "source_quote": "the wererats might mistake him for a hostile ooze",
+    "subject": "Goldwhisker clan",
+    "quote_verified": true
+  }
+]

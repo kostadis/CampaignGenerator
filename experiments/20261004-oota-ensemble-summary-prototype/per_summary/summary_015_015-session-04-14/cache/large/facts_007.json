@@ -1,0 +1,261 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz outlines three of the skeletons in pale, shimmering light to mark them for advantage.",
+    "source_quote": "Daz outlined three of the skeletons in pale, shimmering light that marked them for advantage",
+    "subject": "Buppido's marking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a sphere of absolute darkness to blind and confuse the skeletons.",
+    "source_quote": "Zalthir conjured a sphere of absolute darkness to blind and confuse them",
+    "subject": "Zalthir's darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin wades into the melee and trades blows with the skeletons.",
+    "source_quote": "Thorin waded into the melee, trading blows with the rattling undead",
+    "subject": "Thorin's melee",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum readies his chessboard holy symbol, waiting for the skeletons to be able to see it.",
+    "source_quote": "Gyrgum readied his chessboard holy symbol, waiting for the skeletons to be able to see it",
+    "subject": "Gyrgum's readiness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir offers to shift his darkness to help Gyrgum turn the undead.",
+    "source_quote": "while Zalthir offered to shift his darkness to help",
+    "subject": "Zalthir's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido lunges at Thorin with a hooked spear but fails to land a blow.",
+    "source_quote": "Buppido lunges at Thorin with a hooked spear but fails to land a blow",
+    "subject": "Buppido's attack on Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A skeleton uses a short bow against Gyrgum but misses.",
+    "source_quote": "A short bow misses Gyrgum",
+    "subject": "Skeleton attack on Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A skeleton hits Gyrgum for 5 damage with a short sword.",
+    "source_quote": "A short sword hits for 5 damage",
+    "subject": "Skeleton melee attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crossbow skeleton steps out of the darkness and hits Gyrgum for 5 damage.",
+    "source_quote": "A crossbow skeleton steps out of the darkness and hits Gyrgum for 5 damage",
+    "subject": "Crossbow skeleton attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits a skeleton for 5 damage.",
+    "source_quote": "Zalthir hits a skeleton for 5 damage",
+    "subject": "Zalthir's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point on a second attack which misses.",
+    "source_quote": "spends a focus point on a second attack, which misses",
+    "subject": "Zalthir's second attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum tries Turn Undead, but only three skeletons can see the symbol.",
+    "source_quote": "Gyrgum tries Turn Undead, but only three skeletons can see the symbol",
+    "subject": "First Turn Undead attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum readies the turning as a prepared action.",
+    "source_quote": "Gyrgum readies the turning as a prepared action",
+    "subject": "Gyrgum's readied action",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes unerring magical force that strikes Buppido for 15 damage, killing him.",
+    "source_quote": "Daz unleashed a volley of unerring magical force that struck Buppido squarely for 15 damage against his 13 hit points. The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is dead, killed by Daz's magical force.",
+    "source_quote": "The blow ended his delusions of grandeur and his life in the same moment",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A skeleton hits Zalthir for 5 piercing damage, which Zalthir deflects completely.",
+    "source_quote": "A skeleton hits Zalthir for 5 piercing damage, and Zalthir deflects it completely",
+    "subject": "Skeleton attack on Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir misses twice with attacks.",
+    "source_quote": "Zalthir misses twice",
+    "subject": "Zalthir's misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum raises the holy symbol and channels the divine power of Bahamut, sending the remaining skeletons fleeing.",
+    "source_quote": "Gyrgum raised the holy symbol and channeled the divine power of Bahamut, sending the remaining skeletons fleeing in blind panic",
+    "subject": "Successful Turn Undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The skeletons make a DC 13 Wisdom save at -1, and three flee.",
+    "source_quote": "The skeletons make a DC 13 Wisdom save at -1, and three flee",
+    "subject": "Skeleton saves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills one skeleton with an 8-damage opportunity attack.",
+    "source_quote": "Thorin kills one with an 8-damage opportunity attack",
+    "subject": "Thorin kills skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finishes a 4-hp skeleton.",
+    "source_quote": "Thorin finishes a 4-hp skeleton",
+    "subject": "Thorin kills skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage.",
+    "source_quote": "Gyrgum's crossbow hits a faerie-fired skeleton with advantage for 8 damage",
+    "subject": "Gyrgum's crossbow kill",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz splits a second Magic Missile, dealing 8 damage to one skeleton and 1 to its neighbor.",
+    "source_quote": "Daz splits a second Magic Missile, 8 damage to one skeleton and 1 to its neighbor",
+    "subject": "Daz's split Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir kills the last skeleton next to Thorin.",
+    "source_quote": "Zalthir kills the last skeleton next to Thorin",
+    "subject": "Zalthir's kill",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party coordinates their strikes to eliminate the retreating undead, successfully clearing the cavern.",
+    "source_quote": "The party coordinates their strikes to eliminate the retreating undead, successfully clearing the cavern",
+    "subject": "Battle conclusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reaches fourth level.",
+    "source_quote": "The party reached fourth level",
+    "subject": "Level up",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The skeletons are dead, having been cut down or fled after being turned by Gyrgum.",
+    "source_quote": "the party cut them down one by one",
+    "subject": "skeleton",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reflects that Buppido was crazy but belonged to their group.",
+    "source_quote": "He was crazy, but he was our crazy,\u201d Thorin reflected",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido was once the party's companion and guide through the Underdark.",
+    "source_quote": "He had been their companion once, a guide through the horrors of the Underdark",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido killed Yuk Yuk, the party's goblin guide.",
+    "source_quote": "He had also killed Yuk Yuk, the party's goblin guide",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yuk Yuk is dead, killed by Buppido.",
+    "source_quote": "He had also killed Yuk Yuk, the party's goblin guide",
+    "subject": "Yuk Yuk",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels contain deeper mysteries and the evil Hgraam warned about.",
+    "source_quote": "the deeper mysteries of the Whorlstone Tunnels, and the evil that Hgraam had warned them about, still lay waiting in the dark",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is still somewhere ahead in the tunnels.",
+    "source_quote": "knowing that Droki was still somewhere ahead in the tunnels",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam warned the party about evil in the Whorlstone Tunnels.",
+    "source_quote": "the evil that Hgraam had warned them about",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle took place in Buppido's mad shrine in a glowing cavern.",
+    "source_quote": "the party stood amid the wreckage of Buppido's mad shrine",
+    "subject": "Buppido's shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum uses a chessboard holy symbol to channel divine power.",
+    "source_quote": "Gyrgum readied his chessboard holy symbol",
+    "subject": "chessboard holy symbol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Roll20 label clutter problem pauses play, fixed by the DM with a graphics setting adjustment.",
+    "source_quote": "A Roll20 label clutter problem pauses play. The DM fixes it with the \"Hover to Show Token Nameplate and Bar Overlay\" graphics setting",
+    "subject": "Roll20 technical issue",
+    "quote_verified": true
+  }
+]

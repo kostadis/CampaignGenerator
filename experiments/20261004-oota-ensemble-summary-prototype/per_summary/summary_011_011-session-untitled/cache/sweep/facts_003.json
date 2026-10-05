@@ -1,0 +1,219 @@
+[
+  {
+    "type": "monster",
+    "fact": "The Beholder Zombie is a floating undead creature encountered in the dark waters of the Darklake.",
+    "source_quote": "terrifying beholder zombie in the dark waters of the Darklake",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Beholder Zombie is immune to the prone condition.",
+    "source_quote": "learn that a floating beholder zombie is immune to being knocked prone",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Beholder Zombie can be blinded, granting advantage to attackers within the darkness.",
+    "source_quote": "Thorin fought from inside the darkness, where the blinded creature could not see him",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Beholder Zombie explodes into ash upon death.",
+    "source_quote": "The beholder zombie shuddered, crumpled, and exploded into ash",
+    "subject": "Beholder Zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Beholder Zombie is killed by a combination of the companion crew's crossbow volley and Zalthir's assault.",
+    "source_quote": "The crew's second volley, combined with Zalthir's relentless assault, finally proved too much for the undead horror",
+    "subject": "Beholder Zombie death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The death of the Beholder Zombie ends Daz's paralysis.",
+    "source_quote": "exploded into ash, its threat extinguished at last, and Daz's paralysis ended with its death",
+    "subject": "Beholder Zombie death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir conjures a 15-foot shroud of magical darkness around the creature.",
+    "source_quote": "Zalthir moved with fluid precision, conjuring a 15-foot shroud of magical darkness around the creature",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir strikes the zombie with his bare fists.",
+    "source_quote": "He struck the zombie with his bare fists in a series of devastating blows",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir lands a thunderous critical hit on the zombie.",
+    "source_quote": "landing one thunderous critical hit that sent a shudder through the floating monstrosity",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir takes 16 damage from the zombie's bite.",
+    "source_quote": "The zombie bit Zalthir for 16 damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir disengages from the zombie after punching it for 5 damage.",
+    "source_quote": "Zalthir punches it for 5 and disengages",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin fights from inside the magical darkness where the zombie cannot see him.",
+    "source_quote": "Thorin fought from inside the darkness, where the blinded creature could not see him",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses a feinting attack that leaves the zombie vexed.",
+    "source_quote": "He used a feinting attack that left the zombie vexed",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attempts a Hill Strike to knock the zombie prone.",
+    "source_quote": "then tried a Hill Strike to knock it prone",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin calls Brannum's first answer 'bullshit'.",
+    "source_quote": "Thorin called his first answer \"bullshit\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz unleashes a barrage of Magic Missiles.",
+    "source_quote": "Daz unleashed a barrage of Magic Missiles",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is paralyzed by a beam from the zombie after missing his save by a single point.",
+    "source_quote": "Another beam struck Daz, who missed the save by a single point and was left paralyzed and helpless",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum channels divine power to scorch the undead from within.",
+    "source_quote": "Gyrgum channeled divine power to scorch the undead from within",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is hit by a ray of sickly light for 10 damage and poisoned.",
+    "source_quote": "A ray of sickly light... hit Gyrgum for 10 damage and poisoned him",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's attempt to Turn Undead fails against the creature's saving throw.",
+    "source_quote": "Gyrgum's attempt to Turn Undead failed against the creature's saving throw",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts Cure Wounds on Zalthir, restoring 15 hit points.",
+    "source_quote": "Gyrgum moved quickly to Zalthir's side and cast Cure Wounds, restoring 15 of the 16 hit points the monk had lost",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party demands the truth from Brannum about the shortcut he had chosen.",
+    "source_quote": "the party turned back to Brannum and demanded the truth about the shortcut he had chosen",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "An insight check proves that Brannum's first answer was a lie.",
+    "source_quote": "an insight check proved him right",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool debates briefly with the rest of the companion crew before rowing toward the fight.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth debates briefly with the rest of the companion crew before rowing toward the fight.",
+    "source_quote": "Stool, Hemeth, and the rest of the companion crew debated only briefly before rowing hard toward the fight",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The companion crew raises their crossbows and fires a first volley.",
+    "source_quote": "The crew raised their crossbows and let fly a first volley",
+    "subject": "companion crew",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The companion crew's second volley deals 12 damage to the zombie.",
+    "source_quote": "The companion crew's second crossbow volley deals 12 damage",
+    "subject": "companion crew",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A crew member saves against the zombie's paralyzing ray.",
+    "source_quote": "fires its paralyzing ray at a crew member, who saves",
+    "subject": "companion crew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM compares the zombie's ray of sickly light to a Dalek.",
+    "source_quote": "A ray of sickly light, which the DM compared to a Dalek",
+    "subject": "Dalek comparison",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The companion crew uses crossbows to attack the zombie.",
+    "source_quote": "The crew raised their crossbows and let fly a first volley",
+    "subject": "crossbows",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle takes place in the dark waters of the Darklake.",
+    "source_quote": "dark waters of the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  }
+]

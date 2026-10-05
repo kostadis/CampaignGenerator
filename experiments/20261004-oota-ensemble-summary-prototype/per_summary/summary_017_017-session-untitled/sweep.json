@@ -1,0 +1,1304 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is located in the Whorlstone Tunnels.",
+    "source_quote": "Deep within the Whorlstone Tunnels, the party was beset by writhing swarms of centipedes",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The fungal thickets are located within the Whorlstone Tunnels and serve as the ambush site for the centipedes.",
+    "source_quote": "in the fungal thickets of the Whorlstone Tunnels",
+    "subject": "fungal thickets",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipedes are organized into swarms that crawl over the party members.",
+    "source_quote": "writhing swarms of centipedes that crawled over Zalthir and Daz",
+    "subject": "centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir is bitten by centipedes while they crawl over him.",
+    "source_quote": "writhing swarms of centipedes that crawled over Zalthir",
+    "subject": "Zalthir bitten by centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir retaliates against the centipedes by punching and stomping on them.",
+    "source_quote": "Zalthir punched and stomped the centipedes clinging to his body",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir claims that his frantic display of fighting insects is a long-standing tradition of his monastic order.",
+    "source_quote": "insisted afterward that the frantic display was a long-standing tradition of his monastic order",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is bitten by centipedes.",
+    "source_quote": "The centipedes bite Daz",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz takes 10 damage from the centipedes' bites.",
+    "source_quote": "The centipedes bite Daz, whose AC is only 11, for 10 damage",
+    "subject": "Daz bitten by centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz disengages from the melee to find a safer position.",
+    "source_quote": "Daz disengages from the melee to find a safer position",
+    "subject": "Daz disengages",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz fires magic missiles at the final swarm of centipedes.",
+    "source_quote": "Daz fires magic missiles at the final swarm",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM suggests Daz should consider disengaging as a lifestyle choice.",
+    "source_quote": "after the GM suggests he \"might want to consider that as a lifestyle choice\"",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin explains his newly acquired Sentinel feat to the party before the ambush.",
+    "source_quote": "Thorin explains his new Sentinel feat",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin repositions himself to shield his companions from the centipedes.",
+    "source_quote": "He repositioned himself to shield his companions",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin delivers the killing blow to the last cluster of centipedes.",
+    "source_quote": "Thorin delivered the killing blow to the last cluster",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin hits the last swarm of centipedes for 8 damage and kills it.",
+    "source_quote": "Thorin hits the last swarm for 8 and kills it (\"Ding dong\")",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills the last swarm of centipedes.",
+    "source_quote": "Thorin hits the last swarm for 8 and kills it (\"Ding dong\")",
+    "subject": "last centipede swarm killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last swarm of centipedes is killed by Thorin.",
+    "source_quote": "Thorin hits the last swarm for 8 and kills it (\"Ding dong\")",
+    "subject": "centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining centipedes swarm Thorin.",
+    "source_quote": "The remaining centipedes swarm Thorin and Gyrgum",
+    "subject": "centipedes attacking Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining centipedes swarm Gyrgum.",
+    "source_quote": "The remaining centipedes swarm Thorin and Gyrgum",
+    "subject": "centipedes attacking Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A centipede swarm attacks Gyrgum but fails to land a blow.",
+    "source_quote": "Another swarm attacks Gyrgum (AC 14) but fails to land a blow",
+    "subject": "Gyrgum attacked by centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A centipede swarm rolls exactly 18 against Thorin's AC of 18 and hits for 10 damage.",
+    "source_quote": "A swarm rolls exactly 18 against Thorin's AC 18 and hits for 10",
+    "subject": "Thorin attacked by centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A centipede swarm lands a critical hit on Thorin.",
+    "source_quote": "A swarm lands a critical",
+    "subject": "Thorin crit by centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The critical hit from the centipede swarm only deals 10 damage because swarms at half hit points do half damage.",
+    "source_quote": "it deals only 10 damage because swarms at half hit points do half damage",
+    "subject": "Thorin crit damage reduced",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum channels radiant energy through his hand axe to scatter the insects.",
+    "source_quote": "Gyrgum channeled radiant energy through his hand axe to scatter the insects",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts True Strike through his hand axe, making the attack with Wisdom.",
+    "source_quote": "Gyrgum casts True Strike through his hand axe, making the attack with Wisdom",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum deals 9 radiant damage with his True Strike attack.",
+    "source_quote": "He deals 9 radiant damage (1d6+4 plus an extra 1d6)",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum closes in on the final swarm of centipedes.",
+    "source_quote": "Gyrgum closes in and casts True Strike again but misses",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum misses with his second True Strike on the final swarm.",
+    "source_quote": "casts True Strike again but misses",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum uses his hand axe to channel radiant energy and cast True Strike.",
+    "source_quote": "Gyrgum channeled radiant energy through his hand axe",
+    "subject": "hand axe",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir destroys a swarm of centipedes with his second strike.",
+    "source_quote": "leaving it at 2 hit points, then destroys it with his second strike",
+    "subject": "Zalthir destroys first swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A swarm of centipedes is destroyed by Zalthir after being left at 2 hit points.",
+    "source_quote": "leaving it at 2 hit points, then destroys it with his second strike",
+    "subject": "centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finishes off a swarm of centipedes that was at 1 hit point.",
+    "source_quote": "Thorin finishes off the 1-hit-point swarm",
+    "subject": "Thorin kills 1hp swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A swarm of centipedes is killed by Thorin after being left at 1 hit point.",
+    "source_quote": "Thorin finishes off the 1-hit-point swarm",
+    "subject": "centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's magic missiles deal 15 damage to the final swarm of centipedes, leaving it at 7 hit points.",
+    "source_quote": "Daz fires magic missiles at the final swarm for 15 damage, leaving it at 7 hit points",
+    "subject": "Daz damages final swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The final swarm of centipedes is left at 7 hit points by Daz's magic missiles.",
+    "source_quote": "Daz fires magic missiles at the final swarm for 15 damage, leaving it at 7 hit points",
+    "subject": "centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The battle ends and the tunnels fall quiet.",
+    "source_quote": "the tunnels fell quiet once more",
+    "subject": "battle ends",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM cues appropriate music when the centipedes are defeated.",
+    "source_quote": "The GM cues the appropriate music: \"There are no more centipedes.\"",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM rules that the centipedes crawling over Zalthir does not trigger Thorin's Sentinel feat.",
+    "source_quote": "The GM rules that the movement does not trigger Sentinel",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM clarifies that Thorin's Sentinel opportunity attack must hit and uses his reaction, allowing only one per round.",
+    "source_quote": "The GM clarifies that the attack must hit and that it uses his reaction, so only one per round",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM confirms that stepping away from a swarm hit by Sentinel would leave it stuck.",
+    "source_quote": "the GM confirms it would, \"but for next time\"",
+    "subject": "GM",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The GM suggests Daz might want to consider disengaging as a lifestyle choice.",
+    "source_quote": "after the GM suggests he \"might want to consider that as a lifestyle choice\"",
+    "subject": "GM",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses frustration with the limitations of the Sentinel feat.",
+    "source_quote": "Thorin's reply: \"Well, that's some bullshit.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's free opportunity attack misses the first swarm of centipedes.",
+    "source_quote": "Thorin's free opportunity attack also misses (\"I suck\")",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first punch hits a swarm of centipedes, leaving it at 1 hit point.",
+    "source_quote": "His first hit leaves one swarm at 1 hit point",
+    "subject": "Zalthir hits first swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's second blow misses the swarm at 1 hit point.",
+    "source_quote": "his second blow misses",
+    "subject": "Zalthir misses second blow",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Sentinel feat allows Thorin to stop foes with opportunity attacks when they disengage or attack someone else within 5 feet, dropping their speed to 0.",
+    "source_quote": "Foes who disengage near him still provoke an opportunity attack, and so do foes who attack someone other than him within 5 feet. A hit drops the target's speed to 0.",
+    "subject": "Sentinel feat mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party believes the swarms they are facing are the last of the centipedes based on an earlier check.",
+    "source_quote": "Based on an earlier check, the party believes these are the last of the swarms",
+    "subject": "centipede swarm status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Swarm centipedes deal half damage when at half hit points.",
+    "source_quote": "because swarms at half hit points do half damage",
+    "subject": "swarm hit points halved",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Prayer of Healing on Thorin, Daz, Zalthir, himself, and the ghost.",
+    "source_quote": "Gyrgum casts Prayer of Healing on up to five creatures: Thorin, Daz, Zalthir, himself, and the ghost",
+    "subject": "Gyrgum's Prayer of Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Prayer of Healing grants the target creatures the benefit of a short rest on the spot.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "short rest benefit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro messenger.",
+    "source_quote": "Droki, the derro messenger they were following, had fled ahead",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is characterized by the GM as a creature of ridiculous habits.",
+    "source_quote": "he was \"a creature of ridiculous habits\" who ran the same circuit",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki runs the same circuit, allowing the party to track him easily.",
+    "source_quote": "who ran the same circuit, so \"even a blind rat could follow his path.\"",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests avoiding staying in the fungus.",
+    "source_quote": "Thorin: \"I think it sounds like a good idea not to hang out in the fungus.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks if resting will cause them to lose their quarry.",
+    "source_quote": "Daz asks whether resting would lose their quarry.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "The healing warmth washed over Thorin, Daz, Zalthir, and even their ethereal ghostly companion, and granted each of them the benefit of a short rest on the spot.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is described as an ethereal ghostly companion.",
+    "source_quote": "their ethereal ghostly companion",
+    "subject": "the ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is healed by Gyrgum's Prayer of Healing.",
+    "source_quote": "Gyrgum casts Prayer of Healing on up to five creatures: Thorin, Daz, Zalthir, himself, and the ghost",
+    "subject": "the ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers his healing prayer as an alternative to a traditional short rest.",
+    "source_quote": "Gyrgum offers his healing prayer as an alternative, since it has the effect of a short rest",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum casts a spell using the first of his three 2nd-level spell slots.",
+    "source_quote": "It is the first of Gyrgum's three 2nd-level spell slots.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Prayer of Healing grants 2d8 healing to each target in addition to the benefits of a short rest.",
+    "source_quote": "Each gets a short rest's benefit plus an additional 2d8 healing.",
+    "subject": "Prayer of Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A player at the table comments that the spell is excellent.",
+    "source_quote": "boy that's a really excellent spell.",
+    "subject": "Prayer of Healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows their quarry's route further southeast.",
+    "source_quote": "Restored, the group followed their quarry's route further southeast.",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural cave contains dancing myconids and two quaggoths.",
+    "source_quote": "A group of myconids was dancing frantically to a silent tune, accompanied by two hulking quaggoths covered in mushroom growths and yellow mold.",
+    "subject": "natural cave",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A group of myconids are dancing frantically to a silent tune.",
+    "source_quote": "A group of myconids was dancing frantically to a silent tune",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party's myconid friend previously taught them that myconids do not dance.",
+    "source_quote": "The party had learned from their myconid friend that myconids simply do not dance",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A quaggoth is covered in mushroom growths and yellow mold.",
+    "source_quote": "two hulking quaggoths covered in mushroom growths and yellow mold",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoths accompany the dancing myconids.",
+    "source_quote": "accompanied by two hulking quaggoths covered in mushroom growths and yellow mold",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The quaggoths are hulking.",
+    "source_quote": "two hulking quaggoths covered in mushroom growths and yellow mold",
+    "subject": "quaggoth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to leave the strange cave scene undisturbed.",
+    "source_quote": "they chose to leave the strange scene undisturbed and move on.",
+    "subject": "decision to leave cave",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A flumph is a small floating creature encountered around a bend in the passage.",
+    "source_quote": "Around a bend in the passage they encountered something none of them had ever seen before: a flumph. The small floating creature",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph spoke directly into the party's minds.",
+    "source_quote": "The small floating creature spoke directly into their minds",
+    "subject": "flumph telepathy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph chided the party for staring at it blankly.",
+    "source_quote": "spoke directly into their minds and chided them for staring at it blankly",
+    "subject": "flumph scolding",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph feeds on the background psionic energy radiated by evil creatures.",
+    "source_quote": "It introduced itself as a being that fed on the background psionic energy radiated by evil creatures",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph unleashed a torrent of vivid, distressing psychic visions upon the party.",
+    "source_quote": "the flumph unleashed a torrent of vivid, distressing psychic visions upon them",
+    "subject": "flumph psychic visions",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A shrine to Demogorgon appeared in the visions shown by the flumph.",
+    "source_quote": "They saw a shrine to Demogorgon",
+    "subject": "shrine to Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is the deity of the shrine shown in the flumph's visions.",
+    "source_quote": "They saw a shrine to Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A broken magical shard appeared in the visions, being worked upon near a dark obelisk.",
+    "source_quote": "a broken magical shard being worked upon near a dark obelisk",
+    "subject": "magical shard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A dark obelisk appeared in the visions near the broken magical shard.",
+    "source_quote": "a broken magical shard being worked upon near a dark obelisk",
+    "subject": "dark obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A stolen red dragon egg appeared in the visions, being subjected to cruel experiments.",
+    "source_quote": "and a stolen red dragon egg being subjected to cruel experiments",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The visions depicted a red dragon, implied by the stolen egg.",
+    "source_quote": "and a stolen red dragon egg being subjected to cruel experiments",
+    "subject": "red dragon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph announced it felt much better after unburdening itself at the party's expense.",
+    "source_quote": "the flumph announced cheerfully that it felt much better, having unburdened itself entirely at the party's expense",
+    "subject": "flumph unburdening",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin named the flumph's behavior \"trauma dumping\".",
+    "source_quote": "Thorin promptly named the habit: it had \"trauma dumped\" on them",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A cave opens off to the south from the main passage.",
+    "source_quote": "A cave opens off to the south, and the party decides to glance into it \"carefully.\"",
+    "subject": "cave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stealthily scouts ahead with a Stealth roll of 26.",
+    "source_quote": "Zalthir stealthily scouts ahead with a Stealth roll of 26",
+    "subject": "Zalthir scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states his own stealth abilities are essentially non-existent.",
+    "source_quote": "Thorin notes that his own stealth abilities \"are essentially non-existent\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Three myconid adults, standing five feet tall, were dancing in the natural cave.",
+    "source_quote": "Three myconid adults stand five feet tall and the sprouts are half that height",
+    "subject": "myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconid sprouts, half the height of the adults, were dancing in the natural cave.",
+    "source_quote": "the sprouts are half that height",
+    "subject": "myconid sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One small sprout stood apart from the rest, moving less frantically than the others.",
+    "source_quote": "One small sprout stands apart from the rest, its movement not nearly as frantic",
+    "subject": "myconid sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The myconids were dancing to a silent tune in the natural cave.",
+    "source_quote": "In the natural cave, several fungal creatures dance to a silent tune",
+    "subject": "myconid dancing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party's myconid friend taught them that myconids do not dance.",
+    "source_quote": "The party recalls what their myconid friend taught them: \"myconids don't dance\"",
+    "subject": "myconid friend",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Two larger ape-like creatures identified as quaggoth spore servants were present.",
+    "source_quote": "The scouts identify two larger ape-like creatures as quaggoth spore servants",
+    "subject": "quaggoth spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The quaggoth spore servants were covered in mushroom growths and yellow mold.",
+    "source_quote": "covered in mushroom growths and yellow mold",
+    "subject": "quaggoth spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Yellow mold was growing on the quaggoth spore servants.",
+    "source_quote": "covered in mushroom growths and yellow mold",
+    "subject": "yellow mold",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM noted that myconids are not relentlessly violent and might be talked to.",
+    "source_quote": "The GM notes that myconids are not relentlessly violent and might be talked to",
+    "subject": "GM note on myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz worried that the fungal creatures could turn the party into spore servants.",
+    "source_quote": "Daz worries they could turn the party into spore servants",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "It was reminded to Daz that myconids typically have to kill you first to make you a spore servant.",
+    "source_quote": "and is reminded that \"typically, they have to kill you first\"",
+    "subject": "reminder about spore servants",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to avoid the fungal creatures for now.",
+    "source_quote": "The party decides to avoid the fungal creatures for now",
+    "subject": "avoiding fungal creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party flagged the fungal creatures to raise with their contacts later.",
+    "source_quote": "and flags them to raise with their contacts later",
+    "subject": "raising fungal creatures with contacts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party resumed following the trail east.",
+    "source_quote": "They then resume following the trail east",
+    "subject": "resuming trail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a derro savant who is attempting to mutate a red dragon embryo into a two-headed creature.",
+    "source_quote": "a derro savant named Plinki had been torturing the stolen red dragon egg. She was attempting to mutate the embryo into a two-headed creature",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is a demon lord for whom Plinki intends to present the mutated dragon as a pet and eventually a grand mount.",
+    "source_quote": "a pet and eventually a grand mount for the demon lord Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber is guarded by approximately ten derro.",
+    "source_quote": "about ten derro guarded the obelisk chamber",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Assassin's Guild hides in the hallway the party was heading along.",
+    "source_quote": "the Assassin's Guild hides down the hallway the party was already heading along",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is a psionic group that meets near the secret passage.",
+    "source_quote": "the Council of Savants meets: a psionic group it has been \"feeding off of quite energetically,\" near the secret passage",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zubriska is a leader-type figure always surrounded by four bodyguards.",
+    "source_quote": "It pointed out a leader-type figure named Zubriska, always surrounded by four bodyguards",
+    "subject": "Zubriska",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen red dragon egg is in the Demogorgon shrine and is being tortured by Plinki.",
+    "source_quote": "a derro savant named Plinki had been torturing the stolen red dragon egg",
+    "subject": "stolen red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Demogorgon shrine is a cheap, recently crafted affair heaped with unreadable papers.",
+    "source_quote": "The shrine was a cheap, recently crafted affair heaped with papers the party could not read through the vision",
+    "subject": "Demogorgon shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The faerzress, the magical substance blocking teleportation, blinked out and back again six or seven months ago.",
+    "source_quote": "Some six or seven months ago the faerzress blinked out and back",
+    "subject": "faerzress blinking out",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a dragon who does not yet know about the stolen dragon egg.",
+    "source_quote": "the dragon doesn't know about the egg",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde believes the Assassin's Guild does not exist.",
+    "source_quote": "the Assassin's Guild being right here contradicts Errde's belief that it doesn't exist",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Several of Errde's relatives were killed by the Assassin's Guild.",
+    "source_quote": "Several of Errde's relatives were killed by the Guild",
+    "subject": "Errde's relatives",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are the faction that stole the dragon egg from the Keepers of the Flame.",
+    "source_quote": "The Gray Ghosts are the faction that stole the egg from the Keepers of the Flame",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are the original owners of the stolen dragon egg.",
+    "source_quote": "The Gray Ghosts are the faction that stole the egg from the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin challenges the flumph's definition of evil, comparing it to 'pre-crime'.",
+    "source_quote": "Thorin challenges how it decides who is evil and suggests it sounds like \"pre-crime\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks the flumph what color ghosts are.",
+    "source_quote": "Thorin asks what color ghosts are",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tries an Athletics check with a result he describes as 'really shitty'.",
+    "source_quote": "Thorin tries Athletics, with a \"really shitty\" result",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states his dream of riding out victoriously on the back of a dragon.",
+    "source_quote": "Thorin restates his dream of riding out \"victoriously on a back of the dragon\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if the vision implies that a giant would grow another head.",
+    "source_quote": "Thorin asks whether this is the kind of thing that would make a giant grow another head",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recognizes a tendril on the flumph as one known to collect psionic energy.",
+    "source_quote": "Zalthir recalls his monastic studies and recognizes a small tendril on the flumph as one known to collect psionic energy",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls a 2 on an Arcana check.",
+    "source_quote": "Daz rolls a 2 on Arcana",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Flumph feeds on the psionic energy of evil creatures such as aboleths, gith, and mind flayers.",
+    "source_quote": "The flumph explains that it feeds on the psionic energy of evil creatures such as the aboleth, the gith, and mind flayers",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Flumph joins the adventurers against their mild chagrin regarding its constant psychic offloading.",
+    "source_quote": "The flumph decides to join the adventurers, much to their mild chagrin regarding its constant psychic offloading",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "About ten derro are present in the obelisk area.",
+    "source_quote": "About ten derro are in the obelisk area",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A mind flayer is located within the Assassin's Guild hideout.",
+    "source_quote": "a mind flayer it considered \"a tasty snack\" also lurked",
+    "subject": "Mind flayer",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a location where the party's current goals are equipment and escape.",
+    "source_quote": "Their goals in Gracklstugh are equipment and escape",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides against facing the derro without a long rest and resolves to seek backup from their factions.",
+    "source_quote": "The party decides against facing roughly ten derro without a long rest and resolves to go back to its factions for backup",
+    "subject": "Party decides against confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM advises the party that they can return to the caves later and can leave via their boat if desired.",
+    "source_quote": "The GM steps out of the fiction to note that the party does not have to clear these caves now and can return later... They could always take their boat and leave",
+    "subject": "GM advice",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The flumph performs a telepathic 'trauma dump' sharing images of derro corruption and foul deeds.",
+    "source_quote": "Through a telepathic \"trauma dump,\" the flumph shares vivid images of derro working on a broken magical shard in a chamber with a circular pathway and an obelisk, along with a flood of scenes of corruption and people discussing foul deeds",
+    "subject": "Flumph trauma dump",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The flumph attributes the increase in crankiness and cruelty among Underdark inhabitants to the faerzress blinking out six or seven months ago.",
+    "source_quote": "the faerzress, the glowing magical substance that blocks teleportation throughout the Underdark, blinked out and back again, and everyone since had grown crankier and crueler",
+    "subject": "faerzress instability",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Flumph considers the mind flayer in the Assassin's Guild a 'tasty snack'.",
+    "source_quote": "a mind flayer it considered \"a tasty snack\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Demogorgon shrine contains papers that cannot be read through the flumph's vision.",
+    "source_quote": "heaped with papers the party could not read through the vision",
+    "subject": "Papers in shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM stepped out of the fiction to remind the party of their real goal in Gracklstugh.",
+    "source_quote": "The GM stepped briefly out of the fiction to remind the party that their real goal in Gracklstugh was to get equipment and get out",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to Gracklstugh from the Whorlstone Tunnels.",
+    "source_quote": "They left the Whorlstone Tunnels and returned to the Darklake District of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Darklake District is a location within Gracklstugh where the party visits the Keepers of the Flame.",
+    "source_quote": "returned to the Darklake District of Gracklstugh",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party exits the Whorlstone Tunnels to return to the city.",
+    "source_quote": "They left the Whorlstone Tunnels and returned to the Darklake District of Gracklstugh",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party's ghost companion is kept invisible to prevent panic among the locals.",
+    "source_quote": "Their ghost was kept invisible, since people tend to panic at the sight of ghosts",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph floats along behind the party.",
+    "source_quote": "with their telepathic companion floating along behind them",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party visits the Keepers of the Flame in the Darklake District.",
+    "source_quote": "They went first to the Keepers of the Flame, who were closer",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn is the intense head of the Keepers of the Flame.",
+    "source_quote": "sought out Gartokkar Xundorn, the intense head of the order",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar pulls the party into a separate chamber immediately upon seeing them.",
+    "source_quote": "He pulled them aside into a separate chamber the moment he spotted them",
+    "subject": "Gartokkar pulls party aside",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph projects a vivid image of the egg directly into Gartokkar's mind.",
+    "source_quote": "The flumph projected a vivid image of the egg directly into Gartokkar's mind",
+    "subject": "flumph projects image",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar demands to know why the party did not simply bring the egg back.",
+    "source_quote": "he immediately demanded to know why they had not simply brought it back",
+    "subject": "Gartokkar demands egg return",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar tasks the party with retrieving the egg.",
+    "source_quote": "He tasked the party with retrieving the egg",
+    "subject": "Gartokkar tasks party",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar tasks the party with retrieving the egg.",
+    "source_quote": "He tasked the party with retrieving the egg",
+    "subject": "egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar wants a small statuette of Demogorgon from the Gray Ghost lair.",
+    "source_quote": "He also wanted a small statuette of Demogorgon from the Gray Ghost lair",
+    "subject": "Gartokkar tasks statuette retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A small statuette of Demogorgon is located in the Gray Ghost lair.",
+    "source_quote": "a small statuette of Demogorgon from the Gray Ghost lair",
+    "subject": "statuette of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar wants any incriminating paperwork found in the Gray Ghost lair.",
+    "source_quote": "and any incriminating paperwork",
+    "subject": "incriminating paperwork",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The inscriptions on the egg are intended to help persuade the Deepking.",
+    "source_quote": "which together with the inscriptions on the egg could persuade the Deepking",
+    "subject": "inscriptions on the egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is the authority who could be persuaded to wage holy war against the Gray Ghosts.",
+    "source_quote": "could persuade the Deepking to wage holy war against the Gray Ghosts",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking could be persuaded to wage holy war against the Gray Ghosts.",
+    "source_quote": "wage holy war against the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum accepts the opening offer of 2,000 gold pieces quickly.",
+    "source_quote": "Gyrgum first accepted the opening offer of 2,000 gold pieces far too quickly",
+    "subject": "Gyrgum accepts offer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The initial offer from Gartokkar was 2,000 gold pieces.",
+    "source_quote": "the opening offer of 2,000 gold pieces",
+    "subject": "2,000 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum accepted the opening offer of 2,000 gold pieces far too quickly.",
+    "source_quote": "Gyrgum first accepted the opening offer of 2,000 gold pieces far too quickly",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar rejects the initial terms and insists on 30% up front and 70% on delivery.",
+    "source_quote": "Gartokkar himself rejected the terms and insisted on 30% up front and 70% on delivery",
+    "subject": "Gartokkar rejects terms",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party raises a confidentiality rider regarding Themberchaud's ignorance of the egg.",
+    "source_quote": "The party then raised a confidentiality rider ensuring that the dragon Themberchaud would be kept ignorant of the egg's existence",
+    "subject": "confidentiality rider",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a dragon who is to be kept ignorant of the egg's existence.",
+    "source_quote": "ensuring that the dragon Themberchaud would be kept ignorant of the egg's existence",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "After a moment of murderous madness, Gartokkar agrees to the confidentiality rider.",
+    "source_quote": "After a flash of murderous madness, Gartokkar agreed, muttering that what Themberchaud didn't know couldn't hurt him",
+    "subject": "Gartokkar agrees to secrecy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin demands double payment for discretion.",
+    "source_quote": "Thorin demanded double for the discretion",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz hints that there are other bidders for the egg.",
+    "source_quote": "Daz hinted at other bidders",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar concedes an extra thousand gold pieces due to fear of a leak.",
+    "source_quote": "Gartokkar, sweating over the political disaster a leak would cause, conceded an extra thousand",
+    "subject": "Gartokkar concedes extra thousand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A failed attempt at intimidation settles the upfront terms at 1,100 gold pieces.",
+    "source_quote": "A failed attempt at intimidation settled the upfront terms at 1,100 gold pieces",
+    "subject": "failed intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party receives 1,100 gold pieces upfront.",
+    "source_quote": "settled the upfront terms at 1,100 gold pieces",
+    "subject": "1,100 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party splits the gold evenly at 275 apiece.",
+    "source_quote": "which the party split evenly at 275 apiece",
+    "subject": "party splits gold",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party receives official badges allowing their companions to accompany them.",
+    "source_quote": "They also received official badges that would allow their companions to accompany them on the mission",
+    "subject": "official badges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar enumerates every cave, rock, tunnel, and pool in the Underdark as potential hiding spots for the party.",
+    "source_quote": "Gartokkar fixed the party with a cold, furious stare and enumerated, in exhaustive detail, every cave, rock, tunnel, and pool in the Underdark",
+    "subject": "Gartokkar enumerates hiding spots",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Underdark contains numerous caves, rocks, tunnels, and pools mentioned by Gartokkar.",
+    "source_quote": "enumerated, in exhaustive detail, every cave, rock, tunnel, and pool in the Underdark",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party exits the Whorlstone Tunnels with the flumph and the ghost.",
+    "source_quote": "The party exits the Whorlstone Tunnels with the flumph and the ghost",
+    "subject": "party leaves Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The situation prompts GM jokes about invisible people colliding.",
+    "source_quote": "which prompts GM jokes about invisible people colliding",
+    "subject": "GM jokes about invisible people",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sees the Keepers before Themberchaud, who expects to be filled in on everything.",
+    "source_quote": "see the Keepers before Themberchaud, who expects to be filled in on everything",
+    "subject": "party sees Keepers before Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar rushes up and steers the party to a chamber.",
+    "source_quote": "Gartokkar Xundorn rushes up, steers them to a chamber in a building away from the cavern",
+    "subject": "Gartokkar rushes up",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar finds the telepathic projection of the egg image pleasant.",
+    "source_quote": "which he finds \"quite pleasant, actually.\"",
+    "subject": "Gartokkar finds image pleasant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum points out that nobody asked them to bring the egg.",
+    "source_quote": "Gyrgum points out that nobody asked them to",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar reminds the party they agreed to be agents of Themberchaud.",
+    "source_quote": "Gartokkar reminds them they agreed to be agents of Themberchaud",
+    "subject": "Gartokkar reminds party of agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar offers badges so the party's companions can work with them.",
+    "source_quote": "When the party asks for help, Gartokkar offers badges so their own companions can work with them",
+    "subject": "Gartokkar offers badges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar considers the flumph's mind-reading enough to earn more help but not enough to sway the Deepking.",
+    "source_quote": "He considers the flumph's mind-reading enough to earn the party more help, but not enough to sway the Deepking",
+    "subject": "Gartokkar assesses flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar is offended by Gyrgum's eager acceptance of the advance.",
+    "source_quote": "Gyrgum's eager acceptance as a full advance offends him",
+    "subject": "Gyrgum offends Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin adds an exclusivity rider to the negotiation.",
+    "source_quote": "Thorin adds an \"exclusivity rider\"",
+    "subject": "Thorin adds exclusivity rider",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Persuasion rolls come in at 15 and 14 against the GM's 7.",
+    "source_quote": "Thorin's Persuasion rolls come in at 15 and 14 (Charisma 8) against the GM's 7",
+    "subject": "Thorin Persuasion rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar refuses the offer of 4,000 gold pieces.",
+    "source_quote": "He refuses 4,000 but offers an extra 1,000",
+    "subject": "Gartokkar refuses 4,000",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party pushes for a total of 4,000 gold pieces which Gartokkar refuses.",
+    "source_quote": "He refuses 4,000 but offers an extra 1,000",
+    "subject": "4,000 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 13 on Intimidation which does not help.",
+    "source_quote": "Thorin's Intimidation rolls a 13 and the advantage reroll doesn't help",
+    "subject": "Thorin Intimidation roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar hands over the bag of gold and the badges.",
+    "source_quote": "Gartokkar hands over the bag of gold and the badges for the party's companions",
+    "subject": "Gartokkar hands over gold and badges",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar hands over a bag of gold to the party.",
+    "source_quote": "Gartokkar hands over the bag of gold",
+    "subject": "bag of gold",
+    "quote_verified": true
+  }
+]

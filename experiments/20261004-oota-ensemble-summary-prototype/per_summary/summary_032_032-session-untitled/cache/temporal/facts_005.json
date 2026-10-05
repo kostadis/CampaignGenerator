@@ -1,0 +1,44 @@
+[
+  {
+    "type": "location",
+    "fact": "A five-foot wide ledge runs around the sides of the gas-filled depression.",
+    "source_quote": "a five-foot ledge ran around either side of the depression",
+    "subject": "gas depression ledge width",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals nineteen points of damage to the rocktopus with Dawnbringer.",
+    "source_quote": "dealing nineteen points of damage",
+    "subject": "Thorin damage output",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The rocktopus hits Thorin for ten points of damage.",
+    "source_quote": "The rocktopus hits Thorin for ten points of damage",
+    "subject": "rocktopus damage to Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missile dealing nine points of force damage to the rocktopus.",
+    "source_quote": "Daz casts Magic Missile for nine points of force damage",
+    "subject": "Daz Magic Missile damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals seven points of damage to kill the rocktopus.",
+    "source_quote": "Gyrgum\u2019s blow deals seven points of damage and kills the rocktopus",
+    "subject": "Gyrgum killing blow",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The rocktopus is dead, killed by Gyrgum's mace.",
+    "source_quote": "The final blow killed it",
+    "subject": "rocktopus",
+    "quote_verified": true
+  }
+]

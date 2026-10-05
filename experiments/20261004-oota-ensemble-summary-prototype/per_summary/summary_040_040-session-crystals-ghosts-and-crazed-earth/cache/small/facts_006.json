@@ -1,0 +1,114 @@
+[
+  {
+    "type": "location",
+    "fact": "The party entered abandoned residential caverns marked by darkness, lack of warmth, and signs of a past drow assault.",
+    "source_quote": "entered abandoned residential caverns devoid of warmth or joy and marked by carnage from the old drow assault",
+    "subject": "abandoned residential caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Udhask is identified as a ghost whom Burrow Warden Jadger wanted rescued.",
+    "source_quote": "remains belonged to Udhask, one of the spirits Burrow Warden Jadger wanted rescued",
+    "subject": "Udhask",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask appeared as a furious deep gnome ghost and attacked the party.",
+    "source_quote": "A furious deep gnome ghost appeared and attacked",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask cried out, \u201cThey\u2019re coming! Everyone must hide!\u201d",
+    "source_quote": "prompting the spirit to cry, \u201cThey\u2019re coming! Everyone must hide!\u201d",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask became frightened after being struck by Zalthir.",
+    "source_quote": "Zalthir\u2019s insight revealed that the ghost had become afraid",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir surrounded Udhask with magical darkness and struck it repeatedly with his fists.",
+    "source_quote": "Zalthir surrounded the spirit with magical darkness... and struck it repeatedly with his fists",
+    "subject": "Zalthir attacks Udhask",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir declared his intention to non-lethally punch the ghost.",
+    "source_quote": "Zalthir declared, \u201cI want to non-lethally punch the ghost,\u201d",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum struck Udhask with a mace to frighten it further without destroying it.",
+    "source_quote": "Gyrgum... struck it without destroying it",
+    "subject": "Gyrgum attacks Udhask",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask disengaged, turned ethereal, and fled into a nearby burrow.",
+    "source_quote": "the ghost disengaged, turned ethereal, and fled into a nearby burrow",
+    "subject": "Udhask (ghost)",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party followed Udhask into a burrow where they found skeletal remains beside a stone bed.",
+    "source_quote": "The party followed and found skeletal remains beside a stone bed",
+    "subject": "burrow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Udhask appeared to reach beneath the bed before vanishing, revealing a hidden compartment.",
+    "source_quote": "Just before vanishing, the ghost had appeared to reach beneath that bed",
+    "subject": "hidden compartment discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden compartment contained six gems worth six hundred gold pieces each.",
+    "source_quote": "containing six gems worth six hundred gold pieces each",
+    "subject": "gems",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden compartment contained a potion of invisibility.",
+    "source_quote": "and a potion of invisibility",
+    "subject": "potion of invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Udhask's skeletal remains bore no signs of violent death.",
+    "source_quote": "The bones bore no signs of violent death",
+    "subject": "Udhask (skeleton)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party collected Udhask's bones to return them to the temple.",
+    "source_quote": "The party collected the bones so they could return them to the temple and restore the ghost",
+    "subject": "bone collection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool and the party improvised a ghost-themed song referencing 'Ghostbusters'.",
+    "source_quote": "The discovery prompted Glabbagool and the party to improvise: \u201cWhen something strange in the neighborhood,\u201d \u201cWho are you going to call?\u201d and \u201cGhost cleaners.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  }
+]

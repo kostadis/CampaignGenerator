@@ -1,0 +1,51 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldeth Feldrun is a dwarf companion of the Ember Vanguard.",
+    "source_quote": "their badly wounded dwarf companion, Eldeth Feldrun",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Channel Divinity to heal himself for 14 hit points.",
+    "source_quote": "Gyrgum used Channel Divinity to heal himself by 14 hit points",
+    "subject": "healing Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Channel Divinity to heal Eldeth Feldrun for 6 hit points.",
+    "source_quote": "He gave the remaining 6 to their badly wounded dwarf companion, Eldeth Feldrun, who had been down to 14 hit points",
+    "subject": "healing Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM relabels the group as \"the Ember Vanguard and Groupies.\"",
+    "source_quote": "the GM relabelled the party as \"the Ember Vanguard and Groupies.\"",
+    "subject": "party rebranding",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnels beneath Gracklstugh are dim and oppressive.",
+    "source_quote": "The Ember Vanguard stopped in the dim, oppressive tunnels beneath Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a huge cavern system beneath the Deepking's city.",
+    "source_quote": "The group moved carefully through the huge cavern system beneath the Deepking's city",
+    "subject": "Deepking's city",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz advises the group to be careful at every turn in the passages.",
+    "source_quote": "Daz insists that \"anytime there's a turn cavern, I think it's a good idea to be careful.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

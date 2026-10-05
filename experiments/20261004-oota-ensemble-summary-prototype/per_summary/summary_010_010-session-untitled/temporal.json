@@ -1,0 +1,289 @@
+[
+  {
+    "type": "location",
+    "fact": "The party's boat lacks oars or poles/long sticks for manual propulsion.",
+    "source_quote": "The boat carried no oars or poles",
+    "subject": "Darklake boat equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party's boat lacks long sticks for manual propulsion.",
+    "source_quote": "The boat has no oars or long sticks",
+    "subject": "Darklake boat equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party traveled for approximately two days before the boat ran aground on the sandbar.",
+    "source_quote": "The party's boat runs aground on a submerged sandbar after a couple of days of travel",
+    "subject": "darklake travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's successful survival check spares the party from needing to make another check the following day.",
+    "source_quote": "His roll was good enough to spare the party the next day's check as well",
+    "subject": "Thorin navigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's successful survival check lets the party avoid another survival check the next day.",
+    "source_quote": "His roll also lets the party avoid another survival check the next day",
+    "subject": "Thorin navigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party contains no rangers.",
+    "source_quote": "with so many companions aboard... The party has no rangers",
+    "subject": "party composition",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The party contains no rogues.",
+    "source_quote": "The party has no rangers and no rogues",
+    "subject": "party composition",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The abandoned duergar keelboat is located about 50 feet away from the party's boat.",
+    "source_quote": "About fifty feet away sat a duergar keelboat",
+    "subject": "abandoned keelboat distance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hemeth states that duergar invisibility can last for half an hour or an hour.",
+    "source_quote": "the invisibility could last half an hour or an hour",
+    "subject": "duergar invisibility duration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth turned invisible during the encounter with the keelboat.",
+    "source_quote": "Hemeth grimly reminded everyone that duergar can turn invisible, and promptly did so himself",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is a gray dwarf.",
+    "source_quote": "Hemeth, the gray dwarf traveling with the group",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Jimjar identifies Gracklstugh as the city where the duergar sell captured travelers as slaves.",
+    "source_quote": "selling them as slaves in the city of Gracklstugh",
+    "subject": "Gracklstugh destination",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The group of attackers are identified as gray dwarf slavers, also referred to as duergar.",
+    "source_quote": "gray dwarf slavers materialized from the shadows",
+    "subject": "duergar slavers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin adds a 1d8 superiority die to his initiative roll, resulting in a total initiative of 12.",
+    "source_quote": "adds a 1d8 superiority die to his initiative through his Ambush maneuver and rolls +4, bringing him to 12",
+    "subject": "Thorin initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The water in the Darklake counts as difficult terrain.",
+    "source_quote": "Moving through the water counts as difficult terrain",
+    "subject": "Darklake terrain",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir conjures a sphere of magical darkness with a 15-foot radius.",
+    "source_quote": "conjures a 15-foot-radius sphere of magical darkness",
+    "subject": "Magical Darkness radius",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The duergar slavers have an Armor Class of 16.",
+    "source_quote": "The duergar has AC 16",
+    "subject": "Duergar AC",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a Passive Perception score of 14.",
+    "source_quote": "Daz's passive Perception of 14 lets the party sense that another invisible duergar is lurking nearby",
+    "subject": "Daz Passive Perception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz lands one of three Scorching Rays for 7 fire damage.",
+    "source_quote": "The first two rays miss and the third hits for 7 fire damage",
+    "subject": "Daz Scorching Ray damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 7 at disadvantage for one of his melee attacks.",
+    "source_quote": "He rolls a 7 at disadvantage",
+    "subject": "Thorin attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Feinting Attack hits for 9 damage.",
+    "source_quote": "The 17 hits for 9 damage",
+    "subject": "Thorin Feint damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Tasha's Caustic Brew deals 2d4 acid damage at the start of each turn.",
+    "source_quote": "The acid deals 2d4 at the start of each turn",
+    "subject": "Gyrgum Caustic Brew damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 9 damage plus 1 from a Hill Strike for a total of 10 damage.",
+    "source_quote": "He deals 9 damage plus 1 from a Hill Strike, for 10 total",
+    "subject": "Thorin Hill Strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar beats the DC 13 Strength save with a roll of 14.",
+    "source_quote": "The duergar beats the DC 13 Strength save with a 14",
+    "subject": "Thorin Strength Save",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir can move his sphere of magical darkness up to 60 feet at the start of his turn.",
+    "source_quote": "He moves the sphere up to 60 feet at the start of his turn",
+    "subject": "Darkness movement range",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One duergar is left with only 1 hit point after taking 7 fire damage from Scorching Ray.",
+    "source_quote": "hits for 7 fire damage, leaving the duergar at 1 hit point",
+    "subject": "Duergar HP status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is one of the two goblins that help the party.",
+    "source_quote": "Spiderbait, \"one of the two goblins that helps you\"",
+    "subject": "Spiderbait role",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The enlarged duergar saves against being knocked prone with a roll of 17.",
+    "source_quote": "The duergar saves against prone with a 17",
+    "subject": "Duergar Prone Save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last duergar killed by Daz had 2 hit points remaining and took 6 force damage.",
+    "source_quote": "The duergar Daz kills had only 2 hit points left and took 6 force damage",
+    "subject": "Duergar death damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last duergar takes 8 acid damage from Gyrgum's caustic brew.",
+    "source_quote": "leaves him \"doubly acidified,\" and he takes 8 acid damage",
+    "subject": "Last Duergar Acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin knocks out the last duergar with a non-lethal blow dealing 12 damage.",
+    "source_quote": "The blow is a Feinting Attack at a straight roll for 12 damage",
+    "subject": "Thorin Capture Damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin delivers a twelve-point feinting strike to knock the enlarged duergar unconscious.",
+    "source_quote": "Thorin delivered a twelve-point feinting strike",
+    "subject": "Thorin's feinting strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The captured duergar shrank back to his normal small size as the magic faded.",
+    "source_quote": "the duergar shrank back to his normal small size",
+    "subject": "duergar size change",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar prisoner is no longer invisible and has returned to small size.",
+    "source_quote": "The prisoner is no longer invisible and has returned to small size.",
+    "subject": "duergar state change",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest found aboard the duergar vessel holds 1,100 gold pieces.",
+    "source_quote": "the chest aboard yielded 1,100 gold pieces",
+    "subject": "chest gold value",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The gold amount is determined by Daz rolling 3d6 multiplied by 100.",
+    "source_quote": "Daz rolls 3d6 (\u00d7 100) for the gold",
+    "subject": "gold roll calculation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The alchemy jug holds a gallon of liquid.",
+    "source_quote": "The jug holds a gallon",
+    "subject": "alchemy jug capacity",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The alchemy jug weighs 12 pounds whether full or empty.",
+    "source_quote": "weighs 12 pounds full or empty",
+    "subject": "alchemy jug weight",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The alchemy jug produces a chosen liquid until dawn.",
+    "source_quote": "can be set to produce a chosen liquid until dawn",
+    "subject": "jug liquid reset duration",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party secured two casks containing harvested fungi.",
+    "source_quote": "secured two casks of harvested fungi",
+    "subject": "fungi casks count",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Mayonnaise produced by the jug stays stable for two weeks.",
+    "source_quote": "He rules mayonnaise stays stable for two weeks.",
+    "subject": "mayonnaise stability",
+    "quote_verified": true
+  }
+]

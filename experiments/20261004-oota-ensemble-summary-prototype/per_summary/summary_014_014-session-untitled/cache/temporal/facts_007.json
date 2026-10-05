@@ -1,0 +1,58 @@
+[
+  {
+    "type": "date",
+    "fact": "The session is identified as The Keepers' Secret Mission 014.07.",
+    "source_quote": "The Keepers' Secret Mission 014.07",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A red dragon egg intended to hatch Themberchaud's successor was stolen by the Gray Ghosts.",
+    "source_quote": "A red dragon egg, intended to hatch his successor, had been stolen by a shadowy organization known as the Gray Ghosts",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud is a red dragon.",
+    "source_quote": "A red dragon egg, intended to hatch his successor",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro messenger who carries messages and supplies for the Gray Ghosts.",
+    "source_quote": "tracking down a derro messenger named Droki, who carried messages and supplies for the Gray Ghosts",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are described as a shadowy organization and a Thieves Guild.",
+    "source_quote": "a shadowy organization known as the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The gold pins and holy symbol of Laduguer grant passage beyond the Darklake District.",
+    "source_quote": "granting them passage beyond the Darklake District",
+    "subject": "Darklake District",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Captain Errde is a captain of the Stone Guard.",
+    "source_quote": "Captain Errde of the Stone Guard",
+    "subject": "Captain Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is operating on three fronts at once.",
+    "source_quote": "operating on three fronts at once",
+    "subject": "three fronts",
+    "quote_verified": true
+  }
+]

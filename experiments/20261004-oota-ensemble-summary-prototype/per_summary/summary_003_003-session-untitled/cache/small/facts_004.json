@@ -1,0 +1,198 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz casts Magic Missile, launching three glowing darts that deal twelve points of force damage to the Elite Warrior.",
+    "source_quote": "The first volley of three glowing darts dealt twelve points of damage to the Elite Warrior",
+    "subject": "Magic Missile cast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz abandons the uncertain Mind Sliver spell in favor of Magic Missile.",
+    "source_quote": "Daz helped turn the tide by abandoning the uncertain Mind Sliver for Magic Missile",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz admits, \u201cI need to read my spells better,\u201d after realizing Magic Missile produces three missiles.",
+    "source_quote": "Daz admits, \u201cI need to read my spells better,\u201d after realizing that the spell produces three missiles rather than a single dart",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a second volley of Magic Missile, leaving Imbros at six hit points.",
+    "source_quote": "a second volley left Imbros at six hit points",
+    "subject": "Magic Missile second volley",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros curses the revolting slaves in Undercommon.",
+    "source_quote": "Cursing the revolting slaves in Undercommon, he concentrated his poisoned blade on Prince Derendil",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Imbros kills Prince Derendil with his poisoned blade.",
+    "source_quote": "he concentrated his poisoned blade on Prince Derendil. The Quaggoth suffered a devastating sequence of wounds and was slain",
+    "subject": "Prince Derendil slain",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil is a Quaggoth.",
+    "source_quote": "The Quaggoth suffered a devastating sequence of wounds and was slain",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil is dead.",
+    "source_quote": "The Quaggoth suffered a devastating sequence of wounds and was slain",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Prince Derendil's strength had held the drow in place while the others armed themselves.",
+    "source_quote": "whose strength had held the drow in place while the others armed themselves",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands a blow and pushes the Elite Warrior into the doorway.",
+    "source_quote": "Zalthir finally landed a blow and pushed the Elite Warrior into the doorway",
+    "subject": "Zalthir push",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir dealt four points of damage to the Elite Warrior with a blow.",
+    "source_quote": "Zalthir finally lands a hit for four points of damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith refrains from shouting abuse at Imbros due to Gyrgum's intervention.",
+    "source_quote": "Sarith considered the suggestion and replied, \u201cNever thought of that.\u201d",
+    "subject": "Sarith restraint",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is burning with personal hatred toward Imbros.",
+    "source_quote": "Sarith, burning with personal hatred, was tempted to begin shouting abuse at his former captor",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests Sarith contemplate his spirituality to calm down.",
+    "source_quote": "\u201cThink of your spirituality and how much better it would be if all this came out.\u201d",
+    "subject": "Gyrgum religious appeal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith delivers the killing blow to Imbros.",
+    "source_quote": "delivered the killing blow to Imbros",
+    "subject": "Imbros killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros is a Drow Elite Warrior.",
+    "source_quote": "the Drow Elite Warrior makes a final stand",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros is dead.",
+    "source_quote": "delivered the killing blow to Imbros",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Imbros is currently standing with six hit points.",
+    "source_quote": "a second volley left Imbros at six hit points",
+    "subject": "Imbros",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith Kzekarit delivers the final blow to the Drow Elite Warrior.",
+    "source_quote": "Sarith Kzekarit, fueled by a mix of vengeance and newfound spiritual focus, delivers the final blow to the Drow Elite Warrior",
+    "subject": "Sarith Kzekarit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower chamber is secured after Imbros is killed.",
+    "source_quote": "With Imbros dead, the lower chamber is secured",
+    "subject": "lower chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The room is constricted, making ordinary ranged attacks difficult.",
+    "source_quote": "The spell\u2019s unerring force proved ideal in the constricted guard room, where ordinary ranged attacks were difficult",
+    "subject": "guard room",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Six hand crossbows fire from above, dealing fifteen damage to the Elite Warrior.",
+    "source_quote": "Six hand crossbows fire from above. Three bolts find their target, dealing fifteen damage to the Elite Warrior",
+    "subject": "hand crossbow volley",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum considers Tasha's Caustic Brew but rejects it to avoid hitting an ally.",
+    "source_quote": "Gyrgum considers using Tasha\u2019s Caustic Brew but realizes that its line would also strike an ally in the packed room",
+    "subject": "Gyrgum spell choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Toll the Dead against the wounded Elite Warrior.",
+    "source_quote": "Instead, he turns to Toll the Dead, learning that the cantrip is especially potent against an already wounded creature",
+    "subject": "Gyrgum spell cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith attacks Imbros with a newly acquired short sword, dealing twelve damage.",
+    "source_quote": "Sarith attacks Imbros with his newly acquired short sword and deals twelve damage",
+    "subject": "Sarith attack",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sarith is on the verge of shouting loudly enough to alert the rest of Velkynvelve.",
+    "source_quote": "Sarith is on the verge of shouting curses at Imbros loudly enough to alert the rest of Velkynvelve",
+    "subject": "Velkynvelve",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Elite Warrior is a Drow Elite Warrior.",
+    "source_quote": "the Drow Elite Warrior makes a final stand",
+    "subject": "Elite Warrior",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Prince Derendil is a Quaggoth.",
+    "source_quote": "The Quaggoth suffered a devastating sequence of wounds and was slain",
+    "subject": "Prince Derendil",
+    "quote_verified": true
+  }
+]

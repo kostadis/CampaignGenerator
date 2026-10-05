@@ -1,0 +1,1150 @@
+[
+  {
+    "type": "faction",
+    "fact": "The party is identified as the Ember Vanguard.",
+    "source_quote": "the Ember Vanguard, though they did not yet know that name",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party moves methodically through the corrupted chamber gathering notes and documents.",
+    "source_quote": "The party moved methodically through the space, gathering notes and documents",
+    "subject": "party investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Documents gathered in the chamber lay bare the Council of Savants' foul dealings and demonic entanglements.",
+    "source_quote": "gathering notes and documents that laid bare the Council of Savants' foul dealings and demonic entanglements",
+    "subject": "Council of Savants corruption",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost Pelek inhabits the derro spy's body seized during the previous fight.",
+    "source_quote": "The ghost Pelek, who had seized the derro spy's body at the end of the last fight, lingered in that borrowed body",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party keeps careful hold of Pelek's bones while he inhabits the spy's body.",
+    "source_quote": "while the party kept careful hold of his bones",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro spy is dead, with Pelek occupying his body.",
+    "source_quote": "The ghost Pelek, who had seized the derro spy's body at the end of the last fight",
+    "subject": "derro spy",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses the dragon's egg, which was carried unnoticed by Daz through the fight.",
+    "source_quote": "Most precious of all was the dragon's egg... Daz, who carried it through the fight unnoticed",
+    "subject": "dragon's egg",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg is tough enough to be hidden in a bag or carried unnoticed.",
+    "source_quote": "It was tough enough, and could be hidden in a bag or carried unnoticed",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg has demonic corruption that is a secret known only to the party.",
+    "source_quote": "its demonic corruption was a secret known only to them",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is currently at full hit points.",
+    "source_quote": "Daz, who carried it through the fight unnoticed, is still at full hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is implicated in nefarious activities and corruption via evidence found in the chamber.",
+    "source_quote": "teeming with evidence of corruption and foul deeds connected to the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro group running the chamber is up to nefarious deeds.",
+    "source_quote": "The derro group running the place is 'clearly \u2026 up to nefariously no good deeds'",
+    "subject": "derro group",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party debates delivering intelligence to the red dragon Themberchaud, the Keepers of the Flame, or the Stone Guard.",
+    "source_quote": "considering the interests of the red dragon Themberchaud, the Keepers of the Flame, and the Stone Guard",
+    "subject": "faction deliberation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks whether there is someone paying the party to find the information.",
+    "source_quote": "Gyrgum asks whether there is someone paying them to find all this out.",
+    "subject": "Gyrgum's inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM answers that everyone is paying the party to find the information.",
+    "source_quote": "\"everybody's paying you to find it out.",
+    "subject": "DM response",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is described as too fat and lazy to notice the party's absence for years.",
+    "source_quote": "Themberchaud is \"too fat and lazy.\" It would take him years to realise the party isn't coming back.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Themberchaud would likely burn the city to cinders if he learned of the egg.",
+    "source_quote": "The red dragon hungered for information and would likely burn the city to cinders if he learned of the egg.",
+    "subject": "Themberchaud threat assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses a strong preference for avoiding conflict with red dragons.",
+    "source_quote": "Gyrgum was \"a big fan of not pissing off red dragons.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the leader of the Stone Guard.",
+    "source_quote": "The Stone Guard's leader wanted proof that the Council of Savants was behind the city's corruption.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would march on the king if she learned the king supports the Assassin's Guild.",
+    "source_quote": "She would almost certainly march on the king himself if she learned the full truth: the Assassin's Guild \"that doesn't exist\" was actually being supported by the king.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull would try to kill all derro if told only about their demonic dealings.",
+    "source_quote": "If she were told only about the derro and their demonic dealings, she would try to kill all the derro.",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are led by Gartokkar and are close to the king.",
+    "source_quote": "Led by Gartokkar and close to the king, they simply wanted their egg returned.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are looking for an excuse to commit genocide against the derro.",
+    "source_quote": "They were also looking for an excuse to go genocidal on the derro.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame intend to pursue the party to the end of time if the egg is not returned.",
+    "source_quote": "They had made it abundantly clear they would pursue the party \"to the end of time\" if it was not returned.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want to hatch the dragon egg to use the resulting dragon against another dragon.",
+    "source_quote": "The Keepers wanted to hatch the egg to have a dragon of their own to take on the other dragon.",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is the leader of the Keepers of the Flame.",
+    "source_quote": "Led by Gartokkar and close to the king, they simply wanted their egg returned.",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The assassin gangster was a man who wanted to be scrubbed from the assassins' list.",
+    "source_quote": "The party had already dealt with the man who wanted to be scrubbed from the assassins' list.",
+    "subject": "The assassin gangster",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party holds documentation on the Assassin's Guild that its owners believe was burned.",
+    "source_quote": "Daz notes they hold documentation on the Assassin's Guild that its owners don't know about, \"because we burn the table and they think it's burned.\"",
+    "subject": "Assassin's Guild documentation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is a weaponsmithing clan.",
+    "source_quote": "Clan Ironhead, a weaponsmithing clan that would happily deal with the gnomes if the Deepking were removed.",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead is the faction most supportive of the gnome kingdoms.",
+    "source_quote": "Zalthir asked which faction was most pro-gnome. The answer was Clan Ironhead",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "New leadership in Gracklstugh would be friendlier to the gnome kingdoms, whose trade is currently blocked by the king.",
+    "source_quote": "if something happened to the Deepking, new leadership would be far friendlier to the gnome kingdoms, whose trade the current king was blocking.",
+    "subject": "regime change benefit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a Religion check for 18 to determine the dragon egg's status.",
+    "source_quote": "he rolled his dragon check with Religion instead, for an 18.",
+    "subject": "Gyrgum's dragon check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum attempted a Nature check first, rolling a 12 with a -1 modifier.",
+    "source_quote": "Gyrgum had only a \u22121 in Nature... He first rolled Nature (a 12, with a \u22121 modifier)",
+    "subject": "Gyrgum's Nature check",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg will hatch of its own accord in forty-four weeks.",
+    "source_quote": "the DM ruled that the egg would hatch of its own accord in forty-four weeks.",
+    "subject": "Dragon Egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg is possessed by a demon.",
+    "source_quote": "it was corrupted by a demon that possessed it. It \"might be possessed by a demon. Details.\"",
+    "subject": "Dragon Egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's lesser restoration spell would not lift the demonic corruption from the egg.",
+    "source_quote": "Lesser restoration would not lift the demonic corruption",
+    "subject": "Lesser Restoration attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Removing the demonic corruption from the egg would require research.",
+    "source_quote": "and removing it would take research.",
+    "subject": "Purging research",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum resolves to consult his superiors at the Church of Bahamut regarding demonic dragons.",
+    "source_quote": "As a follower of Bahamut, Gyrgum resolved to consult his superiors about demonic dragons.",
+    "subject": "Gyrgum's consultation plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expressed a wish for the party to have a baby dragon of their own.",
+    "source_quote": "Thorin wished aloud for a little baby dragon of their own.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is a dragonborn who felt dissed by Thorin's comment about a baby dragon.",
+    "source_quote": "Zalthir the dragonborn standing right there... Zalthir was \"feeling a little bit like, you know, dissed right now\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin apologised to Zalthir for the comment about the baby dragon.",
+    "source_quote": "Thorin apologised, saying he hadn't realised it came out that way.",
+    "subject": "Thorin's apology",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to return the egg to Gartokkar in exchange for safe passage.",
+    "source_quote": "They would return the egg to Gartokkar. Gartokkar would probably let them leave the city in exchange",
+    "subject": "Party's final decision",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party hopes to parlay the return of the egg into rights to buy minerals for the gnomes.",
+    "source_quote": "and the egg might be parlayed into rights to buy the minerals the gnomes wanted.",
+    "subject": "Mineral trade rights",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to tell the Keepers of the Flame that they found no evidence of who was behind the theft.",
+    "source_quote": "They would tell the Keepers they had found no evidence of who was behind the theft.",
+    "subject": "Keepers' deception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decided to hide the list connecting the Deepking to the Assassin's Guild from Errde Blackskull.",
+    "source_quote": "The incriminating list connecting the Deepking to the Assassin's Guild would stay hidden from Errde's volatile temper.",
+    "subject": "Hidden assassination list",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir hopes to leave Clan Ironhead in a stronger position before departing.",
+    "source_quote": "Clan Ironhead was the one faction Zalthir hoped to leave in a stronger position.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber is described as more of an office space or laboratory than a treasure lair.",
+    "source_quote": "not the kind of place you store your treasure",
+    "subject": "Council Lab",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found 170 gold pieces in the chamber.",
+    "source_quote": "found 170 gold pieces",
+    "subject": "170 gold pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a baby rattle in the chamber.",
+    "source_quote": "found 170 gold pieces and one deeply puzzling object: a baby rattle",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle is heavier than any child could comfortably hold.",
+    "source_quote": "The rattle was heavier than any child could comfortably hold",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle is crafted from materials far too durable for an infant's toy.",
+    "source_quote": "crafted from materials far too durable for an infant's toy",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle bears the name of Clan Thrazgad.",
+    "source_quote": "it did bear the name of Clan Thrazgad",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Thrazgad is a Duergar steelsmithing clan.",
+    "source_quote": "Clan Thrazgad, a Duergar steelsmithing clan",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle was made for a dragon hatchling to gnaw on.",
+    "source_quote": "this rattle had been made for a dragon hatchling to gnaw on",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum guessed that the rattle had been commissioned.",
+    "source_quote": "Gyrgum guessed it had been commissioned",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM confirmed that asking a Duergar smithing clan to make such an item is a very odd thing.",
+    "source_quote": "The DM agreed that was a very odd thing to ask of a Duergar smithing clan",
+    "subject": "DM confirms odd commission",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The reason the rattle ended up in the chamber and who commissioned it remains a mystery.",
+    "source_quote": "by whom, and why it had ended up in this chamber, remained a mystery",
+    "subject": "Rattle origin mystery",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "As a weapon, the rattle counts as a rock doing 1d4 damage.",
+    "source_quote": "As a weapon it would count as a rock, doing 1d4 damage",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle might interest a baby dragon.",
+    "source_quote": "It might interest a baby dragon",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle might sweeten a deal with Themberchaud.",
+    "source_quote": "sweeten a deal with Themberchaud",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle might serve as a distraction for some other creature.",
+    "source_quote": "or serve as a distraction for some other creature",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party tucked the rattle away, sensing it might prove useful as leverage or evidence.",
+    "source_quote": "The party tucked it away, sensing it might prove useful as leverage or evidence",
+    "subject": "Storing the rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to return the dragon egg to Gartokkar and the Keepers of the Flame.",
+    "source_quote": "decides to return the dragon egg to Gartokkar and the Keepers of the Flame",
+    "subject": "Dragon egg decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to withhold the incriminating list of names from Errde.",
+    "source_quote": "chooses to withhold the incriminating list of names from Errde",
+    "subject": "Incineration of names",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states they will selectively respond without saying the existence of the list.",
+    "source_quote": "We will selectively respond without saying the existence of the list",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The planned story for Gartokkar is that they had a tough battle against cultists who are all dead, recovered the egg, and have no evidence of who was behind it.",
+    "source_quote": "tough battle against cultists who are all dead, the egg recovered, and \"no evidence\" of who was behind it",
+    "subject": "Story for Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes they can go tell the assassin gangster he's off the hook.",
+    "source_quote": "Thorin notes they can go tell the assassin gangster he's off the hook",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "An assassin gangster is involved with the party's current political situation.",
+    "source_quote": "tell the assassin gangster he's off the hook",
+    "subject": "Assassin gangster",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM stated that the party's resolution surprised him.",
+    "source_quote": "The DM said later that the party's resolution surprised him",
+    "subject": "DM reaction to resolution",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir describes himself as trying to play a good character this time.",
+    "source_quote": "Zalthir is \"trying to play a good character this time\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes himself as having zero filter and being chaotic neutral, out for himself.",
+    "source_quote": "Thorin has \"zero filter\" and is chaotic neutral, out for himself",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes himself as trying to be neutral good.",
+    "source_quote": "Gyrgum is \"trying to be neutral good\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir insists on looting the corpses and checking the shrine for magic items.",
+    "source_quote": "Zalthir insists on looting the corpses and checking the shrine for magic items",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks if there are TPS reports.",
+    "source_quote": "Zalthir asks whether there are \"TPS reports\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The part where the fist would grip is made of a much stronger material than any baby toy.",
+    "source_quote": "The part where the fist would grip is made of a much stronger material than any baby toy",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle has no gems and no precious-metal inlay.",
+    "source_quote": "It has no gems and no precious-metal inlay",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle could be of artistic significance to the right person.",
+    "source_quote": "It could be of artistic significance to the right person",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rattle could be a gift to a dragon expecting hatchlings.",
+    "source_quote": "a gift to a dragon expecting hatchlings",
+    "subject": "Baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party looted the area and found 170 gold pieces and a mysterious, heavy baby rattle.",
+    "source_quote": "The party loots the area, finding 170 gold pieces and a mysterious, heavy baby rattle",
+    "subject": "Looting results",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realized the rattle was crafted by Clan Thrazgad and likely intended for a dragon to chew on.",
+    "source_quote": "the party realises the rattle was crafted by Clan Thrazgad and was likely intended for a dragon to chew on",
+    "subject": "Rattle realization",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests the rattle could have been commissioned.",
+    "source_quote": "Gyrgum suggests the rattle could have been commissioned",
+    "subject": "Gyrgum's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM remarks that it is a very odd thing to commission.",
+    "source_quote": "The DM: \"it's a very odd thing to commission\"",
+    "subject": "DM's comment on commission",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party discusses using the rattle for blackmail or political leverage.",
+    "source_quote": "The party discusses using the rattle for blackmail or political leverage",
+    "subject": "Political leverage discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to leave the city as quietly as possible.",
+    "source_quote": "ultimately decides to leave the city as quietly as possible",
+    "subject": "Decision to leave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The DM raises the idea of staging a coup against the Deepking.",
+    "source_quote": "The DM raises staging a coup against the Deepking",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM raises the idea of bringing everything to the Deepking so he goes after everyone at once.",
+    "source_quote": "or bringing everything to the Deepking so he goes after everyone at once",
+    "subject": "Deepking involvement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggests they should move on from the town and leave things as ambiguous as possible.",
+    "source_quote": "Thorin: \"I think we should move on from this town and leave things as ambiguous as we can\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks whether it would be useful to plant the rattle on anybody.",
+    "source_quote": "Gyrgum asks whether it would be useful to plant the rattle on anybody",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir says to keep the rattle in their back pocket in case they ever decide to destroy the town.",
+    "source_quote": "Zalthir says to keep it \"in our back pocket\" in case they ever decide to destroy the town",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum laments that he should build a table of all the factions.",
+    "source_quote": "Gyrgum laments he should build a table of all the factions",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that the DM either has a table or the AI has captured it regarding the factions.",
+    "source_quote": "Zalthir notes that given how often the DM has repeated it, \"he either has a table or the AI has captured it\"",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party intimidates four Derro guards at a dungeon exit instead of killing them.",
+    "source_quote": "The party decides to use intimidation and magic to scare the guards into spreading rumors about them rather than killing them.",
+    "subject": "Derro guard intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The first Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 1",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The second Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The third Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 3",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The fourth Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 4",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party encounters the guards at a heavy double door with an alarm mechanism.",
+    "source_quote": "four Derro guards stationed at a heavy double door, hands hovering near an alarm mechanism",
+    "subject": "dungeon exit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a die to decide between killing and intimidating the guards, resulting in intimidation.",
+    "source_quote": "Thorin let a die roll decide between killing and intimidation. It came up intimidation.",
+    "subject": "Thorin's decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures floating lights that drift around the party.",
+    "source_quote": "Daz conjured a swirling display of floating lights that drifted and spun around the group like orbiting stars.",
+    "subject": "Daz's display",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum causes tremors in the stone beneath the guards' feet.",
+    "source_quote": "Gyrgum used his connection to the earth to send tremors rippling through the stone beneath the guards' feet",
+    "subject": "Gyrgum's tremors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz tells the guards they do not know who he is.",
+    "source_quote": "Daz stepped forward into the shimmering light and told them, with absolute conviction, \"You do not know who we are.\"",
+    "subject": "Daz's declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin commands the guards to tell everyone what happened.",
+    "source_quote": "Thorin added that they should make sure to tell everybody what had happened here.",
+    "subject": "Thorin's command",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party adopts the name Ember Vanguard.",
+    "source_quote": "the party declared itself the Ember Vanguard",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The name was decided by a committee vote.",
+    "source_quote": "hammered out in a hasty committee vote while the guards stood frozen in awe",
+    "subject": "naming vote",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin failed the group intimidation check.",
+    "source_quote": "On the group intimidation check Thorin failed",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 20 on the group intimidation check.",
+    "source_quote": "but Daz rolled a 20",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro are convinced they face a 20th-level drow archmage.",
+    "source_quote": "The Derro mistook the ember-like lights for a meteor swarm and became convinced they faced a supremely powerful drow archmage",
+    "subject": "Derro reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party lets the Derro guards go to spread the rumor.",
+    "source_quote": "The Ember Vanguard let them go, satisfied that their reputation would now travel faster than they could.",
+    "subject": "guards released",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM warns that the drow might now hate the party.",
+    "source_quote": "The DM warned that the drow might now count among the factions who hated them.",
+    "subject": "drow faction hostility",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir poses as the baby rattle repair crew.",
+    "source_quote": "Zalthir floats posing as the \"baby rattle repair crew\"",
+    "subject": "Zalthir's joke",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir offers a sphere of darkness if a fight breaks out.",
+    "source_quote": "offers a sphere of darkness if it comes to a fight.",
+    "subject": "sphere of darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir passes the decision to Thorin.",
+    "source_quote": "Zalthir hands the call to \"the chaotic one.\"",
+    "subject": "Zalthir's pass",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to skirt the assassins' territory entirely and headed west through the dark Underdark passages.",
+    "source_quote": "The party chose to skirt the assassins' territory entirely... So they headed west through the dark Underdark passages.",
+    "subject": "party route choice",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir reminds the DM that the assassins told the party not to come back.",
+    "source_quote": "Zalthir reminds the DM that the assassins told them not to come back after the desk burning.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unknown whether the south route re-enters assassin territory.",
+    "source_quote": "It is unknown whether the south route re-enters assassin territory.",
+    "subject": "assassin territory status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool's request to help his friend among the crazed Myconids was placed at the bottom of the priority list.",
+    "source_quote": "Stool's request to help his friend among the crazed Myconids is discussed but placed at the bottom of the priority list.",
+    "subject": "Stool's plea deferred",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that Stool is convinced the party will be safe despite the presence of terrifying Myconids and an ape thing.",
+    "source_quote": "Zalthir notes Stool is \"convinced that we'll be perfectly safe despite there being a bunch of terrifying Myconids and some ape thing.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin sides with Stool regarding the request to help his friend.",
+    "source_quote": "Thorin sides with Stool",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes his character as incredibly loyal and a little bit sociopathic.",
+    "source_quote": "describing his character as \"incredibly loyal and \u2026 a little bit sociopathic.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin bases his character on Amos from The Expanse.",
+    "source_quote": "He says he is basing him on Amos from *The Expanse*.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM switches the map to display a single party icon.",
+    "source_quote": "The DM switches the map to a single party icon.",
+    "subject": "map switch",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The assassins previously told the party not to return after an incident involving a sneeze and a burned desk.",
+    "source_quote": "They had been told not to return after \"sneezing\" on and burning the assassins' desk",
+    "subject": "assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The route the party used to enter the Underdark runs through assassin territory.",
+    "source_quote": "The way they came in runs through assassin territory.",
+    "subject": "assassin territory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is ambushed by a Trapper in the western passages.",
+    "source_quote": "The tunnels were silent and oppressive, the kind of silence that hides things.",
+    "subject": "Trapper ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper achieves surprise because no party member has a passive Perception higher than 18.",
+    "source_quote": "No one has a passive Perception over 18, so the creature achieves surprise.",
+    "subject": "surprise achieved",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper is a massive, manta-ray-shaped predator.",
+    "source_quote": "A massive, manta-ray-shaped predator known as a Trapper",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper strikes at the rear of the party.",
+    "source_quote": "Without warning, something struck at the rear of the party.",
+    "subject": "Trapper attacks rear",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper wraps its wings around Gyrgum, grappling him.",
+    "source_quote": "wrapped its great leathery wings around Gyrgum",
+    "subject": "Gyrgum grappled",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum loses a DC 13 Dexterity save and is grappled by the Trapper.",
+    "source_quote": "Gyrgum fails a DC 13 Dexterity save and is grappled.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum makes a joke that the grapple is a 'bat hug' rather than a bear hug.",
+    "source_quote": "Gyrgum: \"Instead of a bear hug, it's a bat hug.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper has 85 hit points.",
+    "source_quote": "The Trapper has 85 hit points",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a natural 1 for initiative, resulting in 0.",
+    "source_quote": "Thorin rolls a natural 1 for a 0 initiative",
+    "subject": "Thorin initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that this is his second natural one of the night.",
+    "source_quote": "his \"second natural one \u2026 so far tonight.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum takes smothering damage of 15 then 20 points at the start of his turn.",
+    "source_quote": "He takes the smothering damage at the start of his turn (the DM called 15, then 20 points).",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum uses his orc ability to drop to 1 hit point instead of 0.",
+    "source_quote": "He uses his orc ability to drop to 1 hit point instead of 0.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM clarifies that the grapple stops movement but allows Gyrgum to attack or cast spells.",
+    "source_quote": "The DM clarifies that the grapple only stops movement, so Gyrgum could still attack or cast spells.",
+    "subject": "grapple mechanics clarified",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum fails a check to break free from the grapple with a roll of 9.",
+    "source_quote": "Gyrgum tries to break free and fails with a 9.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz fires magic missiles at the Trapper.",
+    "source_quote": "firing magic missiles into the beast.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that any spell that is not area-of-effect is safe to use on the grappled creature.",
+    "source_quote": "The DM rules that anything but an area-of-effect spell is safe to use.",
+    "subject": "AoE rule clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz attempts to use Silvery Barbs but realizes it requires an attack, check, or save to trigger.",
+    "source_quote": "Daz first tries Silvery Barbs but realises it needs an attack, check, or save to trigger.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes his mistake regarding Silvery Barbs.",
+    "source_quote": "He notes, \"I need to remember that, though.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party is confirmed to be at level 4.",
+    "source_quote": "The party is confirmed to be at level 4.",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir locks the Trapper in a counter-grapple.",
+    "source_quote": "Zalthir rushes forward, striking the monstrosity with an unarmed blow and locking it in a counter-grapple",
+    "subject": "Zalthir counter-grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses his grappler's advantage to land repeated strikes.",
+    "source_quote": "using his grappler's advantage to land repeated strikes.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands two follow-up attacks with advantage.",
+    "source_quote": "Two follow-up attacks with advantage both hit.",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir decides not to drag the creature because it would also drag Gyrgum.",
+    "source_quote": "Dragging the creature would only drag Gyrgum too, so Zalthir stays put.",
+    "subject": "dragging aborted",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the Trapper with his longsword for 12 damage.",
+    "source_quote": "The longsword hits for 12.",
+    "subject": "Thorin longsword attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Hill Strike to add 4 damage and force a DC 14 Strength save against falling prone.",
+    "source_quote": "His Hill Strike adds 4 damage and a DC 14 Strength save against falling prone",
+    "subject": "Thorin Hill Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper passes the Strength save against falling prone.",
+    "source_quote": "which the Trapper passes.",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Sap mastery gives the Trapper disadvantage on its next attack roll.",
+    "source_quote": "The Sap mastery gives the creature disadvantage on its next attack roll.",
+    "subject": "Thorin Sap mastery",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses Sentinel to claim an opportunity attack.",
+    "source_quote": "Sentinel is mentioned, and Thorin claims an opportunity attack.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper saves against Daz's Toll the Dead.",
+    "source_quote": "The Trapper saves against Toll the Dead.",
+    "subject": "Daz Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz forces the Trapper to reroll the save with Silvery Barbs, but it succeeds again.",
+    "source_quote": "Daz forces a reroll with Silvery Barbs, but it succeeds again.",
+    "subject": "Daz Silvery Barbs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gains advantage on his next roll due to Daz's spell.",
+    "source_quote": "Gyrgum still gains advantage on his next roll",
+    "subject": "Gyrgum advantage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz promises to use Silvery Barbs to force rerolls every round.",
+    "source_quote": "and Daz promises to do this every round.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the Trapper until it collapses dead.",
+    "source_quote": "beat the enormous predator into the ground with a relentless series of strikes until it collapsed, dead.",
+    "subject": "Trapper killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper is dead.",
+    "source_quote": "it collapsed, dead.",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The dead Trapper releases Gyrgum onto the cave floor.",
+    "source_quote": "It released a battered and thoroughly acid-covered Gyrgum onto the cave floor.",
+    "subject": "Gyrgum released",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is covered in acid residue.",
+    "source_quote": "thoroughly acid-covered Gyrgum",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum scrapes the caustic residue off himself with visible disgust.",
+    "source_quote": "Gyrgum scraped the caustic residue off himself with visible disgust",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum complains about the 'icky stuff'.",
+    "source_quote": "Gyrgum scrapes the acid off himself: \"I can't abide that sort of icky stuff, you know?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard presses on into the dark after the fight.",
+    "source_quote": "and the Ember Vanguard pressed on into the dark.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM promises the next session will not involve discussing Ubiquiti networking devices.",
+    "source_quote": "\"next week, we will not spend 40 minutes discussing Ubiquiti networking devices.\"",
+    "subject": "next session promise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz teases a show-and-tell for the next session.",
+    "source_quote": "Daz teased a show-and-tell for next time.",
+    "subject": "show-and-tell teaser",
+    "quote_verified": true
+  }
+]

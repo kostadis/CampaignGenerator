@@ -1,0 +1,128 @@
+[
+  {
+    "type": "event",
+    "fact": "Gartokkar Xundorn materialized out of thin air near the party.",
+    "source_quote": "a duergar materialized out of thin air nearby",
+    "subject": "Gartokkar materializes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party notes that materializing out of thin air is a disconcerting habit of the city's inhabitants.",
+    "source_quote": "The party was learning that this was a disconcerting habit of the city's inhabitants",
+    "subject": "party observation on invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn introduced himself as a member of the Keepers of the Flame.",
+    "source_quote": "He introduced himself as Gartokkar Xundorn of the Keepers of the Flame",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar flashed a badge that caused curious onlookers to scatter.",
+    "source_quote": "flashed a badge that sent curious onlookers scattering",
+    "subject": "Gartokkar's badge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gets the impression Gartokkar is a legal authority who can make other authorities disappear.",
+    "source_quote": "The party gets the impression he is a legal authority, one who \"has the ability to make the other authorities disappear.\"",
+    "subject": "party impression of authority",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar explains that his order's duty is to tend to the red dragon Themberchaud.",
+    "source_quote": "his order's sacred duty was to tend to the red dragon Themberchaud",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Themberchaud keeps the city's forges burning in the lightless depths of the Underdark.",
+    "source_quote": "who kept the city's forges burning in the lightless depths of the Underdark",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking treats the Keepers of the Flame as his most prized advisors.",
+    "source_quote": "the Deepking treated the Keepers as his most prized advisors",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum dryly offered kindling if the order was running short on dragons.",
+    "source_quote": "Gyrgum drily offered that they had some kindling available if the order was running short on dragons",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar laughed at Gyrgum's joke but dissected it with analytical precision, extinguishing the humor.",
+    "source_quote": "Gartokkar laughed, then dissected the joke with such analytical precision that every trace of humor was methodically extinguished",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar invited the party to his quarters by the following day to discuss a problem.",
+    "source_quote": "He invited the party to his quarters by the following day",
+    "subject": "Gartokkar's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar promised city passes in exchange for help with an unnamed problem.",
+    "source_quote": "In exchange for their help with a problem he was not yet ready to name, he promised city passes",
+    "subject": "Gartokkar's compensation offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar offered help if the party runs afoul of other factions or police while acting on his behalf.",
+    "source_quote": "He also offers help if they run afoul of other factions or police while acting on his behalf, with \"a standard set of disclaimers.\"",
+    "subject": "Gartokkar's legal protection offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin summarized the offer as \"a limited get-out of jail-free card.\"",
+    "source_quote": "what Thorin summarized as \"a limited get-out of jail-free card.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gartokkar has a problem he is not yet ready to name.",
+    "source_quote": "a problem he was not yet ready to name",
+    "subject": "Gartokkar's problem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminded Zalthir of his \"I know a guy\" list: one favor per city.",
+    "source_quote": "the GM reminded Zalthir of his \"I know a guy\" list: one favor per city",
+    "subject": "GM reminder to Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party has already sent someone to fetch them a magical weapon.",
+    "source_quote": "The GM also reminds the party they have already sent someone to fetch them a magical weapon",
+    "subject": "magical weapon retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to get a drink as their method of gathering information.",
+    "source_quote": "They settle on getting a drink",
+    "subject": "party decision on information",
+    "quote_verified": true
+  }
+]

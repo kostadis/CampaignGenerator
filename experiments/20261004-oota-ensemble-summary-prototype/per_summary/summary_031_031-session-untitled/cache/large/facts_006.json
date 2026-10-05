@@ -1,0 +1,86 @@
+[
+  {
+    "type": "event",
+    "fact": "The remaining victims in the soil begin to groan and croak in horrible unison.",
+    "source_quote": "the remaining victims in the soil began to groan and croak in horrible unison",
+    "subject": "infected victims vocalization",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recognizes the same musical quality he had sensed in Yrberop's mind, confirming the connection between the infected myconids and whatever waited ahead.",
+    "source_quote": "Thorin recognized the same musical quality he had sensed in Yrberop's mind, confirming the connection between the infected myconids and whatever waited ahead",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A parade of vaguely humanoid creatures with decaying flesh covered in luminescent lichen and tumescent growths is seen through the mist.",
+    "source_quote": "the party saw a parade of vaguely humanoid creatures, their decaying flesh covered in luminescent lichen and tumescent growths",
+    "subject": "procession creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The voices of the procession creatures stab into the party's minds with equal parts madness and glee.",
+    "source_quote": "their voices stabbing into the party's minds with equal parts madness and glee",
+    "subject": "procession creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A chant rises from the procession celebrating the union of Zuggtmoy and Araumycos.",
+    "source_quote": "A chant rose from the procession \u2014 a wedding hymn celebrating the union of Zuggtmoy and Araumycos",
+    "subject": "wedding chant",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The chant promises that Zuggtmoy's joyous spores will spread to all the world below and above.",
+    "source_quote": "promising that her joyous spores would spread to all the world below and above",
+    "subject": "spore spread prophecy",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The chant states that Araumycos and Zuggtmoy will become one till death do part.",
+    "source_quote": "Araumycos and Zuggtmoy joined together heart to heart, becoming one till death do part",
+    "subject": "marriage permanence",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy, the Demon Queen of Fungi and Lady of Decay, leads the procession walking toward the party.",
+    "source_quote": "leading the procession, came Zuggtmoy herself \u2014 the Demon Queen of Fungi, the Lady of Decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party confirms that Zuggtmoy is the same demon lord Thorin had encountered before.",
+    "source_quote": "the same demon lord Thorin had encountered before",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is walking with her bridesmaids.",
+    "source_quote": "walking toward the party with her bridesmaids",
+    "subject": "Zuggtmoy's bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of the Masters stands beyond the Garden of Welcome and is dominated by a towering mushroom.",
+    "source_quote": "Beyond the Garden of Welcome stands the Circle of the Masters, dominated by a towering mushroom.",
+    "subject": "Circle of the Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ends with Zuggtmoy and her procession walking toward the party.",
+    "source_quote": "Zuggtmoy and her procession walking toward the party",
+    "subject": "procession approach",
+    "quote_verified": true
+  }
+]

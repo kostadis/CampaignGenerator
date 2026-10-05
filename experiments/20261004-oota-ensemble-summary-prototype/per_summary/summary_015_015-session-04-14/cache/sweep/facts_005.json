@@ -1,0 +1,226 @@
+[
+  {
+    "type": "location",
+    "fact": "The West Cleft District is a wretched place composed of burrows clawed into cavern walls and chaotic, unplanned streets.",
+    "source_quote": "The West Cleft District was a wretched place. Its homes were nothing more than burrows clawed into the cavern walls, and its streets were a chaotic tangle of structures piled atop one another with no plan or order.",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Hundreds of Derro fill the West Cleft District, muttering, screaming, and raving with unnerving, discordant chatter.",
+    "source_quote": "hundreds of Derro filled the air with an unnerving, discordant chatter",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a pale-faced Derro courier spotted by the party in the West Cleft District.",
+    "source_quote": "It was there, amid the squalor, that they spotted Droki. He was a pale-faced Derro",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki wears a floppy hat adorned with two tentacle-like protrusions that bob with his movement.",
+    "source_quote": "in a floppy hat adorned with two tentacle-like protrusions that bobbed with his every frantic step",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki moves with unnatural, almost magical speed.",
+    "source_quote": "moved with an unnatural, almost magical speed",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Droki vanishes down a narrow fissure hidden behind scraps of canvas and moldy boxes.",
+    "source_quote": "he vanished down a narrow fissure hidden behind scraps of canvas and moldy boxes",
+    "subject": "Droki disappears",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido immediately bolts after Droki.",
+    "source_quote": "Buppido immediately bolted after him",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party squeezes through a gap into the tunnels beyond the fissure, choosing not to restrain Buppido to avoid a scene.",
+    "source_quote": "the party let him go and then squeezed through the gap into the tunnels beyond",
+    "subject": "party enters tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels have air that tastes faintly of metal and sound that is strangely muted.",
+    "source_quote": "The air tasted faintly of metal, and all sound was strangely muted, as though the cavern itself had swallowed every echo",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Swirling patterns of faerzress cast dancing spirals of soft light across the jagged stone pillars lining the walls.",
+    "source_quote": "Swirling patterns of faerzress, the wild, unpredictable magical energy of the Underdark, cast dancing spirals of soft light across the jagged stone pillars lining the walls",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Bigwigs are peculiar mushrooms said to swell whoever consumes them.",
+    "source_quote": "peculiar mushrooms the locals called bigwigs... which were said to swell or shrink whoever consumed them",
+    "subject": "bigwigs",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Pygmyworts are peculiar mushrooms said to shrink whoever consumes them.",
+    "source_quote": "peculiar mushrooms the locals called... pygmyworts, which were said to swell or shrink whoever consumed them",
+    "subject": "pygmyworts",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party takes one bigwig and one pygmywort each.",
+    "source_quote": "The party took one of each, sensing they might prove useful",
+    "subject": "party collects fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes yelling for Droki.",
+    "source_quote": "Thorin proposes yelling for Droki",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido advises the party to stay on the down low.",
+    "source_quote": "Buppido makes clear they should stay on the down low",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states, 'once you go in the dungeon, you're in the dungeon.'",
+    "source_quote": "Thorin: \"once you go in the dungeon, you're in the dungeon.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido identifies the fissure as an entrance to stone tunnels.",
+    "source_quote": "Buppido says \"he's going into stone tunnels. That's one of the entrances\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin argues they cannot coerce Buppido without a fuss that could go bad.",
+    "source_quote": "Thorin: \"At this point, we can't coerce him without a fuss, and that could go bad.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin enters the Whorlstone Tunnels warily, ready for traps or the unexpected.",
+    "source_quote": "Thorin enters \"Warily, ready for traps or the unexpected.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ceilings in the tunnels rise about 50 feet and drop to 25 feet in the narrow tunnels.",
+    "source_quote": "The ceilings in the tunnels rise about 50 feet and drop to 25 in the narrow tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Edible fungi grow everywhere in the tunnels.",
+    "source_quote": "Edible fungi grow everywhere",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum worries about eating too much bigwig because only a medium creature fits through the fissure.",
+    "source_quote": "Gyrgum worries about eating too much bigwig, since only a medium creature fits through the fissure",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki heads north, oblivious to the party.",
+    "source_quote": "Droki heads north, oblivious to the party",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki does not seem alert to being followed.",
+    "source_quote": "Droki \"doesn't seem alert to being followed\"",
+    "subject": "Droki",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The party follows Droki openly, reasoning that it might reveal all the people he works for.",
+    "source_quote": "reasoning that Droki \"doesn't seem alert to being followed.\" Following him might reveal all the people he works for",
+    "subject": "Following Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Derro who spot the party look at them with burning hatred.",
+    "source_quote": "Those who spot the party look at them \"with a burning hatred.\"",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party uses Stone Guard passes to enter the West Cleft District.",
+    "source_quote": "The party uses their Stone Guard passes to enter the West Cleft District",
+    "subject": "Stone Guard passes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido gleefully shows his pass to the gate guards.",
+    "source_quote": "Buppido gleefully shows his pass",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The gate guards meet Buppido with the usual set of contempt.",
+    "source_quote": "the gate guards meet him with \"the usual set of contempt.\"",
+    "subject": "Gate guards",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A gap leaking eerie fog marks the entrance to the Whorlstone Tunnels.",
+    "source_quote": "squeezing through a gap leaking eerie fog",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Moldy boxes are used to hide the narrow fissure in the West Cleft District.",
+    "source_quote": "hidden behind scraps of canvas and moldy boxes",
+    "subject": "moldy boxes",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Scraps of canvas are used to hide the narrow fissure in the West Cleft District.",
+    "source_quote": "hidden behind scraps of canvas and moldy boxes",
+    "subject": "scraps of canvas",
+    "quote_verified": true
+  }
+]

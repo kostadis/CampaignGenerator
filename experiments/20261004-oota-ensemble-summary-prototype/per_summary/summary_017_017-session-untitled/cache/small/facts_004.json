@@ -1,0 +1,366 @@
+[
+  {
+    "type": "npc",
+    "fact": "The flumph communicates with the party via a shared telepathic 'party line'.",
+    "source_quote": "says \"well, hello\" directly into the party's minds, on a shared telepathic \"party line\"",
+    "subject": "flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph explains that telepathy is a survival trait in the Underdark to avoid attracting attention through sound.",
+    "source_quote": "telepathy is a survival trait in the Underdark, because sound travels through tunnels and attracts the wrong things",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the party is wary because nearly everyone they have met below has tried to kill them.",
+    "source_quote": "Thorin explains they are wary because nearly everyone they have met below has tried to kill them",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph looks very disappointed when Thorin asks what a flumph is.",
+    "source_quote": "When he asks \"What is a flumph?\", it looks very disappointed",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph feeds on the psionic energy of evil creatures such as the aboleth, the gith, and mind flayers.",
+    "source_quote": "it feeds on the psionic energy of evil creatures such as the aboleth, the gith, and mind flayers",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin challenges the flumph on how it decides who is evil, comparing it to 'pre-crime'.",
+    "source_quote": "Thorin challenges how it decides who is evil and suggests it sounds like \"pre-crime\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin concedes he is not worried about the flumph's judgment because the party is not evil.",
+    "source_quote": "He then concedes, \"we're not evil, so I'm not too worried\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The flumph shares vivid images of derro working on a broken magical shard in a chamber with a circular pathway and an obelisk.",
+    "source_quote": "the flumph shares vivid images of derro working on a broken magical shard in a chamber with a circular pathway and an obelisk",
+    "subject": "flumph trauma dump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if the vision relates to making a giant grow another head.",
+    "source_quote": "Thorin asks whether this is the kind of thing that would make a giant grow another head",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party sees a vision of a shrine to Demogorgon and the stolen red dragon egg.",
+    "source_quote": "The party sees a vision of a shrine to Demogorgon and the stolen red dragon egg",
+    "subject": "vision of shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party infers that the Gray Ghosts are the faction that stole the egg from the Keepers of the Flame.",
+    "source_quote": "infers the location of the Gray Ghost lair. The Gray Ghosts are the faction that stole the egg from the Keepers of the Flame",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks what color ghosts are, noting their own ghost is blue.",
+    "source_quote": "Thorin asks what color ghosts are, since their own ghost is blue",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph responds to Thorin's question about ghost colors by asking 'What colors are ghosts?' back at him.",
+    "source_quote": "The flumph looks at him funny: \"What colors are ghosts?\"",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph expresses hope that the party will deal with those who polluted its home.",
+    "source_quote": "The flumph hopes the party will deal with \"these evil people who have polluted my home\"",
+    "subject": "flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The flumph shows the party a route involving a quick passageway and a door further along, both leading to the 'obelisk of doom'.",
+    "source_quote": "It shows them the route: a quick passageway, and a door further along, both leading to the \"obelisk of doom\"",
+    "subject": "route revelation",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph admits there are many evil things going on when asked about dangers.",
+    "source_quote": "the flumph admits there are \"lots of evil things going on\"",
+    "subject": "flumph",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The flumph sinks sadly and trauma dumps again, after which it feels much better.",
+    "source_quote": "It sinks sadly, trauma dumps again, and feels much better",
+    "subject": "flumph second trauma dump",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The flumph describes its former home as a 'hippy-dippy, cool place' where it could 'chill out and shillax'.",
+    "source_quote": "It was once a \"hippy-dippy, cool place\" where a flumph could \"chill out and shillax\"",
+    "subject": "flumph home",
+    "quote_verified": false
+  },
+  {
+    "type": "date",
+    "fact": "The faerzress blinked out and back again approximately six or seven months ago.",
+    "source_quote": "Some six or seven months ago the faerzress blinked out and back",
+    "subject": "faerzress fluctuation",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Inhabitants of the Underdark have grown crankier and crueler since the faerzress fluctuation.",
+    "source_quote": "everyone since had grown crankier and crueler",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Assassins have moved in to take over an area in the Underdark following the faerzress fluctuation.",
+    "source_quote": "assassins moving in to take over an area",
+    "subject": "assassin arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Assassin's Guild hides down the hallway the party was already heading along.",
+    "source_quote": "The flumph reveals that the Assassin's Guild hides down the hallway the party was already heading along",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A mind flayer lurks within the Assassin's Guild location.",
+    "source_quote": "a mind flayer it considered \"a tasty snack\" also lurked",
+    "subject": "mind flayer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph describes feeding on a mind flayer's psionic aura as a filter feeder without probing it.",
+    "source_quote": "It describes feeding on the mind flayer's psionic aura as a filter feeder, without ever probing it",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde believes the Assassin's Guild does not exist.",
+    "source_quote": "contradicts Errde's belief that it doesn't exist",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Several of Errde's relatives were killed by the Assassin's Guild.",
+    "source_quote": "Several of Errde's relatives were killed by the Guild",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recognizes a small tendril on the flumph as a feature of psionic filter feeders based on his monastic studies.",
+    "source_quote": "Zalthir recalls his monastic studies and recognizes a small tendril on the flumph as one known to collect psionic energy",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 2 on an Arcana check.",
+    "source_quote": "Daz rolls a 2 on Arcana",
+    "subject": "Daz Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts an Athletics check with a poor result.",
+    "source_quote": "Thorin tries Athletics, with a \"really shitty\" result",
+    "subject": "Thorin Athletics check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM notes the party does not have to clear the caves immediately and can return later.",
+    "source_quote": "The GM steps out of the fiction to note that the party does not have to clear these caves now and can return later",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party's goals in Gracklstugh are equipment and escape.",
+    "source_quote": "Their goals in Gracklstugh are equipment and escape",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Magic items are not yet for sale in Gracklstugh.",
+    "source_quote": "magic items are not yet for sale",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The drow are currently pursuing the party.",
+    "source_quote": "the drow remain on their trail",
+    "subject": "drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The flumph states there is 'no real danger' from the obelisk.",
+    "source_quote": "the flumph says there is \"no real danger\" from the obelisk",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is a derro savant working on the obelisk.",
+    "source_quote": "It remembers the name of the savant working on it: Plinki",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is torturing the stolen red dragon egg.",
+    "source_quote": "The flumph reveals that Plinki is torturing the stolen red dragon egg",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is attempting to give the dragon embryo a second head to present it as a pet for Demogorgon.",
+    "source_quote": "She is trying to give the embryo a second head so she can present it as a pet",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki intends to eventually train the two-headed dragon as a grand mount for Demogorgon.",
+    "source_quote": "eventually a grand mount for Demogorgon",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "About ten derro are guarding the obelisk area.",
+    "source_quote": "About ten derro are in the obelisk area",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The flumph has been feeding off the Council of Savants' psionic energy energetically.",
+    "source_quote": "a psionic group it has been \"feeding off of quite energetically\"",
+    "subject": "Council of Savants",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Council of Savants meets near the secret passage.",
+    "source_quote": "The flumph reveals where the Council of Savants meets: ... near the secret passage",
+    "subject": "Council of Savants",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Zubriska is a leader-type figure of the Council of Savants.",
+    "source_quote": "It points out a leader-type figure named Zubriska",
+    "subject": "Zubriska",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zubriska is always accompanied by four bodyguards.",
+    "source_quote": "always accompanied by four bodyguards",
+    "subject": "Zubriska",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Demogorgon shrine is covered in papers that the party cannot read from the mental image.",
+    "source_quote": "The Demogorgon shrine is covered in papers, but the mental image is not detailed enough to read them",
+    "subject": "shrine papers",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Demogorgon shrine is recently crafted, low-quality art.",
+    "source_quote": "the work of a \"Johnny come lately\"",
+    "subject": "Demogorgon shrine",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The GM cautions the party to be careful about what they tell Themberchaud regarding the egg.",
+    "source_quote": "The GM cautions the party to be careful what they tell Themberchaud",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud does not know about the stolen dragon egg.",
+    "source_quote": "since the dragon doesn't know about the egg",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin restates his dream of riding out victoriously on the back of a dragon.",
+    "source_quote": "Thorin restates his dream of riding out \"victoriously on a back of the dragon\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party decides against facing the derro without a long rest and resolves to return to their factions for backup.",
+    "source_quote": "The party decides against facing roughly ten derro without a long rest and resolves to go back to its factions for backup",
+    "subject": "party decision",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The flumph serves as the party's evidence regarding the corruption and the derro.",
+    "source_quote": "The flumph is its evidence",
+    "subject": "flumph evidence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph decides to accompany the adventurers.",
+    "source_quote": "Whether the party wanted it to or not, the flumph declared it would be accompanying them, and so it did",
+    "subject": "flumph joins party",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party finds the flumph's constant psychic offloading mildly chagrin-inducing.",
+    "source_quote": "much to their mild chagrin regarding its constant psychic offloading",
+    "subject": "flumph",
+    "quote_verified": true
+  }
+]

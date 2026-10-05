@@ -1,0 +1,79 @@
+[
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard stops in the tunnels beneath Gracklstugh to tend their wounds before moving on.",
+    "source_quote": "The Ember Vanguard stopped in the dim, oppressive tunnels beneath Gracklstugh to tend their wounds before moving on.",
+    "subject": "tending wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Channel Divinity to heal himself by 14 hit points.",
+    "source_quote": "Gyrgum used Channel Divinity to heal himself by 14 hit points.",
+    "subject": "Gyrgum self-heal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gives the remaining 6 points of Channel Divinity healing to Eldeth Feldrun.",
+    "source_quote": "He gave the remaining 6 to their badly wounded dwarf companion, Eldeth Feldrun",
+    "subject": "Gyrgum heals Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth Feldrun was down to 14 hit points before being healed by Gyrgum.",
+    "source_quote": "who had been down to 14 hit points",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The healing brings both Gyrgum and Eldeth Feldrun to approximately 20 hit points.",
+    "source_quote": "bringing them both to about 20.",
+    "subject": "hit point recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM relabels the party in Roll20 as \"the Ember Vanguard and Groupies.\"",
+    "source_quote": "In Roll20, the GM relabelled the party as \"the Ember Vanguard and Groupies.\"",
+    "subject": "group relabeling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group moves carefully through the huge cavern system beneath Gracklstugh.",
+    "source_quote": "The group moved carefully through the huge cavern system beneath the Deepking's city",
+    "subject": "cautious movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group slows at every turn in the winding passages.",
+    "source_quote": "and slowed at every turn in the winding passages.",
+    "subject": "slowing at turns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz advises the group to be careful whenever there is a turn in the cavern.",
+    "source_quote": "Daz insists that \"anytime there's a turn cavern, I think it's a good idea to be careful.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnels beneath Gracklstugh are dim and oppressive.",
+    "source_quote": "The Ember Vanguard stopped in the dim, oppressive tunnels beneath Gracklstugh",
+    "subject": "tunnels beneath Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a huge cavern system beneath the Deepking's city.",
+    "source_quote": "the huge cavern system beneath the Deepking's city",
+    "subject": "huge cavern system",
+    "quote_verified": true
+  }
+]

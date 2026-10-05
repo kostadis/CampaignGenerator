@@ -1,0 +1,226 @@
+[
+  {
+    "type": "npc",
+    "fact": "Plinki is a derro savant who is attempting to mutate a red dragon embryo into a two-headed creature.",
+    "source_quote": "a derro savant named Plinki had been torturing the stolen red dragon egg. She was attempting to mutate the embryo into a two-headed creature",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Demogorgon is a demon lord for whom Plinki intends to present the mutated dragon as a pet and eventually a grand mount.",
+    "source_quote": "a pet and eventually a grand mount for the demon lord Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The obelisk chamber is guarded by approximately ten derro.",
+    "source_quote": "about ten derro guarded the obelisk chamber",
+    "subject": "obelisk chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Assassin's Guild hides in the hallway the party was heading along.",
+    "source_quote": "the Assassin's Guild hides down the hallway the party was already heading along",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is a psionic group that meets near the secret passage.",
+    "source_quote": "the Council of Savants meets: a psionic group it has been \"feeding off of quite energetically,\" near the secret passage",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zubriska is a leader-type figure always surrounded by four bodyguards.",
+    "source_quote": "It pointed out a leader-type figure named Zubriska, always surrounded by four bodyguards",
+    "subject": "Zubriska",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen red dragon egg is in the Demogorgon shrine and is being tortured by Plinki.",
+    "source_quote": "a derro savant named Plinki had been torturing the stolen red dragon egg",
+    "subject": "stolen red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Demogorgon shrine is a cheap, recently crafted affair heaped with unreadable papers.",
+    "source_quote": "The shrine was a cheap, recently crafted affair heaped with papers the party could not read through the vision",
+    "subject": "Demogorgon shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The faerzress, the magical substance blocking teleportation, blinked out and back again six or seven months ago.",
+    "source_quote": "Some six or seven months ago the faerzress blinked out and back",
+    "subject": "faerzress blinking out",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a dragon who does not yet know about the stolen dragon egg.",
+    "source_quote": "the dragon doesn't know about the egg",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde believes the Assassin's Guild does not exist.",
+    "source_quote": "the Assassin's Guild being right here contradicts Errde's belief that it doesn't exist",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Several of Errde's relatives were killed by the Assassin's Guild.",
+    "source_quote": "Several of Errde's relatives were killed by the Guild",
+    "subject": "Errde's relatives",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are the faction that stole the dragon egg from the Keepers of the Flame.",
+    "source_quote": "The Gray Ghosts are the faction that stole the egg from the Keepers of the Flame",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are the original owners of the stolen dragon egg.",
+    "source_quote": "The Gray Ghosts are the faction that stole the egg from the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin challenges the flumph's definition of evil, comparing it to 'pre-crime'.",
+    "source_quote": "Thorin challenges how it decides who is evil and suggests it sounds like \"pre-crime\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks the flumph what color ghosts are.",
+    "source_quote": "Thorin asks what color ghosts are",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tries an Athletics check with a result he describes as 'really shitty'.",
+    "source_quote": "Thorin tries Athletics, with a \"really shitty\" result",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states his dream of riding out victoriously on the back of a dragon.",
+    "source_quote": "Thorin restates his dream of riding out \"victoriously on a back of the dragon\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if the vision implies that a giant would grow another head.",
+    "source_quote": "Thorin asks whether this is the kind of thing that would make a giant grow another head",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir recognizes a tendril on the flumph as one known to collect psionic energy.",
+    "source_quote": "Zalthir recalls his monastic studies and recognizes a small tendril on the flumph as one known to collect psionic energy",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls a 2 on an Arcana check.",
+    "source_quote": "Daz rolls a 2 on Arcana",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Flumph feeds on the psionic energy of evil creatures such as aboleths, gith, and mind flayers.",
+    "source_quote": "The flumph explains that it feeds on the psionic energy of evil creatures such as the aboleth, the gith, and mind flayers",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Flumph joins the adventurers against their mild chagrin regarding its constant psychic offloading.",
+    "source_quote": "The flumph decides to join the adventurers, much to their mild chagrin regarding its constant psychic offloading",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "About ten derro are present in the obelisk area.",
+    "source_quote": "About ten derro are in the obelisk area",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A mind flayer is located within the Assassin's Guild hideout.",
+    "source_quote": "a mind flayer it considered \"a tasty snack\" also lurked",
+    "subject": "Mind flayer",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is a location where the party's current goals are equipment and escape.",
+    "source_quote": "Their goals in Gracklstugh are equipment and escape",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides against facing the derro without a long rest and resolves to seek backup from their factions.",
+    "source_quote": "The party decides against facing roughly ten derro without a long rest and resolves to go back to its factions for backup",
+    "subject": "Party decides against confrontation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM advises the party that they can return to the caves later and can leave via their boat if desired.",
+    "source_quote": "The GM steps out of the fiction to note that the party does not have to clear these caves now and can return later... They could always take their boat and leave",
+    "subject": "GM advice",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The flumph performs a telepathic 'trauma dump' sharing images of derro corruption and foul deeds.",
+    "source_quote": "Through a telepathic \"trauma dump,\" the flumph shares vivid images of derro working on a broken magical shard in a chamber with a circular pathway and an obelisk, along with a flood of scenes of corruption and people discussing foul deeds",
+    "subject": "Flumph trauma dump",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The flumph attributes the increase in crankiness and cruelty among Underdark inhabitants to the faerzress blinking out six or seven months ago.",
+    "source_quote": "the faerzress, the glowing magical substance that blocks teleportation throughout the Underdark, blinked out and back again, and everyone since had grown crankier and crueler",
+    "subject": "faerzress instability",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Flumph considers the mind flayer in the Assassin's Guild a 'tasty snack'.",
+    "source_quote": "a mind flayer it considered \"a tasty snack\"",
+    "subject": "Flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Demogorgon shrine contains papers that cannot be read through the flumph's vision.",
+    "source_quote": "heaped with papers the party could not read through the vision",
+    "subject": "Papers in shrine",
+    "quote_verified": true
+  }
+]

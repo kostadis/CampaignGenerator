@@ -1,0 +1,219 @@
+[
+  {
+    "type": "location",
+    "fact": "Diggermattock Hall is a well-lit cavern occupied by roughly two dozen Svirfneblin.",
+    "source_quote": "The party was eventually brought to Diggermattock Hall. Roughly two dozen Svirfneblin occupied the well-lit cavern.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Roughly two dozen Svirfneblin occupy Diggermattock Hall, some carrying messages and papers and others gathered around stone tables.",
+    "source_quote": "Roughly two dozen Svirfneblin occupied the well-lit cavern. Some hurried about with messages and papers in hand, while others gathered around stone tables",
+    "subject": "Svirfneblin of Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The stone tables in Diggermattock Hall are covered with maps and documents.",
+    "source_quote": "others gathered around stone tables covered with maps and documents",
+    "subject": "stone tables in Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A rock-carved dais stands at the back of Diggermattock Hall bearing two stone desks.",
+    "source_quote": "At the back stood a rock-carved dais bearing two stone desks.",
+    "subject": "dais in Diggermattock Hall",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo Diggermattock is a male Svirfneblin who introduces himself as the leader in charge at Diggermattock Hall.",
+    "source_quote": "The male leader introduced himself: \u201cMy name is Dorbo. And over here is my assistant, Senni. And we are in charge here. Who are you?\u201d",
+    "subject": "Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni Diggermattock is a female Svirfneblin who serves as Dorbo's assistant and Quartermaster.",
+    "source_quote": "And over here is my assistant, Senni.",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Advisors are conferring with Dorbo and Senni at the dais in Diggermattock Hall.",
+    "source_quote": "A male and female Svirfneblin sat there conferring with one another and their advisors.",
+    "subject": "advisors",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party initially introduces themselves as the Emerald Vanguard before retracting the name.",
+    "source_quote": "The party initially blurted out \u201cthe Emerald Vanguard,\u201d",
+    "subject": "Emerald Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party considers the name Ember Vanguard during a discussion of their identity.",
+    "source_quote": "became tangled in a discussion of the Emerald Vanguard, Ember Vanguard, and Emerald Enclave.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party considers the name Emerald Enclave during a discussion of their identity.",
+    "source_quote": "became tangled in a discussion of the Emerald Vanguard, Ember Vanguard, and Emerald Enclave.",
+    "subject": "Emerald Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A faction blamed for destroying a capital city is referenced by the party as a reason to avoid using specific names.",
+    "source_quote": "They remembered that one of those names was associated with a faction blamed for destroying a capital city and decided against using it.",
+    "subject": "unknown faction leader",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A capital city was reportedly destroyed by a faction associated with one of the party's proposed names.",
+    "source_quote": "a faction blamed for destroying a capital city",
+    "subject": "capital city",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party states their goal is to reach the Overbright.",
+    "source_quote": "introduced themselves simply as adventurers trying to find their way home and reach the Overbright.",
+    "subject": "the Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo and Senni engage in an apparently heated private argument involving muttering and finger-pointing.",
+    "source_quote": "Dorbo and Quartermaster Senni Diggermattock responded with muttering, finger-pointing, and an apparently heated private argument.",
+    "subject": "private argument",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is referenced as having issued a warning that the party anticipated regarding the clan's quests.",
+    "source_quote": "Anticipating Jimjar\u2019s warning, the party openly asked whether the clan had a side quest involving oozes and volunteered their interest.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Senni assigns the party a quest to address the community's ooze problem before helping them reach the Overbright.",
+    "source_quote": "we won\u2019t feel at all encumbered or guilty about asking you to do that before we help you.\u201d",
+    "subject": "ooze quest assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Glabbagool references Blingdenstone as the place where creatures like him are causing trouble.",
+    "source_quote": "Well, I\u2019m not an ooze. I\u2019m a gelatinous cube. A totally different species.\u201d He added, \u201cAnd I don\u2019t know why my fat friends are causing you pain, but I\u2019m here. I am the friendly type.\u201d",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool defends himself by stating he is a gelatinous cube, not an ooze.",
+    "source_quote": "Glabbagool immediately defended the distinction between himself and the creatures troubling Blingdenstone: \u201cWell, I\u2019m not an ooze. I\u2019m a gelatinous cube. A totally different species.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool claims to be the friendly type despite the trouble his species causes.",
+    "source_quote": "And I don\u2019t know why my fat friends are causing you pain, but I\u2019m here. I am the friendly type.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gelatinous cubes have higher viscosity than oozes and maintain a square form.",
+    "source_quote": "the party supported his argument by noting that gelatinous cubes have much higher viscosity than oozes and can maintain a square form: \u201cHave you ever seen a square ooze? I don\u2019t think so.\u201d",
+    "subject": "gelatinous cubes",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool expresses delight at the reasoning that distinguishes him from oozes.",
+    "source_quote": "Delighted by the reasoning, Glabbagool declared, \u201cI knew there was a reason I was just better than them.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool has never heard of a shambling mound and requires a description.",
+    "source_quote": "The discussion wandered to shambling mounds. Because Glabbagool had never heard of one, a party member described the creature from both study and the group\u2019s previous encounter.",
+    "subject": "shambling mound",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool asks if the shambling mound retained objects when it blew up.",
+    "source_quote": "Glabbagool excitedly asked, \u201cSo does it have a lot of stuff inside of it when it blew up?\u201d",
+    "subject": "shambling mound blowup",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party previously encountered and fought a shambling mound.",
+    "source_quote": "a party member described the creature from both study and the group\u2019s previous encounter.",
+    "subject": "previous shambling mound encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Shambling mounds do not sweep up and retain objects like gelatinous cubes.",
+    "source_quote": "The party explained that shambling mounds did not sweep up and retain objects the way gelatinous cubes did.",
+    "subject": "shambling mound",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool characterizes ordinary oozes as very not talkative.",
+    "source_quote": "Glabbagool knew ordinary oozes from personal experience but characterized them as \u201cvery not talkative.\u201d",
+    "subject": "ordinary oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he does not eat oozes.",
+    "source_quote": "\u201cNo, no, I don\u2019t eat oozes.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool states that he punches oozes sometimes.",
+    "source_quote": "I mean, I do punch them sometimes, but no, I don\u2019t eat oozes.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool extends a pseudopod to demonstrate his ability to strike things.",
+    "source_quote": "He then extended a pseudopod to demonstrate that he could strike things as well as absorb them.",
+    "subject": "pseudopod demonstration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recalls using fire during their previous encounter with a shambling mound.",
+    "source_quote": "The party remembers using fire during that encounter.",
+    "subject": "fire usage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The session ends with the party still located in Diggermattock Hall.",
+    "source_quote": "The session ends with the party in Diggermattock Hall, having been asked to address Blingdenstone\u2019s ooze infestation before the clan will help them reach the Overbright.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  }
+]

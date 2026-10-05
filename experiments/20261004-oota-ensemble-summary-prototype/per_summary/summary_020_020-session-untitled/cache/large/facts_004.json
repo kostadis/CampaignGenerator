@@ -1,0 +1,240 @@
+[
+  {
+    "type": "event",
+    "fact": "Zalthir delivers the killing blow to the Master Thief.",
+    "source_quote": "Zalthir delivered the killing blow to the Master Thief",
+    "subject": "Master Thief death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Master Thief is dead, killed by Zalthir.",
+    "source_quote": "finally ending the rogue's stubborn resistance",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes a Derro warrior and pushes him off a ten-foot ledge.",
+    "source_quote": "struck a Derro warrior and pushed him off a ten-foot ledge",
+    "subject": "Derro pushed to death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The pushed Derro warrior crashes to his death below.",
+    "source_quote": "sending him crashing to his death below",
+    "subject": "Derro fall death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro warrior is dead, having fallen from a ten-foot ledge.",
+    "source_quote": "sending him crashing to his death below",
+    "subject": "Derro (pushed)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz cries out for assistance as he is cornered by the spy.",
+    "source_quote": "When Daz cried out for help as the last remaining spy cornered him",
+    "subject": "Daz cries for help",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost ally plunges into the spy's body, possessing him entirely.",
+    "source_quote": "the ghost ally swept across the cavern and plunged into the spy's body, possessing him entirely",
+    "subject": "Ghost possession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The possessed spy's eyes glow with an eerie inner light.",
+    "source_quote": "causing his eyes to glow with an eerie inner light",
+    "subject": "Spy eyes glow",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spy is incapacitated and controlled by the ghost ally.",
+    "source_quote": "successfully possesses the spy, incapacitating him and taking control of his body",
+    "subject": "Spy (possessed)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down the last Derro.",
+    "source_quote": "Thorin cut down the last Derro",
+    "subject": "Last Derro death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last Derro is dead, killed by Thorin.",
+    "source_quote": "Thorin then kills the last Derro for nine",
+    "subject": "Derro (last)",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has the stolen red dragon egg in their possession.",
+    "source_quote": "the stolen red dragon egg safely in their possession",
+    "subject": "Red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The egg was spirited away beneath Daz's robes prior to the final Derro's death.",
+    "source_quote": "the egg had long since been spirited away beneath Daz's robes",
+    "subject": "Egg secured",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is prone at the start of the scene.",
+    "source_quote": "Still prone from the last round, Gyrgum is attacked again",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Cultists attack Gyrgum but fail to cause significant injury.",
+    "source_quote": "avoids significant injury due to the cultists' poor coordination",
+    "subject": "Gyrgum attacked",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Healing Word on himself to mend his wounds.",
+    "source_quote": "uses a healing word to mend his own wounds",
+    "subject": "Gyrgum healed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is currently standing and disengaged from the main fray.",
+    "source_quote": "scrambles to his feet and uses a healing word to mend his own wounds while staying clear of the main fray",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost ally is currently at 15 hit points.",
+    "source_quote": "the ghost is at 15 hit points",
+    "subject": "Ghost ally",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin moves to block the path of the remaining enemies.",
+    "source_quote": "Thorin cuts down another Derro with his longsword and moves to block the path of the remaining enemies",
+    "subject": "Thorin blocks path",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three Derro swing at Thorin screaming for the egg but miss.",
+    "source_quote": "Three Derro swing at Thorin screaming \"the egg, the egg\"",
+    "subject": "Derro attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses a magical earthen hand to restrain the spy.",
+    "source_quote": "Daz uses a magical earthen hand to restrain the spy",
+    "subject": "Daz restrains spy",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spy is temporarily restrained by Daz's spell.",
+    "source_quote": "The spy is restrained and takes 8",
+    "subject": "Spy (restrained)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grabs and kills two more Derro.",
+    "source_quote": "Zalthir grabs and kills two more Derro",
+    "subject": "Zalthir kills Derros",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two Derros are dead, killed by Zalthir.",
+    "source_quote": "Zalthir grabs and kills two more Derro",
+    "subject": "Derro (pair)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir saves his last focus point.",
+    "source_quote": "Zalthir saves his last focus point",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum strikes a remaining enemy with his mace despite disadvantage.",
+    "source_quote": "Gyrgum navigates the darkness to strike a remaining enemy with his mace",
+    "subject": "Gyrgum strikes enemy",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The battle takes place in a cavern.",
+    "source_quote": "the ghost ally swept across the cavern",
+    "subject": "Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Play is paused until after the 13th.",
+    "source_quote": "play paused until after the 13th",
+    "subject": "Session break",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM is traveling to Greece during the break.",
+    "source_quote": "while the GM travels to Greece",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The GM's grandfather bought a house in Santorini 70 years ago.",
+    "source_quote": "his family's Santorini house, bought by his grandfather 70 years ago",
+    "subject": "Santorini house",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief attempts to strike the ghost but is stopped by Thorin's Sentinel ability.",
+    "source_quote": "stopped by Thorin's sentinel ability, which halts his movement after an opportunity attack",
+    "subject": "Master Thief movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack deals 11 damage to the Master Thief.",
+    "source_quote": "Thorin's OA deals 11",
+    "subject": "Thorin OA",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief hits the ghost for 17 damage.",
+    "source_quote": "the thief hits the ghost for 17",
+    "subject": "Thief hits ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost recharges possession.",
+    "source_quote": "The ghost recharges possession",
+    "subject": "Ghost possession recharge",
+    "quote_verified": true
+  }
+]

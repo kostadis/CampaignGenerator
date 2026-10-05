@@ -1,0 +1,51 @@
+[
+  {
+    "type": "event",
+    "fact": "The dragon egg will hatch of its own accord in forty-four weeks.",
+    "source_quote": "the egg would hatch of its own accord in forty-four weeks",
+    "subject": "egg hatching timeline",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled the egg will hatch in 44 weeks of its own accord.",
+    "source_quote": "the egg \"will hatch in 44 weeks of its own accord.\"",
+    "subject": "egg hatching timeline",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a -1 modifier in Nature.",
+    "source_quote": "Gyrgum had only a \u22121 in Nature",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled an 18 on his Religion check to determine the egg's hatching time.",
+    "source_quote": "he rolled his dragon check with Religion instead, for an 18",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "It would take Themberchaud years to realize the party isn't coming back.",
+    "source_quote": "It would take him years to realise the party isn't coming back",
+    "subject": "Themberchaud awareness delay",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are close to the king.",
+    "source_quote": "Led by Gartokkar and close to the king",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want to hatch the egg to have a dragon of their own to take on the other dragon.",
+    "source_quote": "The Keepers wanted to hatch the egg to have a dragon of their own to take on the other dragon",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  }
+]

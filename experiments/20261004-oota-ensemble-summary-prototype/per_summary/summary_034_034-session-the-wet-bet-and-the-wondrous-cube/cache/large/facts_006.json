@@ -1,0 +1,198 @@
+[
+  {
+    "type": "location",
+    "fact": "The party reached a door leading into a temple chamber identified as the Oozing Temple Fountain Room 034.06.",
+    "source_quote": "the party reached a door leading into a temple chamber",
+    "subject": "Oozing Temple Fountain Room 034.06",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Inside the chamber stands a stone fountain with a raised edge and a basin of shallow, brackish water.",
+    "source_quote": "Inside stood a stone fountain filled with shallow, brackish water",
+    "subject": "Stone Fountain",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The rubble of a broken statue lies atop a central pedestal, with only a pair of clawed stone feet still recognizable.",
+    "source_quote": "The rubble of a broken statue lay atop a central pedestal, with only a pair of clawed stone feet still recognizable",
+    "subject": "Broken Statue",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Seven niches line the walls of the fountain chamber.",
+    "source_quote": "Seven niches lined the walls",
+    "subject": "Seven Niches",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "One niche admits water through a crack.",
+    "source_quote": "one admitted water through a crack",
+    "subject": "Water Seep Niche",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The two niches flanking the water seep niche are empty.",
+    "source_quote": "the two beside it were empty",
+    "subject": "Empty Niches",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four niches contain strange, formless sculptures.",
+    "source_quote": "four contained strange, formless sculptures",
+    "subject": "Formless Sculptures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Skeletons lie in the chamber, prompting the party to consider removing their weapons.",
+    "source_quote": "Skeletons also lay in the chamber, prompting the party to consider removing their weapons as a precaution against animation",
+    "subject": "Skeletons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool suggests he scout the room because oozes cannot go through him.",
+    "source_quote": "the party accepted Glabbagool\u2019s suggestion that he scout. \u201cWell, you know, the oozes can\u2019t go through me,\u201d he reasoned",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tells Glabbagool they would sing his praises at the tavern once they get out of the Underdark.",
+    "source_quote": "Thorin told him, \u201cWe would sing your praises at the tavern once we get out of the Underdark,\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool enters the fountain room to inspect it.",
+    "source_quote": "Glabbagool entered and asked what he should inspect",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "When Glabbagool touches one of the formless sculptures, it materializes into a gray ooze.",
+    "source_quote": "When he touched one of the formless sculptures, it materialized into a gray ooze",
+    "subject": "First Sculpture Activation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool complains about the sculpture transforming, saying \u201cWell, that\u2019s rude.\u201d",
+    "source_quote": "\u201cWell, that\u2019s rude,\u201d he complained",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rushed in and punched the gray ooze apart.",
+    "source_quote": "Zalthir rushed in and punched the ooze apart",
+    "subject": "First Ooze Destroyed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to activate the remaining sculptures one at a time while Zalthir destroyed each resulting creature.",
+    "source_quote": "The party then chose the cautious approach of activating the remaining sculptures one at a time. Zalthir rapidly destroyed each creature as it appeared",
+    "subject": "Subsequent Sculptures Activated",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gray oozes have extremely low armor class, making the darkness advantage question largely irrelevant.",
+    "source_quote": "Darkness would have granted Zalthir an advantage if the oozes lacked blindsight, but their extremely low armor class makes the question largely irrelevant",
+    "subject": "Gray Oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool methodically absorbed the debris from the destroyed oozes until the floor was perfectly clean.",
+    "source_quote": "while Glabbagool methodically absorbed the debris until the floor was perfectly clean",
+    "subject": "Debris Cleaned",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool reports that the absorbed remains were \u201cnot very tasty.\u201d",
+    "source_quote": "He reports that the remains were \u201cnot very tasty.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool searched the fountain and discovered a hidden cache of treasure.",
+    "source_quote": "Glabbagool next searched the fountain and discovered a hidden cache of treasure",
+    "subject": "Treasure Discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden cache contained 112 silver pieces.",
+    "source_quote": "discovered a hidden cache of treasure: 112 silver pieces",
+    "subject": "112 Silver Pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden cache contained three gold pieces.",
+    "source_quote": "three gold pieces",
+    "subject": "3 Gold Pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden cache contained a drow dagger.",
+    "source_quote": "a drow dagger",
+    "subject": "Drow Dagger",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The hidden cache contained a vial of oil of slipperiness.",
+    "source_quote": "and a vial of oil of slipperiness",
+    "subject": "Vial of Oil of Slipperiness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool absorbed the treasure cache he discovered.",
+    "source_quote": "Unfortunately, he absorbed all of it",
+    "subject": "Treasure Absorbed",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party concluded they would have to wait several days for the valuables to pass through Glabbagool.",
+    "source_quote": "The party concluded that they would have to wait several days for the valuables to pass through him",
+    "subject": "Treasure Retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party jokingly compares Glabbagool to a cube of holding or a convenience-store time safe.",
+    "source_quote": "joking that Glabbagool had become \u201ca cube of holding\u201d or a convenience-store time safe",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party retraced its path and chose the eastern route rather than investigating the remaining western passages.",
+    "source_quote": "the party retraced its path and chooses the eastern route",
+    "subject": "Route Selection",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The remaining western passages were not investigated.",
+    "source_quote": "Rather than investigate the remaining western passages",
+    "subject": "Western Passages",
+    "quote_verified": true
+  }
+]

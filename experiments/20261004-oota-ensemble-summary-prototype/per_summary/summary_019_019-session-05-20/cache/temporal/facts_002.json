@@ -1,0 +1,37 @@
+[
+  {
+    "type": "event",
+    "fact": "Eldgrim quoted 200 gold pieces to whitelist the merchant Werz.",
+    "source_quote": "Eldgrim quoted 200 gold pieces to \"whitelist\" Werz",
+    "subject": "Werz whitelist fee (no task)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldgrim quoted 20 gold pieces to whitelist the merchant Werz if the party dealt with his Demogorgon problem.",
+    "source_quote": "or 20 gold pieces if the party dealt with his Demogorgon problem",
+    "subject": "Werz whitelist fee (task)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin calculated the 'imbued value' of handling the Demogorgon problem to save on fees as 180 gold.",
+    "source_quote": "an \"imbued value\" of 180 gold",
+    "subject": "Werz whitelist differential value",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Two duergar sentries, Rust and Bob, belong to the Empty-Scabbard Killers.",
+    "source_quote": "Rust and his quiet companion Bob, two duergar sentries belonging to the Empty-Scabbard Killers",
+    "subject": "duergar sentries",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three additional soulblades are present with Eldgrim in the chamber.",
+    "source_quote": "with three more soulblades present",
+    "subject": "Eldgrim's soulblade guard",
+    "quote_verified": true
+  }
+]

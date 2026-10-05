@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "The entrance consists of heavy double doors with a stone diorama inside.",
+    "source_quote": "a set of heavy double doors, beyond which stood a stone diorama",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brysis of Khaem is a Netherese sorcerer depicted in her prime in the tomb's diorama.",
+    "source_quote": "depicting the Netherese sorcerer Brysis of Khaem in her prime",
+    "subject": "Brysis of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The diorama shows Brysis surrounded by attendants, slaves, and trappings of an empire.",
+    "source_quote": "surrounded by attendants and slaves and all the trappings of an empire long since turned to dust",
+    "subject": "stone diorama",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar demands a bet before reaching the tomb doors.",
+    "source_quote": "Jimjar felt the irresistible pull of his gambling instincts and demanded a bet",
+    "subject": "Jimjar demands bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wagers that the crystals will come in handy.",
+    "source_quote": "Gyrgum obliged, wagering that the crystals would come in handy after all",
+    "subject": "Gyrgum wagers on crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar accepts Gyrgum's wager about the crystals.",
+    "source_quote": "and a startled Jimjar took it",
+    "subject": "Jimjar accepts wager",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers a bet that no one will agree whether the crystals were useful, but nobody takes it.",
+    "source_quote": "tried, without a single taker, to bet that no one would ever agree whether the crystals had been useful",
+    "subject": "failed bet offer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A soft, feminine voice pleads for help telepathically.",
+    "source_quote": "A soft, feminine voice drifted into their minds",
+    "subject": "trapped voice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The voice claims to have been trapped in the dark for a very long time.",
+    "source_quote": "begging to be freed from the dark where she had been trapped \"for so long. So very long.\"",
+    "subject": "trapped voice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The voice gives the party a sense of the tomb entrance's direction.",
+    "source_quote": "The voice gave them a sense of the tomb's entrance",
+    "subject": "voice guides party",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A roll of 24 on Arcana confirms the tomb belongs to Brysis and contains powerful magic.",
+    "source_quote": "a 24 on Arcana confirmed this was truly Brysis's Netherese tomb and that powerful magic lay within",
+    "subject": "Arcana check 24",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM notes that Netherese notions of good and evil may differ from the party's.",
+    "source_quote": "The GM added a reminder that Netherese notions of good and evil may not map to the party's own",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A staircase descends over a hundred feet into the earth.",
+    "source_quote": "descended a long staircase that plunged over a hundred feet into the earth",
+    "subject": "long staircase",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A Netherese calendar stone is set into the wall of the staircase.",
+    "source_quote": "passing a Netherese calendar stone set into the wall along the way",
+    "subject": "Netherese calendar stone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes the lead in the party.",
+    "source_quote": "Gyrgum took the lead",
+    "subject": "Gyrgum takes lead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM considers Daz more fungible in a disaster.",
+    "source_quote": "the magic user Daz was \"more fungible in a disaster\"",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The shrine contains shredded tapestries and friezes gouged beyond recognition.",
+    "source_quote": "found a shrine with shredded tapestries and friezes gouged beyond recognition",
+    "subject": "shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A cracked marble altar is in the shrine and shows signs of recent violence.",
+    "source_quote": "and a cracked marble altar that had clearly been the target of recent violence",
+    "subject": "cracked marble altar",
+    "quote_verified": true
+  },
+  {
+    "type": "observation",
+    "fact": "The party notes that tomb contents are oddly intact after thousands of years.",
+    "source_quote": "noted how oddly intact everything was after thousands of years",
+    "subject": "tomb contents",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Floating undead are responsible for the damage in the shrine.",
+    "source_quote": "Gyrgum studied the damage carefully and concluded that the culprits were floating undead",
+    "subject": "floating undead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Floating undead leave no tracks in the dust.",
+    "source_quote": "creatures that left no tracks in the thick layer of dust on the floor",
+    "subject": "floating undead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls undead lore from his days with Bahamut.",
+    "source_quote": "He remembered from his days with Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Floating undead do not rest and are driven to keep searching.",
+    "source_quote": "undead don't rest but are driven to keep searching",
+    "subject": "floating undead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Floating undead tend to hate things they were associated with in life.",
+    "source_quote": "he suggested they tend to hate things they were associated with in life",
+    "subject": "floating undead",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is referenced by the party as a source of information.",
+    "source_quote": "The party also recalled Fargas Rumblefoot's tip",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Fargas Rumblefoot tipped that the tomb held a secret, false tomb.",
+    "source_quote": "the tomb held a secret, false tomb",
+    "subject": "secret false tomb",
+    "quote_verified": true
+  }
+]

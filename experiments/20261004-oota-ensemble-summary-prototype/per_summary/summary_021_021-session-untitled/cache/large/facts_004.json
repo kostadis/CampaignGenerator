@@ -1,0 +1,149 @@
+[
+  {
+    "type": "event",
+    "fact": "The party intimidates four Derro guards at a dungeon exit instead of killing them.",
+    "source_quote": "The party decides to use intimidation and magic to scare the guards into spreading rumors about them rather than killing them.",
+    "subject": "Derro guard intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The first Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 1",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The second Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The third Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 3",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The fourth Derro guard has 13 hit points.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro Guard 4",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party encounters the guards at a heavy double door with an alarm mechanism.",
+    "source_quote": "four Derro guards stationed at a heavy double door, hands hovering near an alarm mechanism",
+    "subject": "dungeon exit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a die to decide between killing and intimidating the guards, resulting in intimidation.",
+    "source_quote": "Thorin let a die roll decide between killing and intimidation. It came up intimidation.",
+    "subject": "Thorin's decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures floating lights that drift around the party.",
+    "source_quote": "Daz conjured a swirling display of floating lights that drifted and spun around the group like orbiting stars.",
+    "subject": "Daz's display",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum causes tremors in the stone beneath the guards' feet.",
+    "source_quote": "Gyrgum used his connection to the earth to send tremors rippling through the stone beneath the guards' feet",
+    "subject": "Gyrgum's tremors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz tells the guards they do not know who he is.",
+    "source_quote": "Daz stepped forward into the shimmering light and told them, with absolute conviction, \"You do not know who we are.\"",
+    "subject": "Daz's declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin commands the guards to tell everyone what happened.",
+    "source_quote": "Thorin added that they should make sure to tell everybody what had happened here.",
+    "subject": "Thorin's command",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party adopts the name Ember Vanguard.",
+    "source_quote": "the party declared itself the Ember Vanguard",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The name was decided by a committee vote.",
+    "source_quote": "hammered out in a hasty committee vote while the guards stood frozen in awe",
+    "subject": "naming vote",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin failed the group intimidation check.",
+    "source_quote": "On the group intimidation check Thorin failed",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolled a 20 on the group intimidation check.",
+    "source_quote": "but Daz rolled a 20",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro are convinced they face a 20th-level drow archmage.",
+    "source_quote": "The Derro mistook the ember-like lights for a meteor swarm and became convinced they faced a supremely powerful drow archmage",
+    "subject": "Derro reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party lets the Derro guards go to spread the rumor.",
+    "source_quote": "The Ember Vanguard let them go, satisfied that their reputation would now travel faster than they could.",
+    "subject": "guards released",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM warns that the drow might now hate the party.",
+    "source_quote": "The DM warned that the drow might now count among the factions who hated them.",
+    "subject": "drow faction hostility",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir poses as the baby rattle repair crew.",
+    "source_quote": "Zalthir floats posing as the \"baby rattle repair crew\"",
+    "subject": "Zalthir's joke",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir offers a sphere of darkness if a fight breaks out.",
+    "source_quote": "offers a sphere of darkness if it comes to a fight.",
+    "subject": "sphere of darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir passes the decision to Thorin.",
+    "source_quote": "Zalthir hands the call to \"the chaotic one.\"",
+    "subject": "Zalthir's pass",
+    "quote_verified": true
+  }
+]

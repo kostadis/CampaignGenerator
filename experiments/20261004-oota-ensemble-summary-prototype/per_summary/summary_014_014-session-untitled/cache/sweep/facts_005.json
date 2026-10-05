@@ -1,0 +1,135 @@
+[
+  {
+    "type": "object",
+    "fact": "Eighteen silver pieces are found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "eighteen silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A trinket is found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "trinket",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A pair of bloodstained gloves is found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "bloodstained gloves",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A box of scented candles is found on the bodies of the assassins.",
+    "source_quote": "found eighteen silver pieces, a trinket, a pair of bloodstained gloves, and, somewhat absurdly, a box of scented candles",
+    "subject": "box of scented candles",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bloodstained gloves are not magical.",
+    "source_quote": "Neither the gloves nor the candles are magical",
+    "subject": "bloodstained gloves",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The box of scented candles is not magical.",
+    "source_quote": "Neither the gloves nor the candles are magical",
+    "subject": "box of scented candles",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A fish-skin parchment bearing a charcoal likeness of Werz is found on the bodies of the assassins.",
+    "source_quote": "discovered a fish-skin parchment bearing a charcoal likeness of Werz himself",
+    "subject": "fish-skin parchment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is depicted in a charcoal likeness on the fish-skin parchment found on the assassins.",
+    "source_quote": "bearing a charcoal likeness of Werz himself",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The discovery of the likeness confirms the attack was a deliberate, pre-planned assassination.",
+    "source_quote": "confirming that the attack had been a deliberate, pre-planned assassination",
+    "subject": "assassination plot confirmed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the attack was not an opportunity attack.",
+    "source_quote": "Thorin: \"It was not an attack of opportunity.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The city guard has not yet arrived at the pier.",
+    "source_quote": "the party slipped away before the city guard could arrive",
+    "subject": "city guard",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Stone Guards are a type of guard the GM warns will eventually show up.",
+    "source_quote": "The GM warns that Stone Guards and other guards will eventually show up if the party lingers",
+    "subject": "Stone Guards",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum pushes the corpses of the assassins off the pier into the water.",
+    "source_quote": "Gyrgum shoved the corpses off the pier into the dark water below",
+    "subject": "bodies dumped",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a short rest to recover their strength.",
+    "source_quote": "After a brief rest to recover their strength",
+    "subject": "short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz uses Arcane Recovery to regain a second-level spell slot.",
+    "source_quote": "Daz used Arcane Recovery to regain a second-level spell slot",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Flowstone District is inhabited by no one but Duergar.",
+    "source_quote": "through a district inhabited by no one but Duergar",
+    "subject": "Flowstone District",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar priests escort the party through the stone corridors.",
+    "source_quote": "the party was escorted by Duergar priests through the stone corridors of the Flowstone District",
+    "subject": "Duergar priests",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame occupy a territory in the Flowstone District.",
+    "source_quote": "toward the territory of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party travels through the district on the strength of their permit.",
+    "source_quote": "They traveled on the strength of their permit",
+    "subject": "travel on permit",
+    "quote_verified": true
+  }
+]

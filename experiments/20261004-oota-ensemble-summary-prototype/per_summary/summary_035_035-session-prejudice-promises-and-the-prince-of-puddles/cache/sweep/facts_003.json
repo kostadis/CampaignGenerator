@@ -1,0 +1,114 @@
+[
+  {
+    "type": "location",
+    "fact": "The massive gate is made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine.",
+    "source_quote": "The party reached a massive gate made from steel and mithril, laid with magical, magic-resistant alloys, and plated in adamantine.",
+    "subject": "massive gate",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Eight gnome guards wait behind the gate.",
+    "source_quote": "Eight gnome guards waited behind it.",
+    "subject": "gnome guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The head guard demands to know who the travelers are and why they have come.",
+    "source_quote": "Their leader demanded to know who the travelers were and why they had come.",
+    "subject": "head guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "One guard expresses distrust toward Daz, stating that drow lie.",
+    "source_quote": "One guard immediately distrusted Daz, saying, \u201cYou are a drow, and we know that drow lie.\u201d",
+    "subject": "gnome guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum counters the guard's prejudice by claiming that orcs only tell the truth.",
+    "source_quote": "Gyrgum countered, \u201cBut I am an orc, and everyone knows that orcs only tell the truth,\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The guards are surprised to discover that Gyrgum is an orc cleric of Bahamut.",
+    "source_quote": "bewildering the guards further when they realized he was an orc cleric of Bahamut.",
+    "subject": "guards' realization",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum confirms his true nature to the guards, saying, \u201cTis true. You see me truly.\u201d",
+    "source_quote": "Gyrgum answers their disbelief with, \u201cTis true. You see me truly.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar initially responds to the guard's question with his habitual catchphrase.",
+    "source_quote": "Jimjar initially responds with his habitual \u201cWanna bet?\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar presents himself as merely another friend of the party.",
+    "source_quote": "before presenting himself as merely another friend of the party.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asserts that Daz is interested in exploration and growth rather than domination.",
+    "source_quote": "Jimjar tries to reassure the guards about Daz: \u201cYes, yes, yes, his name harkens to the words Menzoberranzan, but he's really a really nice guy. He's all about exploring and growing, not about domination and world conquest.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Jimjar claims Daz has been reading a popular book called The Up in the Overbright.",
+    "source_quote": "Jimjar jokingly claims Daz has been reading a popular book called *The Up in the Overbright*",
+    "subject": "The Up in the Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz explains that the group had been detained against their will by captors who wanted to exploit them.",
+    "source_quote": "Daz explains that the party had been detained against their will, not for wrongdoing but so their captors could exploit them.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states that the party gathered other travelers seeking good companions and a safer destination after escaping.",
+    "source_quote": "After escaping, they gathered other travelers seeking good companions and a safer destination.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party has arrived at Blingdenstone hoping for help and fellowship.",
+    "source_quote": "Daz concludes that the group has found itself at Blingdenstone looking for the same kind of aid and fellowship.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's name is stated by Jimjar to harken to the words Menzoberranzan.",
+    "source_quote": "his name harkens to the words Menzoberranzan",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gyrgum is identified as an orc cleric of Bahamut.",
+    "source_quote": "he was an orc cleric of Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  }
+]

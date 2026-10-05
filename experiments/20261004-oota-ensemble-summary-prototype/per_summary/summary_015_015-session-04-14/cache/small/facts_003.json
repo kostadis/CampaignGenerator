@@ -1,0 +1,191 @@
+[
+  {
+    "type": "npc",
+    "fact": "Hgraam told the party it was time to leave to tend rocks.",
+    "source_quote": "it is time for you to leave there are rocks that need to be tended",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam presented the party with a polished crystal the length of a human forearm.",
+    "source_quote": "he presented them with a remarkable gift: a polished crystal the length of a human forearm",
+    "subject": "gift presentation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal is a polished crystal the length of a human forearm.",
+    "source_quote": "a polished crystal the length of a human forearm",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal has 10 charges.",
+    "source_quote": "It has 10 charges",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal requires attunement.",
+    "source_quote": "requires attunement",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The crystal grants advantage on Investigation checks.",
+    "source_quote": "grants advantage on Investigation",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using speak with dead costs four charges on the crystal.",
+    "source_quote": "Speak with dead costs four charges",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Using speak with animals costs two charges on the crystal.",
+    "source_quote": "speak with animals costs two",
+    "subject": "Stonespeaker Crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Attunement to the crystal cannot happen until tomorrow, after a long rest.",
+    "source_quote": "Attunement can't happen until tomorrow, after a long rest",
+    "subject": "attunement restriction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has an Intelligence score of 17 and an Investigation bonus of +5.",
+    "source_quote": "Daz has INT 17 and Investigation +5",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has an Intelligence score of 14.",
+    "source_quote": "Thorin has INT 14",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz is fine with someone else taking the crystal.",
+    "source_quote": "Daz is fine with someone else taking the crystal",
+    "subject": "crystal allocation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin thinks speak with dead is the most useful power of the crystal.",
+    "source_quote": "Thorin thinks speak with dead is the most useful power",
+    "subject": "Thorin's opinion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is keen to meet the Deepking's advisor.",
+    "source_quote": "Gyrgum is keen to meet the Deepking's advisor",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warned Gyrgum that meeting the advisor might not have the desired effect.",
+    "source_quote": "The DM warns this \"might not have quite the effect you want\"",
+    "subject": "advisor warning",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "The meeting with the Deepking's advisor is placed on the checklist for later.",
+    "source_quote": "it goes on the checklist for later",
+    "subject": "Deepking's advisor meeting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a derro courier.",
+    "source_quote": "He is a derro courier",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is linked to various factions.",
+    "source_quote": "linked to various factions",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "It is unclear whether Droki belongs to a faction or just carries their messages.",
+    "source_quote": "It is unclear whether he belongs to a faction or just carries their messages",
+    "subject": "Droki's affiliation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull pointed the party toward Droki.",
+    "source_quote": "Both Errde Blackskull and Gartokkar pointed the party toward him",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar pointed the party toward Droki.",
+    "source_quote": "Both Errde Blackskull and Gartokkar pointed the party toward him",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party deduced that a derro living in a slum where duergar would be slaughtered is the ideal messenger.",
+    "source_quote": "a derro living in a slum where \"any duergar that tried to get in there would probably get slaughtered\" would be the ideal messenger",
+    "subject": "Droki deduction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to head to the West Cleft District to track down Droki.",
+    "source_quote": "plan to head to the West Cleft District to track down a Derro courier named Droki",
+    "subject": "travel plan",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is the original home of the city's derro slaves.",
+    "source_quote": "the original home of the city's derro slaves",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is a dark and dangerous ghetto.",
+    "source_quote": "remains a dark and dangerous ghetto",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The East Cleft District was settled after the derro earned their freedom.",
+    "source_quote": "The East Cleft District was settled after the derro earned their freedom",
+    "subject": "East Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Upon reaching the entrance of the West Cleft District, the party decided to consult Buppido for local intelligence.",
+    "source_quote": "Upon reaching the entrance of the squalid district, they decide to pivot and consult Buppido for local intelligence",
+    "subject": "pivoting to Buppido",
+    "quote_verified": true
+  }
+]

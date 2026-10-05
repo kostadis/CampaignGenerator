@@ -1,0 +1,65 @@
+[
+  {
+    "type": "object",
+    "fact": "Gyrgum wagers the crystals will prove useful, and Jimjar accepts the bet.",
+    "source_quote": "Gyrgum obliged, wagering that the crystals would come in handy after all, and a startled Jimjar took it.",
+    "subject": "crystal bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A character succeeds on an Arcana check with a result of 24 to confirm the tomb's origins.",
+    "source_quote": "where a 24 on Arcana confirmed this was truly Brysis's Netherese tomb",
+    "subject": "Arcana check at tomb entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party arrives at the tomb after several days of travel.",
+    "source_quote": "After several days of travel, the party arrives at the entrance to the Lost Tomb of Khaem.",
+    "subject": "elapsed travel time",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The staircase descending from the tomb entrance plunges over one hundred feet into the earth.",
+    "source_quote": "descended a long staircase that plunged over a hundred feet into the earth",
+    "subject": "tomb staircase depth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz reports a passive Perception score of 15 and an Investigation score of 17.",
+    "source_quote": "Daz reports passive Perception 15 and Investigation 17",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party observes the tomb has remained intact for several thousand years.",
+    "source_quote": "after thousands of years",
+    "subject": "tomb age",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolls a natural 1 on an Investigation check.",
+    "source_quote": "Zalthir rolls a natural 1 on Investigation",
+    "subject": "Zalthir Investigation roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 17 on an Arcana check.",
+    "source_quote": "Gyrgum rolls a 17 on Arcana",
+    "subject": "Gyrgum Arcana roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz inspects the altar with an Arcana result of 16, finding no arcane significance.",
+    "source_quote": "Daz examines the altar but finds no arcane significance (Arcana 16)",
+    "subject": "Daz altar inspection",
+    "quote_verified": true
+  }
+]

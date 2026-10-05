@@ -1,0 +1,142 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir devised a plan to use Shadow Step to capture the Pudding King.",
+    "source_quote": "Zalthir nevertheless devised the core of a workable plan.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "In dim light, Zalthir can Shadow Step up to sixty feet.",
+    "source_quote": "In dim light, he could Shadow Step up to sixty feet",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir plans to teleport to the Pudding King, grapple him, and fly away.",
+    "source_quote": "reach the Pudding King, grapple him, and fly away with him",
+    "subject": "Shadow Step plan",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Green slime clings to the ceiling of the throne chamber.",
+    "source_quote": "Green slime clinging to the ceiling",
+    "subject": "green slime",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir risks green slime falling on him if he passes underneath it during an aerial escape.",
+    "source_quote": "complicated the escape because it could fall onto Zalthir as he passed underneath",
+    "subject": "slime hazard",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The oozes are currently under the control of the Pudding King.",
+    "source_quote": "under his control",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Incapacitating the Pudding King could release hundreds of uncontrolled oozes to wander through Blingdenstone.",
+    "source_quote": "the Pudding King\u2019s incapacitation could release hundreds of uncontrolled oozes to wander through Blingdenstone in search of food",
+    "subject": "ooze army release",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "A large coordinated distraction and defenders are necessary to contain the ooze army.",
+    "source_quote": "A large, coordinated distraction\u2014and defenders ready to contain the ooze army\u2014would therefore be necessary",
+    "subject": "ooze containment need",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party considered using fireballs, collapsing rubble, and sealing caves as distractions.",
+    "source_quote": "The party considered fireballs, collapsing rubble, and sealing the caves",
+    "subject": "distraction brainstorming",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool warned that oozes can squeeze through extremely small gaps.",
+    "source_quote": "Glabbagool warned that oozes could squeeze through extremely small gaps",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "An improvised rubble barrier is unreliable because oozes can move through extremely small spaces.",
+    "source_quote": "oozes can move through extremely small spaces, making an improvised rubble barrier unreliable",
+    "subject": "rubble barrier efficacy",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Proper containment of oozes requires sealed walls and Blingdenstone's labor and organization.",
+    "source_quote": "Proper containment would require sealed walls and therefore Blingdenstone\u2019s labor, organization, and advance knowledge of the situation",
+    "subject": "sealed walls requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offered to motivate Blingdenstone\u2019s troops with a speech.",
+    "source_quote": "Gyrgum offered to motivate Blingdenstone\u2019s troops with a speech",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum and the party improvised a rallying speech: 'We will fight them in the pudding court. We will fight them on the rubble. We will fight them by the glowing pool.'",
+    "source_quote": "\u201cWe will fight them in the pudding court. We will fight them on the rubble. We will fight them by the glowing pool.\u201d",
+    "subject": "rallying speech",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party concluded they need the city\u2019s army and possibly Clan Goldwhisker to confront the ooze army.",
+    "source_quote": "They concluded that they needed the city\u2019s army and possibly Clan Goldwhisker",
+    "subject": "allied forces need",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party considered asking Clan Goldwhisker to participate in the war against the oozes.",
+    "source_quote": "The party also considers asking Clan Goldwhisker to participate",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The common war against the oozes might provide an opportunity for reconciliation with Clan Goldwhisker.",
+    "source_quote": "The common war against the oozes might even provide \u201can opportunity for reconciliation.\u201d",
+    "subject": "reconciliation opportunity",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party decided to report to Dorbo first.",
+    "source_quote": "They decide to report to Dorbo first",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Three gelatinous cubes caused damage in the Traders\u2019 Grotto.",
+    "source_quote": "the damage caused by only three gelatinous cubes in the Traders\u2019 Grotto",
+    "subject": "Traders\u2019 Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three gelatinous cubes were previously encountered in the Traders\u2019 Grotto.",
+    "source_quote": "damage caused by only three gelatinous cubes in the Traders\u2019 Grotto",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  }
+]

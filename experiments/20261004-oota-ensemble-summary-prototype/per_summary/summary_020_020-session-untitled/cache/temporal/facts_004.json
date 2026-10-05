@@ -1,0 +1,128 @@
+[
+  {
+    "type": "location",
+    "fact": "The ledge from which the Derro was pushed is ten feet high.",
+    "source_quote": "pushed him off a ten-foot ledge",
+    "subject": "Derro ledge height",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The red dragon egg is secured in the party's possession.",
+    "source_quote": "the stolen red dragon egg safely in their possession",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Play is paused until after the 13th.",
+    "source_quote": "play paused until after the 13th",
+    "subject": "session break duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes three points of damage from a later hit.",
+    "source_quote": "A later hit lands for three",
+    "subject": "Gyrgum hit damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack deals 11 damage.",
+    "source_quote": "Thorin's OA deals 11",
+    "subject": "Thorin OA damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief deals 17 damage to the ghost.",
+    "source_quote": "the thief hits the ghost for 17",
+    "subject": "Master Thief damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro takes 10 damage from being struck, and the fall damage roll is a 6.",
+    "source_quote": "10 damage plus an unconditional push; the fall's d6 rolls a 6",
+    "subject": "Derro fall damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost is at 15 hit points.",
+    "source_quote": "the ghost is at 15 hit points",
+    "subject": "ghost hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 12 damage to a Derro.",
+    "source_quote": "12 damage",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party helpers hit the spy for four damage.",
+    "source_quote": "hit the spy once for four",
+    "subject": "spy damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spy takes 8 damage while restrained.",
+    "source_quote": "The spy is restrained and takes 8",
+    "subject": "spy restrained damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three Derro swing at Thorin.",
+    "source_quote": "Three Derro swing at Thorin",
+    "subject": "Derro attack count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grabs and kills two more Derro.",
+    "source_quote": "Zalthir grabs and kills two more Derro",
+    "subject": "Derro kill count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost's fly speed is 40 feet.",
+    "source_quote": "Fly speed 40 feet",
+    "subject": "ghost fly speed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost's possession attempt requires a DC 13 Charisma save.",
+    "source_quote": "DC 13 Charisma save fails",
+    "subject": "ghost possession save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace hits for three damage.",
+    "source_quote": "mace hits despite disadvantage, for three",
+    "subject": "Gyrgum mace damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals nine damage to the last Derro.",
+    "source_quote": "Thorin then kills the last Derro for nine",
+    "subject": "last Derro damage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The GM's family Santorini house was bought 70 years ago.",
+    "source_quote": "bought by his grandfather 70 years ago",
+    "subject": "Santorini house age",
+    "quote_verified": true
+  }
+]

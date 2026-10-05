@@ -1,0 +1,58 @@
+[
+  {
+    "type": "event",
+    "fact": "Mushroom harvest quantities are set to dice averages, with 3 units per d6.",
+    "source_quote": "Quantities are set to dice averages (3 per d6)",
+    "subject": "mushroom foraging quantity",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two swarms of centipedes initially ambush the party from the surrounding mushrooms.",
+    "source_quote": "two swarms of centipedes ambush them from the surrounding mushrooms",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two additional swarms emerge from the surrounding fungi to surround the party.",
+    "source_quote": "Two additional swarms emerge from the surrounding fungi",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipede swarms are established as not infinite.",
+    "source_quote": "establishes, through Daz, that the swarms are not infinite",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One swarm is reduced to 1 hit point after Thorin deals 10 damage.",
+    "source_quote": "Thorin strikes a swarm for 10 damage, leaving it at 1 hit point",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tallest mushrooms in the fungi forest grow to be five feet high.",
+    "source_quote": "some standing nearly five feet tall",
+    "subject": "fungi forest mushroom height",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The fungi forest is designated as difficult terrain.",
+    "source_quote": "The forest is difficult terrain.",
+    "subject": "fungi forest terrain",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir moves at half speed while in the difficult terrain of the fungi forest.",
+    "source_quote": "moves at half speed through the difficult terrain",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

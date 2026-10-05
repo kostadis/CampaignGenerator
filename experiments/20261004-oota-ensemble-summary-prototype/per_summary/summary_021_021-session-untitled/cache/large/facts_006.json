@@ -1,0 +1,289 @@
+[
+  {
+    "type": "event",
+    "fact": "The party is ambushed by a Trapper in the western passages.",
+    "source_quote": "The tunnels were silent and oppressive, the kind of silence that hides things.",
+    "subject": "Trapper ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper achieves surprise because no party member has a passive Perception higher than 18.",
+    "source_quote": "No one has a passive Perception over 18, so the creature achieves surprise.",
+    "subject": "surprise achieved",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper is a massive, manta-ray-shaped predator.",
+    "source_quote": "A massive, manta-ray-shaped predator known as a Trapper",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper strikes at the rear of the party.",
+    "source_quote": "Without warning, something struck at the rear of the party.",
+    "subject": "Trapper attacks rear",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper wraps its wings around Gyrgum, grappling him.",
+    "source_quote": "wrapped its great leathery wings around Gyrgum",
+    "subject": "Gyrgum grappled",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum loses a DC 13 Dexterity save and is grappled by the Trapper.",
+    "source_quote": "Gyrgum fails a DC 13 Dexterity save and is grappled.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum makes a joke that the grapple is a 'bat hug' rather than a bear hug.",
+    "source_quote": "Gyrgum: \"Instead of a bear hug, it's a bat hug.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper has 85 hit points.",
+    "source_quote": "The Trapper has 85 hit points",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a natural 1 for initiative, resulting in 0.",
+    "source_quote": "Thorin rolls a natural 1 for a 0 initiative",
+    "subject": "Thorin initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that this is his second natural one of the night.",
+    "source_quote": "his \"second natural one \u2026 so far tonight.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum takes smothering damage of 15 then 20 points at the start of his turn.",
+    "source_quote": "He takes the smothering damage at the start of his turn (the DM called 15, then 20 points).",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum uses his orc ability to drop to 1 hit point instead of 0.",
+    "source_quote": "He uses his orc ability to drop to 1 hit point instead of 0.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM clarifies that the grapple stops movement but allows Gyrgum to attack or cast spells.",
+    "source_quote": "The DM clarifies that the grapple only stops movement, so Gyrgum could still attack or cast spells.",
+    "subject": "grapple mechanics clarified",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum fails a check to break free from the grapple with a roll of 9.",
+    "source_quote": "Gyrgum tries to break free and fails with a 9.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz fires magic missiles at the Trapper.",
+    "source_quote": "firing magic missiles into the beast.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that any spell that is not area-of-effect is safe to use on the grappled creature.",
+    "source_quote": "The DM rules that anything but an area-of-effect spell is safe to use.",
+    "subject": "AoE rule clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz attempts to use Silvery Barbs but realizes it requires an attack, check, or save to trigger.",
+    "source_quote": "Daz first tries Silvery Barbs but realises it needs an attack, check, or save to trigger.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes his mistake regarding Silvery Barbs.",
+    "source_quote": "He notes, \"I need to remember that, though.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party is confirmed to be at level 4.",
+    "source_quote": "The party is confirmed to be at level 4.",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir locks the Trapper in a counter-grapple.",
+    "source_quote": "Zalthir rushes forward, striking the monstrosity with an unarmed blow and locking it in a counter-grapple",
+    "subject": "Zalthir counter-grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses his grappler's advantage to land repeated strikes.",
+    "source_quote": "using his grappler's advantage to land repeated strikes.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands two follow-up attacks with advantage.",
+    "source_quote": "Two follow-up attacks with advantage both hit.",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir decides not to drag the creature because it would also drag Gyrgum.",
+    "source_quote": "Dragging the creature would only drag Gyrgum too, so Zalthir stays put.",
+    "subject": "dragging aborted",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the Trapper with his longsword for 12 damage.",
+    "source_quote": "The longsword hits for 12.",
+    "subject": "Thorin longsword attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Hill Strike to add 4 damage and force a DC 14 Strength save against falling prone.",
+    "source_quote": "His Hill Strike adds 4 damage and a DC 14 Strength save against falling prone",
+    "subject": "Thorin Hill Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper passes the Strength save against falling prone.",
+    "source_quote": "which the Trapper passes.",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Sap mastery gives the Trapper disadvantage on its next attack roll.",
+    "source_quote": "The Sap mastery gives the creature disadvantage on its next attack roll.",
+    "subject": "Thorin Sap mastery",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses Sentinel to claim an opportunity attack.",
+    "source_quote": "Sentinel is mentioned, and Thorin claims an opportunity attack.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Trapper saves against Daz's Toll the Dead.",
+    "source_quote": "The Trapper saves against Toll the Dead.",
+    "subject": "Daz Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz forces the Trapper to reroll the save with Silvery Barbs, but it succeeds again.",
+    "source_quote": "Daz forces a reroll with Silvery Barbs, but it succeeds again.",
+    "subject": "Daz Silvery Barbs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gains advantage on his next roll due to Daz's spell.",
+    "source_quote": "Gyrgum still gains advantage on his next roll",
+    "subject": "Gyrgum advantage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz promises to use Silvery Barbs to force rerolls every round.",
+    "source_quote": "and Daz promises to do this every round.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the Trapper until it collapses dead.",
+    "source_quote": "beat the enormous predator into the ground with a relentless series of strikes until it collapsed, dead.",
+    "subject": "Trapper killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper is dead.",
+    "source_quote": "it collapsed, dead.",
+    "subject": "Trapper",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The dead Trapper releases Gyrgum onto the cave floor.",
+    "source_quote": "It released a battered and thoroughly acid-covered Gyrgum onto the cave floor.",
+    "subject": "Gyrgum released",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is covered in acid residue.",
+    "source_quote": "thoroughly acid-covered Gyrgum",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum scrapes the caustic residue off himself with visible disgust.",
+    "source_quote": "Gyrgum scraped the caustic residue off himself with visible disgust",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum complains about the 'icky stuff'.",
+    "source_quote": "Gyrgum scrapes the acid off himself: \"I can't abide that sort of icky stuff, you know?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard presses on into the dark after the fight.",
+    "source_quote": "and the Ember Vanguard pressed on into the dark.",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The DM promises the next session will not involve discussing Ubiquiti networking devices.",
+    "source_quote": "\"next week, we will not spend 40 minutes discussing Ubiquiti networking devices.\"",
+    "subject": "next session promise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Daz teases a show-and-tell for the next session.",
+    "source_quote": "Daz teased a show-and-tell for next time.",
+    "subject": "show-and-tell teaser",
+    "quote_verified": true
+  }
+]

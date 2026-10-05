@@ -1,0 +1,212 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gyrgum initially hoped to buy scrolls of Thunderwave and Heroism.",
+    "source_quote": "Gyrgum first hoped to buy scrolls of Thunderwave and Heroism",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum learns he is limited to casting spells from scrolls that are on his class spell list.",
+    "source_quote": "learned that he could only cast scrolls of spells on his own class list",
+    "subject": "Gyrgum learns class limitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum acquires a scroll containing a powerful divine bolt of radiant energy.",
+    "source_quote": "He instead acquired a scroll containing a powerful divine bolt of radiant energy",
+    "subject": "Gyrgum buys scroll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The shopkeeper is visibly disappointed that she gets customers who do not need magic or weapons.",
+    "source_quote": "The shopkeeper was visibly disappointed that \"of all the adventures in all the world, she gets the two who don't need any magic, who don't need any weapons.\"",
+    "subject": "Shopkeeper",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The shopkeeper sells only common potions and scrolls.",
+    "source_quote": "Only common potions and scrolls are for sale here, not magic weapons.",
+    "subject": "Shopkeeper",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM provides a price book titled 'Sane Magical Prices'.",
+    "source_quote": "priced from the GM's \"Sane Magical Prices\" price book",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM saved a 'Sane Magical Prices' document to a shared Google Drive folder.",
+    "source_quote": "The GM saved a \"Sane Magical Prices\" document to the shared Google Drive folder",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM referred to Gyrgum's choice of a Guiding Bolt scroll as 'a fantastic choice'.",
+    "source_quote": "Gyrgum buys a scroll of Guiding Bolt, which the GM called \"a fantastic choice\"",
+    "subject": "GM",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin adds rations to his gear at the GM's urging.",
+    "source_quote": "At the GM's urging, Thorin adds them to his gear.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin bought two potions.",
+    "source_quote": "Daz and Thorin bought two each",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz bought two potions.",
+    "source_quote": "Daz and Thorin bought two each",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz was left with 105 gold after purchases.",
+    "source_quote": "Daz was left with 105 gold.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchases a week's worth of rations.",
+    "source_quote": "They bought a week's worth of rations",
+    "subject": "Party purchases rations",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party purchases several potions of healing to hold jointly.",
+    "source_quote": "The party purchases several potions of healing, held jointly.",
+    "subject": "Party purchases healing potions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM adds three more potions to the party's supply.",
+    "source_quote": "the GM added three more, for a total of nine.",
+    "subject": "GM adds potions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reviews their current inventory, noting recovered basic survival gear.",
+    "source_quote": "The party reviews their current inventory, noting they have recovered basic survival gear like bedrolls, rope, tinderbox, torches, and a waterskin.",
+    "subject": "Party reviews inventory",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The shop is the location where the party uses their store credit.",
+    "source_quote": "good only at this particular store",
+    "subject": "Shop",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The store credit is 175 gold pieces, described as an advance.",
+    "source_quote": "The credit came to 175 gold pieces, given as an advance",
+    "subject": "Store Credit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A bedroll is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Bedroll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Rope is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A tinderbox is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Tinderbox",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Torches are among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Torches",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A waterskin is among the items recovered during the escape.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "Waterskin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum considered but did not acquire a scroll of Thunderwave due to class limitations.",
+    "source_quote": "Gyrgum first hoped to buy scrolls of Thunderwave and Heroism, but learned that he could only cast scrolls of spells on his own class list.",
+    "subject": "Scroll of Thunderwave",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum considered but did not acquire a scroll of Heroism due to class limitations.",
+    "source_quote": "Gyrgum first hoped to buy scrolls of Thunderwave and Heroism, but learned that he could only cast scrolls of spells on his own class list.",
+    "subject": "Scroll of Heroism",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum buys a scroll of Guiding Bolt.",
+    "source_quote": "Gyrgum buys a scroll of Guiding Bolt",
+    "subject": "Scroll of Guiding Bolt",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a total of nine healing potions.",
+    "source_quote": "for a total of nine.",
+    "subject": "Healing Potions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The 'Sane Magical Prices' document was shared in a Google Drive folder on February 28, 2021.",
+    "source_quote": "which the players discovered had been shared back on February 28, 2021.",
+    "subject": "'Sane Magical Prices' document",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The 'Sane Magical Prices' document was shared on February 28, 2021.",
+    "source_quote": "which the players discovered had been shared back on February 28, 2021.",
+    "subject": "February 28, 2021",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Other magic items are expected to come later when 'the magic guy shows up'.",
+    "source_quote": "Other magic items come later, when \"the magic guy shows up.\"",
+    "subject": "Magic Guy",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "type": "date",
+    "fact": "Droki is expected to complete his circuit and return within a day.",
+    "source_quote": "he will likely come round again within a day or so",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Prayer of Healing on five creatures: Thorin, Daz, Zalthir, himself, and the ghost.",
+    "source_quote": "Gyrgum casts Prayer of Healing on up to five creatures",
+    "subject": "Prayer of Healing casting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "This was the first of Gyrgum's three 2nd-level spell slots.",
+    "source_quote": "It is the first of Gyrgum's three 2nd-level spell slots",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two quaggoths accompanied the dancing myconids.",
+    "source_quote": "accompanied by two hulking quaggoths",
+    "subject": "quaggoths count",
+    "quote_verified": true
+  }
+]

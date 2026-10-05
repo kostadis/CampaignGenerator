@@ -1,0 +1,177 @@
+[
+  {
+    "type": "location",
+    "fact": "The southern passage opens into an immense cavern carpeted with oozes.",
+    "source_quote": "The southern passage opened into an immense cavern carpeted with more oozes than the party had ever seen",
+    "subject": "The Ooze Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Green slime coats the cavern walls.",
+    "source_quote": "Green slime coated the cavern walls",
+    "subject": "The Ooze Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A great spherical structure stands upon stone pillars at the center of the cavern.",
+    "source_quote": "a great spherical structure stood upon stone pillars at the center",
+    "subject": "The Ooze Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Dozens of oozes crawl around the pillars extending grasping pseudopods.",
+    "source_quote": "Dozens of oozes crawled around those pillars, extending grasping pseudopods",
+    "subject": "oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A disembodied voice addresses the visitors and proclaims the coming of the Faceless Lord.",
+    "source_quote": "A disembodied voice addressed the visitors and proclaimed the coming of the \u201cFaceless Lord,\u201d",
+    "subject": "proclamation of Faceless Lord",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The surrounding oozes urge Glabbagool to join them, but he refuses.",
+    "source_quote": "The surrounding oozes urged Glabbagool to join them, but he refused.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool senses something not nice about the assembled oozes.",
+    "source_quote": "He liked the party and sensed \u201csomething not nice\u201d about the assembled oozes.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool notes that oozes don't talk and finds this weird.",
+    "source_quote": "More importantly, \u201cOozes don\u2019t talk. Something\u2019s weird.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recalls that Juiblex was also known as the Faceless Lord.",
+    "source_quote": "Gyrgum recalled that Juiblex was also known as the Faceless Lord",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gyrgum connects the scene to an earlier ghost\u2019s warning that devils create contracts while demons infuse creatures with power.",
+    "source_quote": "connected the scene to an earlier ghost\u2019s warning: devils create contracts, while demons infuse creatures or objects with power to generate chaos and mayhem.",
+    "subject": "ghost's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party concludes that Juiblex is probably working through a local proxy rather than appearing personally.",
+    "source_quote": "The party concluded that Juiblex was probably working through a local proxy rather than appearing personally.",
+    "subject": "party conclusion on Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz summons a bat familiar and names him Batman.",
+    "source_quote": "Daz summoned a bat familiar and named him Batman.",
+    "subject": "Batman summoning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Batman conducts a breadth-first reconnaissance of the surrounding passages.",
+    "source_quote": "Batman conducted a breadth-first reconnaissance of the surrounding passages.",
+    "subject": "Batman",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds abandoned remnants of the old gnomish settlement.",
+    "source_quote": "He found abandoned remnants of the old gnomish settlement",
+    "subject": "abandoned remnants of the old gnomish settlement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds dripping caves occupied by scattered oozes.",
+    "source_quote": "dripping caves occupied by scattered oozes",
+    "subject": "caves occupied by scattered oozes",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Batman finds wreckage scoured clean and the ruins of a fungal partition.",
+    "source_quote": "wreckage scoured clean, and the ruins of a fungal partition.",
+    "subject": "ruins of a fungal partition",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "In another cave, phosphorescent lichen illuminates pools and hanging drapes of green slime.",
+    "source_quote": "In another cave, phosphorescent lichen illuminated pools and hanging drapes of green slime.",
+    "subject": "lichen-lit cave",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A slime-covered throne faces east at the center of the lichen-lit cave.",
+    "source_quote": "A slime-covered throne faced east at its center.",
+    "subject": "slime-covered throne",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A small gnome sits upon the throne holding court like an insane monarch.",
+    "source_quote": "A small gnome sat upon that throne, holding court like an insane monarch.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King speaks of cleansing Blingdenstone of everyone who had irritated him.",
+    "source_quote": "He spoke of cleansing Blingdenstone of everyone who had irritated him",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King declares that he would become king of Blingdenstone.",
+    "source_quote": "declared that the Pudding King would become king of Blingdenstone.",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool and the party recognize the Pudding King's voice as the one projected through the great ooze cavern.",
+    "source_quote": "Glabbagool and the party recognized his voice as the one projected through the great ooze cavern.",
+    "subject": "voice identification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Pudding King does not appear particularly formidable.",
+    "source_quote": "The Pudding King himself did not appear particularly formidable",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hundreds of oozes and slime cover the Pudding King's chamber, making a direct attack impractical.",
+    "source_quote": "but hundreds of oozes and the slime covering his chamber made a direct attack impractical.",
+    "subject": "Pudding King's chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz earns inspiration for using Batman to identify the enemy without exposing the party.",
+    "source_quote": "Daz\u2019s use of Batman had allowed the party to identify the enemy without exposing themselves, earning him inspiration.",
+    "subject": "Daz earns inspiration",
+    "quote_verified": true
+  }
+]

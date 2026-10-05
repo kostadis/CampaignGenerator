@@ -1,0 +1,30 @@
+[
+  {
+    "type": "event",
+    "fact": "Daz advances slowly within the 30-foot range of the Shape Water spell.",
+    "source_quote": "Advancing slowly within Shape Water's 30-foot range",
+    "subject": "Shape Water range",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Shambling Mound is a Large creature that occupies a 10-by-10-foot space.",
+    "source_quote": "The Shambling Mound is a Large creature occupying a 10-by-10-foot space",
+    "subject": "Shambling Mound size",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz freezes moss in a checkerboard pattern ensuring no 10-by-10 gap exists to hide the Large creature.",
+    "source_quote": "spacing his lines so that no 10-by-10 gap could hide the Large creature",
+    "subject": "Grid detection spacing",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Grick Alpha is located in the southern part of the cavern near a pool of water.",
+    "source_quote": "Grick Alpha and a hidden Shambling Mound near a pool of water in the southern part of the cavern",
+    "subject": "Grick Alpha location",
+    "quote_verified": true
+  }
+]

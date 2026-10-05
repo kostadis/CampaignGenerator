@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "Basidia guides the party to the Circle of Hunters within the grove.",
+    "source_quote": "Basidia guides the party to the Circle of Hunters within the grove",
+    "subject": "Circle of Hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub is the leader of the myconid hunters and a staunch ally of Basidia.",
+    "source_quote": "Loobamub, the circle leader and staunch ally of Basidia",
+    "subject": "Loobamub",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub shares unease about Phylo's new ways.",
+    "source_quote": "He explained that myconid hunters did not kill prey. They tracked creatures that had already died near the grove and brought the remains back for reanimation... He asked the party to kill a grick alpha lurking in the nearby fungal wilds and bring back its carcass intact. Zalthir asked why this errand mattered, and then answered his own question: a reanimated grick could fight alongside them against whatever demonic force was in the Garden of Welcome. Basidia called it \"an excellent idea.\" Through it all, Dawnbringer blazed at Thorin's side and refused to be dimmed, a constant, chattering reminder that she had spent far too long in the dark and had absolutely no intention of ever going back.",
+    "subject": "Loobamub",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub affirms that Phylo's new ways are not good.",
+    "source_quote": "Loobamub affirms, \"yes, yes, Phylo's new ways are not good.\"",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub explains that myconid hunters do not hunt live prey.",
+    "source_quote": "Loobamub explains that myconid hunters do not hunt live prey but rather track deceased creatures to bring their carcasses back for reanimation.",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Loobamub requests the party's help in slaying a grick alpha.",
+    "source_quote": "Loobamub requests the party's help in slaying a grick alpha, a dangerous worm-like monstrosity lurking in the nearby fungal wilds.",
+    "subject": "Loobamub",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is nearby with his friends but ignores the party.",
+    "source_quote": "Phylo is nearby with his friends but ignores the party, and the acoustics are poor.",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia guides the party to the Circle of Hunters.",
+    "source_quote": "Basidia guides the party to the Circle of Hunters within the grove and introduces them to Loobamub, the circle leader.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia instructs the party to help Loobamub if he needs assistance.",
+    "source_quote": "If Loobamub needs your help, then you should help Loobamub. All things can be done in their time and place.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia calls Zalthir's suggestion of reanimating the grick an excellent idea.",
+    "source_quote": "Zalthir voices the idea, and Basidia replies, \"What an excellent idea.\"",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks why the errand matters.",
+    "source_quote": "Zalthir asked why this errand mattered",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests that a reanimated grick could fight alongside them against the demonic force in the Garden of Welcome.",
+    "source_quote": "a reanimated grick could fight alongside them against whatever demonic force was in the Garden of Welcome.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum likens the grick to a carnivorous plant.",
+    "source_quote": "Gyrgum likens it to a carnivorous plant.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin carries Dawnbringer at his side.",
+    "source_quote": "Dawnbringer blazed at Thorin's side",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A grick alpha is a dangerous worm-like monstrosity lurking in the nearby fungal wilds.",
+    "source_quote": "a grick alpha, a dangerous worm-like monstrosity lurking in the nearby fungal wilds.",
+    "subject": "grick alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Gricks are passive predators that blend with rock and lurk where creatures pass.",
+    "source_quote": "The grick is a passive predator that blends with rock and lurks where creatures pass.",
+    "subject": "grick",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a demonic force present in the Garden of Welcome.",
+    "source_quote": "against whatever demonic force was in the Garden of Welcome",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a sentient sword that talks to Thorin.",
+    "source_quote": "Thorin's sentient sword Dawnbringer is revealed to have been talking to Thorin throughout the visit",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer insists on remaining illuminated at all times.",
+    "source_quote": "insists on remaining illuminated at all times due to her profound fear of the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer causes stress to the party when they try to sleep.",
+    "source_quote": "causing stress when the party tries to sleep.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer states she does not trust the dark because she has been in it for a very long time.",
+    "source_quote": "I don't trust the dark. I've been in the dark for a very long time.",
+    "subject": "Dawnbringer quote",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fire damage does not prevent reanimation, but slashing or acid disintegration does.",
+    "source_quote": "The GM rules that fire damage does not prevent reanimation, but slashing a creature to pieces or disintegrating it with acid does.",
+    "subject": "reanimation rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to hunt the grick alpha.",
+    "source_quote": "The party agrees to hunt the creature, realizing that Basidia could reanimate the carcass to serve as an ally against the demonic corruption in the grove.",
+    "subject": "party agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ends before the hunt begins.",
+    "source_quote": "The session ends before the hunt begins.",
+    "subject": "session end",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconid hunters track deceased creatures to bring their carcasses back for reanimation.",
+    "source_quote": "myconid hunters do not hunt live prey but rather track deceased creatures to bring their carcasses back for reanimation.",
+    "subject": "myconid hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "There is demonic corruption in the grove.",
+    "source_quote": "ally against the demonic corruption in the grove",
+    "subject": "demonic corruption",
+    "quote_verified": true
+  }
+]

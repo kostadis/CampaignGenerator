@@ -1,0 +1,142 @@
+[
+  {
+    "type": "event",
+    "fact": "The party leaves the catacombs declaring that the ooze crew is on the march.",
+    "source_quote": "the self-appointed \u201cooze crew\u201d made their way to the Traders' Grotto",
+    "subject": "party departure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party riffs on the slogan: \u201cWhen something's oozing in the neighborhood, who are you going to call? The ooze crew.\u201d",
+    "source_quote": "When something's oozing in the neighborhood, who are you going to call? ... The ooze crew",
+    "subject": "ooze crew motto",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A sergeant guides the party through the cavern to the Traders' Grotto.",
+    "source_quote": "A sergeant guided them through the cavern",
+    "subject": "sergeant guidance",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant proudly provides historical and cultural commentary throughout the tour.",
+    "source_quote": "proudly explaining that fungi had once grown in its moist environment",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Traders' Grotto is Blingdenstone's bustling central market.",
+    "source_quote": "the Traders' Grotto, Blingdenstone's bustling central market",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Fungi once grew in the Traders' Grotto's moist environment until a medusa's spell petrified them centuries ago.",
+    "source_quote": "fungi had once grown in its moist environment until a medusa's spell petrified them centuries ago",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A medusa's spell petrified the fungi in the Traders' Grotto centuries ago.",
+    "source_quote": "until a medusa's spell petrified them centuries ago",
+    "subject": "medusa petrification",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A medusa was responsible for petrifying the fungi in the Traders' Grotto centuries ago.",
+    "source_quote": "until a medusa's spell petrified them centuries ago",
+    "subject": "medusa",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Merchants operate makeshift stalls among the stone growths in the grotto.",
+    "source_quote": "Merchants now operated makeshift stalls among the stone growths",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Arriving caravans lower cargo into warehouses carved beneath the grotto.",
+    "source_quote": "arriving caravans lowered cargo into warehouses carved beneath the grotto",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Merchants hawk and barter their wares among the stone growths.",
+    "source_quote": "hawking and bartering their wares",
+    "subject": "market commerce",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Ordinary goods are available for purchase in the market.",
+    "source_quote": "Ordinary goods ... were available",
+    "subject": "Traders' Grotto",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "Common and perhaps some uncommon potions are available in the market.",
+    "source_quote": "some common\u2014and perhaps a few uncommon\u2014potions were available",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The market is not a magical-item shop and has no extraordinary items openly for sale.",
+    "source_quote": "it was not a magical-item shop ... nothing particularly extraordinary is openly for sale",
+    "subject": "Traders' Grotto",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gnome merchants regard Glabbagool with considerable suspicion.",
+    "source_quote": "The merchants eyed Glabbagool suspiciously",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party revisits its new name, shifting from the Ash Enclave to alternatives.",
+    "source_quote": "The party revisits its new name, shifting from the Ash Enclave toward \u201cAsh Vanguard\u201d",
+    "subject": "name deliberation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests the name Ash Vanguard.",
+    "source_quote": "shifting from the Ash Enclave toward \u201cAsh Vanguard\u201d",
+    "subject": "name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests the name Ash Peloton.",
+    "source_quote": "alternatives such as the Ash Vanguard, Ash Peloton",
+    "subject": "name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests the name Ash Rearguard.",
+    "source_quote": "and the unfortunately phrased Ash Rearguard",
+    "subject": "name suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The name Ash Rearguard is rejected because it is unlikely to age well.",
+    "source_quote": "\u201cAsh Rearguard\u201d is rejected as particularly unlikely to age well",
+    "subject": "name rejection",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,359 @@
+[
+  {
+    "type": "npc",
+    "fact": "Hgraam is a Stone Giant who speaks gravely about his apprentice.",
+    "source_quote": "Hgraam spoke gravely of his apprentice, the Stone Giant the party had earlier tried to stop without killing.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam expresses grief over his apprentice's madness.",
+    "source_quote": "Hgraam expresses grief over his apprentice, who was driven mad by the stones: \"Yes, it was a tragedy.\"",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam acknowledges that the party tried to stop his apprentice rather than kill him.",
+    "source_quote": "He acknowledges the party tried to stop the apprentice rather than kill him.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam has never been to the surface world and considers it myth.",
+    "source_quote": "He called the surface the Dreamlands, a place so foreign to him it might as well be myth.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam does not know the path to the surface himself.",
+    "source_quote": "He does not know the path himself.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam has advised the Deepking to be patient and \"watch the stones.\"",
+    "source_quote": "He has advised the Deepking to be patient and \"watch the stones.\"",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam gave the party a polished crystal as a token of gratitude.",
+    "source_quote": "The Stone Giant leader presents the party with a polished crystal as a token of gratitude before returning to his duties.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam ended the audience by telling the party it is time to leave because rocks need to be tended.",
+    "source_quote": "it is time for you to leave there are rocks that need to be tended.",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz offers condolences to Hgraam regarding his training master.",
+    "source_quote": "Daz learns that the mad Stone Giant was Hgraam's apprentice and offers condolences: \"Sorry for what happened to your training master. Hope you're doing okay.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz finds the giant's speech regarding the Whorlstone Tunnels comical and senseless.",
+    "source_quote": "Daz finds the giant's speech comical and senseless (\"This makes absolutely no sense\").",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is struck by how different Hgraam is from other giants he knew.",
+    "source_quote": "Gyrgum is struck by how different this giant is from the ones he knew, who mostly bellowed and hit things (paraphrase).",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum deduces that factions are hiding underground to escape the Deepking's rigid control.",
+    "source_quote": "Zalthir and Gyrgum deduce that various factions are hiding underground to escape the Deepking's rigid control",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir makes an Arcana check regarding the source of the apprentice's madness.",
+    "source_quote": "Zalthir's Arcana check led him to suspect that the apprentice's madness was tied to the growing presence of demons.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks Hgraam why the apprentice in particular went mad.",
+    "source_quote": "Zalthir asks why the apprentice in particular went mad.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir deduces that various factions are hiding underground to escape the Deepking's rigid control.",
+    "source_quote": "Zalthir and Gyrgum deduce that various factions are hiding underground to escape the Deepking's rigid control",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shal is a new favored advisor to the Deepking who has wormed his way into the king's confidence.",
+    "source_quote": "The change, Hgraam believed, had begun when a new favored advisor named Shal had wormed his way into the king's confidence.",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Shal has never come to visit Hgraam.",
+    "source_quote": "Shal has never come to visit",
+    "subject": "Shal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar previously told the party that the best path back to the surface runs through the town of the deep gnomes.",
+    "source_quote": "Jimjar had told them the same",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam notes that Jimjar may have had other agendas.",
+    "source_quote": "though Jimjar may have had other agendas",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is the ruler of Gracklstugh.",
+    "source_quote": "The ruler of Gracklstugh had once been a measured and reasonable leader",
+    "subject": "The Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking has grown paranoid, erratic, and isolated in recent times.",
+    "source_quote": "but in recent times had grown paranoid, erratic, and increasingly isolated from his oldest allies.",
+    "subject": "The Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking asked Hgraam about the Gray Ghosts.",
+    "source_quote": "The Deepking had asked Hgraam about the Gray Ghosts",
+    "subject": "The Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking no longer discusses Gracklstugh's problems with Hgraam.",
+    "source_quote": "and the Deepking no longer discusses Gracklstugh's problems with Hgraam.",
+    "subject": "The Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Apprentice is a Stone Giant and Hgraam's student.",
+    "source_quote": "Hgraam spoke gravely of his apprentice, the Stone Giant",
+    "subject": "The Apprentice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Apprentice is driven to madness by the stones themselves.",
+    "source_quote": "The apprentice had been driven to madness not by any enemy blade, but by the very stones themselves.",
+    "subject": "The Apprentice",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Apprentice brings out the polished crystal for Hgraam.",
+    "source_quote": "His apprentice brings it out.",
+    "subject": "The Apprentice",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Demonic manta rays were encountered in the water.",
+    "source_quote": "demonic manta rays in the water",
+    "subject": "Demonic manta rays",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Demogorgon is a demon lord whose presence implies an extraordinarily powerful magical force.",
+    "source_quote": "The fact that a demon lord of Demogorgon's power is walking the earth implies an extraordinarily powerful magical force behind it.",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Dreamlands is what Hgraam calls the surface world.",
+    "source_quote": "He called the surface the Dreamlands",
+    "subject": "The Dreamlands",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The town of the deep gnomes is the best path back to the surface world.",
+    "source_quote": "the best path back to the surface world ran through the town of the deep gnomes.",
+    "subject": "Town of the deep gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels are located beneath the city.",
+    "source_quote": "When pressed about the Whorlstone Tunnels beneath the city, Hgraam grew somber.",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Hgraam warns that the Whorlstone Tunnels are filled with evil.",
+    "source_quote": "Hgraam warns that the Whorlstone Tunnels beneath the city are filled with evil",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Something ancient and terrible is stirring in the blackest depths of the Underdark.",
+    "source_quote": "something ancient and terrible was stirring in the blackest depths of the Underdark",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is the city ruled by the Deepking.",
+    "source_quote": "The ruler of Gracklstugh had once been a measured and reasonable leader",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The deep gnomes know a way out of the Underdark.",
+    "source_quote": "He has only heard through trade that the deep gnomes know a way out.",
+    "subject": "Deep gnomes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Gray Ghosts are a group the Deepking is concerned about.",
+    "source_quote": "The Deepking had asked Hgraam about the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The kuo-toa worship a creation associated with Demogorgon.",
+    "source_quote": "the kuo-toa worshipped creation",
+    "subject": "kuo-toa",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Duergar patrol the city above the underground hiding spots.",
+    "source_quote": "away from the invisible duergar patrolling the city above.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The polished crystal is a token of gratitude from Hgraam to the party.",
+    "source_quote": "The Stone Giant leader presents the party with a polished crystal as a token of gratitude",
+    "subject": "polished crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam recites a list of omens including a cave with two faces and rock devoured.",
+    "source_quote": "He recited a list of omens: a cave with two faces, rock devoured, land overgrown, a pebble that believes itself flesh.",
+    "subject": "Hgraam recites omens",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz offers condolences to Hgraam for his apprentice's state.",
+    "source_quote": "Daz learns that the mad Stone Giant was Hgraam's apprentice and offers condolences: \"Sorry for what happened to your training master. Hope you're doing okay.\"",
+    "subject": "Daz makes condolence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir performs an Arcana check regarding the demon presence.",
+    "source_quote": "Zalthir's Arcana check led him to suspect that the apprentice's madness was tied to the growing presence of demons.",
+    "subject": "Zalthir's Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reviews the demons they have already encountered.",
+    "source_quote": "The party reviews the demons they have already encountered:",
+    "subject": "Demons encountered",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam gives a long rant about everyone being in a rush.",
+    "source_quote": "Hgraam gives a long rant about everyone being in a rush",
+    "subject": "Hgraam gives rant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hgraam ends the audience and the party prepares to leave.",
+    "source_quote": "The Stone Giant leader presents the party with a polished crystal as a token of gratitude before returning to his duties.",
+    "subject": "Audience ends",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Shal has wormed his way into the Deepking's confidence.",
+    "source_quote": "The change, Hgraam believed, had begun when a new favored advisor named Shal had wormed his way into the king's confidence.",
+    "subject": "Shal's rise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "An ancient and terrible evil is stirring in the blackest depths of the Underdark.",
+    "source_quote": "something ancient and terrible was stirring in the blackest depths of the Underdark, a creeping evil that caused the rock to cry out in pain and the tunnels to shake in fury.",
+    "subject": "Stirring evil in Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The presence of demons in the Underdark is far more widespread than previously thought.",
+    "source_quote": "That presence was far more widespread than the party's scattered sightings of Demogorgon, the creation the kuo-toa worshipped, the demonic manta rays and the brawling demons at Velkynvelve had suggested.",
+    "subject": "Demons in Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Deepking's change in behavior is linked to the advisor Shal.",
+    "source_quote": "The change, Hgraam believed, had begun when a new favored advisor named Shal had wormed his way into the king's confidence.",
+    "subject": "Deepking's paranoia",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The Deepking's attempts to crush resistance have driven enemies underground where they fester.",
+    "source_quote": "He explained that the Deepking's iron-fisted attempts to crush resistance had only driven his enemies underground, where they festered and grew beyond his reach.",
+    "subject": "Whorlstone Tunnels instability",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The more the Deepking enforces control, the more evil escapes the tunnels to seize control of the city.",
+    "source_quote": "The more he enforces control, the more it escapes outside the city to seize control of the city.",
+    "subject": "Whorlstone Tunnels instability",
+    "quote_verified": true
+  }
+]

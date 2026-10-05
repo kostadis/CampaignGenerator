@@ -1,0 +1,1094 @@
+[
+  {
+    "type": "location",
+    "fact": "The battle takes place in a dark cavern deep within the Underdark containing a mysterious egg.",
+    "source_quote": "Deep within the Underdark, the party found themselves locked in a desperate struggle to protect a mysterious and coveted egg hidden within a dark cavern.",
+    "subject": "Egg Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro minds are twisted beyond reason by sinister forces.",
+    "source_quote": "their minds twisted beyond reason by the manipulations of sinister forces",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cooperate out of necessity and when riled up by a charismatic leader.",
+    "source_quote": "out of necessity and when riled up by a charismatic leader",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro have a history as slaves to Mind Flayers.",
+    "source_quote": "The party discusses the madness of the Derro and their history as slaves to Mind Flayers.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crazed Derro conclude that Gyrgum must be killed and his heart dropped over the egg.",
+    "source_quote": "Gyrgum \"has to be killed. And his heart dropped over the egg.\"",
+    "subject": "Derro intent",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki was grappled by Zalthir at the end of the previous chapter.",
+    "source_quote": "Plinki has been grappled (by Zalthir, at the end of chapter 19)",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is sitting over the eggs.",
+    "source_quote": "Gyrgum was sitting over the eggs",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a plan to steal the egg.",
+    "source_quote": "GM: Daz already has a plan to steal the egg.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro spy emerges from the shadows and looses a crossbow bolt.",
+    "source_quote": "A Derro spy emerges from the shadows and severely wounds Eldeth with a crossbow bolt.",
+    "subject": "Derro spy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth is struck by a crossbow bolt from the Derro spy.",
+    "source_quote": "one bolt striking Eldeth with brutal force and dropping her to the edge of death",
+    "subject": "Eldeth wounded",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth takes 12 points of damage and is down to four hit points.",
+    "source_quote": "Eldeth takes 12 points of damage and is down to four hit points",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A second Derro spy attempts to shoot Daz.",
+    "source_quote": "A second spy attempts to shoot Daz but misses.",
+    "subject": "Derro spy 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second Derro spy misses Daz with his crossbow bolt.",
+    "source_quote": "A second spy attempts to shoot Daz but misses.",
+    "subject": "Daz evasion",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro marches up and swings at Zalthir.",
+    "source_quote": "A Derro marches up and swings at Zalthir",
+    "subject": "Derro warrior",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro warrior misses Zalthir with his swing due to disadvantage.",
+    "source_quote": "with disadvantage, rolling a 15 against AC 16 \u2014 a miss.",
+    "subject": "Zalthir evasion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin engages a Derro warrior with his longsword.",
+    "source_quote": "Thorin engages a Derro warrior, utilizing his longsword",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits Derro #6 for 9 damage using Blindsight advantage.",
+    "source_quote": "Blindsight in the darkness gives him advantage; he hits derro #6 for 9",
+    "subject": "Thorin's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's longsword has Sap mastery which imposes disadvantage on the target's next attack.",
+    "source_quote": "his longsword's Sap mastery gives the target disadvantage on its next attack.",
+    "subject": "Thorin's longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin utilizes his Sentinel feat to prevent enemies from disengaging.",
+    "source_quote": "Thorin's player is learning his new Sentinel feat (\"defend other people. People can't disengage\").",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A spectator appears and joins the battle.",
+    "source_quote": "A spectator, a multi-eyed beholder-like creature, suddenly appears and joins the fray.",
+    "subject": "spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has previously encountered the spectator.",
+    "source_quote": "GM notes \"You've met it before.\"",
+    "subject": "spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the party's helpers hits the spectator for 10 damage.",
+    "source_quote": "One of the helpers hits the spectator for 10.",
+    "subject": "spectator attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum decides to protect the egg rather than flee.",
+    "source_quote": "Gyrgum's player: \"I think they're pretty brave. Besides, I need to protect the egg. Gyrgum has spoken.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki attempts to attack Gyrgum but fails due to darkness.",
+    "source_quote": "Plinki attempts to attack Gyrgum but fails to land a blow due to the surrounding darkness.",
+    "subject": "Plinki's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki wants to attack Gyrgum.",
+    "source_quote": "GM: \"he's got only one thing on his mind. He wants to attack Gyrgum.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a massive hand of compacted earth that seizes the spectator.",
+    "source_quote": "Daz conjured a massive hand of compacted earth that surged up from the ground and seized the spectator",
+    "subject": "Earthen hand conjuration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spectator is restrained by Daz's earthen hand.",
+    "source_quote": "the spectator is restrained (\"There's a big hand on top of it\")",
+    "subject": "spectator restrained",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's earthen hand deals 16 damage to the spectator.",
+    "source_quote": "16 damage; the spectator is restrained",
+    "subject": "spectator damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz retreats into the darkness to avoid being targeted.",
+    "source_quote": "Daz then retreats into the darkness so he can't be targeted.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An enemy crossbowman hits Gyrgum for six damage.",
+    "source_quote": "one hits Gyrgum for six",
+    "subject": "blind fire 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro with a hooked spear misses his attack.",
+    "source_quote": "a derro with a hooked spear misses",
+    "subject": "Derro spearman",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Enemy crossbowmen shoot at where they think Daz is and miss.",
+    "source_quote": "others shoot at where they think Daz is and miss.",
+    "subject": "blind fire 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir moves with deadly precision through the supernatural darkness.",
+    "source_quote": "Zalthir, gifted with the ability to perceive through the supernatural darkness, moved with deadly precision",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir maneuvers through his own magical darkness to strike at the Derro.",
+    "source_quote": "Zalthir maneuvers through his own magical darkness to strike at the Derro.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum calls upon a ghostly ally to protect the egg.",
+    "source_quote": "Gyrgum called upon his ghostly ally to defend the egg",
+    "subject": "Ghost summons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly ally acts on Gyrgum's turn.",
+    "source_quote": "it acts on Gyrgum's turn \"because you have the bones.\"",
+    "subject": "Ghost ally",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir unleashes a terrifying breath attack in a wide cone.",
+    "source_quote": "Zalthir unleashed a terrifying breath that swept across the chamber in a wide cone",
+    "subject": "Zalthir breath attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's breath attack kills Plinki.",
+    "source_quote": "killing the fanatical Derro leader Plinki outright",
+    "subject": "Plinki death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is dead, killed by Zalthir's breath attack.",
+    "source_quote": "killing the fanatical Derro leader Plinki outright",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's breath attack inflicts the blinded condition on other survivors.",
+    "source_quote": "leaving the survivors blinded and reeling",
+    "subject": "Blindness effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Other survivors take one or two points of damage from Zalthir's breath attack.",
+    "source_quote": "others take one or two points.",
+    "subject": "Survivor damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki is dead, shifting the battle dynamics.",
+    "source_quote": "With Plinki dead, the battle shifted, but the danger was far from over.",
+    "subject": "Plinki's death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro Master Thief is a fifth-level rogue equivalent.",
+    "source_quote": "think of a fifth-level rogue",
+    "subject": "Derro Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro Master Thief is a tenacious foe who shrugs off multiple blows.",
+    "source_quote": "a skilled derro Master Thief proved to be a tenacious foe, shrugging off blow after blow",
+    "subject": "Derro Master Thief",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grapples the Master Thief.",
+    "source_quote": "Zalthir grapples the Master Thief",
+    "subject": "Zalthir grappling Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir maneuvers the Master Thief toward Thorin.",
+    "source_quote": "Zalthir grapples the Master Thief and maneuvers him toward Thorin",
+    "subject": "Master Thief movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attempts to drop the Master Thief off a ledge.",
+    "source_quote": "attempting to drop him off a ledge",
+    "subject": "Master Thief ledge threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands an unarmed strike with advantage on the Master Thief.",
+    "source_quote": "Unarmed strike with advantage hits",
+    "subject": "Zalthir unarmed strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dropping the Master Thief off the ledge would deal an additional 16 damage and knock him prone.",
+    "source_quote": "dropping him off the ledge deals an additional 16 damage and knocks him prone",
+    "subject": "Ledge drop damage rule",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost's first possession attempt on the Master Thief fails.",
+    "source_quote": "The ghost's first possession attempt on the Master Thief fails",
+    "subject": "Ghost possession attempt 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief makes his saving throw against possession.",
+    "source_quote": "he makes his saving throw",
+    "subject": "Master Thief save throw",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lands a punishing strike on the Master Thief.",
+    "source_quote": "Thorin's sentinel instincts snapped into action, landing a punishing strike",
+    "subject": "Thorin strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's strike roots the Master Thief in place.",
+    "source_quote": "landing a punishing strike that rooted the thief in place",
+    "subject": "Master Thief rooted",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses teleportation magic to vanish from the fray.",
+    "source_quote": "Daz, ever calculating, had already used a burst of teleportation magic to vanish from the fray",
+    "subject": "Daz teleport",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz conceals the egg beneath his robes.",
+    "source_quote": "secretly concealing the egg beneath his robes",
+    "subject": "Mysterious Egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cultists scramble blindly in the darkness.",
+    "source_quote": "the Derro cultists scrambled blindly in the darkness",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cultists scream about their missing prize.",
+    "source_quote": "screaming about their missing prize",
+    "subject": "Derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashes a caustic spray that coats several enemies in corrosive fluid.",
+    "source_quote": "Gyrgum unleashes a caustic spray that coats several enemies in corrosive fluid",
+    "subject": "Gyrgum caustic spray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Tasha's Caustic Brew instead of Guiding Bolt because the thief is 10 feet below in darkness.",
+    "source_quote": "steers him from Guiding Bolt (the thief is 10 feet below in darkness) to Tasha's Caustic Brew",
+    "subject": "Gyrgum spell choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro (#4) fails the DC 14 Dex save against the acid spray and takes 7 damage.",
+    "source_quote": "one (#4) fails and takes 2d4 (7)",
+    "subject": "Gyrgum acid save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminds the party they are beneficiaries of a Bless spell.",
+    "source_quote": "The GM reminds everyone they are beneficiaries of a Bless spell.",
+    "subject": "Bless reminder",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A spy climbs up and senses the ghost.",
+    "source_quote": "A spy climbs up, senses the ghost",
+    "subject": "Spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The spy freaks out upon sensing the ghost.",
+    "source_quote": "\"freaks out\"",
+    "subject": "Spy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The spy attacks the ghost and misses.",
+    "source_quote": "attacks it, and misses",
+    "subject": "Spy attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A derro attacks Thorin and misses.",
+    "source_quote": "a derro \"too stupid to do anything otherwise\" attacks Thorin and misses",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills derro #6 for 7 damage.",
+    "source_quote": "Thorin kills derro #6 (the one with fewer hit points) for 7",
+    "subject": "Thorin kill derro #6",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro #6 is dead.",
+    "source_quote": "Thorin kills derro #6",
+    "subject": "Derro #6",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spectator breaks free from the magical earthen grasp.",
+    "source_quote": "The spectator manages to break free from the magical earthen grasp.",
+    "subject": "Spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spectator has Strength 8.",
+    "source_quote": "Strength 8, but it rolls a 17",
+    "subject": "Spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party hits the spectator twice, leaving it at one hit point.",
+    "source_quote": "The party helpers then hit it twice, leaving it at one hit point.",
+    "subject": "Spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires four Magic Missile darts.",
+    "source_quote": "Second-level Magic Missile, four darts",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz kills one Derro with Magic Missile.",
+    "source_quote": "killing one Derro",
+    "subject": "Daz kill derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz wounds another nearby enemy with Magic Missile, dealing 9 damage.",
+    "source_quote": "wounding another nearby enemy... The second target takes 9.",
+    "subject": "Daz wound enemy",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz climbs the stairs and picks up the mysterious egg.",
+    "source_quote": "Daz climbs the stairs and picks up the mysterious egg.",
+    "subject": "Daz retrieve egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro screams \"where is the egg?\".",
+    "source_quote": "One screams \"where is the egg?\"",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro spends his action searching for the egg.",
+    "source_quote": "spends his action searching",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro's plan was to grab the egg and run.",
+    "source_quote": "his plan had been to grab the egg and run",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost summoned by the party attempts to intimidate the attackers.",
+    "source_quote": "The ghost summoned by the party attempts to intimidate the attackers",
+    "subject": "Ghost intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro scream for the sacrifice of the cleric of Bahamut.",
+    "source_quote": "the Derro scream for the sacrifice of the cleric of Bahamut",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An acid-coated derro spends his action scraping off the acid.",
+    "source_quote": "The acid-coated derro spends his action scraping off the acid",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro attacks the cleric of Bahamut and misses.",
+    "source_quote": "\"die, cleric of Bahamut\" \u2014 the swing misses.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The crazed Derro grew more frantic with every passing moment.",
+    "source_quote": "The crazed Derro grew more frantic with every passing moment",
+    "subject": "crazed Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crazed Derro shrieked that whoever held the egg held absolute power over them all.",
+    "source_quote": "shrieking that whoever held the egg held absolute power over them all",
+    "subject": "Derro proclamation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One cultist howled for the sacrifice of Gyrgum, demanding his heart be cut out and fed to a dark entity.",
+    "source_quote": "One cultist howled for the sacrifice of Gyrgum, the cleric of Bahamut, demanding his heart be cut out and fed to some dark entity",
+    "subject": "Derro demand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost responded to the cultist's outburst with a chilling voice, causing the cultists to falter.",
+    "source_quote": "The ghost responded to this outburst with a voice that chilled the air, and the cultists faltered",
+    "subject": "ghost intervention",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashed streams of corrosive acid that coated the fumbling Derro and ate away at them.",
+    "source_quote": "Gyrgum unleashed streams of corrosive acid that coated the fumbling Derro and ate away at them with each passing moment",
+    "subject": "acid attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was knocked to the ground more than once by the swarming attackers.",
+    "source_quote": "knocked to the ground more than once by the swarming attackers",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum pulled back from the press and used restorative magic to mend his wounds.",
+    "source_quote": "he finally pulled back from the press and used restorative magic to mend his wounds",
+    "subject": "Gyrgum's healing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro Master Thief stood up and struck at the ghost.",
+    "source_quote": "He stands up and strikes at the ghost",
+    "subject": "thief vs ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin took a Sentinel opportunity attack against the Master Thief for 7 damage.",
+    "source_quote": "Thorin takes a Sentinel opportunity attack for 7",
+    "subject": "Thorin's opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief hit the ghost twice, but the ghost's resistance to non-magical attacks halved the damage to 13.",
+    "source_quote": "The thief hits twice, but the ghost's resistance to non-magical attacks halves it to 13",
+    "subject": "thief's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Crazed Derro reinforcements arrived, frantically searching for the missing egg and shouting about its power.",
+    "source_quote": "Crazed Derro reinforcements arrive, frantically searching for the missing egg and shouting about its power",
+    "subject": "Derro reinforcements",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A crazed Derro shouted, \"Whoever has the eggs is in charge.\"",
+    "source_quote": "Whoever has the eggs is in charge.",
+    "subject": "Derro shout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An enemy assailed Gyrgum, knocking the cleric to the ground for six damage.",
+    "source_quote": "An enemy assails Gyrgum, knocking the cleric to the ground. ... Six damage",
+    "subject": "attack on Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum failed a DC 9 Strength save and was knocked prone by the attack.",
+    "source_quote": "Gyrgum fails a DC 9 Strength save and is knocked prone",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirmed the attacker rolled with disadvantage (14 and 16, +2) when attacking Gyrgum.",
+    "source_quote": "the GM confirms the attacker rolled with disadvantage (14 and 16, +2)",
+    "subject": "Gyrgum's save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir relentlessly attacked and grappled the Master Thief to halt his movement.",
+    "source_quote": "Zalthir relentlessly attacks and grapples the Master Thief to halt his movement",
+    "subject": "Zalthir's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rerolled a 1 on a d6 damage die, resulting in 5 more damage.",
+    "source_quote": "Rerolls a 1 on a d6 damage die for 5 more",
+    "subject": "Zalthir's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grappled the Master Thief again.",
+    "source_quote": "grapples again",
+    "subject": "Zalthir's grapple",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's two follow-up attacks missed the Master Thief's AC 16, even with Bless.",
+    "source_quote": "two follow-up attacks miss against AC 16 even with Bless",
+    "subject": "Zalthir's misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dropped the Master Thief off the ledge again for 6 damage.",
+    "source_quote": "drops him off the ledge again for 6",
+    "subject": "Zalthir's ledge drop",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Master Thief reacted to being dropped with \"what the?\"",
+    "source_quote": "GM (as the thief): \"what the?\"",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost failed to recharge its possession.",
+    "source_quote": "The ghost fails to recharge possession",
+    "subject": "ghost's possession",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The ghost's withering touch attacks missed because it is blinded.",
+    "source_quote": "its withering touch attacks miss because it is also blinded",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum recovered his footing and held his ground.",
+    "source_quote": "Gyrgum recovers his footing and holds his ground",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM and Zalthir's player offered to move the darkness, but Gyrgum declined.",
+    "source_quote": "the GM and Zalthir's player offer to move the darkness, but Gyrgum declines",
+    "subject": "darkness offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum chose to cast Corrosive Acid on two specific Derro (#2 and #4) rather than an area spell.",
+    "source_quote": "Gyrgum unleashes a stream of corrosive acid upon the searching Derro. ... Caustic Brew on #2 and #4; both fail",
+    "subject": "Gyrgum's spell choice",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The Derro failed their saves against the acid, and the damage was calculated as the mean of 4 and 6, resulting in five damage each.",
+    "source_quote": "he rolls 4 and 6 and takes \"the mean\" \u2014 five each",
+    "subject": "acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A hidden spy became terrified by the spectral presence and attempted to flee the cavern.",
+    "source_quote": "A hidden spy becomes terrified by the spectral presence and attempts to flee the cavern",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The spy stated, \"There's a ghost \u2026 I've got better things to do.\"",
+    "source_quote": "There's a ghost \u2026 I've got better things to do.",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The spy had been revealed as a spy, which ruined his business.",
+    "source_quote": "he's been revealed as a spy, and that ruins his whole business",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Master Thief still has 30 hit points.",
+    "source_quote": "Told the thief still has 30 hit points",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin delivered a heavy blow to the Master Thief for 13 damage.",
+    "source_quote": "Thorin hits him for 13",
+    "subject": "Thorin's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin stepped forward to shield his companions.",
+    "source_quote": "Thorin delivers a heavy blow to the Master Thief before stepping forward to shield his companions",
+    "subject": "Thorin's action",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party helpers fired short crossbows and all spectacularly missed.",
+    "source_quote": "The party helpers all fire short crossbows \"and they all spectacularly\" miss",
+    "subject": "helpers' attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth hung back from the fight, stating, \"I don't want to get killed.\"",
+    "source_quote": "Eldeth hangs back: \"I don't want to get killed.\"",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz utilized teleportation magic to escape danger.",
+    "source_quote": "Daz utilizes teleportation magic to escape danger",
+    "subject": "Daz's escape",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Daz safely hid the mysterious egg beneath his robes.",
+    "source_quote": "safely hiding the mysterious egg beneath his robes",
+    "subject": "mysterious egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz attempted to restrain an enemy with a conjured hand of earth.",
+    "source_quote": "Daz attempts to restrain an enemy with a conjured hand of earth",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The enemy targeted by the hand of earth managed to slip free.",
+    "source_quote": "though the target manages to slip free",
+    "subject": "enemy escape",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Enemies rallied against Gyrgum, shouting to eliminate the cleric.",
+    "source_quote": "Enemies rally against Gyrgum, shouting to eliminate the cleric",
+    "subject": "rally against Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The enemies knocked Gyrgum prone once more.",
+    "source_quote": "knocking him prone once more",
+    "subject": "attack on Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum failed another DC 9 Strength save.",
+    "source_quote": "Another failed DC 9 Strength save",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Only one hit landed on Gyrgum for a single point of damage.",
+    "source_quote": "only one hit lands, for a single point",
+    "subject": "Gyrgum's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir delivers the killing blow to the Master Thief.",
+    "source_quote": "Zalthir delivered the killing blow to the Master Thief",
+    "subject": "Master Thief death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Master Thief is dead.",
+    "source_quote": "Zalthir delivered the killing blow to the Master Thief",
+    "subject": "Master Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir pushes a Derro warrior off a ten-foot ledge.",
+    "source_quote": "pushed him off a ten-foot ledge",
+    "subject": "Derro ledge kill",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Derro warrior dies after falling from the ledge.",
+    "source_quote": "sending him crashing to his death below",
+    "subject": "Derro warrior",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes three damage from a later hit while prone.",
+    "source_quote": "A later hit lands for three",
+    "subject": "Gyrgum injury",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remains prone but avoids significant injury due to poor coordination by the cultists.",
+    "source_quote": "avoids significant injury due to the cultists' poor coordination",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes an opportunity attack against the Master Thief, dealing 11 damage.",
+    "source_quote": "Thorin's OA deals 11",
+    "subject": "Thorin OA",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Master Thief hits the ghost for 17 damage and disengages.",
+    "source_quote": "the thief hits the ghost for 17 and disengages",
+    "subject": "Ghost hit by Thief",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is more expressive than usual because no one can see his face in the darkness.",
+    "source_quote": "Zalthir is secretly more expressive than usual, since no one can see his face in the darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Healing Word on himself to mend his wounds.",
+    "source_quote": "uses a healing word to mend his own wounds",
+    "subject": "Gyrgum healing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum scrambles to his feet.",
+    "source_quote": "Gyrgum scrambles to his feet",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost is at 15 hit points.",
+    "source_quote": "the ghost is at 15 hit points",
+    "subject": "Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down a Derro with his longsword for 12 damage.",
+    "source_quote": "Thorin cuts down another Derro with his longsword",
+    "subject": "Thorin Derro kill",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Party helpers hit the spy once for four damage.",
+    "source_quote": "The party helpers finally hit the spy once for four",
+    "subject": "Helpers attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost recharges its possession ability.",
+    "source_quote": "The ghost recharges possession",
+    "subject": "Ghost possession charge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses a magical earthen hand to restrain the spy.",
+    "source_quote": "Daz uses a magical earthen hand to restrain the spy",
+    "subject": "Daz restraint",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spy is restrained and takes 8 damage.",
+    "source_quote": "The spy is restrained and takes 8",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three Derro swing at Thorin screaming about the egg.",
+    "source_quote": "Three Derro swing at Thorin screaming",
+    "subject": "Derro attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "All three Derro miss their attacks against Thorin.",
+    "source_quote": "Amazingly, all three of them missed",
+    "subject": "Derro misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir grabs and kills two more Derro.",
+    "source_quote": "Zalthir grabs and kills two more Derro",
+    "subject": "Zalthir kills Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir saves his last focus point.",
+    "source_quote": "Zalthir saves his last focus point",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz cries out for assistance as he is cornered by the spy.",
+    "source_quote": "Daz cries out for assistance as he is cornered by the spy",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ghost flies across the battlefield and possesses the spy.",
+    "source_quote": "The ghost ally flies across the battlefield and successfully possesses the spy",
+    "subject": "Ghost possession",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The spy is possessed and incapacitated by the ghost.",
+    "source_quote": "possesses the spy, incapacitating him and taking control of his body",
+    "subject": "spy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost possesses the spy and will not let go of the new body.",
+    "source_quote": "He's just got possession of a new body. He doesn't want to let go of it",
+    "subject": "Ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum strikes a remaining enemy with his mace for three damage.",
+    "source_quote": "The mace hits despite disadvantage, for three",
+    "subject": "Gyrgum mace hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills the last Derro for nine damage.",
+    "source_quote": "Thorin then kills the last Derro for nine",
+    "subject": "Thorin final kill",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is unaware that the egg has been stolen from beneath Daz's robes.",
+    "source_quote": "Thorin cut down the last Derro, who never realised the egg had long since been spirited away beneath Daz's robes",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stolen red dragon egg is safely in the party's possession.",
+    "source_quote": "the stolen red dragon egg safely in their possession",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Play is paused until after the 13th while the GM travels to Greece.",
+    "source_quote": "play paused until after the 13th while the GM travels to Greece",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM promises photos of his family's Santorini house.",
+    "source_quote": "he promises photos of his family's Santorini house",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The GM's family's Santorini house was bought by his grandfather 70 years ago.",
+    "source_quote": "bought by his grandfather 70 years ago",
+    "subject": "Santorini house",
+    "quote_verified": true
+  }
+]

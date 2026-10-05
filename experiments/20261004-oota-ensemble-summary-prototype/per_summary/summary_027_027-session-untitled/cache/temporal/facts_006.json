@@ -1,0 +1,23 @@
+[
+  {
+    "type": "event",
+    "fact": "The journey to the Hidden Shore took four days in total.",
+    "source_quote": "the only encounter of the four-day journey",
+    "subject": "journey duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The final two days of the journey were uneventful.",
+    "source_quote": "Two more uneventful days pass",
+    "subject": "uneventful days",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stirge swarm was the only combat encounter during the four-day journey.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "stirge",
+    "quote_verified": true
+  }
+]

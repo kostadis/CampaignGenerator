@@ -1,0 +1,142 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes himself as a completionist.",
+    "source_quote": "a little bit of a completionist",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to enter the unexplored southern chamber.",
+    "source_quote": "Gyrgum... wanted to see the unexplored southern chamber, and the party went in",
+    "subject": "exploration of southern chamber",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz hangs back at the rear of the party, ready to use fire spells.",
+    "source_quote": "Daz hanging back ready to throw fire",
+    "subject": "Daz rearguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin opens the door to the southern chamber.",
+    "source_quote": "Thorin has already opened the door",
+    "subject": "Thorin opens door",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The southern chamber contains canopic jars and a sarcophagus.",
+    "source_quote": "The party enters a southern chamber filled with canopic jars and a large stone sarcophagus",
+    "subject": "southern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There are a dozen clay canopic jars containing desiccated organs in niches on the western and eastern walls.",
+    "source_quote": "a dozen clay canopic jars of desiccated organs",
+    "subject": "canopic jars",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sarcophagus is decorated with mosaics depicting great floating cities.",
+    "source_quote": "decorated with mosaics of great floating cities",
+    "subject": "sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sarcophagus rests on a black marble bier.",
+    "source_quote": "The sarcophagus rests on a black marble bier",
+    "subject": "black marble bier",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone lid of the sarcophagus is magically enchanted to be light despite its heavy appearance.",
+    "source_quote": "The heavy-looking stone lid turns out to be light, thanks to a magical enchantment",
+    "subject": "sarcophagus lid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir boasts that he can punch the lid off the sarcophagus.",
+    "source_quote": "I bet I can punch it off. That's kind of my thing",
+    "subject": "Zalthir's boast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin pushes the sarcophagus lid, causing it to fly off.",
+    "source_quote": "Thorin pushes the lid, which flies off",
+    "subject": "Thorin opens lid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party realizes the southern chamber is a decoy tomb, as warned by Fargas Rumblefoot.",
+    "source_quote": "The party realizes the chamber is the fake tomb mentioned by Fargas Rumblefoot, serving as a decoy for the real burial site",
+    "subject": "decoy identification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot warned the party that the southern chamber was a decoy.",
+    "source_quote": "Fargas Rumblefoot had once warned them that this chamber was a decoy",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith is dead.",
+    "source_quote": "its only curse had already been destroyed along with the wraith",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The curse associated with the chamber ended when the wraith was killed.",
+    "source_quote": "There had been a curse, but it ended when the wraith was killed",
+    "subject": "curse ended",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party exits the tomb complex and returns to the Underdark caverns.",
+    "source_quote": "the party exits the tomb complex back into the Underdark caverns",
+    "subject": "exit tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb complex is located within the Underdark caverns.",
+    "source_quote": "the party exits the tomb complex back into the Underdark caverns",
+    "subject": "Underdark caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is currently being pursued.",
+    "source_quote": "Zalthir notes they are still being pursued",
+    "subject": "pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that they are still being pursued.",
+    "source_quote": "Zalthir notes they are still being pursued",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin opens the sarcophagus lid.",
+    "source_quote": "Thorin pushes the lid, which flies off",
+    "subject": "Thorin",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,128 @@
+[
+  {
+    "type": "location",
+    "fact": "The party arrives at a desolate, lonely beach.",
+    "source_quote": "The party arrived at a desolate, lonely beach",
+    "subject": "hidden shore",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith identifies the beach as the path toward the Lost Tomb of Khaem.",
+    "source_quote": "Sarith identified as the path toward the Lost Tomb of Khaem",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb is identified as the destination of the party's current journey.",
+    "source_quote": "path toward the Lost Tomb of Khaem",
+    "subject": "Lost Tomb of Khaem",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot is a gnome who was rescued by the party in spider webs long ago.",
+    "source_quote": "Fargas Rumblefoot, the gnome they rescued in the spider webs long ago",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party previously rescued Fargas Rumblefoot from spider webs.",
+    "source_quote": "gnome they rescued in the spider webs long ago",
+    "subject": "rescue of Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks whether there is anyone present to sell the boat to.",
+    "source_quote": "Thorin asked whether there was anyone to sell the boat to",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith looks at the empty beach and states that there is no one to sell the boat to.",
+    "source_quote": "Sarith looked at the empty beach and said no",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith proposes sinking the boat and fixing it later with the spell Mending.",
+    "source_quote": "He pointed out they might want the boat later and proposed sinking it, then fixing it with Mending",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Sarith suggests using the spell Mending to repair the boat upon their return.",
+    "source_quote": "fixing it with Mending",
+    "subject": "Mending",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party intentionally scuttles their boat, letting it sink beneath the dark waters.",
+    "source_quote": "The party scuttled their own boat, letting it sink beneath the dark waters",
+    "subject": "scuttling the boat",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith leads the group away from the shore and back into the winding tunnels of the Underdark.",
+    "source_quote": "Sarith led the group away from the shore and back into the winding, lightless tunnels of the Underdark",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnels are described as winding and lightless.",
+    "source_quote": "winding, lightless tunnels of the Underdark",
+    "subject": "Underdark tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The arrival happens on the date 027.06.",
+    "source_quote": "Arrival at the Hidden Shore 027.06",
+    "subject": "arrival at hidden shore",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A stirge swarm is the only encounter encountered during the four-day journey.",
+    "source_quote": "The stirge swarm is the only encounter of the four-day journey",
+    "subject": "stirge swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The DM notes that the Drow will eventually come looking for the party.",
+    "source_quote": "The DM notes the Drow will eventually come looking",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party expresses concern about being tracked by the Gray Ghosts.",
+    "source_quote": "Concerned about being tracked by the Drow or the Gray Ghosts",
+    "subject": "Gray Ghosts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum happily punches a hole in the boat to help scuttle it.",
+    "source_quote": "Gyrgum happily punches the hole",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sarith leads the group away from the Darklake.",
+    "source_quote": "Sarith leads the group away from the Darklake and back into the winding tunnels of the Underdark",
+    "subject": "Darklake",
+    "quote_verified": true
+  }
+]

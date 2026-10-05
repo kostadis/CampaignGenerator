@@ -1,0 +1,170 @@
+[
+  {
+    "type": "location",
+    "fact": "The cemetery is located beside the Temple of the Ruby in the Rough and consists of catacombs below the temple.",
+    "source_quote": "cemetery beside the Temple of the Ruby in the Rough ... The cemetery is in catacombs beneath the Temple of the Ruby in the Rough",
+    "subject": "Cemetery beside the Temple of the Ruby in the Rough",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Temple of the Ruby in the Rough is dedicated to Segojan Earthcaller.",
+    "source_quote": "Temple of the Ruby in the Rough, dedicated to Segojan Earthcaller",
+    "subject": "Temple of the Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Segojan Earthcaller is the Svirfneblin god of deep earth and nature.",
+    "source_quote": "Segojan Earthcaller, the Svirfneblin god of deep earth and nature",
+    "subject": "Segojan Earthcaller",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glyphic Shroomlight is a priest of Segojan Earthcaller found at the temple.",
+    "source_quote": "they met Glyphic Shroomlight, a priest",
+    "subject": "Glyphic Shroomlight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glyphic Shroomlight is initially hesitant to inter remains of someone he does not know.",
+    "source_quote": "Glyphic Shroomlight, a priest who was initially hesitant to inter the remains of someone he did not know",
+    "subject": "Glyphic's hesitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum jingles a bag to show he possesses Pelek's bones.",
+    "source_quote": "Gyrgum jingled the bag to establish that he did, in fact, possess Pelek's bones",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's ghost materializes to speak to Glyphic Shroomlight.",
+    "source_quote": "When Pelek's ghost materialized, Glyphic realized that refusing might leave him haunted",
+    "subject": "Pelek's ghost materializes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek confirms he plans to go to the afterlife after being properly buried.",
+    "source_quote": "Yes, I plan to go to wherever I'm supposed to go next",
+    "subject": "Pelek's confirmation of passing",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glyphic Shroomlight decides to make an exception for the burial to avoid being haunted.",
+    "source_quote": "I think we could always make an exception for a ghost that could haunt and terrorize me till the end of my days",
+    "subject": "Glyphic Shroomlight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glyphic Shroomlight directs the party into the catacombs below the temple.",
+    "source_quote": "He directed the party to the catacombs below",
+    "subject": "Descent to catacombs",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glyphic Shroomlight asks Glabbagool to remain upstairs to prevent disturbing graves.",
+    "source_quote": "asking only that Glabbagool remain upstairs to prevent accidents among the graves",
+    "subject": "Glabbagool stays behind",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is a gelatinous cube who agrees to wait upstairs and offers to clean if needed.",
+    "source_quote": "Glabbagool agreed: \u201cOkay. But if you need anything cleaned, I'm here.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The burial chambers contain numerous sealed tombs and a large skull decoration at the north end.",
+    "source_quote": "burial chambers containing numerous sealed tombs and a large skull decoration at the north end",
+    "subject": "Burial chambers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was murdered by Buppido.",
+    "source_quote": "murdered by \u201cBuppido, who is really an annoying person.\u201d",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is the person who murdered Pelek.",
+    "source_quote": "murdered by \u201cBuppido, who is really an annoying person.\u201d",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plek expressed profound relief at reaching the end of his journey.",
+    "source_quote": "Plek expressed profound relief at reaching the end of his journey",
+    "subject": "Pelek",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Plek had feared he was permanently lost and doomed to torment people forever.",
+    "source_quote": "He had feared that he was permanently lost and doomed to torment people forever",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plek stated he wanted to end his journey.",
+    "source_quote": "But I really do want to end my journey",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a priest of dragons.",
+    "source_quote": "As a priest of dragons",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum found a quiet corner in the catacombs and scooped out a shallow resting place for the remains.",
+    "source_quote": "Gyrgum found a quiet corner where the remains would not be stepped on, scooped out a shallow resting place",
+    "subject": "Burial site preparation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum performed a dragon-themed ritual over Pelek's remains.",
+    "source_quote": "performed an appropriate dragon-themed ritual",
+    "subject": "Dragon-themed ritual",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gyrgum planted a gold coin with Pelek's bones to serve as the foundation for his word.",
+    "source_quote": "planted a gold coin with the bones as the foundation for his word",
+    "subject": "Gold coin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's spirit faded away after the party said their goodbyes.",
+    "source_quote": "After the party said their goodbyes, his spirit faded away",
+    "subject": "Pelek's spirit fades",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Another ghost materializes shortly after Pelek's spirit disappears.",
+    "source_quote": "The peace lasts only a moment before another ghost materializes",
+    "subject": "New ghost materializes",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,93 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gartokkar is a high-ranking member of the Keepers of the Flame.",
+    "source_quote": "Gartokkar, a high-ranking member of the Keepers of the Flame",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party moved to the private residence of Gartokkar.",
+    "source_quote": "moved next toward the private residence of Gartokkar",
+    "subject": "residence of Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is depicted with smelters dumping soot into the air and poor visibility, described as Dickensian London.",
+    "source_quote": "The DM describes the city as Dickensian London: smelters dumping soot into the air and poor visibility",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a dragon egg that Thorin and Gyrgum consider dangerous and toxic to carry.",
+    "source_quote": "This egg feels toxic to carry around if we get caught with it",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts a sphere of magical darkness low over the group.",
+    "source_quote": "Zalthir casts his sphere of darkness low over the group",
+    "subject": "darkness spell cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his specialized senses to guide the group through the magical gloom.",
+    "source_quote": "Zalthir uses his specialized senses to guide the group through the magical gloom",
+    "subject": "navigation in darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's Shadow Arts ability allows him to see within his own magical darkness.",
+    "source_quote": "Zalthir's Shadow Arts let him see within his own Darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses a desire to get rid of the egg quickly, calling it a hot potato.",
+    "source_quote": "It's too hot a potato to keep it",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses a desire to get rid of the egg quickly.",
+    "source_quote": "Thorin and Gyrgum both want the egg gone quickly",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A plan to disguise Daz with a hood was discussed but not implemented.",
+    "source_quote": "Disguising Daz with a hood was also floated",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party arrives at the residence of Gartokkar to fulfill their contract regarding the dragon egg.",
+    "source_quote": "The party arrives at the residence of Gartokkar to fulfill their contract regarding the dragon egg",
+    "subject": "arrival at residence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin steps back from the interaction, citing his previous handling of giants.",
+    "source_quote": "Thorin steps back (\"since I handled the giants\")",
+    "subject": "Thorin steps back",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party knocks on the door of the residence.",
+    "source_quote": "the party simply knocks",
+    "subject": "knock at door",
+    "quote_verified": true
+  }
+]

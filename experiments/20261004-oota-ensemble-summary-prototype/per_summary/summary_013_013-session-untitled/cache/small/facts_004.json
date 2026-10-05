@@ -1,0 +1,114 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn materializes from invisibility near the party shortly after Dorhun departs.",
+    "source_quote": "Barely had Dorhun departed when a duergar materialized out of thin air nearby",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar introduces himself as a representative of the Keepers of the Flame.",
+    "source_quote": "He introduced himself as Gartokkar Xundorn of the Keepers of the Flame",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame have a sacred duty to tend to the red dragon Themberchaud.",
+    "source_quote": "his order's sacred duty was to tend to the red dragon Themberchaud",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is a red dragon who keeps the city's forges burning.",
+    "source_quote": "the red dragon Themberchaud, who kept the city's forges burning",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Deepking treats the Keepers of the Flame as his most prized advisors.",
+    "source_quote": "the Deepking treated the Keepers as his most prized advisors",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar flashes a badge to disperse curious onlookers.",
+    "source_quote": "flashed a badge that sent curious onlookers scattering",
+    "subject": "Badge display",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party perceives Gartokkar as a legal authority capable of making other authorities disappear.",
+    "source_quote": "has the ability to make the other authorities disappear",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum jokes that they have kindling available if the order is short on dragons.",
+    "source_quote": "Gyrgum drily offered that they had some kindling available if the order was running short on dragons",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar laughs at Gyrgum's joke and then dissects it with analytical precision, extinguishing the humor.",
+    "source_quote": "Gartokkar laughed, then dissected the joke with such analytical precision that every trace of humor was methodically extinguished",
+    "subject": "Humor dissection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that dragon cults usually wear purple robes.",
+    "source_quote": "Daz adds that they usually have purple robes",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar invites the party to his quarters by the following day to discuss a specific task.",
+    "source_quote": "He invited the party to his quarters by the following day",
+    "subject": "Job offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar offers city passes and legal immunity in exchange for the party's help.",
+    "source_quote": "In exchange for their help with a problem he was not yet ready to name, he promised city passes and what Thorin summarized as \"a limited get-out of jail-free card.\"",
+    "subject": "Payment offer",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gartokkar has a problem he is not yet ready to name that requires the party's help.",
+    "source_quote": "help with a problem he was not yet ready to name",
+    "subject": "Mysterious problem",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Zalthir has an 'I know a guy' list, allowing one favor per city to learn about factions or obtain items.",
+    "source_quote": "the GM reminded Zalthir of his \"I know a guy\" list: one favor per city",
+    "subject": "Zalthir's contacts",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party has already sent someone to fetch them a magical weapon.",
+    "source_quote": "the GM also reminds the party they have already sent someone to fetch them a magical weapon",
+    "subject": "Magical weapon delivery",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to get a drink rather than immediately seeking out the stone giant, the dragon, or the Blade Bazaar.",
+    "source_quote": "They settle on getting a drink",
+    "subject": "Party decision",
+    "quote_verified": true
+  }
+]

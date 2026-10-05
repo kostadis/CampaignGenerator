@@ -1,0 +1,65 @@
+[
+  {
+    "type": "npc",
+    "fact": "Eldeth is down to four hit points after taking 12 points of damage.",
+    "source_quote": "Eldeth takes 12 points of damage and is down to four hit points.",
+    "subject": "Eldeth HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 against AC 16 with disadvantage, resulting in a miss.",
+    "source_quote": "rolling a 15 against AC 16 \u2014 a miss.",
+    "subject": "Thorin attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin hits derro #6 for 9 damage.",
+    "source_quote": "he hits derro #6 for 9",
+    "subject": "derro #6 damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A party helper hits the spectator for 10 damage.",
+    "source_quote": "One of the helpers hits the spectator for 10.",
+    "subject": "spectator damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Daz's earthen hand deals 16 damage to the spectator.",
+    "source_quote": "16 damage; the spectator is restrained",
+    "subject": "spectator damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An enemy crossbowman hits Gyrgum for six damage.",
+    "source_quote": "one hits Gyrgum for six",
+    "subject": "Gyrgum damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Plinki is killed by Zalthir's breath attack.",
+    "source_quote": "successfully killing Plinki",
+    "subject": "Plinki status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Plinki is dead, killed by Zalthir's breath attack.",
+    "source_quote": "successfully killing Plinki",
+    "subject": "Plinki status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Enemies other than Plinki take one or two points of damage from the breath attack.",
+    "source_quote": "others take one or two points",
+    "subject": "enemies damage",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,142 @@
+[
+  {
+    "type": "event",
+    "fact": "The party searches the bodies of the assassins.",
+    "source_quote": "the party searched the bodies",
+    "subject": "looting the assassins",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Eighteen silver pieces were found on the assassins' bodies.",
+    "source_quote": "found eighteen silver pieces",
+    "subject": "eighteen silver pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A trinket was found on the assassins' bodies.",
+    "source_quote": "a trinket",
+    "subject": "trinket",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A pair of bloodstained gloves was found on the assassins' bodies.",
+    "source_quote": "a pair of bloodstained gloves",
+    "subject": "bloodstained gloves",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A box of scented candles was found on the assassins' bodies.",
+    "source_quote": "a box of scented candles",
+    "subject": "box of scented candles",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Neither the gloves nor the candles are magical.",
+    "source_quote": "Neither the gloves nor the candles are magical.",
+    "subject": "gloves and candles inspection",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The candles found are scented.",
+    "source_quote": "The candles turn out to be scented.",
+    "subject": "scented candles",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A fish-skin parchment was discovered bearing a charcoal likeness of Werz.",
+    "source_quote": "discovered a fish-skin parchment bearing a charcoal likeness of Werz himself",
+    "subject": "fish-skin parchment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Werz is a merchant.",
+    "source_quote": "the merchant Werz",
+    "subject": "Werz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fish-skin parchment confirms that the attack was a deliberate, pre-planned assassination.",
+    "source_quote": "confirming that the attack had been a deliberate, pre-planned assassination",
+    "subject": "assassination confirmation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the attack was not an opportunity.",
+    "source_quote": "Thorin: \"It was not an attack of opportunity.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Stone Guards are expected to arrive if the party lingers at the pier.",
+    "source_quote": "The GM warns that Stone Guards and other guards will eventually show up if the party lingers.",
+    "subject": "Stone Guards",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin comments that they have been at the center of trouble enough.",
+    "source_quote": "Thorin: \"I think we've already been at the center of shit enough.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum pushes the corpses off the pier into the water.",
+    "source_quote": "Gyrgum pushes the corpses off the pier into the water",
+    "subject": "disposing of corpses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party slips away before the city guard arrives.",
+    "source_quote": "the party slipped away before the city guard could arrive.",
+    "subject": "leaving the pier",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party takes a short rest.",
+    "source_quote": "The party takes a short rest to recover their strength",
+    "subject": "short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz uses Arcane Recovery to regain one second-level spell slot.",
+    "source_quote": "Daz uses Arcane Recovery to regain one second-level slot.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party is escorted by Duergar priests through the stone corridors of the Flowstone District.",
+    "source_quote": "the party was escorted by Duergar priests through the stone corridors of the Flowstone District",
+    "subject": "escort through Flowstone District",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Flowstone District is inhabited by no one but Duergar.",
+    "source_quote": "inhabited by no one but Duergar",
+    "subject": "Duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party travels toward the territory of the Keepers of the Flame.",
+    "source_quote": "toward the territory of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  }
+]

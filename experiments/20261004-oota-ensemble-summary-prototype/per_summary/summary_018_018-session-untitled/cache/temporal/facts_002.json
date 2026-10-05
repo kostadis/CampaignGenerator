@@ -1,0 +1,23 @@
+[
+  {
+    "type": "object",
+    "fact": "The character Daz has a Intelligence score of 19.",
+    "source_quote": "he has a 19 Intelligence",
+    "subject": "Daz's Intelligence",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The character Daz has a Charisma score of 10.",
+    "source_quote": "only a 10 Charisma",
+    "subject": "Daz's Charisma",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The character Daz has a Wisdom score of 14.",
+    "source_quote": "(and 14 Wisdom)",
+    "subject": "Daz's Wisdom",
+    "quote_verified": true
+  }
+]

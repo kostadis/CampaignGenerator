@@ -1,0 +1,51 @@
+[
+  {
+    "type": "location",
+    "fact": "The party's boat lacks oars or poles/long sticks for manual propulsion.",
+    "source_quote": "The boat carried no oars or poles",
+    "subject": "Darklake boat equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party's boat lacks long sticks for manual propulsion.",
+    "source_quote": "The boat has no oars or long sticks",
+    "subject": "Darklake boat equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party traveled for approximately two days before the boat ran aground on the sandbar.",
+    "source_quote": "The party's boat runs aground on a submerged sandbar after a couple of days of travel",
+    "subject": "darklake travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's successful survival check spares the party from needing to make another check the following day.",
+    "source_quote": "His roll was good enough to spare the party the next day's check as well",
+    "subject": "Thorin navigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's successful survival check lets the party avoid another survival check the next day.",
+    "source_quote": "His roll also lets the party avoid another survival check the next day",
+    "subject": "Thorin navigation check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party contains no rangers.",
+    "source_quote": "with so many companions aboard... The party has no rangers",
+    "subject": "party composition",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The party contains no rogues.",
+    "source_quote": "The party has no rangers and no rogues",
+    "subject": "party composition",
+    "quote_verified": false
+  }
+]

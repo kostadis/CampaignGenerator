@@ -1,0 +1,37 @@
+[
+  {
+    "type": "location",
+    "fact": "There are three statues in the ritual cavern.",
+    "source_quote": "there were now three statues",
+    "subject": "statue count",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three companions are blessed by Gyrgum.",
+    "source_quote": "blessed his three companions",
+    "subject": "companions blessed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cultists' passive perception is 7.",
+    "source_quote": "cultists' passive perception of 7",
+    "subject": "stealth check difficulty",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 20 on the stealth check.",
+    "source_quote": "Gyrgum rolled a 20",
+    "subject": "stealth check roll",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The Bless spell lasts for a minute.",
+    "source_quote": "blessed his three companions (+1d4 to attacks and saves for a minute)",
+    "subject": "bless duration",
+    "quote_verified": false
+  }
+]

@@ -1,0 +1,156 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin decides to go left at the first intersection based on a coin flip.",
+    "source_quote": "So I rolled a D2, otherwise known as flip a coin, and it came up one. So I say we go left.",
+    "subject": "route selection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The left passage is 10 feet high and its walls glisten with dark, dripping water.",
+    "source_quote": "The chosen route led into a 10-foot-high passage whose walls glistened with dark, dripping water.",
+    "subject": "first intersection passage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin refuses to step into the pool due to fear of 'creepy crawlies'.",
+    "source_quote": "Thorin initially refused to step into the pool because \u201ccreepy crawlies will come out and get me,\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An examination reveals the water in the pool is rising at an alarming rate.",
+    "source_quote": "the water was rising at an alarming rate.",
+    "subject": "flood discovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz confirms that the entire complex is leaking.",
+    "source_quote": "Daz investigated further and confirmed that the entire complex was leaking.",
+    "subject": "complex leak confirmation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A tremor cracked an underground reservoir or river into the cave system.",
+    "source_quote": "A tremor had cracked an underground reservoir or river into the cave system",
+    "subject": "tremor damage",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Unless the party finds an exit, the temple will eventually fill completely with water.",
+    "source_quote": "unless the party found a way out, the temple would eventually fill completely.",
+    "subject": "temple flooding",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar remarks on the poetic nature of the flooding with respect to a bet.",
+    "source_quote": "Jimjar to appreciate the poetic possibilities of the wager: \u201cWhat an appropriate bet. Tears, water.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin argues that the square, constructed chamber beyond the pool is more likely to offer an exit than the natural cave.",
+    "source_quote": "Thorin argued that the square, constructed chamber beyond the pool was more likely to offer an exit than the natural cave passage",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rushes forward into the chamber beyond the pool.",
+    "source_quote": "and the party rushed forward.",
+    "subject": "party movement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A gray ooze emerges in the water as Thorin leads the party through it.",
+    "source_quote": "As Thorin led them through the water, a gray ooze emerged exactly as he had predicted.",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he wished he had lost the bet.",
+    "source_quote": "Jimjar admitted, \u201cI really wished I had lost this bet, Thorin,\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin observes that the presence of the creature confirms his prediction about things in the water.",
+    "source_quote": "Thorin observed, \u201cOkay, so not only is the water, but there\u2019s also something creepy crawly in the water, as I predicted.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir destroys the gray ooze with two powerful unarmed blows.",
+    "source_quote": "Zalthir stepped forward and destroyed the creature with two powerful unarmed blows before anyone else could act.",
+    "subject": "ooze combat",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze is destroyed by Zalthir.",
+    "source_quote": "Zalthir stepped forward and destroyed the creature with two powerful unarmed blows",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is not vulnerable to the ooze's corrosion because it is a weapon of light, not metal.",
+    "source_quote": "Dawnbringer is not made of metal; it is described as a weapon of light, \u201cas a lightsaber,\u201d and therefore is not vulnerable to the ooze\u2019s corrosion.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir chooses to attack the ooze by punching it.",
+    "source_quote": "Zalthir chooses the direct approach: \u201cWell, I see no reason not to punch it a lot.\u201d",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rejects grappling the ooze because it could ooze through holds.",
+    "source_quote": "Grappling is rejected because the creature could simply ooze through any hold.",
+    "subject": "grappling decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 10 damage followed by 12 damage, killing the ooze.",
+    "source_quote": "Zalthir strikes for 10 damage, then 12 more, killing the ooze",
+    "subject": "ooze death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes the encounter highlights the need for magical armor.",
+    "source_quote": "Thorin notes that the encounter has added magical armor to his growing list of desirable equipment.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar asks if they are committed to a slow death due to drowning.",
+    "source_quote": "Jimjar asking whether they are now committed to \u201ca slow death due to drowning.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a die roll to decide the next action, favoring reckless choices if the roll is greater than 10.",
+    "source_quote": "Thorin uses another die roll to settle the decision: \u201cGreater than 10 is always the most reckless action.\u201d",
+    "subject": "next route selection",
+    "quote_verified": true
+  }
+]

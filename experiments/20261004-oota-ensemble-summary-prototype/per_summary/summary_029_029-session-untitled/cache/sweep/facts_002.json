@@ -1,0 +1,212 @@
+[
+  {
+    "type": "event",
+    "fact": "Brysis is defeated prior to the looting of the tomb.",
+    "source_quote": "With Brysis defeated, the party searched the tomb.",
+    "subject": "Brysis defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb contains a sarcophagus covered by a thin gold sheath.",
+    "source_quote": "They found a thin gold sheath covering the sarcophagus",
+    "subject": "tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tomb contains a chest rendered completely invisible by magic.",
+    "source_quote": "as well as a chest that had been rendered completely invisible by magic.",
+    "subject": "tomb",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The thin gold sheath covering the sarcophagus is worth 250 gold pieces.",
+    "source_quote": "a thin gold sheath covering the sarcophagus worth 250 gold pieces",
+    "subject": "gold sheath",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dispels the magical darkness in the tomb.",
+    "source_quote": "Zalthir dispels the magical darkness, allowing the party to inspect the sarcophagus and surrounding area.",
+    "subject": "dissipation of darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer is revealed to speak, read, and understand Common.",
+    "source_quote": "Dawnbringer is revealed to speak, read, and understand Common.",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum comments that Dawnbringer has been upgraded after learning it can read.",
+    "source_quote": "This prompts Gyrgum's \"a sword that can read\" and \"They've upgraded these things\"",
+    "subject": "Dawnbringer revelation reaction",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer responds to Gyrgum's comment with a flat \"seriously?\".",
+    "source_quote": "the sword answers with a flat \"seriously?\"",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pries loose the thin gold covering from Brysis's sarcophagus.",
+    "source_quote": "The party pries loose a thin gold covering from Brysis's sarcophagus",
+    "subject": "gold sheath taken",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The invisible chest is located near the sarcophagus.",
+    "source_quote": "The party discovers a magically hidden, invisible chest near the sarcophagus.",
+    "subject": "invisible chest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks if anyone has an invisible key.",
+    "source_quote": "Gyrgum quips, \"Does anyone have an invisible key?\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz casts Faerie Fire to reveal the invisible chest and its contents.",
+    "source_quote": "Daz casts Faerie Fire to reveal the invisible chest and its contents.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz incorrectly calls the spell \"Faerie Fly\" before being corrected.",
+    "source_quote": "He first calls it \"Faerie Fly\" and is corrected.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has the worst sleight of hand in the group with a value of -1.",
+    "source_quote": "Thorin has the worst at -1, and he is eager to do it anyway.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir volunteers to open the chest to spare Thorin.",
+    "source_quote": "Zalthir volunteers (\"I'll do it. I'll take one for the team.\")",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir successfully opens the chest.",
+    "source_quote": "and successfully opens the chest.",
+    "subject": "chest opened",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The invisible contents of the chest are dumped out onto the ground.",
+    "source_quote": "The contents are invisible too and are dumped out onto the ground.",
+    "subject": "contents dumped",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest holds 4,000 silver pieces.",
+    "source_quote": "The chest holds 4,000 silver pieces",
+    "subject": "chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest holds 1,200 gold pieces.",
+    "source_quote": "1,200 gold pieces",
+    "subject": "chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest holds eleven zircons worth 50 gold each.",
+    "source_quote": "eleven zircons (50 gp each)",
+    "subject": "chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest holds a necklace of fireballs.",
+    "source_quote": "a necklace of fireballs",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest holds a philter of love.",
+    "source_quote": "a philter of love",
+    "subject": "philter of love",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The chest holds a potion of greater healing.",
+    "source_quote": "and a potion of greater healing",
+    "subject": "potion of greater healing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The necklace of fireballs has four beads.",
+    "source_quote": "The necklace has four beads.",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Each bead of the necklace can be thrown as a fireball.",
+    "source_quote": "Each can be thrown as a fireball",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "All four beads of the necklace can be detached and thrown at once.",
+    "source_quote": "or all four can be detached and thrown at once.",
+    "subject": "necklace of fireballs",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum claims the necklace of fireballs.",
+    "source_quote": "Gyrgum claims the necklace (\"Anyone want to claim it? Otherwise, I'll take it.\").",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum points out the new party inventory tab in D&D Beyond.",
+    "source_quote": "Gyrgum points out D&D Beyond's new party inventory tab",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz moves the party's money into the D&D Beyond party inventory tab.",
+    "source_quote": "and Daz moves the party's money into it.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM rules that consumables belong to the whole party.",
+    "source_quote": "The GM ruled that consumables belong to the whole party.",
+    "subject": "GM",
+    "quote_verified": true
+  }
+]

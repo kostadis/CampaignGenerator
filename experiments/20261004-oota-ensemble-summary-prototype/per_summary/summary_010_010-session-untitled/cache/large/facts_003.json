@@ -1,0 +1,569 @@
+[
+  {
+    "type": "event",
+    "fact": "The party is ambushed by invisible duergar slavers while navigating the Darklake.",
+    "source_quote": "The party is ambushed by invisible duergar slavers while navigating the Darklake",
+    "subject": "Ambush on the Darklake begins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido attempts to hide as the party realizes they are being watched by invisible foes.",
+    "source_quote": "Buppido and Jimjar attempt to hide as the party realizes they are being watched by invisible foes",
+    "subject": "Buppido hides",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar attempts to hide as the party realizes they are being watched by invisible foes.",
+    "source_quote": "Buppido and Jimjar attempt to hide as the party realizes they are being watched by invisible foes",
+    "subject": "Jimjar hides",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses his Ambush maneuver to add a 1d8 superiority die to his initiative, rolling a +4.",
+    "source_quote": "He adds a 1d8 superiority die to his initiative through his Ambush maneuver and rolls +4",
+    "subject": "Thorin initiative maneuver",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's initiative score becomes 12.",
+    "source_quote": "bringing him to 12",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz readies an action to fire Magic Missile at anything that jumps out of the water.",
+    "source_quote": "Daz readies an action to fire Magic Missile at anything that jumps out of the water",
+    "subject": "Daz readies action",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that duergar become visible once they attack.",
+    "source_quote": "The duergar become visible once they attack",
+    "subject": "GM rules on invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that moving through the water counts as difficult terrain.",
+    "source_quote": "Moving through the water counts as difficult terrain",
+    "subject": "GM rules on water terrain",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjures a 15-foot-radius sphere of magical darkness to envelop one of the invisible duergar.",
+    "source_quote": "Zalthir conjures a 15-foot-radius sphere of magical darkness to envelop one of the invisible duergar",
+    "subject": "Zalthir conjures darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that the darkness spell cannot be cast directly on a creature.",
+    "source_quote": "Zalthir notes the spell can't be cast on a creature",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that he can move the magical darkness sphere freely on his turn.",
+    "source_quote": "he can move it freely on his turn",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM reminisces that in first edition, darkness could be cast on an enemy's eyes.",
+    "source_quote": "The GM reminisces that in first edition you could cast darkness on an enemy's eyes",
+    "subject": "GM lore flashback",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves into the water to engage a duergar.",
+    "source_quote": "Zalthir moves into the water",
+    "subject": "Zalthir enters water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir delivers a series of precise strikes against a duergar, spending focus points for an extra attack.",
+    "source_quote": "Zalthir spends focus points for an extra attack",
+    "subject": "Zalthir strikes duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir deals 9 damage to the duergar.",
+    "source_quote": "dealing 9 damage: \"The duergar is pounded.\"",
+    "subject": "Zalthir damages duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The duergar targeted by Zalthir has an AC of 16.",
+    "source_quote": "The duergar has AC 16",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's passive Perception of 14 lets the party sense that another invisible duergar is lurking nearby.",
+    "source_quote": "Daz's passive Perception of 14 lets the party sense that another invisible duergar is lurking nearby",
+    "subject": "Daz passive perception",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin pinpoints the location of the second invisible duergar on his turn.",
+    "source_quote": "On his turn, Thorin pinpoints him",
+    "subject": "Thorin pinpoints duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that Daz cannot use Magic Missile on a creature he is merely aware of because the spell requires a visible target.",
+    "source_quote": "The GM rules that Daz can't use Magic Missile on a creature he is merely aware of, because the spell requires a target he can see",
+    "subject": "GM rules Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz complains that the Magic Missile ruling is a bunch of BS.",
+    "source_quote": "Daz: \"Well, that seems like a bunch of BS.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that area-of-effect spells and ranged weapons can be aimed at the square of an invisible target.",
+    "source_quote": "Area-of-effect spells and ranged weapons can still be aimed at the square",
+    "subject": "GM rules AoE vs invisibility",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that he has no ranged weapons.",
+    "source_quote": "Thorin notes he has no ranged weapons",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM realizes he forgot to give the party crossbows earlier.",
+    "source_quote": "The GM realizes he meant to give the party crossbows earlier but \"forgot to actually say it.\"",
+    "subject": "GM admits missing equipment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin dives into the water to engage the duergar in melee combat.",
+    "source_quote": "Thorin dives into the water to engage the duergar in melee combat",
+    "subject": "Thorin dives",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM grants a retroactive Feinting Attack to Thorin, assuming he would have used it.",
+    "source_quote": "The GM grants a \"gimme,\" retroactively allowing a Feinting Attack",
+    "subject": "Thorin Feinting Attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin lands a blow that hits for 9 damage.",
+    "source_quote": "The 17 hits for 9 damage",
+    "subject": "Thorin hits duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz aims Scorching Ray at the square next to his allies.",
+    "source_quote": "He aims Scorching Ray at the square next to his allies",
+    "subject": "Daz Scorching Ray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's third Scorching Ray hits for 7 fire damage, leaving the duergar at 1 hit point.",
+    "source_quote": "the third hits for 7 fire damage, leaving the duergar at 1 hit point",
+    "subject": "Daz hits duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz instructs the party to concentrate fire.",
+    "source_quote": "Daz: \"Let's concentrate fire, buddies.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum finishes off a wounded duergar by dousing him in Tasha's Caustic Brew.",
+    "source_quote": "Gyrgum finishes off a wounded duergar by dousing him in a corrosive, acidic brew",
+    "subject": "Gyrgum kills duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar begin grappling members of the crew.",
+    "source_quote": "The duergar begin grappling members of the crew",
+    "subject": "duergar grapples crew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM marks the three seized escapees with numbers.",
+    "source_quote": "the GM marks them with numbers",
+    "subject": "Prisoners marked",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar explains that duergar kidnap people to sell as slaves in Gracklstugh.",
+    "source_quote": "Jimjar explains that the duergar kidnap people to sell as slaves in Gracklstugh",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar states that the duergar viewed the party as easy targets.",
+    "source_quote": "He adds that they must have seen the party as \"easy targets, easy pickings.\"",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks if Eldeth is among the captives because he has a thing for her.",
+    "source_quote": "Thorin asks whether Eldeth is among the captives, since he has \"kind of got a thing for Eldeth.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is not among the captives.",
+    "source_quote": "She is not.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin delivers a heavy blow dealing 9 damage plus 1 from a Hill Strike for 10 total.",
+    "source_quote": "He deals 9 damage plus 1 from a Hill Strike, for 10 total.",
+    "subject": "Thorin intercepts slaver",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar beats the DC 13 Strength save with a roll of 14.",
+    "source_quote": "The duergar beats the DC 13 Strength save with a 14",
+    "subject": "duergar resists prone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin gains Vex, granting him advantage on his next attack.",
+    "source_quote": "Thorin gains Vex for advantage on his next attack",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves the sphere of magical darkness up to 60 feet at the start of his turn.",
+    "source_quote": "He moves the sphere up to 60 feet at the start of his turn",
+    "subject": "Zalthir moves darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits a duergar for 9 damage and then 5 damage.",
+    "source_quote": "He hits one duergar for 9 and then 5",
+    "subject": "Zalthir hits duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hits a visible duergar with Magic Missile, drawing a splur of blood.",
+    "source_quote": "Daz hits a now-visible duergar with Magic Missile, drawing \"a splur of blood.\"",
+    "subject": "Daz Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's Toll the Dead is shrugged off by one duergar.",
+    "source_quote": "Gyrgum's Toll the Dead is shrugged off by one duergar",
+    "subject": "Gyrgum Toll the Dead miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One duergar disengages and flees.",
+    "source_quote": "One duergar disengages and flees",
+    "subject": "duergar flees",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's attack of opportunity misses the fleeing duergar.",
+    "source_quote": "Gyrgum's attack of opportunity misses",
+    "subject": "Gyrgum AoO miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The remaining duergar slavers use innate magic to enlarge themselves to giant proportions.",
+    "source_quote": "The remaining duergar slavers use their innate magic to enlarge themselves to giant proportions",
+    "subject": "duergar enlarge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One enlarged duergar stays invisible.",
+    "source_quote": "One stays invisible while enlarged",
+    "subject": "duergar remains invisible",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido lies on the ground pretending to be invisible.",
+    "source_quote": "Buppido, the derro companion, lies on the ground pretending to be invisible",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM corrects himself, noting that Buppido is a derro and never turned invisible.",
+    "source_quote": "The GM corrects himself: Buppido is a derro, not a duergar, so he never actually turned invisible",
+    "subject": "GM correction Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido asks if the GM can tell the difference between a derro and a duergar.",
+    "source_quote": "Buppido: \"Derro, not a duergar. Can't you tell the difference?\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM reveals that the captive is Spiderbait, one of the two goblins who helps the party.",
+    "source_quote": "The GM reveals the captive is Spiderbait, \"one of the two goblins that helps you.\"",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses that he likes Spiderbait.",
+    "source_quote": "Thorin: \"Oh, I like that guy.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes the party keeps the boat and its chest if they kill all the duergar.",
+    "source_quote": "The GM notes the party keeps the boat and its chest if they kill all the duergar",
+    "subject": "GM loot rules",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM suggests a captured duergar might be a useful guide.",
+    "source_quote": "He adds that a captured duergar \"might be a useful guide.\"",
+    "subject": "GM advice on capture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a Feinting Attack plus Hill Strike on the enlarged duergar for 8 and then 6 more damage.",
+    "source_quote": "Thorin uses a Feinting Attack plus Hill Strike on the enlarged duergar for 8 and then 6 more damage",
+    "subject": "Thorin hits enlarged duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The enlarged duergar saves against prone with a 17.",
+    "source_quote": "The duergar saves against prone with a 17",
+    "subject": "duergar resists prone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir pummels a duergar with unarmed strikes until it falls.",
+    "source_quote": "Zalthir pummels a duergar with a series of unarmed strikes until it falls",
+    "subject": "Zalthir kills duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz finishes off a duergar with Magic Missile.",
+    "source_quote": "Daz finishes off another with Magic Missile",
+    "subject": "Daz kills duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar Daz killed had only 2 hit points left and took 6 force damage.",
+    "source_quote": "The duergar Daz killed had only 2 hit points left and took 6 force damage",
+    "subject": "duergar death",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The dead duergar shrinks to normal size and falls into the water, leaving floating blood.",
+    "source_quote": "He shrinks to normal size as the magic ends and falls into the water, leaving floating blood",
+    "subject": "duergar shrinks",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The duergar killed by Daz is dead, having taken 6 force damage from Magic Missile.",
+    "source_quote": "The duergar Daz killed had only 2 hit points left and took 6 force damage",
+    "subject": "duergar",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum shouts for someone to leave a duergar out of the darkness.",
+    "source_quote": "Gyrgum, frustrated by the darkness, shouts \"Leave one of them not in darkness.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum coats the fleeing duergar in a caustic, acidic brew.",
+    "source_quote": "Gyrgum repeatedly coats the slavers in Tasha's Caustic Brew",
+    "subject": "Gyrgum Caustic Brew",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The acid from Tasha's Caustic Brew deals 2d4 damage at the start of each turn.",
+    "source_quote": "The acid deals 2d4 at the start of each turn",
+    "subject": "Caustic Brew effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A duergar attempting to flee with Spiderbait drops the prisoner to prioritize escape.",
+    "source_quote": "One duergar attempts to flee with Spiderbait but eventually drops the prisoner to prioritize his own escape",
+    "subject": "duergar drops prisoner",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM describes duergar number three as abandoning the prisoner to run.",
+    "source_quote": "The GM describes duergar number three as \"like, screw this prisoner stuff. I'm running out of here.\"",
+    "subject": "GM description of duergar 3",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits for 6 damage with advantage from Vex.",
+    "source_quote": "Thorin hits for 6 with advantage from Vex",
+    "subject": "Thorin hits duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin misses an Action Surge attack.",
+    "source_quote": "then misses an Action Surge attack",
+    "subject": "Thorin misses Action Surge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir kills another duergar, dealing 4 damage followed by the finishing blow.",
+    "source_quote": "Zalthir kills another duergar (4 damage, then the finishing blow)",
+    "subject": "Zalthir kills duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's follow-up attack without advantage misses.",
+    "source_quote": "His follow-up without advantage misses",
+    "subject": "Zalthir misses",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The duergar killed by Zalthir is dead.",
+    "source_quote": "Zalthir kills another duergar (4 damage, then the finishing blow)",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires a crossbow with disadvantage at the enlarged, invisible last duergar and misses.",
+    "source_quote": "Daz fires a crossbow with disadvantage at the enlarged, invisible last duergar and misses",
+    "subject": "Daz crossbow miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's second Caustic Brew on the last duergar leaves him doubly acidified.",
+    "source_quote": "Gyrgum's second Caustic Brew on the last duergar leaves him \"doubly acidified\"",
+    "subject": "Gyrgum second Caustic Brew",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The last duergar takes 8 acid damage from Gyrgum's attack.",
+    "source_quote": "he takes 8 acid damage",
+    "subject": "Gyrgum damages duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin explains how advantage and disadvantage cancel using a blackjack analogy.",
+    "source_quote": "Thorin explains how advantage and disadvantage cancel: \"It's not like counting cards in blackjack, right?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin delivers a final, non-lethal blow, knocking the last duergar unconscious for interrogation.",
+    "source_quote": "Thorin delivers a final, non-lethal blow to the last remaining duergar, knocking him unconscious for later interrogation",
+    "subject": "Thorin knocks duergar out",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's final blow is a Feinting Attack at a straight roll for 12 damage.",
+    "source_quote": "The blow is a Feinting Attack at a straight roll for 12 damage",
+    "subject": "Thorin damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states that the party wants to capture the duergar and make him talk.",
+    "source_quote": "Thorin says, \"I think we want to capture him and we want to make him talk.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last remaining duergar is unconscious, having been knocked out by Thorin.",
+    "source_quote": "knocking him unconscious for later interrogation",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dispels the magical darkness at the end of combat.",
+    "source_quote": "Zalthir dispels the darkness as the combat ends",
+    "subject": "Zalthir dispels darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is rescued from the duergar.",
+    "source_quote": "revealing the defeated slavers and the rescued Spiderbait",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,268 @@
+[
+  {
+    "type": "thread",
+    "fact": "The party deliberates over the political fallout of revealing the corrupted dragon egg to various factions.",
+    "source_quote": "The party discusses the potential consequences of revealing the corrupted dragon egg to various factions in the city.",
+    "subject": "corrupted dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon egg was corrupted by a demon that possessed it.",
+    "source_quote": "it was corrupted by a demon that possessed it",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The DM states the egg \"might be possessed by a demon. Details.\"",
+    "source_quote": "It \"might be possessed by a demon. Details.\"",
+    "subject": "dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The assassin gangster is a paying party interested in the egg.",
+    "source_quote": "The assassin gangster, whom they already had scrubbed from the kill list.",
+    "subject": "assassin gangster",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard leader wants proof of the Council's corruption.",
+    "source_quote": "The Stone Guard leader, who wants proof of the Council's corruption.",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud wants to know everything about the situation.",
+    "source_quote": "Themberchaud, who wants to know everything.",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want the egg back.",
+    "source_quote": "The Keepers of the Flame, who want the egg back.",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes the party holds documentation on the Assassin's Guild.",
+    "source_quote": "Daz notes they hold documentation on the Assassin's Guild",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Assassin's Guild owners do not know the party holds documentation on them.",
+    "source_quote": "documentation on the Assassin's Guild that its owners don't know about",
+    "subject": "Assassin's Guild",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party burned a table to make the Assassin's Guild owners believe the documentation was burned.",
+    "source_quote": "because we burn the table and they think it's burned",
+    "subject": "burning the table",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead are the weaponsmiths.",
+    "source_quote": "Clan Ironhead, the weaponsmiths",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Ironhead would deal with the gnomes if the Deepking were removed.",
+    "source_quote": "would deal with the gnomes if the Deepking were removed",
+    "subject": "Clan Ironhead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud is described as \"too fat and lazy.\"",
+    "source_quote": "Themberchaud is \"too fat and lazy.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "It would take Themberchaud years to realise the party isn't coming back.",
+    "source_quote": "It would take him years to realise the party isn't coming back",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is the Stone Guard leader.",
+    "source_quote": "the Stone Guard leader Errde Blackskull",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Leaving without the Stone Guard's knowledge would likely bring the drow after the party.",
+    "source_quote": "Leaving without the Stone Guard's knowledge would likely bring the drow after them.",
+    "subject": "drow pursuit",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers would pursue the party to the end of time if betrayed.",
+    "source_quote": "The Keepers would pursue them to the end of time if betrayed.",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers wanted to hatch the egg to have a dragon of their own.",
+    "source_quote": "The Keepers wanted to hatch the egg to have a dragon of their own",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers intend to use the new dragon to take on the other dragon.",
+    "source_quote": "to take on the other dragon",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum determines that the dragon egg will hatch in approximately forty-four weeks.",
+    "source_quote": "Gyrgum uses his religious knowledge to determine that the dragon egg will hatch in approximately forty-four weeks.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 12 with a -1 modifier on a Nature check.",
+    "source_quote": "He first rolled Nature (a 12, with a \u22121 modifier)",
+    "subject": "hatching time roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled an 18 on a Religion check (+5 modifier).",
+    "source_quote": "then switched to Religion (+5) for an 18",
+    "subject": "hatching time roll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Appendix A states the egg \"will hatch in 44 weeks of its own accord.\"",
+    "source_quote": "Appendix A: the egg \"will hatch in 44 weeks of its own accord.\"",
+    "subject": "Appendix A",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's lesser restoration would not remove the demon from the egg.",
+    "source_quote": "Gyrgum's lesser restoration would not remove the demon",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Purging the demon from the egg would require research.",
+    "source_quote": "purging it would require research",
+    "subject": "demon removal",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The DM describes the Keepers as \"a slightly psychotic group of people.\"",
+    "source_quote": "a slightly psychotic group of people",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wishes for a baby dragon party member.",
+    "source_quote": "Thorin wishes for a baby dragon party member",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin unintentionally slights Zalthir the dragonborn with his wish.",
+    "source_quote": "unintentionally slighting Zalthir the dragonborn",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin apologises to Zalthir.",
+    "source_quote": "and apologises",
+    "subject": "Thorin's apology",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar would likely be delighted to receive the egg and let the party leave.",
+    "source_quote": "Gartokkar, given the egg, would likely be delighted and let them leave the city",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The deal with Gartokkar could be parlayed into rights to buy minerals.",
+    "source_quote": "The deal could also be parlayed into rights to buy the minerals they want",
+    "subject": "trade rights deal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to return the egg to Gartokkar.",
+    "source_quote": "The party ultimately decides to return the egg to Gartokkar",
+    "subject": "decision to return egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was tempted by the narrative appeal of all-out crossfire chaos.",
+    "source_quote": "Gyrgum was tempted by the narrative appeal of all-out crossfire chaos",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The city keeps part of its population enslaved.",
+    "source_quote": "it keeps part of its population enslaved",
+    "subject": "city",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The city captures slaves.",
+    "source_quote": "captures slaves",
+    "subject": "city",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The city is run by a mad king.",
+    "source_quote": "is run by a mad king",
+    "subject": "city",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum advocated simply returning the egg.",
+    "source_quote": "Gyrgum still advocated simply returning the egg",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum cited too many real-world parallels as a reason for caution.",
+    "source_quote": "citing too many real-world parallels",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

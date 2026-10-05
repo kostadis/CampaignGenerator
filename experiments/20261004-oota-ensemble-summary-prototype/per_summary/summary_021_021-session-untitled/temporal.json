@@ -1,0 +1,184 @@
+[
+  {
+    "type": "event",
+    "fact": "The dragon egg will hatch of its own accord in forty-four weeks.",
+    "source_quote": "the egg would hatch of its own accord in forty-four weeks",
+    "subject": "egg hatching timeline",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM ruled the egg will hatch in 44 weeks of its own accord.",
+    "source_quote": "the egg \"will hatch in 44 weeks of its own accord.\"",
+    "subject": "egg hatching timeline",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a -1 modifier in Nature.",
+    "source_quote": "Gyrgum had only a \u22121 in Nature",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled an 18 on his Religion check to determine the egg's hatching time.",
+    "source_quote": "he rolled his dragon check with Religion instead, for an 18",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "It would take Themberchaud years to realize the party isn't coming back.",
+    "source_quote": "It would take him years to realise the party isn't coming back",
+    "subject": "Themberchaud awareness delay",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are close to the king.",
+    "source_quote": "Led by Gartokkar and close to the king",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame want to hatch the egg to have a dragon of their own to take on the other dragon.",
+    "source_quote": "The Keepers wanted to hatch the egg to have a dragon of their own to take on the other dragon",
+    "subject": "The Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds 170 gold pieces in the chamber.",
+    "source_quote": "Among its sparse loot the party found 170 gold pieces",
+    "subject": "gold loot",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "As an improvised weapon, the baby rattle deals 1d4 damage.",
+    "source_quote": "As a weapon it would count as a rock, doing 1d4 damage",
+    "subject": "baby rattle damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four Derro guards are stationed at a heavy double door.",
+    "source_quote": "face to face with four Derro guards stationed at a heavy double door",
+    "subject": "Derro guards count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guards have 13 hit points each.",
+    "source_quote": "Thorin notes they have 13 hit points each.",
+    "subject": "Derro guards hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guards are led to believe they faced a 20th-level drow archmage.",
+    "source_quote": "convinced they faced a supremely powerful drow archmage",
+    "subject": "Derro guards rumor claim",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Derro guards believe the threat was a 20th-level drow mage.",
+    "source_quote": "They would say a 20th-level drow mage had swept through the Council's stronghold",
+    "subject": "Derro guards rumor claim level",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "No party member has a passive Perception score higher than 18.",
+    "source_quote": "No one's passive Perception beat 18.",
+    "subject": "party awareness range",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A random encounter roll of 16 triggers the ambush.",
+    "source_quote": "A random encounter roll of 16 triggers the ambush.",
+    "subject": "ambush trigger",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Trapper has 85 hit points.",
+    "source_quote": "The Trapper has 85 hit points",
+    "subject": "Trapper hit points",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a natural 1, resulting in an initiative score of 0.",
+    "source_quote": "Thorin rolls a natural 1 for a 0 initiative",
+    "subject": "Thorin initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fails a DC 13 Dexterity save.",
+    "source_quote": "Gyrgum fails a DC 13 Dexterity save",
+    "subject": "Gyrgum Dex save",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The first instance of smothering damage dealt to Gyrgum is 15 points.",
+    "source_quote": "the DM called 15, then 20 points",
+    "subject": "smothering damage 1",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The second instance of smothering damage dealt to Gyrgum is 20 points.",
+    "source_quote": "the DM called 15, then 20 points",
+    "subject": "smothering damage 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fails his attempt to break free with a roll of 9.",
+    "source_quote": "Gyrgum tries to break free and fails with a 9.",
+    "subject": "Gyrgum escape attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party is confirmed to be at level 4.",
+    "source_quote": "The party is confirmed to be at level 4.",
+    "subject": "party level",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's longsword attack deals 12 damage.",
+    "source_quote": "The longsword hits for 12.",
+    "subject": "Thorin weapon damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Hill Strike feature adds 4 damage.",
+    "source_quote": "His Hill Strike adds 4 damage",
+    "subject": "Thorin hill strike damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Hill Strike forces a DC 14 Strength save against falling prone.",
+    "source_quote": "DC 14 Strength save against falling prone",
+    "subject": "Thorin hill strike save",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The group spent 40 minutes discussing networking devices in the previous session.",
+    "source_quote": "next week, we will not spend 40 minutes discussing Ubiquiti networking devices",
+    "subject": "session duration",
+    "quote_verified": true
+  }
+]

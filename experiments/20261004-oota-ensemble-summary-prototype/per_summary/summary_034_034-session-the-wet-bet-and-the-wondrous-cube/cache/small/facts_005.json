@@ -1,0 +1,135 @@
+[
+  {
+    "type": "event",
+    "fact": "The party reaches a junction with four passages heading west and a fifth route to the east.",
+    "source_quote": "The party reaches a junction with four passages heading west and a fifth route to the east.",
+    "subject": "junction selection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses a virtual d5 to select one of the western passages.",
+    "source_quote": "Thorin uses another virtual die\u2014this time a d5\u2014to select one of the western passages.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin throws a dart at a patch of water to test for properties.",
+    "source_quote": "Before proceeding, he throws a dart at another patch of water.",
+    "subject": "dart test",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's passive perception fails to detect a concealed pit trap.",
+    "source_quote": "Thorin\u2019s passive perception fails to detect a concealed pit trap.",
+    "subject": "pit trap detection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin falls into the pit but manages to grab the edge.",
+    "source_quote": "He sees the pit a moment too late and begins to fall, but succeeds in grabbing its edge.",
+    "subject": "Thorin falls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin scrambles out of the pit with a second effort, aided by his strength.",
+    "source_quote": "A second effort allows him to scramble out, aided substantially by his strength.",
+    "subject": "Thorin escapes",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A black pudding climbs out of the pit as Thorin dusts himself off.",
+    "source_quote": "As Thorin dusts himself off, a black pudding climbs out of the pit.",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes that the temple is offering the speed dating version of oozes, puddings, and gelatinous cubes.",
+    "source_quote": "The party jokes that the temple is offering \u201cthe speed dating version of like oozes, puddings, and cubes of gelatin.\u201d",
+    "subject": "party joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Arcane knowledge connects the concentration of oozes to Juiblex, the demon lord associated with such creatures.",
+    "source_quote": "Arcane knowledge connects the concentration of oozes to Juiblex, the demon lord associated with such creatures.",
+    "subject": "Juiblex",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The group remembers that black puddings can split when hit with certain types of weapons.",
+    "source_quote": "The group remembers that black puddings can split when hit with certain types of weapons.",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes retreating roughly 25 feet to draw the creature into a larger chamber.",
+    "source_quote": "Thorin proposes retreating roughly 25 feet and drawing it into a larger chamber.",
+    "subject": "retreat strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group plans to keep the pudding out of melee range and attack while withdrawing.",
+    "source_quote": "His plan is to keep it out of melee range, attack while withdrawing, and avoid its corrosive attacks entirely.",
+    "subject": "combat strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group executes the strategy and defeats the pudding without allowing it to catch them.",
+    "source_quote": "The group executes the strategy successfully and defeats the pudding without allowing it to catch them.",
+    "subject": "black pudding defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The black pudding is destroyed by ranged attacks.",
+    "source_quote": "destroying it with ranged attacks",
+    "subject": "black pudding",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool consumes the remains of the black pudding.",
+    "source_quote": "Glabbagool eagerly consumed the remains.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The pit is empty when the party later returns to it.",
+    "source_quote": "When the party later returns to the pit, it is empty.",
+    "subject": "pit trap",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin elects to continue down the passage because the unexplored alternatives are equally uncertain.",
+    "source_quote": "Thorin elects to continue down the passage because the unexplored alternatives are equally uncertain.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin makes a point of searching much more carefully for additional traps after his near fall.",
+    "source_quote": "After his near fall, he makes a point of searching much more carefully for additional traps.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party reaffirms that splitting the party is a bad idea.",
+    "source_quote": "The party remains together, reaffirming that \u201cIt\u2019s always a bad idea to split the party.\u201d",
+    "subject": "party cohesion",
+    "quote_verified": true
+  }
+]

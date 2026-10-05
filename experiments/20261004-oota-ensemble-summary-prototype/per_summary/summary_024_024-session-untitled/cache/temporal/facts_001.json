@@ -1,0 +1,37 @@
+[
+  {
+    "type": "monster",
+    "fact": "Three derro cultists are affected by the acidic pain spell.",
+    "source_quote": "Gyrgum maintains a spell that causes acidic pain to three of the derro enemies",
+    "subject": "derro cultists count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro enemy takes 5 damage from the acidic pain spell.",
+    "source_quote": "One takes 5 damage before moving",
+    "subject": "derro acid damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum takes 2 points of damage from a hooked spear.",
+    "source_quote": "Gyrgum is struck by a hooked spear and takes 2 points of damage",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spear blow forces a DC 9 Strength save on Gyrgum.",
+    "source_quote": "The spear blow forces a DC 9 Strength save",
+    "subject": "Gyrgum prone check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is knocked prone.",
+    "source_quote": "which Gyrgum fails. He is knocked prone",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,268 @@
+[
+  {
+    "type": "location",
+    "fact": "The party loots a chamber described as more of a laboratory or office space than a lair.",
+    "source_quote": "The chamber was more a laboratory than a lair",
+    "subject": "Council Lab 021.03",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir asks if there are TPS reports in the room.",
+    "source_quote": "Zalthir asks whether there are \"TPS reports.\"",
+    "subject": "Council Lab 021.03",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a baby rattle that is heavier than a child could comfortably hold.",
+    "source_quote": "a baby rattle... The rattle was heavier than any child could comfortably hold",
+    "subject": "baby rattle",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The baby rattle is crafted from materials far too durable for an infant's toy.",
+    "source_quote": "crafted from materials far too durable for an infant's toy",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The baby rattle bears the name of Clan Thrazgad.",
+    "source_quote": "it did bear the name of Clan Thrazgad, a Duergar steelsmithing clan",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The baby rattle has no gems and no inlays.",
+    "source_quote": "It carried no gems and no inlays",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party realises the baby rattle was made for a dragon hatchling to gnaw on.",
+    "source_quote": "this rattle had been made for a dragon hatchling to gnaw on",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The grip of the baby rattle is made of much stronger material than any baby toy.",
+    "source_quote": "The part where the fist would grip is made of a much stronger material than any baby toy",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "As a weapon, the baby rattle counts as a rock and does 1d4 damage.",
+    "source_quote": "As a weapon it would count as a rock, doing 1d4 damage",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The baby rattle could be of artistic significance to the right person.",
+    "source_quote": "It could be of artistic significance to the right person",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The baby rattle could serve as a distraction for some other creature.",
+    "source_quote": "or serve as a distraction for some other creature",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party tucks the baby rattle away, sensing it might prove useful as leverage or evidence.",
+    "source_quote": "The party tucked it away, sensing it might prove useful as leverage or evidence",
+    "subject": "baby rattle",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Clan Thrazgad is a Duergar steelsmithing clan.",
+    "source_quote": "Clan Thrazgad, a Duergar steelsmithing clan",
+    "subject": "Clan Thrazgad",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum guesses the baby rattle had been commissioned.",
+    "source_quote": "Gyrgum guessed it had been commissioned",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is mentioned by the DM as someone with whom a deal could be sweetened using the rattle.",
+    "source_quote": "sweeten a deal with Themberchaud",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party loots the area and finds 170 gold pieces.",
+    "source_quote": "finding 170 gold pieces and a mysterious, heavy baby rattle",
+    "subject": "looting session",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to return the dragon egg to Gartokkar and the Keepers of the Flame.",
+    "source_quote": "The party decides to return the dragon egg to Gartokkar and the Keepers of the Flame",
+    "subject": "political decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is to receive the dragon egg from the party.",
+    "source_quote": "return the dragon egg to Gartokkar and the Keepers of the Flame",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party decides to withhold the incriminating list of names from Errde.",
+    "source_quote": "The group chooses to withhold the incriminating list of names from Errde",
+    "subject": "Errde",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir states they will selectively respond without revealing the existence of the list.",
+    "source_quote": "Zalthir: \"We will selectively respond without saying the existence of the list.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to tell Gartokkar about a battle against cultists who are all dead.",
+    "source_quote": "The planned story for Gartokkar is a tough battle against cultists who are all dead",
+    "subject": "planned story for Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party plans to tell Gartokkar that the egg was recovered with no evidence of who was behind it.",
+    "source_quote": "the egg recovered, and \"no evidence\" of who was behind it",
+    "subject": "planned story for Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes they can tell the assassin gangster he is off the hook.",
+    "source_quote": "Thorin notes they can go tell the assassin gangster he's off the hook",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The assassin gangster is to be told he is off the hook.",
+    "source_quote": "go tell the assassin gangster he's off the hook",
+    "subject": "assassin gangster",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir describes himself as trying to play a good character.",
+    "source_quote": "Zalthir is \"trying to play a good character this time.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes himself as having zero filter and being chaotic neutral.",
+    "source_quote": "Thorin has \"zero filter\" and is chaotic neutral, out for himself",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes himself as trying to be neutral good.",
+    "source_quote": "Gyrgum is \"trying to be neutral good.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir insists on looting the corpses and checking the shrine for magic items.",
+    "source_quote": "Zalthir insists on looting the corpses and checking the shrine for magic items",
+    "subject": "looting corpses",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There exists an incriminating list of names that the party chooses to withhold.",
+    "source_quote": "withhold the incriminating list of names from Errde",
+    "subject": "incriminating list of names",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are a group to whom the dragon egg will be returned.",
+    "source_quote": "return the dragon egg to Gartokkar and the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party plans to report that cultists were involved and are all dead.",
+    "source_quote": "tough battle against cultists who are all dead",
+    "subject": "cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM raises the possibility of staging a coup against the Deepking.",
+    "source_quote": "The DM raises staging a coup against the Deepking",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM suggests bringing everything to the Deepking so he goes after everyone at once.",
+    "source_quote": "bringing everything to the Deepking so he goes after everyone at once",
+    "subject": "political strategy discussion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin advocates moving on from the town and leaving things ambiguous.",
+    "source_quote": "Thorin: \"I think we should move on from this town and leave things as ambiguous as we can.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks if it would be useful to plant the rattle on anybody.",
+    "source_quote": "Gyrgum asks whether it would be useful to plant the rattle on anybody",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests keeping the rattle in their back pocket in case they decide to destroy the town.",
+    "source_quote": "Zalthir says to keep it \"in our back pocket\" in case they ever decide to destroy the town",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum laments that he should build a table of all the factions.",
+    "source_quote": "Gyrgum laments he should build a table of all the factions",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir notes that the DM either has a table or the AI has captured it.",
+    "source_quote": "Zalthir notes that given how often the DM has repeated it, \"he either has a table or the AI has captured it.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  }
+]

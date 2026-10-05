@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "A small chest rests on the lakebed among wreckage.",
+    "source_quote": "Daz spotted a small chest resting on the lakebed",
+    "subject": "lakebed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Several aquatic zombies surround the sunken chest on the lakebed.",
+    "source_quote": "surrounded by the undead",
+    "subject": "aquatic zombies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that floating the chest with Shape Water is too great a stretch of the rules.",
+    "source_quote": "The DM called that a stretch of the rules",
+    "subject": "DM ruling on Shape Water",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin volunteers to dive to the chest because someone other than a squishy magic-user should do it.",
+    "source_quote": "\"I'm going to regret this, but, you know, somebody's got to do it.\"",
+    "subject": "Thorin volunteers to dive",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Shield of Faith on Thorin.",
+    "source_quote": "Gyrgum cast Shield of Faith on Thorin",
+    "subject": "Shield of Faith cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz shapes a bubble of breathable air for Thorin.",
+    "source_quote": "Daz shaped a bubble of breathable air",
+    "subject": "Air bubble created",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir creates magical darkness around the dive site.",
+    "source_quote": "Zalthir created magical darkness around the dive site",
+    "subject": "Magical darkness created",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin descends into the water and returns to the surface with the chest without stirring the undead.",
+    "source_quote": "Thorin slipped into the water and descended without making a sound... He returned to the surface with the chest, and not a single zombie had stirred.",
+    "subject": "Thorin retrieves chest",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin successfully retrieved the chest from the lakebed.",
+    "source_quote": "He returned to the surface with the chest",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The aquatic zombies remained oblivious to Thorin's dive due to the magical darkness.",
+    "source_quote": "blind the zombies lurking below... while the undead remained oblivious",
+    "subject": "aquatic zombies",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The chest contains 120 silver pieces, 30 gold pieces, four spell scrolls, and a drifting globe of light.",
+    "source_quote": "found 120 silver and 30 gold pieces, four spell scrolls, and a drifting globe of light",
+    "subject": "chest contents",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum Redmarch suggested he deserved a share of the treasure because it belonged to his crew.",
+    "source_quote": "Brannum immediately suggested he deserved a share, since the treasure had belonged to his crew",
+    "subject": "Brannum Redmarch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rebuffs Brannum by inviting him to argue with the zombies and spraying water around him.",
+    "source_quote": "inviting him to argue it out with the zombies below and twinkling his fingers to send water spraying up around the duergar",
+    "subject": "Daz rebuffs Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Find Traps on the limestone islet and finds no traps.",
+    "source_quote": "Gyrgum... casts Find Traps and finds none",
+    "subject": "Gyrgum casts Find Traps",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses a mending cantrip to repair the boat's hull.",
+    "source_quote": "Gyrgum uses a mending cantrip to repair the boat's hull",
+    "subject": "Gyrgum repairs boat",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a driftglobe (drifting globe of light) recovered from the chest.",
+    "source_quote": "a drifting globe of light",
+    "subject": "driftglobe",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is researching whether the driftglobe's Daylight spell dispels Zalthir's Darkness spell, pending determination of Darkness's cast level.",
+    "source_quote": "Daylight dispels darkness from spells of 3rd level or lower, and the DM leaves the question of Darkness's cast level for further research",
+    "subject": "Darkness vs Daylight interaction",
+    "quote_verified": true
+  }
+]

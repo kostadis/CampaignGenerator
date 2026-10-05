@@ -1,0 +1,23 @@
+[
+  {
+    "type": "location",
+    "fact": "The junction consists of four passages heading west and one route to the east.",
+    "source_quote": "four passages heading west and a fifth route to the east",
+    "subject": "junction passage count",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses a d5 to select one of the western passages.",
+    "source_quote": "Thorin uses another virtual die\u2014this time a d5\u2014to select one of the western passages",
+    "subject": "Thorin path selection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party retreats roughly 25 feet from the pit to engage the black pudding.",
+    "source_quote": "Thorin proposes retreating roughly 25 feet",
+    "subject": "retreat distance",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,149 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gyrgum senses \"something off\" about the duergar merchants.",
+    "source_quote": "Gyrgum rolls Insight (15) and senses \"there's something off.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A merchant breaks off a sale to threaten to kill Gyrgum.",
+    "source_quote": "the merchant broke off mid-sale to threaten to kill him",
+    "subject": "merchant threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant carries on with the sale as if the threat had not happened.",
+    "source_quote": "then carried on as if nothing had happened",
+    "subject": "merchant resumption",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A duergar merchant constantly asks the opinion of a twin brother who does not exist.",
+    "source_quote": "The party observes a duergar merchant constantly asking the opinion of a non-existent twin brother.",
+    "subject": "twin-consulting duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Another duergar confirms the merchant has no twin and is an only child.",
+    "source_quote": "there's no twin brother. He's an only child.",
+    "subject": "twin-consulting duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders if the merchants are talking to invisible duergar.",
+    "source_quote": "Gyrgum wonders whether they are talking to invisible duergar.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz wonders if the merchants can see into the Ethereal Plane.",
+    "source_quote": "Daz wonders whether they can see into the Ethereal Plane: \"Is it like they see dead people?\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Several duergar merchants give wildly different prices for the same goods from one moment to the next.",
+    "source_quote": "Others quoted wildly different prices for the same goods from one moment to the next",
+    "subject": "price fluctuations",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The erratic merchants insist it is the buyers who are changing the terms.",
+    "source_quote": "insisting it was the buyers who kept changing the terms",
+    "subject": "erratic merchants",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A duergar merchant turns completely invisible in the middle of a transaction.",
+    "source_quote": "one merchant turned completely invisible in the middle of a transaction",
+    "subject": "invisible duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The invisible duergar merchant continues speaking as though nothing has happened.",
+    "source_quote": "simply continued speaking as though nothing had happened",
+    "subject": "invisible speech",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum steps outside the bazaar.",
+    "source_quote": "then steps outside the bazaar",
+    "subject": "Gyrgum leaves bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A stone giant arrives just as Gyrgum steps outside.",
+    "source_quote": "then steps outside the bazaar and looks around just as the stone giant arrives.",
+    "subject": "stone giant arrival",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum and Hemeth leave to go on an errand.",
+    "source_quote": "Meanwhile, Brannum and Hemeth go off on their errand",
+    "subject": "Brannum and Hemeth errand",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum is currently away on an errand with Hemeth.",
+    "source_quote": "Brannum and Hemeth go off on their errand",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hemeth is currently away on an errand with Brannum.",
+    "source_quote": "Brannum and Hemeth go off on their errand",
+    "subject": "Hemeth",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar of Gracklstugh are exhibiting deeply unsettling and erratic behaviors.",
+    "source_quote": "Gyrgum began to notice something deeply unsettling about the city's inhabitants",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The creeping madness of the Underdark has seeped into the stones of Gracklstugh.",
+    "source_quote": "The creeping madness that had haunted the party throughout their time in the Underdark seemed to have seeped into the very stones of Gracklstugh itself",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The kuo-toa previously exhibited frenzy.",
+    "source_quote": "It had already shown itself in the frenzy of the kuo-toa",
+    "subject": "kuo-toa",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A summoned horror was previously summoned by the kuo-toa.",
+    "source_quote": "their summoned horror",
+    "subject": "summoned horror",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The cause of the erratic behavior in Gracklstugh is unknown.",
+    "source_quote": "something very odd about everybody's behavior as if they're slightly not quite there",
+    "subject": "source of madness",
+    "quote_verified": true
+  }
+]

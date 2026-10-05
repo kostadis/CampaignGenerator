@@ -1,0 +1,16 @@
+[
+  {
+    "type": "npc",
+    "fact": "Two members of Captain Errde Blackskull's clan have died under mysterious circumstances.",
+    "source_quote": "two members of her own clan had died",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The clan victim was in the prime of his health before dying.",
+    "source_quote": "The victim was in the prime of his health",
+    "subject": "clan victim health status",
+    "quote_verified": true
+  }
+]

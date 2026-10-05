@@ -1,0 +1,163 @@
+[
+  {
+    "type": "event",
+    "fact": "The party reviewed their recovered inventory, which included a bedroll, rope, tinderbox, torches, and a waterskin.",
+    "source_quote": "rifling through what little they had recovered during their escape: a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "inventory review",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a bedroll.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "bedroll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has rope.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "rope",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a tinderbox.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "tinderbox",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has torches.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "torches",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has a waterskin.",
+    "source_quote": "a bedroll, rope, tinderbox, torches, and a waterskin",
+    "subject": "waterskin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party has 175 gold pieces in store credit.",
+    "source_quote": "The credit came to 175 gold pieces",
+    "subject": "store credit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The store credit was provided as an advance.",
+    "source_quote": "given as an advance",
+    "subject": "store credit",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The store credit is valid only at this particular store.",
+    "source_quote": "good only at this particular store",
+    "subject": "store credit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The general store sells only common potions and scrolls.",
+    "source_quote": "Only common potions and scrolls are for sale here, not magic weapons",
+    "subject": "general store",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The general store does not sell magic weapons.",
+    "source_quote": "not magic weapons",
+    "subject": "general store",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pricing guide used is the GM's 'Sane Magical Prices' document.",
+    "source_quote": "priced from the GM's \"Sane Magical Prices\" price book",
+    "subject": "Sane Magical Prices",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The 'Sane Magical Prices' document was shared on February 28, 2021.",
+    "source_quote": "shared back on February 28, 2021",
+    "subject": "shared document date",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum learned he can only cast scrolls containing spells from his own class list.",
+    "source_quote": "learned that he could only cast scrolls of spells on his own class list",
+    "subject": "Gyrgum scroll check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin added a week's worth of rations to his gear.",
+    "source_quote": "At the GM's urging, Thorin adds them to his gear",
+    "subject": "Thorin rations purchase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum acquired a scroll of Guiding Bolt.",
+    "source_quote": "Gyrgum buys a scroll of Guiding Bolt",
+    "subject": "Gyrgum scroll purchase",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz was left with 105 gold after purchases.",
+    "source_quote": "Daz was left with 105 gold",
+    "subject": "Daz funds",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party purchased several potions of healing.",
+    "source_quote": "The party purchases several potions of healing",
+    "subject": "healing potions",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The healing potions are held jointly by the party.",
+    "source_quote": "held jointly",
+    "subject": "healing potions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party ended up with a total of nine healing potions.",
+    "source_quote": "for a total of nine",
+    "subject": "potion count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum reserves his remaining funds for future needs.",
+    "source_quote": "reserves the rest of his funds for later",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The shopkeeper is disappointed that the party does not need magic weapons or magic items.",
+    "source_quote": "shopkeeper was visibly disappointed that \"of all the adventures in all the world, she gets the two who don't need any magic, who don't need any weapons.\"",
+    "subject": "shopkeeper",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Other magic items will become available later when 'the magic guy' arrives.",
+    "source_quote": "Other magic items come later, when \"the magic guy shows up.\"",
+    "subject": "magic items timing",
+    "quote_verified": true
+  }
+]

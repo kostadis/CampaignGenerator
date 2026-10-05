@@ -1,0 +1,198 @@
+[
+  {
+    "type": "npc",
+    "fact": "Dorhun has just departed the scene when the next encounter begins.",
+    "source_quote": "Barely had Dorhun departed",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn materializes out of thin air nearby the party.",
+    "source_quote": "a duergar materialized out of thin air nearby",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar have a habit of materializing out of thin air that disconcerts the party.",
+    "source_quote": "The party was learning that this was a disconcerting habit of the city's inhabitants",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn introduces himself as a member of the Keepers of the Flame.",
+    "source_quote": "He introduced himself as Gartokkar Xundorn of the Keepers of the Flame",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar Xundorn flashes a badge that causes curious onlookers to scatter.",
+    "source_quote": "flashed a badge that sent curious onlookers scattering",
+    "subject": "badge",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame have a sacred duty to tend to the red dragon Themberchaud.",
+    "source_quote": "his order's sacred duty was to tend to the red dragon Themberchaud",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Themberchaud is a red dragon who keeps the city's forges burning.",
+    "source_quote": "who kept the city's forges burning",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Underdark is a lightless depth where wood is nearly impossible to find.",
+    "source_quote": "in the lightless depths of the Underdark, where wood was nearly impossible to find",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking treats the Keepers of the Flame as his most prized advisors.",
+    "source_quote": "the Deepking treated the Keepers as his most prized advisors",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum offers that the party has kindling available if the order is running short on dragons.",
+    "source_quote": "Gyrgum drily offered that they had some kindling available if the order was running short on dragons",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn laughs at Gyrgum's joke.",
+    "source_quote": "Gartokkar laughed",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn dissects Gyrgum's joke with analytical precision, removing all humor.",
+    "source_quote": "dissected the joke with such analytical precision that every trace of humor was methodically extinguished",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar Xundorn invites the party to his quarters by the following day.",
+    "source_quote": "He invited the party to his quarters by the following day",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Gartokkar Xundorn promises the party city passes in exchange for help with a problem.",
+    "source_quote": "he promised city passes",
+    "subject": "city passes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin summarizes the promised help as a limited get-out of jail-free card.",
+    "source_quote": "what Thorin summarized as \"a limited get-out of jail-free card.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM reminds Zalthir of his \"I know a guy\" list.",
+    "source_quote": "the GM reminded Zalthir of his \"I know a guy\" list",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The \"I know a guy\" list allows one favor per city to learn about factions or obtain something useful.",
+    "source_quote": "one favor per city, usable to learn about the factions or obtain something useful",
+    "subject": "\"I know a guy\" list",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks Gartokkar if the order is the \"Keeper of the Old Flame.\"",
+    "source_quote": "Thorin asks whether that means \"Keeper of the Old Flame.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gracklstugh is a society of spies and invisibility with many secret societies.",
+    "source_quote": "Gracklstugh has clans and, in a society of spies and invisibility, many secret societies",
+    "subject": "secret societies",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party perceives Gartokkar as a legal authority with the ability to make other authorities disappear.",
+    "source_quote": "has the ability to make the other authorities disappear",
+    "subject": "Gartokkar Xundorn",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum concludes that the Keepers are not a dragon cult because dragon cults always boast about being dragon cults.",
+    "source_quote": "Gyrgum asks whether this is another dragon cult and concludes it isn't, because dragon cults always boast about being dragon cults",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz notes that dragon cults usually wear purple robes.",
+    "source_quote": "Daz adds that they usually have purple robes",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar offers passes to other parts of the city and help with disclaimers if the party runs afoul of factions or police.",
+    "source_quote": "He offers passes to other parts of the city. He also offers help if they run afoul of other factions or police while acting on his behalf, with \"a standard set of disclaimers.\"",
+    "subject": "Gartokkar's offer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gartokkar invites the party to discuss a specific task at his quarters the following day.",
+    "source_quote": "Gartokkar invites the party to his quarters by the following day to discuss the specific task",
+    "subject": "meeting invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party considers the stone giant as a possible source of information.",
+    "source_quote": "the stone giant, the dragon himself, or asking around the Blade Bazaar",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party considers asking the dragon himself as a source of information.",
+    "source_quote": "the stone giant, the dragon himself, or asking around the Blade Bazaar",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party considers asking around the Blade Bazaar as a source of information.",
+    "source_quote": "the stone giant, the dragon himself, or asking around the Blade Bazaar",
+    "subject": "Blade Bazaar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party settles on getting a drink to gather information.",
+    "source_quote": "They settle on getting a drink",
+    "subject": "getting a drink",
+    "quote_verified": true
+  }
+]

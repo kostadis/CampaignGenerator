@@ -1,0 +1,268 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thorin activates Dawnbringer, emitting actual sunlight in a fifteen-foot radius.",
+    "source_quote": "Thorin activates Dawnbringer, emitting actual sunlight in a fifteen-foot radius",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer emits actual sunlight in a fifteen-foot radius when activated by Thorin.",
+    "source_quote": "Thorin activates Dawnbringer, emitting actual sunlight in a fifteen-foot radius",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The myconids are light-sensitive and suffer while within Dawnbringer's radiance.",
+    "source_quote": "The light-sensitive myconids suffer while within Dawnbringer's radiance",
+    "subject": "myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is immune to the light sensitivity weakness of the myconids.",
+    "source_quote": "although Yestabrod itself is immune to this weakness",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An adult myconid releases a puff of spores that stuns Jimjar.",
+    "source_quote": "An adult myconid releases a puff of spores that stuns Jimjar",
+    "subject": "myconid stun spores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum moves in close to Yestabrod and strikes the creature with a necrotic touch.",
+    "source_quote": "Gyrgum moves in close to Yestabrod and strikes the creature with a necrotic touch",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum acknowledges the danger of touching Yestabrod but proceeds, saying \"You know, you only live once.\"",
+    "source_quote": "\u201cYou know, you only live once.\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod uses a legendary ability to explode a nearby corpse, absorbing the offal to heal his wounds.",
+    "source_quote": "Yestabrod uses a legendary ability to explode a nearby corpse, absorbing the offal to heal his wounds",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The garden contains enough buried corpses to fuel Yestabrod's ability to explode them.",
+    "source_quote": "The garden contains enough buried corpses to fuel this ability",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes a fireball that badly burns three clustered creatures.",
+    "source_quote": "Daz unleashes a fireball that badly burns three clustered creatures",
+    "subject": "Daz's fireball",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM clarifies that the spores had already been emitted prior to the fireball blast.",
+    "source_quote": "the GM clarified that the spores had already been emitted",
+    "subject": "GM clarification on spores",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod causes another corpse to explode in a shower of acidic gore, injuring several party members.",
+    "source_quote": "Yestabrod retaliates by causing another corpse to explode in a shower of acidic gore, injuring several party members",
+    "subject": "Yestabrod's second corpse eruption",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod moves closer to the party, cackles, and releases a thick cloud of spores.",
+    "source_quote": "Yestabrod moves closer to the party, cackles, and releases a thick cloud of spores",
+    "subject": "Yestabrod spore cloud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz fails to resist the spores and receives a secret roleplaying alteration regarding a secret madness.",
+    "source_quote": "Daz and Zalthir fail to resist the spores and are each instructed to make a private roll determining the nature of their madness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz asks whether he should conceal his secret madness alteration from the others.",
+    "source_quote": "Daz receives a secret roleplaying alteration and asks whether he should conceal it from the others",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir fails to resist the spores and is told his worldview has suddenly shifted, though he can still act normally in combat.",
+    "source_quote": "Zalthir is told that his worldview has suddenly shifted, although he remains capable of acting normally in combat",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The madness can be cured with appropriate restorative magic if the victims recognize that they need treatment.",
+    "source_quote": "The party notes that the madness can be cured with appropriate restorative magic, provided the victims recognize that they need treatment",
+    "subject": "madness cure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith's head explodes during the battle, turning him into a mindless drow spore servant.",
+    "source_quote": "The party's former companion Sarith suffers a horrific transformation as his head explodes, turning him into a drow spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow spore servant is the transformed state of the former companion Sarith.",
+    "source_quote": "turning him into a drow spore servant",
+    "subject": "drow spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth and Jimjar strike down the spore-corrupted remains of Sarith.",
+    "source_quote": "Eldeth and Jimjar are forced to strike down the spore-corrupted remains of Sarith",
+    "subject": "Sarith struck down",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is dead after being struck down by Eldeth and Jimjar.",
+    "source_quote": "Eldeth and Jimjar are forced to strike down the spore-corrupted remains of Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir considers conjuring magical darkness but leaves Dawnbringer's sunlight intact to weaken the myconids.",
+    "source_quote": "Zalthir considers conjuring magical darkness but leaves Dawnbringer's sunlight intact because it is weakening the myconids",
+    "subject": "Zalthir's tactical choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir launches a flurry of strikes against Yestabrod, attacking repeatedly through disciplined expenditure of his focus.",
+    "source_quote": "Zalthir launches a flurry of strikes against Yestabrod, attacking repeatedly through disciplined expenditure of his focus",
+    "subject": "Zalthir's assault on Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's final blow slays the larval monstrosity Yestabrod.",
+    "source_quote": "Zalthir's final blow slays the larval monstrosity",
+    "subject": "Yestabrod slain",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is dead.",
+    "source_quote": "Zalthir's final blow slays the larval monstrosity",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod's death ends the threat of further exploding corpses.",
+    "source_quote": "Yestabrod's death ends the threat of further exploding corpses",
+    "subject": "end of corpse explosions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A myconid adult targets Thorin because Dawnbringer's sunlight is harming the myconids.",
+    "source_quote": "A myconid adult targets Thorin because Dawnbringer's sunlight is harming the myconids",
+    "subject": "myconid targets Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A myconid releases stunning spores that leave Thorin momentarily incapacitated.",
+    "source_quote": "The creature releases stunning spores that leave Thorin momentarily incapacitated",
+    "subject": "Thorin stunned",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is incapacitated by stunning spores and remains so until the battle is nearly over.",
+    "source_quote": "Thorin ... remained incapacitated until the battle was nearly over",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels necrotic energy to wither a myconid adult, leaving it barely alive.",
+    "source_quote": "Gyrgum channels necrotic energy to wither a myconid adult, leaving it barely alive",
+    "subject": "Gyrgum withers myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The myconid adult targeted by Gyrgum is withered and barely alive.",
+    "source_quote": "Gyrgum channels necrotic energy to wither a myconid adult, leaving it barely alive",
+    "subject": "myconid adult (Gyrgum's target)",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz distributes magic missiles between the adult myconid and the drow spore servant.",
+    "source_quote": "Daz precisely divided bolts of magical force between two badly wounded enemies",
+    "subject": "Daz's magic missiles",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The adult myconid targeted by Daz's magic missiles is killed.",
+    "source_quote": "Daz giggles after both creatures fall to the spell",
+    "subject": "myconid adult (Daz's target)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow spore servant targeted by Daz's magic missiles is killed.",
+    "source_quote": "Daz giggles after both creatures fall to the spell",
+    "subject": "drow spore servant (Daz's target)",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz giggles after both creatures fall to his spell.",
+    "source_quote": "Daz giggles after both creatures fall to the spell",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses the sunlight from Dawnbringer to destroy the final myconid attacker by punching it repeatedly.",
+    "source_quote": "Zalthir ... uses the sunlight emanating from Dawnbringer ... punches it repeatedly and destroys it",
+    "subject": "Zalthir's final strike",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The final myconid attacker is destroyed by Zalthir's punches.",
+    "source_quote": "Zalthir ... punches it repeatedly and destroys it",
+    "subject": "myconid (final)",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya remains trapped in her living grave throughout the battle, unable to act or flee.",
+    "source_quote": "Xinaya remains trapped throughout the battle, unable to act or flee and capable only of crying out from her living grave",
+    "subject": "Xinaya",
+    "quote_verified": true
+  }
+]

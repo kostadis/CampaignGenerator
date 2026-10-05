@@ -1,0 +1,205 @@
+[
+  {
+    "type": "event",
+    "fact": "Plinki reveals that the beating heart of a cleric of Bahamut is the final ingredient needed to complete her ritual.",
+    "source_quote": "Plinki revealed what she truly needed to complete her ritual: the beating heart of a cleric of Bahamut",
+    "subject": "Plinki reveals ritual requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's cover as a fellow worshiper evaporates immediately after Plinki's revelation.",
+    "source_quote": "Gyrgum's cover evaporated in an instant",
+    "subject": "Gyrgum's cover lost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The table debates what a cleric of Bahamut would do regarding a demon-corrupted egg.",
+    "source_quote": "The table briefly debated what a cleric of Bahamut would do about a demon-corrupted egg",
+    "subject": "Bahamut cleric debate",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM consults Gemini, which identifies four camps of Bahamut's clerics: destroy, cleanse, study, or seek guidance while holding the egg.",
+    "source_quote": "The DM consulted Gemini, which named four camps of Bahamut's clerics: destroy it, cleanse it, study it, or seek guidance while holding it",
+    "subject": "Gemini consultation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asks about a dragon omelette.",
+    "source_quote": "Thorin wondered aloud about a dragon omelette",
+    "subject": "Thorin's comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum warns Plinki and her followers that Daz will smash the egg if they do not stand down.",
+    "source_quote": "Gyrgum grandstanded loudly, warning Plinki and her followers that Daz would not hesitate to smash the egg if they did not stand down",
+    "subject": "Gyrgum's threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cultists hesitate when Gyrgum issues his warning.",
+    "source_quote": "The cultists hesitated",
+    "subject": "Cultist hesitation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki screams for her followers to attack.",
+    "source_quote": "Plinki's madness won out, and she screamed for her followers to attack",
+    "subject": "Plinki's attack command",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki shows Gyrgum the stolen dragon egg, calling it her masterpiece.",
+    "source_quote": "Plinki: \"here is the egg. See my masterpiece.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is using the massive black obelisk to infuse the stolen dragon egg with demonic energy in honor of Demogorgon.",
+    "source_quote": "Plinki enthusiastically explains she is using the massive black obelisk to infuse the stolen dragon egg with demonic energy in honor of Demogorgon",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki points out the shrine of Demogorgon and the incantations inscribed on the egg.",
+    "source_quote": "She points out the shrine of Demogorgon and the incantations inscribed on the egg",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki claims a specific symbol she found was critical to the entire spell.",
+    "source_quote": "look, look at this symbol that I found. It was critical to the entire spell",
+    "subject": "Plinki",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki states there is one more way Gyrgum can contribute.",
+    "source_quote": "Now that you have admired this, I think there is one more way you can contribute",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is described as a little bit concerned.",
+    "source_quote": "Plinki is \"a little bit concerned\"",
+    "subject": "Plinki",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum navigates the chamber tiers to approach Plinki and the egg while maintaining his cover.",
+    "source_quote": "Gyrgum navigates the chamber tiers to approach Plinki and the stolen dragon egg, maintaining his cover as a fellow worshiper",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum notices the cultists closing in around him due to his passive perception of 14.",
+    "source_quote": "With a passive perception of 14, Gyrgum notices the cultists closing in around him",
+    "subject": "Cultists closing in",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz maneuvers to within 30 feet of the egg.",
+    "source_quote": "Daz maneuvers to within 30 feet of the egg",
+    "subject": "Daz's maneuver",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz plans to Misty Step to the egg and hold it hostage because the cultists will not want it harmed.",
+    "source_quote": "He plans to Misty Step to it and hold it hostage, since the cultists won't want it harmed",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum grandstands by playing on the cultural bias that a drow cannot be trusted.",
+    "source_quote": "a drow, after all, could never be trusted",
+    "subject": "Gyrgum's drow bias comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum remarks that the cultural bias angle is coming from an orc.",
+    "source_quote": "Gyrgum: \"Coming from an orc\"",
+    "subject": "Gyrgum's orc comment",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "One cultist moves closer to Gyrgum but does not yet attack.",
+    "source_quote": "One cultist moves closer but does not yet attack",
+    "subject": "cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir maneuvers across the high tiers to stand directly next to Plinki.",
+    "source_quote": "Zalthir maneuvers himself across the high tiers to stand directly next to Plinki",
+    "subject": "Zalthir's maneuver",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tiers are 10 feet high.",
+    "source_quote": "The tiers are 10 feet high",
+    "subject": "tiers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir climbs the stairs, avoiding the square beside a cultist.",
+    "source_quote": "so he climbs the stairs, avoiding the square beside a cultist",
+    "subject": "Zalthir's climb",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The allied crew is set to act on initiative 10.",
+    "source_quote": "The allied crew is set to act on initiative 10",
+    "subject": "initiative order",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Gyrgum rolls a 14 for initiative and acts after Zalthir.",
+    "source_quote": "Gyrgum rolled 14 initiative and acts after Zalthir",
+    "subject": "Gyrgum's initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The confrontation takes place at Obelisk 019.06.",
+    "source_quote": "### Confrontation at the Obelisk 019.06",
+    "subject": "Obelisk 019.06",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Plinki is a mad cultist worshiping Demogorgon.",
+    "source_quote": "Confrontation with the mad cultist Plinki... in honor of Demogorgon",
+    "subject": "Cult of Demogorgon",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "There are four camps among Bahamut's clerics regarding demon-corrupted eggs: destroy, cleanse, study, or seek guidance.",
+    "source_quote": "four camps among Bahamut's clerics: destroy, cleanse, study, or seek guidance while possessing the egg",
+    "subject": "Clerics of Bahamut",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,289 @@
+[
+  {
+    "type": "location",
+    "fact": "The party returned to Neverlight Grove.",
+    "source_quote": "The party returned to Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party presented the remains of the Grick Alpha to Basidia.",
+    "source_quote": "presented the remains of the Grick Alpha to Basidia",
+    "subject": "Grick Alpha presented",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Grick Alpha is dead and its hide is in a poor state.",
+    "source_quote": "mildly disappointed at the state of the hide",
+    "subject": "Grick Alpha",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia expressed mild disappointment at the state of the Grick Alpha's hide but anticipated an interesting transformation.",
+    "source_quote": "She was mildly disappointed at the state of the hide but mused, \"hmm, this will be an interesting transformation. I can't wait.\"",
+    "subject": "Basidia's reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a Myconid companion of the party.",
+    "source_quote": "their old Myconid companions, Stool and Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a Myconid companion of the party.",
+    "source_quote": "their old Myconid companions, Stool and Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party checked in on Stool and Rumpadump.",
+    "source_quote": "The party checked in on their old Myconid companions, Stool and Rumpadump",
+    "subject": "check-in with Myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool declined an offer to go adventuring with the party.",
+    "source_quote": "Gyrgum told them they were welcome to come adventuring, but the pair preferred to stay home",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump declined an offer to go adventuring with the party.",
+    "source_quote": "Gyrgum told them they were welcome to come adventuring, but the pair preferred to stay home",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz considered heading to Blingdenstone.",
+    "source_quote": "Daz wondered whether they should head on to Blingdenstone",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Blingdenstone is a location Daz considered visiting.",
+    "source_quote": "Daz wondered whether they should head on to Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia reminded the party of her promise of magic and treasure in exchange for exploring the Circle of Masters.",
+    "source_quote": "Basidia reminded them that she had promised magic and treasure if they explored the Circle of Masters",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Masters is a location promised to be explored for a reward.",
+    "source_quote": "Basidia reminded them that she had promised magic and treasure if they explored the Circle of Masters",
+    "subject": "Circle of Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia held forth about the circles during a brief rest.",
+    "source_quote": "During a brief rest she held forth about the circles",
+    "subject": "rest and lecture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia led the party to the Circle of Builders.",
+    "source_quote": "She then led them to the Circle of Builders",
+    "subject": "move to Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of Builders is a vast cavern featuring terraced irrigation systems and thousands of glowing fungi.",
+    "source_quote": "a vast cavern of terraced irrigation systems and thousands of glowing fungi",
+    "subject": "Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The air in the Circle of Builders has a thick, sweet smell.",
+    "source_quote": "that filled the air with a thick, sweet smell",
+    "subject": "Circle of Builders",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is a Myconid with intense and obsessive curiosity.",
+    "source_quote": "There they met Gasbide, a Myconid of intense and obsessive curiosity",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide is a supporter of Sovereign Phylo.",
+    "source_quote": "and a supporter of Sovereign Phylo",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Sovereign Phylo is the entity Gasbide supports.",
+    "source_quote": "and a supporter of Sovereign Phylo",
+    "subject": "Sovereign Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide immediately began interrogating the party about surface-world architecture.",
+    "source_quote": "He immediately began interrogating the party about surface-world architecture",
+    "subject": "interrogation starts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum described surface buildings as being either tall or big.",
+    "source_quote": "Gyrgum offered that \"we have some that are tall and some that are big\"",
+    "subject": "Gyrgum's answer",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide was not satisfied with Gyrgum's description of buildings.",
+    "source_quote": "which did not satisfy him",
+    "subject": "satisfaction check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide demanded details on shapes, materials, and counts of windows and doors.",
+    "source_quote": "Gasbide demanded shapes, materials, and counts of windows and doors",
+    "subject": "Gasbide's demands",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide was captivated by the word \"window\".",
+    "source_quote": "and was captivated by the unfamiliar word \"window\"",
+    "subject": "window fascination",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir conjured an illusion of a small surface building.",
+    "source_quote": "Zalthir conjured an illusion of a small surface building",
+    "subject": "illusion cast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide was utterly transfixed by Zalthir's illusion.",
+    "source_quote": "and Gasbide was utterly transfixed",
+    "subject": "Gasbide transfixed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide theorized the illusion depicted a building for small people, then concluded the creator was a member of their local circle of builders.",
+    "source_quote": "He wondered whether it was built for small people, then decided that its creator must be a member of the circle of builders in their own community",
+    "subject": "Gasbide's theory",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia rolled her eyes during the interaction with Gasbide.",
+    "source_quote": "Meanwhile, Basidia rolled her eyes",
+    "subject": "Basidia's reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide dreams of building a fungal tower greater than Yggmorgus.",
+    "source_quote": "Gasbide revealed that he dreamed of building a fungal tower even greater than Yggmorgus",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Yggmorgus is a colossal mushroom in Neverlight Grove.",
+    "source_quote": "the colossal mushroom of Neverlight Grove",
+    "subject": "Yggmorgus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide hopes his tower will break through the Underdark to the surface world.",
+    "source_quote": "He hoped it would break through the Underdark to the surface world",
+    "subject": "tower ambition",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gasbide asked for a construction that could shield him from the sun.",
+    "source_quote": "He asked for a construction that could shield him from the sun",
+    "subject": "sun shield request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggested \"shade\" as a shield from the sun.",
+    "source_quote": "and Gyrgum helpfully suggested \"shade\"",
+    "subject": "shade suggestion",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz engaged with Gasbide regarding zurkhwood and construction minutiae.",
+    "source_quote": "Daz happily nerded out with him over zurkhwood and construction minutiae",
+    "subject": "Daz's bonding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zurkhwood is a subject of interest for Gasbide and Daz.",
+    "source_quote": "Daz happily nerded out with him over zurkhwood",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gasbide does not understand what Araumycos is, viewing it only as part of a coming celebration.",
+    "source_quote": "Gasbide had no real understanding of what Araumycos was, only that it was part of a great celebration to come",
+    "subject": "Gasbide",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Araumycos is an entity mentioned by Gasbide in relation to a great awakening.",
+    "source_quote": "possibly with the aid of Araumycos",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Gasbide quoted Phylo as promising a great awakening and improvement after a celebration.",
+    "source_quote": "\"Phylo said that there would be a great awakening, that everything will be better after the great celebration.\"",
+    "subject": "Phylo's promise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party noted that Gasbide's words indicated a larger, unsettling plan involving blind faith in Phylo.",
+    "source_quote": "The party noted the unsettling vagueness of his words and the blind faith he placed in Phylo's promises",
+    "subject": "unrest in Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party observed that something far larger than a simple celebration is being planned in Neverlight Grove.",
+    "source_quote": "Something was being planned in Neverlight Grove, and it was far larger than a simple celebration",
+    "subject": "scale of plot",
+    "quote_verified": true
+  }
+]

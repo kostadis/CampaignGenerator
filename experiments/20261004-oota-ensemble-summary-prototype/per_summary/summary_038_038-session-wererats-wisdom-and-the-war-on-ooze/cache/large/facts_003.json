@@ -1,0 +1,254 @@
+[
+  {
+    "type": "location",
+    "fact": "The party enters an abandoned residential cave beyond the rubble.",
+    "source_quote": "Beyond the rubble, the party entered an abandoned residential cave.",
+    "subject": "abandoned residential cave",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Homes were once dug into the walls of the cave at various heights.",
+    "source_quote": "Homes had once been dug into the walls at various heights",
+    "subject": "abandoned residential cave",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A foul-smelling pile of refuse now dominates the chamber.",
+    "source_quote": "a foul-smelling pile of refuse now dominated the chamber",
+    "subject": "abandoned residential cave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's first inspection of the refuse reveals nothing.",
+    "source_quote": "Zalthir\u2019s first inspection revealed nothing",
+    "subject": "Zalthir's inspection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir approaches the refuse first but finds nothing useful.",
+    "source_quote": "Zalthir approaches the refuse first but finds nothing useful.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz discovers decomposing matter and two partially digested deep gnome corpses in the refuse.",
+    "source_quote": "Daz found decomposing matter and two slimy, partially digested deep gnome corpses.",
+    "subject": "Daz's investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two slimy, partially digested deep gnome corpses are found.",
+    "source_quote": "two slimy, partially digested deep gnome corpses",
+    "subject": "deep gnome corpses",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The remains had unmistakably passed through an ooze.",
+    "source_quote": "The remains had unmistakably passed through an ooze.",
+    "subject": "deep gnome corpses",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz conducts a more careful investigation of the refuse.",
+    "source_quote": "Daz conducts a more careful investigation",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz discovers decomposing matter.",
+    "source_quote": "Daz found decomposing matter",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz traces an ooze trail into a hallway.",
+    "source_quote": "Daz then traced an ooze trail into a hallway.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An ooze trail leads down a hallway.",
+    "source_quote": "Daz then traced an ooze trail into a hallway.",
+    "subject": "ooze trail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool begins moving toward the trail with unusual purpose.",
+    "source_quote": "Glabbagool began moving toward the trail with unusual purpose.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool admits he can hear voices calling to him.",
+    "source_quote": "He admitted that he could hear voices calling to him",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is excited by the prospect that others of his kind might be able to speak.",
+    "source_quote": "became excited by the prospect that others of his kind might be able to speak",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool has never heard another ooze speak.",
+    "source_quote": "Glabbagool has never heard another ooze speak",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool says, \"I can hear voices calling me.\"",
+    "source_quote": "he says, \u201cI can hear voices calling me.\u201d",
+    "subject": "Glabbagool's statement",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party fears the voices represent demonic influence rather than friendly oozes.",
+    "source_quote": "The party feared that the voices represented demonic influence rather than friendly oozes.",
+    "subject": "mysterious voices",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir persuades Glabbagool to let his friends go first to protect him from corruption.",
+    "source_quote": "Zalthir persuaded Glabbagool to let his friends go first and protect him from corruption.",
+    "subject": "Zalthir's persuasion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir advises Glabbagool to remain behind the others so friends can confront danger first.",
+    "source_quote": "Zalthir advises Glabbagool to remain behind the others so that his friends can confront the danger first",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool agrees to Zalthir's proposal.",
+    "source_quote": "Glabbagool agreed",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool declares, \"You\u2019re my friend, so we should all go together.\"",
+    "source_quote": "declaring, \u201cYou\u2019re my friend, so we should all go together,\u201d",
+    "subject": "Glabbagool's statement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool praises the party for protecting him from \"the bad oozes.\"",
+    "source_quote": "praised the party for protecting him from \u201cthe bad oozes.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool recognizes Zalthir's warning as \"a very important and thoughtful point.\"",
+    "source_quote": "He recognizes Zalthir\u2019s warning as \u201ca very important and thoughtful point\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool concludes his companions will protect him from \"the bad oozes.\"",
+    "source_quote": "concludes that his companions will protect him from \u201cthe bad oozes.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool\u2019s googly eyes bob up and down, conveying his pleasure at being protected and included.",
+    "source_quote": "Glabbagool\u2019s googly eyes bob up and down, conveying his pleasure at being protected and included.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin takes the lead in exploring the cave.",
+    "source_quote": "Thorin led the way",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has relatively poor passive perception.",
+    "source_quote": "Thorin takes the lead, despite having relatively poor passive perception",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir walks beside Thorin as they explore.",
+    "source_quote": "with Zalthir beside him",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir detects an oddly placed pit trap along the ooze trail.",
+    "source_quote": "Zalthir detected an oddly placed pit trap",
+    "subject": "pit trap detection",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pit trap is placed along the ooze trail.",
+    "source_quote": "Zalthir detects a pit trap placed along the ooze trail.",
+    "subject": "pit trap",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The pit trap's location is initially strange but less surprising given the creatures moving through the area.",
+    "source_quote": "Its location is initially strange, though less surprising given the creatures moving through the area.",
+    "subject": "pit trap",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party crosses the pit trap safely.",
+    "source_quote": "the party crossed it safely",
+    "subject": "trap avoidance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "At the next junction, Glabbagool indicates the voices come from the south.",
+    "source_quote": "At the next junction, Glabbagool indicated that the voices came from the south.",
+    "subject": "Glabbagool's direction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool rotates like a tank turret to indicate the source of the voices.",
+    "source_quote": "Glabbagool rotates like a tank turret",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party proceeds onward and southward.",
+    "source_quote": "The party proceeds \u201conward and southward.\u201d",
+    "subject": "party movement",
+    "quote_verified": true
+  }
+]

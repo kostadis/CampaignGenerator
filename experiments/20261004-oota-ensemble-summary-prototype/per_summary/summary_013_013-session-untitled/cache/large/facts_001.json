@@ -1,0 +1,198 @@
+[
+  {
+    "type": "location",
+    "fact": "The streets of Gracklstugh erupted into chaos due to a rampaging stone giant.",
+    "source_quote": "The streets of Gracklstugh erupted into chaos",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant has two heads and is crazed.",
+    "source_quote": "facing down a rampaging stone giant with two heads, a grotesque sign of the madness",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A squad of duergar militia is fighting alongside the party against the giant.",
+    "source_quote": "alongside a squad of duergar militia, facing down a rampaging stone giant",
+    "subject": "duergar militia",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The duergar guards act very official and are on the party's side.",
+    "source_quote": "The duergar \"act very official\" and are on the party's side.",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two duergar guards magically enlarge themselves.",
+    "source_quote": "Two of the duergar guards swelled to enormous size",
+    "subject": "duergar enlarge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two duergar guards unleash sprays of fire at the giant.",
+    "source_quote": "two of them unleashed sprays of fire that scorched the giant's rocky hide",
+    "subject": "duergar fire spray",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The fire sprays deal 23 points of damage to the giant.",
+    "source_quote": "damage rolls come to 13 and 10, for 23 points total.",
+    "subject": "fire damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum channels divine energy against the giant using his holy symbol.",
+    "source_quote": "Gyrgum called upon his divine power through his holy symbol.",
+    "subject": "Gyrgum channel divine",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant burns as a result of Gyrgum's channeled divine energy.",
+    "source_quote": "The giant \"once again burns at the end of the day.\"",
+    "subject": "Gyrgum's effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes a nature/history/survival check with a result of 16.",
+    "source_quote": "Thorin makes a nature/history/survival check (16)",
+    "subject": "Thorin check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recognizes that the giant has likely gone mad.",
+    "source_quote": "recognizes the giant has likely gone mad.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin scores a critical hit on the giant with his short sword.",
+    "source_quote": "Thorin scored a critical hit with his short sword",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses Action Surge to strike the giant again.",
+    "source_quote": "then uses Action Surge and hits again for 6 more damage.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's second strike deals 6 damage to the giant.",
+    "source_quote": "hits again for 6 more damage.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's first swing of his great club hits a duergar for 19 damage.",
+    "source_quote": "hitting one duergar for 19 damage",
+    "subject": "Giant's first club swing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One duergar takes 19 damage from the giant's club swing.",
+    "source_quote": "hitting one duergar for 19 damage",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's second swing targets Zalthir but misses.",
+    "source_quote": "narrowly missing Zalthir.",
+    "subject": "Giant's second club swing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant's attack roll against Zalthir was a 14 against AC 15 with disadvantage.",
+    "source_quote": "targets Zalthir, but with disadvantage it rolls a 14 against Zalthir's AC 15 and misses.",
+    "subject": "Giant's missed attack roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir declares non-lethal damage for his attacks.",
+    "source_quote": "Zalthir declares non-lethal damage",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir attacks the giant three times.",
+    "source_quote": "attacks three times",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir spends a focus point on his third attack.",
+    "source_quote": "spending a focus point on the third.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir misses his first and third attacks and hits the second for 5 damage.",
+    "source_quote": "He misses, hits for 5 damage, then misses.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz strikes the giant with Magic Missile.",
+    "source_quote": "Daz strikes the giant with Magic Missile",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz rolls a one on the Magic Missile attack, dealing 6 damage.",
+    "source_quote": "but rolls a one, dealing 6 damage",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that dropping the giant to zero with a weapon knocks him out.",
+    "source_quote": "dropping the giant to zero with a weapon knocks him out",
+    "subject": "GM ruling on giant death",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM rules that dropping the giant to zero with a spell kills him.",
+    "source_quote": "dropping him with a spell like Magic Missile kills him.",
+    "subject": "GM ruling on giant death",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant is at 34 hit points during the battle.",
+    "source_quote": "The giant is at 34 hit points at this point.",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Stone giants are particularly unforgiving of those who kill their kind.",
+    "source_quote": "Stone giants are particularly unforgiving of those who kill their kind.",
+    "subject": "stone giant madness",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,79 @@
+[
+  {
+    "type": "location",
+    "fact": "Cairngorm Cavern is a massive underground home carved deep into the Southfurrow District.",
+    "source_quote": "the Cairngorm Cavern, a massive and imposing underground home carved deep into the Southfurrow District",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Stone Giants are known to wait a very long time before initiating conversation to avoid rushing.",
+    "source_quote": "can wait a very long time before they initiate a conversation because they don't want to rush anything",
+    "subject": "Stone Giants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Cairngorm dwells in the Cairngorm Cavern.",
+    "source_quote": "where the Stone Giants of Clan Cairngorm dwelled",
+    "subject": "Clan Cairngorm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the clan leader of the Stone Giants of Clan Cairngorm.",
+    "source_quote": "At the entrance sat Hgraam, the clan leader",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum was nervous about meeting giants due to a previously poor relationship with them.",
+    "source_quote": "Gyrgum was a little nervous about meeting giants, since he had not had a good relationship with them before.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin questioned why the clan leaders were simply chilling by the entrance.",
+    "source_quote": "Thorin asks: \"What, like the clan leaders just chilling by the entrance?\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is a fan of his previous character, who was a famous writer and hero.",
+    "source_quote": "Daz's player enjoys the twist that Daz is a fan of his previous character, and the GM confirms it as lore",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's previous character was a famous writer, a hero of the realms, involved in a significant battle, and a well-known publisher of fiction and art.",
+    "source_quote": "was a famous writer, a hero of the realms, involved in a significant battle, and a well-known publisher of fiction and art.",
+    "subject": "Daz's previous character",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Southfurrow District contains the entrance to Cairngorm Cavern.",
+    "source_quote": "carved deep into the Southfurrow District",
+    "subject": "Southfurrow District",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to visit the Stone Giants, the one group they have not yet spoken with.",
+    "source_quote": "the party decides to visit the Stone Giants, the one group they have not yet spoken with",
+    "subject": "visit to Stone Giants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player stated they should get all offers or assignments before acting.",
+    "source_quote": "Gyrgum's player: \"we should get all the offers or assignments before we really do anything.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,401 @@
+[
+  {
+    "type": "event",
+    "fact": "The derro cultists abandon their chanting and begin shouting 'die, die, die'.",
+    "source_quote": "Having abandoned their chanting for cries of \"die, die, die\"",
+    "subject": "ritual abandonment",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "Zalthir conjured a sphere of impenetrable shadow at the heart of the ritual chamber.",
+    "source_quote": "Zalthir had conjured a sphere of impenetrable shadow at the heart of the room",
+    "subject": "ritual chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists are attempting a ritual to create a two-headed giant.",
+    "source_quote": "derro cultists who were attempting a ritual to create a two-headed giant",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro cultists are navigating the zone of magical darkness.",
+    "source_quote": "the derro cultists scrambled to navigate it",
+    "subject": "derro cultists",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum maintains a spell that causes acidic pain to three derro enemies at the start of their turns.",
+    "source_quote": "Gyrgum maintains a spell that causes acidic pain to three of the derro enemies at the start of their turns",
+    "subject": "Gyrgum's acid spell",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro enemy takes 5 damage from Gyrgum's acid spell before moving.",
+    "source_quote": "One takes 5 damage before moving",
+    "subject": "derro damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro warrior charges out of the zone of darkness to locate the source of the magical attacks.",
+    "source_quote": "A derro warrior charges out of Zalthir's zone of darkness to locate the source of the magical attacks",
+    "subject": "derro charge",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Underdark dwellers know to run in a straight line to reach the edge of innate darkness cast by drow.",
+    "source_quote": "Underdark dwellers know to run in a straight line until they reach its edge",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro drove a hooked spear into Gyrgum.",
+    "source_quote": "One of them found Gyrgum and drove a hooked spear into the cleric",
+    "subject": "Gyrgum hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes 2 points of damage from the spear blow.",
+    "source_quote": "Gyrgum is struck by a hooked spear and takes 2 points of damage",
+    "subject": "Gyrgum damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The force of the spear blow sends Gyrgum crashing to the ground, knocking him prone.",
+    "source_quote": "the force of the blow sent him crashing to the ground",
+    "subject": "Gyrgum prone",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum fails a DC 9 Strength save against the spear blow.",
+    "source_quote": "The spear blow forces a DC 9 Strength save, which Gyrgum fails",
+    "subject": "Gyrgum strength save",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The trauma of the blow shatters Gyrgum's concentration.",
+    "source_quote": "The trauma shattered Gyrgum's concentration",
+    "subject": "Gyrgum concentration failure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The corrosive magic Gyrgum was sustaining flickers and dies.",
+    "source_quote": "the corrosive magic he had been sustaining over the cultists flickered and died",
+    "subject": "acid spell ended",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An ettin is present in the combat zone alongside the derro cultists.",
+    "source_quote": "The party continues its battle against a group of derro cultists and an ettin",
+    "subject": "ettin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro warrior drove a hooked spear into Gyrgum.",
+    "source_quote": "One of them found Gyrgum and drove a hooked spear into the cleric",
+    "subject": "derro warrior",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is a cleric.",
+    "source_quote": "drove a hooked spear into the cleric",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party searched the ritual chamber after the fighting concluded.",
+    "source_quote": "With the fighting done, the party searched the ritual chamber",
+    "subject": "ritual chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party found a collection of dark texts in the ritual chamber.",
+    "source_quote": "found a collection of dark texts",
+    "subject": "dark texts",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Rituals of the Two-Headed Beast is a volume found among the texts that details methods used to drive stone giants mad and warp them.",
+    "source_quote": "Chief among them was a volume called The Rituals of the Two-Headed Beast, which laid bare the methods the cult had used to drive stone giants mad and warp them into two-headed monstrosities",
+    "subject": "The Rituals of the Two-Headed Beast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum offered a quiet prayer to Bahamut.",
+    "source_quote": "Gyrgum offered a quiet prayer to Bahamut",
+    "subject": "prayer to Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum removed a key from around Narrak's neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "key retrieval",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum retrieved a key from around Narrak's neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin used the recovered key to open an iron chest.",
+    "source_quote": "Thorin used the key to carefully open an iron chest",
+    "subject": "chest opening",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The iron chest contains 45 gold pieces, 15 silver pieces, and five doses of Keoghtom's Ointment.",
+    "source_quote": "Inside were 45 gold and 15 silver pieces in a small leather bag, alongside five doses of Keoghtom's Ointment",
+    "subject": "iron chest",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A small leather bag inside the chest holds 45 gold and 15 silver pieces.",
+    "source_quote": "45 gold and 15 silver pieces in a small leather bag",
+    "subject": "leather bag",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses five doses of Keoghtom's Ointment.",
+    "source_quote": "alongside five doses of Keoghtom's Ointment",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Keoghtom's Ointment is a rare healing salve that mends wounds and purges poison.",
+    "source_quote": "a rare and powerful healing salve that mends wounds and purges poison from the body",
+    "subject": "Keoghtom's Ointment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stood well to the side while opening the iron chest.",
+    "source_quote": "standing well to the side, just in case",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party took stock of their gathered items including texts, evidence of king's collusion, a red dragon egg, and passes.",
+    "source_quote": "The party then took stock of everything they had gathered: the texts, the evidence of the king's collusion with assassins, the red dragon egg, and a couple of passes",
+    "subject": "inventory review",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a couple of passes that allow them to leave with their evidence.",
+    "source_quote": "a couple of passes that would let them walk out with all of it",
+    "subject": "passes",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bet that the party would want to hold on to some of the evidence for later.",
+    "source_quote": "Jimjar bet that they would want to hold on to some of it for later",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar bet that they would want to hold on to some of the evidence for later.",
+    "source_quote": "Jimjar bet that they would want to hold on to some of it for later",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a small fungal creature who tugged at Zalthir's sleeve.",
+    "source_quote": "the small fungal creature Stool tugged at Zalthir's sleeve",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool reminded the group that they still needed to go rescue Rumpadump.",
+    "source_quote": "reminded him, with the cheerful persistence of a child, that they still needed to go rescue Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir was tugged at the sleeve by Stool.",
+    "source_quote": "the small fungal creature Stool tugged at Zalthir's sleeve",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party needs to go rescue Rumpadump.",
+    "source_quote": "they still needed to go rescue Rumpadump",
+    "subject": "Rumpadump rescue",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a prisoner who needs to be rescued.",
+    "source_quote": "they still needed to go rescue Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The cult warped stone giants into two-headed monstrosities.",
+    "source_quote": "warp them into two-headed monstrosities",
+    "subject": "two-headed monstrosities",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM clarified that the two-foot-tall statue does not come alive.",
+    "source_quote": "The GM clarifies that it does not come alive",
+    "subject": "statue clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The ritual turns a stone giant mad and gives it another head.",
+    "source_quote": "the ritual \"turns one of the stone giants mad and gives it another head.\"",
+    "subject": "ritual effect",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak had been reading the volume titled 'The Rituals of the Two-Headed Beast'.",
+    "source_quote": "including a volume titled 'The Rituals of the Two-Headed Beast', which Narrak had been reading",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "There is a two-foot-tall statue in the area that does not come alive.",
+    "source_quote": "Thorin asks about the two-foot-tall statue. The GM clarifies that it does not come alive",
+    "subject": "two-foot-tall statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party entered the ointment into their shared spreadsheet.",
+    "source_quote": "The party enters the ointment into its shared spreadsheet",
+    "subject": "spreadsheet entry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party debated how to pronounce Keoghtom's Ointment.",
+    "source_quote": "A pronunciation debate follows: \"Look, even the DM hasn't decided how to pronounce it.\"",
+    "subject": "pronunciation debate",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party killed two members of the Council of Savants.",
+    "source_quote": "The party discusses the political implications of having killed two members of the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants has two members who were killed by the party.",
+    "source_quote": "having killed two members of the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin joked about installing democracy as a form of regime change.",
+    "source_quote": "Thorin jokes about regime change and \"installing democracy\"",
+    "subject": "regime change joke",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum stated that installing a system of chaos would be straightforward.",
+    "source_quote": "Gyrgum counters that \"if we wanted to install some sort of system of chaos, that would be straightforward.\"",
+    "subject": "chaos system comment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is deceased, indicated by the key being removed from his neck.",
+    "source_quote": "removing a key from around Narrak's neck",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The key found on Narrak's neck matches the style of the iron chest.",
+    "source_quote": "The key matches the style of an iron chest",
+    "subject": "key",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asked whether anyone is good with traps before opening the chest.",
+    "source_quote": "When the party asks whether anyone is good with traps, Thorin cautiously opens the chest",
+    "subject": "trap check",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "There is evidence that the king has been working with assassins to kill members of a clan.",
+    "source_quote": "the king's collusion with assassins (\"the king has been working with the assassins to kill members of her clan\")",
+    "subject": "king's collusion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The red dragon egg is evidence that could help the keepers of the flame or the red dragon.",
+    "source_quote": "the red dragon egg, which \"would help the keepers of the flame or the red dragon.\"",
+    "subject": "red dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool asked the group to open the cell.",
+    "source_quote": "asks them to \"just open the cell.\"",
+    "subject": "cell opening request",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session ended because the GM's audio became unintelligible.",
+    "source_quote": "The session ends here because the GM's audio became unintelligible",
+    "subject": "session end",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A party member protested the implication that they planned to eat the egg.",
+    "source_quote": "A party member protests, \"Oh, I wasn't planning to, you know, just like eat the egg or anything,\"",
+    "subject": "egg consumption protest",
+    "quote_verified": true
+  }
+]

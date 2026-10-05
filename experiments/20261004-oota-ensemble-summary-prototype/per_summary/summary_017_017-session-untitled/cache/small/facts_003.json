@@ -1,0 +1,177 @@
+[
+  {
+    "type": "monster",
+    "fact": "The flumph floats and speaks directly into the minds of the party.",
+    "source_quote": "The small floating creature spoke directly into their minds",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph chides the party for staring at it blankly.",
+    "source_quote": "chided them for staring at it blankly",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph feeds on background psionic energy radiated by evil creatures.",
+    "source_quote": "fed on the background psionic energy radiated by evil creatures",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The flumph unleashes vivid, distressing psychic visions upon the party.",
+    "source_quote": "the flumph unleashed a torrent of vivid, distressing psychic visions upon them",
+    "subject": "flumph visions",
+    "quote_verified": true
+  },
+  {
+    "type": "vision",
+    "fact": "The party sees a shrine to Demogorgon in the vision.",
+    "source_quote": "They saw a shrine to Demogorgon",
+    "subject": "vision of shrine",
+    "quote_verified": true
+  },
+  {
+    "type": "vision",
+    "fact": "The party sees a broken magical shard being worked upon near a dark obelisk in the vision.",
+    "source_quote": "a broken magical shard being worked upon near a dark obelisk",
+    "subject": "vision of shard",
+    "quote_verified": true
+  },
+  {
+    "type": "vision",
+    "fact": "The party sees a stolen red dragon egg being subjected to cruel experiments in the vision.",
+    "source_quote": "a stolen red dragon egg being subjected to cruel experiments",
+    "subject": "vision of egg",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The flumph announces it feels better after unburdening itself at the party's expense.",
+    "source_quote": "the flumph announced cheerfully that it felt much better, having unburdened itself entirely at the party's expense",
+    "subject": "flumph",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin names the flumph's behavior of sharing traumatic visions 'trauma dumping'.",
+    "source_quote": "Thorin promptly named the habit: it had \"trauma dumped\" on them",
+    "subject": "Thorin naming habit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The red line on the map shows the quarry continuing southeast.",
+    "source_quote": "The red line on the map shows the quarry continuing southeast",
+    "subject": "quarry passage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A cave opens off to the south of the quarry passage.",
+    "source_quote": "A cave opens off to the south",
+    "subject": "natural cave",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to glance into the cave carefully.",
+    "source_quote": "the party decides to glance into it \"carefully\"",
+    "subject": "party decision to scout",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir stealthily scouts ahead with a Stealth roll of 26.",
+    "source_quote": "Zalthir stealthily scouts ahead with a Stealth roll of 26",
+    "subject": "Zalthir scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir remarks that his Stealth roll is 'no 38 but 26 is still pretty good'.",
+    "source_quote": "it's no 38 but 26 is still pretty good",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin notes that his own stealth abilities are 'essentially non-existent'.",
+    "source_quote": "Thorin notes that his own stealth abilities \"are essentially non-existent\"",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Three myconid adults stand five feet tall and dance in the natural cave.",
+    "source_quote": "Three myconid adults stand five feet tall and the sprouts are half that height",
+    "subject": "myconid adults",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The myconid sprouts are half the height of the adults and dance to a silent tune.",
+    "source_quote": "sprouts are half that height",
+    "subject": "myconid sprouts",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One small myconid sprout stands apart from the rest, its movement not nearly as frantic.",
+    "source_quote": "One small sprout stands apart from the rest, its movement not nearly as frantic",
+    "subject": "myconid sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party recalls a myconid friend teaching them that 'myconids don't dance' and instead farm or sit in circles.",
+    "source_quote": "The party recalls what their myconid friend taught them: \"myconids don't dance.\" They farm and sit around in circles",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two larger ape-like creatures are quaggoth spore servants covered in mushroom growths and yellow mold.",
+    "source_quote": "The scouts identify two larger ape-like creatures as quaggoth spore servants covered in mushroom growths and yellow mold",
+    "subject": "quaggoth spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM notes that myconids are not relentlessly violent and might be talked to.",
+    "source_quote": "The GM notes that myconids are not relentlessly violent and might be talked to",
+    "subject": "GM",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz worries that the myconids could turn the party into spore servants.",
+    "source_quote": "Daz worries they could turn the party into spore servants",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is reminded that myconids typically have to kill a creature first to turn it into a spore servant.",
+    "source_quote": "is reminded that \"typically, they have to kill you first\"",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to avoid the fungal creatures for now and flag them for their contacts.",
+    "source_quote": "The party decides to avoid the fungal creatures for now and flags them to raise with their contacts later",
+    "subject": "party avoidance decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party resumes following the trail east.",
+    "source_quote": "They then resume following the trail east",
+    "subject": "party resume travel",
+    "quote_verified": true
+  }
+]

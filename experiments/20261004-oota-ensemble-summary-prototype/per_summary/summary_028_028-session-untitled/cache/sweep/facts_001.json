@@ -1,0 +1,135 @@
+[
+  {
+    "type": "location",
+    "fact": "The party passes through a region thick with Faerzress.",
+    "source_quote": "The party pressed deeper into the Underdark, passing through a region thick with Faerzress",
+    "subject": "Underdark tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM recalls that the Faerzress \"went blink and caused everybody to go mad.\"",
+    "source_quote": "Faerzress is also the thing that \"went blink and caused everybody to go mad.\"",
+    "subject": "Faerzress blink",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party's working hypothesis is that the blink caused the demons to show up.",
+    "source_quote": "The party's working hypothesis is that the blink somehow caused the demons to show up.",
+    "subject": "Faerzress origins",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM ruled out the theory that Plinki caused the madness by experimenting with the obelisk.",
+    "source_quote": "Out of character, the GM ruled out the theory that Plinki caused it experimenting with the obelisk",
+    "subject": "Plinki and the obelisk",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Fist-sized chunks of quartz are scattered through the area and shed a dim light in a 10-foot radius.",
+    "source_quote": "Scattered through the area were fist-sized chunks of quartz that shed a dim light in a 10-foot radius.",
+    "subject": "quartz chunks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith explains that the crystals burst into a blinding flash in a 10-foot radius when hurled against a hard surface.",
+    "source_quote": "Sarith explained that these crystals, when hurled against a hard surface, burst into a blinding flash in a 10-foot radius.",
+    "subject": "quartz explosion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party pockets twelve of the glowing stones.",
+    "source_quote": "The party set about harvesting what they could, pocketing twelve of the glowing stones",
+    "subject": "glowing stones",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir previously explained to the party that magical darkness blocks all light, even magical light.",
+    "source_quote": "magical darkness blocks all light, even magical light",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is referenced as a potential cause of the Faerzress madness via experiments with the obelisk.",
+    "source_quote": "Out of character, the GM ruled out the theory that Plinki caused it experimenting with the obelisk",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is a human former slave of the Drow found by the party.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow.",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is a human former slave of the Drow found with Fuurm.",
+    "source_quote": "The party discovers two wretched humans, Fuurm and Baedora, who are former slaves of the Drow.",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Fuurm and Baedora bear telltale Drow prisoner markings.",
+    "source_quote": "spots the telltale Drow prisoner markings",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm recently escaped during a demonic attack on his captors.",
+    "source_quote": "only recently escaping during a demonic attack on his captors",
+    "subject": "Fuurm's escape",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm's sister was stolen from the Overbright by the Drow.",
+    "source_quote": "the sister was stolen from the Overbright by the Drow",
+    "subject": "Fuurm's sister",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Overbright is the location from which Fuurm's sister was stolen.",
+    "source_quote": "the sister was stolen from the Overbright by the Drow",
+    "subject": "Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM describes Fuurm as \"just a farmer\" with no special skills.",
+    "source_quote": "Fuurm is \"just a farmer\" with no special skills",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to let Fuurm and Baedora travel along.",
+    "source_quote": "the party agrees to let them travel along",
+    "subject": "party agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir urges the party to keep an eye on Fuurm and Baedora.",
+    "source_quote": "with Zalthir urging everyone to keep an eye on them",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM notes that the last stray the party picked up turned out to be a psychotic believer.",
+    "source_quote": "the last stray the party picked up turned out to be a psychotic believer",
+    "subject": "previous stray",
+    "quote_verified": true
+  }
+]

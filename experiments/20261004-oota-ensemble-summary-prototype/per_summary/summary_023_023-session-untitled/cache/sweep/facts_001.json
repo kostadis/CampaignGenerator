@@ -1,0 +1,191 @@
+[
+  {
+    "type": "faction",
+    "fact": "Five Derro cultists stand on a raised platform chanting a discordant chorus.",
+    "source_quote": "five Derro cultists stood upon it, chanting in a discordant, maddening chorus",
+    "subject": "Derro",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "A grotesque stone giant statue is sprouting a second head that reshapes with each verse.",
+    "source_quote": "from which a second head was visibly sprouting and reshaping itself with each unholy verse",
+    "subject": "stone giant statue",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A restless death dog paces in a cage near the platform's edge.",
+    "source_quote": "A restless death dog paced in a cage near the platform's edge",
+    "subject": "death dog",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga is a massive female ettin lurking in a fungal alcove.",
+    "source_quote": "A massive female ettin named Grula-Munga lurked silently in a fungal alcove",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Narrak is a member of the Council of Savants.",
+    "source_quote": "Narrak, the lead spellcaster, is a member of the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The heretical texts are damning enough to bring down the entire Council of Savants.",
+    "source_quote": "The heretical texts they had already recovered were damning enough to bring down the entire Council for all time",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is the lead spellcaster of the cult.",
+    "source_quote": "Narrak, the lead spellcaster, is a member of the Council of Savants",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak has 70 hit points.",
+    "source_quote": "Narrak himself had 70",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is out of first-level spells.",
+    "source_quote": "Daz was out of first-level spells",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is basically out of spells.",
+    "source_quote": "Gyrgum admitted he was \"basically out of spells\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is a lover of giants who would want to stop the manipulation of giant physiology.",
+    "source_quote": "Thorin, a lover of giants, would want to put a stop to cultists manipulating giant physiology",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A two-headed stone giant rampaged through the market four days ago in game time.",
+    "source_quote": "the two-headed stone giant that had rampaged through the market only four days earlier in game time",
+    "subject": "market rampage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cavern contains a raised platform, flickering campfires, and a fungal alcove.",
+    "source_quote": "The party crept into a vast, foul-smelling cavern reeking of brimstone and fungi, where flickering campfires cast an eerie glow over a raised platform at the center.",
+    "subject": "foul-smelling cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cavern contains locked chests scattered about it.",
+    "source_quote": "The locked chests scattered about the cavern hinted at valuable treasures",
+    "subject": "foul-smelling cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A massive female ettin lurks in a fungal alcove.",
+    "source_quote": "A massive female ettin named Grula-Munga lurked silently in a fungal alcove",
+    "subject": "fungal alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro chant around a pulsing ritual circle of sickly green light.",
+    "source_quote": "chanting in a discordant, maddening chorus around a pulsing ritual circle of sickly green light",
+    "subject": "ritual circle",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party previously recovered a trove of heretical Demogorgon texts.",
+    "source_quote": "They had already recovered a trove of heretical Demogorgon texts",
+    "subject": "Demogorgon texts recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum is inspired by Bahamut on a second religion roll of 21.",
+    "source_quote": "On a second religion roll of 21, Gyrgum was inspired by Bahamut",
+    "subject": "Gyrgum's inspiration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bahamut is referenced as inspiring Gyrgum's insight about the curse.",
+    "source_quote": "On a second religion roll of 21, Gyrgum was inspired by Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hgraam is the Stonespeaker who could reverse the curse.",
+    "source_quote": "bringing one of the corrupted statues to Stonespeaker Hgraam might allow him to reverse the curse",
+    "subject": "Hgraam",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party uses a spell to realize the statues are two-foot, 100-pound miniatures.",
+    "source_quote": "The table also spent a spell convinced the statues were life-sized, until the DM clarified they were two-foot, 100-pound miniatures.",
+    "subject": "Statue size realization",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone giant statues are two feet tall and weigh about 100 pounds.",
+    "source_quote": "the statues were two-foot, 100-pound miniatures",
+    "subject": "stone giant statues",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Ordinary Derro have around 13 hit points.",
+    "source_quote": "the ordinary Derro had around 13 hit points",
+    "subject": "ordinary Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two tougher Derro have 27 hit points.",
+    "source_quote": "two tougher ones had 27",
+    "subject": "tougher Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to retreat to a safer location to recover magical strength.",
+    "source_quote": "The party decides to retreat to a safer location to recover their magical strength before confronting the cultists",
+    "subject": "retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party pins Narrak's location on the map before retreating.",
+    "source_quote": "pins Narrak's location on the map",
+    "subject": "Narrak's location pinned",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party confirms the cult is the same one behind the demonic infusion of the dragon egg.",
+    "source_quote": "they confirmed this was the same cult behind the demonic infusion of the dragon egg",
+    "subject": "demonic infusion",
+    "quote_verified": true
+  }
+]

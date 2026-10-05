@@ -1,0 +1,79 @@
+[
+  {
+    "type": "event",
+    "fact": "The party arrives on the shores of the Darklake.",
+    "source_quote": "The party arrived on the shores of the Darklake drenched, cold, and miserable",
+    "subject": "arrival at Darklake shores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar announces that the party is one day away from Blingdenstone.",
+    "source_quote": "We are but a day's journey from the outskirts of Blingdenstone. I know it for sure this time.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar wagers that someone will demand a rest.",
+    "source_quote": "He immediately wagered that someone would demand a rest.",
+    "subject": "Jimjar's bet",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to take a long rest.",
+    "source_quote": "Once the party agreed to take a long rest",
+    "subject": "long rest decision",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar claims victory for winning his bet about the rest.",
+    "source_quote": "\u201cExcellent. I made\u2014I won, I won my bet.\u201d",
+    "subject": "Jimjar wins bet",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar admits he made a miscalculation because no one had actually accepted his wager.",
+    "source_quote": "Jimjar admitted to a \u201cslight miscalculation\u201d",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar tries to start a bet about whether Gyrgum will bet with him.",
+    "source_quote": "unsuccessfully tried to start another bet about whether Gyrgum would take the bet",
+    "subject": "new bet attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is unfamiliar with the concept of a long rest.",
+    "source_quote": "Gyrgum puzzled over the unfamiliar idea of a \u201clong rest\u201d",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum reflects that closing his eyes sometimes leaves him feeling refreshed.",
+    "source_quote": "it might explain why closing his eyes sometimes left him feeling refreshed",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recovers their strength after the long rest.",
+    "source_quote": "By morning, everyone had recovered their strength",
+    "subject": "recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "No one is pursuing the party.",
+    "source_quote": "With no one pursuing them",
+    "subject": "pursuit",
+    "quote_verified": true
+  }
+]

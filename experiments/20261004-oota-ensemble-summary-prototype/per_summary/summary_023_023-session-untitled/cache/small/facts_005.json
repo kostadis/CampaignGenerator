@@ -1,0 +1,254 @@
+[
+  {
+    "type": "event",
+    "fact": "The party successfully sneaks up on the Derro cultists and gains a surprise round.",
+    "source_quote": "The party successfully sneaks up on the Derro cultists... the party gets a surprise round",
+    "subject": "surprise attack",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "The death dog's handler is busy grooming the dog to avoid his screaming boss.",
+    "source_quote": "The death dog's handler fails to notice them because he's busy grooming the dog to avoid his screaming boss",
+    "subject": "Derro cultist handler",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that a readied action normally can't include movement but offers to allow half movement.",
+    "source_quote": "The DM rules that a readied action normally can't include movement, but offers to allow half movement going forward",
+    "subject": "DM ruling on readied action",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir creates a sphere of magical darkness to disorient the cultists.",
+    "source_quote": "Zalthir creates a sphere of magical darkness to disorient the cultists",
+    "subject": "sphere of magical darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak demands the intruders embrace Demogorgon's madness or break trying.",
+    "source_quote": "\"Demogorgon's madness flows through me! You, whoever you are, will embrace it or break trying.\"",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his fire breath weapon on four enemies after stepping east.",
+    "source_quote": "Zalthir, remembering he is a dragonborn, uses his fire breath weapon on four enemies after stepping east",
+    "subject": "Zalthir fire breath",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three enemies take 6 damage each and a fourth takes 3 damage from Zalthir's fire breath.",
+    "source_quote": "three take 6 damage each, and a fourth takes 3",
+    "subject": "fire breath damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak mocks the party's fire attack, claiming his power is superior.",
+    "source_quote": "Narrak mocks the party's fire attack, claiming his power is superior",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Derro cultist steps out and stabs at the party with a short spear, chanting \"You shall die!\", but misses.",
+    "source_quote": "A Derro cultist steps out and stabs at the party with a short spear, chanting \"You shall die!\", and misses",
+    "subject": "Derro spear attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Derro cultist strikes blindly from within the magical darkness and misses.",
+    "source_quote": "Another, unable to see out of the darkness, strikes blindly from within it and also misses",
+    "subject": "blind Derro attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is gripped by a momentary madness from the ritual circle but shakes it off with monk's focus.",
+    "source_quote": "Zalthir, standing at the edge of the ritual circle, is gripped by a momentary madness from it (a Wisdom save), but his monk's focus lets it subside",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts Tasha's Caustic Brew and catches four cultists.",
+    "source_quote": "Gyrgum casts Tasha's Caustic Brew (a 30-by-5-foot line, DC 14 Dexterity) and catches four cultists",
+    "subject": "Tasha's Caustic Brew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One cultist dodges the brew while the rest take 2d4 acid damage at the start of each turn.",
+    "source_quote": "Only one dodges, and the rest take 2d4 acid at the start of each turn",
+    "subject": "caustic brew damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin senses the circle's danger and charges a cultist instead of entering the circle.",
+    "source_quote": "Thorin senses the danger and charges a cultist instead of running into the circle",
+    "subject": "Thorin charges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's first fiery ray kills one of the tougher chanters.",
+    "source_quote": "His first ray does 15 damage to one of the tougher chanters, which the DM put at 21 hit points, and the DM rules it dead",
+    "subject": "chanters killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz turns his third ray on Grula-Munga, hitting for 8 damage.",
+    "source_quote": "He turns his third ray on Grula-Munga (85 HP), hitting on a 14 for 8 damage",
+    "subject": "Daz attacks Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Grula-Munga shouts \"Oh, brother!\" and points at the attackers.",
+    "source_quote": "Grula-Munga shouts \"Oh, brother!\" and points at the attackers",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A Derro who heard the magic comes out and spears at Zalthir.",
+    "source_quote": "A Derro who heard the magic comes out and spears at Zalthir",
+    "subject": "Derro spear attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak casts Fear, striking terror into Thorin, Gyrgum, and Zalthir and forcing them to flee.",
+    "source_quote": "Narrak steps outside the darkness and retaliates by casting Fear, striking terror into Thorin, Gyrgum, and Zalthir and forcing them to flee",
+    "subject": "Narrak casts Fear",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum fails his saving throw against Fear because he did not use Bless on himself.",
+    "source_quote": "Gyrgum rolls 11 without Bless (he blessed only the others)",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is unaffected by Narrak's Fear spell.",
+    "source_quote": "and Daz is unaffected",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga's battle axe misses Thorin, but her morning star hits for 14 damage.",
+    "source_quote": "Grula-Munga joins the fray; her battle axe misses Thorin (AC 18), but her morning star hits for 14 damage",
+    "subject": "Grula-Munga attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro attacked by the caustic brew strikes at Zalthir, misses, and takes 4 acid damage.",
+    "source_quote": "A caustic-brewed Derro attacks Zalthir and misses, then takes 4 acid damage",
+    "subject": "Derro cultist",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir dashes away and repositions the sphere of magical darkness to block Narrak's line of sight.",
+    "source_quote": "Zalthir dashes away, then repositions the sphere of magical darkness to block Narrak's line of sight",
+    "subject": "Zalthir moves darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM rules that moving the magical darkness was a free action.",
+    "source_quote": "The DM ruled that moving the darkness was a free action",
+    "subject": "DM ruling on darkness movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his bonus action on Eldritch Maul, empowering his tattoo.",
+    "source_quote": "Zalthir uses his bonus action on Eldritch Maul, empowering his tattoo",
+    "subject": "Zalthir Eldritch Maul",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir's tattoo now allows his melee attacks to reach 15 feet and deal extra damage.",
+    "source_quote": "so that his melee attacks reach 15 feet and deal extra damage",
+    "subject": "tattoo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum passes his saving throw against Fear and shakes off the effect.",
+    "source_quote": "Gyrgum, no longer seeing Narrak, passes his save and shakes off the fear",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum strikes Grula-Munga with a bolt of guiding light, marking her for a follow-up attack by Thorin.",
+    "source_quote": "Gyrgum strikes Grula-Munga with a bolt of guiding light, marking the giant for a follow-up attack by Thorin",
+    "subject": "Gyrgum guides Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits Grula-Munga with his longsword for 16 total damage, leaving her at 54 hit points.",
+    "source_quote": "His +1 longsword with advantage hits for 10, plus 6 from a special ability, for 16 total, leaving her at 54 hit points",
+    "subject": "Thorin strikes Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin shakes off his fear.",
+    "source_quote": "then shakes off his fear",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a hand of compacted earth that seizes and restrains Narrak, dealing bludgeoning damage.",
+    "source_quote": "He conjures a massive hand of compacted earth that erupts from the ground to seize and restrain Narrak, dealing bludgeoning damage",
+    "subject": "Daz restrains Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak fails his Strength save, his concentration breaks, and the Fear ends.",
+    "source_quote": "Narrak fails his Strength save, his concentration breaks, and the Fear ends",
+    "subject": "Narrak concentration breaks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak defiantly proclaims the inevitability of the two-headed curse and Demogorgon's rise.",
+    "source_quote": "Narrak, though trapped and injured, defiantly proclaims the inevitability of the two-headed curse and the rise of Demogorgon",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The session pauses mid-combat and will resume after Daz's turn.",
+    "source_quote": "The session pauses mid-combat and will resume after Daz's turn",
+    "subject": "session pause",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The DM adds Narrak's parting couplet after calling the stop.",
+    "source_quote": "After calling the stop, the DM added Narrak's parting couplet",
+    "subject": "session stop",
+    "quote_verified": true
+  }
+]

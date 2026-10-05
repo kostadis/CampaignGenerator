@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Stool departed with Basidia and the surviving myconids to remain among their own kind.",
+    "source_quote": "Stool and Rumpadump departed with Basidia and the surviving myconids to remain among their own kind.",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump departed with Basidia and the surviving myconids to remain among their own kind.",
+    "source_quote": "Stool and Rumpadump departed with Basidia and the surviving myconids to remain among their own kind.",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia departed with Stool and Rumpadump to remain among their own kind.",
+    "source_quote": "Stool and Rumpadump departed with Basidia and the surviving myconids to remain among their own kind.",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump delivered Zalthir an exhaustive, highly detailed list of feedback through rapport spores.",
+    "source_quote": "Before leaving, Rumpadump delivered Zalthir an exhaustive, highly detailed, and allegedly constructive list of feedback through rapport spores",
+    "subject": "Rumpadump's feedback delivery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump's feedback remained in Zalthir\u2019s head for roughly fifteen minutes.",
+    "source_quote": "which remained in Zalthir\u2019s head for roughly fifteen minutes.",
+    "subject": "feedback duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum won five gold pieces from Jimjar, contrary to Jimjar's initial recollection.",
+    "source_quote": "Jimjar\u2019s previous bet was also settled: contrary to his initial recollection, Gyrgum had won five gold pieces from him.",
+    "subject": "Jimjar pays Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar initially claimed he lacked ready cash to settle his debt to Gyrgum.",
+    "source_quote": "Jimjar first claimed he lacked ready cash",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar relented and paid Gyrgum the five gold pieces.",
+    "source_quote": "then relented and paid.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is dead.",
+    "source_quote": "With Sarith dead and no longer able to guide them",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party turned toward Blingdenstone as their best hope of reaching the Overbright.",
+    "source_quote": "the party turned toward Blingdenstone as their best hope of eventually reaching the Overbright.",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar confidently claimed he knew exactly where they were going.",
+    "source_quote": "Jimjar confidently claimed he knew exactly where they were going",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar tried to turn his claim of knowing the way into another bet.",
+    "source_quote": "and immediately tried to turn that claim into another bet.",
+    "subject": "Jimjar's bet proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo could not provide a guide for the entire two-week journey to Blingdenstone.",
+    "source_quote": "Rasharoo could not provide a guide for the entire two-week journey",
+    "subject": "Rasharoo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo supplied myconid scouts to lead the party safely through the first third of the journey.",
+    "source_quote": "but he supplied myconid scouts who could lead them safely through the first third.",
+    "subject": "Rasharoo supplies scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rasharoo warned that Ilvara remains at large.",
+    "source_quote": "He also warned that Ilvara and her drow hunters remained at large.",
+    "subject": "Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Ilvara's drow hunters are actively pursuing the party.",
+    "source_quote": "Ilvara and her drow hunters remained at large.",
+    "subject": "drow hunters",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party speculated that Ilvara might be diverted to Neverlight Grove.",
+    "source_quote": "their pursuers might be usefully diverted by Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party speculated that Ilvara might be diverted by the Circle of Welcome.",
+    "source_quote": "or even an invitation to Zuggtmoy\u2019s wedding.",
+    "subject": "Circle of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party speculated that Ilvara might be diverted by an invitation to Zuggtmoy\u2019s wedding.",
+    "source_quote": "or even an invitation to Zuggtmoy\u2019s wedding.",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Myconid scouts guided the party through the first third of the journey.",
+    "source_quote": "Rasharoo could not provide a guide for the entire two-week journey, but he supplied myconid scouts who could lead them safely through the first third.",
+    "subject": "myconid scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party set out into the deep darkness of the Underdark after a long rest.",
+    "source_quote": "the party set out once more into the deep darkness of the Underdark.",
+    "subject": "Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar offered a bet that Thorin would praise him once they arrived at Blingdenstone.",
+    "source_quote": "Jimjar again asserted that he knew precisely where they were going and offered to bet that Thorin would praise him once they arrived.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rasharoo\u2019s scouts bid the party farewell after seven days of travel.",
+    "source_quote": "Seven days of largely uneventful travel passed before Rasharoo\u2019s scouts bid them farewell.",
+    "subject": "scouts depart",
+    "quote_verified": true
+  }
+]

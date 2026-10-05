@@ -1,0 +1,737 @@
+[
+  {
+    "type": "event",
+    "fact": "All party members advance to 4th level.",
+    "source_quote": "everyone advanced to 4th level",
+    "subject": "character leveling",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Intelligence score increases to 19.",
+    "source_quote": "Daz's Intelligence reaches 19",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum temporarily raises a score to 19.",
+    "source_quote": "Gyrgum bumps a score to 19 \"at least temporarily\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has not taken a long rest since the skeleton fight.",
+    "source_quote": "The party has not taken a long rest since the fight",
+    "subject": "rest status",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost with a gruesome cleaved head.",
+    "source_quote": "A ghost with a gruesome cleaved head emerged from the ground",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spot where the ghost emerged is marked on the map as \"Buppido's resting place\".",
+    "source_quote": "The spot is marked on the map as \"Buppido's resting place\"",
+    "subject": "Buppido's resting place",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a deep gnome traveler from Blingdenstone.",
+    "source_quote": "Pelek, a deep gnome traveler from Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's mother named him after an actor who appeared in Blingdenstone.",
+    "source_quote": "his mother named him after an actor who showed up in Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is a derro who was previously friends with Pelek.",
+    "source_quote": "he had once been friends with a derro named Buppido",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was trapped in the caverns for approximately a year.",
+    "source_quote": "trapped in the caverns ever since, which he reckoned was about a year",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek attempted to possess Buppido but failed.",
+    "source_quote": "he had even tried to possess Buppido, and the effort failed entirely",
+    "subject": "attempted possession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wraps Pelek's bones and stores them in his pack.",
+    "source_quote": "Gyrgum wrapped them up and tucked them into his pack",
+    "subject": "bone collection",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek asks the party to carry his bones to his ancestral home in Blingdenstone.",
+    "source_quote": "collect his specific bones and carry them back to Blingdenstone, where they could be buried in his ancestral home",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fumbles an intimidation attempt against Pelek.",
+    "source_quote": "Thorin pressed the ghost on what the party got out of the deal and fumbled an intimidation attempt badly",
+    "subject": "intimidation attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 1 on his intimidation check against Pelek.",
+    "source_quote": "Thorin rolls a 1",
+    "subject": "intimidation rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek laughs off Thorin and Daz's intimidation attempts.",
+    "source_quote": "Pelek laughs both off",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek advises the party to claim the drow among them has no ties to Menzoberranzan at Blingdenstone gates.",
+    "source_quote": "they must make absolutely clear that the drow among them had no ties to Menzoberranzan",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's severed hand was animated by tunnel magic and scuttled away while wearing an obsidian ring.",
+    "source_quote": "strange magic pervading the tunnels had animated his severed hand, which had scuttled away... still wearing his obsidian ring",
+    "subject": "obsidian ring",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's spirit binds to the party and travels alongside them.",
+    "source_quote": "Pelek's spirit drifted alongside them as a companion, bound to wherever his remains traveled",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek does not gain levels but acts as a companion whose thoughts are audible to the party.",
+    "source_quote": "Pelek does not gain levels but is now effectively a companion whose thoughts the party hear",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek told the party that Droki passes through the tunnels once a day.",
+    "source_quote": "Pelek told them that Droki passed through once a day",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki leaves behind a messy trail of food scraps.",
+    "source_quote": "Following the messy trail of food scraps Droki left behind",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM describes Droki as a litter bug.",
+    "source_quote": "a litter bug",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests Droki may just be obsessive-compulsive.",
+    "source_quote": "Gyrgum suggests Droki may just be obsessive-compulsive",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The DM states that Droki's obsessive-compulsive behavior is only a piece of his madness.",
+    "source_quote": "that's only a piece of his madness",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party reached a massive cavern filled with a deep, black pool of water.",
+    "source_quote": "a massive cavern filled with a deep, black pool of water",
+    "subject": "massive cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The black pool stretches nearly a hundred feet across.",
+    "source_quote": "stretching nearly a hundred feet across",
+    "subject": "black pool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Nothing can be seen beneath the surface of the black water.",
+    "source_quote": "nothing can be seen beneath the surface of the black water",
+    "subject": "black pool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz sees the black pool as his chance to shine with Shape Water.",
+    "source_quote": "Daz sees it as his chance to shine with Shape Water",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests continuing on Droki's path first and circling back to the pool if needed.",
+    "source_quote": "Zalthir suggests continuing on Droki's path first and circling back if needed",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party arrived at a solid rock wall riddled with narrow cracks.",
+    "source_quote": "a solid rock wall riddled with narrow cracks",
+    "subject": "solid rock wall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Gyrgum rolled low Investigation checks (11 and 10), revealing no secret doors in the wall.",
+    "source_quote": "Investigation rolls: Daz 11, Gyrgum 10. There are no secret doors",
+    "subject": "investigation of wall",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Through the cracks, the party can see a tunnel running about 30 feet.",
+    "source_quote": "Through the cracks the party can see a tunnel running about 30 feet",
+    "subject": "cracks",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes growing large and smashing through the wall.",
+    "source_quote": "Thorin proposes growing large and \"Hulk smash[ing]\" through",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wants to cast mending to seal the cracks instead.",
+    "source_quote": "Gyrgum's contrarian streak wants to cast mending to seal the cracks instead",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The caverns are now held by people plotting against the Deepking.",
+    "source_quote": "the caverns are now held by people plotting against the Deepking",
+    "subject": "anti-Deepking groups",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Drawing attention in the caverns is unwise because the inhabitants are committed to overthrowing the Deepking.",
+    "source_quote": "the caverns, once \"a hippie place,\" are now held by groups committed to overthrowing the Deepking, so drawing attention would be unwise",
+    "subject": "anti-Deepking groups",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Magical shrinking mushrooms are growing nearby the rock wall.",
+    "source_quote": "Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "shrinking mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum ate one of the magical shrinking mushrooms.",
+    "source_quote": "Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek slipped through the narrow stone cracks to scout ahead.",
+    "source_quote": "Pelek slipped through the narrow stone cracks to scout ahead",
+    "subject": "Pelek",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reported that the tunnel continues for some distance with nobody there.",
+    "source_quote": "He reports that the tunnel continues for some distance with nobody there",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek cannot go far because he is tied to his bones.",
+    "source_quote": "Tied to his bones, he cannot go far",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum ate a shrinking mushroom, but the cracks were still too small for him to squeeze through.",
+    "source_quote": "The cracks were far too small for any of them to squeeze through, even after Gyrgum ate one of the magical shrinking mushrooms",
+    "subject": "shrinking mushroom usage",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party is debating using magical shrinking mushrooms to bypass the barrier.",
+    "source_quote": "The party debates using magical shrinking mushrooms to bypass the barrier",
+    "subject": "bypassing barrier",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek slipped through the stone to scout the area on the other side of the pool.",
+    "source_quote": "Pelek slipped effortlessly through the stone as only a ghost could, scouting ahead",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek confirmed that a tunnel continues on the other side of the pool.",
+    "source_quote": "confirming that a tunnel continued on the other side",
+    "subject": "tunnel scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tunnel beyond the pool is clear of immediate danger.",
+    "source_quote": "confirming that a tunnel continued on the other side, clear of any immediate danger",
+    "subject": "tunnel",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party rules out the narrow cracks in the wall as a viable passage.",
+    "source_quote": "With the cracks ruled out as a passage",
+    "subject": "abandoning cracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum eats Pygmywort to shrink himself in an attempt to fit through the narrow rock cracks.",
+    "source_quote": "Gyrgum eats Pygmywort to shrink himself through the narrow rock cracks",
+    "subject": "Pygmywort attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum cannot get small enough to pass through the cracks.",
+    "source_quote": "cannot get small enough to pass",
+    "subject": "Gyrgum fail to shrink",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pygmywort functions like the enlarge/reduce spell, reducing a Medium creature only to Small.",
+    "source_quote": "The mushroom works like enlarge/reduce, taking a Medium creature only to Small",
+    "subject": "Pygmywort",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eating more Pygmywort does not shrink Gyrgum further.",
+    "source_quote": "Eating more does not shrink him further",
+    "subject": "Gyrgum second dose",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum gets the impression that he will be smaller for a longer period of time after eating more Pygmywort.",
+    "source_quote": "you do get the distinct impression you might be smaller for a longer period of time",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wonders if the mushrooms behave like Photoshop zoom.",
+    "source_quote": "Thorin wonders whether the mushrooms behave like Photoshop zoom",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz compares the mushrooms to adding a picture to a Word document.",
+    "source_quote": "Daz compares them to adding a picture to a Word document",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party returns to the large, dark pool to use an alternate route.",
+    "source_quote": "the party returns to the large, dark pool",
+    "subject": "dark pool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses magic to freeze successive sections of the water, creating a temporary ice bridge.",
+    "source_quote": "Daz uses magic to freeze successive sections of the water, creating a temporary ice bridge",
+    "subject": "ice bridge creation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz can freeze a five-foot cube and have no more than two non-instantaneous effects active at once.",
+    "source_quote": "Daz can freeze a five-foot cube and have no more than two non-instantaneous effects active at once",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir suggests layering five-foot chunks to form the bridge.",
+    "source_quote": "Zalthir suggests layering five-foot chunks into a bridge",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "As each new ice slab forms, the previous one melts behind them.",
+    "source_quote": "As each new slab forms, the old one melts behind them",
+    "subject": "ice melting",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes Daz perform 'Spider-Man motions' while freezing the bridge.",
+    "source_quote": "Thorin has him making \"Spider-Man motions.\"",
+    "subject": "Thorin gesture",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum expresses that he likes the 'iceberg spell'.",
+    "source_quote": "Gyrgum: \"I like the iceberg spell.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The whole group walks safely over the black water to the far shore.",
+    "source_quote": "The whole group walked safely over the black water to the far shore",
+    "subject": "crossing pool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum learns that staying small weakens his Strength attacks.",
+    "source_quote": "Gyrgum learns that staying small weakens his Strength attacks",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum takes a Bigwig to restore his size.",
+    "source_quote": "he takes a Bigwig (\"the antidote\") to restore his size",
+    "subject": "Gyrgum restoration",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Bigwig is described as the antidote to Pygmywort.",
+    "source_quote": "he takes a Bigwig (\"the antidote\") to restore his size",
+    "subject": "Bigwig",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "More Pygmywort and Bigwig grow on the far shore of the pool.",
+    "source_quote": "More Pygmywort and Bigwig grow on the far shore",
+    "subject": "far shore",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum stocks an ample supply of Pygmywort and Bigwig.",
+    "source_quote": "he makes sure to stock \"an ample supply.\"",
+    "subject": "Gyrgum stockpiling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows Droki's trail east into the Fungi Forest.",
+    "source_quote": "At an intersection, the party follows Droki's crumbs east.",
+    "subject": "following Droki's trail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin moves to the back of the group because his armor is too loud.",
+    "source_quote": "\"I'm like clink clank every time I step.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Fungi Forest is a dense area filled with giant mushrooms, some standing nearly five feet tall.",
+    "source_quote": "a dense forest of giant mushrooms, some standing nearly five feet tall",
+    "subject": "Fungi Forest",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Fungi Forest produces an eerie whispering sound resembling wind breathing through the fungi.",
+    "source_quote": "a hissing sound starts to rise, like uncounted tiny voices whispering in tongues you don't understand",
+    "subject": "Fungi Forest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reassures the group that the whispering sounds from the fungi are harmless.",
+    "source_quote": "Pelek reassured the group that the noise was harmless, just the wind of the Underdark breathing through the fungi",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin considers covering their mouths against possible spores in the fungi forest.",
+    "source_quote": "Thorin considers covering mouths against possible spores.",
+    "subject": "Thorin considers covering mouths",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The terrain in the Fungi Forest is difficult.",
+    "source_quote": "The forest is difficult terrain.",
+    "subject": "Fungi Forest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum climbs a tall mushroom to spot a tunnel heading southwest.",
+    "source_quote": "Gyrgum climbs a tall mushroom and spots a tunnel heading southwest.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party begins foraging for Underdark mushrooms, including barrelstalks and bluecaps.",
+    "source_quote": "They begin foraging for various Underdark mushrooms, including barrelstalks and bluecaps.",
+    "subject": "foraging for mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Nilhogg's Nose is a type of mushroom found in the Fungi Forest.",
+    "source_quote": "The DM also mentions Nilhogg's Nose.",
+    "subject": "Nilhogg's Nose",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tracks mushroom quantities in a separate inventory column.",
+    "source_quote": "Thorin tracks them in a separate inventory column.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two swarms of centipedes ambush the party from the surrounding mushrooms.",
+    "source_quote": "While the party harvests the fungi, two swarms of centipedes ambush them from the surrounding mushrooms.",
+    "subject": "centipede ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek hovers near Gyrgum to keep his bones safe.",
+    "source_quote": "Pelek hovers wherever Gyrgum is to keep his bones safe.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Centipede swarms cannot be grappled or restrained.",
+    "source_quote": "Swarms can't be grappled or restrained.",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz asks if Maximilian's Earthen Grasp works on swarms and is told it does not.",
+    "source_quote": "Daz asks about Maximilian's Earthen Grasp and is told no.",
+    "subject": "Maximilian's Earthen Grasp question",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Centipede swarms can move through other creatures' spaces.",
+    "source_quote": "Swarms can move through other creatures' spaces.",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A single-target spell hits the centipede swarm, but area spells also hit allies covered by the swarm.",
+    "source_quote": "Single-target spells hit only the swarm, but area spells will also hit an ally the swarm covers.",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches a centipede swarm twice, dealing 6 damage on the second hit.",
+    "source_quote": "he punches at the swarm and hits twice, the second for 6 damage.",
+    "subject": "Zalthir punches swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead on the centipede swarms, but the swarm makes its Wisdom save and resists.",
+    "source_quote": "Daz casts Toll the Dead against the creatures, but the swarm makes its Wisdom save and resists the effect.",
+    "subject": "Daz casts Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A centipede swarm crawls onto Zalthir, covering him in biting insects.",
+    "source_quote": "A swarm crawls onto Zalthir, covering him in biting insects.",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipede swarm's bite misses Zalthir because the insects stumble on his clothes and scales.",
+    "source_quote": "Its bite misses his AC 16 as the centipedes \"stumble on your clothes, your scales, on each other.\"",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashes a stream of caustic acid at the swarms, but they dodge with a 19 on the Dexterity save.",
+    "source_quote": "Gyrgum unleashes a stream of caustic acid at the swarms, but the insects roll a 19 on the Dexterity save and dodge the brunt of the spray.",
+    "subject": "Gyrgum sprays acid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes a centipede swarm for 10 damage, leaving it at 1 hit point.",
+    "source_quote": "Thorin strikes a swarm for 10 damage, leaving it at 1 hit point",
+    "subject": "Thorin strikes swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Action Surge after striking a swarm.",
+    "source_quote": "then uses Action Surge.",
+    "subject": "Thorin uses Action Surge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The players discover they can draw spell-effect animations on the map.",
+    "source_quote": "The players also discover they can draw spell-effect animations on the map (\"It was in the wrong place, but it looked really cool\").",
+    "subject": "map animations",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A centipede swarm covers Gyrgum and bites, but misses his AC 14 with a roll of 13.",
+    "source_quote": "A second swarm moves to cover Gyrgum and bites, but its roll of 13 falls just short of his AC 14",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Two additional centipede swarms emerge from the fungi, one initially hidden under Pelek's token.",
+    "source_quote": "Two additional swarms emerge from the surrounding fungi, one of them initially hidden under Pelek's token, further surrounding the party.",
+    "subject": "additional swarms emerge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz passes a nature check establishing that the centipede swarms are not infinite.",
+    "source_quote": "A nature check establishes, through Daz, that the swarms are not infinite.",
+    "subject": "nature check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek starts to tell a ghost story about adventurers but stops mid-sentence.",
+    "source_quote": "Pelek starts to tell a ghost story about a group of adventurers, then stops mid-sentence.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes off the centipede swarm covering him.",
+    "source_quote": "Zalthir finishes off the swarm covering him",
+    "subject": "Zalthir finishes swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves at half speed through difficult terrain to punch another cluster for 10 damage.",
+    "source_quote": "then moves at half speed through the difficult terrain to engage another cluster, punching for 10 damage.",
+    "subject": "Zalthir moves and punches",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses Toll the Dead on a wounded centipede swarm for 6 damage.",
+    "source_quote": "Daz uses Toll the Dead on a wounded swarm for 6 damage.",
+    "subject": "Daz casts Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits with his hand axe for 4 damage but misses with his mace.",
+    "source_quote": "His hand axe hits (15) for 4 damage and his mace swing misses entirely (7).",
+    "subject": "Gyrgum two-weapon fighting",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The DM notes that a five-foot space is large, resembling hitting all the bugs.",
+    "source_quote": "The DM notes that a five-foot space is big, \"so it's more like you hitting all these bugs.\"",
+    "subject": "battle space",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts a tactical strike with a superiority die but fails to land the blow.",
+    "source_quote": "Thorin attempts a tactical strike, adding a superiority die to a missed attack, but still fails to land the blow.",
+    "subject": "Thorin tactical strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session ends mid-combat with the party still surrounded by centipede swarms.",
+    "source_quote": "The session ends mid-combat with the party still surrounded by centipede swarms.",
+    "subject": "session ends",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipede swarms are alive and surrounding the party as the session ends.",
+    "source_quote": "the mushroom forest alive with the sound of countless skittering legs",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  }
+]

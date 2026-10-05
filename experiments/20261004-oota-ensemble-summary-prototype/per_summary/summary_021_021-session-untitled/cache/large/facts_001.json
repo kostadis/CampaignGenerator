@@ -1,0 +1,107 @@
+[
+  {
+    "type": "faction",
+    "fact": "The party is identified as the Ember Vanguard.",
+    "source_quote": "the Ember Vanguard, though they did not yet know that name",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party moves methodically through the corrupted chamber gathering notes and documents.",
+    "source_quote": "The party moved methodically through the space, gathering notes and documents",
+    "subject": "party investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Documents gathered in the chamber lay bare the Council of Savants' foul dealings and demonic entanglements.",
+    "source_quote": "gathering notes and documents that laid bare the Council of Savants' foul dealings and demonic entanglements",
+    "subject": "Council of Savants corruption",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost Pelek inhabits the derro spy's body seized during the previous fight.",
+    "source_quote": "The ghost Pelek, who had seized the derro spy's body at the end of the last fight, lingered in that borrowed body",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party keeps careful hold of Pelek's bones while he inhabits the spy's body.",
+    "source_quote": "while the party kept careful hold of his bones",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro spy is dead, with Pelek occupying his body.",
+    "source_quote": "The ghost Pelek, who had seized the derro spy's body at the end of the last fight",
+    "subject": "derro spy",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses the dragon's egg, which was carried unnoticed by Daz through the fight.",
+    "source_quote": "Most precious of all was the dragon's egg... Daz, who carried it through the fight unnoticed",
+    "subject": "dragon's egg",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg is tough enough to be hidden in a bag or carried unnoticed.",
+    "source_quote": "It was tough enough, and could be hidden in a bag or carried unnoticed",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The dragon's egg has demonic corruption that is a secret known only to the party.",
+    "source_quote": "its demonic corruption was a secret known only to them",
+    "subject": "dragon's egg",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is currently at full hit points.",
+    "source_quote": "Daz, who carried it through the fight unnoticed, is still at full hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is implicated in nefarious activities and corruption via evidence found in the chamber.",
+    "source_quote": "teeming with evidence of corruption and foul deeds connected to the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro group running the chamber is up to nefarious deeds.",
+    "source_quote": "The derro group running the place is 'clearly \u2026 up to nefariously no good deeds'",
+    "subject": "derro group",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party debates delivering intelligence to the red dragon Themberchaud, the Keepers of the Flame, or the Stone Guard.",
+    "source_quote": "considering the interests of the red dragon Themberchaud, the Keepers of the Flame, and the Stone Guard",
+    "subject": "faction deliberation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks whether there is someone paying the party to find the information.",
+    "source_quote": "Gyrgum asks whether there is someone paying them to find all this out.",
+    "subject": "Gyrgum's inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM answers that everyone is paying the party to find the information.",
+    "source_quote": "\"everybody's paying you to find it out.",
+    "subject": "DM response",
+    "quote_verified": true
+  }
+]

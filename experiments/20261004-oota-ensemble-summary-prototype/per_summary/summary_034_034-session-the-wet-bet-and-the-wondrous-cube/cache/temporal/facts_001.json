@@ -1,0 +1,23 @@
+[
+  {
+    "type": "object",
+    "fact": "Thorin defines 'end in tears' as any unfortunate event before returning to their path, excluding literal crying or death.",
+    "source_quote": "By end in tears, what I mean is not literally that somebody will cry, but rather there will be some unfortunate event before we get back on our way.",
+    "subject": "Thorin's wager definition",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a Strength score of 18.",
+    "source_quote": "Thorin points out that he has a Strength of 18",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin rolled a 1 on a D2 (coin flip) to determine their path.",
+    "source_quote": "So I rolled a D2, otherwise known as flip a coin, and it came up one",
+    "subject": "Thorin's die roll",
+    "quote_verified": true
+  }
+]

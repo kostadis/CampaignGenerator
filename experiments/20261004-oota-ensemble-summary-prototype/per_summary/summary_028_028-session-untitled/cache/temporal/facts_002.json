@@ -1,0 +1,23 @@
+[
+  {
+    "type": "monster",
+    "fact": "Two wretched figures, one man and one woman, are found huddled in the dark.",
+    "source_quote": "the party had come across two wretched figures huddled in the dark",
+    "subject": "former prisoners",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 22 on Investigation to identify the former prisoners.",
+    "source_quote": "Daz rolled a 22 on Investigation",
+    "subject": "crystal investigation",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party collects twelve quartz crystals in total.",
+    "source_quote": "The party collects twelve quartz crystals in total",
+    "subject": "quartz crystals count",
+    "quote_verified": true
+  }
+]

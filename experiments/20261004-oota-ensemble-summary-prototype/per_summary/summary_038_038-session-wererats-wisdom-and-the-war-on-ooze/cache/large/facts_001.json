@@ -1,0 +1,184 @@
+[
+  {
+    "type": "event",
+    "fact": "The party faces a crowd of questioning merchants and citizens in the Traders' Grotto after defeating the gelatinous cubes.",
+    "source_quote": "The aftermath of the battle with the gelatinous cubes in the Traders' Grotto left the party facing a crowd of questioning merchants and citizens.",
+    "subject": "battle aftermath",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The public is disturbed that outsiders handled the crisis more effectively than Blingdenstone\u2019s guards, despite the physical destruction.",
+    "source_quote": "the public was more disturbed that outsiders had handled the crisis more effectively than Blingdenstone\u2019s own guards.",
+    "subject": "public reception",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant declares that Chief Dorbo Diggermattock hired the adventurers to solve the settlement's problems.",
+    "source_quote": "Chief Dorbo Diggermattock hired these adventurers to solve our problems.",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant asserts that Chief Dorbo Diggermattock is on top of everything.",
+    "source_quote": "Chief Dorbo Diggermattock is on top of everything.",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo Diggermattock is accused by a citizen of caring only for the gold from the gems from the mines.",
+    "source_quote": "accusing Chief Dorbo of caring only for \u201cthe gold from the gems from the mines.\u201d",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A critic claims Chief Dorbo has been obsessed with money since leading the reconquest of the area.",
+    "source_quote": "Dorbo had been obsessed with \u201cmoney, money, money, money, money\u201d since leading the reconquest of the area.",
+    "subject": "Chief Dorbo Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A citizen praises Senni Diggermattock as an advocate for ordinary people.",
+    "source_quote": "A citizen praised Senni Diggermattock as an advocate for ordinary people",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The critic claims Senni Diggermattock is an advocate for Blingdenstone\u2019s people.",
+    "source_quote": "A citizen praises Senni Diggermattock as an advocate for Blingdenstone\u2019s people",
+    "subject": "Senni Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recognizes that Blingdenstone\u2019s political class is trying to claim credit for their victory.",
+    "source_quote": "Blingdenstone\u2019s political class was trying to claim credit for their victory",
+    "subject": "political maneuvering",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party suggests that Chief Dorbo use wealth to rebuild the damaged businesses.",
+    "source_quote": "the party suggested that Dorbo use some of that wealth to rebuild the damaged businesses",
+    "subject": "suggestion made",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sergeant calls the suggestion to rebuild excellent but strongly encourages the party to leave the market.",
+    "source_quote": "the increasingly nervous sergeant called it an excellent suggestion\u2014then strongly encouraged them to leave the market",
+    "subject": "sergeant dismissal",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Traders' Grotto contains wreckage from the battle with the gelatinous cubes.",
+    "source_quote": "Amid the wreckage, they also recovered a magical short sword",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recovers a magical short sword from the wreckage.",
+    "source_quote": "they also recovered a magical short sword",
+    "subject": "short sword recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz claims the magical short sword as an upgrade after discussing weapon proficiencies.",
+    "source_quote": "Daz ultimately claimed [the magical short sword] as an upgrade",
+    "subject": "item claim",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Daz takes the Short Sword +1 as an upgrade to his weapon.",
+    "source_quote": "Daz takes the short sword as an upgrade.",
+    "subject": "Short Sword +1",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool wonders if he was hired and if he will be paid for his assistance.",
+    "source_quote": "Glabbagool... wondered whether he had also been hired and whether he would be paid.",
+    "subject": "Glabbagool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool decides that friends are what he wants, stating he could do with some friends.",
+    "source_quote": "\u201cYes, I think I could do with some friends.\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party assures Glabbagool he can come with them, and the sergeant revises the adventurer count to include him.",
+    "source_quote": "the sergeant revises the official count of adventurers to include him.",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant visibly becomes nervous about the party's continued presence and revolutionary tactics.",
+    "source_quote": "becoming visibly nervous about their continued presence and \u201crevolutionary tactics.\u201d",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The sergeant points toward a rubble-choked route for the party to traverse.",
+    "source_quote": "The sergeant points toward a rubble-choked route",
+    "subject": "rubble-choked route",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sergeant states that Blingdenstone has a serious ooze problem and leaders cannot help the party leave while the settlement is at risk.",
+    "source_quote": "Blingdenstone has a serious ooze problem, and its leaders cannot help the party leave while the settlement remains at risk of being overrun.",
+    "subject": "mission restatement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to stop waiting for oozes to attack the market and instead seek the source.",
+    "source_quote": "The party agrees to stop waiting for more oozes to attack the market and seek the source instead.",
+    "subject": "strategy change",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party destroyed gelatinous cubes in the Traders' Grotto, causing damage to part of the market.",
+    "source_quote": "destroying part of the market might complicate their reception",
+    "subject": "gelatinous cubes",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Blingdenstone\u2019s guards failed to protect the citizens during the ooze crisis.",
+    "source_quote": "the public was more disturbed that outsiders had handled the crisis more effectively than Blingdenstone\u2019s own guards.",
+    "subject": "Blingdenstone guards",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The political class of Blingdenstone attempts to take credit for the adventurers' work while limiting their exposure to the public.",
+    "source_quote": "Blingdenstone\u2019s political class was trying to claim credit for their victory while keeping their \u201crevolutionary tactics\u201d away from the crowd.",
+    "subject": "Blingdenstone political class",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party will seek the source of the ooze problem instead of waiting for attacks in the market.",
+    "source_quote": "seek the source instead.",
+    "subject": "ooze source",
+    "quote_verified": true
+  }
+]

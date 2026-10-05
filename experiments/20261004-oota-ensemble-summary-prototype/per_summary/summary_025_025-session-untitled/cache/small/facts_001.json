@@ -1,0 +1,226 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is located deep within the Whorlstone Caverns beneath the city of Gracklstugh.",
+    "source_quote": "Deep within the Whorlstone Caverns beneath the city of Gracklstugh",
+    "subject": "Whorlstone Caverns",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Every derro in the Whorlstone Caverns is dead.",
+    "source_quote": "With every derro in the caves dead",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM confirms every derro in the area is dead and all of the treasure has been secured.",
+    "source_quote": "The DM confirms every derro in the area is dead and all of the treasure has been secured",
+    "subject": "derro extermination",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a two-headed dragon egg tied to the cult of Demogorgon.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon",
+    "subject": "two-headed dragon egg",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The two-headed dragon egg is tied to the cult of Demogorgon.",
+    "source_quote": "A two-headed dragon egg tied to the cult of Demogorgon",
+    "subject": "Cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party has proof that the derro were aligned with demonic powers.",
+    "source_quote": "Proof that the derro were aligned with demonic powers",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has enough material to create mayhem and chaos.",
+    "source_quote": "The party has \"enough material to like create mayhem and chaos.\"",
+    "subject": "derro alignment proof",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The evidence is enough to bury the derro in accusations of aligning with demonic powers to destroy Gracklstugh.",
+    "source_quote": "Enough to bury the derro in accusations of aligning with demonic powers to destroy Gracklstugh",
+    "subject": "derro accusations",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Deepking is allied with assassins trying to wipe out the opposition.",
+    "source_quote": "Knowledge that the Deepking himself was allied with assassins trying to wipe out the opposition",
+    "subject": "Deepking",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party has proof that the Deepking is allied with assassins.",
+    "source_quote": "The king is allied with assassins \"trying to wipe out the opposition.\"",
+    "subject": "Deepking alliance proof",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has proof that Themberchaud is actually \"Themberchaud the 28th.\"",
+    "source_quote": "Proof that Themberchaud is in fact \"Themberchaud the 28th.\"",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party possesses proof revealing Themberchaud's true identity.",
+    "source_quote": "Themberchaud is \"Themberchaud the 28th.\"",
+    "subject": "Themberchaud identity proof",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses a ritual statue connected to the affliction causing stone giants to sprout second heads.",
+    "source_quote": "A ritual statue connected to the affliction causing stone giants to sprout second heads",
+    "subject": "ritual statue",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Only one ritual statue was completed; the party interrupted the ritual on the second.",
+    "source_quote": "Only one ritual statue was completed. The party interrupted the ritual on the second",
+    "subject": "ritual interruption",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's player described their political leverage as \"Epstein level dirt on everybody.\"",
+    "source_quote": "\"Epstein level dirt on everybody,\" as Daz's player put it",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM reminded the party they are only fourth level in a city of 10,000 duergar that is barely holding together.",
+    "source_quote": "The DM reminded them that they were \"only fourth level in a city of 10,000 duergar,\" and that the city was barely holding together",
+    "subject": "DM warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gartokkar is the head of the Keepers of the Flame.",
+    "source_quote": "hand the egg to Gartokkar, head of the Keepers of the Flame",
+    "subject": "Gartokkar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame is a faction in Gracklstugh led by Gartokkar.",
+    "source_quote": "hand the egg to Gartokkar, head of the Keepers of the Flame",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's player rolled a die to decide whether Thorin wanted to burn the place down.",
+    "source_quote": "Thorin's player rolls a die (15+ = burn it down) to decide whether his character wants to burn the place down",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The roll for burning the place down came up short, so Thorin agreed with the group.",
+    "source_quote": "The roll comes up short, so he goes along with the rest of the group",
+    "subject": "Thorin burn die roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir proposed a dead man's switch to ensure information release if the party were captured or killed.",
+    "source_quote": "Zalthir proposed a dead man's switch, some way to ensure the information would be released if the party were captured or killed",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar urged the party to hold onto the evidence for future use rather than hand it over too soon.",
+    "source_quote": "Jimjar urged them to hold onto everything for future use rather than hand it over too soon",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The DM corrected a misstatement of Jimjar's advice, clarifying he wants to hold onto things for later need.",
+    "source_quote": "Jimjar wants to hold onto as many of these things as possible because \"you don't know when you're going to need them later.\"",
+    "subject": "Jimjar advice correction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player agreed with Jimjar's instinct to hold onto the items.",
+    "source_quote": "Gyrgum's player agrees: \"Yeah, that's always my instinct.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool pleads with the party to find his friend Rumpadump.",
+    "source_quote": "Stool pleads with them to find his friend Rumpadump",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool's friend Rumpadump needs to be found.",
+    "source_quote": "Stool pleads with them to find his friend Rumpadump",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin floated the idea of visiting a merchant the party previously helped.",
+    "source_quote": "Thorin floated going to the merchant they had helped",
+    "subject": "merchant",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin worries the merchant might betray them.",
+    "source_quote": "he worried the merchant might betray them",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin suggested telling the merchant they got the assassin's office back.",
+    "source_quote": "He suggests telling the merchant \"we got the assassin's office back\" (verbatim)",
+    "subject": "assassin's office deal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recalls two duergar the party earned a favor with.",
+    "source_quote": "Thorin also recalls the two duergar the party earned a favor with",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum summarized the plan to hand over the egg and leave Gracklstugh without answering questions.",
+    "source_quote": "Gyrgum summarizes the plan: hand over the egg and get out of Gracklstugh, avoiding too many questions about everything they have collected",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's original plan was to hand the egg to Gartokkar and leave.",
+    "source_quote": "Their original plan had been to hand the egg to Gartokkar, head of the Keepers of the Flame, and call it a day",
+    "subject": "original plan",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "type": "date",
+    "fact": "The session takes place on 036.03.",
+    "source_quote": "### Journey Through Blingdenstone 036.03",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guards bring the party to Diggermattock Hall after leading them through the reception hall and Traders' Grotto.",
+    "source_quote": "The guards ultimately bring the party to Diggermattock Hall.",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  }
+]

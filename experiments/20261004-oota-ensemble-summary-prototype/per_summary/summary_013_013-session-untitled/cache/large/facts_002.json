@@ -1,0 +1,142 @@
+[
+  {
+    "type": "date",
+    "fact": "The events described take place during the instance labeled The Fall of Rihuud 013.02.",
+    "source_quote": "### The Fall of Rihuud 013.02",
+    "subject": "The Fall of Rihuud 013.02",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin succeeds on a check and realizes the stone giant has gone mad.",
+    "source_quote": "Thorin drew on his deep familiarity with giant-kind and made a successful check (a 16) that revealed the terrible truth: this creature had not chosen violence but had gone mad.",
+    "subject": "Thorin identifies madness",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The stone giant is in a state of madness rather than having chosen violence.",
+    "source_quote": "this creature had not chosen violence but had gone mad",
+    "subject": "stone giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin urges the party and the duergar militia to bring the giant down without killing him.",
+    "source_quote": "Thorin urged the party and the duergar militia alike to bring the giant down without killing him.",
+    "subject": "Thorin urges non-lethal force",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party switches to non-lethal weapon attacks.",
+    "source_quote": "The party switched to non-lethal weapon attacks",
+    "subject": "party switches to non-lethal attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party wears the giant down from 34 hit points to 8.",
+    "source_quote": "and wore the giant down from 34 hit points to 8",
+    "subject": "giant damaged",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir attacks the giant with a focus point.",
+    "source_quote": "Zalthir attacked with a focus point",
+    "subject": "Zalthir attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attacks the giant with a critical hit and uses Action Surge.",
+    "source_quote": "Thorin followed with his crit and Action Surge",
+    "subject": "Thorin attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum charges the giant with his mace.",
+    "source_quote": "Gyrgum charged in with his mace",
+    "subject": "Gyrgum charges",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum moves out of the darkness into melee range to strike the giant.",
+    "source_quote": "He moves out of the darkness into melee range to strike with his mace",
+    "subject": "Gyrgum moves to melee",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace hits the giant for 1 damage.",
+    "source_quote": "Gyrgum's mace hits for 1 damage",
+    "subject": "Gyrgum hits giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses two-weapon fighting with the flat of his hand axe and misses.",
+    "source_quote": "He then uses two-weapon fighting with the flat of his hand axe and misses",
+    "subject": "Gyrgum misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attempts to intimidate the duergar militia to spare the giant but fails.",
+    "source_quote": "Thorin attempts to intimidate or persuade the duergar to stay their hand and spare the giant's life, but rolls poorly and fails",
+    "subject": "Thorin fails to save giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar militia delivers a lethal blow, killing the stone giant.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant.",
+    "subject": "duergar kill giant",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The giant crumples to the stone floor of the city.",
+    "source_quote": "The giant, later identified as Rihuud, crumpled to the stone floor of the city.",
+    "subject": "giant falls",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rihuud, the stone giant, is dead, killed by the duergar militia.",
+    "source_quote": "The duergar militia ignores the plea and delivers a lethal blow, killing the stone giant",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rihuud is identified as a stone giant who had gone mad.",
+    "source_quote": "The giant, later identified as Rihuud",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin speaks funeral words over the giant's body to save face in case the giants take offense.",
+    "source_quote": "Thorin spoke funeral words over the body to save face in case the giants took offense",
+    "subject": "Thorin speaks funeral words",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The magical darkness cast by Zalthir lifts.",
+    "source_quote": "and the darkness lifted",
+    "subject": "darkness lifts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar soldiers shrink back to their normal size with a popping sound.",
+    "source_quote": "The duergar soldiers shrink back to their normal size with the \"usual popping sound\"",
+    "subject": "duergar return to normal size",
+    "quote_verified": true
+  }
+]

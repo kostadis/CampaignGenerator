@@ -1,0 +1,30 @@
+[
+  {
+    "type": "date",
+    "fact": "The party travels through the Underdark for several days before losing their pursuers.",
+    "source_quote": "After several days of careful travel",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's pursuit rating drops to zero after Eldeth's successful checks.",
+    "source_quote": "the party's pursuit rating dropped to zero",
+    "subject": "pursuit status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a long rest to recover strength.",
+    "source_quote": "The party takes a long rest",
+    "subject": "rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Two more days of travel pass after the pursuit is broken.",
+    "source_quote": "Two more days of travel pass",
+    "subject": "elapsed time",
+    "quote_verified": true
+  }
+]

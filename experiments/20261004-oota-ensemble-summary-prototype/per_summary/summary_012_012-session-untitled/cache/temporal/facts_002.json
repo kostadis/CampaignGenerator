@@ -1,0 +1,37 @@
+[
+  {
+    "type": "object",
+    "fact": "The duergar merchant offered a ten percent discount on a new mace in exchange for Gyrgum's old short sword.",
+    "source_quote": "offered a ten percent discount on a new mace",
+    "subject": "mace discount",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum's contact requested two days to procure an Eldritch Claw tattoo for Zalthir.",
+    "source_quote": "requesting two days",
+    "subject": "Eldritch Claw tattoo procurement",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A first-level spell scroll costs approximately 60 gold pieces.",
+    "source_quote": "A first-level spell scroll costs about 60 gold pieces",
+    "subject": "first-level spell scroll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party has six traveling companions who are waiting in the district.",
+    "source_quote": "what the party tells its six traveling companions",
+    "subject": "traveling companions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The merchant Dulgir cursed Gyrgum to the seven heavens before switching accents upon learning of the purchase intent.",
+    "source_quote": "curses Gyrgum \"to the seven heavens\"",
+    "subject": "Dulgir's curse",
+    "quote_verified": true
+  }
+]

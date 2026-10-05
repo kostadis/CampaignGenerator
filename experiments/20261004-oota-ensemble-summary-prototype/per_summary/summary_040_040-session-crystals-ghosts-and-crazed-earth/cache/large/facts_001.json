@@ -1,0 +1,72 @@
+[
+  {
+    "type": "event",
+    "fact": "Eldeth, Jimjar, and Spiderbait took on the ghost problem.",
+    "source_quote": "Eldeth, Jimjar, and Spiderbait took on the ghost problem.",
+    "subject": "ghost problem assignment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool initially volunteered for the ghost problem but remained with the main party after the plan changed.",
+    "source_quote": "Glabbagool initially volunteered too, but the plan changed and he remained with the main party",
+    "subject": "Glabbagool's reassignment",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool is currently with the main party.",
+    "source_quote": "he remained with the main party",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool wonders if he would become the first gelatinous cube ghost if he died.",
+    "source_quote": "he wondered aloud whether he would become the first gelatinous cube ghost if he died",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger wished the ghost-hunting group well.",
+    "source_quote": "Burrow Warden Jadger wished the ghost-hunting group well",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Burrow Warden Jadger reassured the group that if they died, they could still fight in the coming battle as ghosts.",
+    "source_quote": "reassured them that if they died, they could still fight in the coming battle as ghosts",
+    "subject": "Burrow Warden Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool asks if he would be the first gelatinous cube ghost.",
+    "source_quote": "Would I be the first gelatinous cube ghost?",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose the Rockblight as their first objective.",
+    "source_quote": "The party chose to begin with the Rockblight",
+    "subject": "expedition objective selection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Rockblight is close to the party's current position.",
+    "source_quote": "which lay close to their current position",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party planned to take a long rest before setting out for the Rockblight.",
+    "source_quote": "planned to take a long rest before setting out",
+    "subject": "long rest planning",
+    "quote_verified": true
+  }
+]

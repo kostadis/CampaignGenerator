@@ -1,0 +1,1024 @@
+[
+  {
+    "type": "date",
+    "fact": "The party advanced to 4th level after the skeleton fight.",
+    "source_quote": "everyone advanced to 4th level",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost with a cleaved head who emerged from the ground in the Whorlstone Tunnels.",
+    "source_quote": "A ghost with a gruesome cleaved head emerged from the ground",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is a deep gnome traveler from Blingdenstone.",
+    "source_quote": "Pelek, a deep gnome traveler from Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's mother named him after an actor, which his father disliked.",
+    "source_quote": "His mother had named him after an actor; his father never liked it",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek refuses to discuss the details of his past beyond his name, calling it complicated and sordid.",
+    "source_quote": "the rest was \"complicated and sordid\", which he declined to get into",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was once friends with a derro named Buppido.",
+    "source_quote": "he had once been friends with a derro named Buppido",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido lured Pelek into the tunnels with promises of business deals.",
+    "source_quote": "Buppido, who had lured him in with promises of business deals",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido slaughtered and dismembered Pelek with an axe.",
+    "source_quote": "slaughtering and dismembering him with an axe",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido changed overnight from eccentric to believing he was the avatar of a major deity.",
+    "source_quote": "Buppido had changed overnight, going from merely eccentric to utterly convinced he was the avatar of a major deity",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido raves and rants.",
+    "source_quote": "raving and ranting while the gnome tried desperately to reason with him",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek tried to reason with Buppido but failed.",
+    "source_quote": "raving and ranting while the gnome tried desperately to reason with him",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek has been trapped in the caverns for about a year.",
+    "source_quote": "trapped in the caverns ever since, which he reckoned was about a year",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is unable to move on.",
+    "source_quote": "unable to move on",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek attempted to possess Buppido but the effort failed entirely.",
+    "source_quote": "the effort failed entirely",
+    "subject": "Pelek's failed possession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek asks the party to collect his bones and carry them to Blingdenstone for burial.",
+    "source_quote": "asked the party to collect his specific bones and carry them back to Blingdenstone",
+    "subject": "Pelek's request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek pointed out each of his bones to the party.",
+    "source_quote": "He pointed out each bone carefully",
+    "subject": "Bone collection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wrapped Pelek's bones and put them in his pack.",
+    "source_quote": "Gyrgum wrapped them up and tucked them into his pack",
+    "subject": "Bone packing",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's bones are currently in Gyrgum's pack.",
+    "source_quote": "Gyrgum wrapped them up and tucked them into his pack",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fumbled an intimidation attempt on Pelek.",
+    "source_quote": "Thorin pressed the ghost on what the party got out of the deal and fumbled an intimidation attempt badly",
+    "subject": "Thorin's intimidation",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "To enter Blingdenstone, the party must clarify that any drow have no ties to Menzoberranzan or devotion to Lolth.",
+    "source_quote": "make absolutely clear that the drow among them had no ties to Menzoberranzan and no devotion to the spider goddess Lolth",
+    "subject": "Blingdenstone entry conditions",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The number eight is the sign of Lolth, referencing a spider's eight legs.",
+    "source_quote": "eight for a spider's eight legs, the sign of Lolth",
+    "subject": "Lolth's sign",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party must not carry anything marked with or divisible by eight to enter Blingdenstone.",
+    "source_quote": "carry nothing marked with the number eight, or divisible by eight",
+    "subject": "Lolth's sign",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party must not carry spiders to enter Blingdenstone.",
+    "source_quote": "And no spiders",
+    "subject": "Lolth's sign",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The deep gnomes of Blingdenstone know ways to reach the Overbright.",
+    "source_quote": "deep gnomes of Blingdenstone know ways to reach the \"Overbright\"",
+    "subject": "Blingdenstone",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Pelek's severed hand was animated by strange magic.",
+    "source_quote": "the strange magic pervading the tunnels had animated his severed hand",
+    "subject": "Pelek's severed hand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's animated severed hand scuttled away through the cavern wall.",
+    "source_quote": "which had scuttled away through the narrow crevices of the cavern wall",
+    "subject": "Hand scuttles away",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's severed hand is wearing his obsidian ring.",
+    "source_quote": "still wearing his obsidian ring",
+    "subject": "Obsidian ring",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's spirit drifts alongside the party as a companion.",
+    "source_quote": "Pelek's spirit drifted alongside them as a companion",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's spirit is bound to wherever his remains travel.",
+    "source_quote": "bound to wherever his remains traveled",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party levels up to 4th level before play resumes.",
+    "source_quote": "Before play resumes, everyone levels up to 4th level.",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Intelligence score reaches 19.",
+    "source_quote": "Daz's Intelligence reaches 19",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum bumps a score to 19, at least temporarily, and defers browsing feats.",
+    "source_quote": "Gyrgum bumps a score to 19 \"at least temporarily\" and defers browsing feats.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party has not taken a long rest since the fight.",
+    "source_quote": "The party has not taken a long rest since the fight.",
+    "subject": "rest status",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A ghost with a gruesome cleaved head emerges from the ground near a pile of cadavers and bones.",
+    "source_quote": "A ghost with a gruesome cleaved head emerges from the ground near a pile of cadavers and bones.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spot where Pelek emerged is marked on the map as \"Buppido's resting place.\"",
+    "source_quote": "The spot is marked on the map as \"Buppido's resting place.\"",
+    "subject": "Buppido's resting place",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum tries not to look straight at the ghost.",
+    "source_quote": "Gyrgum tries not to look straight at it.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghost introduces himself as Pelek.",
+    "source_quote": "The ghost introduces himself as Pelek (\"P-E-L-E-K\")",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek expresses relief that the party killed the derro nearby.",
+    "source_quote": "expresses relief that the party killed the derro nearby: \"He is dead, yes?\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek states that his mother named him after an actor who showed up in Blingdenstone.",
+    "source_quote": "Pelek says his mother named him after an actor who showed up in Blingdenstone.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek mentions \"the jealousy and the screaming and the terrible childhood\" before declining to go further.",
+    "source_quote": "he trails off into \"the jealousy and the screaming and the terrible childhood\" before declining to go further.",
+    "subject": "Pelek",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin tells the DM to stop torturing them.",
+    "source_quote": "\"Stop torturing the DM. He'll get back at us.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek identifies himself as a traveler from Blingdenstone who fell in with Buppido.",
+    "source_quote": "he was a traveler from Blingdenstone who fell in with Buppido",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido betrayed and murdered Pelek.",
+    "source_quote": "betrayed and murdered by him.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido lured Pelek in with business deals to slaughter and dismember him.",
+    "source_quote": "Buppido lured him in with business deals only to slaughter and dismember him.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Buppido used a specific axe to cut off Pelek's head.",
+    "source_quote": "Pelek points at an axe: \"he cut my head with that axe.\"",
+    "subject": "axe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum briefly mistakes Pelek's request for a tip and reaches for his pocket.",
+    "source_quote": "Gyrgum briefly mistakes Pelek's request for a tip and reaches for his pocket.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A strange magic animated one of Pelek's severed hands.",
+    "source_quote": "a strange magic pervading the tunnels animated one of his severed hands.",
+    "subject": "severed hand",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The animated hand scuttled away through a narrow tunnel.",
+    "source_quote": "It scuttled away through a narrow tunnel",
+    "subject": "severed hand",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The animated hand is wearing an obsidian ring.",
+    "source_quote": "wearing an obsidian ring.",
+    "subject": "obsidian ring",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asks Pelek whether he still needs the ring.",
+    "source_quote": "Thorin asks whether Pelek still needs the ring.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek states that he is dead and does not need anything.",
+    "source_quote": "Pelek: \"Well, I'm dead. I don't need anything.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek hints that the ring could say it does many powerful things if that would encourage the party.",
+    "source_quote": "Pelek hints that he \"could say it does many powerful things\" if that would encourage the party.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek has no alignment with any Gracklstugh faction.",
+    "source_quote": "Pelek has no alignment with any Gracklstugh faction.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek estimates he has been trapped for a year or so.",
+    "source_quote": "He estimates he has been trapped for \"a year or so.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek knows of Droki only as the mad derro who comes in and out.",
+    "source_quote": "Pelek knows of Droki only as the mad derro who comes in and out.",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek has never met Droki.",
+    "source_quote": "He has never met him",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek cannot leave his bones to follow Droki.",
+    "source_quote": "and cannot leave his bones to follow.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek describes Buppido's descent from eccentric to madness.",
+    "source_quote": "Pelek describes Buppido's sudden descent into madness: going from eccentric to \"convinced that he was the second coming of some major deity and an avatar and that everybody needed to bow to him.\"",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek denies that Buppido was possessed.",
+    "source_quote": "Pelek denies that Buppido was possessed",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek confirms Buppido grew no extra body parts.",
+    "source_quote": "and confirms he grew no extra body parts.",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek requests that the party collect his specific bones and return them to his ancestral home in Blingdenstone.",
+    "source_quote": "Pelek requests that the party collect his specific bones and return them to his ancestral home in Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek flits over to point out exactly which bones to collect.",
+    "source_quote": "He flits over to point out exactly which bones; \"You don't have to bury all of them.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin questions what the party actually gains from the deal with Pelek.",
+    "source_quote": "Thorin questions what the party actually gains from the deal.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek offers to try to possess one of the party members.",
+    "source_quote": "Pelek offers, \"I could try to possess one of you.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM calls for an intimidation roll from Thorin and then Daz.",
+    "source_quote": "The DM calls for an intimidation roll. Thorin and then Daz try to intimidate the ghost.",
+    "subject": "intimidation roll",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolls a 1 on the intimidation check.",
+    "source_quote": "Thorin rolls a 1.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek laughs off the intimidation attempts by Thorin and Daz.",
+    "source_quote": "Pelek laughs both off (\"You do realize I'm a ghost, right?\")",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin concedes that the dead have nothing to lose.",
+    "source_quote": "Thorin concedes that the dead have nothing to lose.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek provides advice for the journey to Blingdenstone regarding the main gates.",
+    "source_quote": "Pelek offers crucial advice for the journey to Blingdenstone. At the main gates, explain that the drow (Daz) \"is not allied with any of the agents of Menzoberranzan, but actually comes from the Overbright.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Pelek advises the party to avoid any association with Lolth.",
+    "source_quote": "Avoid any association with Lolth.",
+    "subject": "avoiding Lolth",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Pelek advises the party to avoid anything divisible by eight.",
+    "source_quote": "\"No eights, no eight of anything. Don't have 208 coins. 207.\" Nothing divisible by eight.",
+    "subject": "avoiding eights",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek cites \"Spiders\" as the reason to avoid eights.",
+    "source_quote": "The reason, delivered to a confused Thorin: \"Spiders.\"",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The svirfneblin of Blingdenstone know wonderful ways to get to the Overbright.",
+    "source_quote": "the svirfneblin of Blingdenstone \"know all these wonderful ways to get to the Overbright.\"",
+    "subject": "svirfneblin of Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek notes that Jimjar could guide the party to the Overbright.",
+    "source_quote": "He also notes that Jimjar and many others could guide the party there.",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to help Pelek.",
+    "source_quote": "The party agrees to help.",
+    "subject": "party agreement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wraps Pelek's bones and stores them in his pack.",
+    "source_quote": "Gyrgum wraps the bones and stores them in his pack",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Storing the bones binds Pelek's spirit to travel alongside the party.",
+    "source_quote": "binding Pelek's spirit to travel alongside them as a companion.",
+    "subject": "Pelek bound",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek does not gain levels.",
+    "source_quote": "The DM confirms Pelek does not gain levels",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is now effectively a companion whose thoughts the party hears.",
+    "source_quote": "but is now effectively a companion whose thoughts the party hears whether they like it or not.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz predicts two sessions of Gyrgum and Pelek chatting.",
+    "source_quote": "Daz predicts \"two sessions of Gyrgum and Pelek just like chatting.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek tells the party that Droki passes through once a day.",
+    "source_quote": "Pelek told them that Droki passed through once a day.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows the messy trail of food scraps Droki left behind, moving southeast.",
+    "source_quote": "Following the messy trail of food scraps Droki left behind, the party pushed southeast",
+    "subject": "following Droki's trail",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek remarks that the party could wait for Droki or take a long rest because he passes through once a day.",
+    "source_quote": "Pelek mentions that Droki passes through roughly once a day, so the party could wait for him or even take a long rest.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reaches a massive cavern filled with a deep, black pool of water stretching nearly a hundred feet across.",
+    "source_quote": "they reached a massive cavern filled with a deep, black pool of water stretching nearly a hundred feet across",
+    "subject": "discovery of dark pool",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The dark pool is deep and black, with nothing visible beneath its surface.",
+    "source_quote": "nothing can be seen beneath the surface of the black water",
+    "subject": "dark pool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz sees the pool as an opportunity to use Shape Water.",
+    "source_quote": "Daz sees it as his chance to shine with Shape Water.",
+    "subject": "Daz's intent",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir suggests continuing on Droki's path first and circling back to the pool if needed.",
+    "source_quote": "Zalthir suggests continuing on Droki's path first and circling back if needed.",
+    "subject": "Zalthir's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party traces Droki's path to a solid rock wall riddled with narrow cracks.",
+    "source_quote": "they traced Droki's path to a solid rock wall riddled with narrow cracks",
+    "subject": "finding rock wall",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz and Gyrgum roll 11 and 10 respectively on Investigation, revealing no secret doors.",
+    "source_quote": "Investigation rolls: Daz 11, Gyrgum 10. There are no secret doors.",
+    "subject": "investigation rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Through the cracks, the party sees a tunnel running about 30 feet.",
+    "source_quote": "Through the cracks the party can see a tunnel running about 30 feet",
+    "subject": "crack observation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests that Droki might be obsessive-compulsive.",
+    "source_quote": "Gyrgum suggests Droki may just be obsessive-compulsive.",
+    "subject": "Gyrgum's suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM clarifies that Droki's obsessive behavior is only a piece of his madness.",
+    "source_quote": "The DM replies, \"that's only a piece of his madness.\"",
+    "subject": "DM's comment on Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin proposes growing large to smash through the wall.",
+    "source_quote": "Thorin proposes growing large and \"Hulk smash[ing]\" through.",
+    "subject": "Thorin's proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum suggests casting mending to seal the cracks in the wall.",
+    "source_quote": "Gyrgum's contrarian streak wants to cast mending to seal the cracks instead.",
+    "subject": "Gyrgum's counter-proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM warns that smashing the wall is unwise because the caverns are held by people plotting against the Deepking and noise would draw attention.",
+    "source_quote": "The DM warns that the caverns, once \"a hippie place,\" are now held by groups committed to overthrowing the Deepking, so drawing attention would be unwise.",
+    "subject": "DM's warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek slips through the narrow stone cracks to scout ahead.",
+    "source_quote": "Pelek slips through the narrow stone cracks to scout ahead",
+    "subject": "Pelek scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reports that the tunnel continues for some distance with nobody there.",
+    "source_quote": "He reports that the tunnel continues for some distance with nobody there.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek is tied to his bones and cannot travel far from the party.",
+    "source_quote": "Tied to his bones, he cannot go far.",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum eats one of the magical shrinking mushrooms growing nearby.",
+    "source_quote": "Gyrgum ate one of the magical shrinking mushrooms growing nearby",
+    "subject": "shrinking mushroom usage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Magical shrinking mushrooms grow nearby in the caverns.",
+    "source_quote": "magical shrinking mushrooms growing nearby",
+    "subject": "magical shrinking mushrooms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cracks are too small for the party to squeeze through even after Gyrgum eats a shrinking mushroom.",
+    "source_quote": "The cracks were far too small for any of them to squeeze through, even after Gyrgum ate one of the magical shrinking mushrooms growing nearby.",
+    "subject": "shrink mushroom ineffectiveness",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The caverns are currently held by groups committed to overthrowing the Deepking.",
+    "source_quote": "the caverns ... are now held by groups committed to overthrowing the Deepking",
+    "subject": "Deepking's enemies",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Fungi Forest is a dense forest of giant mushrooms with stalks nearly five feet tall that fill the cavern with an eerie whispering sound.",
+    "source_quote": "a dense forest of giant mushrooms, some standing nearly five feet tall, their stalks filling the cavern with an eerie whispering sound",
+    "subject": "Fungi Forest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party followed Droki's trail into the Fungi Forest.",
+    "source_quote": "the party followed Droki's trail into a dense forest of giant mushrooms",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek reassures the group that the noise from the fungi is harmless wind from the Underdark.",
+    "source_quote": "Pelek reassured the group that the noise was harmless, just the wind of the Underdark breathing through the fungi",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party begins foraging for useful mushrooms.",
+    "source_quote": "The party relaxed enough to begin foraging, gathering an assortment of useful mushrooms from the forest floor",
+    "subject": "foraging",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Swarms of centipedes erupt from the surrounding fungi in relentless waves.",
+    "source_quote": "Without warning, swarms of centipedes erupted from the surrounding fungi, skittering across the ground in relentless waves",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One mass of centipedes crawls directly onto Zalthir, covering him in biting legs.",
+    "source_quote": "One mass of insects crawled directly onto Zalthir, covering him in writhing, biting legs",
+    "subject": "Zalthir covered by swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's clothes and scales prevent the centipedes from causing the worst of the damage.",
+    "source_quote": "though his clothes and scales kept the worst of it at bay",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum unleashes a stream of caustic acid at the nearest swarm.",
+    "source_quote": "Gyrgum unleashed a stream of caustic acid at the nearest swarm",
+    "subject": "Gyrgum's acid attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipedes twist away from Gyrgum's acid spray.",
+    "source_quote": "but the agile insects twisted away from the spray",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz attempts to drain life from the centipedes with necrotic energy.",
+    "source_quote": "Daz's attempt to drain the life from them with necrotic energy",
+    "subject": "Daz's necrotic attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipedes shrug off Daz's necrotic energy.",
+    "source_quote": "was similarly shrugged off",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes hard at a wounded swarm.",
+    "source_quote": "Thorin struck hard at a wounded swarm",
+    "subject": "Thorin's strike",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin's strike nearly disperses the wounded swarm entirely.",
+    "source_quote": "nearly dispersing it entirely",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two more swarms emerge from the depths of the fungi forest, surrounding the group.",
+    "source_quote": "two more swarms emerged from the depths of the fungi forest, surrounding the group on all sides",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir tears the centipedes from his body and crushes them.",
+    "source_quote": "Zalthir tore the centipedes from his body and crushed them",
+    "subject": "Zalthir crushing centipedes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hacks at the insects swarming around him with his hand axe, landing a light blow.",
+    "source_quote": "Gyrgum hacked at the insects swarming around him with his hand axe, landing a light blow",
+    "subject": "Gyrgum's axe hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace swing goes wide.",
+    "source_quote": "and his mace swing went wide",
+    "subject": "Gyrgum's mace miss",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's last swing misses even with a superiority die.",
+    "source_quote": "Thorin's last swing missed even with a superiority die",
+    "subject": "Thorin's missed swing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin moves to the back of the group because his armor is loud.",
+    "source_quote": "Thorin moves to the back of the group: \"I'm like clink clank every time I step.\"",
+    "subject": "Thorin's armor noise",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The fungi forest is difficult terrain.",
+    "source_quote": "The forest is difficult terrain.",
+    "subject": "Fungi Forest",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum climbs a tall mushroom and spots a tunnel heading southwest.",
+    "source_quote": "Gyrgum climbs a tall mushroom and spots a tunnel heading southwest",
+    "subject": "Gyrgum scouting",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party forages for barrelstalks and bluecaps.",
+    "source_quote": "They begin foraging for various Underdark mushrooms, including barrelstalks and bluecaps",
+    "subject": "barrelstalks and bluecaps",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The DM mentions Nilhogg's Nose as a type of mushroom.",
+    "source_quote": "The DM also mentions Nilhogg's Nose",
+    "subject": "Nilhogg's Nose",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek hovers near Gyrgum to keep his bones safe.",
+    "source_quote": "Pelek hovers wherever Gyrgum is to keep his bones safe",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches at the swarm and hits twice.",
+    "source_quote": "he punches at the swarm and hits twice, the second for 6 damage",
+    "subject": "Zalthir's punch",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead against the creatures.",
+    "source_quote": "Daz casts Toll the Dead against the creatures",
+    "subject": "Daz's Toll the Dead",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The swarm makes its Wisdom save and resists Toll the Dead.",
+    "source_quote": "but the swarm makes its Wisdom save and resists the effect",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The centipede swarm crawling on Zalthir stumbles on his clothes and scales.",
+    "source_quote": "Its bite misses his AC 16 as the centipedes \"stumble on your clothes, your scales, on each other.\"",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The insects roll a 19 on the Dexterity save and dodge the brunt of Gyrgum's acid spray.",
+    "source_quote": "but the insects roll a 19 on the Dexterity save and dodge the brunt of the spray",
+    "subject": "Gyrgum's acid dodge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin strikes a swarm for 10 damage.",
+    "source_quote": "Thorin strikes a swarm for 10 damage",
+    "subject": "Thorin's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Thorin's strike leaves the swarm at 1 hit point.",
+    "source_quote": "leaving it at 1 hit point",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Action Surge.",
+    "source_quote": "then uses Action Surge",
+    "subject": "Thorin's Action Surge",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A second swarm moves to cover Gyrgum and bites.",
+    "source_quote": "A second swarm moves to cover Gyrgum and bites",
+    "subject": "Gyrgum bitten",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The swarm's bite roll of 13 falls short of Gyrgum's AC 14.",
+    "source_quote": "but its roll of 13 falls just short of his AC 14",
+    "subject": "centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two additional swarms emerge, one initially hidden under Pelek's token.",
+    "source_quote": "Two additional swarms emerge from the surrounding fungi, one of them initially hidden under Pelek's token",
+    "subject": "centipede swarms",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A nature check establishes that the swarms are not infinite.",
+    "source_quote": "A nature check establishes, through Daz, that the swarms are not infinite",
+    "subject": "Nature check result",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek stops mid-sentence while starting to tell a ghost story.",
+    "source_quote": "Pelek starts to tell a ghost story about a group of adventurers, then stops mid-sentence",
+    "subject": "Pelek stops storytelling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes off the swarm covering him.",
+    "source_quote": "Zalthir finishes off the swarm covering him",
+    "subject": "Zalthir kills swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves at half speed through difficult terrain to engage another cluster.",
+    "source_quote": "then moves at half speed through the difficult terrain to engage another cluster",
+    "subject": "Zalthir moves",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches for 10 damage.",
+    "source_quote": "punching for 10 damage",
+    "subject": "Zalthir's punch damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses Toll the Dead on a wounded swarm for 6 damage.",
+    "source_quote": "Daz uses Toll the Dead on a wounded swarm for 6 damage",
+    "subject": "Daz's damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's hand axe hits for 4 damage.",
+    "source_quote": "His hand axe hits (15) for 4 damage",
+    "subject": "Gyrgum's axe hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's mace swing misses entirely with a roll of 7.",
+    "source_quote": "and his mace swing misses entirely (7)",
+    "subject": "Gyrgum's mace miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin adds a superiority die to an attack but still fails to land the blow.",
+    "source_quote": "Thorin attempts a tactical strike, adding a superiority die to a missed attack, but still fails to land the blow",
+    "subject": "Thorin's tactical strike",
+    "quote_verified": true
+  }
+]

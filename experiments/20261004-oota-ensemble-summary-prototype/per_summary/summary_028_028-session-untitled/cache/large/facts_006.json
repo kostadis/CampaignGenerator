@@ -1,0 +1,184 @@
+[
+  {
+    "type": "event",
+    "fact": "The party scrambled down into a lower chamber.",
+    "source_quote": "The party scrambled down into a lower chamber",
+    "subject": "descent into lower chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower chamber's walls are decorated with rich pigments and inlays of semi-precious stone.",
+    "source_quote": "walls were decorated with rich pigments and inlays of semi-precious stone",
+    "subject": "lower chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A gilded sarcophagus rests atop a stone bier along one wall of the lower chamber.",
+    "source_quote": "A gilded sarcophagus rested atop a stone bier along one wall",
+    "subject": "gilded sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "An invisible stone chest sits silently at the foot of the gilded sarcophagus.",
+    "source_quote": "with an invisible stone chest sitting silently at its foot",
+    "subject": "invisible stone chest",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith is resistant to fire.",
+    "source_quote": "recalled (Arcana 17)... that she was resistant to fire",
+    "subject": "wraith",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith can fly and hovers.",
+    "source_quote": "it hovers and can fly",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith materializes before the party upon their entry into the chamber.",
+    "source_quote": "A wraith materialized before them",
+    "subject": "wraith materializes",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The wraith declares that the party's deaths will free her from her prison and that her victims will serve her even in death.",
+    "source_quote": "declaring that their deaths would free her from her prison and that her victims would serve her even in death",
+    "subject": "wraith's declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Initiative falls in the party's favor, allowing Daz to go first.",
+    "source_quote": "Initiative falls 'miraculously in the right order,' and Daz goes first",
+    "subject": "initiative order",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz steps back rather than climbing out of the hole to remain near his allies.",
+    "source_quote": "Daz steps back rather than climbing out, so he isn't too far from allies who might need help",
+    "subject": "Daz steps back",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz moves to hurl a fireball but aborts because the wraith is resistant to fire.",
+    "source_quote": "moved to hurl a fireball at the creature, then recalled... that she was resistant to fire",
+    "subject": "Daz aborts fireball",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz briefly considers binding the wraith with Maximilian's Earthen Grasp.",
+    "source_quote": "He briefly considered binding her with Maximilian's Earthen Grasp",
+    "subject": "Daz considers Earthen Grasp",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts a third-level Magic Missile, dealing 20 damage to the wraith.",
+    "source_quote": "He then pivoted to a third-level magic missile, five darts of pure force for 20 damage, and the wraith reeled",
+    "subject": "Daz casts Magic Missile",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith screams that the drow and the dwarves defeated her once and shall never defeat her again.",
+    "source_quote": "\"the drow, the dwarves, defeated me once and they shall never defeat me again\"",
+    "subject": "wraith screams about past defeats",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The wraith lashes out at Thorin with a life-draining touch that misses entirely.",
+    "source_quote": "lashed out at Thorin with a life-draining touch that missed entirely",
+    "subject": "wraith attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wraith slips into her gilded sarcophagus to hide.",
+    "source_quote": "slipped into her gilded sarcophagus to hide",
+    "subject": "wraith hides in sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party must spend an action to access the wraith while she is in the sarcophagus.",
+    "source_quote": "forcing the party to spend an action to get at her",
+    "subject": "sarcophagus action cost",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir shifts his shroud of darkness into the lower chamber.",
+    "source_quote": "Zalthir shifted his shroud of darkness into the lower chamber",
+    "subject": "Zalthir shifts darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The shroud of darkness blocks Daz's line of sight for casting Magic Missile.",
+    "source_quote": "knowing it would cost Daz his line of sight for Magic Missile",
+    "subject": "darkness affects Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends his action to open the gilded sarcophagus.",
+    "source_quote": "He then spent his action to open the gilded sarcophagus",
+    "subject": "Zalthir opens sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A mysterious feminine voice speaks from within the sarcophagus, offering aid to the party.",
+    "source_quote": "\"in the sarcophagus, I can help you.\"",
+    "subject": "mysterious voice speaks",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The voice in the sarcophagus belongs to something ancient and bound that offers aid.",
+    "source_quote": "voice of something ancient and bound offered its aid from the very heart of the tomb",
+    "subject": "ancient bound entity",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A withered, mummified corpse rests inside the gilded sarcophagus.",
+    "source_quote": "resting atop a withered, mummified corpse",
+    "subject": "mummified corpse",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A magical sword lies atop the mummified corpse inside the gilded sarcophagus.",
+    "source_quote": "lay a magical sword",
+    "subject": "magical sword",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A pile of treasure surrounds the mummified corpse inside the gilded sarcophagus.",
+    "source_quote": "surrounded by treasure",
+    "subject": "treasure hoard",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The lower chamber is located 30 feet below the room above.",
+    "source_quote": "The GM gives 150 feet, then corrects himself to 30 feet below the room above",
+    "subject": "tomb depth",
+    "quote_verified": true
+  }
+]

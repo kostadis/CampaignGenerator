@@ -1,0 +1,44 @@
+[
+  {
+    "type": "location",
+    "fact": "Glabbagool\u2019s body is ten-foot-by-ten-foot-by-ten-foot.",
+    "source_quote": "Glabbagool\u2019s ten-foot-by-ten-foot-by-ten-foot body",
+    "subject": "Glabbagool dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The gray ooze moves only about ten feet per round.",
+    "source_quote": "gray oozes move only about ten feet per round",
+    "subject": "gray ooze",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The corridor Glabbagool blocked had a ten-foot width.",
+    "source_quote": "completely fills its ten-foot width",
+    "subject": "corridor width",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's first dart hit a gray ooze for 8 damage.",
+    "source_quote": "His first dart hits a gray ooze for 8 damage",
+    "subject": "Thorin dart attack 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's second dart hit the gray ooze for another 8 damage.",
+    "source_quote": "a second hit inflicts another 8",
+    "subject": "Thorin dart attack 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Toll the Dead, inflicting 18 points of necrotic damage.",
+    "source_quote": "Toll the Dead, inflicting 18 points of necrotic damage",
+    "subject": "Daz Toll the Dead cast",
+    "quote_verified": true
+  }
+]

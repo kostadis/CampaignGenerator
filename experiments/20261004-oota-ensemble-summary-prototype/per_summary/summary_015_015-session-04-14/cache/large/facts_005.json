@@ -1,0 +1,184 @@
+[
+  {
+    "type": "location",
+    "fact": "The West Cleft District homes are burrows clawed into the cavern walls.",
+    "source_quote": "Its homes were nothing more than burrows clawed into the cavern walls",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The streets of the West Cleft District are a chaotic tangle of structures piled atop one another.",
+    "source_quote": "its streets were a chaotic tangle of structures piled atop one another",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is filled with the muttering, screaming, and raving of hundreds of Derro.",
+    "source_quote": "the muttering, screaming, and raving of hundreds of Derro filled the air",
+    "subject": "West Cleft District",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The West Cleft District is described as a wretched place with overwhelming stench.",
+    "source_quote": "The West Cleft District was a wretched place... The stench was overwhelming",
+    "subject": "West Cleft District",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Droki is a pale-faced Derro wearing a floppy hat adorned with two tentacle-like protrusions.",
+    "source_quote": "He was a pale-faced Derro in a floppy hat adorned with two tentacle-like protrusions",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki moved with unnatural, almost magical speed.",
+    "source_quote": "moved with an unnatural, almost magical speed",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Droki vanished down a narrow fissure hidden behind scraps of canvas and moldy boxes.",
+    "source_quote": "he vanished down a narrow fissure hidden behind scraps of canvas and moldy boxes",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido bolts after Droki when the Derro vanishes into the fissure.",
+    "source_quote": "Buppido immediately bolted after him",
+    "subject": "Buppido chases Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides not to restrain Buppido to avoid causing a scene.",
+    "source_quote": "Rather than cause a scene restraining him in a place full of Derro, the party let him go",
+    "subject": "Party decision on Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party squeezes through the gap into the tunnels beyond.",
+    "source_quote": "the party let him go and then squeezed through the gap into the tunnels beyond",
+    "subject": "Party enters tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels have air that tastes faintly of metal.",
+    "source_quote": "The air tasted faintly of metal",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Sound is strangely muted in the Whorlstone Tunnels.",
+    "source_quote": "all sound was strangely muted, as though the cavern itself had swallowed every echo",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Swirling patterns of faerzress cast dancing spirals of soft light across the stone pillars in the Whorlstone Tunnels.",
+    "source_quote": "Swirling patterns of faerzress... cast dancing spirals of soft light across the jagged stone pillars",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Bigwigs are peculiar mushrooms that swell whoever consumes them.",
+    "source_quote": "peculiar mushrooms the locals called bigwigs... which were said to swell... whoever consumed them",
+    "subject": "bigwigs",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Pygmyworts are peculiar mushrooms that shrink whoever consumes them.",
+    "source_quote": "pygmyworts... which were said to... shrink whoever consumed them",
+    "subject": "pygmyworts",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The party takes one bigwig and one pygmywort.",
+    "source_quote": "The party took one of each",
+    "subject": "Party collects fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Following Droki might lead the party to every faction he serves.",
+    "source_quote": "They realized that following the courier might lead them to every faction he served",
+    "subject": "Droki's patrons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin proposes yelling for Droki.",
+    "source_quote": "Thorin proposes yelling for Droki",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido tells the party to stay on the down low.",
+    "source_quote": "Buppido makes clear they should stay on the down low",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chooses to find Droki before the cave entrance.",
+    "source_quote": "The party chooses to find Droki before the cave entrance",
+    "subject": "Party strategy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The gate guards meet Buppido with the usual set of contempt.",
+    "source_quote": "the gate guards meet him with \"the usual set of contempt\"",
+    "subject": "Gate guards",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Derro in the district look at the party with burning hatred.",
+    "source_quote": "Those who spot the party look at them \"with a burning hatred\"",
+    "subject": "Derro",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The ceilings in the Whorlstone Tunnels rise about 50 feet and drop to 25 in the narrow tunnels.",
+    "source_quote": "The ceilings in the tunnels rise about 50 feet and drop to 25 in the narrow tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum worries about eating too much bigwig because only a medium creature fits through the fissure.",
+    "source_quote": "Gyrgum worries about eating too much bigwig, since only a medium creature fits through the fissure",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Droki heads north through the tunnels.",
+    "source_quote": "Droki heads north",
+    "subject": "Droki's direction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party follows Droki openly.",
+    "source_quote": "The party follows openly",
+    "subject": "Party tracking",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,1227 @@
+[
+  {
+    "type": "event",
+    "fact": "Thorin's player returns after an absence.",
+    "source_quote": "When Thorin's player returned",
+    "subject": "Thorin's return",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin confirms that his character is still alive.",
+    "source_quote": "Thorin returns after an absence and confirms that his character is still alive",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is referenced as having occasionally determined Thorin's actions at random.",
+    "source_quote": "his companions admit that Basidia has occasionally determined his actions at random",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a gilded longsword hilt.",
+    "source_quote": "Dawnbringer, a gilded longsword",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer possesses a blade of pure radiance that springs from its hilt via a bonus action.",
+    "source_quote": "conjure a blade of pure radiance from its hilt",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin examines Dawnbringer's gilded longsword hilt.",
+    "source_quote": "Thorin examines Dawnbringer's gilded longsword hilt",
+    "subject": "Thorin examines Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin attunes to Dawnbringer.",
+    "source_quote": "Thorin attunes to Dawnbringer",
+    "subject": "Attunement to Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a legendary sunblade with a gilded hilt.",
+    "source_quote": "legendary sunblade with a gilded hilt",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a plus-two weapon.",
+    "source_quote": "Dawnbringer is a plus-two weapon",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer deals radiant rather than slashing damage.",
+    "source_quote": "Its attacks deal radiant rather than slashing damage",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer deals an additional 1d8 damage against undead.",
+    "source_quote": "it deals an additional 1d8 damage against undead",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer can cast lesser restoration once per day.",
+    "source_quote": "Dawnbringer can cast lesser restoration once per day",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is sentient.",
+    "source_quote": "It was sentient",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer possesses a kind feminine voice.",
+    "source_quote": "possessed of a kind feminine voice",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer fears the darkness with a desperate, anxious intensity.",
+    "source_quote": "It feared the darkness with a desperate, anxious intensity",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer fears being left alone.",
+    "source_quote": "it feared being left alone even more",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer was trapped in the dark for millennia.",
+    "source_quote": "deeply scarred by millennia spent trapped in the dark",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer may feel neglected if Thorin stops carrying it or begins using another weapon.",
+    "source_quote": "Dawnbringer may feel neglected if Thorin stops carrying it or begins using another weapon",
+    "subject": "Dawnbringer's fear of neglect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dawnbringer may attempt to charm Thorin if he rushes into magical darkness.",
+    "source_quote": "may attempt to charm Thorin if he rushes into magical darkness",
+    "subject": "Dawnbringer's charm attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a negative charisma modifier.",
+    "source_quote": "Thorin has a negative charisma modifier",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's charisma is notably poor.",
+    "source_quote": "Thorin, whose charisma was notably poor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is referenced as casting magical darkness.",
+    "source_quote": "Thorin realizes the sword's radiant nature might conflict with Zalthir's magical darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir's magical darkness can extinguish Dawnbringer's light.",
+    "source_quote": "Zalthir's magical darkness could still extinguish it",
+    "subject": "Zalthir's magical darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir's magical darkness suppresses Dawnbringer's light while the sword remains aware it is trying to shine.",
+    "source_quote": "Zalthir's magical darkness suppresses Dawnbringer's light, though the sword remains aware that it is trying to shine",
+    "subject": "Zalthir's magical darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin states that he and Dawnbringer are bonded.",
+    "source_quote": "I mean, no, we're bonded at this point",
+    "subject": "Thorin's acceptance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin asks to be guided through Dawnbringer's reactions.",
+    "source_quote": "Lead me through it as we go",
+    "subject": "Thorin's request for guidance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes that Thorin already behaves randomly without the intelligent weapon.",
+    "source_quote": "The party jokes that Thorin already behaves randomly enough without an intelligent weapon influencing him",
+    "subject": "Party joke about Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Light-sensitive creatures of the Underdark are identified as being vulnerable to Dawnbringer's light.",
+    "source_quote": "a tremendous advantage against the light-sensitive creatures of the Underdark",
+    "subject": "light-sensitive creatures of the Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Underdark is referenced as the home of light-sensitive creatures.",
+    "source_quote": "the light-sensitive creatures of the Underdark",
+    "subject": "The Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Basidia is a myconid sovereign who guides the party through the Neverlight Grove.",
+    "source_quote": "Basidia, the myconid sovereign who had been guiding the party through the Neverlight Grove",
+    "subject": "Basidia",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe is the obsessive leader of the Circle of Growers.",
+    "source_quote": "They then met Hebopbe, the obsessive leader of the Circle of Growers",
+    "subject": "Hebopbe",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum appears visibly confused when Hebopbe explains that myconids are herbivores.",
+    "source_quote": "a distinction that left Gyrgum visibly confused",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin compares the myconid agricultural arrangement to a mammal eating other mammals.",
+    "source_quote": "Thorin compared the arrangement to a mammal eating other mammals",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo is a sovereign responsible for political upheaval in the colony.",
+    "source_quote": "Hebopbe was indifferent to the political upheaval caused by the sovereign Phylo",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop is the leader of the circle mound where new myconids are spored and grown.",
+    "source_quote": "The mound's leader, Yrberop, was visibly infected",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump is a nervous and energetic myconid scout who advocates for a nomadic way of life.",
+    "source_quote": "where they met Rumpadump, a nervous and energetic myconid scout who advocated passionately for a nomadic way of life",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is a companion of the party who behaves strangely by placing no bets.",
+    "source_quote": "Meanwhile, their companion Jimjar had been behaving strangely \u2014 hinting at a coming wedding and, most tellingly, placing no bets at all",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Growers is led by Hebopbe and cultivates specific fungi for food.",
+    "source_quote": "Hebopbe, the obsessive leader of the Circle of Growers, who proudly explained that myconids were herbivores who cultivated specific fungi for food",
+    "subject": "Circle of Growers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Circle of Explorers is led by Rumpadump and consists of scouts, patrols, pathfinders, and visionaries.",
+    "source_quote": "He described the explorers as the colony's scouts, patrols, pathfinders, and visionaries beyond the boundaries of Neverlight Grove",
+    "subject": "Circle of Explorers",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Myconids are a sentient species with varied tastes, cooking styles, and agricultural practices.",
+    "source_quote": "explaining that they were a sentient species with their own varied tastes, cooking styles, and agricultural practices",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Neverlight Grove is the location of the myconid colony the party tours.",
+    "source_quote": "guiding the party through the Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Overbright is mentioned as a destination where myconids plan to spread happiness, which the party knows would be fatal or unnatural for them.",
+    "source_quote": "He spoke excitedly of sending myconids into the Overbright, something the party knew should be fatal or deeply unnatural for them",
+    "subject": "Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is the final stop of the tour, which the party suspects involves demonic sacrifice.",
+    "source_quote": "Their final stop before the Garden of Welcome was the Circle of Explorers",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The circle mound is where new myconids are spored and grown, featuring a forest of awakened zurkhwood trees nearby.",
+    "source_quote": "Next, the party visited the circle mound where new myconids were spored and grown",
+    "subject": "circle mound",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi.",
+    "source_quote": "Hebopbe shows off his prized zurkhwood and other favored cultivated fungi",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Newly spored myconids are only a few inches tall and not yet aware.",
+    "source_quote": "Basidia showed them newly spored myconids only a few inches tall, not yet aware but soon to mature into myconid sprouts",
+    "subject": "myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The zurkhwood trees in the forest near the circle mound are awakened and sentient.",
+    "source_quote": "passing through a forest that includes awakened, sentient zurkhwood trees",
+    "subject": "zurkhwood",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zuggtmoy is a demonic entity praised by Yrberop and Phylo, described in feminine terms and associated with a coming wedding.",
+    "source_quote": "He spoke excitedly of sending myconids into the Overbright... Yrberop praises the \u201cgreat Zuggtmoy\u201d",
+    "subject": "Zuggtmoy",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The party suspects the Garden of Welcome visit is intended to make them sacrifices to a demon.",
+    "source_quote": "The party increasingly suspected that the promised visit to the Garden of Welcome was intended to make them sacrifices to a demon",
+    "subject": "demon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia reveals that Hebopbe has been infected by strange evil spores.",
+    "source_quote": "What Basidia quietly revealed, however, was that Hebopbe had already been infected by the strange evil spores spreading through the colony",
+    "subject": "Hebopbe infected",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Hebopbe is infected by strange evil spores.",
+    "source_quote": "Hebopbe has already been infected by the strange evil spores spreading through the colony",
+    "subject": "Hebopbe",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop is visibly infected and sways to discordant internal music.",
+    "source_quote": "The mound's leader, Yrberop, was visibly infected and swayed to discordant internal music that no one else could hear",
+    "subject": "Yrberop infected",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop is infected and hears a chaotic cacophony through his mind.",
+    "source_quote": "Yrberop, was visibly infected and swayed to discordant internal music that no one else could hear \u2014 a chaotic, painful cacophony",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin connects the noise Yrberop hears to his own dark memory of a demonic presence.",
+    "source_quote": "Thorin, drawing on a dark memory of his own time spent in the presence of something deeply wrong, felt certain that the noise and the evil he had encountered before were connected",
+    "subject": "Thorin recognizes threat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yrberop croons a lullaby to the newly spored myconids that praises Zuggtmoy and her wedding.",
+    "source_quote": "Yrberop lost interest in the conversation and began crooning a lullaby to the newly spored myconids",
+    "subject": "Yrberop sings lullaby",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo previously described Zuggtmoy in reverent, feminine terms and stated she must be experienced firsthand.",
+    "source_quote": "Phylo had previously described Zuggtmoy in reverent, specifically feminine terms and claimed that she could answer any question, but refused to explain what she was",
+    "subject": "Phylo quote",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo describes Zuggtmoy in feminine terms and claims she can answer any question.",
+    "source_quote": "Phylo had previously described Zuggtmoy in reverent, specifically feminine terms and claimed that she could answer any question",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump has prepared escape routes and hidden nutrient caches in the exit tunnels.",
+    "source_quote": "He had already prepared escape routes and hidden nutrient caches in the exit tunnels in case Basidia chose to abandon the grove",
+    "subject": "Rumpadump escape prep",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Nutrient caches are hidden in the exit tunnels for a potential nomadic migration.",
+    "source_quote": "hidden nutrient caches in the exit tunnels",
+    "subject": "nutrient caches",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump offers the party a way into the Garden of Welcome through a secret passageway.",
+    "source_quote": "It was Rumpadump who offered the party a way into the Garden of Welcome through a secret passageway",
+    "subject": "Rumpadump secret passageway",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar offers to bet that he was never infected by spores when challenged.",
+    "source_quote": "When challenged, Jimjar returned briefly to form by offering to bet that he had never been infected by spores",
+    "subject": "Jimjar bets",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is not infected by the strange spores.",
+    "source_quote": "Basidia confirmed that he was not infected",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party accepts Rumpadump's offer to investigate the Garden of Welcome immediately.",
+    "source_quote": "The party accepts immediately, comparing the decision to turning to the obviously fatal page of a choose-your-own-adventure book",
+    "subject": "party enters passage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party compares their decision to enter the secret passageway to turning to the fatal page of a choose-your-own-adventure book.",
+    "source_quote": "comparing the decision to turning to the obviously fatal page of a choose-your-own-adventure book",
+    "subject": "choose-your-own-adventure book",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Phylo's guided tour is scheduled for the morning.",
+    "source_quote": "without waiting for Phylo's guided tour in the morning",
+    "subject": "morning",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Yrberop mentions a 'great plan' by a 'great cedar' to bring happiness to all.",
+    "source_quote": "Yrberop speaks cryptically about a \u201cgreat plan\u201d by a \u201cgreat cedar\u201d to bring happiness to all",
+    "subject": "great plan",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The lullaby and Phylo's hints reference a coming wedding between Zuggtmoy and a 'great body'.",
+    "source_quote": "His lullaby praises Zuggtmoy, her wedding to the \u201cgreat body,\u201d and the invitation extended to every myconid",
+    "subject": "Zuggtmoy wedding",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Basidia uses rapport spores to link the party telepathically, shielding them from the corrupting spores in Yrberop's mind.",
+    "source_quote": "Basidia, rather than Yrberop, is responsible for the rapport spores linking the party, so the telepathic contact does not itself expose them to the corrupting spores",
+    "subject": "rapport spores",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe stops his detailed explanation of farming yields upon realizing the party is losing interest.",
+    "source_quote": "He nearly launches into a detailed explanation of farming yields before recognizing the party's fading interest and deferring the lecture",
+    "subject": "Hebopbe defers lecture",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Basidia bluntly prompts the party to ask Hebopbe about Phylo.",
+    "source_quote": "Basidia bluntly prompts the party to ask Hebopbe about Phylo, demonstrating little talent for discretion",
+    "subject": "Basidia prompts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Hebopbe points out the terraces and cultivation program supplying the colony.",
+    "source_quote": "Hebopbe proudly points out the terraces and extensive cultivation program that keeps the colony supplied with varied food",
+    "subject": "Hebopbe shows food",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Newly spored myconids will mature into myconid sprouts.",
+    "source_quote": "newly spored myconids only a few inches tall, not yet aware but soon to mature into myconid sprouts",
+    "subject": "myconid sprout",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Phylo refuses to explain Zuggtmoy, stating one must experience it firsthand.",
+    "source_quote": "One cannot be told what the great Zuggtmoy is. One must experience it firsthand.",
+    "subject": "Zuggtmoy quote",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump trusts only Basidia and the party because Basidia vouches for them.",
+    "source_quote": "Rumpadump trusted only Basidia and, by extension, the party, and he made no secret of his fear that something terrible was unfolding in the grove",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Rumpadump observes the colony changes further and for the worse upon each return from an expedition.",
+    "source_quote": "Every time he returned from an expedition, he found the colony changed further and for the worse",
+    "subject": "Rumpadump colony change",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar explains his lack of bets by claiming weddings make people unhappy.",
+    "source_quote": "Jimjar claims that nothing is wrong beyond the general truth that \u201canytime there's a wedding, you know, people get unhappy.\u201d",
+    "subject": "Jimjar excuse",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is located on a plateau higher than the rest of the grove.",
+    "source_quote": "The Garden of Welcome was a nightmare made real. The plateau rose high above the rest of the grove",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is screened by towering zurkhwood stalks.",
+    "source_quote": "screened by towering zurkhwood stalks",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome emits a chorus of muffled moans, cries, and hisses.",
+    "source_quote": "from within came a chorus of muffled moans and cries",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome is illuminated only by a few glowing mushrooms.",
+    "source_quote": "Only a few glowing mushrooms illuminated the gloom",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome contains the heads of creatures from a dozen Underdark races peeking from the soil.",
+    "source_quote": "the heads of creatures from a dozen different Underdark races peeked from the soil",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is a drow woman with a face half-rotted and blooming with tiny fungi.",
+    "source_quote": "a drow woman named Xinaya, her face half-rotted and blooming with tiny fungi",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Xinaya raises a spider medallion embedded in the fungal mass that was once her hand.",
+    "source_quote": "raised a spider medallion embedded in the fungal mass that had once been her hand",
+    "subject": "spider medallion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya begs the party to end her suffering.",
+    "source_quote": "She begged the party in desperate, broken words to end her suffering",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya warns that Zuggtmoy, the Lady of Decay, is present.",
+    "source_quote": "warned that Zuggtmoy, the Lady of Decay, was present",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya was sent by Ilvara to search for and capture the party near the grove.",
+    "source_quote": "she had been sent by Ilvara to search for and capture them near the grove",
+    "subject": "Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ilvara reserved the privilege of killing the fugitives for herself.",
+    "source_quote": "Ilvara had reserved the privilege of killing the fugitives for herself",
+    "subject": "Ilvara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya and her patrol accepted Phylo's invitation to visit the Garden of Welcome.",
+    "source_quote": "She and her patrol had made the fatal mistake of accepting Phylo's invitation to visit the Garden of Welcome",
+    "subject": "Xinaya's patrol accepting invitation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Phylo invited Xinaya and her patrol to visit the Garden of Welcome.",
+    "source_quote": "accepting Phylo's invitation to visit the Garden of Welcome",
+    "subject": "Phylo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya recognizes Daz as being from Menzoberranzan.",
+    "source_quote": "Xinaya recognizes Daz as being from Menzoberranzan",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya urges Daz to warn the other Drow that the Demon Queen of Fungi has entered the Underdark.",
+    "source_quote": "She urged Daz... to warn the other Drow that the Demon Queen of Fungi had entered the Underdark",
+    "subject": "warning to Drow",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is a larval creature with vestigial fungal growths suggesting it might once have been a myconid.",
+    "source_quote": "A disgusting larval creature named Yestabrod rises from the ground, its vestigial fungal growths suggesting that it might once have been a myconid",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod speaks both aloud and inside the party's minds.",
+    "source_quote": "It welcomed the party to a wedding rehearsal in a gurgling voice heard both aloud and inside their minds",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod welcomes the party to a wedding rehearsal.",
+    "source_quote": "It welcomed the party to a wedding rehearsal",
+    "subject": "wedding rehearsal announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two adult myconids emerge to join Yestabrod.",
+    "source_quote": "Two adult myconids and drow spore servants from Xinaya's former patrol emerged to join it",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Drow spore servants from Xinaya's former patrol emerge to join Yestabrod.",
+    "source_quote": "drow spore servants from Xinaya's former patrol emerged to join it",
+    "subject": "drow spore servants",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod rejects the party's attempt to use their audit ploy, stating there will be no audit.",
+    "source_quote": "Yestabrod rejected the ploy: there would be no audit, only incorporation into the \u201ccoworkers of pain.\u201d",
+    "subject": "audit refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party enters the Garden of Welcome through Rumpadump's secret route.",
+    "source_quote": "The party enters through Rumpadump's secret route before Phylo can conduct his planned tour the following morning",
+    "subject": "secret entry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Rumpadump has a secret route into the Garden of Welcome.",
+    "source_quote": "The party enters through Rumpadump's secret route",
+    "subject": "Rumpadump",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wields the sword Dawnbringer.",
+    "source_quote": "Thorin, wielding Dawnbringer and flooding the garden with sunlight",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin activates Dawnbringer to emit genuine sunlight in a fifteen-foot radius.",
+    "source_quote": "Dawnbringer cast genuine sunlight in a fifteen-foot radius, hampering the light-sensitive myconids",
+    "subject": "Dawnbringer sunlight activation",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The myconids are light-sensitive and are hampered by Dawnbringer's radiance.",
+    "source_quote": "hampering the light-sensitive myconids",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is stunned by an adult myconid's spores.",
+    "source_quote": "One adult myconid opened by stunning Jimjar with a puff of spores",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum channels necrotic energy directly into Yestabrod.",
+    "source_quote": "Gyrgum moved in close and channeled devastating necrotic energy directly into Yestabrod",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum acknowledges the danger of touching Yestabrod but proceeds anyway.",
+    "source_quote": "You know, you only live once.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod causes a nearby corpse to explode.",
+    "source_quote": "a nearby corpse exploded, and the creature absorbed the resulting remains to heal itself",
+    "subject": "corpse explosion 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod absorbs remains from exploded corpses to heal itself.",
+    "source_quote": "Yestabrod immediately demonstrated its unnatural resilience: a nearby corpse exploded, and the creature absorbed the resulting remains to heal itself",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz unleashes a roaring fireball.",
+    "source_quote": "Daz unleashed a roaring fireball that badly burned three clustered creatures",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A player jokes that the fireball made the spores crispy.",
+    "source_quote": "A player joked that the blast had made the spores crispy",
+    "subject": "player joke",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM clarifies that the spores had already been emitted before the fireball.",
+    "source_quote": "but the GM clarified that the spores had already been emitted",
+    "subject": "GM clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod causes another corpse to explode, showering the battlefield with gore, offal, and acid.",
+    "source_quote": "Yestabrod answered with another corpse eruption, showering the battlefield with gore, offal, and acid",
+    "subject": "corpse explosion 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Yestabrod moves among the party and releases a thick cloud of spores.",
+    "source_quote": "It then moved among the party and released a thick cloud of spores",
+    "subject": "spore cloud release",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz succumbs to the spores and is afflicted with a secret madness.",
+    "source_quote": "Daz and Zalthir succumbed and were each afflicted with a secret madness",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir succumbs to the spores and is afflicted with a secret madness.",
+    "source_quote": "Daz and Zalthir succumbed and were each afflicted with a secret madness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz treats his madness affliction as a hidden roleplay alteration.",
+    "source_quote": "Daz treated the affliction as a hidden alteration to his roleplay",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir is warned that his worldview has suddenly shifted.",
+    "source_quote": "while Zalthir was warned that his worldview had suddenly shifted",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The madness can be cured if the victims first recognize that something is wrong.",
+    "source_quote": "the madness could be cured if its victims first recognized that something was wrong",
+    "subject": "madness cure condition",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is a companion who has traveled with the party through the Underdark.",
+    "source_quote": "Most devastating of all was the fate of Sarith, a companion who had traveled with the party for their entire journey through the Underdark",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith's head explodes and he rises as a mindless drow spore servant.",
+    "source_quote": "In the midst of the battle, his head exploded and he rose as a mindless drow spore servant",
+    "subject": "Sarith transformation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth and Jimjar cut down Sarith after his transformation.",
+    "source_quote": "Eldeth and Jimjar were forced to cut him down almost immediately",
+    "subject": "Sarith destruction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth cuts down Sarith.",
+    "source_quote": "Eldeth and Jimjar were forced to cut him down almost immediately",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar cuts down Sarith.",
+    "source_quote": "Eldeth and Jimjar were forced to cut him down almost immediately",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin is overwhelmed by a stunning cloud of spores and incapacitated.",
+    "source_quote": "Thorin, wielding Dawnbringer and flooding the garden with sunlight, was briefly overwhelmed by a stunning cloud of spores and remained incapacitated until the battle was nearly over",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's first attempt to shake off the spore effect fails.",
+    "source_quote": "his first attempt to shake off the effect fails",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir ends Yestabrod with a relentless flurry of strikes.",
+    "source_quote": "Zalthir ultimately ended Yestabrod with a relentless flurry of strikes, preventing it from detonating any more corpses",
+    "subject": "Yestabrod defeat",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Yestabrod is slain by Zalthir's final blow.",
+    "source_quote": "Zalthir's final blow slays the larval monstrosity",
+    "subject": "Yestabrod",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum withers a myconid adult with a necrotic touch.",
+    "source_quote": "Gyrgum withered another myconid with a second necrotic touch",
+    "subject": "myconid 2 destruction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz divides magical force bolts between two badly wounded enemies.",
+    "source_quote": "Daz precisely divided bolts of magical force between two badly wounded enemies",
+    "subject": "magic missile distribution",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz giggles after both creatures fall to his spell.",
+    "source_quote": "Daz giggles after both creatures fall to the spell",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir steps into Dawnbringer's sunlight to destroy the final myconid attacker.",
+    "source_quote": "Zalthir stepped into Dawnbringer's sunlight to destroy the final myconid attacker",
+    "subject": "myconid final destruction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir punches the final myconid repeatedly while in the sunlight.",
+    "source_quote": "Zalthir punches it repeatedly and destroys it",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya remains trapped in her living grave throughout the battle.",
+    "source_quote": "Xinaya remains trapped throughout the battle, unable to act or flee and capable only of crying out from her living grave",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome contains buried corpses.",
+    "source_quote": "The garden contains enough buried corpses to fuel this ability throughout the encounter",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Sarith becomes a drow spore servant.",
+    "source_quote": "his head exploded and he rose as a mindless drow spore servant",
+    "subject": "drow spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An adult myconid targets Thorin because Dawnbringer's sunlight harms the myconids.",
+    "source_quote": "A myconid adult targets Thorin because Dawnbringer's sunlight is harming the myconids",
+    "subject": "adult myconid",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir retrieves the spider medallion from Xinaya's bloated, fungal hand while she is still alive.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand while she was still alive",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya warns the party that those infected by the spores have only days to find a cure before sharing her fate.",
+    "source_quote": "The dying drow warned the party that those infected by the spores had only days to find a cure before sharing her fate",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya states that it is too late for her to be cured.",
+    "source_quote": "Asked whether she can still be cured, Xinaya answers, \u201cIt is too late for me.\u201d",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum considers using lesser restoration on Xinaya but determines she is beyond its power.",
+    "source_quote": "Gyrgum considered lesser restoration... but she was too far gone",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum briefly considers revivify for Xinaya but notes he has no third-level spell slots remaining.",
+    "source_quote": "Gyrgum briefly considers revivify as well, though he has no third-level spell slots remaining",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin consults quietly with Dawnbringer regarding the decision to grant Xinaya's request.",
+    "source_quote": "Thorin consulted quietly with Dawnbringer",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin delivers a mercy kill to Xinaya at her own request.",
+    "source_quote": "Thorin... delivers a mercy kill to Xinaya at her own request to end her suffering",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin characterizes his relationship with Dawnbringer as an unexpected marriage.",
+    "source_quote": "Thorin described his bond with the blade as a marriage he had not requested but intended to honor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dawnbringer is a sentient blade that Thorin treats as an equal partner in decisions.",
+    "source_quote": "Thorin asks Dawnbringer whether it agrees with granting Xinaya's request, treating the sword as an equal partner in the decision",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The spider medallion is retrieved from Xinaya's hand by Zalthir.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand",
+    "subject": "spider medallion",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Xinaya's hand is described as bloated and fungal.",
+    "source_quote": "Xinaya's bloated, fungal hand",
+    "subject": "Xinaya's hand",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Sarith transformed into a spore servant.",
+    "source_quote": "Sarith... whose head had exploded during his transformation into a spore servant",
+    "subject": "spore servant",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The spore servant's head exploded during Sarith's transformation.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "spore servant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is the party's former companion.",
+    "source_quote": "The party discovers the remains of their former companion Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith's head exploded during his transformation.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya is killed by Thorin and Dawnbringer via mercy kill.",
+    "source_quote": "together they granted her the merciful death she had begged for",
+    "subject": "Xinaya's death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is dead, having received a mercy kill from Thorin and Dawnbringer.",
+    "source_quote": "together they granted her the merciful death she had begged for",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith transformed into a spore servant, resulting in his head exploding.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith's transformation",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is dead, his head having exploded during his transformation into a spore servant.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a sentient blade wielded by Thorin.",
+    "source_quote": "Thorin, wielding Dawnbringer and consulting with the sentient blade",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin and Dawnbringer act together to grant Xinaya's mercy kill.",
+    "source_quote": "Thorin, wielding Dawnbringer and consulting with the sentient blade, delivers a mercy kill to Xinaya",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Those infected by the spores have only a few days to find a cure.",
+    "source_quote": "those infected by the spores had only days to find a cure before sharing her fate",
+    "subject": "spore infection cure timeline",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Magic on the scale of a wish is stated as potentially the only way to restore someone in Xinaya's condition.",
+    "source_quote": "only magic on the scale of a wish might have restored her",
+    "subject": "wish-level magic requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Garden of Welcome stands before the Circle of the Masters.",
+    "source_quote": "Beyond the Garden of Welcome stands the Circle of the Masters",
+    "subject": "Garden of Welcome",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Circle of the Masters is dominated by a towering mushroom.",
+    "source_quote": "Circle of the Masters, dominated by a towering mushroom",
+    "subject": "Circle of the Masters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin recognizes a musical connection between the victims' groaning and the sound he sensed in Yrberop's mind.",
+    "source_quote": "Thorin recognized the same musical quality he had sensed in Yrberop's mind",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin compares the party's reluctance to approach to an audience shouting at horror film characters not to continue.",
+    "source_quote": "Thorin observing that an audience watching a horror film would be shouting at them not to continue",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Yrberop is referenced as a being whose mind contained a discordant cacophony.",
+    "source_quote": "the discordant cacophony he perceived in Yrberop's mind",
+    "subject": "Yrberop",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A parade of vaguely humanoid creatures with decaying flesh covered in luminescent lichen and tumescent growths emerges from the mist.",
+    "source_quote": "a parade of vaguely humanoid creatures, their decaying flesh covered in luminescent lichen and tumescent growths",
+    "subject": "vaguely humanoid creatures",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Infected myconids are identified as being connected to the discordant music emanating from the cavern.",
+    "source_quote": "confirming the connection between the infected myconids and whatever waited ahead",
+    "subject": "myconids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the Demon Queen of Fungi and the Lady of Decay.",
+    "source_quote": "Zuggtmoy herself \u2014 the Demon Queen of Fungi, the Lady of Decay",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy leads the wedding procession.",
+    "source_quote": "leading the procession, came Zuggtmoy herself",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy is the same demon lord Thorin had encountered previously.",
+    "source_quote": "the same demon lord Thorin had encountered before",
+    "subject": "Zuggtmoy",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zuggtmoy's bridesmaids walk with her in the procession.",
+    "source_quote": "walking toward the party with her bridesmaids",
+    "subject": "Zuggtmoy's bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Araumycos is the groom in the wedding hymn celebrating the union with Zuggtmoy.",
+    "source_quote": "a wedding hymn celebrating the union of Zuggtmoy and Araumycos",
+    "subject": "Araumycos",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wedding hymn promises that Zuggtmoy's joyous spores will spread to all the world below and above.",
+    "source_quote": "promising that her joyous spores would spread to all the world below and above",
+    "subject": "wedding hymn",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The wedding hymn states that Araumycos and Zuggtmoy will become one till death do part.",
+    "source_quote": "Araumycos and Zuggtmoy joined together heart to heart, becoming one till death do part",
+    "subject": "wedding hymn",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The wedding procession for Zuggtmoy and Araumycos emerges from the mist.",
+    "source_quote": "leading the procession, came Zuggtmoy herself",
+    "subject": "wedding procession begins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The victims planted in the soil begin to groan and croak in horrible unison.",
+    "source_quote": "the remaining victims in the soil began to groan and croak in horrible unison",
+    "subject": "victims begin to sing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes about whether they are wedding crashers, gifts, guests, or the feast.",
+    "source_quote": "The party jokes about whether they are wedding crashers, wedding gifts, guests, or the feast",
+    "subject": "party joking",
+    "quote_verified": true
+  }
+]

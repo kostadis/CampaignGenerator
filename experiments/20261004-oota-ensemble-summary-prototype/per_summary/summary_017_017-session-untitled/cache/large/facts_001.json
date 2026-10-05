@@ -1,0 +1,240 @@
+[
+  {
+    "type": "location",
+    "fact": "The Whorlstone Tunnels contain fungal thickets.",
+    "source_quote": "fungal thickets of the Whorlstone Tunnels",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin explains that his Sentinel feat causes foes who disengage near him or attack someone other than him within 5 feet to provoke an opportunity attack.",
+    "source_quote": "Foes who disengage near him still provoke an opportunity attack, and so do foes who attack someone other than him within 5 feet",
+    "subject": "Thorin explains Sentinel feat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM clarifies that the Sentinel feat's opportunity attack must hit and uses the character's reaction, limiting it to one per round.",
+    "source_quote": "The GM clarifies that the attack must hit and that it uses his reaction, so only one per round",
+    "subject": "GM clarifies Sentinel mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin remarks, \"Well, that's some bullshit,\" regarding the Sentinel feat limitations.",
+    "source_quote": "Thorin's reply: \"Well, that's some bullshit.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A swarm of centipedes crawls over Zalthir.",
+    "source_quote": "A swarm of centipedes crawls over Zalthir",
+    "subject": "centipede swarm 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The centipede swarm bites Zalthir, but the attack misses.",
+    "source_quote": "The swarm's attack misses",
+    "subject": "centipede swarm 1 attacks Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's free opportunity attack against the first centipede swarm misses.",
+    "source_quote": "Thorin's free opportunity attack also misses",
+    "subject": "Thorin's opportunity attack misses",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states \"I suck\" after missing the opportunity attack.",
+    "source_quote": "Thorin's free opportunity attack also misses (\"I suck\")",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A second swarm of centipedes attacks Daz.",
+    "source_quote": "The centipedes bite Daz, whose AC is only 11, for 10 damage",
+    "subject": "centipede swarm 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz takes 10 damage from a centipede swarm bite, revealing his AC is 11.",
+    "source_quote": "The centipedes bite Daz, whose AC is only 11, for 10 damage",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A third swarm of centipedes attacks Gyrgum.",
+    "source_quote": "Another swarm attacks Gyrgum (AC 14) but fails to land a blow",
+    "subject": "centipede swarm 3",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The third centipede swarm fails to land a blow against Gyrgum.",
+    "source_quote": "Another swarm attacks Gyrgum (AC 14) but fails to land a blow",
+    "subject": "centipede swarm 3 attacks Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches the swarm on his body, leaving it at 1 hit point.",
+    "source_quote": "His first hit leaves one swarm at 1 hit point",
+    "subject": "Zalthir punches centipede swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's second blow against the swarm misses.",
+    "source_quote": "his second blow misses",
+    "subject": "Zalthir's second punch misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirms that stepping away from a swarm hit by Thorin's Sentinel feature leaves it stuck for the next round.",
+    "source_quote": "the GM confirms it would, \"but for next time.\"",
+    "subject": "Stuck swarm ruling",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz disengages from the melee to find a safer position.",
+    "source_quote": "Daz disengages from the melee to find a safer position",
+    "subject": "Daz disengages",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The GM advises Daz to consider disengaging \"as a lifestyle choice.\"",
+    "source_quote": "after the GM suggests he \"might want to consider that as a lifestyle choice.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Based on an earlier check, the party believes these are the last of the centipede swarms.",
+    "source_quote": "Based on an earlier check, the party believes these are the last of the swarms",
+    "subject": "final swarms belief",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts True Strike through his hand axe, making the attack with Wisdom.",
+    "source_quote": "Gyrgum casts True Strike through his hand axe, making the attack with Wisdom",
+    "subject": "Gyrgum casts True Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum deals 9 radiant damage to a centipede swarm.",
+    "source_quote": "He deals 9 radiant damage (1d6+4 plus an extra 1d6)",
+    "subject": "Gyrgum damages swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin finishes off the centipede swarm left at 1 hit point.",
+    "source_quote": "Thorin finishes off the 1-hit-point swarm",
+    "subject": "Thorin kills swarm 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin moves to protect Daz after killing the first swarm.",
+    "source_quote": "Thorin finishes off the 1-hit-point swarm and moves to protect Daz from further harm",
+    "subject": "Thorin protects Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Remaining centipedes swarm Thorin and Gyrgum.",
+    "source_quote": "The remaining centipedes swarm Thorin and Gyrgum",
+    "subject": "centipede swarm 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A centipede swarm rolls exactly 18 against Thorin's AC 18 and hits for 10 damage.",
+    "source_quote": "A swarm rolls exactly 18 against Thorin's AC 18 and hits for 10",
+    "subject": "centipede swarm hits Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has an AC of 18.",
+    "source_quote": "against Thorin's AC 18",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A centipede swarm lands a critical hit dealing only 10 damage because it is at half hit points.",
+    "source_quote": "A swarm lands a critical, but it deals only 10 damage because swarms at half hit points do half damage",
+    "subject": "centipede swarm crits",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir punches the swarm on Gyrgum for 7 damage, leaving it at 2 hit points.",
+    "source_quote": "Zalthir punches the swarm on Gyrgum for 7 damage, leaving it at 2 hit points",
+    "subject": "Zalthir hits swarm on Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir destroys the swarm on Gyrgum with his second strike.",
+    "source_quote": "then destroys it with his second strike",
+    "subject": "Zalthir destroys swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The final centipede swarm is hit by magic missiles.",
+    "source_quote": "Daz fires magic missiles at the final swarm for 15 damage",
+    "subject": "centipede swarm 5",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires magic missiles at the final swarm for 15 damage, leaving it at 7 hit points.",
+    "source_quote": "Daz fires magic missiles at the final swarm for 15 damage, leaving it at 7 hit points",
+    "subject": "Daz fires magic missiles",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts True Strike again but misses.",
+    "source_quote": "Gyrgum closes in and casts True Strike again but misses",
+    "subject": "Gyrgum True Strike miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits the last swarm for 8 damage and kills it.",
+    "source_quote": "Thorin hits the last swarm for 8 and kills it (\"Ding dong\")",
+    "subject": "Thorin kills final swarm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin says \"Ding dong\" after killing the last swarm.",
+    "source_quote": "Thorin hits the last swarm for 8 and kills it (\"Ding dong\")",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirms there are no more centipedes as the tunnels fall quiet.",
+    "source_quote": "The GM cues the appropriate music: \"There are no more centipedes.\"",
+    "subject": "centipedes defeated",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,163 @@
+[
+  {
+    "type": "npc",
+    "fact": "Xinaya was a drow scout who was dying from spore infection.",
+    "source_quote": "the party tends to the dying drow scout",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya had a bloated, fungal hand.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya was still alive when Zalthir retrieved the medallion.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand while she was still alive",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya warned that those infected by the spores had only days to find a cure.",
+    "source_quote": "The dying drow warned the party that those infected by the spores had only days to find a cure",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya stated that it was too late for her to be cured.",
+    "source_quote": "Asked whether she can still be cured, Xinaya answers, \u201cIt is too late for me.\u201d",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir retrieved the spider medallion from Xinaya's hand.",
+    "source_quote": "Zalthir retrieved the spider medallion from Xinaya's bloated, fungal hand",
+    "subject": "spider medallion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Xinaya warned that anyone infected by the spores must be cured within a few days to avoid her fate.",
+    "source_quote": "Xinaya warns the party that anyone infected by the spores must be cured within a few days or suffer the same gruesome fate",
+    "subject": "spore warning",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum considered using lesser restoration on Xinaya.",
+    "source_quote": "Gyrgum considered lesser restoration and even revivify",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum determined that lesser restoration would not work because Xinaya was too far gone.",
+    "source_quote": "Gyrgum considered lesser restoration but determines that Xinaya is already beyond its power",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum had no third-level spell slots remaining.",
+    "source_quote": "Gyrgum briefly considers revivify as well, though he has no third-level spell slots remaining",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum briefly considered using revivify on Xinaya.",
+    "source_quote": "Gyrgum briefly considers revivify as well",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Magic comparable to a wish is believed to be the only thing capable of restoring someone in Xinaya's condition.",
+    "source_quote": "only magic comparable to a wish might restore someone in her condition",
+    "subject": "cure for spores",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin consulted quietly with Dawnbringer before acting.",
+    "source_quote": "Thorin consulted quietly with Dawnbringer",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Dawnbringer is a sentient blade that Thorin treats as an equal partner.",
+    "source_quote": "Thorin asks Dawnbringer whether it agrees with granting Xinaya's request, treating the sword as an equal partner in the decision",
+    "subject": "Dawnbringer",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin describes his bond with Dawnbringer as a marriage he did not request but intends to honor.",
+    "source_quote": "Thorin described his bond with the blade as a marriage he had not requested but intended to honor",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stated that he and Dawnbringer are now a partnership.",
+    "source_quote": "\u201cWe're a partnership now.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stated that he did not ask for the marriage to Dawnbringer but will keep his vow.",
+    "source_quote": "\u201cI didn't ask for this marriage, but, you know, I'm going to make my vow.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and Dawnbringer granted Xinaya a merciful death at her request.",
+    "source_quote": "Thorin, wielding Dawnbringer and consulting with the sentient blade, delivers a mercy kill to Xinaya at her own request to end her suffering",
+    "subject": "Xinaya's death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Xinaya is dead, killed by Thorin and Dawnbringer to end her suffering.",
+    "source_quote": "delivers a mercy kill to Xinaya at her own request to end her suffering",
+    "subject": "Xinaya",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party discovered the remains of their former companion Sarith.",
+    "source_quote": "The party discovers the remains of their former companion Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith's head exploded during his transformation into a spore servant.",
+    "source_quote": "whose head had exploded during his transformation into a spore servant",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is dead.",
+    "source_quote": "The party discovers the remains of their former companion Sarith",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Sarith's fate confirms the corruption that had been affecting him.",
+    "source_quote": "Sarith's fate removes any remaining uncertainty about the corruption that had been affecting him",
+    "subject": "Sarith's corruption",
+    "quote_verified": true
+  }
+]

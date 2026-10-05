@@ -1,0 +1,26 @@
+{
+ "chapter": 35,
+ "kind": "summary",
+ "inputs": [
+  "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md"
+ ],
+ "session": null,
+ "reason": "direct summary; filename numeric prefix is authoritative",
+ "passes": {
+  "small": "summary",
+  "large": "summary",
+  "sweep": "summary",
+  "temporal": "summary"
+ },
+ "source_path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/035-session-prejudice-promises-and-the-prince-of-puddles.md",
+ "chapter_identity": {
+  "authoritative": 35,
+  "source": "filename_numeric_prefix",
+  "heading": 35
+ },
+ "heading_chapter": 35,
+ "chapter_mismatch": false,
+ "omitted_passes": [
+  "interiority"
+ ]
+}

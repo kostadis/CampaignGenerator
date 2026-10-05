@@ -1,0 +1,226 @@
+[
+  {
+    "type": "event",
+    "fact": "The party retraced its route after discovering the fountain chamber was not the expected exit.",
+    "source_quote": "The fountain chamber proved not to be the expected exit, so the party retraced its route",
+    "subject": "route change",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party explored the eastern passageway of the temple complex.",
+    "source_quote": "explored the eastern passage",
+    "subject": "eastern passageway",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin actively searched for traps while proceeding down the eastern passageway.",
+    "source_quote": "while Thorin actively searches for traps",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party heard the sound of pouring water near a rough-hewn wall.",
+    "source_quote": "Near a rough wall they heard pouring water",
+    "subject": "discovery of water source",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Water streams into the passageway through cracks in the 10-foot-high ceiling.",
+    "source_quote": "Streams entered through cracks in the 10-foot-high ceiling",
+    "subject": "ceiling cracks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party estimated that the water level was rising by roughly one foot per hour.",
+    "source_quote": "the party estimated that the water was rising by roughly one foot per hour",
+    "subject": "flood rate estimate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin suggested that the cracks in the ceiling were worth investigating.",
+    "source_quote": "Thorin\u2019s dwarven knowledge suggested that the cracks were worth investigating",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin identifies himself as a 'dwarf dwarf' in response to a joke about him being a 'water dwarf'.",
+    "source_quote": "I\u2019m a dwarf dwarf",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Glabbagool cannot squeeze through a space as narrow as one inch, unlike some oozes.",
+    "source_quote": "Glabbagool cannot use the ability possessed by some oozes to squeeze through a space as narrow as one inch",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The group debated whether to plug the breach in the rock or deliberately break it open.",
+    "source_quote": "The group debates whether the rock should be plugged or deliberately broken open",
+    "subject": "escape plan debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar advised the party to focus on the way out rather than how they got there.",
+    "source_quote": "Jimjar advises, \u201cLet\u2019s not focus on the how we got here. Let\u2019s focus on the way out.\u201d",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar bet that a massive quantity of water waited behind the stone.",
+    "source_quote": "Jimjar bet that a massive quantity of water waited behind the stone",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reminded Jimjar that nobody had accepted the bet regarding the water behind the stone.",
+    "source_quote": "Thorin to remind him that nobody had accepted that particular wager",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asked if anyone possessed a spell that could create a bubble of air for breathing.",
+    "source_quote": "The party asks whether anyone possesses a spell that could create a bubble of air in which everyone could breathe",
+    "subject": "air bubble inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is a dwarf.",
+    "source_quote": "Eldeth, another dwarf, examines the site",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth examined the site and performed a geological assessment.",
+    "source_quote": "Eldeth examined the site and recognized the signs of an underground river breaking through the rock",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth believed an underground river was breaking through the stone.",
+    "source_quote": "She believed an underground river is breaking through the stone",
+    "subject": "Eldeth",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth warned that inaction would eventually drown everyone.",
+    "source_quote": "warns that inaction will eventually drown them all",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth recalled stories of people escaping similar disasters by breaking through stone and swimming through passages.",
+    "source_quote": "She had heard stories of people escaping such disasters by breaking through the stone and swimming through the resulting passage",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth noted that she did not hear about the people who attempted the escape and drowned.",
+    "source_quote": "\u201cI didn\u2019t hear about all the people who did that and drowned anymore.\u201d",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recognized survivor bias in Eldeth's stories, comparing it to reports from bombers that returned from battle.",
+    "source_quote": "The party compared the logic to hearing only about bombers that returned from battle",
+    "subject": "survivor bias realization",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party suspects unexplored portions of the temple contain only more oozes and dead ends.",
+    "source_quote": "but suspect it contains only more oozes and a dead end",
+    "subject": "unexplored temple sections",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin possesses a potion of spider climb.",
+    "source_quote": "Thorin mentions having a potion of spider climb",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin asked if there was a high place to survive the initial rush of water.",
+    "source_quote": "asked whether there is any high place from which they might survive the first rush of water",
+    "subject": "Thorin",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The ceiling of the eastern passageway is only ten feet high.",
+    "source_quote": "The ceiling is only ten feet high",
+    "subject": "eastern passageway ceiling",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The group considered using Shape Water to create air pockets, redirect currents, build ice barriers, or drain routes.",
+    "source_quote": "The group considers using Shape Water to create an air pocket, redirect the current, build an ice barrier, or progressively drain a route",
+    "subject": "shape water plan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determined that the Shape Water spell affects a five-foot cube.",
+    "source_quote": "Daz determines that the spell can affect a five-foot cube",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determined that the non-instantaneous effect of Shape Water can last for an hour.",
+    "source_quote": "that its non-instantaneous effect can last for an hour",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz determined that two Shape Water effects can be maintained at once.",
+    "source_quote": "and that two such effects can be maintained at once",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party planned to create two adjacent five-foot air pockets using Shape Water and move through them in sequence.",
+    "source_quote": "The resulting plan is to create two adjacent five-foot pockets and move through them in sequence",
+    "subject": "escape strategy formulation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The cracks in the ceiling were caused by the same tremor that trapped the party.",
+    "source_quote": "The cracks appear to have been caused by the same tremor that trapped the party",
+    "subject": "tremor cause identification",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The entire temple complex is slowly flooding due to an underground water source.",
+    "source_quote": "realizing the entire complex is slowly flooding",
+    "subject": "temple complex",
+    "quote_verified": true
+  }
+]

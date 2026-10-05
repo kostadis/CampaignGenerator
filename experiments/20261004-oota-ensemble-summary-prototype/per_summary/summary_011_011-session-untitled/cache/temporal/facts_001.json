@@ -1,0 +1,16 @@
+[
+  {
+    "type": "npc",
+    "fact": "Thirteen people are surrounding the duergar prisoner Brannum Redmarch.",
+    "source_quote": "he was surrounded by thirteen people",
+    "subject": "party members surrounding prisoner",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check of 18 confirmed that Brannum Redmarch was being truthful.",
+    "source_quote": "An insight check of 18 confirmed that he was being straight with them",
+    "subject": "insight check on Brannum",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,849 @@
+[
+  {
+    "type": "event",
+    "fact": "The party rescues companions from the rubble after a rockfall.",
+    "source_quote": "The aftermath of the rockfall left the party scrambling to pull their companions from the rubble",
+    "subject": "rescue from rockfall",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "Freeing a buried companion takes an action, and anyone left under the dirt takes damage the next round.",
+    "source_quote": "Freeing a buried companion took an action, and anyone left under the dirt would take damage the next round.",
+    "subject": "rescue timing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir goes first in the rescue effort.",
+    "source_quote": "The party worked in rough initiative order, with Zalthir going first.",
+    "subject": "rescue initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir uses his strength to heave heavy slabs of rock aside.",
+    "source_quote": "Zalthir, drawing on his considerable strength, heaved heavy slabs of rock aside",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir shoves rocks off Daz.",
+    "source_quote": "Zalthir shoved the rocks off Daz",
+    "subject": "Zalthir rescues Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is stable but unconscious.",
+    "source_quote": "Zalthir shoved the rocks off Daz, who lay stable but unconscious",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is treated as the urgent case because he is the only unconscious companion.",
+    "source_quote": "Daz is the only unconscious companion, so Zalthir treats him as the urgent case.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin drags Gyrgum clear of the debris.",
+    "source_quote": "Thorin focused his efforts on dragging Gyrgum clear of the debris",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rescues Gyrgum because he is part of the party's crew.",
+    "source_quote": "Thorin focuses his efforts on rescuing Gyrgum from the debris, \"because he's part of our crew.\"",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool is a small but determined sentient fungus.",
+    "source_quote": "Stool, the small but determined sentient fungus",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool asks Gyrgum if he is okay.",
+    "source_quote": "Stool... asked Gyrgum if he was okay",
+    "subject": "Stool",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum states he is not doing well and is badly hurt.",
+    "source_quote": "Oh, I'm not doing so well. I got pretty badly hurt.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool pulls Shuushar and Buppido to safety.",
+    "source_quote": "Stool managed to pull both Shuushar and Buppido to safety",
+    "subject": "Stool rescues Shuushar and Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool frees Buppido because he thinks Buppido dying would be tragic.",
+    "source_quote": "He freed Buppido because he thought Buppido dying would be tragic",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asked Stool to save Shuushar.",
+    "source_quote": "Gyrgum asked for Shuushar",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith is the party's guide.",
+    "source_quote": "Their guide had not been trapped at all.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith was not trapped under the rocks.",
+    "source_quote": "Their guide had not been trapped at all.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is still trapped in the rubble.",
+    "source_quote": "though Eldeth and Jimjar were still trapped",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is still trapped in the rubble.",
+    "source_quote": "though Eldeth and Jimjar were still trapped",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A carrion crawler erupts from the earth, resembling a colossal maggot with paralyzing tentacles.",
+    "source_quote": "It was a carrion crawler, a grotesque creature resembling a colossal maggot lined with paralyzing tentacles.",
+    "subject": "carrion crawler",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler is drawn to the party by the noise of the rescue efforts.",
+    "source_quote": "drawn by the noise of the rescue.",
+    "subject": "carrion crawler ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir casts a line of fire on the carrion crawler as his first action.",
+    "source_quote": "Zalthir went first and exhaled a searing line of fire.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler takes 10 damage from Zalthir's fire line after failing its Dexterity save.",
+    "source_quote": "The crawler blew its Dexterity save and took 10 damage",
+    "subject": "Zalthir's first fire blast",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir pulls back behind the other party members after his first attack.",
+    "source_quote": "and Zalthir pulled back behind the others.",
+    "subject": "Zalthir repositions",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The carrion crawler strikes Gyrgum with a tentacle, dealing 4 damage and dropping him.",
+    "source_quote": "The crawler struck Gyrgum with a tentacle for 4 damage and dropped him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is currently downed by the carrion crawler.",
+    "source_quote": "dropped him",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler turns its jaws on Thorin and hits him for 7 damage.",
+    "source_quote": "turned its snapping jaws on Thorin and hit him for 7.",
+    "subject": "Crawler attacks Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin attacks the carrion crawler with a short sword, dealing 4 piercing damage.",
+    "source_quote": "Thorin answered with a precise thrust of his short sword for 4 piercing damage.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin's short sword has the Vex property, which grants him advantage on his next attack.",
+    "source_quote": "The weapon's Vex property gave him advantage on his next attack",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Shuushar, Turvy, Topsy, Sarith, and Buppido fire hand crossbow bolts at the carrion crawler.",
+    "source_quote": "Shuushar, Turvy, Topsy, Sarith, and Buppido, raised their hand crossbows and loosed a volley of bolts into the creature's hide.",
+    "subject": "Companions volley",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companions' volley lands four critical hits on the carrion crawler for 20 damage.",
+    "source_quote": "landed four hits, and dealt 20 damage.",
+    "subject": "Companions volley damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts fire again, but the crawler twists aside and takes only 2 damage.",
+    "source_quote": "Zalthir unleashed another blast of fire, but the crawler twisted aside and took only 2 damage.",
+    "subject": "Zalthir's second fire blast",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin uses his Second Wind feature to regain ten hit points.",
+    "source_quote": "Thorin caught his breath with Second Wind for ten more hit points.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler's jaws miss Thorin, missing by one point against his AC.",
+    "source_quote": "The crawler's jaws missed Thorin by one point against his AC",
+    "subject": "Crawler misses Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The carrion crawler's tentacle misses Sarith spectacularly.",
+    "source_quote": "a tentacle aimed at Sarith \"misses spectacularly.\"",
+    "subject": "Crawler misses Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth is currently nearing death.",
+    "source_quote": "Eldeth was nearing death",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is rolling death saves.",
+    "source_quote": "Gyrgum rolled death saves",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has passed two death saving throws.",
+    "source_quote": "Gyrgum rolled death saves and passes twice.",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is stable and does not need to make death saving throws.",
+    "source_quote": "Daz is stable, so he does not need death saves.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz continues to roll ordinary successes for potential hit point recovery.",
+    "source_quote": "Daz kept rolling successes while staying stable.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin orders Topsy and Turvy to dig out Eldeth and Jimjar.",
+    "source_quote": "Thorin had Topsy and Turvy dig out Eldeth",
+    "subject": "Rescue order given",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is trapped and requires rescue by Topsy and Turvy.",
+    "source_quote": "Thorin had Topsy and Turvy dig out Eldeth ... and Jimjar.",
+    "subject": "Jimjar",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The remaining three companions deal 15 damage to the carrion crawler, killing it.",
+    "source_quote": "The three companions still shooting put 15 more damage into the crawler and killed it.",
+    "subject": "Crawler killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The carrion crawler is dead.",
+    "source_quote": "Once it was dead, everyone came round",
+    "subject": "carrion crawler",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is conscious again but is at one hit point.",
+    "source_quote": "Gyrgum at one hit point.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party finds no loot on the carrion crawler's corpse.",
+    "source_quote": "There was no loot, so the party harvested the carcass instead.",
+    "subject": "No loot found",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party harvests the carrion crawler's corpse for food.",
+    "source_quote": "the party harvested the carcass instead.",
+    "subject": "Carcass harvested",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolls a 9 on 2d6, yielding nine rations.",
+    "source_quote": "Gyrgum's 2d6 roll produced nine rations",
+    "subject": "Food roll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party obtains nine rations of carrion crawler meat.",
+    "source_quote": "nine rations, about two days' food with the mushrooms.",
+    "subject": "nine rations",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The harvested carrion crawler meat tastes like chicken.",
+    "source_quote": "the meat tasted remarkably like chicken.",
+    "subject": "Meat taste",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party settles into a defensible corner of the cavern for a long rest.",
+    "source_quote": "the party settled into a defensible corner of the cavern for a long rest",
+    "subject": "the cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Everyone in the party reaches 2nd level.",
+    "source_quote": "everyone reached 2nd level",
+    "subject": "party level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz takes expertise in Arcana.",
+    "source_quote": "Daz took expertise in Arcana",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a Wisdom score of 14.",
+    "source_quote": "With only Wisdom 14 he passed on Perception",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz chose Arcana because he has been doing all the wizardry stuff.",
+    "source_quote": "chose Arcana \"because he's been doing all the wizardry stuff.\"",
+    "subject": "Daz selects expertise",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Expertise doubles the proficiency bonus.",
+    "source_quote": "Expertise doubles the proficiency bonus.",
+    "subject": "expertise mechanics",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a +3 modifier, noted in the context of Perception checks.",
+    "source_quote": "Gyrgum notes he has +3.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One hour passes into the march through the Underdark.",
+    "source_quote": "They had barely been walking an hour",
+    "subject": "elapsed time",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz froze when his passive perception caught something wrong in the darkness behind the group.",
+    "source_quote": "Daz and Zalthir both froze. Their passive perception caught something wrong in the darkness behind them",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir froze when his passive perception caught something wrong in the darkness behind the group.",
+    "source_quote": "Daz and Zalthir both froze. Their passive perception caught something wrong in the darkness behind them",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a natural 20 on a follow-up insight roll.",
+    "source_quote": "one came up a natural 20",
+    "subject": "Zalthir insight roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 17 on a follow-up insight roll.",
+    "source_quote": "Daz rolled a 17",
+    "subject": "Daz insight roll",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The figures stalking the party are Drow scouts from the prison they escaped.",
+    "source_quote": "The figures stalking them were scouts from the very prison they had escaped",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A full Drow hunting party is likely close behind the scouts.",
+    "source_quote": "where scouts moved, a full hunting party was never far behind",
+    "subject": "Drow prison hunting party",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The Drow scouts have the party's scent.",
+    "source_quote": "The scouts seemed to have their scent",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a natural 20 on a history check.",
+    "source_quote": "A natural-20 history check reminded Zalthir",
+    "subject": "Zalthir history roll",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Zalthir recalls a musty tome from his monastery.",
+    "source_quote": "reminded Zalthir of a musty tome from his monastery",
+    "subject": "musty tome",
+    "quote_verified": true
+  },
+  {
+    "type": "fact",
+    "fact": "The musty tome teaches that killing the scouts would not stop the main force.",
+    "source_quote": "taught that killing the scouts would not stop the main force",
+    "subject": "musty tome",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool cannot use mind-control on Drow because he has only four spores.",
+    "source_quote": "Stool cannot mind-control drow, since he has only four spores",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool urged the party to run.",
+    "source_quote": "Stool urged running",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides to flee rather than risk an ambush.",
+    "source_quote": "the decision was made quickly: they would run",
+    "subject": "party decision to flee",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hands Stool to Thorin because Stool can only move 10 feet and Gyrgum cannot carry him far due to 8 Strength.",
+    "source_quote": "Stool could move only 10 feet, and Gyrgum, with 8 Strength, could not carry him far. So Gyrgum handed Stool up to Thorin",
+    "subject": "Stool carried by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool grabs onto Thorin for dear life while being carried.",
+    "source_quote": "Stool \"grabs onto you for dear life.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool releases rapport spores to create a telepathic link between the party members.",
+    "source_quote": "Stool released a cloud of rapport spores that wove a telepathic link between them",
+    "subject": "Rapport spores released",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses both his action and bonus action to dash, sprinting ahead of the main group.",
+    "source_quote": "Zalthir used both his action and bonus action to dash, sprinting ahead of the main group.",
+    "subject": "Zalthir dashes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolls a 17 on a search of the rocky terrain and finds a natural alcove.",
+    "source_quote": "He searched the rocky terrain on a roll of 17 and found a natural alcove",
+    "subject": "Zalthir finds alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural alcove found by Zalthir gives the party advantage on their stealth check.",
+    "source_quote": "found a natural alcove that would give the whole party advantage on its stealth check.",
+    "subject": "Natural alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum dashes to the hiding place, moving 30 feet plus a bonus-action Dash.",
+    "source_quote": "Gyrgum moves 30 feet plus a bonus-action Dash",
+    "subject": "Gyrgum dashes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gains two temporary hit points from his Adrenaline Rush trait.",
+    "source_quote": "gains two temporary hit points from Adrenaline Rush (his orc trait).",
+    "subject": "Gyrgum gains temp HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Thaumaturgy to make the ground tremble.",
+    "source_quote": "used Thaumaturgy to set the ground trembling",
+    "subject": "Gyrgum casts Thaumaturgy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow scouts encounter a sudden drop in the tunnel floor.",
+    "source_quote": "The drow hit a sudden drop in the tunnel",
+    "subject": "Drow hit drop",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow scouts make their Dexterity save and avoid falling into the pit.",
+    "source_quote": "but made their Dexterity save and avoided the hole.",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz dashes into the hiding spot.",
+    "source_quote": "Daz dashed into the hiding spot",
+    "subject": "Daz hides",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's group stealth check against DC 12 holds, causing the scouts to lose the scent.",
+    "source_quote": "The party's group stealth check against DC 12 held, and the scouts lost the scent.",
+    "subject": "Group stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow scouts double back and disappear down a different corridor.",
+    "source_quote": "The scouts doubled back and disappeared down a different corridor",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he is at minus one on stealth.",
+    "source_quote": "Thorin warns he is at minus one on stealth.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir warns the party they must move faster to prevent the Drow from catching up.",
+    "source_quote": "Zalthir reminded them... that they needed to move faster and keep moving",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The GM explains that a participant can Dash 3 + CON modifier times.",
+    "source_quote": "A participant can Dash 3 + CON modifier times.",
+    "subject": "Chase rules explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Each extra Dash beyond the limit requires a DC 10 CON save or the runner gains a level of exhaustion.",
+    "source_quote": "Each extra Dash requires a DC 10 CON save or the runner gains a level of exhaustion.",
+    "subject": "Chase exhaustion rule",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The scouts roll a 12 on initiative.",
+    "source_quote": "The scouts roll 12 on initiative (8 + 2).",
+    "subject": "Scouts initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM adjusts the distance gap between the party and scouts to 160 feet.",
+    "source_quote": "the GM worked the gap out to 160 feet",
+    "subject": "Distance gap adjusted",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The party traveled for three days.",
+    "source_quote": "By the end of the third day",
+    "subject": "duration of travel",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party chose to travel at a fast pace rather than covering their tracks.",
+    "source_quote": "They chose speed over covering their tracks",
+    "subject": "travel pace",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth has a +5 bonus to Wisdom (Survival).",
+    "source_quote": "Eldeth (+5 survival) was the best tracker among them",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth was judged the best choice to lead trail-covering.",
+    "source_quote": "Eldeth is judged the best choice to lead trail-covering",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar has a +4 bonus to Wisdom (Survival).",
+    "source_quote": "Among the companions, Eldeth has +5 survival, Jimjar +4",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar grumbled that no one would find food at the pace set by 'the silent one'.",
+    "source_quote": "On the fast march Jimjar grumbled that no one would find any food at the pace \"the silent one\" wanted",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar lamented that at this pace no one will find food.",
+    "source_quote": "Jimjar laments that at this pace no one will find food",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party already had rations, despite Jimjar's concerns about food.",
+    "source_quote": "The party already has rations",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party passed through caverns filled with Faerzress.",
+    "source_quote": "They passed through caverns filled with Faerzress",
+    "subject": "Faerzress tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Faerzress is a strange and unsettling dim magical light.",
+    "source_quote": "a strange and unsettling dim magical light",
+    "subject": "Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Faerzress caused Shuushar visible distress.",
+    "source_quote": "caused Shuushar visible distress",
+    "subject": "Shuushar",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party barely escaped the worst effects of the Faerzress by moving quickly.",
+    "source_quote": "By moving quickly they barely escaped the worst of its effects",
+    "subject": "avoiding Faerzress",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith has a +0 bonus to Wisdom (Survival).",
+    "source_quote": "Sarith +0",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith led the way through the twisting passages.",
+    "source_quote": "Sarith led the way through the twisting passages",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith displayed pride in his navigational abilities.",
+    "source_quote": "his pride in his navigational abilities on full display",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Sarith nearly led the group down the wrong path.",
+    "source_quote": "he nearly led the group down the wrong path entirely",
+    "subject": "navigation error",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum noticed Sarith's navigational error.",
+    "source_quote": "Gyrgum noticed the error",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum corrected the group's course.",
+    "source_quote": "Gyrgum notices a navigational error and corrects their course",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum clarified that Thaumaturgy is sound and light effects, not destruction, so it cannot collapse a bridge.",
+    "source_quote": "Gyrgum clarifies that Thaumaturgy is sound and light effects, not destruction, so it cannot collapse a bridge behind them",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith answered Gyrgum's correction with barely concealed irritation.",
+    "source_quote": "Sarith, with barely concealed irritation, answered",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith claimed he saw the error and did not need help.",
+    "source_quote": "\"Yes, I saw that. Thank you. I didn't need your help.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith acknowledged it was good they were on the same page.",
+    "source_quote": "But it's good we're all on the same page.\"",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party gained a day's lead on the Drow hunting party.",
+    "source_quote": "the party had put a meaningful lead between themselves and their pursuers, a day ahead",
+    "subject": "pursuit status",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The pursuit level is currently four.",
+    "source_quote": "a day ahead at pursuit level four",
+    "subject": "pursuit level",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Drow hunting party is still pursuing the group from behind.",
+    "source_quote": "Somewhere behind them in the dark, the Drow hunting party was still out there",
+    "subject": "Drow hunting party",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The pursuit level is lowered by one for each day of fast travel, covering trails at normal pace with a DC 16 check, crossing obscuring features, or splitting the party.",
+    "source_quote": "The party can lower pursuit by one for: each day travelling at a fast pace; covering their trail at normal pace with a DC 16 Wisdom (Survival) check; crossing a feature that obscures the trail; splitting the party",
+    "subject": "pursuit mechanics",
+    "quote_verified": false
+  },
+  {
+    "type": "thread",
+    "fact": "If the pursuit level reaches five, the Drow catch up to the party.",
+    "source_quote": "Level five means the drow catch up",
+    "subject": "pursuit risk",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Fast travel carries a risk of getting lost.",
+    "source_quote": "Fast travel carries a risk of getting lost",
+    "subject": "getting lost",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The best survival bonus among the PCs for assisting navigation is +3.",
+    "source_quote": "The best survival bonus among the PCs is +3",
+    "subject": "navigation skill",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party successfully avoided getting lost and maintained their lead.",
+    "source_quote": "The party successfully avoids getting lost, maintaining their lead over their pursuers",
+    "subject": "avoiding getting lost",
+    "quote_verified": true
+  }
+]

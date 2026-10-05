@@ -1,0 +1,289 @@
+[
+  {
+    "type": "location",
+    "fact": "The battle takes place in a dark cavern deep within the Underdark containing a mysterious egg.",
+    "source_quote": "Deep within the Underdark, the party found themselves locked in a desperate struggle to protect a mysterious and coveted egg hidden within a dark cavern.",
+    "subject": "Egg Chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro minds are twisted beyond reason by sinister forces.",
+    "source_quote": "their minds twisted beyond reason by the manipulations of sinister forces",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro cooperate out of necessity and when riled up by a charismatic leader.",
+    "source_quote": "out of necessity and when riled up by a charismatic leader",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Derro have a history as slaves to Mind Flayers.",
+    "source_quote": "The party discusses the madness of the Derro and their history as slaves to Mind Flayers.",
+    "subject": "Derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crazed Derro conclude that Gyrgum must be killed and his heart dropped over the egg.",
+    "source_quote": "Gyrgum \"has to be killed. And his heart dropped over the egg.\"",
+    "subject": "Derro intent",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki was grappled by Zalthir at the end of the previous chapter.",
+    "source_quote": "Plinki has been grappled (by Zalthir, at the end of chapter 19)",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum is sitting over the eggs.",
+    "source_quote": "Gyrgum was sitting over the eggs",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz has a plan to steal the egg.",
+    "source_quote": "GM: Daz already has a plan to steal the egg.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro spy emerges from the shadows and looses a crossbow bolt.",
+    "source_quote": "A Derro spy emerges from the shadows and severely wounds Eldeth with a crossbow bolt.",
+    "subject": "Derro spy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Eldeth is struck by a crossbow bolt from the Derro spy.",
+    "source_quote": "one bolt striking Eldeth with brutal force and dropping her to the edge of death",
+    "subject": "Eldeth wounded",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth takes 12 points of damage and is down to four hit points.",
+    "source_quote": "Eldeth takes 12 points of damage and is down to four hit points",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A second Derro spy attempts to shoot Daz.",
+    "source_quote": "A second spy attempts to shoot Daz but misses.",
+    "subject": "Derro spy 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The second Derro spy misses Daz with his crossbow bolt.",
+    "source_quote": "A second spy attempts to shoot Daz but misses.",
+    "subject": "Daz evasion",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro marches up and swings at Zalthir.",
+    "source_quote": "A Derro marches up and swings at Zalthir",
+    "subject": "Derro warrior",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Derro warrior misses Zalthir with his swing due to disadvantage.",
+    "source_quote": "with disadvantage, rolling a 15 against AC 16 \u2014 a miss.",
+    "subject": "Zalthir evasion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin engages a Derro warrior with his longsword.",
+    "source_quote": "Thorin engages a Derro warrior, utilizing his longsword",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits Derro #6 for 9 damage using Blindsight advantage.",
+    "source_quote": "Blindsight in the darkness gives him advantage; he hits derro #6 for 9",
+    "subject": "Thorin's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Thorin's longsword has Sap mastery which imposes disadvantage on the target's next attack.",
+    "source_quote": "his longsword's Sap mastery gives the target disadvantage on its next attack.",
+    "subject": "Thorin's longsword",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin utilizes his Sentinel feat to prevent enemies from disengaging.",
+    "source_quote": "Thorin's player is learning his new Sentinel feat (\"defend other people. People can't disengage\").",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A spectator appears and joins the battle.",
+    "source_quote": "A spectator, a multi-eyed beholder-like creature, suddenly appears and joins the fray.",
+    "subject": "spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The party has previously encountered the spectator.",
+    "source_quote": "GM notes \"You've met it before.\"",
+    "subject": "spectator",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the party's helpers hits the spectator for 10 damage.",
+    "source_quote": "One of the helpers hits the spectator for 10.",
+    "subject": "spectator attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum decides to protect the egg rather than flee.",
+    "source_quote": "Gyrgum's player: \"I think they're pretty brave. Besides, I need to protect the egg. Gyrgum has spoken.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Plinki attempts to attack Gyrgum but fails due to darkness.",
+    "source_quote": "Plinki attempts to attack Gyrgum but fails to land a blow due to the surrounding darkness.",
+    "subject": "Plinki's attack",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki wants to attack Gyrgum.",
+    "source_quote": "GM: \"he's got only one thing on his mind. He wants to attack Gyrgum.\"",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz conjures a massive hand of compacted earth that seizes the spectator.",
+    "source_quote": "Daz conjured a massive hand of compacted earth that surged up from the ground and seized the spectator",
+    "subject": "Earthen hand conjuration",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The spectator is restrained by Daz's earthen hand.",
+    "source_quote": "the spectator is restrained (\"There's a big hand on top of it\")",
+    "subject": "spectator restrained",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's earthen hand deals 16 damage to the spectator.",
+    "source_quote": "16 damage; the spectator is restrained",
+    "subject": "spectator damage",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz retreats into the darkness to avoid being targeted.",
+    "source_quote": "Daz then retreats into the darkness so he can't be targeted.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An enemy crossbowman hits Gyrgum for six damage.",
+    "source_quote": "one hits Gyrgum for six",
+    "subject": "blind fire 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A Derro with a hooked spear misses his attack.",
+    "source_quote": "a derro with a hooked spear misses",
+    "subject": "Derro spearman",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Enemy crossbowmen shoot at where they think Daz is and miss.",
+    "source_quote": "others shoot at where they think Daz is and miss.",
+    "subject": "blind fire 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir moves with deadly precision through the supernatural darkness.",
+    "source_quote": "Zalthir, gifted with the ability to perceive through the supernatural darkness, moved with deadly precision",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir maneuvers through his own magical darkness to strike at the Derro.",
+    "source_quote": "Zalthir maneuvers through his own magical darkness to strike at the Derro.",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum calls upon a ghostly ally to protect the egg.",
+    "source_quote": "Gyrgum called upon his ghostly ally to defend the egg",
+    "subject": "Ghost summons",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly ally acts on Gyrgum's turn.",
+    "source_quote": "it acts on Gyrgum's turn \"because you have the bones.\"",
+    "subject": "Ghost ally",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir unleashes a terrifying breath attack in a wide cone.",
+    "source_quote": "Zalthir unleashed a terrifying breath that swept across the chamber in a wide cone",
+    "subject": "Zalthir breath attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's breath attack kills Plinki.",
+    "source_quote": "killing the fanatical Derro leader Plinki outright",
+    "subject": "Plinki death",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is dead, killed by Zalthir's breath attack.",
+    "source_quote": "killing the fanatical Derro leader Plinki outright",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's breath attack inflicts the blinded condition on other survivors.",
+    "source_quote": "leaving the survivors blinded and reeling",
+    "subject": "Blindness effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Other survivors take one or two points of damage from Zalthir's breath attack.",
+    "source_quote": "others take one or two points.",
+    "subject": "Survivor damage",
+    "quote_verified": true
+  }
+]

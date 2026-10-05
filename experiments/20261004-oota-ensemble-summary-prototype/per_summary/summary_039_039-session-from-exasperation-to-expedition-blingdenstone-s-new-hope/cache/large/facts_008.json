@@ -1,0 +1,198 @@
+[
+  {
+    "type": "npc",
+    "fact": "Dorbo proposed that the army attack from the Temple of the Steadfast Stone.",
+    "source_quote": "Dorbo suggested that the army attack from the Temple of the Steadfast Stone",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorbo argued that the southern approach would redirect oozes away from Blingdenstone's populated areas.",
+    "source_quote": "redirecting the oozes away from Blingdenstone's populated areas",
+    "subject": "Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The temple is located within the Rockblight district.",
+    "source_quote": "The temple stood within the Rockblight",
+    "subject": "Temple of the Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The temple must be cleansed before it can be used as a staging area.",
+    "source_quote": "and would first need to be cleansed",
+    "subject": "Temple of the Steadfast Stone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik Tapfinger produced a red spell gem containing the Hallow spell.",
+    "source_quote": "Gurnik Tapfinger produced a red spell gem containing the Hallow spell",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Hallow spell gem is red and contains the Hallow spell.",
+    "source_quote": "red spell gem containing the Hallow spell",
+    "subject": "Hallow spell gem",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Hallow spell gem must be placed in the temple's menhir.",
+    "source_quote": "it must be placed in the temple's menhir",
+    "subject": "gem placement requirement",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Ogr\u00e9moch's Bane would send servants to dislodge the gem once it is placed.",
+    "source_quote": "Ogr\u00e9moch's Bane would then send servants to dislodge the gem",
+    "subject": "Ogr\u00e9moch's Bane",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party must defend the gem until its power awakens three temple guardians.",
+    "source_quote": "forcing the party to defend it until its power awakened three temple guardians",
+    "subject": "temple defense",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The awakened guardians and the gem's power cleanse the temple.",
+    "source_quote": "cleansed the site",
+    "subject": "temple cleansing",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Cleansing the Steadfast Stone would allow the Stoneheart Enclave to protect summoned elementals.",
+    "source_quote": "Cleansing the Steadfast Stone would allow the Stoneheart Enclave to protect summoned elementals",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik delivered an obviously rehearsed exchange with Nomi Pathshutter.",
+    "source_quote": "Gurnik and Nomi Pathshutter delivered an obviously rehearsed exchange",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Nomi Pathshutter participated in a rehearsed exchange with Gurnik regarding Earth Elementals.",
+    "source_quote": "Gurnik and Nomi Pathshutter delivered an obviously rehearsed exchange",
+    "subject": "Nomi Pathshutter",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Earth Elementals would be ideal troops against the oozes.",
+    "source_quote": "Earth Elementals would be ideal troops against the oozes",
+    "subject": "Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Ogr\u00e9moch's Bane can drive summoned Earth Elementals insane.",
+    "source_quote": "but could be driven insane by Ogr\u00e9moch's Bane",
+    "subject": "Ogr\u00e9moch's Bane",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz questioned why the army could not simply attack from the north.",
+    "source_quote": "Daz and the others questioned why the army could not simply attack from the north",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Rockblight surrounds the Temple of the Steadfast Stone.",
+    "source_quote": "The surrounding district was known as the Rockblight",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The temple in the Rockblight has fallen under hostile influence.",
+    "source_quote": "the temple there had fallen under hostile influence",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger warned that someone would have to cleanse the area first.",
+    "source_quote": "Uth-Jadger warned that someone would first have to \u201ccleanse the area.\u201d",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Pudding King commands an army of oozes.",
+    "source_quote": "draw the Pudding King's oozes away",
+    "subject": "Pudding King",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The room's silence revealed that the leaders were trying to use the party for community problems.",
+    "source_quote": "The room's silence revealed the truth: Blingdenstone's leaders had discovered a capable adventuring party and were attempting to use it to solve additional community problems",
+    "subject": "leaders' exposure",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The leaders hastily praised the northern approach after being exposed.",
+    "source_quote": "The leaders hastily praised the northern approach",
+    "subject": "northern approach praise",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chipgrin enthusiastically declared the northern assault a demonstration of inter-clan cooperation.",
+    "source_quote": "Chipgrin and the others enthusiastically declared the northern assault a wonderful demonstration of inter-clan cooperation",
+    "subject": "Chipgrin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik looked increasingly concerned as the opportunity to have the temple cleansed slipped away.",
+    "source_quote": "while Gurnik looked increasingly concerned that his opportunity to have the temple cleansed was slipping away",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gurnik remained visibly annoyed about the vanishing temple cleansing opportunity.",
+    "source_quote": "Gurnik remained visibly annoyed that his opportunity to have the temple cleansed was vanishing",
+    "subject": "Gurnik Tapfinger",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The menhir is located at the Temple of the Steadfast Stone.",
+    "source_quote": "the gem must be placed in the temple's menhir",
+    "subject": "Menhir",
+    "quote_verified": false
+  },
+  {
+    "type": "object",
+    "fact": "Ent\u00e9moch's Boon has a summoning circle needed to summon Earth Elementals.",
+    "source_quote": "The party would first need to find Ent\u00e9moch's Boon and use its summoning circle",
+    "subject": "Ent\u00e9moch's Boon",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Daz used his insight to confirm Gurnik was omitting dangerous details.",
+    "source_quote": "Daz used his insight to confirm that Gurnik was omitting the dangerous part",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

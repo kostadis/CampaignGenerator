@@ -1,0 +1,16 @@
+[
+  {
+    "type": "location",
+    "fact": "Visibility within the magical darkness is clear up to 30 feet, beyond which the streets appear as dark as a dark room.",
+    "source_quote": "Beyond 30 feet the streets were already as dim as a dark room",
+    "subject": "darkness visibility limit",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party can see each other within 30 feet, but the environment beyond that distance is indistinguishable.",
+    "source_quote": "Within 30 feet the party can see each other",
+    "subject": "darkness visibility limit",
+    "quote_verified": true
+  }
+]

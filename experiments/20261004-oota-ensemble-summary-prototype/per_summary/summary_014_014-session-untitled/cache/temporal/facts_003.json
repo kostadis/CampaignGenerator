@@ -1,0 +1,30 @@
+[
+  {
+    "type": "date",
+    "fact": "The party spent the night sleeping, constituting a long rest.",
+    "source_quote": "a night spent crammed into a shared room with bunk beds",
+    "subject": "rest duration",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The Topsy-Turvy twins left the party during the night.",
+    "source_quote": "had quietly slipped away during the night",
+    "subject": "Topsy-Turvy twins disappearance",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The lodging house charged five copper pieces per person for the night.",
+    "source_quote": "spends the night in a shared room with bunk beds for five copper pieces per person",
+    "subject": "lodging cost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is currently at five hit points.",
+    "source_quote": "Daz is down to five hit points",
+    "subject": "Daz",
+    "quote_verified": true
+  }
+]

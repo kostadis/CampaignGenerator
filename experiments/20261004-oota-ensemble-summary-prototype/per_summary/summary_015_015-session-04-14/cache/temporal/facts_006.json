@@ -1,0 +1,44 @@
+[
+  {
+    "type": "npc",
+    "fact": "Buppido stands at an intersection in the tunnels.",
+    "source_quote": "At an intersection, the party encounters Buppido standing before a makeshift altar",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls a 15 for initiative.",
+    "source_quote": "Thorin keeps a 15 on initiative.",
+    "subject": "Thorin initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Daz casts a spell targeting a 20-foot cube area.",
+    "source_quote": "Daz targets a 20-foot cube",
+    "subject": "Daz spell area",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three skeletons are marked by Daz's spell.",
+    "source_quote": "and three skeletons are marked",
+    "subject": "marked skeletons count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido has 13 hit points.",
+    "source_quote": "Buppido has only 13 hit points",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 4 damage to a skeleton with advantage on the first melee attack.",
+    "source_quote": "He hits one with advantage for 4 damage",
+    "subject": "Thorin first hit",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,149 @@
+[
+  {
+    "type": "npc",
+    "fact": "Pelek is a ghost who had been traveling with the party.",
+    "source_quote": "a promise made to Pelek, a ghost who had been traveling with them",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek was killed by Buppido.",
+    "source_quote": "Buppido had killed Pelek",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek wants his remains to be properly interred.",
+    "source_quote": "Pelek came to Blingdenstone specifically so his remains could be laid to rest",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido killed Pelek.",
+    "source_quote": "Buppido had killed Pelek",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum carries a small bag of Pelek's surviving bones.",
+    "source_quote": "Gyrgum carried a small bag of his surviving bones",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bag contains only Pelek's surviving bones, described as 'Catholic relic size'.",
+    "source_quote": "small bag of his surviving bones\u2014\u201cCatholic relic size,\u201d rather than a complete skeleton",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The bones fit in a pouch and are not a femur, skull, or complete skeleton.",
+    "source_quote": "The remains are small enough to fit in a pouch and are described as \u201cCatholic relic size,\u201d rather than a femur, skull, or complete skeleton.",
+    "subject": "Pelek's bones",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's ghost addresses Gyrgum regarding the bones.",
+    "source_quote": "Pelek's ghost addresses Gyrgum about the bones.",
+    "subject": "Pelek addresses Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum confirms to Pelek that he still has the bones in his bag.",
+    "source_quote": "Gyrgum confirms that the bones are still in his bag",
+    "subject": "Gyrgum confirms bones",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek impatiently asks if they can go to the cemetery now.",
+    "source_quote": "Pelek impatiently asks whether they can go to the cemetery now",
+    "subject": "Pelek asks for cemetery",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is currently in Blingdenstone.",
+    "source_quote": "Pelek came to Blingdenstone specifically so his remains could be laid to rest",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blingdenstone cemetery is where the party intends to inter Pelek's bones.",
+    "source_quote": "The party takes Pelek's bones to the Blingdenstone cemetery to fulfill his wish to be properly interred.",
+    "subject": "Blingdenstone cemetery",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The cemetery is located beside the temple known as the Ruby in the Rough.",
+    "source_quote": "A guard explains that the cemetery is beside the temple known as the Ruby in the Rough.",
+    "subject": "Blingdenstone cemetery",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Ruby in the Rough is a temple dedicated to Segojan Earthcaller.",
+    "source_quote": "The temple is dedicated to Segojan Earthcaller, the Svirfneblin god of deep earthen nature.",
+    "subject": "Ruby in the Rough",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Segojan Earthcaller is the Svirfneblin god of deep earthen nature.",
+    "source_quote": "the Svirfneblin god of deep earthen nature",
+    "subject": "Svirfneblin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A guard explains to the party where the cemetery is located.",
+    "source_quote": "A guard explains that the cemetery is beside the temple known as the Ruby in the Rough.",
+    "subject": "Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum asks a guard where the cemetery is.",
+    "source_quote": "Gyrgum asks a guard where the cemetery is",
+    "subject": "Gyrgum asks guard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum announces 'I got a deposit to make' before rephrasing that he has bones to inter.",
+    "source_quote": "announcing, \u201cI got a deposit to make,\u201d before acknowledging how awkward that sounds and rephrasing it as having bones to inter",
+    "subject": "Gyrgum's awkward announcement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokes that Saint Pelek might have toe bones in many places or even seven sternums.",
+    "source_quote": "The party jokes that Saint Pelek might have toe bones in many places or even seven sternums",
+    "subject": "Party joke",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Blingdenstone cemetery is on the way to the Traders' Grotto.",
+    "source_quote": "Because the cemetery is on the way to the Traders' Grotto",
+    "subject": "Traders' Grotto",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party plans to pursue an ooze quest after fulfilling their promise to Pelek.",
+    "source_quote": "Before embarking on the ooze hunt",
+    "subject": "ooze hunt",
+    "quote_verified": true
+  }
+]

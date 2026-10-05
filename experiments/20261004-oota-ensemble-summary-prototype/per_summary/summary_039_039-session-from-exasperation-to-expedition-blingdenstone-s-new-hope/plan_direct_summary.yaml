@@ -1,0 +1,25 @@
+passes:
+- name: small
+  chunk_size: 6000
+  agent: extract_facts
+  annotate_pov: true
+  document: /home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_039_039-session-from-exasperation-to-expedition-blingdenstone-s-new-hope/lineage_summary_scenes.md
+  structural: true
+- name: large
+  chunk_size: 15000
+  agent: extract_facts
+  annotate_pov: true
+  document: /home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_039_039-session-from-exasperation-to-expedition-blingdenstone-s-new-hope/lineage_summary_scenes.md
+  structural: true
+- name: sweep
+  chunk_size: 15000
+  agent: extract_facts_sweep
+  annotate_pov: true
+  document: /home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_039_039-session-from-exasperation-to-expedition-blingdenstone-s-new-hope/lineage_summary_scenes.md
+  structural: true
+- name: temporal
+  chunk_size: 15000
+  agent: extract_facts_temporal
+  annotate_pov: true
+  document: /home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_039_039-session-from-exasperation-to-expedition-blingdenstone-s-new-hope/lineage_summary_scenes.md
+  structural: true

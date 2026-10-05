@@ -1,0 +1,142 @@
+[
+  {
+    "type": "event",
+    "fact": "Gyrgum hands Stool to Thorin because Stool can only move 10 feet and Gyrgum cannot carry him far due to 8 Strength.",
+    "source_quote": "Stool could move only 10 feet, and Gyrgum, with 8 Strength, could not carry him far. So Gyrgum handed Stool up to Thorin",
+    "subject": "Stool carried by Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Stool grabs onto Thorin for dear life while being carried.",
+    "source_quote": "Stool \"grabs onto you for dear life.\"",
+    "subject": "Stool",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Stool releases rapport spores to create a telepathic link between the party members.",
+    "source_quote": "Stool released a cloud of rapport spores that wove a telepathic link between them",
+    "subject": "Rapport spores released",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses both his action and bonus action to dash, sprinting ahead of the main group.",
+    "source_quote": "Zalthir used both his action and bonus action to dash, sprinting ahead of the main group.",
+    "subject": "Zalthir dashes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolls a 17 on a search of the rocky terrain and finds a natural alcove.",
+    "source_quote": "He searched the rocky terrain on a roll of 17 and found a natural alcove",
+    "subject": "Zalthir finds alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural alcove found by Zalthir gives the party advantage on their stealth check.",
+    "source_quote": "found a natural alcove that would give the whole party advantage on its stealth check.",
+    "subject": "Natural alcove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum dashes to the hiding place, moving 30 feet plus a bonus-action Dash.",
+    "source_quote": "Gyrgum moves 30 feet plus a bonus-action Dash",
+    "subject": "Gyrgum dashes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gains two temporary hit points from his Adrenaline Rush trait.",
+    "source_quote": "gains two temporary hit points from Adrenaline Rush (his orc trait).",
+    "subject": "Gyrgum gains temp HP",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum uses Thaumaturgy to make the ground tremble.",
+    "source_quote": "used Thaumaturgy to set the ground trembling",
+    "subject": "Gyrgum casts Thaumaturgy",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The drow scouts encounter a sudden drop in the tunnel floor.",
+    "source_quote": "The drow hit a sudden drop in the tunnel",
+    "subject": "Drow hit drop",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow scouts make their Dexterity save and avoid falling into the pit.",
+    "source_quote": "but made their Dexterity save and avoided the hole.",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz dashes into the hiding spot.",
+    "source_quote": "Daz dashed into the hiding spot",
+    "subject": "Daz hides",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party's group stealth check against DC 12 holds, causing the scouts to lose the scent.",
+    "source_quote": "The party's group stealth check against DC 12 held, and the scouts lost the scent.",
+    "subject": "Group stealth check",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The drow scouts double back and disappear down a different corridor.",
+    "source_quote": "The scouts doubled back and disappeared down a different corridor",
+    "subject": "Drow scouts",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin states he is at minus one on stealth.",
+    "source_quote": "Thorin warns he is at minus one on stealth.",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir warns the party they must move faster to prevent the Drow from catching up.",
+    "source_quote": "Zalthir reminded them... that they needed to move faster and keep moving",
+    "subject": "Zalthir",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The GM explains that a participant can Dash 3 + CON modifier times.",
+    "source_quote": "A participant can Dash 3 + CON modifier times.",
+    "subject": "Chase rules explanation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Each extra Dash beyond the limit requires a DC 10 CON save or the runner gains a level of exhaustion.",
+    "source_quote": "Each extra Dash requires a DC 10 CON save or the runner gains a level of exhaustion.",
+    "subject": "Chase exhaustion rule",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The scouts roll a 12 on initiative.",
+    "source_quote": "The scouts roll 12 on initiative (8 + 2).",
+    "subject": "Scouts initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM adjusts the distance gap between the party and scouts to 160 feet.",
+    "source_quote": "the GM worked the gap out to 160 feet",
+    "subject": "Distance gap adjusted",
+    "quote_verified": true
+  }
+]

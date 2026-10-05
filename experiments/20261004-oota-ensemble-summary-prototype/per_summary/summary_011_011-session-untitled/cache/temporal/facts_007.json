@@ -1,0 +1,23 @@
+[
+  {
+    "type": "date",
+    "fact": "The party arrives at Gracklstugh on the seventh day of the first tenday of an unspecified month in a specified year, noted as 011.07.",
+    "source_quote": "Arrival at Gracklstugh 011.07",
+    "subject": "session date",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses 27 platinum pieces.",
+    "source_quote": "27 platinum pieces",
+    "subject": "platinum pieces",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party possesses 1,100 gold pieces.",
+    "source_quote": "1,100 gold pieces",
+    "subject": "gold pieces",
+    "quote_verified": true
+  }
+]

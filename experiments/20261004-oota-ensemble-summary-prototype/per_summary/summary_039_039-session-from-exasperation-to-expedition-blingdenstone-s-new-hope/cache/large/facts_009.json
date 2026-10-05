@@ -1,0 +1,149 @@
+[
+  {
+    "type": "event",
+    "fact": "Kazook Pickshine warns that ooze acid could destroy the soldiers' weapons and armor.",
+    "source_quote": "Kazook Pickshine warned that ooze acid could destroy the soldiers' weapons and armor",
+    "subject": "Kazook Pickshine warns",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Kazook Pickshine knows how to make a protective treatment for equipment.",
+    "source_quote": "He knew how to make a protective treatment",
+    "subject": "Kazook Pickshine",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The protective treatment requires ingredients from Neverlight Grove.",
+    "source_quote": "but needed ingredients from Neverlight Grove",
+    "subject": "protective treatment ingredients",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The gnomes propose sending salt to Gracklstugh in exchange for better weapons.",
+    "source_quote": "Alternatively, the gnomes could send salt to Gracklstugh in exchange for better weapons",
+    "subject": "salt trade proposal",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Gracklstugh's current existence and willingness to trade are uncertain.",
+    "source_quote": "assuming Gracklstugh still existed and remained willing to trade after the party's departure",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Uth-Jadger offered assistance from other Burrow Warden spirits if the party completed a separate task.",
+    "source_quote": "Uth-Jadger offered assistance from other Burrow Warden spirits if the party completed a separate task for them",
+    "subject": "Uth-Jadger",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Burrow Warden spirits are a collective group that could join the fight.",
+    "source_quote": "Uth-Jadger offered assistance from other Burrow Warden spirits",
+    "subject": "Burrow Warden spirits",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Chief Dorbo's committee sweetened the Rockblight proposal by offering a Stone of Controlling Earth Elementals.",
+    "source_quote": "Chief Dorbo's committee sweetened the Rockblight proposal by offering the party a Stone of Controlling Earth Elementals",
+    "subject": "Chief Dorbo's committee",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The Stone of Controlling Earth Elementals is offered as payment for cleansing the Rockblight and defeating Ogr\u00e9moch's Bane.",
+    "source_quote": "Dorbo's committee offered a Stone of Controlling Earth Elementals as payment for cleansing the Rockblight and defeating Ogr\u00e9moch's Bane",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group objected to the idea of enslaving an elemental.",
+    "source_quote": "The group objected to the idea of enslaving an elemental",
+    "subject": "party objects to enslavement",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir stated he did not want to enslave an Earth Elemental.",
+    "source_quote": "Zalthir said, \u201cI don't want to enslave an Earth Elemental.\u201d",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group speculated about befriending an elemental by freeing it with its own control stone.",
+    "source_quote": "began speculating about befriending one, freeing it by giving it its own control stone \u201clike giving Dobby a sock\u201d",
+    "subject": "befriending speculation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The group imagined Glabbagool and an Earth Elemental getting along.",
+    "source_quote": "They imagined Glabbagool and an Earth Elemental getting along",
+    "subject": "Glabbagool elemental speculation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group joked that a good \"summoner score\" might pair them with the best elementals.",
+    "source_quote": "joked that a sufficiently good \u201csummoner score\u201d might pair them with the best elementals",
+    "subject": "summoner score joke",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Senni favored obtaining Earth Elementals to better protect the fighters.",
+    "source_quote": "Senni favored obtaining Earth Elementals because their presence would better protect the fighters",
+    "subject": "Senni",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Goldwhisker refused to act as cannon fodder unless the Diggermattocks and elemental support also committed.",
+    "source_quote": "Clan Goldwhisker refused to act as cannon fodder unless the Diggermattocks and elemental support also committed to the battle",
+    "subject": "Clan Goldwhisker",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party jokingly suggested the gnomes could simply \u201cDoorDash\u201d the shipment.",
+    "source_quote": "The party jokingly suggested that the gnomes could simply \u201cDoorDash\u201d the shipment",
+    "subject": "DoorDash joke",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Dorbo's committee offered the Stone of Controlling Earth Elementals after overhearing interest in an elemental companion.",
+    "source_quote": "After overhearing the party's interest in an elemental companion, Dorbo's committee offered a Stone of Controlling Earth Elementals as payment",
+    "subject": "Dorbo's committee offer",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The stone can summon an Earth Elemental friendly to the user and their companions for roughly an hour.",
+    "source_quote": "The stone could summon an Earth Elemental friendly to the user and their companions for roughly an hour",
+    "subject": "Stone of Controlling Earth Elementals",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party asked whether Blingdenstone possessed \u201cstones of befriending Earth Elementals.\u201d",
+    "source_quote": "They asked whether Blingdenstone possessed \u201cstones of befriending Earth Elementals\u201d instead",
+    "subject": "befriending stones inquiry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The discussion ended with jokes about maintaining a good \"summoner score\" to be matched with desirable elementals like riders and drivers.",
+    "source_quote": "The discussion ended with jokes about maintaining a good \u201csummoner score\u201d so the party could be matched with desirable elementals like riders and drivers in a rideshare service",
+    "subject": "summoner score analogy",
+    "quote_verified": true
+  }
+]

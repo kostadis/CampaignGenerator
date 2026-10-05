@@ -1,0 +1,254 @@
+[
+  {
+    "type": "npc",
+    "fact": "Daz approached the strangers carefully and introduced himself without revealing too much.",
+    "source_quote": "Daz approached them carefully, introducing himself without giving too much away.",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz explained that the party had no interest in returning anyone to the Drow.",
+    "source_quote": "He explained that the party had no interest in returning anyone to the Drow",
+    "subject": "Daz explains party intentions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz stated that the party was trying to escape the Underdark.",
+    "source_quote": "since they were trying to escape the Underdark themselves.",
+    "subject": "Daz explains party goal",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm offered that he and Baedora could be of some help.",
+    "source_quote": "Fuurm quickly offered that \"we could be of some help,\"",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A roll of 24 on Insight confirmed that Fuurm and Baedora were desperate to escape and not plants.",
+    "source_quote": "and a 24 on Insight confirmed the pair were simply desperate to get out, not plants.",
+    "subject": "Insight check on strangers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm's backstory came out haltingly over a shared meal.",
+    "source_quote": "Fuurm's story came out haltingly over a shared meal.",
+    "subject": "Fuurm shares story",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm's sister was stolen by the Drow.",
+    "source_quote": "after the Drow stole her from the Overbright",
+    "subject": "Fuurm's sister",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm followed his sister into the depths.",
+    "source_quote": "He had followed his sister into the depths",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Fuurm's sister was taken from the Overbright.",
+    "source_quote": "stole her from the Overbright",
+    "subject": "Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Fuurm was captured almost immediately after following his sister.",
+    "source_quote": "only to be captured almost immediately.",
+    "subject": "Fuurm captured",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm spent a long stretch as a Drow slave.",
+    "source_quote": "He spent a long and miserable stretch as a Drow slave",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A demonic attack on Fuurm's captors allowed him to flee.",
+    "source_quote": "until a demonic attack on his captors gave him the chance to flee.",
+    "subject": "demonic attack on captors",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fuurm is described as a farmer with a perverse sense of loyalty.",
+    "source_quote": "The GM described him as \"just a farmer... with a perverse sense of loyalty who made some terrible life choices,\"",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Baedora is part of the pair of strangers with Fuurm.",
+    "source_quote": "reasoning that two more sets of eyes cost little and that the pair seemed genuinely desperate rather than dangerous.",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party agreed to let Baedora travel with them.",
+    "source_quote": "The party agreed to let Fuurm and Baedora travel with them",
+    "subject": "Baedora",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party agreed to let Fuurm travel with them.",
+    "source_quote": "The party agreed to let Fuurm and Baedora travel with them",
+    "subject": "Fuurm",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Larry Niven is referenced by Daz's player as the author of *Ringworld*.",
+    "source_quote": "like the puppeteers of Niven's *Ringworld*.",
+    "subject": "Larry Niven",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Ringworld is a book referenced in a joke about selective breeding.",
+    "source_quote": "like the puppeteers of Niven's *Ringworld*.",
+    "subject": "Ringworld",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The puppeteers of Ringworld are cited as an example of selective breeding for luck.",
+    "source_quote": "like the puppeteers of Niven's *Ringworld*.",
+    "subject": "puppeteers of Ringworld",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party enters a cavern filled with various types of mushrooms and fungi.",
+    "source_quote": "The party enters a cavern filled with various types of mushrooms and fungi.",
+    "subject": "fungus cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Shriekers wailed at the party's approach, threatening to alert nearby threats.",
+    "source_quote": "shriekers wailed at the party's approach and threatened to bring every predator in the Underdark down on their heads.",
+    "subject": "shriekers",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Shriekers threatened to bring every predator in the Underdark down on the party.",
+    "source_quote": "threatened to bring every predator in the Underdark down on their heads.",
+    "subject": "predators in the Underdark",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A crystal was hurled at the shriekers from 10 feet away.",
+    "source_quote": "A crystal hurled at the shriekers from 10 feet away",
+    "subject": "crystal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The crystal had no effect on the shriekers.",
+    "source_quote": "did nothing to stop the noise",
+    "subject": "crystal thrown at shriekers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth made the DC 16 Survival check that covered their passage through the fungus cavern.",
+    "source_quote": "Eldeth made the DC 16 Survival check that covered their passage.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth has the party's best Survival check at +6.",
+    "source_quote": "who has the party's best Survival at +6.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum rolled a 12 on the Survival check.",
+    "source_quote": "Gyrgum's own roll is a 12",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party stopped at a field of crystal clusters to search for more crystals.",
+    "source_quote": "The second came at a later field of crystal clusters, where the party stopped to search for more",
+    "subject": "field of crystal clusters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party searched for more crystals at the field of crystal clusters.",
+    "source_quote": "where the party stopped to search for more",
+    "subject": "searching for crystals",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth covered their trail again at the field of crystal clusters.",
+    "source_quote": "and Eldeth once again covered their trail.",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz decided to search for more crystals on the sixth day.",
+    "source_quote": "Daz decides \"Might as well search for a little bit more.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party passed another crystal cluster with no one around on about the sixth day.",
+    "source_quote": "On about the sixth day the party passes another crystal cluster with no one around",
+    "subject": "crystal cluster",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth was fairly confident she had almost shaken the Drow off their trail by journey's end.",
+    "source_quote": "she was fairly confident she had almost shaken the Drow",
+    "subject": "Eldeth",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The pursuit level of the Drow was one by journey's end.",
+    "source_quote": "the party's pursuit level stood at one.",
+    "subject": "Drow",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Sarith announced that the party had arrived at their destination.",
+    "source_quote": "Sarith announced that they had arrived.",
+    "subject": "Sarith",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Shrieker fungi are present in the fungus cavern.",
+    "source_quote": "Shrieker fungi begin to wail",
+    "subject": "shrieker fungi",
+    "quote_verified": true
+  }
+]

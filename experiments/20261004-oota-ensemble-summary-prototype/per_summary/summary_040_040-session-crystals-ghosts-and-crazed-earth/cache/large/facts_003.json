@@ -1,0 +1,121 @@
+[
+  {
+    "type": "location",
+    "fact": "The Rockblight could be entered through a fortified staging area with multiple fences.",
+    "source_quote": "The Rockblight could be entered through a fortified staging area with multiple fences",
+    "subject": "Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Rockblight has an alternate route obstructed by dirt and gravel.",
+    "source_quote": "or through a route obstructed by dirt and gravel",
+    "subject": "Rockblight alternate entrance",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party selected the gravel route to enter the Rockblight.",
+    "source_quote": "The party selected the gravel route",
+    "subject": "route selection",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Cultivation Cave is a massive complex devoted to fungi used by deep gnomes in cooking and crafting.",
+    "source_quote": "a vast complex where the deep gnomes grew useful fungi for cooking and crafting",
+    "subject": "Cultivation Cave",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stoneheart Enclave manages the Cultivation Cave.",
+    "source_quote": "A member of the Stoneheart Enclave welcomed them and supplied the freshest fungi",
+    "subject": "Stoneheart Enclave",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "A member of the Stoneheart Enclave greeted the party.",
+    "source_quote": "A member of the Stoneheart Enclave welcomed them",
+    "subject": "Stoneheart Enclave member",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The Stoneheart Enclave member heard that the party intended to cleanse the temple.",
+    "source_quote": "having heard that they intended to cleanse the temple",
+    "subject": "Stoneheart Enclave member",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Stoneheart Enclave member provided the best and freshest fungi from the garden.",
+    "source_quote": "provided the best and freshest fungi from the garden",
+    "subject": "fungi provision",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The fungi from the Cultivation Cave do not possess growth- or shrinking-related magical properties.",
+    "source_quote": "The fungi did not possess the growth- or shrinking-related magical properties",
+    "subject": "Cultivation Cave fungi",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool plowed through the dirt and gravel blocking the alternate entrance to the Rockblight.",
+    "source_quote": "Glabbagool enthusiastically ate mushrooms and plowed through the dirt and gravel blocking the alternate entrance",
+    "subject": "Glabbagool excavation",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool sprayed debris aside like a gigantic transparent snowblower.",
+    "source_quote": "spraying debris aside like a gigantic transparent snowblower",
+    "subject": "Glabbagool debris spraying",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool was delighted by the supplies of fungi.",
+    "source_quote": "Glabbagool was delighted by the supplies",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool consumed mushrooms along the route while clearing a path.",
+    "source_quote": "consumed mushrooms along the route while clearing a path",
+    "subject": "Glabbagool",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party briefly worried about the possibility of a hallucinating gelatinous cube.",
+    "source_quote": "The party briefly worried about the possibility of a hallucinating gelatinous cube",
+    "subject": "hallucinating gelatinous cube worry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party reached the entrance to the Rockblight caverns after several hours of digging.",
+    "source_quote": "After several hours of excavation, the party reached the caverns",
+    "subject": "arrival at Rockblight",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Glabbagool initially appeared prepared to remain behind for more important activities.",
+    "source_quote": "Glabbagool initially appeared prepared to remain behind for \u201cmore important activities\u201d",
+    "subject": "Glabbagool",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Glabbagool happily accompanied the party after they made it clear that they wanted his company.",
+    "source_quote": "happily accompanied the party after they made it clear that they wanted his company",
+    "subject": "Glabbagool joins party",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "samples": 1,
+  "default_input": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_030_030-session-untitled/lineage_summary_scenes.md",
+  "passes": [
+    {
+      "name": "small",
+      "agent": "extract_facts",
+      "chunk_size": 6000,
+      "document": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_030_030-session-untitled/lineage_summary_scenes.md",
+      "structural": true,
+      "outputs": [
+        {
+          "key": "small#1",
+          "file": "small.json",
+          "n_facts": 220
+        }
+      ]
+    },
+    {
+      "name": "large",
+      "agent": "extract_facts",
+      "chunk_size": 15000,
+      "document": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_030_030-session-untitled/lineage_summary_scenes.md",
+      "structural": true,
+      "outputs": [
+        {
+          "key": "large#1",
+          "file": "large.json",
+          "n_facts": 126
+        }
+      ]
+    },
+    {
+      "name": "sweep",
+      "agent": "extract_facts_sweep",
+      "chunk_size": 15000,
+      "document": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_030_030-session-untitled/lineage_summary_scenes.md",
+      "structural": true,
+      "outputs": [
+        {
+          "key": "sweep#1",
+          "file": "sweep.json",
+          "n_facts": 239
+        }
+      ]
+    },
+    {
+      "name": "temporal",
+      "agent": "extract_facts_temporal",
+      "chunk_size": 15000,
+      "document": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/ensemble_summary_prototype/per_summary/summary_030_030-session-untitled/lineage_summary_scenes.md",
+      "structural": true,
+      "outputs": [
+        {
+          "key": "temporal#1",
+          "file": "temporal.json",
+          "n_facts": 34
+        }
+      ]
+    }
+  ]
+}

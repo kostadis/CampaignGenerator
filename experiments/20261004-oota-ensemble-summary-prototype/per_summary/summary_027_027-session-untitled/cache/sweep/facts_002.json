@@ -1,0 +1,107 @@
+[
+  {
+    "type": "npc",
+    "fact": "Themberchaud lands with a shuddering, graceless impact.",
+    "source_quote": "He landed with a shuddering, graceless impact, his belly wobbling as he righted himself",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud addresses the party as his personal agents.",
+    "source_quote": "Themberchaud addressed the party as his personal agents",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Keepers of the Flame are criticized by Themberchaud for their inefficiency and petty checkpoints.",
+    "source_quote": "expressing grand frustration with the inefficiency of the Keepers of the Flame and their petty checkpoints",
+    "subject": "Keepers of the Flame",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud offers the party 'express service' to their next destination.",
+    "source_quote": "the dragon grandly declared that he would provide them with his \"express service\" to wherever they needed to go next",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud invites the party to climb onto his back.",
+    "source_quote": "invited them to climb aboard, as though it were the greatest honor he could bestow",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The party scrambles onto Themberchaud's back.",
+    "source_quote": "the party scrambled onto his back",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes the ride as dangerous and stupid.",
+    "source_quote": "Gyrgum called the ride \"dangerous and stupid\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum agrees to the ride because it is a dragon ride.",
+    "source_quote": "but agreed because it was a dragon ride",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud is identified as the red dragon of Gracklstugh.",
+    "source_quote": "Themberchaud, the red dragon of Gracklstugh, descends upon the party",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Themberchaud mistakes the party for his loyal agents.",
+    "source_quote": "mistaking them for his loyal agents",
+    "subject": "Themberchaud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party recalls they have already handed off Themberchaud's egg.",
+    "source_quote": "The party recalls they have already handed off his egg, so they have none on them",
+    "subject": "egg hand-off",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir asks whether the party is still hidden in the sphere of darkness.",
+    "source_quote": "Zalthir asks whether they are still hidden in the sphere of darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The dragon spotted the party during the fight.",
+    "source_quote": "the dragon spotted them during the fight",
+    "subject": "dragon sight",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party briefly considers hiding in a nearby market.",
+    "source_quote": "The party briefly considers hiding in a nearby market",
+    "subject": "nearby market",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum positions himself near an entrance he can duck into.",
+    "source_quote": "Gyrgum positions himself near an entrance he can duck into",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

@@ -1,0 +1,212 @@
+[
+  {
+    "type": "event",
+    "fact": "The party advances to 4th level.",
+    "source_quote": "everyone advanced to 4th level",
+    "subject": "level up",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's Intelligence reaches 19 upon leveling up.",
+    "source_quote": "Daz's Intelligence reaches 19",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum bumps a score to 19 and defers browsing feats.",
+    "source_quote": "Gyrgum bumps a score to 19 \"at least temporarily\" and defers browsing feats",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A ghost with a gruesome cleaved head emerges from the ground.",
+    "source_quote": "A ghost with a gruesome cleaved head emerged from the ground",
+    "subject": "ghost",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek introduces himself as a deep gnome traveler from Blingdenstone.",
+    "source_quote": "He introduced himself with surprising cheerfulness as Pelek, a deep gnome traveler from Blingdenstone",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's mother named him after an actor.",
+    "source_quote": "His mother had named him after an actor",
+    "subject": "Pelek's mother",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek's father never liked Pelek's name.",
+    "source_quote": "his father never liked it",
+    "subject": "Pelek's father",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido is a derro who was once friends with Pelek.",
+    "source_quote": "he had once been friends with a derro named Buppido",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Buppido slaughtered and dismembered Pelek with an axe.",
+    "source_quote": "Buppido had lured him in with promises of business deals before slaughtering and dismembering him with an axe",
+    "subject": "Pelek's murder",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Buppido became convinced he was the avatar of a major deity.",
+    "source_quote": "Buppido had changed overnight, going from merely eccentric to utterly convinced he was the avatar of a major deity",
+    "subject": "Buppido",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek has been trapped in the caverns for about a year.",
+    "source_quote": "The ghost had been trapped in the caverns ever since, which he reckoned was about a year",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek failed in an attempt to possess Buppido.",
+    "source_quote": "he had even tried to possess Buppido, and the effort failed entirely",
+    "subject": "failed possession",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek asks the party to collect his bones and bury them in Blingdenstone.",
+    "source_quote": "He asked the party to collect his specific bones and carry them back to Blingdenstone, where they could be buried in his ancestral home",
+    "subject": "Pelek's request",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum wraps Pelek's bones and tucks them into his pack.",
+    "source_quote": "Gyrgum wrapped them up and tucked them into his pack",
+    "subject": "bones collected",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin fumbles an intimidation attempt against the ghost.",
+    "source_quote": "Thorin pressed the ghost on what the party got out of the deal and fumbled an intimidation attempt badly",
+    "subject": "Thorin's intimidation attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek laughs off the intimidation attempts by Thorin and Daz.",
+    "source_quote": "Pelek laughs both off (\"You do realize I'm a ghost, right?\")",
+    "subject": "Pelek",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is identified as the drow among the party.",
+    "source_quote": "the drow (Daz) \"is not allied with any of the agents of Menzoberranzan, but actually comes from the Overbright\"",
+    "subject": "Daz",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Pelek advises the party to state that Daz has no ties to Menzoberranzan.",
+    "source_quote": "make absolutely clear that the drow among them had no ties to Menzoberranzan",
+    "subject": "Menzoberranzan",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Lolth is a spider goddess to whom Daz must show no devotion.",
+    "source_quote": "no devotion to the spider goddess Lolth",
+    "subject": "Lolth",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Pelek's severed hand is wearing an obsidian ring.",
+    "source_quote": "the strange magic pervading the tunnels had animated his severed hand, which had scuttled away through the narrow crevices of the cavern wall, still wearing his obsidian ring",
+    "subject": "obsidian ring",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Pelek's severed hand animated and scuttled away through the cavern wall.",
+    "source_quote": "the strange magic pervading the tunnels had animated his severed hand, which had scuttled away through the narrow crevices of the cavern wall",
+    "subject": "severed hand",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ghost encounter takes place in the Whorlstone Tunnels.",
+    "source_quote": "The skeleton fight in the Whorlstone Tunnels was over",
+    "subject": "Whorlstone Tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Pelek is a traveler from Blingdenstone.",
+    "source_quote": "Pelek, a deep gnome traveler from Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The svirfneblin of Blingdenstone know ways to reach the Overbright.",
+    "source_quote": "the svirfneblin of Blingdenstone \"know all these wonderful ways to get to the Overbright\"",
+    "subject": "svirfneblin",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Pelek knows of Droki only as a mad derro.",
+    "source_quote": "Pelek knows of Droki only as the mad derro who comes in and out",
+    "subject": "Droki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Jimjar is referenced by Pelek as someone who could guide the party to the Overbright.",
+    "source_quote": "He also notes that Jimjar and many others could guide the party there",
+    "subject": "Jimjar",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Overbright is a destination reachable via paths known by the svirfneblin.",
+    "source_quote": "the deep gnomes of Blingdenstone know ways to reach the \"Overbright.\"",
+    "subject": "Overbright",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Pelek's spirit drifts alongside the party as a companion.",
+    "source_quote": "Pelek's spirit drifted alongside them as a companion, bound to wherever his remains traveled",
+    "subject": "Pelek bound to party",
+    "quote_verified": true
+  },
+  {
+    "type": "date",
+    "fact": "The session took place on April 28, 2025.",
+    "source_quote": "Session 2025-04-28",
+    "subject": "Session Date",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spot where the ghost emerged is marked on the map as Buppido's resting place.",
+    "source_quote": "The spot is marked on the map as \"Buppido's resting place.\"",
+    "subject": "Buppido's resting place",
+    "quote_verified": true
+  }
+]

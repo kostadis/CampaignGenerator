@@ -1,0 +1,233 @@
+[
+  {
+    "type": "event",
+    "fact": "Two more days of paddling pass.",
+    "source_quote": "Two more days of paddling",
+    "subject": "travel duration",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party is within a day of Gracklstugh.",
+    "source_quote": "brought them within a day of Gracklstugh",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Brannum states they are only a day away.",
+    "source_quote": "Brannum says they are only a day away",
+    "subject": "distance update",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An aquatic troll ambishes the boat while navigating the Darklake.",
+    "source_quote": "the party is ambushed by a massive aquatic troll",
+    "subject": "troll ambush",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "An enormous aquatic troll surges up alongside the boat.",
+    "source_quote": "an enormous aquatic troll surging up alongside the boat",
+    "subject": "aquatic troll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir and Daz notice the troll just before it grabs Thorin, preventing a surprise attack.",
+    "source_quote": "Zalthir (22) and Daz (23) notice a large, troll-like creature swimming toward their boat just before it grabs Thorin",
+    "subject": "troll detection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The aquatic troll speaks in the rumbling tongue of giants and demands a party member for a meal.",
+    "source_quote": "Speaking in the rumbling tongue of giants, it demanded that the party hand over one of their number for a meal",
+    "subject": "troll demand",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The DM clarifies the troll wants something live or meaty, not just food.",
+    "source_quote": "it wants something \"live or meaty.\"",
+    "subject": "troll preference",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz suggests giving the troll Brannum as a meal.",
+    "source_quote": "Daz suggested giving it Brannum",
+    "subject": "Daz suggestion",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum refuses to toss people to the trolls, citing his neutral good alignment.",
+    "source_quote": "Gyrgum refused: \"I'm neutral good here. I don't think I can be tossing people to the trolls.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum's player remarks that they are having trouble being evil in the game due to real-world evil.",
+    "source_quote": "With all the evil in the world right now, I'm having trouble being evil in the game.",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin calls for them to run.",
+    "source_quote": "Thorin called for them to run",
+    "subject": "Thorin refusal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar shouts for fire.",
+    "source_quote": "Jimjar shouted \"Does anybody have fire?\"",
+    "subject": "Jimjar warning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Jimjar warns that the troll will regenerate unless burned with fire or acid.",
+    "source_quote": "warned that the creature would simply regenerate from any wound unless it was burned with fire or acid",
+    "subject": "Jimjar advice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Scorching Ray misses.",
+    "source_quote": "Daz's Scorching Ray missed",
+    "subject": "Daz attack miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz's Magic Missiles hit the troll for 9 damage.",
+    "source_quote": "his Magic Missiles hit for 9",
+    "subject": "Daz attack hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz moves toward the back of the boat but stays on the same side to prevent flipping.",
+    "source_quote": "Daz moves toward the back of the boat but stays on the same side so the boat won't flip",
+    "subject": "Daz movement",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll grabs the boat and pulls it down.",
+    "source_quote": "The troll grabbed the boat and pulled it down",
+    "subject": "troll grab",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll rakes Daz with a claw.",
+    "source_quote": "raking Daz with a claw",
+    "subject": "troll attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll's bite misses Daz.",
+    "source_quote": "though its bite missed",
+    "subject": "troll miss",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes the troll hard enough that it releases the hull.",
+    "source_quote": "Zalthir struck the troll hard enough that it released the hull",
+    "subject": "Zalthir strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir uses his class technique to shove the troll five feet back.",
+    "source_quote": "his class technique shoved it five feet back",
+    "subject": "Zalthir technique",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a Strength of 8 and is unable to row effectively.",
+    "source_quote": "Gyrgum, with a Strength of only 8 and no use at the oars",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum vomits forth a wave of acid using Tasha's Caustic Brew.",
+    "source_quote": "vomited forth a wave of acid with Tasha's Caustic Brew",
+    "subject": "Tasha's Caustic Brew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll twists away from the worst of Gyrgum's acid spray.",
+    "source_quote": "the troll twisted away from the worst of it",
+    "subject": "troll dodge",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Brannum offers to grow to giant size and help row if untied.",
+    "source_quote": "Brannum offered to grow to giant size and help row if they untied him",
+    "subject": "Brannum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin refuses Brannum's offer.",
+    "source_quote": "Thorin refused",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin reasons that allowing Brannum to grow would end with him smashing the boat or killing the party.",
+    "source_quote": "reasoning that it would end with the duergar smashing the boat or killing them all",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin and the others throw their backs into the oars.",
+    "source_quote": "Thorin and the others threw their backs into the oars",
+    "subject": "party rowing",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The companion crew briefly moves to help then stops when they see the party fleeing.",
+    "source_quote": "The companion crew briefly moves to help, then gets the message that the party is fleeing",
+    "subject": "crew reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll sinks back into the dark water.",
+    "source_quote": "The troll, singed and frustrated, sank back into the dark water",
+    "subject": "troll retreat",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The troll grumbles that it was trying to help by reducing the number of mouths to feed.",
+    "source_quote": "with a grumbling complaint that it had only been trying to help by reducing the number of mouths the party had to feed",
+    "subject": "troll comment",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The ambush takes place while navigating the Darklake.",
+    "source_quote": "While navigating the Darklake",
+    "subject": "Darklake",
+    "quote_verified": true
+  }
+]

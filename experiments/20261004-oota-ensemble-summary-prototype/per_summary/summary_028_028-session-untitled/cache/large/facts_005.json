@@ -1,0 +1,401 @@
+[
+  {
+    "type": "event",
+    "fact": "The party chooses to go east through a side door based on a die roll.",
+    "source_quote": "The party pressed east through a side door, a direction chosen by die roll in Thorin's honour",
+    "subject": "party route choice",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum's player rolls an 18 to determine the party's path.",
+    "source_quote": "Gyrgum's player rolls an 18",
+    "subject": "die roll for path",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber contains four stone sarcophagi, each bearing the sculpted likeness of a robed human in repose.",
+    "source_quote": "entered a chamber dominated by four stone sarcophagi, each bearing the sculpted likeness of a robed figure in repose",
+    "subject": "sarcophagi chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is a hole in the south wall of the chamber which is an artifact of the game assets.",
+    "source_quote": "A hole in the south wall turns out to be \"just an artifact of the assets.\"",
+    "subject": "south wall hole",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The hangers-on stay outside the sarcophagi chamber.",
+    "source_quote": "The hangers-on stayed outside (\"You go there. We're not doing this\")",
+    "subject": "hangers-on",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party notices that the northeast sarcophagus rests on hidden stone rollers.",
+    "source_quote": "they noticed that the northeast sarcophagus rested on hidden stone rollers",
+    "subject": "traps search",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir casts a shroud of magical darkness across the room.",
+    "source_quote": "Zalthir drew his shroud of magical darkness across the room",
+    "subject": "Zalthir casts darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's player took about seven tries to cast the darkness spell in Roll20.",
+    "source_quote": "The darkness takes Zalthir's player about seven tries to cast in Roll20",
+    "subject": "Zalthir casting attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolls the northeast sarcophagus aside.",
+    "source_quote": "Thorin rolled the sarcophagus aside",
+    "subject": "Thorin moves sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Four specters emerge from the sarcophagi and attack the party.",
+    "source_quote": "Four specters tore free from the sarcophagi and launched themselves at the party",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The specters have 22 HP each.",
+    "source_quote": "The specters have only 22 HP each",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The specters are immune to a lot.",
+    "source_quote": "but are immune to a lot",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A distant voice from deeper in the tomb cries out \"No, you must save me.\"",
+    "source_quote": "the distant voice cried, \"No, you must save me.\"",
+    "subject": "distant voice cries",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir strikes one of the specters down in a flurry of blows.",
+    "source_quote": "Zalthir moved with terrifying speed, striking one of the spirits down in a flurry of blows before it could react",
+    "subject": "Zalthir strikes specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits a specter for 11 damage.",
+    "source_quote": "He hits for 11 and 9",
+    "subject": "Zalthir damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir hits a specter for 9 damage.",
+    "source_quote": "He hits for 11 and 9",
+    "subject": "Zalthir second hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point for extra attacks.",
+    "source_quote": "spends a focus point for extra attacks",
+    "subject": "Zalthir focus point",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir kills one of the specters.",
+    "source_quote": "kills one, then hits a second for 9",
+    "subject": "specter killed",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One specter is dead, killed by Zalthir.",
+    "source_quote": "kills one",
+    "subject": "specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz unleashes a volley of magical force at the remaining specters.",
+    "source_quote": "Daz unleashed a volley of magical force at the remaining specters",
+    "subject": "Daz casts missiles",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The specters strike Daz twice with life-draining touches.",
+    "source_quote": "the specters struck him twice with life-draining touches",
+    "subject": "specters strike Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's hit-point maximum falls by 2 from a life-draining touch.",
+    "source_quote": "His hit-point maximum fell by 2",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's hit-point maximum falls by 10 more from a life-draining touch.",
+    "source_quote": "then by 10 more",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz is badly weakened.",
+    "source_quote": "leaving him badly weakened",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz moves out of the darkness because he cannot see into it.",
+    "source_quote": "Daz can't see into the darkness despite his darkvision, so he moves out",
+    "subject": "Daz moves out",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz sends two missiles into one specter for 10 damage.",
+    "source_quote": "He sends two missiles into one specter (10 damage)",
+    "subject": "Daz missiles",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz sends one missile into another specter for 5 damage.",
+    "source_quote": "and one into another (5 damage)",
+    "subject": "Daz missiles 2",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz's maximum hit points are down 12 in total until a long rest.",
+    "source_quote": "His maximum is down 12 in total until a long rest",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states he needs a long rest soon.",
+    "source_quote": "I'm going to need a long rest here pretty soon",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum raises his holy symbol to turn the undead.",
+    "source_quote": "Gyrgum raised his holy symbol and called upon Bahamut's power to drive the undead back",
+    "subject": "Gyrgum turns undead",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Every remaining specter shrugs off Gyrgum's divine energy.",
+    "source_quote": "every remaining specter shrugged off the divine energy",
+    "subject": "specters resist turning",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Every specter makes the DC 15 Wisdom save against turning.",
+    "source_quote": "The save is DC 15 Wisdom, and every specter makes it",
+    "subject": "specter save rolls",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum wonders if Bahamut is displeased about the dragon egg.",
+    "source_quote": "That left Gyrgum to wonder, not for the first time, whether the god was still displeased about the dragon egg",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A specter hits Zalthir for 6 necrotic damage.",
+    "source_quote": "A specter hits Zalthir for 6 necrotic damage",
+    "subject": "specter hits Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The specter floats away incorporeally after hitting Zalthir.",
+    "source_quote": "then floats away incorporeally, provoking no opportunity attack",
+    "subject": "specter flees",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down another specter with his enchanted longsword.",
+    "source_quote": "Thorin stepped in with his enchanted longsword and cut down another specter",
+    "subject": "Thorin strikes specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's longsword +1 hits a specter for 12 damage.",
+    "source_quote": "Thorin's longsword +1 hits for 12 and kills one specter",
+    "subject": "Thorin damage roll",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One specter is dead, killed by Thorin.",
+    "source_quote": "kills one specter",
+    "subject": "specter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits another specter for 11 damage.",
+    "source_quote": "then hits another for 11, which leaves it alive",
+    "subject": "Thorin second hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir finishes off the remaining spectral guardians.",
+    "source_quote": "Zalthir finished the rest with a relentless series of strikes",
+    "subject": "Zalthir finishes specters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves his darkness two squares.",
+    "source_quote": "Zalthir moves his darkness two squares",
+    "subject": "Zalthir moves darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One of the specters pauses to correct Zalthir that it is a specter, not a ghost.",
+    "source_quote": "One of them paused mid-fight to correct Zalthir that it was a specter, not a ghost",
+    "subject": "specter correction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir lands 13 damage on a specter and finishes it.",
+    "source_quote": "He lands 13 damage, then finishes it",
+    "subject": "Zalthir final hit",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "All specters in the chamber are dead.",
+    "source_quote": "With the specters destroyed",
+    "subject": "specters",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party loots the sarcophagi.",
+    "source_quote": "the party looted the sarcophagi and found a respectable haul",
+    "subject": "looting sarcophagi",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds gold bracelets in the northeast sarcophagus.",
+    "source_quote": "The northeast sarcophagus holds two gold bracelets",
+    "subject": "gold bracelets",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a fancy walking stick.",
+    "source_quote": "a fancy walking stick",
+    "subject": "fancy walking stick",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party finds a gold censer worked with platinum filigree in the southeast sarcophagus.",
+    "source_quote": "the southeast a gold censer with platinum filigree",
+    "subject": "gold censer",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "There is nowhere to spend money until the party reaches the Neverlight Grove.",
+    "source_quote": "The GM notes there's nowhere to spend money until they reach the Neverlight Grove",
+    "subject": "Neverlight Grove",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum reasons that they paid for opening the sarcophagi.",
+    "source_quote": "Gyrgum reasons \"we paid for opening them.\"",
+    "subject": "Gyrgum justification",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolls a 27 on an Arcana check.",
+    "source_quote": "Daz then rolled a 27 on Arcana",
+    "subject": "Daz Arcana check",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The undead in this tomb reform every 24 hours.",
+    "source_quote": "These kinds of undead did not stay dead. They would reform every 24 hours",
+    "subject": "undead reform",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz determines the party cannot safely take a long rest in the tomb.",
+    "source_quote": "Daz determines that the undead in this tomb likely reform every twenty-four hours, meaning the party cannot safely take a long rest here",
+    "subject": "Daz assessment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM clarifies that the 24-hour undead reform clock runs past any long rest.",
+    "source_quote": "The GM clarifies the 24-hour clock runs past any long rest, so it can't be gamed",
+    "subject": "GM clarification",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz states they can keep going.",
+    "source_quote": "Daz's answer: \"No, we can keep going.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Beneath the rolled-aside sarcophagus is a four-foot square hole leading down into darkness.",
+    "source_quote": "Beneath the sarcophagus Thorin had rolled aside lay a four-foot square hole dropping down into the darkness below",
+    "subject": "hidden hole",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum confirms he fits through the hole because he is an orc, not a giant.",
+    "source_quote": "Asked whether Gyrgum fits, Gyrgum answers \"I'm an orc, not a giant,\" and the GM confirms he does",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  }
+]

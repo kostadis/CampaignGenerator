@@ -1,0 +1,156 @@
+[
+  {
+    "type": "location",
+    "fact": "The party encountered the derro patrol approximately 100 feet down the path.",
+    "source_quote": "About 100 feet down that path, a derro patrol spotted them.",
+    "subject": "encounter distance",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The patrol consists of four derro guards.",
+    "source_quote": "The party encounters a patrol of four derro guards",
+    "subject": "derro patrol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro patrol was located in the western tunnels.",
+    "source_quote": "encounters a patrol of four derro guards about 100 feet away in the western tunnels",
+    "subject": "derro patrol encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro have an Intelligence score of 3.",
+    "source_quote": "the derro have intelligence and wisdom of 3",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro have a Wisdom score of 3.",
+    "source_quote": "the derro have intelligence and wisdom of 3",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro have a Perception score of 7.",
+    "source_quote": "and a perception of 7",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin rolled a 19 for initiative.",
+    "source_quote": "Thorin won initiative with a 19",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a 19 for initiative, placing him first in the order.",
+    "source_quote": "Initiative order:\n  - Thorin 19",
+    "subject": "Thorin initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The allied crew rolled a 10 for initiative.",
+    "source_quote": "Initiative order:\n  - Thorin 19\n  - allies 10",
+    "subject": "Allies initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 7 for initiative.",
+    "source_quote": "Initiative order:\n  - Thorin 19\n  - allies 10\n  - Daz 7",
+    "subject": "Daz initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum rolled a 2 for initiative.",
+    "source_quote": "Initiative order:\n  - Thorin 19\n  - allies 10\n  - Daz 7\n  - Gyrgum 2",
+    "subject": "Gyrgum initiative",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's longsword hit for 6 damage.",
+    "source_quote": "His longsword hits (13) for 6 damage",
+    "subject": "Thorin longsword hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The allied crew attacks for 8 and 4 damage.",
+    "source_quote": "The allied crew attacks twice, for 8 and 4 damage",
+    "subject": "Allied crew attacks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir landed a critical unarmed strike for 12 damage.",
+    "source_quote": "lands a critical unarmed strike for 12 damage",
+    "subject": "Zalthir critical strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum has an Armor Class of 14.",
+    "source_quote": "I handily parry with my 14 armor class",
+    "subject": "Gyrgum AC check",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin dealt 7 damage to kill his opponent.",
+    "source_quote": "Thorin kills his opponent with another 7 damage",
+    "subject": "Thorin kill damage",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack dealt 7 damage to derro number four.",
+    "source_quote": "Thorin's opportunity attack deals 7",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro had 6 hit points before being targeted by Daz.",
+    "source_quote": "two at the derro with 6 hit points",
+    "subject": "derro 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro had 8 hit points before being targeted by Daz.",
+    "source_quote": "one at the derro with 8",
+    "subject": "derro 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro was dropped to 3 hit points by Daz's magic missiles.",
+    "source_quote": "dropping it to 3",
+    "subject": "derro 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir rolled a 2 and a 1 on his attacks.",
+    "source_quote": "the GM rolls a 2 and a 1",
+    "subject": "Zalthir roll failures",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hit with a 13 to kill the last derro.",
+    "source_quote": "Gyrgum casts True Strike on his mace and hits with a 13",
+    "subject": "Gyrgum final hit",
+    "quote_verified": true
+  }
+]

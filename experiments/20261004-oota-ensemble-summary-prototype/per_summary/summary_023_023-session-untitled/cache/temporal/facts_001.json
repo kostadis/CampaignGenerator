@@ -1,0 +1,58 @@
+[
+  {
+    "type": "monster",
+    "fact": "There are five Derro cultists performing the ritual on the raised platform.",
+    "source_quote": "Five Derro cultists stood upon it",
+    "subject": "Derro cultists count",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The corrupted stone giant statues are two feet tall.",
+    "source_quote": "barely two feet tall",
+    "subject": "stone giant statue dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The corrupted stone giant statues weigh 100 pounds.",
+    "source_quote": "two-foot, 100-pound miniatures",
+    "subject": "stone giant statue dimensions",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two-headed stone giant attacked the market four days ago.",
+    "source_quote": "this was only four days ago in game time",
+    "subject": "market attack timing",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Ordinary Derro have approximately 13 hit points.",
+    "source_quote": "ordinary Derro had around 13 hit points",
+    "subject": "ordinary Derro HP",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two tougher Derro have 27 hit points.",
+    "source_quote": "two tougher ones had 27",
+    "subject": "tough Derro HP",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "There are two tougher Derro with higher hit points than the ordinary ones.",
+    "source_quote": "two tougher ones had 27",
+    "subject": "tough Derro count",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak has 70 hit points.",
+    "source_quote": "Narrak himself had 70",
+    "subject": "Narrak HP",
+    "quote_verified": true
+  }
+]

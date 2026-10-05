@@ -1,0 +1,107 @@
+[
+  {
+    "type": "location",
+    "fact": "The party arrives at a gate within the caverns of Blingdenstone.",
+    "source_quote": "The party arrived at a gate deep within the caverns of Blingdenstone",
+    "subject": "Blingdenstone",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The squeaky-voiced guard confirms that the party escaped from Velkynvelve from the Drow.",
+    "source_quote": "So you escaped from Velkynvelve from the Drow. Is this correct?",
+    "subject": "Squeaky-voiced guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant failed to read the latest report all the way through.",
+    "source_quote": "the visibly embarrassed sergeant had not read the latest report all the way through",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant appears flummoxed and embarrassed.",
+    "source_quote": "a flummoxed and embarrassed sergeant",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The sergeant looks as though he wishes a hole would open and swallow him.",
+    "source_quote": "The sergeant looks as though he wishes a hole would open and swallow him",
+    "subject": "Sergeant",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The officer publicly admonishes the sergeant for failing to read orders thoroughly.",
+    "source_quote": "Shame on you... It\u2019s very important in any military operation that people read the orders thoroughly.",
+    "subject": "Sergeant",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "Clan Diggermattock took the territory from the Drow.",
+    "source_quote": "Clan Diggermattock took the area from the Drow",
+    "subject": "Clan Diggermattock",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Svirfneblin routinely view Drow escapees as valuable sources of information about a long-term enemy.",
+    "source_quote": "The Svirfneblin routinely view Drow escapees as valuable sources of information about a long-term enemy",
+    "subject": "Svirfneblin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Standing orders require escapees from the Drow to be escorted immediately to Chief Dorbo of Clan Diggermattock.",
+    "source_quote": "any escapees from the Drow to be escorted immediately to Chief Dorbo of Clan Diggermattock",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Chief Dorbo wants to question the party to better prepare Blingdenstone\u2019s defenses.",
+    "source_quote": "Dorbo hopes to use this information to better prepare Blingdenstone\u2019s defenses",
+    "subject": "Chief Dorbo",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The officer apologizes to the party for failing to inform them about the standing orders sooner.",
+    "source_quote": "apologizes for failing to inform the party sooner",
+    "subject": "guard apology",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "An insight check establishes that the guards' request is sincere and contains no malevolence.",
+    "source_quote": "An insight check established that the request was sincere and contained no malevolence",
+    "subject": "insight check",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The party reasons that Chief Dorbo may know a route to the surface.",
+    "source_quote": "Dorbo may know a way out of the Underdark",
+    "subject": "route to surface",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party agrees to accompany the guards to Diggermattock Hall.",
+    "source_quote": "The party agrees to accompany the guards to Diggermattock Hall",
+    "subject": "agreement to accompany",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The guards are escorting the party to Diggermattock Hall.",
+    "source_quote": "The party agrees to accompany the guards to Diggermattock Hall",
+    "subject": "Diggermattock Hall",
+    "quote_verified": true
+  }
+]

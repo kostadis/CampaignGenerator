@@ -1,0 +1,1199 @@
+[
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard stops to tend their wounds in the tunnels beneath Gracklstugh.",
+    "source_quote": "The Ember Vanguard stopped in the dim, oppressive tunnels beneath Gracklstugh to tend their wounds",
+    "subject": "tending wounds",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum uses Channel Divinity to heal himself.",
+    "source_quote": "Gyrgum used Channel Divinity to heal himself",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum restores 14 hit points to himself.",
+    "source_quote": "He restores 14 hit points to himself.",
+    "subject": "Gyrgum healing self",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth Feldrun is a dwarf companion of the party.",
+    "source_quote": "their badly wounded dwarf companion, Eldeth Feldrun",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum gives 6 hit points to Eldeth Feldrun.",
+    "source_quote": "He gives the remaining 6 to their badly wounded dwarf companion",
+    "subject": "Eldeth Feldrun healing",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Eldeth Feldrun was down to 14 hit points before healing.",
+    "source_quote": "who had been down to 14 hit points",
+    "subject": "Eldeth Feldrun",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The healing brings both Gyrgum and Eldeth Feldrun to about 20 hit points.",
+    "source_quote": "bringing them both to about 20.",
+    "subject": "Eldeth Feldrun state change",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM relabels the party as \"the Ember Vanguard and Groupies.\"",
+    "source_quote": "In Roll20, the GM relabelled the party as \"the Ember Vanguard and Groupies.\"",
+    "subject": "group relabeling",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard is the current name for the group, formerly \"the party and allies.\"",
+    "source_quote": "relables the group from \"the party and allies\" to \"the Ember Vanguard and Groupies.\"",
+    "subject": "the Ember Vanguard",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The tunnels beneath Gracklstugh are described as dim and oppressive.",
+    "source_quote": "dim, oppressive tunnels beneath Gracklstugh",
+    "subject": "tunnels beneath Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Gracklstugh is referred to as the Deepking's city.",
+    "source_quote": "beneath the Deepking's city",
+    "subject": "Gracklstugh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Deepking's city has a huge cavern system beneath it.",
+    "source_quote": "the huge cavern system beneath the Deepking's city",
+    "subject": "Deepking's city",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz advises the group to be careful at every turn in the cavern.",
+    "source_quote": "Daz insists that \"anytime there's a turn cavern, I think it's a good idea to be careful.\"",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group moves carefully through the cavern system and slows at every turn.",
+    "source_quote": "The group moved carefully through the huge cavern system... and slowed at every turn",
+    "subject": "cautious advance",
+    "quote_verified": false
+  },
+  {
+    "type": "location",
+    "fact": "The Pit of Decomposed Flesh is a vast chamber that reeked of death and decomposed flesh.",
+    "source_quote": "Their path led to a vast chamber that reeked of death and decomposed flesh.",
+    "subject": "The Pit of Decomposed Flesh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The glow of faerzress drifted through the Pit of Decomposed Flesh like fog.",
+    "source_quote": "The glow of faerzress drifted through it like fog.",
+    "subject": "The Pit of Decomposed Flesh",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The pit is located below a ledge in the Pit of Decomposed Flesh and is full of zombies.",
+    "source_quote": "A lone derro cultist named Skiit stood on a ledge above a deep pit full of zombies.",
+    "subject": "the pit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is a lone derro cultist standing on a ledge above a deep pit.",
+    "source_quote": "A lone derro cultist named Skiit stood on a ledge above a deep pit full of zombies.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit mutters to himself and tosses body parts into the darkness below.",
+    "source_quote": "He muttered to himself and tossed body parts into the darkness below",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit complains that he always gets the low end of the stick.",
+    "source_quote": "complaining that he always got \"the low end of the stick.\"",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled a 20 on a religion check.",
+    "source_quote": "Daz rolled a 20 on a religion check",
+    "subject": "Daz's religion check",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Cult of Demogorgon uses symbols that Skiit wears.",
+    "source_quote": "recognized the symbols of the Cult of Demogorgon on him",
+    "subject": "Cult of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is identified as a low-ranking true believer who needs someone else to think for him.",
+    "source_quote": "Skiit was a low-ranking true believer, the kind who needs someone else to think for him.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is insane from the mind flayers' experiments and the demonic influence in the area.",
+    "source_quote": "Skiit is insane, as many derro are, from the mind flayers' experiments and the demonic influence in the area.",
+    "subject": "Skiit",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The mind flayers conducted experiments that caused insanity in derro.",
+    "source_quote": "insane... from the mind flayers' experiments",
+    "subject": "mind flayers",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum steps forward in the role of a visiting supervisor.",
+    "source_quote": "Gyrgum stepped forward in the role of a visiting supervisor.",
+    "subject": "Gyrgum's bluff",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks coolly about the big project and the work of Ulnara.",
+    "source_quote": "He asked coolly about the \"big project\" and the work of Ulnara",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum presses Skiit to keep his zombies on plan.",
+    "source_quote": "pressed Skiit to keep his zombies \"on plan.\"",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara is referenced by Gyrgum in the context of the big project.",
+    "source_quote": "the work of Ulnara",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is completely taken in by Gyrgum's ruse.",
+    "source_quote": "Skiit was completely taken in",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit asks permission to feed the party's goblin companion to the zombies.",
+    "source_quote": "asked permission to feed the party's goblin companion to the zombies.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Spiderbait is the party's goblin companion whom Skiit offers to feed to zombies.",
+    "source_quote": "He asks whether he can give the party's goblin companion, Spiderbait, to the zombies.",
+    "subject": "Spiderbait",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The bluff collapses when Gyrgum rolls a natural one.",
+    "source_quote": "The bluff collapsed when Gyrgum rolled a natural one.",
+    "subject": "Gyrgum's natural one",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit puffs himself up and boasts of Demogorgon and Plinki.",
+    "source_quote": "Skiit puffed himself up, boasted of Demogorgon and Plinki",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Plinki is referenced by Skiit as a boastful figure.",
+    "source_quote": "boasted of Demogorgon and Plinki",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Skiit accuses the party of spying for the duergar.",
+    "source_quote": "accused the party of spying for the duergar",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Skiit accuses the party of spying for the mind flayers.",
+    "source_quote": "or the mind flayers",
+    "subject": "mind flayers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum shoves the ranting cultist off the ledge into the pit.",
+    "source_quote": "Gyrgum shoved the ranting cultist off the ledge into the pit.",
+    "subject": "Skiit shoved into pit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit takes 1 hit point damage from the fall into the pit.",
+    "source_quote": "The fall costs him 1 hit point.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses minor illusion to dim the area.",
+    "source_quote": "Daz used minor illusion to dim the area",
+    "subject": "Daz's minor illusion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz uses minor illusion to fill the air with floating icons of Demogorgon.",
+    "source_quote": "fill the air with floating icons of Demogorgon",
+    "subject": "Daz's minor illusion",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The floating icons of Demogorgon give the party an aura of dark authority.",
+    "source_quote": "giving the party an aura of dark authority.",
+    "subject": "icons of Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit's hysterical screaming from the pit draws a derro savant named Ulnara out of the back of the chamber.",
+    "source_quote": "Skiit's hysterical screaming from the pit drew a derro savant named Ulnara out of the back of the chamber.",
+    "subject": "Skiit's screaming",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara is a derro savant.",
+    "source_quote": "a derro savant named Ulnara",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A hulking zombie walks beside Ulnara.",
+    "source_quote": "A hulking zombie walked beside her.",
+    "subject": "hulking zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara demands to know who the strangers are.",
+    "source_quote": "She demanded to know who these strangers were",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The party invokes the name Ember Vanguard when answering Ulnara.",
+    "source_quote": "They invoked the name \"Ember Vanguard\"",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara replies to the mention of Ember Vanguard with confusion: The Ember, what?",
+    "source_quote": "Ulnara replies: \"The Ember, what?\"",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party offers to look up their employers in a database, leading to a debate about inner and outer joins.",
+    "source_quote": "offered to look up their employers in a \"database,\" which led to a debate about inner and outer joins.",
+    "subject": "inner and outer joins debate",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara is left momentarily speechless by the party's baffling confidence.",
+    "source_quote": "The borderline-insane cultist was left momentarily speechless.",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM hints that a follower of Demogorgon would respond to gratuitous violence, not words.",
+    "source_quote": "The GM hinted that a follower of Demogorgon would respond to gratuitous violence, not words.",
+    "subject": "GM hint on violence",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz casts Maximilian's Earthen Grasp on Skiit at the bottom of the pit.",
+    "source_quote": "Daz cast Maximilian's Earthen Grasp on Skiit at the bottom of the pit",
+    "subject": "Maximilian's Earthen Grasp",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Daz crushes Skiit for 8 damage with Maximilian's Earthen Grasp.",
+    "source_quote": "and crushed him for 8 damage.",
+    "subject": "Skiit crushed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara changes tone and calls Skiit a disappointment to your lordship.",
+    "source_quote": "She changed tone, called Skiit a disappointment to \"your lordship,\"",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara promises to raise Skiit as a zombie so he could serve the cult forever.",
+    "source_quote": "promised to raise him as a zombie so he could serve the cult forever.",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit breaks free from the earthen grasp and runs.",
+    "source_quote": "When Skiit broke free and ran",
+    "subject": "Skiit escapes",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Ulnara sends her zombies after Skiit as he escapes.",
+    "source_quote": "while Ulnara sends her zombies after him.",
+    "subject": "zombies chase Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz finishes Skiit with Toll the Dead.",
+    "source_quote": "Daz finished him with Toll the Dead.",
+    "subject": "Skiit killed",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Skiit is dead, killed by Daz's Toll the Dead.",
+    "source_quote": "Daz finished him with Toll the Dead.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara thanks the party for the excellent supplies.",
+    "source_quote": "She thanked the party for the \"excellent supplies\"",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara asks the party to tell Plinki what a wonderful ally she had been.",
+    "source_quote": "asked them to tell Plinki what a wonderful ally she had been.",
+    "subject": "Plinki",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Ulnara lets the party pass, convinced they are powerful allies.",
+    "source_quote": "Convinced they were powerful allies, she let them pass.",
+    "subject": "Ulnara",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM noted that if the party had entered from the other side, past a marked line on the map, the zombies would have attacked on sight.",
+    "source_quote": "if the party had entered from the other side, past a marked line on the map, the zombies would have attacked on sight.",
+    "subject": "map line trigger",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz rolled 16 and Gyrgum rolled 13 on investigation or insight checks to recognize the sounds from below as zombies.",
+    "source_quote": "on investigation or insight checks (Daz 16, Gyrgum 13), they recognize the sounds from below as zombies",
+    "subject": "investigation checks",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The zombies in the pit have about 22 hit points.",
+    "source_quote": "Zombies here have about 22 hit points.",
+    "subject": "zombie",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Skiit appears to have 13 hit points.",
+    "source_quote": "He appears to have 13 hit points.",
+    "subject": "Skiit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Skiit rolls 13 against DC 14 for the Earthen Grasp damage.",
+    "source_quote": "Skiit rolls 13 against DC 14 and takes 8 damage.",
+    "subject": "Skiit saving throw",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Ulnara and the hulking zombie emerge from the back of the room from about 80 feet away.",
+    "source_quote": "out of the back of the room from about 80 feet away",
+    "subject": "the back of the room",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin stands behind Gyrgum looking threatening.",
+    "source_quote": "Thorin stands behind him looking threatening",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz looks smug while Gyrgum approaches Skiit.",
+    "source_quote": "Daz looks smug",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party takes a short rest in the tunnels.",
+    "source_quote": "The party took a short rest",
+    "subject": "short rest",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir resets his focus points during the short rest.",
+    "source_quote": "which also let Zalthir reset his focus points",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The party pushes through a set of large double doors.",
+    "source_quote": "They then pushed through a set of large double doors",
+    "subject": "large double doors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party listens at the double doors and hears nothing loud.",
+    "source_quote": "They listen at the door and hear nothing loud",
+    "subject": "listening at doors",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The double doors are cool to the touch.",
+    "source_quote": "found cool to the touch",
+    "subject": "large double doors",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party puts their shoulders into the double doors and pushes them open.",
+    "source_quote": "Then they put their shoulders into it and push it open",
+    "subject": "pushing doors",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Beyond the double doors is a passageway branching right and left.",
+    "source_quote": "Beyond the doors, they find a passageway branching right and left",
+    "subject": "branching passage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber to the east is heavy with animal musk.",
+    "source_quote": "To the east they looked into a chamber heavy with animal musk",
+    "subject": "eastern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three enormous cave bears are resting in cages.",
+    "source_quote": "Three enormous cave bears rested in cages",
+    "subject": "cave bear",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The cave bears are held in cages made of scrap iron.",
+    "source_quote": "cages of scrap iron",
+    "subject": "scrap iron cages",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A spiral path marked by small stone pylons winds through the area toward a tent and a large cauldron.",
+    "source_quote": "A spiral path marked by small stone pylons wound toward a tent and a large cauldron at the center",
+    "subject": "branching passage",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A large cauldron sits at the center of the spiral path.",
+    "source_quote": "a large cauldron at the center",
+    "subject": "large cauldron",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Two insane derro stand at the cauldron.",
+    "source_quote": "Two insane derro stood at the cauldron",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The two derro talk while ignoring each other.",
+    "source_quote": "each talking while ignoring the other",
+    "subject": "derro talking",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "The GM reminds the party that the goal is to get out with the egg while facing as few encounters as possible.",
+    "source_quote": "The GM reminds them that the goal is to get out with the egg while facing as few encounters as possible",
+    "subject": "escape objective",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard quietly withdraws from the cauldron chamber area.",
+    "source_quote": "the Ember Vanguard quietly withdrew and took the western path",
+    "subject": "Ember Vanguard withdrawal",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard chooses to take the western path.",
+    "source_quote": "the Ember Vanguard quietly withdrew and took the western path",
+    "subject": "route choice",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber contains scrap iron cages holding three resting cave bears.",
+    "source_quote": "scrap iron cages holding three resting cave bears",
+    "subject": "caged bear chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The chamber has a heavy, unpleasant musk.",
+    "source_quote": "A heavy, unpleasant musk fills the air",
+    "subject": "caged bear chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The spiral path is marked by small stone pylons and circles toward a tent and a large cauldron.",
+    "source_quote": "A spiral path marked by small stone pylons circles in toward a tent and a large cauldron",
+    "subject": "spiral path",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A tent is located near the center of the spiral path, near the large cauldron.",
+    "source_quote": "circles in toward a tent and a large cauldron near the center",
+    "subject": "tent",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "A large cauldron is situated near the center of the spiral path.",
+    "source_quote": "a tent and a large cauldron near the center",
+    "subject": "cauldron",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "Small stone pylons mark the spiral path.",
+    "source_quote": "A spiral path marked by small stone pylons",
+    "subject": "stone pylons",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Three cave bears are resting in scrap iron cages.",
+    "source_quote": "scrap iron cages holding three resting cave bears",
+    "subject": "cave bear",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The cave bears are considered a real risk by the party.",
+    "source_quote": "the bears were a real risk",
+    "subject": "cave bear",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Two derro cultists stand at the cauldron.",
+    "source_quote": "Two derro cultists stand at the cauldron",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are regarded by the dwarves as a race of dwarves corrupted by the mind flayers.",
+    "source_quote": "the dwarves' contempt for the derro as a race of dwarves corrupted by the mind flayers",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro are described as dwarves corrupted by the mind flayers.",
+    "source_quote": "a race of dwarves corrupted by the mind flayers",
+    "subject": "mind flayers",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro cultists mention a 'prince' who is 'always hungry'.",
+    "source_quote": "Says the prince is hungry, always hungry",
+    "subject": "the prince",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The derro cultists express devotion to Demogorgon.",
+    "source_quote": "their devotion to Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "One derro recites a cryptic poem about a smooth obsidian scale from the Underdark.",
+    "source_quote": "recited a cryptic, almost poetic speech about a scale \"smooth as polished obsidian\" that \"came from the deep, deep, deep\"",
+    "subject": "derro poem recitation",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "The derro stops partway through the poem, corrects himself, and starts again.",
+    "source_quote": "He then stopped, corrected himself, and started again",
+    "subject": "derro poem correction",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum suggests the party could come back to the cauldron chamber another time.",
+    "source_quote": "Gyrgum suggesting they could \"come back here another time\"",
+    "subject": "Gyrgum",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "A derro patrol spots the party 100 feet down a path in the western tunnels.",
+    "source_quote": "About 100 feet down that path, a derro patrol spotted them.",
+    "subject": "derro patrol encounter",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party attempts to bypass the derro patrol with a casual stroll, aided by a deception roll of 21.",
+    "source_quote": "The party tried a casual, confident stroll past, helped by the derros' wretched wisdom and a deception roll of 21.",
+    "subject": "deception attempt",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro have an intelligence and wisdom score of 3 and a perception score of 7.",
+    "source_quote": "the derro have intelligence and wisdom of 3 and a perception of 7",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro attack immediately after Gyrgum declares his devotion to Bahamut.",
+    "source_quote": "Gyrgum declared his devotion to Bahamut, and the derro attacked at once.",
+    "subject": "combat start",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Bahamut is the deity worshipped by Gyrgum.",
+    "source_quote": "Gyrgum declared his devotion to Bahamut",
+    "subject": "Bahamut",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin wins initiative with a roll of 19.",
+    "source_quote": "Thorin won initiative with a 19",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hits a derro with his longsword for 6 damage.",
+    "source_quote": "His longsword hits (13) for 6 damage",
+    "subject": "Thorin attacks derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Sap mastery leaves his target at disadvantage on its next attack.",
+    "source_quote": "his Sap mastery leaves his target at disadvantage",
+    "subject": "Thorin uses Sap",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moves his magical darkness over two of the enemies.",
+    "source_quote": "Zalthir moved his magical darkness over two of the enemies",
+    "subject": "Zalthir uses darkness",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir scores a critical unarmed strike from inside the darkness for 12 damage.",
+    "source_quote": "scored a critical unarmed strike from inside it",
+    "subject": "Zalthir attacks derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The critical strike leaves the targeted derro at a single hit point.",
+    "source_quote": "leaving one at a single hit point",
+    "subject": "Derro weakened",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz splits magic missiles across the patrol.",
+    "source_quote": "Daz split magic missiles across the patrol",
+    "subject": "Daz attacks patrol",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hits the derro with Tasha's Caustic Brew.",
+    "source_quote": "Gyrgum hit them with Tasha's Caustic Brew",
+    "subject": "Gyrgum casts Brew",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin cuts down a derro that tries to go after Zalthir using a Guardian stance.",
+    "source_quote": "Thorin took up a Guardian stance and cut down a derro that tried to go after Zalthir",
+    "subject": "Thorin guards Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum parries a hooked spear while debating theology with his attacker.",
+    "source_quote": "Gyrgum parried a hooked spear while calmly debating theology with his attacker",
+    "subject": "Gyrgum parries",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum casts True Strike on his mace.",
+    "source_quote": "He then cast True Strike",
+    "subject": "Gyrgum casts True Strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum kills the last standing derro with a bone-crushing blow of his mace.",
+    "source_quote": "killed the last standing derro with a bone-crushing blow of his mace",
+    "subject": "Last derro killed",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party continues down the underground corridor after the patrol is defeated.",
+    "source_quote": "With the patrol defeated, the party continues down the underground corridor",
+    "subject": "Patrol defeated",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The allied crew attacks twice for 8 and 4 damage, leaving one derro at 1 hit point.",
+    "source_quote": "The allied crew attacks twice, for 8 and 4 damage, leaving one derro at 1 hit point",
+    "subject": "Derro wounded by allies",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro swing back with hooked spears at Zalthir and miss.",
+    "source_quote": "The derro swing back with hooked spears at Zalthir and miss",
+    "subject": "Derro misses Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Derro number four fails its save against Tasha's Caustic Brew and is coated in acid that burns each turn.",
+    "source_quote": "derro number four fails and is coated in acid that burns each turn until scraped off",
+    "subject": "Derro covered in acid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A derro charges Gyrgum screaming about death to Bahamut.",
+    "source_quote": "A derro charges Gyrgum screaming about death to Bahamut",
+    "subject": "Derro charges Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin kills his opponent with 7 damage.",
+    "source_quote": "Thorin kills his opponent with another 7 damage",
+    "subject": "Thorin kills derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack deals 7 damage and cuts down derro number four.",
+    "source_quote": "Thorin's opportunity attack deals 7 and cuts it down",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fires magic missiles that drop a derro to 3 hit points.",
+    "source_quote": "Daz fires more magic missiles: two at the derro with 6 hit points and one at the derro with 8, dropping it to 3",
+    "subject": "Daz finishes derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's attacks all miss due to low rolls.",
+    "source_quote": "Zalthir's attacks all miss (the GM rolls a 2 and a 1)",
+    "subject": "Zalthir misses",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The last derro goes splattering across the ground with broken vertebrae.",
+    "source_quote": "goes splattering across the ground with a couple of broken vertebrae",
+    "subject": "Final derro dies",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The patrol consists of four derro guards.",
+    "source_quote": "The party encounters a patrol of four derro guards",
+    "subject": "derro patrol",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro are fanatical cultists of the dual-headed master.",
+    "source_quote": "The fanatical cultists attack at once",
+    "subject": "derro",
+    "quote_verified": false
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin leads the attack in the first round of combat.",
+    "source_quote": "Thorin leads the attack",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum remarks with quiet arrogance that one head is better than two while standing over the fallen patrol.",
+    "source_quote": "Standing over the fallen patrol, he remarked with quiet arrogance that one head was indeed better than two",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Brimstone Cavern smells of brimstone and chemicals.",
+    "source_quote": "explore a large chamber that smelled of brimstone and chemicals",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The walls of the Brimstone Cavern are lit by the hellish red glow of faerzress swirling in spiral patterns.",
+    "source_quote": "The cavern was lit by the hellish red glow of faerzress swirling in spiral patterns on the walls",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Dripping water in the Brimstone Cavern makes no echo.",
+    "source_quote": "Dripping water made no echo",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thick fungi cover the floors and walls of the Brimstone Cavern.",
+    "source_quote": "thick fungi covered the floors and walls",
+    "subject": "The Brimstone Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes that the cavern is lit by the light of campfires.",
+    "source_quote": "They investigate a large chamber smelling of brimstone and chemicals, lit by the light of campfires",
+    "subject": "campfires added",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum has a passive perception of 14.",
+    "source_quote": "Gyrgum, with a passive perception of 14, spotted a pit trap",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum spots a pit trap near the entrance of the cavern and warns the others.",
+    "source_quote": "spotted a pit trap near the entrance just in time and warned the others",
+    "subject": "pit trap spotted",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The group creeps inside the cavern.",
+    "source_quote": "The group crept inside",
+    "subject": "party sneaks in",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin expresses caution because someone is asking him to enter the chamber insistently.",
+    "source_quote": "the fact that you're asking so insistently makes me a little cautious",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rushes into the cavern so as not to leave anyone behind.",
+    "source_quote": "He rushes in anyway, so as not to leave anyone behind",
+    "subject": "Thorin enters",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin has a passive perception of 12.",
+    "source_quote": "Thorin's passive 12 would also have been enough",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The session pauses when the GM's Roll20 container crashes.",
+    "source_quote": "The session pauses briefly when the GM's Roll20 container crashes",
+    "subject": "GM crash",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM crash prompts a conversation detour about JavaScript.",
+    "source_quote": "prompting a detour about JavaScript",
+    "subject": "JavaScript detour",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A death dog lurks in the cavern near a group of derro.",
+    "source_quote": "A death dog lurked near a group of derro who had not noticed the intruders",
+    "subject": "death dog",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "A group of derro are present in the cavern and have not noticed the intruders.",
+    "source_quote": "a group of derro who had not noticed the intruders",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party makes stealth checks resulting in 18, 16, and 7, plus Zalthir.",
+    "source_quote": "The group stealth check comes in at 18, 16, and 7, plus Zalthir",
+    "subject": "stealth checks",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin makes his stealth roll at disadvantage.",
+    "source_quote": "Thorin rolls at disadvantage",
+    "subject": "Thorin disadvantage",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A five-foot natural platform stands at the center of the chamber.",
+    "source_quote": "At the center of the chamber stood a five-foot natural platform",
+    "subject": "natural platform",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The natural platform holds a glowing ritual circle and several books.",
+    "source_quote": "On it were a glowing ritual circle and several books with pages made from trillimac mushroom caps",
+    "subject": "natural platform",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The books on the platform have pages made from trillimac mushroom caps.",
+    "source_quote": "several books with pages made from trillimac mushroom caps",
+    "subject": "trillimac mushroom cap books",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The books are filled with mad scribblings.",
+    "source_quote": "filled with mad scribblings",
+    "subject": "trillimac mushroom cap books",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The books are laid out almost but not quite in a line.",
+    "source_quote": "laid out almost but not quite in a line",
+    "subject": "trillimac mushroom cap books",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Errde Blackskull is a member of the Stone Guard.",
+    "source_quote": "Errde Blackskull of the Stone Guard",
+    "subject": "Errde Blackskull",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Errde Blackskull wants physical evidence of a demonic conspiracy within the Council of Savants.",
+    "source_quote": "Errde Blackskull of the Stone Guard wanted in order to expose a demonic conspiracy within the Council of Savants",
+    "subject": "evidence sought",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Council of Savants is suspected of containing a demonic conspiracy.",
+    "source_quote": "expose a demonic conspiracy within the Council of Savants",
+    "subject": "Council of Savants",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard is an organization Errde Blackskull belongs to.",
+    "source_quote": "Errde Blackskull of the Stone Guard",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak is the cult leader of the derro in the cavern.",
+    "source_quote": "The cult leader Narrak picked up one of the books",
+    "subject": "Narrak",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak picks up one of the books on the platform.",
+    "source_quote": "The cult leader Narrak picked up one of the books",
+    "subject": "Narrak reads",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A follower asks Narrak what they are doing.",
+    "source_quote": "When a follower asked what they were doing",
+    "subject": "follower question",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak declares that their experiments serve the elevation of the derro, the triumph of Demogorgon, and the destruction of the duergar.",
+    "source_quote": "he declared that their experiments served the elevation of the derro, the triumph of Demogorgon, and the destruction of the duergar",
+    "subject": "Narrak declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Narrak seeks the destruction of the duergar.",
+    "source_quote": "the destruction of the duergar",
+    "subject": "duergar",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Narrak seeks the triumph of Demogorgon.",
+    "source_quote": "the triumph of Demogorgon",
+    "subject": "Demogorgon",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak orders his followers to stand back because none of them can read the book.",
+    "source_quote": "He ordered his crowding followers to stand back, since none of them could read the book",
+    "subject": "stand back order",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Narrak announces that he has found the spell they need.",
+    "source_quote": "announced he had found \"the spell we need\"",
+    "subject": "spell found",
+    "quote_verified": false
+  },
+  {
+    "type": "faction",
+    "fact": "The Ember Vanguard watches the scene from the shadows.",
+    "source_quote": "The Ember Vanguard watched from the shadows",
+    "subject": "Ember Vanguard",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The Ember Vanguard knows that the most dangerous part of their mission is only just beginning.",
+    "source_quote": "knowing that the most dangerous part of their mission was only just beginning",
+    "subject": "mission begins",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM notes that she would always prefer real evidence to manufactured evidence.",
+    "source_quote": "The GM notes she would always prefer real evidence to manufactured evidence",
+    "subject": "GM preference",
+    "quote_verified": true
+  }
+]

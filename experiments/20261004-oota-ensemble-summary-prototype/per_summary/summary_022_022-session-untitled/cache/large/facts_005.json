@@ -1,0 +1,303 @@
+[
+  {
+    "type": "location",
+    "fact": "The party is in western tunnels approximately 100 feet from a derro patrol.",
+    "source_quote": "About 100 feet down that path",
+    "subject": "western tunnels",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The derro patrol consists of four guards.",
+    "source_quote": "The party encounters a patrol of four derro guards",
+    "subject": "derro patrol",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Derro have an Intelligence and Wisdom score of 3.",
+    "source_quote": "the derro have intelligence and wisdom of 3",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Derro have a Perception score of 7.",
+    "source_quote": "and a perception of 7",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "Derro worship a dual-headed master.",
+    "source_quote": "asked whether they worshipped the dual-headed master",
+    "subject": "derro",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party attempted to walk past the derro patrol confidently with a group deception roll of 21.",
+    "source_quote": "helped by the derros' wretched wisdom and a deception roll of 21",
+    "subject": "deception check",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum declared his devotion to Bahamut.",
+    "source_quote": "Gyrgum declared his devotion to Bahamut",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The derro attacked immediately after Gyrgum declared his devotion to Bahamut.",
+    "source_quote": "the derro attacked at once",
+    "subject": "derro attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin rolled a 19 for initiative.",
+    "source_quote": "Thorin won initiative with a 19",
+    "subject": "initiative roll",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin hit a derro with his longsword for 6 damage.",
+    "source_quote": "His longsword hits (13) for 6 damage",
+    "subject": "Thorin attack",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's Sap mastery left his target at disadvantage on its next attack.",
+    "source_quote": "his Sap mastery left his target at disadvantage",
+    "subject": "Sap mastery effect",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The allied crew attacked twice for 8 and 4 damage.",
+    "source_quote": "The allied crew attacks twice, for 8 and 4 damage",
+    "subject": "allies attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro was left at 1 hit point after the allied crew's attacks.",
+    "source_quote": "leaving one derro at 1 hit point",
+    "subject": "derro 1",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir moved his magical darkness over two of the enemies.",
+    "source_quote": "Zalthir moved his magical darkness over two of the enemies",
+    "subject": "Zalthir darkness move",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir landed a critical unarmed strike for 12 damage from inside his darkness.",
+    "source_quote": "landed a critical unarmed strike for 12 damage from inside it",
+    "subject": "Zalthir critical hit",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "The derro hit by Zalthir's critical strike was left at 1 hit point.",
+    "source_quote": "leaving that derro at 1 hit point",
+    "subject": "derro 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz split a first-level magic missile, killing one wounded derro and hitting another.",
+    "source_quote": "Daz split a first-level magic missile, sending one dart to finish off a wounded derro and the rest into another",
+    "subject": "Daz first volley",
+    "quote_verified": false
+  },
+  {
+    "type": "monster",
+    "fact": "Derro 1 was killed by Daz's magic missile.",
+    "source_quote": "sending one dart to finish off a wounded derro",
+    "subject": "derro 1",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Daz could not target the derro hidden in the darkness with his magic missiles.",
+    "source_quote": "He can't target the derro hidden in the darkness",
+    "subject": "derro 2",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro swung at Zalthir with hooked spears and missed.",
+    "source_quote": "The derro swing back with hooked spears at Zalthir and miss",
+    "subject": "derro 3",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum cast Tasha's Caustic Brew as a line across multiple targets.",
+    "source_quote": "Gyrgum casts Tasha's Caustic Brew as a line across multiple targets",
+    "subject": "Gyrgum spell",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro number four failed its saving throw against Tasha's Caustic Brew and was coated in acid.",
+    "source_quote": "derro number four fails and is coated in acid",
+    "subject": "derro 4",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro 4 is burning from the acid, which lasts until scraped off.",
+    "source_quote": "acid that burns each turn until scraped off",
+    "subject": "derro 4",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "One derro succeeded its saving throw against Tasha's Caustic Brew.",
+    "source_quote": "One derro saves",
+    "subject": "derro 5",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro 3 charged Gyrgum screaming about death to Bahamut.",
+    "source_quote": "A derro charges Gyrgum screaming about death to Bahamut",
+    "subject": "derro 3",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum parried the spear strike from the charging derro.",
+    "source_quote": "Gyrgum parries the spear strike",
+    "subject": "Gyrgum parry",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin killed his opponent with 7 damage.",
+    "source_quote": "Thorin kills his opponent with another 7 damage",
+    "subject": "Thorin kill",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro 2 was killed by Thorin's attack.",
+    "source_quote": "Thorin kills his opponent",
+    "subject": "derro 2",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin took up a Guardian stance.",
+    "source_quote": "Thorin took up a Guardian stance",
+    "subject": "Thorin Guardian stance",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro 4 went after Zalthir.",
+    "source_quote": "When derro number four goes after Zalthir",
+    "subject": "derro 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin's opportunity attack dealt 7 damage to derro 4.",
+    "source_quote": "Thorin's opportunity attack deals 7",
+    "subject": "Thorin opportunity attack",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Derro 4 was cut down by Thorin's opportunity attack.",
+    "source_quote": "cuts it down",
+    "subject": "derro 4",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fired two magic missiles at the derro with 6 hit points.",
+    "source_quote": "Daz fires more magic missiles: two at the derro with 6 hit points",
+    "subject": "Daz second volley",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fired one magic missile at the derro with 8 hit points.",
+    "source_quote": "and one at the derro with 8",
+    "subject": "Daz second volley",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro with 8 hit points was dropped to 3 hit points.",
+    "source_quote": "dropping it to 3",
+    "subject": "derro 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Zalthir's attacks on the remaining derro missed.",
+    "source_quote": "Zalthir's attacks all miss",
+    "subject": "derro 3",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The derro with 6 hit points was hit by Daz's missiles, leaving it at 4 hit points.",
+    "source_quote": "two at the derro with 6 hit points",
+    "subject": "derro 5",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum cast True Strike on his mace.",
+    "source_quote": "Gyrgum cast True Strike on his mace",
+    "subject": "Gyrgum True Strike",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum hit the last standing derro with a 13 roll.",
+    "source_quote": "hits with a 13",
+    "subject": "Gyrgum final hit",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum killed the last standing derro with a bone-crushing blow of his mace.",
+    "source_quote": "killed the last standing derro with a bone-crushing blow of his mace",
+    "subject": "Gyrgum kill",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The last derro died, its body splattering across the ground with broken vertebrae.",
+    "source_quote": "goes splattering across the ground with a couple of broken vertebrae",
+    "subject": "derro 5",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Gyrgum remarked that one head was better than two while standing over the fallen patrol.",
+    "source_quote": "remarked with quiet arrogance that one head was indeed better than two",
+    "subject": "Gyrgum comment",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party continued down the underground corridor.",
+    "source_quote": "the party continues down the underground corridor",
+    "subject": "party movement",
+    "quote_verified": true
+  }
+]

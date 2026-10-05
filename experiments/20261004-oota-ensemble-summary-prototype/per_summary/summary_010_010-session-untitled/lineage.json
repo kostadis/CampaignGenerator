@@ -1,0 +1,26 @@
+{
+ "chapter": 10,
+ "kind": "summary",
+ "inputs": [
+  "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/010-session-untitled.md"
+ ],
+ "session": null,
+ "reason": "direct summary; filename numeric prefix is authoritative",
+ "passes": {
+  "small": "summary",
+  "large": "summary",
+  "sweep": "summary",
+  "temporal": "summary"
+ },
+ "source_path": "/home/kostadis/out-of-the-abyss/out-of-the-abyss/docs/summaries/010-session-untitled.md",
+ "chapter_identity": {
+  "authoritative": 10,
+  "source": "filename_numeric_prefix",
+  "heading": 10
+ },
+ "heading_chapter": 10,
+ "chapter_mismatch": false,
+ "omitted_passes": [
+  "interiority"
+ ]
+}

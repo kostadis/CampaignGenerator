@@ -1,0 +1,37 @@
+[
+  {
+    "type": "location",
+    "fact": "Cairngorm Cavern is located in Gracklstugh and serves as the site where stone giants commune with the stone.",
+    "source_quote": "communing with the stone deep in Cairngorm Cavern",
+    "subject": "Cairngorm Cavern",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Dorhun is a stone giant and an apprentice to Stonespeaker Hgraam.",
+    "source_quote": "Dorhun, a stone giant and fellow apprentice to the revered Stonespeaker Hgraam",
+    "subject": "Dorhun",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Rihuud was a stone giant apprentice who went mad and sprouted a second head.",
+    "source_quote": "sprouted a second head while communing with the stone",
+    "subject": "Rihuud",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The duergar soldiers shrink back to their normal size with an audible pop.",
+    "source_quote": "the duergar soldiers shrank back to their normal size with an audible pop",
+    "subject": "duergar soldiers shrink",
+    "quote_verified": true
+  },
+  {
+    "type": "faction",
+    "fact": "The Stone Guard duergar belong to a different clan from the first group of militia encountered.",
+    "source_quote": "The party notices the \"Stone Guard\" duergar belong to a different clan from the first group",
+    "subject": "Stone Guard",
+    "quote_verified": true
+  }
+]

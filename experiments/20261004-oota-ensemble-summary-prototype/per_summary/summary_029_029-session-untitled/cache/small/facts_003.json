@@ -1,0 +1,128 @@
+[
+  {
+    "type": "npc",
+    "fact": "Gyrgum describes himself as a completionist.",
+    "source_quote": "a little bit of a completionist",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party enters the unexplored southern chamber.",
+    "source_quote": "the party went in with Daz hanging back ready to throw fire",
+    "subject": "party enters southern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz hangs back at the rear ready to use fire.",
+    "source_quote": "Daz hanging back ready to throw fire",
+    "subject": "Daz readying fire",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Fargas Rumblefoot previously warned the party that the southern chamber was a decoy.",
+    "source_quote": "Fargas Rumblefoot had once warned them that this chamber was a decoy",
+    "subject": "Fargas Rumblefoot",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The southern chamber is a decoy tomb.",
+    "source_quote": "The party realizes the chamber is the fake tomb mentioned by Fargas Rumblefoot, serving as a decoy for the real burial site",
+    "subject": "southern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The southern chamber contains no danger because its curse was destroyed with the wraith.",
+    "source_quote": "There was no danger whatsoever, because its only curse had already been destroyed along with the wraith",
+    "subject": "southern chamber",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The southern chamber contains canopic jars of desiccated organs.",
+    "source_quote": "it held nothing but canopic jars of desiccated organs",
+    "subject": "canopic jars",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The canopic jars are housed in niches held by stone blocks against the western and eastern walls.",
+    "source_quote": "Stone blocks against the western and eastern walls hold niches with a dozen clay canopic jars",
+    "subject": "canopic jars",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sarcophagus rests on a black marble bier.",
+    "source_quote": "The sarcophagus rests on a black marble bier",
+    "subject": "sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The sarcophagus is decorated with mosaics depicting great floating cities.",
+    "source_quote": "a large stone sarcophagus decorated with mosaics depicting great floating cities",
+    "subject": "sarcophagus",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin opens the door to the southern chamber.",
+    "source_quote": "Thorin has already opened the door",
+    "subject": "Thorin opens door",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir boasts that he can punch the sarcophagus lid off.",
+    "source_quote": "Zalthir boasts, \"I bet I can punch it off. That's kind of my thing.\"",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin pushes the sarcophagus lid, causing it to fly off.",
+    "source_quote": "Thorin pushes the lid, which flies off",
+    "subject": "Thorin removes lid",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The sarcophagus lid is light due to a magical enchantment.",
+    "source_quote": "The heavy-looking stone lid turns out to be light, thanks to a magical enchantment",
+    "subject": "lid enchantment revealed",
+    "quote_verified": true
+  },
+  {
+    "type": "thread",
+    "fact": "Zalthir notes that the party is still being pursued.",
+    "source_quote": "Zalthir notes they are still being pursued",
+    "subject": "pursuers",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The GM confirms that nothing will respawn now that the big bad is dead.",
+    "source_quote": "The GM confirms that nothing will respawn now that the big bad is dead",
+    "subject": "GM confirms no respawn",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The wraith is dead, having been killed previously.",
+    "source_quote": "its only curse had already been destroyed along with the wraith",
+    "subject": "wraith",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party exits the tomb complex back into the Underdark caverns.",
+    "source_quote": "the party exits the tomb complex back into the Underdark caverns",
+    "subject": "party exits tomb",
+    "quote_verified": true
+  }
+]

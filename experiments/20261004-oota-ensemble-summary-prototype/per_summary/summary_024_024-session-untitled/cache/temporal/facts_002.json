@@ -1,0 +1,58 @@
+[
+  {
+    "type": "npc",
+    "fact": "Zalthir's eldritch tattoo tentacles stretch fifteen feet into the darkness.",
+    "source_quote": "stretched fifteen feet into the darkness",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Grula-Munga hits Thorin for 13 damage.",
+    "source_quote": "Grula-Munga struck back hard, hitting Thorin for 13 damage",
+    "subject": "Grula-Munga strike on Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thorin has an Armor Class of 18.",
+    "source_quote": "rolling 14 and 11 against his AC 18",
+    "subject": "Thorin's Armor Class",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir's tattoo strikes hit Grula-Munga for 8 and 5 damage.",
+    "source_quote": "hits for 8 and 5",
+    "subject": "Zalthir's tattoo strikes on Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "Grula-Munga's hit points are reduced to 41 after Zalthir's initial tattoo strikes.",
+    "source_quote": "The ettin is then at 41 hit points",
+    "subject": "Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir spends a focus point to deal an additional 12 damage to Grula-Munga.",
+    "source_quote": "Zalthir spends a focus point for a third hit of 12",
+    "subject": "Zalthir's third tattoo strike",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin deals 8 damage to Grula-Munga with his longsword.",
+    "source_quote": "Thorin presses the advantage against the massive ettin with his longsword, attacking with advantage and dealing 8 damage",
+    "subject": "Thorin's attack on Grula-Munga",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz strikes down a weakened derro cultist with three bolts of Magic Missile.",
+    "source_quote": "He unleashed all three glowing darts of Magic Missile on a single weakened derro cultist and strikes him down",
+    "subject": "Daz's killing blow",
+    "quote_verified": false
+  }
+]

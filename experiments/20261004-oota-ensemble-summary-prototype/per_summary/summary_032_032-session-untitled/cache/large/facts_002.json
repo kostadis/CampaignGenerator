@@ -1,0 +1,191 @@
+[
+  {
+    "type": "event",
+    "fact": "A mock wedding ceremony begins with a chamberlain and bridesmaid standing in for Araumycos and Zuggtmoy.",
+    "source_quote": "a mock wedding ceremony played out before them, with a chamberlain and bridesmaid standing in for Araumycos and Zuggtmoy",
+    "subject": "mock wedding start",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Three spore servants rise from the garden and carry the slain Yestabrod\u2019s corpse like a puppet to play the priest.",
+    "source_quote": "Three spore servants rose from the garden and carried the recently slain Yestabrod\u2019s corpse like a grotesque puppet, forcing it to play the priest",
+    "subject": "Yestabrod puppetization",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "A vision overtakes the party, replacing the mock wedding with the interior of a great tower.",
+    "source_quote": "a vision overtook them all. The mock wedding vanished, replaced by the interior of a great tower",
+    "subject": "Zuggtmoy vision start",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The tower walls are carved with spiraling stairs and balconies and covered in phosphorescent mold.",
+    "source_quote": "whose walls were carved with spiraling stairs and balconies. Phosphorescent mold grew across it in glowing whorls",
+    "subject": "Zuggtmoy's tower (vision)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "A woman-like figure made entirely of fungi and mold floats in the center of the tower, three times the height of the bridesmaids.",
+    "source_quote": "At its center floated a woman-like figure made entirely of fungi and mold, three times the height of the fungal bridesmaids tending her",
+    "subject": "Zuggtmoy (vision)",
+    "quote_verified": true
+  },
+  {
+    "type": "monster",
+    "fact": "The bridesmaids sing a soothing song while weaving the figure's substance into lichen veils and a mycelium bridal train.",
+    "source_quote": "They sang a strange, soothing song while weaving her substance into delicate lichen veils and a long mycelium bridal train",
+    "subject": "fungal bridesmaids",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The vision ends and the rehearsal participants retreat into the Majestic Mushroom.",
+    "source_quote": "Once the vision ends, the rehearsal participants retreat into the Majestic Mushroom",
+    "subject": "vision end",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "The Majestic Mushroom is a colossal structure reaching nearly from floor to ceiling of its cavern.",
+    "source_quote": "the mushroom still reaches nearly from floor to ceiling",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "Thousands of lesser fungi cling to the central stalk, which divides into secondary stalks with caps large enough to top great towers.",
+    "source_quote": "Thousands of lesser fungi cling to the central stalk, which divides into secondary stalks whose caps are large enough to top great towers",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "location",
+    "fact": "A carpet of fungi covers the cavern floor and eerie luminescence pours from slitted windows cut into the trunk.",
+    "source_quote": "A carpet of fungi covers the cavern floor around it, and eerie luminescence pours from slitted windows cut into its trunk",
+    "subject": "Majestic Mushroom",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party wets strips of cloth and covers their mouths and noses to protect against spores.",
+    "source_quote": "they wetted strips of cloth and covered their mouths and noses against the spores drifting through the air",
+    "subject": "spore protection",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz fails to resist the local madness despite his precautions.",
+    "source_quote": "Daz was overcome by short-term madness",
+    "subject": "Daz madness onset",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Daz experiences vivid hallucinations of happy elf families, dwarves and elves living in peace, countless pictures of dogs, and a drow city without spiders.",
+    "source_quote": "experienced vivid hallucinations of happy elf families, dwarves and elves living in peace, countless pictures of dogs, and, most horrifyingly for a drow, a city without spiders",
+    "subject": "Daz",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Daz screams, hides, and struggles to distinguish hallucinations from reality.",
+    "source_quote": "He screamed, hid, and struggled to distinguish the hallucinations from reality",
+    "subject": "Daz madness reaction",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party searches the equipment piled near Xinaya\u2019s burial place and finds magical studded leather armor and scrolls.",
+    "source_quote": "the party collected equipment piled near Xinaya\u2019s burial place, including finely crafted studded leather armor and magical scrolls",
+    "subject": "equipment recovery",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir becomes possessed by greed and hoards the recovered scrolls.",
+    "source_quote": "a maddening greed seized him. He hoarded the scrolls",
+    "subject": "Zalthir greed onset",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir declares the scrolls are his and refuses to share them.",
+    "source_quote": "He snapped, \u201cThese are mine. I found them,\u201d refusing to share them with anyone",
+    "subject": "Zalthir possession declaration",
+    "quote_verified": false
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir reiterates his ownership and warns others not to touch the items.",
+    "source_quote": "\u201cI\u2019ll work it out later. These are mine. Don\u2019t touch them.\u201d",
+    "subject": "Zalthir further declaration",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir was affected by spores released during the earlier battle with Yestabrod.",
+    "source_quote": "both Zalthir and Daz had inhaled spores released by Yestabrod during their earlier battle",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Gyrgum asks their ghostly companion for a diagnosis of the madness.",
+    "source_quote": "When Gyrgum asks their ghostly companion for a diagnosis",
+    "subject": "Gyrgum",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "The ghostly companion identifies itself as a ghost, a traitor, and a gem cutter, stating it is not a doctor.",
+    "source_quote": "he answers, \u201cI am a ghost. I am a traitor. I am a gem cutter. I am not a doctor.\u201d",
+    "subject": "ghostly companion",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Thorin uses Dawnbringer's restorative power to cast Lesser Restoration on Zalthir.",
+    "source_quote": "Thorin used Dawnbringer\u2019s restorative power on Zalthir, reasoning that the affliction might be a disease",
+    "subject": "Zalthir cure",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Zalthir's madness is cured, leaving him bewildered and apologetic.",
+    "source_quote": "The magic worked, breaking his madness and leaving him bewildered and apologetic",
+    "subject": "Zalthir",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "Zalthir apologizes and explains he did not know what came over him but possessing the treasure felt critically important.",
+    "source_quote": "He admitted that he did not know what had come over him, only that possessing the treasure had suddenly felt critically important",
+    "subject": "Zalthir apology",
+    "quote_verified": true
+  },
+  {
+    "type": "event",
+    "fact": "The party decides not to take a passage beyond the Majestic Mushroom because it leads deeper into Zuggtmoy's realm.",
+    "source_quote": "The party considers another passage beyond the Majestic Mushroom but learns that following it would take them deeper into Zuggtmoy\u2019s realm",
+    "subject": "route decision",
+    "quote_verified": true
+  },
+  {
+    "type": "npc",
+    "fact": "Thorin decides not to proceed deeper into Zuggtmoy's realm.",
+    "source_quote": "Thorin decides, \u201cYeah, no, let\u2019s not do that.\u201d",
+    "subject": "Thorin",
+    "quote_verified": true
+  },
+  {
+    "type": "object",
+    "fact": "The party recovers finely crafted studded leather armor near Xinaya's burial place.",
+    "source_quote": "finely crafted studded leather armor",
+    "subject": "studded leather armor",
+    "quote_verified": true
+  }
+]
