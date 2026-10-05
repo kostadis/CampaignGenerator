@@ -42,6 +42,7 @@ pipelines/grounding/thread_registry.py  # CLI: narrative-thread canon — propos
 pipelines/rlm/query.py      # CLI: search summaries
 pipelines/grounding/planning.py         # CLI: NPC dossiers + arc scores → planning.md
 pipelines/grounding/party.py            # CLI: character sheets + summaries → party.md
+pipelines/summary_native/     # CLI: summary_native — validate | build | synth | compare; grounding-doc drafts straight from reviewed structured summaries
 pipelines/content_ingest/dnd_sheet.py  # CLI: D&D Beyond PDF → markdown (vision API)
 pipelines/workspace/new_workspace.py  # CLI: create a new campaign workspace
 pipelines/session_prep/transform.py  # CLI: NotebookLLM dossiers → prep input
@@ -82,6 +83,7 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/design/GenreRulebook_implementation.md` | The *why* behind it — three copies, the two fixes, the decision table, and what the verification render found |
 | `docs/cli/quote_verification_howto.md` | Using quote verification: `sd_verify_quotes` / `sd_agent`, the five verdicts, why `near` ≠ safe, raw-vs-`.cleaned` VTT choice, every error message. Deterministic, zero-token, no backend — optional and auto-corrects nothing |
 | `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page — **and the Threads page** (`/grounding/threads`): harvest → rule → build, the two candidate bands, why an accepted thread keeps resurfacing, every refusal decoded |
+| `docs/cli/summary_native_howto.md` | **Start here for summary-native grounding docs.** Task-oriented: the summary format, `validate` (every finding code), range choice, `build`, possible duplicates (fix the summaries; `canon.yaml` rulings), `synth` for all four docs, `compare`, promoting by hand, every refusal and exit code decoded, and an Out of the Abyss worked example |
 | `docs/cli/provenance_howto.md` | **Start here for `provenance`.** Task-oriented: trust a hit or don't, scope to canon, chapter horizons, resolve a name, cross-campaign, what to do when results look wrong |
 | `docs/cli/provenance_search.md` | The reference behind it — the two hand-authored files (`~/src/campaigns/provenance.yaml`, per-campaign `docs/corrections.yaml`): trust tiers, corrections matching, all ten `check` findings |
 | `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |

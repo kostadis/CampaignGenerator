@@ -283,7 +283,7 @@ description: "Task list for 031 summary-native grounding docs"
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T054 [P] Write `docs/cli/summary_native_howto.md` (user directive). Cover:
+- [X] T054 [P] Write `docs/cli/summary_native_howto.md` (user directive). Cover:
   - what the path is and how it differs from the other three;
   - the input format with a minimal example file;
   - `validate` (the one-pass report, every finding code and how to fix each, the out-of-range section, gaps);
@@ -294,12 +294,12 @@ description: "Task list for 031 summary-native grounding docs"
   - `compare` and promoting by hand (`cp` after review);
   - every refusal and exit code decoded;
   - a worked OOTA example.
-- [ ] T055 [P] Add the how-to to the docs index and the architecture doc:
+- [X] T055 [P] Add the how-to to the docs index and the architecture doc:
   - `docs/README.md`: link it in the CLI section;
   - `CLAUDE.md`: add a "Detailed docs" table row for `docs/cli/summary_native_howto.md` and a project-structure line for `pipelines/summary_native/`;
   - `docs/core/architecture.md`: add the fourth rendering path and a "common task → start here" row.
-- [ ] T056 Run quickstart Q1–Q6 against the real OOTA corpus. Record the results (timings, counts vs 67/409, byte-stable yes/no) in `specs/031-summary-native-grounding/session-log.md`. Do not edit any summary file. If 070 is still unfixed, report it rather than working around it.
-- [ ] T057 COMMIT "docs: summary_native CLI how-to and index links"
+- [X] T056 Run quickstart Q1–Q6 against the real OOTA corpus. Record the results (timings, counts vs 67/409, byte-stable yes/no) in `specs/031-summary-native-grounding/session-log.md`. Do not edit any summary file. If 070 is still unfixed, report it rather than working around it.
+- [X] T057 COMMIT "docs: summary_native CLI how-to and index links"
 - [ ] T058 REVIEW `/code-review` on T057's commit. Fix and commit.
 - [ ] T059 Push the branch and open a PR to `main` via `mcp__github__create_pull_request`, linking #499. The body summarises SC status and lists SC-008 as pending GM judgment. Do not merge; wait for the user.
 

@@ -24,9 +24,10 @@ the start and end are the first and last chapters present.
 | Code | Meaning |
 |---|---|
 | 0 | success |
-| 1 | validation found blocking problems (report printed and written) |
+| 1 | validation found blocking problems (report printed). `validate` and `build` also write it; `synth` exits 1 too when the range has blocking problems, and prints the report without writing it |
 | 2 | usage / refusal (bad range, missing input, mixed corpus, existing output without `--force`) |
 | 3 | synthesis produced an incomplete document (`.incomplete.md` written) |
+| 4 | the model call failed in a part (`synth` only). `record.json` keeps `check.error`; stderr names the part, the exception and the record path. No draft is written |
 
 ## `summary_native validate`
 
@@ -92,13 +93,20 @@ adds the pair to `canon.yaml` under `not_duplicates`, and re-runs.
 built range directory and refuses otherwise. Before rendering, it re-runs validation and compares
 every in-range file's sha256 against `manifest.json`. On any mismatch it exits 2 with
 "summaries changed since build — run `summary_native build --force`" (FR-005b).
+Blocking validation problems in the range exit 1 instead (as `validate`/`build`).
+It also compares the sha256 of the entity registry `build` would use now (the
+auto-discovered `docs/entity_registry.yaml`, or an explicit `--registry`; absent =
+none) with the one recorded in `manifest.json` (`canon.registry_sha256`); on mismatch
+it exits 2 with "entity registry changed since build — run `summary_native build
+--force`". `canon.yaml` changes do not make a corpus stale: they affect validation
+findings only, never the corpus.
 
 | Flag | Applies to | Meaning |
 |---|---|---|
-| `--world-state FILE` | campaign_state, party, planning | GM-reviewed world-state draft to use as context (FR-020) |
-| `--campaign-state FILE` | party, planning | GM-reviewed campaign-state draft |
+| `--world-state FILE` | campaign_state, party, planning | GM-reviewed world-state draft to use as context (FR-020). Any other doc exits 2: "--world-state does not apply to world_state" |
+| `--campaign-state FILE` | party, planning | GM-reviewed campaign-state draft. Any other doc exits 2 ("--campaign-state does not apply to …") |
 | `--audit FILE…` | campaign_state | tracking / planning / module files treated as questions (FR-019); default `grounding.yaml campaign_state.track_files` |
-| `--party-config PATH` | party | default `<config dir>/party.yaml`; resolved against the campaign root. Missing/invalid/empty roster, or a missing sheet/backstory/arc-score file, exits 2. Refused for other docs |
+| `--party-config PATH` | party | default `<config dir>/party.yaml`; resolved against the campaign root. Missing/invalid/empty roster (one error line), or a missing sheet/backstory/arc-score file, exits 2. Refused for other docs |
 | `--planning-config PATH` | planning | default `<config dir>/planning.yaml`; an absent *default* file means no arc scores, an absent *explicit* path exits 2. With no arc score configured the `## Threat Tracker` body must be exactly `_No arc scores configured._` or the run is incomplete (exit 3, "threat tracker must be empty: no arc scores configured"). Planning selects NPC dossiers only. Refused for other docs |
 | `--recent-chapters N` | all | default 4 (from config) |
 | `--recurring-min N` | all | default 10 (from config) |

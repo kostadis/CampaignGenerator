@@ -24,6 +24,8 @@ from pipelines.summary_native import context, corpus, schema, select, validate
 
 EXIT_REFUSED = 2
 EXIT_INCOMPLETE = 3
+EXIT_MODEL_FAILED = 4
+EXIT_BLOCKING = 1
 
 
 def load_outline(doc: str) -> list[str]:
@@ -131,13 +133,21 @@ def _rel(path: Path, root: Path) -> str:
         return Path(path).as_posix()
 
 
-def _check_fresh(report, range_dir: Path, root: Path) -> str | None:
-    """FR-005b: refuse on blocking findings or any in-range file differing from the manifest."""
-    if report.blocking_count:
-        return report.to_markdown() + "\nvalidation has blocking problems; fix the summaries, then build --force"
+def _check_fresh(report, range_dir: Path, root: Path, manifest: dict, registry_path: Path | None) -> str | None:
+    """FR-005b: refuse when any in-range file, or the entity registry, differs from the build.
+
+    The registry is hashed because it decides how headings group into dossiers, so a
+    changed registry means the built corpus no longer matches what ``build`` would
+    produce now. canon.yaml is deliberately NOT compared: it holds not-a-duplicate
+    rulings that affect validation findings only, never the corpus content.
+    """
     state = corpus.describe_existing(range_dir, report, root)
     if state is None or state.get("state") != "matches":
         return "summaries changed since build — run `summary_native build --force`"
+    built = (manifest.get("canon") or {}).get("registry_sha256")
+    now_sha = corpus.sha256_file(registry_path) if registry_path is not None and registry_path.is_file() else None
+    if built != now_sha:
+        return "entity registry changed since build — run `summary_native build --force`"
     return None
 
 
@@ -152,6 +162,7 @@ def run_synth(
     recent_chapters: int,
     recurring_min: int,
     parts: int,
+    registry_path: Path | None = None,
     now=None,
 ) -> int:
     now = now or _utcnow
@@ -160,15 +171,24 @@ def run_synth(
         return _refuse(f"synth {doc}: not implemented yet (available: {', '.join(schema.SYNTH_DOCS)})")
     if args.audit and doc != "campaign_state":
         return _refuse(f"--audit applies to campaign_state only, not {doc}")
+    for flag, owners in (("world_state", ("campaign_state", "party", "planning")),
+                         ("campaign_state", ("party", "planning"))):
+        if getattr(args, flag, None) and doc not in owners:
+            return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}")
     for flag, owner in (("party_config", "party"), ("planning_config", "planning")):
         if getattr(args, flag, None) and doc != owner:
             return _refuse(f"--{flag.replace('_', '-')} applies to {owner} only, not {doc}")
 
+    if report.blocking_count:
+        # Same outcome as validate/build: the summaries need fixing, not the flags.
+        print(report.to_markdown(), end="")
+        print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
+        return EXIT_BLOCKING
     try:
         manifest = corpus.load_manifest(range_dir, require_complete=True)
     except corpus.CorpusError as e:
         return _refuse(str(e))
-    stale = _check_fresh(report, range_dir, root)
+    stale = _check_fresh(report, range_dir, root, manifest, registry_path)
     if stale:
         return _refuse(stale)
 
@@ -305,7 +325,12 @@ def run_synth(
             out = render_part(client, system, user, args.model, args.max_tokens)
         except Exception as e:
             fail(f"part {k}: {type(e).__name__}: {e}")
-            raise
+            print(
+                f"Error: model call failed in part {k}: {type(e).__name__}: {e} "
+                f"(see runs/{doc}/{run_id}/record.json)",
+                file=sys.stderr,
+            )
+            return EXIT_MODEL_FAILED
         atomic_write_text(run_dir / f"part-{k}.out.md", out)
         outputs.append(out.strip())
     joined = "\n\n".join(outputs) + "\n"

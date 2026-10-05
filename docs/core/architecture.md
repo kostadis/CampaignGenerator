@@ -283,6 +283,7 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 | [`campaign_state.py`](../../pipelines/grounding/campaign_state.py) | `docs/campaign_state.md` (what's done, active threads) | summaries.md |
 | [`make_tracking.py`](../../pipelines/grounding/make_tracking.py) | per-character/faction arc tracking files | adventure module |
 | [`arc_triggers.py`](../../pipelines/grounding/arc_triggers.py) | candidate trigger events from chronicle | mempalace |
+| [`summary_native`](../../pipelines/summary_native/cli.py) | the fourth rendering path: drafts of all four grounding docs under `docs/summary_native/ch<since>-<until>/drafts/` (never the live files) | reviewed structured summaries, parsed with no model; one render call per doc. See [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md) |
 
 ### RLM / retrieval
 
@@ -414,6 +415,7 @@ A fast-orientation table for "I need to change X, where does it live?"
 | Touch the proposal-gate | [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py) — `require_approved_proposal` is the choke point |
 | Render a 5etools entity to prose | [`fivetools_render.py`](../../pipelines/content_ingest/fivetools_render.py) (`render_<type>` family); resolve `_copy` first via [`fivetools_copy.py`](../../pipelines/content_ingest/fivetools_copy.py) |
 | Convert a new RPG PDF | [`convert_book.py`](../../pipelines/content_ingest/convert_book.py) (wraps pdf-translators); then [`fivetools_ingest.py`](../../pipelines/content_ingest/fivetools_ingest.py) — keep the steps explicit |
+| Build grounding docs straight from reviewed session summaries | [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md); code in [`pipelines/summary_native/`](../../pipelines/summary_native/cli.py) |
 
 ## Detailed docs
 

@@ -1,7 +1,7 @@
 """summary_native CLI: validate | build | synth | compare.
 
 Exit codes (contracts/cli.md): 0 ok, 1 blocking validation problems, 2 refusal,
-3 incomplete synthesis.
+3 incomplete synthesis, 4 model call failed.
 Config is resolved AFTER ``parse_args`` because ``find_default_config`` raises.
 """
 
@@ -122,9 +122,8 @@ def main(argv: list[str] | None = None) -> int:
         else float(cfg.get("dup_threshold", schema.DEFAULT_DUP_THRESHOLD))
     )
 
-    uses_registry = args.command in ("validate", "build")
     registry_path = None
-    if uses_registry:
+    if args.command != "compare":  # synth hashes the registry for its staleness check
         if args.registry:
             given = _under(root, args.registry)
             if given.is_dir():
@@ -137,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
             registry_path = find_registry(root)  # the campaign root, not the cwd
     canon_path = _under(root, args.canon) if args.canon else out_root / "canon.yaml"
     reg_obj = None
-    if registry_path is not None:
+    if registry_path is not None and args.command in ("validate", "build"):
         try:
             reg_obj = load_registry(registry_path)
         except Exception as e:  # yaml.YAMLError, KeyError, AttributeError, TypeError, ValueError, OSError
@@ -169,7 +168,7 @@ def main(argv: list[str] | None = None) -> int:
 
 def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path, canon_path, grouper) -> int:
     if args.command == "synth":
-        return _synth(args, root, config_path, cfg, report, range_dir)
+        return _synth(args, root, config_path, cfg, report, range_dir, registry_path)
     if args.command == "compare":
         return _compare(args, root, range_dir)
     range_dir.mkdir(parents=True, exist_ok=True)
@@ -197,7 +196,7 @@ def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, 
     return 0
 
 
-def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path) -> int:
+def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, registry_path) -> int:
     try:
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
     except ValueError as e:
@@ -206,6 +205,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
     return synth.run_synth(
         args,
         root=root,
+        registry_path=registry_path,
         range_dir=range_dir,
         report=report,
         audit_default=[str(t) for t in track],

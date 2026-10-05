@@ -235,7 +235,8 @@ def test_synth_refuses_stale_corpus(camp, fake, capsys):
 def test_synth_refuses_blocking_validation(camp, fake, capsys):
     f = camp / "summaries" / "002-the-gate.md"
     f.write_text(f.read_text().replace("# Chapter 2", "# Chapter 9"))
-    assert main(["synth", "world_state", *ARGS]) == 2
+    assert main(["synth", "world_state", *ARGS]) == 1  # same as validate/build
+    assert "blocking" in capsys.readouterr().out.lower()  # the report is printed
     assert not fake[0]
 
 
@@ -420,13 +421,15 @@ def test_failed_client_setup_still_writes_record(camp, monkeypatch):
     assert record["check"] == {"complete": False, "error": "no credentials for this backend"}
 
 
-def test_failed_model_call_still_writes_record(camp, monkeypatch, fake):
+def test_failed_model_call_still_writes_record(camp, monkeypatch, fake, capsys):
     def explode(*_a, **_k):
         raise RuntimeError("upstream 529")
 
     monkeypatch.setattr(synth, "render_part", explode)
-    with pytest.raises(RuntimeError):
-        main(["synth", "world_state", *ARGS])
+    assert main(["synth", "world_state", *ARGS]) == 4
+    err = capsys.readouterr().err
+    assert "Error: model call failed in part 1: RuntimeError: upstream 529" in err
+    assert "runs/world_state/" in err and "record.json" in err
     record = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
     assert record["check"]["complete"] is False
     assert "upstream 529" in record["check"]["error"]
@@ -482,6 +485,19 @@ def test_party_config_missing_or_invalid_exits_2(camp, capsys):
     assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
     assert "Nope.md" in capsys.readouterr().err
     assert not run_dirs(camp, "party")
+
+
+def test_party_config_failure_prints_one_error_line(camp, capsys):
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
+    lines = [l for l in capsys.readouterr().err.splitlines() if l.strip()]
+    assert len(lines) == 1 and "--party-config" in lines[0]
+    (camp / "config" / "party.yaml").write_text("characters: not-a-list\n")
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
+    lines = [l for l in capsys.readouterr().err.splitlines() if l.strip()]
+    assert len(lines) == 1 and "--party-config" in lines[0]
+    assert main(["synth", "planning", *ARGS, "--dump-only", "--planning-config", "nope.yaml"]) == 2
+    lines = [l for l in capsys.readouterr().err.splitlines() if l.strip()]
+    assert len(lines) == 1 and "--planning-config" in lines[0]
 
 
 def test_planning_no_arc_scores_prompt_states_empty(camp):
@@ -588,3 +604,49 @@ def test_planning_empty_threat_tracker_fails(camp, fake):
         "## Threat Tracker\n\n",
     )
     assert main(["synth", "planning", *ARGS]) == 3
+
+
+# ── upstream flag applicability, registry staleness ─────────────────────────
+
+
+@pytest.mark.parametrize(
+    "doc,flag,ok",
+    [
+        ("world_state", "--world-state", False),
+        ("world_state", "--campaign-state", False),
+        ("campaign_state", "--world-state", True),
+        ("campaign_state", "--campaign-state", False),
+        ("party", "--world-state", True),
+        ("party", "--campaign-state", True),
+        ("planning", "--world-state", True),
+        ("planning", "--campaign-state", True),
+    ],
+)
+def test_upstream_flag_applicability(camp, capsys, doc, flag, ok):
+    write_party(camp)
+    write_planning(camp)
+    src = "docs/world_state.md" if flag == "--world-state" else "docs/campaign_state.md"
+    rc = main(["synth", doc, *ARGS, "--dump-only", "--force", flag, src])
+    if ok:
+        assert rc == 0
+    else:
+        assert rc == 2
+        assert f"{flag} does not apply to {doc}" in capsys.readouterr().err
+
+
+def test_registry_change_makes_corpus_stale(camp, fake, capsys):
+    calls, _ = fake
+    reg = camp / "docs" / "entity_registry.yaml"
+    reg.write_text("entities: []\n")
+    assert main(["synth", "world_state", *ARGS]) == 2
+    err = capsys.readouterr().err
+    assert "entity registry changed since build" in err and "summary_native build --force" in err
+    assert not calls
+
+
+def test_canon_change_does_not_make_corpus_stale(camp, fake):
+    calls, state = fake
+    state["texts"] = full_text("world_state")
+    (camp / "docs" / "summary_native").mkdir(parents=True, exist_ok=True)
+    (camp / "docs" / "summary_native" / "canon.yaml").write_text("not_duplicates: []\n")
+    assert main(["synth", "world_state", *ARGS]) == 0

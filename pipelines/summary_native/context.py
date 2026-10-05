@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from campaignlib.party_config import load_party_config_arg
+from campaignlib.party_config import load_party_config, resolve_party_config
 from campaignlib.planning_config import load_planning_config, resolve_entries
 from pipelines.summary_native.select import Selection
 
@@ -43,9 +43,15 @@ def _read(path: Path) -> str:
 def party_config_block(path: Path, root: Path) -> DocConfig:
     """The resolved party roster with each sheet and backstory, labelled by path."""
     path = Path(path)
-    resolved = load_party_config_arg(str(path), Path(root))
-    if resolved is None:
-        raise DocConfigError(f"--party-config {_shown(path, root)}: missing or unreadable")
+    # Not load_party_config_arg: it prints its own warning, and the refusal below
+    # is the one line the GM should see.
+    path = path.expanduser()
+    if not path.is_file():
+        raise DocConfigError(f"--party-config {_shown(path, root)}: not found")
+    try:
+        resolved = resolve_party_config(load_party_config(path), Path(root), require_files=False)
+    except ValueError as e:
+        raise DocConfigError(f"--party-config {_shown(path, root)}: unreadable ({e})") from e
     if not resolved.characters:
         raise DocConfigError(f"--party-config {_shown(path, root)}: no characters declared")
     out = [f"=== PARTY CONFIG — {_shown(path, root)} ===\n"

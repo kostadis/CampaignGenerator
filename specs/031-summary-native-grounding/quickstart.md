@@ -61,8 +61,8 @@ Expected: under 2 minutes, 67 files and 409 scenes in `manifest.json`, and
 ```bash
 summary_native build --summaries-dir docs/summaries --out-root docs/ensemble
 ```
-Expected: exit 2, "refusing to write a summary-native corpus into a directory holding
-ensemble artifacts".
+Expected: exit 2, "<range dir>: holds ensemble artifacts (merged.json); summary-native
+and ensemble corpora must never be mixed".
 
 ## Q6. Duplicates are listed for fixing at source, never merged
 

@@ -68,7 +68,7 @@ Problem codes (stable strings, so tests and the UI can key on them):
 | `unreadable-file` | yes | the file cannot be read or decoded (OSError / UnicodeDecodeError text in the message); the scan continues with the other files |
 | `unknown-section` | no | an H2 not in the recognised set (it is preserved) |
 | `possible-duplicate` | no | two same-category headings at or above `dup_threshold`, or equal after a qualifier strip; lists every `file:line` (R7) |
-| `stale-ruling` | no | a `canon.yaml` `not_duplicates` pair whose headings no longer occur in the range (R7) |
+| `stale-ruling` | no | a `canon.yaml` `not_duplicates` pair whose headings occur in no readable summary in the directory (`canon.yaml` is shared across ranges, so the range does not matter) (R7) |
 | `range-gap` | no (informational) | a chapter number inside the range has no file |
 
 Out-of-range files are scanned with the same checks. Their findings carry
