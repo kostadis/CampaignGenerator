@@ -31,7 +31,6 @@ summary_native:
 |---|---|
 | `GET /chapters?summaries_dir=` | `{present: [int], files: [{chapter, path}], duplicates: [...]}`, filled from filename prefixes only, for the range picker |
 | `GET /report?from=&to=` | the range directory's `validation_report.json` (404 if not run) |
-| `GET /proposals?from=&to=` | the parsed `canon_proposals.yaml` |
 | `GET /drafts?from=&to=` | `[{doc, path, status: draft|incomplete, bytes}]` |
 
 ## Runs (SSE, `GET`, same shape as `/api/grounding/run/*`)

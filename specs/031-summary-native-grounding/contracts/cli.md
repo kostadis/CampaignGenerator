@@ -12,7 +12,7 @@ One console script, `summary_native = "pipelines.summary_native.cli:main"` in
 | `--from N` / `--to N` | inclusive chapter range (filename prefixes) | unset = whole directory |
 | `--out-root DIR` | output root | `docs/summary_native` |
 | `--registry PATH` | entity registry | auto-discover `docs/entity_registry.yaml` (`resolve_registry_arg`) |
-| `--canon PATH` | hand-authored mapping | `<out-root>/canon.yaml` (absent = none) |
+| `--canon PATH` | hand-authored not-a-duplicate rulings | `<out-root>/canon.yaml` (absent = none) |
 | `--config PATH` | campaign config | `<cwd>/config/config.yaml` |
 
 The range directory is `<out-root>/ch<start:03d>-<end:03d>/`. For an unset range,
@@ -49,17 +49,19 @@ Stdout shape:
 ## `summary_native build`
 
 Runs `validate`, then exits 1 if anything blocks. Otherwise it writes `manifest.json`,
-`chronology.md`, `memorable_moments.md`, `dossiers/` and `canon_proposals.yaml`.
+`chronology.md`, `memorable_moments.md` and `dossiers/`.
 - It refuses to write into a directory holding another corpus (exit 2).
 - `--force` rewrites an existing summary-native range directory. Without it, an
   existing manifest makes it exit 2.
 - It makes no model call.
 
-## `summary_native canon`
+## Possible duplicates (part of `validate`)
 
-Prints `canon_proposals.yaml` for the range, grouped by category, and reports which
-`canon.yaml` entries no longer match any heading (stale). It is read-only. The GM
-edits `canon.yaml` and re-runs `build --force` to apply.
+There is no separate subcommand. `validate`, and therefore `build`, lists
+non-blocking `possible-duplicate` findings under "Possible duplicates — fix in the
+summaries". Each one gives the category, both spellings, and every `file:line` for
+each. Stale `canon.yaml` rulings are listed too. The GM fixes the summary files, or
+adds the pair to `canon.yaml` under `not_duplicates`, and re-runs.
 
 ## `summary_native synth <doc>`
 

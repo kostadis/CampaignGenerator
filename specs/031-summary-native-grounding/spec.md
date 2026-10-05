@@ -16,7 +16,7 @@ This feature makes that approach a **distinct, supported pipeline** that sits be
 
 **Out of scope by explicit instruction:** how the structured summaries are produced. The pipeline starts from a directory of summaries that already exist and are already in the expected format. It validates that format and reports problems. It never writes, repairs or regenerates a summary.
 
-**Precision-decision accounting (Constitution II):** the deterministic stages (validation, parsing, chronology, dossiers, selection) remove no decisions from the human because they only restate declared structure. Entity canonicalization (which headings name the same entity) is an identity decision, so it is proposed and the human rules on it. It is never applied by a model's judgment. Each synthesis call makes a rendering decision only. Its output is a draft, and a human must review it before it is promoted or fed into a later document's synthesis.
+**Precision-decision accounting (Constitution II):** the deterministic stages (validation, parsing, chronology, dossiers, selection) remove no decisions from the human because they only restate declared structure. Which headings name the same entity is an identity decision. The pipeline only lists likely duplicates, and the GM resolves them by correcting the summary files (or by ruling a pair distinct). Nothing is merged by a model or a similarity score, and no misspelling is ever mapped as an alias. Each synthesis call makes a rendering decision only. Its output is a draft, and a human must review it before it is promoted or fed into a later document's synthesis.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -59,20 +59,23 @@ From the evidence corpus, the GM generates a world-state draft and then a campai
 
 ---
 
-### User Story 3 - Review and approve entity canonicalization (Priority: P2)
+### User Story 3 - Find duplicate entity headings so the GM can fix the summaries (Priority: P2)
 
-Different summaries name the same entity differently ("Manshoon", "Manshoon (Simulacrum)", a typo). The pipeline proposes which headings should share a dossier, separately within each category (NPC, location, item, spell, …), using the campaign's entity registry and deterministic similarity. The GM accepts or rejects each proposal in a reviewable mapping file. Only accepted mappings change how dossiers are grouped.
+Different summaries sometimes name the same entity differently: a typo ("Manshon"), or an inconsistent qualifier ("Manshoon (Simulacrum)"). These are errors in the summaries. **The fix is to correct the summary files, not to map one name onto another.** The pipeline finds likely duplicates within each category (NPC, location, item, spell, …) using deterministic similarity, and lists them, with every file and line where each spelling occurs, in the same validation report the GM already works through (US1). The GM either corrects the summaries or records that the pair is genuinely two different things, in a small hand-authored rulings file (`canon.yaml`), so the pair is not flagged again. Neither a model nor a similarity score ever merges two headings.
 
-**Why this priority**: The prototype worked with exact registry aliases alone, so this is an improvement and not a blocker. It still left near-duplicate dossiers among 868, and merging is an identity decision that must stay with the GM.
+Legitimate alternate names (an approved alias such as a title or full name) are the entity registry's job, not this file's. Exact registry aliases group headings within matching categories. The registry does not carry spells, so spells are only ever grouped by identical heading.
 
-**Independent Test**: Run on a corpus with known near-duplicates. Confirm proposals are written and nothing merges before review. Confirm an accepted mapping merges the two dossiers and keeps every observation. Confirm a rejected one keeps them apart and is not proposed again.
+**Why this priority**: The prototype left near-duplicate dossiers among 868. Surfacing them as a fix list cleans the source for every later run. It is not a blocker for drafting.
+
+**Independent Test**: Run on a corpus seeded with a typo duplicate and a genuinely distinct look-alike. Confirm both are listed with file and line, and that nothing merges. Fix the typo in the summary, record the look-alike as not-a-duplicate in `canon.yaml`, re-run, and confirm the list is empty and the dossiers are correct.
 
 **Acceptance Scenarios**:
 
-1. **Given** two headings in the same category that the registry lists as aliases, **When** dossiers are built, **Then** their observations land in one dossier under the canonical name and each observation keeps its original heading.
-2. **Given** two similar headings with no registry relationship, **When** canonicalization runs, **Then** they appear as a proposal awaiting review and stay as separate dossiers.
-3. **Given** two headings with the same name in different categories (a spell and an item), **When** canonicalization runs, **Then** they are not merged unless the GM explicitly maps them.
-4. **Given** a proposal the GM rejected, **When** the pipeline runs again, **Then** that pair is not proposed again.
+1. **Given** two headings in the same category that the registry lists as exact aliases (a non-spell category), **When** dossiers are built, **Then** their observations land in one dossier under the registry's canonical name and each observation keeps its original heading.
+2. **Given** two similar headings with no registry relationship, **When** the corpus is validated, **Then** they are listed as a possible duplicate with every file and line where each spelling occurs, and they stay as separate dossiers.
+3. **Given** the GM corrects the misspelling in the summary file, **When** the pipeline runs again, **Then** the pair is no longer listed and the dossiers combine because the headings now match.
+4. **Given** a pair the GM recorded as not-a-duplicate in `canon.yaml`, **When** the pipeline runs again, **Then** that pair is not listed again.
+5. **Given** two headings with the same name in different categories (a spell and an item), **When** the corpus is built, **Then** they are never combined and never listed as duplicates of each other.
 
 ---
 
@@ -93,7 +96,7 @@ The GM generates party and planning drafts from the corpus, the party configurat
 
 ### User Story 5 - Run the pipeline from the web UI (Priority: P3)
 
-Every stage reachable from the command line is also reachable from the web UI. The GM chooses the summaries location, runs each stage, sees the validation report and canonicalization proposals, and sees which drafts were written. The judgment between stages (reviewing drafts, ruling on merges, promoting) stays in files, the CLI, or chat.
+Every stage reachable from the command line is also reachable from the web UI. The GM chooses the summaries location, runs each stage, sees the validation report (including possible duplicates), and sees which drafts were written. The judgment between stages (reviewing drafts, ruling on merges, promoting) stays in files, the CLI, or chat.
 
 **Why this priority**: Required for CLI/UI parity (Constitution XI), but the pipeline delivers value from the CLI first.
 
@@ -149,18 +152,18 @@ Every stage reachable from the command line is also reachable from the web UI. T
 
 - **FR-006**: The pipeline MUST produce, without any model call, a chronological scene spine covering every scene of every included summary in chapter-then-scene order.
 - **FR-007**: The pipeline MUST preserve every memorable-moments section verbatim (character-for-character), attributed to its chapter.
-- **FR-008**: The pipeline MUST produce one dossier per entity (after any approved canonicalization) containing every observation of it, losslessly. Each observation MUST record the source file, the authoritative chapter, the heading as written, the category, and the source scene id where the summary places it inside a scene.
+- **FR-008**: The pipeline MUST produce one dossier per entity (headings grouped only by identical text or exact same-category registry alias) containing every observation of it, losslessly. Each observation MUST record the source file, the authoritative chapter, the heading as written, the category, and the source scene id where the summary places it inside a scene.
 - **FR-009**: The source scene id MUST be the id declared in the summary. It MUST stay independent of any later subdivision or model-call chunk position.
-- **FR-010**: Given identical input files and identical approved mappings, every deterministic artifact MUST be byte-identical across runs.
+- **FR-010**: Given identical input files, registry and `canon.yaml`, every deterministic artifact MUST be byte-identical across runs.
 - **FR-011**: Summary-derived artifacts MUST be written to their own corpus location. The pipeline MUST refuse to read or write a location holding chapter/ensemble-derived artifacts, so the two corpora cannot be mixed.
 - **FR-012**: Each dossier MUST be readable by the existing dossier consumers that read ensemble state dossiers, so downstream tools can use either corpus without change.
 
 **Canonicalization (human-ruled)**
 
-- **FR-013**: The pipeline MUST group headings using exact aliases from the campaign's entity registry, within a category only, when a registry exists.
-- **FR-014**: The pipeline MUST propose further candidate merges (near-duplicate headings within a category) in a reviewable mapping file. It MUST NOT apply any proposal until the GM has accepted it.
-- **FR-015**: Accepted and rejected rulings MUST persist, so rejected pairs are not proposed again and accepted pairs are applied deterministically on every run.
-- **FR-016**: No merge decision MAY be made by a model's judgment.
+- **FR-013**: The pipeline MUST group headings only when they are identical within a category, or when the entity registry lists them as exact aliases of an entity whose type matches the category. The registry's inferred aliases MUST NOT be used. Spells and abilities have no registry type and are grouped by identical heading only.
+- **FR-014**: The pipeline MUST detect likely duplicate headings within a category (near-identical spelling, or the same name with and without a parenthetical qualifier). It MUST list each pair in the validation report, with every file and line where each spelling occurs, as a non-blocking fix-at-source item. It MUST NOT merge, rename or alias them.
+- **FR-015**: The GM MUST be able to record a pair as not-a-duplicate in a hand-authored rulings file (`canon.yaml`), which the pipeline only reads. Recorded pairs MUST NOT be listed again. A ruling whose headings no longer occur in the selected range MUST be reported as stale. The file MUST NOT be able to express a merge or alias.
+- **FR-016**: No merge decision MAY be made by a model or a similarity score. Duplicates are resolved by the GM editing the summary files.
 
 **Selection & synthesis**
 
@@ -174,7 +177,7 @@ Every stage reachable from the command line is also reachable from the web UI. T
 
 **Reproducibility, drafts & promotion**
 
-- **FR-024**: For every run, the pipeline MUST retain the exact prompts (system and user), the input file list with content digests, the chapter range, the selection decisions, and the canonicalization mapping that was applied.
+- **FR-024**: For every run, the pipeline MUST retain the exact prompts (system and user), the input file list with content digests, the chapter range, the selection decisions, and the digests of the registry and `canon.yaml` that were read.
 - **FR-025**: Synthesis MUST write only draft files. It MUST NEVER modify the live grounding documents. Promotion stays a separate human act.
 - **FR-026**: The pipeline MUST be able to report a comparison between each draft and the current live document (size, chapter coverage, and a textual diff) to support the promotion decision.
 - **FR-027**: Existing outputs MUST NOT be overwritten unless the GM passes the standard overwrite flag.
@@ -194,7 +197,8 @@ Every stage reachable from the command line is also reachable from the web UI. T
 - **Memorable moments**: verbatim preserved dialogue and table texture, per chapter.
 - **Observation**: one entity entry from one summary. Records source file, chapter, heading as written, category, source scene id (or an explicit "no scene" marker), and its text.
 - **Dossier**: all observations of one canonical entity within one category, with its chapter range.
-- **Canonicalization mapping**: the reviewable record of proposed, accepted and rejected merges between headings. The only thing that can change dossier grouping beyond exact registry aliases.
+- **Possible duplicate**: a pair of same-category headings that look like one entity spelled two ways, with every file and line where each occurs. A fix-at-source item in the validation report.
+- **Duplicate rulings (`canon.yaml`)**: the GM's hand-authored record of pairs that are genuinely distinct, so they stop being flagged. Read-only to the pipeline; it cannot merge or alias anything.
 - **Chapter range**: the inclusive start and end chapter selected for a run, with any gaps inside it. It determines which summaries enter the corpus and labels every output of the run.
 - **Selection manifest**: per synthesis run, which dossiers and context were included and why (recent / recurring / explicitly named).
 - **Synthesis record**: the exact prompts, input digests, backend and model, and output path for one draft.
@@ -209,7 +213,7 @@ Every stage reachable from the command line is also reachable from the web UI. T
 - **SC-003**: 100% of dossier observations carry source file, chapter, heading and category, and every in-scene observation carries its source scene id. Zero dossiers lack a chapter range.
 - **SC-004**: A corpus containing any chapter-identity disagreement (e.g. the unfixed chapter-070 file) produces zero artifacts and a report naming 100% of the disagreeing files.
 - **SC-004a**: On a corpus seeded with N independent problems across several files, one validation run reports all N. The GM never has to re-run validation to discover an error that was present in the earlier run.
-- **SC-005**: Zero entity merges occur beyond exact registry aliases and GM-accepted mappings.
+- **SC-005**: Zero headings are combined except by identical text or an exact same-category registry alias. Every seeded duplicate in the test corpus is listed with its file and line locations.
 - **SC-006**: Every claim from an audited tracking file that the summaries do not support is labeled unsupported in the campaign-state draft. None is stated as played history.
 - **SC-007**: Zero live grounding documents are modified by any pipeline run.
 - **SC-008**: On the Out of the Abyss corpus, the GM judges the generated world-state and campaign-state drafts at least as good as the promoted prototype drafts retained from issue #499. Those drafts are the regression reference.

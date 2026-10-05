@@ -58,8 +58,8 @@ values `blocking_count` and `files_failing`. Serialised as:
 | Field | Notes |
 |---|---|
 | `category` | `npc` \| `location` \| `item` \| `spell` \| `ability` |
-| `heading` | the H3 as written (kept after canonicalization) |
-| `canonical` | the subject after registry + `canon.yaml` |
+| `heading` | the H3 as written (kept even when grouped under a registry canonical) |
+| `canonical` | the heading, or the registry canonical for an exact same-type alias |
 | `chapter` | from the filename |
 | `source_file` | campaign-relative |
 | `source_scene_id` | `NNN.SS`, or `null` = explicitly no scene |
@@ -77,7 +77,7 @@ n_facts: 7            # = number of observations (name kept for read_dossiers)
 chapters: 41-70       # lo-hi over observations
 source_kind: summary_native
 headings: [Manshoon, Manshoon (Simulacrum)]   # every distinct heading merged in
-canonicalized_by: [registry, canon.yaml]      # which passes contributed, if any
+grouped_by: [registry]                        # present only if a registry alias contributed
 ---
 ```
 The body holds one block per observation in `(chapter, line)` order, each with
@@ -101,27 +101,32 @@ not an error.
 `kind: "summary_native"`, `schema: 1`, `range`, `files: [{path, chapter, sha256}]`,
 `counts` (scenes, observations per category, dossiers),
 `absent_optional_sections`, `unknown_sections`, `canon` (the sha256 of the registry
-and `canon.yaml` used, plus the counts applied). It contains no timestamps.
+and `canon.yaml` read, and the number of registry-alias groupings). It contains no timestamps.
 
-## Canonicalization
+## Duplicate detection (fix at source)
 
-### CanonMapping — `canon.yaml` (hand-authored; the tool never writes it)
+Headings are combined into one dossier only by **identical text within a category**
+or by an **exact registry alias** whose entity type matches the category (npc,
+location, item). Nothing else merges, and spells are never registry-grouped.
+
+### PossibleDuplicate (a non-blocking finding, code `possible-duplicate`)
+`category`, `a`, `b`, `reason: similarity|qualifier`, `ratio`, and
+`locations: {a: [file:line…], b: [file:line…]}`. It is listed in
+`validation_report.{md,json}` under "Possible duplicates — fix in the summaries".
+Pairs are excluded if they are recorded in `canon.yaml`, or listed in the registry's
+`distinct`/`rejected_aliases`.
+
+### DuplicateRulings — `canon.yaml` (hand-authored; the tool never writes it)
 ```yaml
-accepted:
-  - {category: npc, from: "Manshoon (Simulacrum)", to: "Manshoon"}
-rejected:
+not_duplicates:
   - {category: item, a: "Staff of Power", b: "Staff of Frost"}
 ```
-Validation: unknown keys are refused. A `from` that is also a `to` elsewhere is
-refused (no chains). A cross-category entry needs `category: "*"` plus `to_category`.
+Validation: the only top-level key is `not_duplicates`. Unknown keys are refused
+(so `accepted:`/`aliases:`-style merges cannot be written). A ruling whose headings
+no longer occur in the range is reported as stale.
 
-### CanonProposals — `canon_proposals.yaml` (generated; overwritten on each run)
-`[{category, a, b, ratio, reason: similarity|qualifier}]`, sorted. Pairs that are
-already accepted, rejected, merged by the registry, or listed in the registry's
-`distinct`/`rejected_aliases` are excluded.
-
-State per heading pair: `unseen → proposed → accepted | rejected`. Only `accepted`
-changes grouping. `rejected` is permanent until the GM edits `canon.yaml`.
+Lifecycle of a pair: `flagged → (GM edits summary) gone` or
+`flagged → (GM records not_duplicates) suppressed`.
 
 ## Synthesis
 
@@ -148,10 +153,9 @@ It never overwrites a live `docs/*.md` (FR-025). An existing draft needs `--forc
 
 ```text
 <out_root>/                         # default docs/summary_native/
-├── canon.yaml                      # human-authored, range-independent
+├── canon.yaml                      # human-authored not-a-duplicate rulings, range-independent
 └── ch002-070/                      # one directory per range: ch<start>-<end>, 3-digit
     ├── manifest.json
-    ├── canon_proposals.yaml        # generated for this range's headings
     ├── validation_report.{json,md}
     ├── chronology.md
     ├── memorable_moments.md

@@ -20,7 +20,7 @@ ruled on three points, and they are recorded as fixed inputs:
 ## R1. Where the code lives
 
 **Decision**: a new package `pipelines/summary_native/` exposed through one console
-script, `summary_native`, with subcommands: `validate`, `build`, `canon`, `synth`,
+script, `summary_native`, with subcommands: `validate`, `build`, `synth`,
 `compare`.
 
 **Rationale**:
@@ -134,7 +134,13 @@ directory that:
 The default output root is `docs/summary_native/`, a sibling of `docs/ensemble/` and
 never nested in it. Input files are refused if they live under an ensemble directory.
 
-## R7. Category-aware canonicalization (FR-013–016)
+## R7. Grouping and duplicate detection (FR-013–016)
+
+**GM rulings (2026-10-05):**
+- Duplicates are fixed in the raw summary files, never mapped as aliases.
+- `canon.yaml` stays separate from the registry. It follows the same model as the
+  spell pass's side files: hand-authored and read-only to the tool.
+- The registry does not carry spells.
 
 **Category map** (H2 heading → category key → registry type that may supply aliases):
 
@@ -143,42 +149,45 @@ never nested in it. Input files are refused if they live under an ensemble direc
 | NPCs | npc | npc |
 | Locations | location | location |
 | Items | item | item |
-| Spells | spell | *(none; registry has no spell type)* |
-| Abilities | ability | *(none)* |
+| Spells | spell | *(none; identical heading only)* |
+| Abilities | ability | *(none; identical heading only)* |
 
 **Decision**:
-1. **Registry pass.** Apply only explicit `name`/`aliases` entries whose entity
-   `type` matches the category. Do **not** apply the registry's first-token
-   inference (`Registry.alias_to_canonical` derives "Kazryn" → "Kazryn Nyantani"),
-   because the spec limits automatic grouping to *exact* aliases. A new helper in
-   `campaignlib/registry.py`, `Registry.explicit_aliases_by_type()`, returns
-   `{type: {casefold(alias): canonical}}` and reuses the existing data. It needs no
-   new store.
-2. **Mapping pass.** Read the human-authored `docs/summary_native/canon.yaml`
-   (`accepted: [{category, from, to}]`, `rejected: [{category, a, b}]`) and apply
-   the accepted entries.
-3. **Proposal pass.** Within each category, run deterministic near-duplicate
-   detection on the remaining distinct headings. It reuses the
-   `difflib.SequenceMatcher` ratio approach already used by
-   `synthesise_facts.detect_clusters`, plus a qualifier strip
-   (`"Manshoon (Simulacrum)"` vs `"Manshoon"`). Pairs are excluded if they are
-   already merged, already rejected, or listed in the registry's
-   `distinct`/`rejected_aliases`. Results are written to the generated
-   `canon_proposals.yaml` and **never applied**.
-4. **Never** cross categories, unless the GM writes an explicit cross-category
-   entry in `canon.yaml`.
+1. **Grouping.** Headings are grouped only by identical text (exact match after
+   whitespace trim) within a category. They are also grouped by an explicit registry
+   `name`/`aliases` entry whose entity `type` equals the category's registry type.
+   The registry's first-token inference (`Registry.alias_to_canonical` turning
+   "Kazryn" into "Kazryn Nyantani") is **excluded**. A new helper,
+   `Registry.explicit_aliases_by_type()` in `campaignlib/registry.py`, returns
+   `{type: {casefold(alias): canonical}}` from existing data. Registry aliases are
+   approved alternate names, never misspellings (the `registry-cleanup` rule), so
+   using them does not paper over errors.
+2. **Detection.** Within each category, the remaining distinct headings are compared
+   deterministically: the `difflib.SequenceMatcher` ratio (the approach already in
+   `synthesise_facts.detect_clusters`), plus a parenthetical-qualifier strip
+   (`"Manshoon (Simulacrum)"` vs `"Manshoon"`). Each hit is a non-blocking
+   `possible-duplicate` finding in the validation report. It lists every file and
+   line for both spellings, so the GM can fix the summaries in the same pass as
+   every other problem.
+3. **Rulings.** `canon.yaml` has a single key, `not_duplicates`. Pairs listed there,
+   or in the registry's `distinct`/`rejected_aliases`, are not flagged. The file
+   cannot express a merge, and the tool never writes it.
+4. **Never** merge across categories, and never merge by score.
 
-**Rationale**: the hand-authored record is separate from the generated proposals,
-the same pattern as `transcript_corrections.yaml` vs `.cleaned.vtt`. The tool
-never rewrites `canon.yaml`, so a GM's edit can never be clobbered. Rejected pairs
-are never proposed again (FR-015), and no model is involved (FR-016).
+**Rationale**: a misspelled heading is an error in the source. Mapping it hides the
+error and leaves every other consumer of the summaries reading the misspelling.
+Fixing the summary corrects it once, for everyone. That is the same reasoning as
+`transcript_corrections.yaml` and `/chapter-enhance`'s fix-at-source queue.
+Because detection is non-blocking, false positives cost a one-line ruling rather
+than a failed run.
 
 **Alternatives considered**:
-- Writing proposals into `docs/entity_registry.yaml` through `registry alias`.
-  Rejected: spells and abilities have no registry type, and a merge in this corpus
-  is a ruling about headings in this corpus, not a global identity ruling. The GM
-  can still promote a ruling to the registry by hand.
-- An LLM proposer. Rejected by FR-016.
+- An `accepted:` merge mapping in `canon.yaml`, from the first design draft.
+  Rejected by the GM: it maps misspellings instead of fixing them.
+- Holding the rulings in `entity_registry.yaml`. Rejected by the GM: the registry
+  must not carry spells.
+- Making possible duplicates blocking. Rejected: similarity is noisy, so every false
+  positive would stop a run until it was ruled on.
 
 ## R8. Selection (FR-017)
 
@@ -286,8 +295,8 @@ check is the only completeness signal that every backend shares.
   service at the route edge, the same as `grounding.py`'s `_pick`. A
   `tests/test_summary_native_config_defaults.py` fails the build if a default literal
   appears in the router.
-- **Read-only routes.** These serve the validation report JSON, the canonicalization
-  proposals, the list of chapters present (for the range picker), and the list of
+- **Read-only routes.** These serve the validation report JSON (including
+  possible duplicates), the list of chapters present (for the range picker), and the list of
   drafts. They read files only.
 - **Explicit range in the UI.** The run routes refuse when `from`/`to` are unset. The
   UI "All chapters" button writes the first and last chapters present as explicit

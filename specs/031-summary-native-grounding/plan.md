@@ -11,7 +11,7 @@ already-reviewed structured session summaries, validates the whole directory in 
 pass, and refuses on any blocking problem. Chapter identity disagreement is a hard
 failure. Within a chosen chapter range, it builds a lossless, byte-stable evidence
 corpus (chronology, verbatim memorable moments, per-entity dossiers) with no model
-call. Canonicalization is GM-ruled and category-aware. The pipeline then renders
+call. Nothing merges except identical headings and exact same-type registry aliases; likely duplicates are listed for the GM to fix in the summaries. The pipeline then renders
 world state, campaign state, party and planning **drafts** through the standard
 `campaignlib` seam, checks each against a declared outline, and retains every prompt
 and selection. It is delivered as one CLI (`summary_native`) with a matching
@@ -53,16 +53,16 @@ observations per campaign. Four draft documents.
 | # | Principle | How this plan complies | Status |
 |---|---|---|---|
 | I | Disk is truth, model is a draft | The input is the summaries on disk, and they are never written. Every model output is a `drafts/*.draft.md`. Promotion is manual. The corpus can be rebuilt from disk | ✅ |
-| II | Human checkpoint | The deterministic stages make no decisions. Merges are proposed and the GM rules on them in `canon.yaml`. Each draft feeds the next only through an explicit `--world-state`/`--campaign-state` file the GM names (FR-020). Tracking files are audit questions, not evidence | ✅ |
+| II | Human checkpoint | The deterministic stages make no decisions. Nothing is merged except identical headings and exact same-type registry aliases. Likely duplicates are listed for the GM to fix in the summaries, and `canon.yaml` only records not-a-duplicate rulings. Each draft feeds the next only through an explicit `--world-state`/`--campaign-state` file the GM names (FR-020). Tracking files are audit questions, not evidence | ✅ |
 | III | Retrieval/render separation | There are no retrieval calls. Context assembly (`context.py`) and rendering (`synth.py`) are separate functions, so `test_retrieve_render_isolation.py` applies unchanged. The dossier-proposal gate does not apply: there is no `rpg_retriever` input (research R10) | ✅ |
 | IV | Verbatim is sacred | Memorable moments, observation bodies and scene synopses are copied verbatim with provenance. Drafts claim to be derived, not verbatim. The campaign-state audit traces claims to chapter and scene | ✅ |
 | V | One seam per boundary | Model calls go only through `campaignlib` (`client_from_args`/`stream_api`), and nothing imports `anthropic`. The registry is read through `campaignlib.registry` | ✅ |
 | VI | CLI is engine | `server/routers/summary_native.py` only builds argv and streams it | ✅ |
 | VII | Extract once, synthesize deliberately | There is no extraction: the summaries are already a reviewed extraction. The corpus is cached on disk and synthesis is per document. Long output is staged by declared parts, never collapsed | ✅ |
 | VIII | State is discoverable | Stage state is visible from disk: `validation_report.*` → `manifest.json` → `drafts/`. The UI reads those files | ✅ |
-| IX | UI mechanizes | There is no promote button and no canon editor in the UI. The GM edits `canon.yaml` and diffs/promotes at the CLI or in chat | ✅ |
+| IX | UI mechanizes | There is no promote button and no rulings editor in the UI. The GM fixes the summaries, edits `canon.yaml`, and diffs/promotes at the CLI or in chat | ✅ |
 | X | No silent "all" | UI runs refuse an unset range, and "All chapters" writes explicit bounds. On the CLI, a typed `--summaries DIR` is the explicit act | ✅ |
-| XI | Bidirectional parity | Every subcommand and flag has a route parameter and page control in this feature. The canon *ruling* is deliberately file-edited (Principle IX), but its *invocation* (`canon`, `build --force`) is reachable | ✅ |
+| XI | Bidirectional parity | Every subcommand and flag has a route parameter and page control in this feature. Fixing duplicates is deliberately done in the files (Principle IX). The findings that drive it are shown on the page | ✅ |
 | XII | One spelling per option | Reused spellings: `--config --registry --backend --endpoint --model --max-tokens --force --dump-only --party-config --planning-config`. Defaults are declared once in `SummaryNativeRun`, with a router default-literal guard test | ✅ |
 | XIII | Breaking state migrates out of band | No existing shape changes. `grounding.yaml` gains an optional group with defaults, which old files load unchanged. All new files are new paths. No migration document is needed, and that is recorded here | ✅ |
 
@@ -72,6 +72,13 @@ observations per campaign. Four draft documents.
 tightened during design: the registry's first-token inference is excluded from
 automatic grouping (research R7), because applying it would be a merge that no exact
 alias or GM ruling supports (Principle II).
+
+**Re-check after GM rulings (2026-10-05):** still PASS, and tighter. The GM ruled
+that duplicates are fixed in the raw summary files, never mapped. So `canon.yaml`
+holds only `not_duplicates` rulings and cannot express a merge, and possible
+duplicates are non-blocking fix-at-source findings in the validation report. The
+registry does not carry spells. No merge happens on anyone's judgment except the
+GM's own edit to the source (Principles I and II).
 
 ## Project Structure
 
@@ -99,7 +106,7 @@ pipelines/summary_native/
 ├── parse.py         # SummaryFile / Section / Entry / Scene (deterministic)
 ├── validate.py      # scan() → ValidationReport; ChapterRange resolution
 ├── corpus.py        # chronology, moments, dossiers, manifest; corpus-kind guard
-├── canon.py         # registry-by-type aliases, canon.yaml, proposals
+├── canon.py         # exact same-type registry grouping, canon.yaml rulings, possible-duplicate detection
 ├── select.py        # recent/recurring selection → selection.json
 ├── context.py       # prompt assembly per doc (string building only)
 ├── synth.py         # render_part() via campaignlib; outline completeness check
@@ -162,7 +169,7 @@ follow the existing grounding router/page/sidebar patterns.
 |---|---|---|---|
 | P1 | `schema`, `parse`, `validate` (collector, range, codes), `cli validate`, fixtures, tests | 001–005f | "summary_native: whole-directory validation + chapter range" |
 | P2 | `corpus` (chronology/moments/dossiers/manifest, separation guard), `cli build`, byte-stability + `read_dossiers` tests, no-LLM AST guard | 006–012 | "summary_native: deterministic corpus build" |
-| P3 | `Registry.explicit_aliases_by_type`, `canon` (mapping + proposals), `cli canon`, rebuild with mapping | 013–016 | "summary_native: GM-ruled canonicalization" |
+| P3 | `Registry.explicit_aliases_by_type`, `canon` (grouping + possible-duplicate findings in `validate`, `canon.yaml` not-duplicate rulings) | 013–016 | "summary_native: fix-at-source duplicate detection" |
 | P4 | `select`, `context`, `synth` (outline check, parts, records), prompts + outlines for world_state & campaign_state, `compare`, `cli synth/compare` | 017–020, 022–027 | "summary_native: world/campaign state drafts" |
 | P5 | party & planning prompts/outlines, threat-tracker guard | 018, 021 | "summary_native: party + planning drafts" |
 | P6 | config group, router, Vue page, sidebar 4th path, route + defaults tests | 028–030, US5 | "summary_native: grounding UI page" |

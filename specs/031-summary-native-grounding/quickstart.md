@@ -64,15 +64,19 @@ summary_native build --summaries docs/summaries --out-root docs/ensemble
 Expected: exit 2, "refusing to write a summary-native corpus into a directory holding
 ensemble artifacts".
 
-## Q6. Canonicalization is proposed, never applied
+## Q6. Duplicates are listed for fixing at source, never merged
 
 ```bash
-summary_native canon --summaries docs/summaries
+summary_native validate --summaries tests/fixtures/summary_native/aliases
 ```
-Expected: near-duplicate pairs are listed per category, and dossier count is
-unchanged. Add one pair to `docs/summary_native/canon.yaml` under `accepted:`, run
-`build --force`, and confirm the two dossiers become one whose `headings:` lists both.
-Add one pair under `rejected:` and confirm it no longer appears in proposals.
+Expected: "Manshon" vs "Manshoon" and "Manshoon (Simulacrum)" vs "Manshoon" are
+listed under "Possible duplicates — fix in the summaries", each with `file:line`.
+"Staff of Power" as an item and as a spell is **not** listed (different
+categories). After a `build`, the dossier count shows nothing merged.
+
+Fix the typo in a copy of the fixture and re-run: that pair disappears. Add the
+qualifier pair to `canon.yaml` under `not_duplicates:` and re-run: it is no longer
+listed. Add an `accepted:` key and re-run: refused (the file cannot express a merge).
 
 ## Q7. Synthesis drafts + GM golden comparison
 
@@ -106,4 +110,4 @@ and exit 3, with a message naming the missing headings and `--parts`.
 4. Run Validate and Build, then Synth world_state.
 
 Expected: the files written are the same as a CLI run with the same arguments, and
-the page shows the validation report, proposals and draft list.
+the page shows the validation report (including possible duplicates) and the draft list.

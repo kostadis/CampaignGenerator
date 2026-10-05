@@ -50,7 +50,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `clean/`: chapters 002, 003, 005 (gap at 004). 7 scenes total. "Manshoon" appears in 002 and 005.
   - `multi_error/`: 5 files, one instance of each blocking code, including one file with two different errors.
   - `out_of_range/`: `clean` plus an `008-…md` whose title says Chapter 6.
-  - `aliases/`: "Manshoon" / "Manshoon (Simulacrum)" / "Manshon" in NPCs, "Staff of Power" in Items and Spells.
+  - `aliases/`: "Manshoon" / "Manshoon (Simulacrum)" / "Manshon" in NPCs across several files, "Staff of Power" in both Items and Spells, plus a tiny `entity_registry.yaml` with one npc alias.
   - `dup_chapter/`: two files with prefix 003.
 - [ ] T006 Write `tests/test_summary_native_parse.py`: scene ids are kept verbatim, synopsis is verbatim, section bodies are exact, line numbers are 1-based, and an entity H3 outside any scene gets `source_scene_id=None`.
 
@@ -106,9 +106,9 @@ description: "Task list for 031 summary-native grounding docs"
 - [ ] T014 [US1] `pipelines/summary_native/corpus.py`:
   - `guard_out_dir(range_dir, force)` refuses: an ensemble marker (`merged.json`, `state_dossiers/`, `merged_dossiers/`, `facts_*.json`, `extract_*.md`); a manifest of another `kind`; a non-empty dir with no manifest; an existing summary-native manifest without `force`.
   - `build_observations(files, aliases_fn)`.
-  - `render_chronology`, `render_memorable_moments`, `write_dossiers` (frontmatter per data-model.md: `subject`, `type`, `n_facts`, `chapters: lo-hi`, `source_kind`, `headings`, `canonicalized_by`; one block per observation; sha suffix on slug collision) and `write_manifest` (no timestamps; sha256 per file; counts).
+  - `render_chronology`, `render_memorable_moments`, `write_dossiers` (frontmatter per data-model.md: `subject`, `type`, `n_facts`, `chapters: lo-hi`, `source_kind`, `headings`, `grouped_by`; one block per observation; sha suffix on slug collision) and `write_manifest` (no timestamps; sha256 per file; counts).
   - Write every file through `campaignlib.util.atomic_write_text`.
-  - For US1, the identity canonicalizer is enough; US3 replaces it.
+  - For US1, group by identical heading within a category only; US3 adds exact same-type registry aliases.
 - [ ] T015 [US1] Wire up `validate` and `build` in `pipelines/summary_native/cli.py` with the shared flags `--summaries --from --to --out-root --registry --canon --config --force`.
   - Resolve config after `parse_args` via `find_default_config()`. If `--summaries` is absent, read `grounding.yaml summary_native.summaries_dir` (a plain YAML read, so this works before US5's model exists); error if neither is set.
   - Print the report to stdout; exit codes per contract.
@@ -173,38 +173,47 @@ description: "Task list for 031 summary-native grounding docs"
 
 ---
 
-## Phase 5: User Story 3 — GM-ruled canonicalization (P2)
+## Phase 5: User Story 3 — Find duplicate headings so the GM can fix the summaries (P2)
 
-**Goal**: apply exact, same-category registry aliases and the accepted entries from `canon.yaml`; propose near-duplicates without applying them.
+**Goal**: group headings only by identical text or exact same-type registry alias; list likely duplicates with `file:line` as non-blocking fix-at-source findings; read `not_duplicates` rulings from `canon.yaml`. Never merge, rename or alias a misspelling.
 
 **Independent Test**: quickstart Q6 on the `aliases` fixture.
 
 ### Tests for User Story 3 (write first)
 
 - [ ] T031 [P] [US3] `tests/test_summary_native_canon.py`:
-  - a same-type registry alias merges and keeps both `headings`;
-  - the registry's first-token inference is NOT applied;
-  - no cross-category merge (Staff of Power item vs spell);
-  - a near-duplicate becomes a proposal and is not merged;
-  - an accepted `canon.yaml` entry merges on rebuild;
-  - a rejected pair is never re-proposed;
-  - pairs in the registry's `distinct`/`rejected_aliases` are not proposed;
-  - `canon.yaml` with unknown keys, chains, or a `*` category without `to_category` is refused;
-  - `canon.yaml` is never written by the tool (mtime and bytes unchanged);
-  - stale `canon.yaml` entries are reported by `canon`.
-- [ ] T032 [P] [US3] Test in `tests/test_registry.py` (or the existing registry test file found via codebase-memory-mcp `search_graph name_pattern=test_.*alias_to_canonical`) for `Registry.explicit_aliases_by_type()`: exact names and aliases only, keyed `{type: {casefold(alias): canonical}}`, no first-token entries.
+  - `test_registry_exact_same_type_alias_groups_and_keeps_headings` (npc);
+  - `test_registry_first_token_inference_not_applied`;
+  - `test_spells_never_registry_grouped`: a registry entry naming a spell string has no effect on the `spell` category;
+  - `test_no_cross_category_grouping_or_flag`: Staff of Power item vs spell;
+  - `test_typo_listed_with_all_file_lines_not_merged`: Manshon/Manshoon;
+  - `test_qualifier_pair_listed`: "Manshoon (Simulacrum)"/"Manshoon";
+  - `test_possible_duplicate_is_non_blocking`: validate exits 0 when duplicates are the only findings;
+  - `test_fixing_source_clears_finding`: edit a tmp copy of the fixture and re-scan;
+  - `test_not_duplicates_ruling_suppresses`;
+  - `test_registry_distinct_and_rejected_aliases_suppress`;
+  - `test_canon_yaml_rejects_merge_keys`: `accepted:`, `aliases:` or any key other than `not_duplicates` is refused with exit 2;
+  - `test_stale_ruling_reported`;
+  - `test_canon_yaml_never_written`: bytes and mtime unchanged after validate and build.
+- [ ] T032 [P] [US3] Test for `Registry.explicit_aliases_by_type()` in the existing registry test file (find it via codebase-memory-mcp `search_graph name_pattern="test_.*alias_to_canonical"`). It returns exact names and aliases only, keyed `{type: {casefold(alias): canonical}}`, with no first-token entries.
 
 ### Implementation for User Story 3
 
-- [ ] T033 [US3] Add `Registry.explicit_aliases_by_type()` to `campaignlib/registry.py`, next to `alias_to_canonical`. Its docstring must say why first-token inference is excluded: automatic grouping here must be exact (spec FR-013, research R7).
+- [ ] T033 [US3] Add `Registry.explicit_aliases_by_type()` to `campaignlib/registry.py`, next to `alias_to_canonical`. Its docstring must say first-token inference is excluded because grouping here must be exact (spec FR-013, research R7). Do not add a spell type to the registry (GM ruling).
 - [ ] T034 [US3] `pipelines/summary_native/canon.py`:
-  - `load_canon(path) -> CanonMapping` (strict validation);
-  - `make_canonicalizer(registry, mapping) -> Callable[[category, heading], (canonical, sources)]`;
-  - `propose(observations, registry, mapping, threshold=0.88) -> list[Proposal]`, using difflib ratio within a category plus a qualifier strip (`"X (Y)"` vs `"X"`), excluding settled pairs;
-  - `write_proposals(range_dir, proposals)` produces `canon_proposals.yaml`, sorted and deterministic.
-- [ ] T035 [US3] Replace US1's identity canonicalizer in `corpus.build_observations` with `canon.make_canonicalizer`. Record `canonicalized_by` and the registry and canon sha256 in the manifest. `build` writes `canon_proposals.yaml`. Wire `canon` in `cli.py` to print proposals grouped by category plus stale entries. Re-run T010 (byte-stability still holds).
+  - `load_rulings(path) -> Rulings`: strict, `not_duplicates` is the only key, and any other key exits 2 with "canon.yaml records not-a-duplicate rulings only; fix duplicates in the summary files";
+  - `make_grouper(registry) -> Callable[[category, heading], (canonical, grouped_by)]`, which allows identical text and exact same-type registry aliases only, with no registry for `spell`/`ability`;
+  - `find_possible_duplicates(observations, registry, rulings, threshold=0.88) -> list[Finding]`, using the difflib ratio within a category plus a parenthetical-qualifier strip, with `locations` listing every `file:line` per spelling, excluding ruled pairs and the registry's `distinct`/`rejected_aliases`;
+  - `stale_rulings(rulings, headings) -> list[Finding]`.
+- [ ] T035 [US3] Wire the US3 functions into the US1 code:
+  - `validate.scan` now also parses entity sections of in-range files and appends `possible-duplicate` (non-blocking) and `stale-ruling` (non-blocking) findings.
+  - `validation_report.md` gains a "Possible duplicates — fix in the summaries" section.
+  - Replace US1's identity grouper in `corpus.build_observations` with `canon.make_grouper`.
+  - Record `grouped_by` in the dossier frontmatter, and the registry and canon sha256 in the manifest.
+  - Add `possible-duplicate` and `stale-ruling` to `schema.py`.
+  - Re-run T010 (byte-stability still holds).
 - [ ] T036 [US3] Green the suite.
-- [ ] T037 [US3] COMMIT "summary_native: GM-ruled category-aware canonicalization"
+- [ ] T037 [US3] COMMIT "summary_native: fix-at-source duplicate detection"
 - [ ] T038 [US3] REVIEW `/code-review` on T037's commit. Fix and commit.
 
 ---
@@ -248,7 +257,7 @@ description: "Task list for 031 summary-native grounding docs"
   - unset `summaries_dir` gives 400;
   - unknown doc gives 400;
   - `/chapters` lists prefixes and duplicates without parsing content;
-  - `/report`, `/proposals` and `/drafts` read files only (404 when absent).
+  - `/report` and `/drafts` read files only (404 when absent).
 
 ### Implementation for User Story 5
 
@@ -257,9 +266,9 @@ description: "Task list for 031 summary-native grounding docs"
 - [ ] T049 [P] [US5] `frontend/src/views/grounding/SummaryNative.vue`:
   - summaries-dir field;
   - range picker fed by `/chapters`, with an "All chapters" button that writes the first and last chapters explicitly;
-  - Validate / Build / Canon proposals / Synth (doc select, upstream draft paths, audit files, parts, force) / Compare buttons, streaming output via the existing grounding run composable (`frontend/src/composables/useGroundingRun.ts`);
-  - panels for the validation report, proposals and drafts list;
-  - no promote button and no canon editor;
+  - Validate / Build / Synth (doc select, upstream draft paths, audit files, parts, force) / Compare buttons, streaming output via the existing grounding run composable (`frontend/src/composables/useGroundingRun.ts`);
+  - panels for the validation report (with its possible-duplicates section) and the drafts list;
+  - no promote button and no rulings editor;
   - persist field values through `PUT /api/grounding/config`.
 - [ ] T050 [P] [US5] `frontend/src/router.ts`: add the child route `summary-native` → `SummaryNative.vue` under `/grounding`. In `frontend/src/components/layout/AppSidebar.vue`, widen the `RenderingPath.id` union and add a fourth path `{ id: 'summary-native', label: 'Summary-native', description: 'Parses reviewed session summaries directly — no extraction pass.', usesSharedExtraction: false, matchPrefixes: ['/grounding/summary-native'], items: [{ label: 'Summary-native', path: '/grounding/summary-native' }] }`. Update the comment that says "three rendering paths".
 - [ ] T051 [US5] `cd frontend && npm run build` (type-check must pass). Green the pytest suite. Run quickstart Q8 by hand via the `run` skill or Chrome tools and report what was seen.
@@ -276,7 +285,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `validate` (the one-pass report, every finding code and how to fix each, the out-of-range section, gaps);
   - choosing a range;
   - `build` and the output layout;
-  - canon proposals, then editing `canon.yaml`, then `build --force`;
+  - possible duplicates: fix the summary files, or record a `not_duplicates` ruling in `canon.yaml`, then re-run; why `canon.yaml` cannot merge;
   - `synth` per doc (upstream flags, `--audit`, `--parts`, `--dump-only`, the backend flags, what `.incomplete.md` means);
   - `compare` and promoting by hand (`cp` after review);
   - every refusal and exit code decoded;
@@ -296,7 +305,7 @@ description: "Task list for 031 summary-native grounding docs"
 
 - Setup (T001–T002) → Foundational (T003–T008) → US1 (T009–T018).
 - US2 (T019–T030) depends on US1 (it needs a built corpus).
-- US3 (T031–T038) depends on US1 only. It touches `corpus.py`, so run it **after** US2 commits, not concurrently, to keep diffs reviewable.
+- US3 (T031–T038) depends on US1 only. It touches `validate.py` and `corpus.py`, so run it **after** US2 commits, not concurrently, to keep diffs reviewable.
 - US4 (T039–T044) depends on US2 (`context.py`/`synth.py`).
 - US5 (T045–T053) depends on the CLI contract being frozen (after US4). T045/T046 can be written earlier.
 - Polish (T054–T059) is last.
@@ -325,6 +334,6 @@ Agent(model=sonnet): "Write prompts/outlines T023"
 
 - **MVP = US1** (T001–T018): validation, range and the deterministic corpus. It is useful alone (a reviewed chronology and dossiers, zero tokens) and settles the format question with the GM's real corpus before any prompt work.
 - **Then US2**: world and campaign state, the core of #499.
-- **Then US3**: canonicalization improves dossier quality for every later run.
+- **Then US3**: the duplicate list lets the GM clean the summaries, which improves every later run.
 - **Then US4 and US5.**
 - Stop after any checkpoint and demo it. SC-008 (GM judgment against the #499 goldens) is assessed by the GM after US2, never claimed by an agent.
