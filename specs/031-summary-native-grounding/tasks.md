@@ -300,7 +300,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `docs/core/architecture.md`: add the fourth rendering path and a "common task → start here" row.
 - [X] T056 Run quickstart Q1–Q6 against the real OOTA corpus. Record the results (timings, counts vs 67/409, byte-stable yes/no) in `specs/031-summary-native-grounding/session-log.md`. Do not edit any summary file. If 070 is still unfixed, report it rather than working around it.
 - [X] T057 COMMIT "docs: summary_native CLI how-to and index links"
-- [ ] T058 REVIEW `/code-review` on T057's commit. Fix and commit.
+- [X] T058 REVIEW `/code-review` on T057's commit. Fix and commit.
 - [ ] T059 Push the branch and open a PR to `main` via `mcp__github__create_pull_request`, linking #499. The body summarises SC status and lists SC-008 as pending GM judgment. Do not merge; wait for the user.
 
 ---

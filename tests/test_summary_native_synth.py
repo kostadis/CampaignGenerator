@@ -429,7 +429,7 @@ def test_failed_model_call_still_writes_record(camp, monkeypatch, fake, capsys):
     assert main(["synth", "world_state", *ARGS]) == 4
     err = capsys.readouterr().err
     assert "Error: model call failed in part 1: RuntimeError: upstream 529" in err
-    assert "runs/world_state/" in err and "record.json" in err
+    assert f"see {RD}/runs/world_state/" in err and "record.json" in err  # campaign-relative
     record = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
     assert record["check"]["complete"] is False
     assert "upstream 529" in record["check"]["error"]

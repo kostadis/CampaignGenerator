@@ -327,7 +327,7 @@ def run_synth(
             fail(f"part {k}: {type(e).__name__}: {e}")
             print(
                 f"Error: model call failed in part {k}: {type(e).__name__}: {e} "
-                f"(see runs/{doc}/{run_id}/record.json)",
+                f"(see {schema.display_path(run_dir / 'record.json', root)})",
                 file=sys.stderr,
             )
             return EXIT_MODEL_FAILED
