@@ -108,8 +108,12 @@ every in-range file's sha256 against `manifest.json`. On any mismatch it exits 2
 | `--force` | all | overwrite an existing draft |
 | `--backend --endpoint --model --max-tokens` | all | via `add_backend_args`, same as `synthesise_world_state` |
 
-It writes `runs/<doc>/…` and `drafts/<doc>.draft.md`, or `.incomplete.md` with
-exit 3. It never writes outside the range directory.
+It writes a new `runs/<doc>/<run_id>/…` per invocation (never touching earlier
+runs) and `drafts/<doc>.draft.md`, or `drafts/<doc>.incomplete.md` with exit 3. An
+incomplete run keeps any existing `.draft.md` and prints
+`previous draft kept: drafts/<doc>.draft.md (from run <id>)`; an existing
+`.incomplete.md` never blocks a run. A backend/model pair that cannot work together
+exits 2 with a message. It never writes outside the range directory.
 
 ## `summary_native compare <doc> --live FILE`
 

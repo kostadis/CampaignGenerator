@@ -171,7 +171,7 @@ description: "Task list for 031 summary-native grounding docs"
   - Accept only `world_state` and `campaign_state` until US4.
 - [X] T028 [US2] Make T019–T021 and the full suite green, including `tests/test_retrieve_render_isolation.py`. Run `synth world_state --dump-only` on a fixture build and inspect the prompts.
 - [X] T029 [US2] COMMIT "summary_native: world/campaign state drafts with outline check and run records"
-- [ ] T030 [US2] REVIEW `/code-review` on T029's commit. Fix and commit.
+- [X] T030 [US2] REVIEW `/code-review` on T029's commit. Fix and commit.
 
 ---
 

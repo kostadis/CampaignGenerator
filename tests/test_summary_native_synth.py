@@ -33,6 +33,15 @@ def camp(tmp_path, monkeypatch):
 ARGS = ["--summaries-dir", "summaries"]
 
 
+def run_dirs(camp, doc):
+    root = camp / RD / "runs" / doc
+    return sorted(p for p in root.iterdir() if p.is_dir()) if root.exists() else []
+
+
+def latest_run(camp, doc):
+    return run_dirs(camp, doc)[-1]
+
+
 def headings(doc):
     return synth.load_outline(doc)
 
@@ -72,7 +81,7 @@ def test_dump_only_writes_prompts_no_call(camp, monkeypatch, fake):
 
     monkeypatch.setattr(synth, "client_from_args", boom)
     assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    runs = camp / RD / "runs/world_state"
+    runs = latest_run(camp, "world_state")
     assert (runs / "part-1.system.md").is_file() and (runs / "part-1.user.md").is_file()
     assert (runs / "selection.json").is_file()
     rec = json.loads((runs / "record.json").read_text())
@@ -89,9 +98,10 @@ def test_draft_written_when_outline_complete(camp, fake):
     assert main(["synth", "world_state", *ARGS]) == 0
     draft = (camp / RD / "drafts/world_state.draft.md").read_text()
     first = draft.splitlines()[0]
-    assert first.startswith("<!-- summary_native draft | doc: world_state | range: ch002-005 | record: runs/world_state/record.json | corpus manifest sha256: ")
+    run = latest_run(camp, "world_state").name
+    assert first.startswith(f"<!-- summary_native draft | doc: world_state | range: ch002-005 | record: runs/world_state/{run}/record.json | corpus manifest sha256: ")
     assert "## " in draft and len(calls) == 1
-    assert (camp / RD / "runs/world_state/part-1.out.md").is_file()
+    assert (latest_run(camp, "world_state") / "part-1.out.md").is_file()
 
 
 def test_incomplete_when_heading_missing_exit3(camp, fake, capsys):
@@ -115,7 +125,7 @@ def test_parts_one_call_per_part_joined_in_order(camp, fake):
     for k, g in enumerate(groups):
         assert all(h in calls[k]["system"] for h in g)
         assert "write ONLY these headings" in calls[k]["system"]
-        assert (camp / RD / f"runs/world_state/part-{k + 1}.out.md").is_file()
+        assert (latest_run(camp, "world_state") / f"part-{k + 1}.out.md").is_file()
     draft = (camp / RD / "drafts/world_state.draft.md").read_text()
     pos = [draft.index(h) for h in hs]
     assert pos == sorted(pos)
@@ -143,12 +153,12 @@ def test_world_state_input_only_from_explicit_flag(camp, fake):
     drafts.mkdir(parents=True)
     (drafts / "world_state.draft.md").write_text("UNREVIEWED DRAFT TEXT\n")
     assert main(["synth", "campaign_state", *ARGS, "--dump-only"]) == 0
-    user = (camp / RD / "runs/campaign_state/part-1.user.md").read_text()
+    user = (latest_run(camp, "campaign_state") / "part-1.user.md").read_text()
     assert "UNREVIEWED DRAFT TEXT" not in user and "UPSTREAM DRAFT" not in user
     reviewed = camp / "reviewed_ws.md"
     reviewed.write_text("REVIEWED WORLD\n")
     assert main(["synth", "campaign_state", *ARGS, "--dump-only", "--force", "--world-state", "reviewed_ws.md"]) == 0
-    user = (camp / RD / "runs/campaign_state/part-1.user.md").read_text()
+    user = (latest_run(camp, "campaign_state") / "part-1.user.md").read_text()
     assert "UPSTREAM DRAFT (GM-reviewed): world_state" in user and "REVIEWED WORLD" in user
     assert "UNREVIEWED DRAFT TEXT" not in user
     assert main(["synth", "campaign_state", *ARGS, "--dump-only", "--world-state", "nope.md"]) == 2
@@ -157,7 +167,7 @@ def test_world_state_input_only_from_explicit_flag(camp, fake):
 def test_audit_files_fenced_as_questions(camp, fake):
     (camp / "track.md").write_text("- Reach Candlekeep\n")
     assert main(["synth", "campaign_state", *ARGS, "--dump-only", "--audit", "track.md"]) == 0
-    runs = camp / RD / "runs/campaign_state"
+    runs = latest_run(camp, "campaign_state")
     user = (runs / "part-1.user.md").read_text()
     system = (runs / "part-1.system.md").read_text()
     assert "AUDIT QUESTIONS — NOT EVIDENCE" in user and "Reach Candlekeep" in user and "track.md" in user
@@ -171,7 +181,7 @@ def test_audit_default_from_grounding_yaml(camp):
         yaml.safe_dump({"campaign_state": {"track_files": ["track.md"]}})
     )
     assert main(["synth", "campaign_state", *ARGS, "--dump-only"]) == 0
-    assert "Default tracked thing" in (camp / RD / "runs/campaign_state/part-1.user.md").read_text()
+    assert "Default tracked thing" in (latest_run(camp, "campaign_state") / "part-1.user.md").read_text()
 
 
 def test_audit_rejected_for_world_state(camp):
@@ -202,12 +212,14 @@ def test_existing_draft_needs_force(camp, fake):
     assert main(["synth", "world_state", *ARGS, "--force"]) == 0
 
 
-def test_existing_incomplete_also_needs_force(camp, fake):
+def test_existing_incomplete_never_blocks(camp, fake):
     calls, state = fake
     state["texts"] = "## nothing\n"
     assert main(["synth", "world_state", *ARGS]) == 3
     n = len(calls)
-    assert main(["synth", "world_state", *ARGS]) == 2 and len(calls) == n
+    state["texts"] = full_text("world_state")
+    assert main(["synth", "world_state", *ARGS]) == 0 and len(calls) == n + 1
+    assert not (camp / RD / "drafts/world_state.incomplete.md").exists()
 
 
 def test_synth_refuses_stale_corpus(camp, fake, capsys):
@@ -248,7 +260,7 @@ def test_record_json_fields(camp, fake):
     _, state = fake
     state["texts"] = full_text("world_state")
     assert main(["synth", "world_state", *ARGS, "--backend", "anthropic", "--model", "m-test", "--max-tokens", "1234"]) == 0
-    rec = json.loads((camp / RD / "runs/world_state/record.json").read_text())
+    rec = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
     for k in ("doc", "backend", "model", "max_tokens", "parts", "range", "corpus_manifest_sha256",
               "upstream", "audit", "outline", "check", "started", "finished"):
         assert k in rec, k
@@ -262,7 +274,158 @@ def test_record_json_fields(camp, fake):
 
 def test_prompts_are_deterministic(camp):
     assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    runs = camp / RD / "runs/world_state"
-    a = (runs / "part-1.user.md").read_bytes(), (runs / "part-1.system.md").read_bytes()
+    r1 = latest_run(camp, "world_state")
+    a = (r1 / "part-1.user.md").read_bytes(), (r1 / "part-1.system.md").read_bytes()
     assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    assert a == ((runs / "part-1.user.md").read_bytes(), (runs / "part-1.system.md").read_bytes())
+    r2 = latest_run(camp, "world_state")
+    assert r1 != r2
+    assert a == ((r2 / "part-1.user.md").read_bytes(), (r2 / "part-1.system.md").read_bytes())
+
+
+@pytest.fixture
+def clock(monkeypatch):
+    from datetime import datetime, timezone
+    t = {"n": 0}
+
+    def tick():
+        t["n"] += 1
+        return datetime(2026, 1, 1, 0, 0, t["n"], tzinfo=timezone.utc)
+
+    monkeypatch.setattr(synth, "_utcnow", tick)
+    return tick
+
+
+def snapshot(d):
+    return {p.relative_to(d).as_posix(): p.read_bytes() for p in d.rglob("*") if p.is_file()}
+
+
+def test_run_ids_are_utc_timestamps(camp, fake, clock):
+    _, state = fake
+    state["texts"] = full_text("world_state")
+    assert main(["synth", "world_state", *ARGS]) == 0
+    assert [d.name for d in run_dirs(camp, "world_state")] == ["20260101T000001Z"]
+
+
+def test_run_id_collision_gets_suffix(camp, monkeypatch):
+    from datetime import datetime, timezone
+    monkeypatch.setattr(synth, "_utcnow", lambda: datetime(2026, 1, 1, tzinfo=timezone.utc))
+    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
+    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
+    assert [d.name for d in run_dirs(camp, "world_state")] == ["20260101T000000Z", "20260101T000000Z-1"]
+
+
+def test_dump_only_leaves_earlier_run_and_draft_record_intact(camp, fake, clock):
+    _, state = fake
+    state["texts"] = full_text("world_state")
+    assert main(["synth", "world_state", *ARGS]) == 0
+    runs = camp / RD / "runs/world_state"
+    before = snapshot(runs)
+    draft = camp / RD / "drafts/world_state.draft.md"
+    ref = draft.read_text().splitlines()[0].split("record: ")[1].split(" |")[0]
+    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
+    after = snapshot(runs)
+    assert all(after[k] == v for k, v in before.items())
+    assert len(run_dirs(camp, "world_state")) == 2
+    assert (camp / RD / ref).is_file() and (camp / RD / ref).read_bytes() == before[ref.split("/", 2)[2]]
+
+
+def test_parts_run_then_single_part_run_keep_separate_dirs(camp, fake, clock):
+    _, state = fake
+    groups = synth.split_parts(headings("world_state"), 3)
+    state["texts"] = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
+    assert main(["synth", "world_state", *ARGS, "--parts", "3"]) == 0
+    first = run_dirs(camp, "world_state")[0]
+    before = snapshot(first)
+    state["texts"] = full_text("world_state")
+    assert main(["synth", "world_state", *ARGS, "--parts", "1", "--force"]) == 0
+    dirs = run_dirs(camp, "world_state")
+    assert len(dirs) == 2 and snapshot(first) == before
+    assert sorted(p.name for p in dirs[1].glob("part-*")) == ["part-1.out.md", "part-1.system.md", "part-1.user.md"]
+    assert (first / "part-3.out.md").is_file()
+
+
+def test_incomplete_keeps_previous_draft(camp, fake, clock, capsys):
+    _, state = fake
+    state["texts"] = full_text("world_state")
+    assert main(["synth", "world_state", *ARGS]) == 0
+    draft = camp / RD / "drafts/world_state.draft.md"
+    kept = draft.read_bytes()
+    first_run = run_dirs(camp, "world_state")[0].name
+    capsys.readouterr()
+    state["texts"] = "## nothing\n"
+    assert main(["synth", "world_state", *ARGS, "--force"]) == 3
+    assert draft.read_bytes() == kept
+    inc = camp / RD / "drafts/world_state.incomplete.md"
+    second_run = run_dirs(camp, "world_state")[1].name
+    assert f"run: {second_run}" in inc.read_text().splitlines()[0]
+    err = capsys.readouterr()
+    assert f"previous draft kept: drafts/world_state.draft.md (from run {first_run})" in err.out + err.err
+
+
+def test_chatty_part_preamble_makes_run_incomplete(camp, fake, capsys):
+    _, state = fake
+    groups = synth.split_parts(headings("world_state"), 3)
+    texts = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
+    texts[1] = "Here is part 2:\n" + texts[1]
+    state["texts"] = texts
+    assert main(["synth", "world_state", *ARGS, "--parts", "3"]) == 3
+    e = capsys.readouterr()
+    assert "part 2" in e.out + e.err
+    assert not (camp / RD / "drafts/world_state.draft.md").exists()
+
+
+def test_extra_h2_makes_run_incomplete(camp, fake, capsys):
+    _, state = fake
+    state["texts"] = full_text("world_state") + "\n## Notes\n\nextra\n"
+    assert main(["synth", "world_state", *ARGS]) == 3
+    e = capsys.readouterr()
+    assert "unexpected heading: ## Notes" in e.out + e.err
+
+
+def test_part_with_foreign_heading_incomplete(camp, fake):
+    _, state = fake
+    hs = headings("world_state")
+    groups = synth.split_parts(hs, 3)
+    # part 1 also writes a heading assigned to part 3
+    texts = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
+    texts[0] += f"\n{groups[2][0]}\n\nstolen\n"
+    state["texts"] = texts
+    assert main(["synth", "world_state", *ARGS, "--parts", "3"]) == 3
+
+
+def test_check_outline_unexpected_heading():
+    hs = ["## A"]
+    assert any("unexpected" in p for p in synth.check_outline("## A\n\nx\n\n## Z\n\ny\n", hs))
+
+
+def test_record_backend_is_effective_backend(camp, fake, monkeypatch):
+    _, state = fake
+    state["texts"] = full_text("world_state")
+    monkeypatch.setenv("CG_BACKEND", "openrouter")
+    assert main(["synth", "world_state", *ARGS]) == 0
+    rec = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
+    assert rec["backend"] == "openrouter"
+
+
+def test_failed_client_setup_still_writes_record(camp, monkeypatch):
+    """A run that never reaches the model still leaves an explained run dir."""
+
+    def boom(*_a, **_k):
+        raise SystemExit("no credentials for this backend")
+
+    monkeypatch.setattr(synth, "client_from_args", boom)
+    assert main(["synth", "world_state", *ARGS]) == 2
+    record = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
+    assert record["check"] == {"complete": False, "error": "no credentials for this backend"}
+
+
+def test_failed_model_call_still_writes_record(camp, monkeypatch, fake):
+    def explode(*_a, **_k):
+        raise RuntimeError("upstream 529")
+
+    monkeypatch.setattr(synth, "render_part", explode)
+    with pytest.raises(RuntimeError):
+        main(["synth", "world_state", *ARGS])
+    record = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
+    assert record["check"]["complete"] is False
+    assert "upstream 529" in record["check"]["error"]

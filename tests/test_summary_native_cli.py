@@ -270,3 +270,13 @@ def test_compare_errors_when_draft_or_live_missing(camp):
     (rd / "drafts").mkdir()
     (rd / "drafts/world_state.draft.md").write_text("x\n")
     assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "nope.md"]) == 2
+
+
+def test_synth_incompatible_backend_model_exits_2_without_traceback(camp, capsys):
+    _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+    capsys.readouterr()
+    rc = main(["synth", "world_state", "--summaries-dir", "summaries", "--dump-only",
+               "--backend", "codex-cli", "--model", "claude-opus-5-5"])
+    err = capsys.readouterr().err
+    assert rc == 2 and "incompatible with backend 'codex-cli'" in err and "Traceback" not in err

@@ -174,7 +174,10 @@ def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, 
 
 
 def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path) -> int:
-    args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
+    try:
+        args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
+    except ValueError as e:
+        return _err(str(e))
     track = _grounding_group(config_path.expanduser().resolve(), "campaign_state").get("track_files") or []
     return synth.run_synth(
         args,

@@ -130,22 +130,31 @@ Lifecycle of a pair: `flagged → (GM edits summary) gone` or
 
 ## Synthesis
 
-### Selection — `runs/<doc>/selection.json`
+### Selection — `runs/<doc>/<run_id>/selection.json`
 `range_end`, `recent_chapters`, `recurring_min`, and
 `selected: [{dossier, reason: recent|recurring|named, last_chapter, n_observations}]`.
 
-### SynthesisRecord — `runs/<doc>/`
+### SynthesisRecord — `runs/<doc>/<run_id>/`
+Every synth invocation, `--dump-only` included, writes a NEW directory;
+`run_id` is the UTC start time `YYYYMMDDTHHMMSSZ`, with `-<k>` appended if that
+directory already exists. A run never overwrites or deletes another run's directory,
+so a draft's `record:` pointer stays valid. A single-part run after a `--parts 3`
+run leaves two directories, the new one holding only `part-1.*`.
 - `part-<k>.system.md` and `part-<k>.user.md`: the exact prompts (FR-024).
 - `part-<k>.out.md`: the raw response.
-- `record.json`: `doc`, `backend`, `model`, `max_tokens`, `parts`, `range`, the
+- `record.json`: `doc`, `backend` (the effective backend: `--backend`, else `CG_BACKEND`, else `anthropic`), `model`, `max_tokens`, `parts`, `range`, the
   input file digests (corpus manifest sha, upstream drafts, audit files, party and
-  planning configs), the outline, the completeness-check result, and the started and
+  planning configs), the outline, the completeness-check result (per part when `--parts` > 1), and the started and
   finished times.
 
 ### DraftDocument — `drafts/<doc>.draft.md` | `drafts/<doc>.incomplete.md`
 `<doc>` is one of `world_state`, `campaign_state`, `party`, `planning`.
 `.draft.md` is written only if the outline check passes. It opens with a
-provenance comment giving the range, the record path and the corpus manifest sha.
+provenance comment giving the range, the record path (`runs/<doc>/<run_id>/record.json`)
+and the corpus manifest sha. An incomplete run writes `.incomplete.md` (its header
+names its own run), replacing any earlier `.incomplete.md` and leaving an existing
+`.draft.md` untouched. The outline check also rejects any H2 not in the outline, and
+with `--parts` checks each part against only its assigned headings.
 It never overwrites a live `docs/*.md` (FR-025). An existing draft needs `--force`
 (FR-027).
 
@@ -160,7 +169,7 @@ It never overwrites a live `docs/*.md` (FR-025). An existing draft needs `--forc
     ├── chronology.md
     ├── memorable_moments.md
     ├── dossiers/*.md
-    ├── runs/<doc>/…
+    ├── runs/<doc>/<run_id>/…
     └── drafts/<doc>.draft.md (+ .vs-live.diff)
 ```
 Different ranges never share a directory (FR-005e).

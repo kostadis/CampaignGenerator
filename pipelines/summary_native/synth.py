@@ -18,6 +18,7 @@ from pathlib import Path
 import yaml
 
 from campaignlib import client_from_args, stream_api
+from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import context, corpus, schema, select, validate
 
@@ -64,6 +65,9 @@ def check_outline(text: str, headings: list[str]) -> list[str]:
     if positions != sorted(positions):
         problems.append("headings out of order (expected: " + " | ".join(present) + ")")
     h2_lines = sorted(n for n, line in enumerate(lines) if line.startswith("## "))
+    for n in h2_lines:
+        if lines[n].rstrip() not in wanted:
+            problems.append(f"unexpected heading: {lines[n].rstrip()}")
     for h in present:
         start = at[h]
         end = next((n for n in h2_lines if n > start), len(lines))
@@ -77,8 +81,26 @@ def render_part(client, system: str, user: str, model: str, max_tokens: int) -> 
     return stream_api(client, system, user, model, max_tokens=max_tokens)
 
 
-def _now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _new_run_dir(runs_root: Path, stamp: str) -> Path:
+    """Create ``runs_root/<stamp>[-k]`` — a directory no earlier run owns."""
+    runs_root.mkdir(parents=True, exist_ok=True)
+    k = 0
+    while True:
+        d = runs_root / (stamp if k == 0 else f"{stamp}-{k}")
+        try:
+            d.mkdir()
+            return d
+        except FileExistsError:
+            k += 1
+
+
+def _previous_draft_run(draft: Path, doc: str) -> str:
+    m = re.search(rf"runs/{re.escape(doc)}/([^/\s]+)/record\.json", draft.read_text(encoding="utf-8").split("\n", 1)[0])
+    return m.group(1) if m else "unknown"
 
 
 def _refuse(msg: str) -> int:
@@ -113,7 +135,9 @@ def run_synth(
     recent_chapters: int,
     recurring_min: int,
     parts: int,
+    now=None,
 ) -> int:
+    now = now or _utcnow
     doc = args.doc
     if doc not in schema.SYNTH_DOCS:
         return _refuse(f"synth {doc}: not implemented yet (available: {', '.join(schema.SYNTH_DOCS)})")
@@ -146,9 +170,11 @@ def run_synth(
             audit_paths.append(p)
 
     drafts = range_dir / "drafts"
-    existing = [p for p in (drafts / f"{doc}.draft.md", drafts / f"{doc}.incomplete.md") if p.exists()]
-    if existing and not args.force and not args.dump_only:
-        return _refuse(f"{existing[0]} exists; pass --force to overwrite it")
+    # An existing .incomplete.md never blocks a run (it is replaced); an existing
+    # .draft.md is GM-reviewed material and needs --force to be replaced.
+    draft_path = drafts / f"{doc}.draft.md"
+    if draft_path.exists() and not args.force and not args.dump_only:
+        return _refuse(f"{draft_path} exists; pass --force to overwrite it")
 
     range_end = int(manifest["range"]["until"])
     range_since = int(manifest["range"]["since"])
@@ -175,17 +201,18 @@ def run_synth(
             )
         )
 
-    runs = range_dir / "runs" / doc
-    runs.mkdir(parents=True, exist_ok=True)
-    atomic_write_text(runs / "selection.json", selection.to_json())
+    started = now()
+    run_dir = _new_run_dir(range_dir / "runs" / doc, started.strftime("%Y%m%dT%H%M%SZ"))
+    run_id = run_dir.name
+    atomic_write_text(run_dir / "selection.json", selection.to_json())
     for k, (system, user) in enumerate(prompts, 1):
-        atomic_write_text(runs / f"part-{k}.system.md", system)
-        atomic_write_text(runs / f"part-{k}.user.md", user)
+        atomic_write_text(run_dir / f"part-{k}.system.md", system)
+        atomic_write_text(run_dir / f"part-{k}.user.md", user)
 
     manifest_sha = corpus.sha256_file(range_dir / "manifest.json")
     record = {
         "doc": doc,
-        "backend": getattr(args, "backend", None),
+        "backend": resolve_cli_model(args, legacy_default=None).backend,
         "model": args.model,
         "max_tokens": args.max_tokens,
         "parts": len(groups),
@@ -195,46 +222,81 @@ def run_synth(
         "audit": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in audit_paths],
         "outline": headings,
         "check": "not run",
-        "started": _now(),
+        "started": started.isoformat(timespec="seconds"),
         "finished": None,
     }
 
     def save_record() -> None:
-        atomic_write_text(runs / "record.json", json.dumps(record, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
+        atomic_write_text(run_dir / "record.json", json.dumps(record, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
 
     if args.dump_only:
-        record["finished"] = _now()
+        record["finished"] = now().isoformat(timespec="seconds")
         save_record()
-        print(f"[--dump-only: prompts written to {runs}; no model call]")
+        print(f"[--dump-only: prompts written to {run_dir}; no model call]")
         return 0
 
-    client = client_from_args(args)
+    def fail(message: str) -> None:
+        # Every run directory keeps a record, including one that never reached
+        # the model, so a directory of prompts is never left unexplained.
+        record["check"] = {"complete": False, "error": message}
+        record["finished"] = now().isoformat(timespec="seconds")
+        save_record()
+
+    try:
+        client = client_from_args(args)
+    except SystemExit as e:  # client_from_args fails fast with SystemExit(message)
+        msg = str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})"
+        fail(msg)
+        return _refuse(msg)
+    except (ValueError, RuntimeError, ImportError) as e:
+        fail(str(e))
+        return _refuse(str(e))
     outputs: list[str] = []
     for k, (system, user) in enumerate(prompts, 1):
-        out = render_part(client, system, user, args.model, args.max_tokens)
-        atomic_write_text(runs / f"part-{k}.out.md", out)
+        try:
+            out = render_part(client, system, user, args.model, args.max_tokens)
+        except Exception as e:
+            fail(f"part {k}: {type(e).__name__}: {e}")
+            raise
+        atomic_write_text(run_dir / f"part-{k}.out.md", out)
         outputs.append(out.strip())
     joined = "\n\n".join(outputs) + "\n"
-    problems = check_outline(joined, headings)
+    if len(groups) > 1:
+        problems = [
+            f"part {k}: {p}"
+            for k, (group, out) in enumerate(zip(groups, outputs), 1)
+            for p in check_outline(out + "\n", group)
+        ]
+    else:
+        problems = check_outline(joined, headings)
     record["check"] = {"complete": not problems, "problems": problems}
-    record["finished"] = _now()
+    record["finished"] = now().isoformat(timespec="seconds")
     save_record()
 
     drafts.mkdir(parents=True, exist_ok=True)
+    record_ref = f"runs/{doc}/{run_id}/record.json"
     if problems:
         target = drafts / f"{doc}.incomplete.md"
-        atomic_write_text(target, joined)
+        header = (
+            f"<!-- summary_native INCOMPLETE | doc: {doc} | range: ch{range_since:03d}-{range_end:03d} "
+            f"| record: {record_ref} | run: {run_id} -->\n"
+        )
+        atomic_write_text(target, header + joined)
         print(f"Incomplete: {target}", file=sys.stderr)
         for p in problems:
             print(f"  - {p}", file=sys.stderr)
+        if draft_path.exists():
+            print(
+                f"previous draft kept: drafts/{doc}.draft.md (from run {_previous_draft_run(draft_path, doc)})",
+                file=sys.stderr,
+            )
         print("Retry with --parts N to write the outline in separate calls, or raise --max-tokens.", file=sys.stderr)
         return EXIT_INCOMPLETE
     header = (
         f"<!-- summary_native draft | doc: {doc} | range: ch{range_since:03d}-{range_end:03d} "
-        f"| record: runs/{doc}/record.json | corpus manifest sha256: {manifest_sha} -->\n"
+        f"| record: {record_ref} | corpus manifest sha256: {manifest_sha} -->\n"
     )
-    target = drafts / f"{doc}.draft.md"
-    atomic_write_text(target, header + joined)
+    atomic_write_text(draft_path, header + joined)
     (drafts / f"{doc}.incomplete.md").unlink(missing_ok=True)
-    print(f"Wrote draft: {target}")
+    print(f"Wrote draft: {draft_path}")
     return 0
