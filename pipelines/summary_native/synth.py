@@ -76,6 +76,20 @@ def check_outline(text: str, headings: list[str]) -> list[str]:
     return problems
 
 
+def check_threat_tracker(text: str) -> list[str]:
+    """With no arc score configured, ``## Threat Tracker`` is exactly the sentinel line."""
+    lines = text.splitlines()
+    try:
+        start = next(n for n, line in enumerate(lines) if line.rstrip() == "## Threat Tracker")
+    except StopIteration:
+        return []  # a missing heading is check_outline's report
+    end = next((n for n in range(start + 1, len(lines)) if lines[n].startswith("## ")), len(lines))
+    body = " ".join("\n".join(lines[start + 1 : end]).split())
+    if body in ("", context.NO_ARC_SENTINEL):
+        return []
+    return ["threat tracker must be empty: no arc scores configured"]
+
+
 def render_part(client, system: str, user: str, model: str, max_tokens: int) -> str:
     """The one model call in this package."""
     return stream_api(client, system, user, model, max_tokens=max_tokens)
@@ -132,6 +146,7 @@ def run_synth(
     range_dir: Path,
     report: validate.ValidationReport,
     audit_default: list[str],
+    config_dir: Path | None = None,
     recent_chapters: int,
     recurring_min: int,
     parts: int,
@@ -143,6 +158,9 @@ def run_synth(
         return _refuse(f"synth {doc}: not implemented yet (available: {', '.join(schema.SYNTH_DOCS)})")
     if args.audit and doc != "campaign_state":
         return _refuse(f"--audit applies to campaign_state only, not {doc}")
+    for flag, owner in (("party_config", "party"), ("planning_config", "planning")):
+        if getattr(args, flag, None) and doc != owner:
+            return _refuse(f"--{flag.replace('_', '-')} applies to {owner} only, not {doc}")
 
     try:
         manifest = corpus.load_manifest(range_dir, require_complete=True)
@@ -176,11 +194,32 @@ def run_synth(
     if draft_path.exists() and not args.force and not args.dump_only:
         return _refuse(f"{draft_path} exists; pass --force to overwrite it")
 
+    doc_config = None
+    cfg_dir = Path(config_dir) if config_dir is not None else root / "config"
+    try:
+        if doc == "party":
+            given = getattr(args, "party_config", None)
+            doc_config = context.party_config_block(
+                schema.resolve_under(root, given) if given else cfg_dir / "party.yaml", root
+            )
+        elif doc == "planning":
+            given = getattr(args, "planning_config", None)
+            doc_config = context.planning_config_block(
+                schema.resolve_under(root, given) if given else cfg_dir / "planning.yaml",
+                root,
+                explicit=bool(given),
+            )
+    except context.DocConfigError as e:
+        return _refuse(str(e))
+
     range_end = int(manifest["range"]["until"])
     range_since = int(manifest["range"]["since"])
+    candidates = select.read_corpus_dossiers(range_dir)
+    if doc == "planning":
+        candidates = [d for d in candidates if d.category == "npc"]
     try:
         selection = select.select_dossiers(
-            select.read_corpus_dossiers(range_dir),
+            candidates,
             range_end,
             recent_chapters,
             recurring_min,
@@ -198,6 +237,7 @@ def run_synth(
                 doc, range_dir, selection, upstream, audit_paths,
                 group if len(groups) > 1 else None,
                 headings=headings, range_since=range_since, root=root,
+                config_block=doc_config.block if doc_config else None,
             )
         )
 
@@ -220,6 +260,10 @@ def run_synth(
         "corpus_manifest_sha256": manifest_sha,
         "upstream": {n: {"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for n, p in upstream.items()},
         "audit": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in audit_paths],
+        "config": (
+            [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in doc_config.files]
+            if doc_config else []
+        ),
         "outline": headings,
         "check": "not run",
         "started": started.isoformat(timespec="seconds"),
@@ -269,6 +313,8 @@ def run_synth(
         ]
     else:
         problems = check_outline(joined, headings)
+    if doc == "planning" and doc_config is not None and doc_config.arc_scores == 0:
+        problems += check_threat_tracker(joined)
     record["check"] = {"complete": not problems, "problems": problems}
     record["finished"] = now().isoformat(timespec="seconds")
     save_record()

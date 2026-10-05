@@ -54,6 +54,8 @@ useGroundingRun('summary_native', {
 const doc = ref<Doc>('world_state')
 const worldStatePath = ref('')
 const campaignStatePath = ref('')
+const partyConfigPath = ref('')
+const planningConfigPath = ref('')
 const auditText = ref('')
 const namesText = ref('')
 const maxTokens = ref<Num>('')
@@ -127,6 +129,8 @@ const synthParams = computed(() => ({
   ...baseParams.value,
   world_state: worldStatePath.value.trim(),
   campaign_state: campaignStatePath.value.trim(),
+  party_config: doc.value === 'party' ? partyConfigPath.value.trim() : '',
+  planning_config: doc.value === 'planning' ? planningConfigPath.value.trim() : '',
   audit: lines(auditText.value),
   name: lines(namesText.value),
   recent_chapters: num(recentChapters.value),
@@ -276,6 +280,10 @@ onMounted(async () => {
           help="A GM-reviewed world_state draft to use as upstream context. Optional." />
         <PathField v-model="campaignStatePath" label="Campaign-state draft (context)" resolve-base="campaign"
           help="A GM-reviewed campaign_state draft to use as upstream context. Optional." />
+        <PathField v-if="doc === 'party'" v-model="partyConfigPath" label="Party config" resolve-base="campaign"
+          help="The party roster (sheets and backstories). Blank uses config/party.yaml." />
+        <PathField v-if="doc === 'planning'" v-model="planningConfigPath" label="Planning config" resolve-base="campaign"
+          help="Tracked NPCs, factions and arc scores. Blank uses config/planning.yaml; none means no arc scores." />
         <div class="field">
           <label class="field-label">Audit files (campaign_state)</label>
           <textarea class="field-textarea" v-model="auditText" rows="3"

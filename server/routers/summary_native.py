@@ -219,6 +219,8 @@ async def run_synth(
     until: int | None = None,
     world_state: str = "",
     campaign_state: str = "",
+    party_config: str = "",
+    planning_config: str = "",
     audit: list[str] | None = Query(default=None),
     name: list[str] | None = Query(default=None),
     recent_chapters: int | None = None,
@@ -239,6 +241,12 @@ async def run_synth(
         cmd += ["--world-state", world_state.strip()]
     if campaign_state.strip():
         cmd += ["--campaign-state", campaign_state.strip()]
+    # --party-config / --planning-config default to <config>/party.yaml and
+    # <config>/planning.yaml inside the CLI; passed only when the request names one.
+    if party_config.strip():
+        cmd += ["--party-config", party_config.strip()]
+    if planning_config.strip():
+        cmd += ["--planning-config", planning_config.strip()]
     # --audit defaults to campaign_state.track_files inside the CLI; the route
     # passes it only when the request names files.
     files = [a.strip() for a in (audit or []) if a.strip()]

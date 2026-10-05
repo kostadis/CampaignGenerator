@@ -341,3 +341,14 @@ def test_tilde_summaries_dir_lists_chapters(campaign, monkeypatch, tmp_path_fact
     (home / "summaries" / "004-x.md").write_text("x")
     r = client.get(f"{BASE}/chapters", params={"summaries_dir": "~/summaries"})
     assert r.status_code == 200 and r.json()["present"] == [4]
+
+
+def test_party_planning_config_paths_only_when_supplied(campaign):
+    _, _, captured = campaign
+    assert _run("/run/synth/party", RANGE) == 200
+    assert "--party-config" not in captured["cmd"] and "--planning-config" not in captured["cmd"]
+    assert _run("/run/synth/party", {**RANGE, "party_config": "config/alt_party.yaml"}) == 200
+    assert _flag(captured["cmd"], "--party-config") == "config/alt_party.yaml"
+    assert _run("/run/synth/planning", {**RANGE, "planning_config": " config/p.yaml "}) == 200
+    assert _flag(captured["cmd"], "--planning-config") == "config/p.yaml"
+    assert captured["cmd"][captured["cmd"].index("synth") + 1] == "planning"

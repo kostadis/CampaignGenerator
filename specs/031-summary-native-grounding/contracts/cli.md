@@ -98,8 +98,8 @@ every in-range file's sha256 against `manifest.json`. On any mismatch it exits 2
 | `--world-state FILE` | campaign_state, party, planning | GM-reviewed world-state draft to use as context (FR-020) |
 | `--campaign-state FILE` | party, planning | GM-reviewed campaign-state draft |
 | `--audit FILE…` | campaign_state | tracking / planning / module files treated as questions (FR-019); default `grounding.yaml campaign_state.track_files` |
-| `--party-config PATH` | party | `config/party.yaml` (existing flag name) |
-| `--planning-config PATH` | planning | `config/planning.yaml` (existing flag name) |
+| `--party-config PATH` | party | default `<config dir>/party.yaml`; resolved against the campaign root. Missing/invalid/empty roster, or a missing sheet/backstory/arc-score file, exits 2. Refused for other docs |
+| `--planning-config PATH` | planning | default `<config dir>/planning.yaml`; an absent *default* file means no arc scores, an absent *explicit* path exits 2. With no arc score configured the `## Threat Tracker` body must be exactly `_No arc scores configured._` or the run is incomplete (exit 3, "threat tracker must be empty: no arc scores configured"). Planning selects NPC dossiers only. Refused for other docs |
 | `--recent-chapters N` | all | default 4 (from config) |
 | `--recurring-min N` | all | default 10 (from config) |
 | `--name SUBJECT…` | all | force-include dossiers (reason `named`) |

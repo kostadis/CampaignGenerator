@@ -8,12 +8,122 @@ Identical inputs give byte-identical prompts.
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from pathlib import Path
 
+from campaignlib.party_config import load_party_config_arg
+from campaignlib.planning_config import load_planning_config, resolve_entries
 from pipelines.summary_native.select import Selection
 
 PROMPT_DIR = Path(__file__).parent / "prompts"
 AUDIT_LABEL = "AUDIT QUESTIONS — NOT EVIDENCE"
+#: The one line a Threat Tracker may hold when no arc score is configured. The
+#: planning prompt states it and ``synth`` checks for it, so it is declared once.
+NO_ARC_SENTINEL = "_No arc scores configured._"
+
+
+class DocConfigError(Exception):
+    """A party/planning config that cannot be used (CLI exit 2)."""
+
+
+@dataclass(frozen=True)
+class DocConfig:
+    """A rendered config block plus what the run record and post-check need."""
+
+    block: str
+    path: Path | None = None
+    arc_scores: int = 0
+    files: tuple[Path, ...] = field(default_factory=tuple)
+
+
+def _read(path: Path) -> str:
+    return Path(path).read_text(encoding="utf-8").rstrip()
+
+
+def party_config_block(path: Path, root: Path) -> DocConfig:
+    """The resolved party roster with each sheet and backstory, labelled by path."""
+    path = Path(path)
+    resolved = load_party_config_arg(str(path), Path(root))
+    if resolved is None:
+        raise DocConfigError(f"--party-config {_shown(path, root)}: missing or unreadable")
+    if not resolved.characters:
+        raise DocConfigError(f"--party-config {_shown(path, root)}: no characters declared")
+    out = [f"=== PARTY CONFIG — {_shown(path, root)} ===\n"
+           "The GM's roster. Sheets and backstories are reference material, not a record of play."]
+    files: list[Path] = [path]
+    for pc in resolved.characters:
+        if pc.trackless:
+            arc = "trackless (no arc score by design)"
+        elif pc.arc_score:
+            arc = f"arc score mechanic: {_shown(pc.arc_score, root)}"
+        else:
+            arc = "no arc score declared"
+        parts = [f"### {pc.name}", f"arc score: {arc}"]
+        for label, p in (("SHEET", pc.sheet), ("BACKSTORY", pc.backstory), ("ARC SCORE MECHANIC", pc.arc_score)):
+            if p is None:
+                continue
+            if not p.is_file():
+                raise DocConfigError(f"party config: {pc.name} {label.lower()} file missing: {_shown(p, root)}")
+            files.append(p)
+            parts.append(f"--- {label} ({_shown(p, root)}) ---\n{_read(p)}")
+        out.append("\n".join(parts))
+    return DocConfig("\n\n".join(out), path, 0, tuple(files))
+
+
+def planning_config_block(path: Path | None, root: Path, *, explicit: bool) -> DocConfig:
+    """Tracked NPCs/factions and their arc scores. An absent default file means none configured."""
+    cfg = None
+    if path is not None and Path(path).is_file():
+        try:
+            cfg = load_planning_config(Path(path))
+            entries = resolve_entries(cfg.npcs, Path(root), require_files=False) + resolve_entries(
+                cfg.factions, Path(root), require_files=False
+            )
+        except ValueError as e:
+            raise DocConfigError(f"--planning-config {_shown(path, root)}: {e}") from e
+    elif explicit:
+        raise DocConfigError(f"--planning-config {path}: no such file")
+    if cfg is None:
+        shown = "(no planning config)"
+        npcs, factions = [], []
+        entries = []
+    else:
+        shown = _shown(Path(path), root)
+        npcs, factions = entries[: len(cfg.npcs)], entries[len(cfg.npcs):]
+    scored = [e for e in entries if e.arc_score is not None]
+    files: list[Path] = [Path(path)] if cfg is not None else []
+
+    def render(kind: str, group) -> str:
+        if not group:
+            return f"{kind}: none configured"
+        chunks = []
+        for e in group:
+            lines = [f"### {e.name}"]
+            lines.append(
+                "arc score: trackless (no arc score by design)" if e.trackless
+                else f"arc score mechanic: {_shown(e.arc_score, root)}" if e.arc_score
+                else "arc score: none"
+            )
+            if e.dossier is not None:
+                lines.append(f"configured dossier: {_shown(e.dossier, root)} (named by the GM; not supplied as evidence)")
+            if e.arc_score is not None:
+                if not e.arc_score.is_file():
+                    raise DocConfigError(f"planning config: {e.name} arc score file missing: {_shown(e.arc_score, root)}")
+                files.append(e.arc_score)
+                lines.append(f"--- ARC SCORE MECHANIC ({_shown(e.arc_score, root)}) ---\n{_read(e.arc_score)}")
+            chunks.append("\n".join(lines))
+        return f"{kind}:\n\n" + "\n\n".join(chunks)
+
+    head = f"=== PLANNING CONFIG — {shown} ===\nThe GM's tracked entities. This says what to track, not what happened."
+    body = [head, render("NPCs", npcs), render("FACTIONS", factions)]
+    if scored:
+        body.append(f"Arc scores configured: {len(scored)}. List them, and only them, in the Threat Tracker.")
+    else:
+        body.append(
+            "No arc scores are configured — leave the Threat Tracker section with the single line: "
+            f"{NO_ARC_SENTINEL}"
+        )
+    return DocConfig("\n\n".join(body), Path(path) if cfg is not None else None, len(scored), tuple(files))
 
 
 def load_system_prompt(doc: str) -> str:
@@ -57,6 +167,7 @@ def build_context(
     headings: list[str],
     range_since: int,
     root: Path | None = None,
+    config_block: str | None = None,
 ) -> tuple[str, str]:
     """Return ``(system, user)``. ``headings`` is the document's full outline."""
     range_dir = Path(range_dir)
@@ -80,6 +191,8 @@ def build_context(
         for i in selection.items
     ]
     blocks.append("=== ENTITY DOSSIERS ===\n" + ("\n\n".join(dossier_blocks) or "(none selected)"))
+    if config_block:
+        blocks.append(config_block)
     for name in sorted(upstream):
         path = Path(upstream[name])
         blocks.append(

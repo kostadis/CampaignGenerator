@@ -227,20 +227,20 @@ description: "Task list for 031 summary-native grounding docs"
 
 **Independent Test**: fake-client tests. Planning with an empty `planning.yaml` gives an empty Threat Tracker; a score line in it fails the run.
 
-- [ ] T039 [P] [US4] Tests in `tests/test_summary_native_synth.py`:
+- [X] T039 [P] [US4] Tests in `tests/test_summary_native_synth.py`:
   - `test_party_reads_party_config_and_sheets`, with a fixture `config/party.yaml` built via `campaignlib.party_config` types;
   - `test_planning_no_arc_scores_prompt_states_empty`;
   - `test_planning_threat_tracker_score_line_fails`: output with a score line under `## Threat Tracker` gives exit 3 with a named reason;
   - `test_party_planning_require_explicit_upstream_flags`.
-- [ ] T040 [P] [US4] Prompts and outlines `pipelines/summary_native/prompts/{party,planning}.system.md` and `{party,planning}.outline.yaml`, adapted from the OOTA prototype prompts on the experiments branch (`git show …party_synthesis_prompt.md.system.md`, `…planning_synthesis_prompt.md.system.md`). Planning's outline includes `## Threat Tracker`.
-- [ ] T041 [US4] Extend `context.py` and `synth.py`:
+- [X] T040 [P] [US4] Prompts and outlines `pipelines/summary_native/prompts/{party,planning}.system.md` and `{party,planning}.outline.yaml`, adapted from the OOTA prototype prompts on the experiments branch (`git show …party_synthesis_prompt.md.system.md`, `…planning_synthesis_prompt.md.system.md`). Planning's outline includes `## Threat Tracker`.
+- [X] T041 [US4] Extend `context.py` and `synth.py`:
   - party context: `load_party_config_arg(--party-config)` → sheets + backstories;
   - planning context: `campaignlib.planning_config.load_planning_config` (arc scores, NPC/faction mappings);
   - the planning NPC selection reuses `select_dossiers` restricted to `npc`;
   - post-check: Threat Tracker must be empty when no arc scores are configured;
   - enable `party` and `planning` in the `synth` choices with `--party-config` / `--planning-config`.
-- [ ] T042 [US4] Green the suite.
-- [ ] T043 [US4] COMMIT "summary_native: party and planning drafts"
+- [X] T042 [US4] Green the suite.
+- [X] T043 [US4] COMMIT "summary_native: party and planning drafts"
 - [ ] T044 [US4] REVIEW `/code-review` on T043's commit. Fix and commit.
 
 ---

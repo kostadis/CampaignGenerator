@@ -113,8 +113,8 @@ DEFAULT_MAX_TOKENS = 16000
 
 #: Every document the pipeline will eventually draft (FR-018).
 DOCS: tuple[str, ...] = ("world_state", "campaign_state", "party", "planning")
-#: The documents `synth` can draft today; US4 adds the others.
-SYNTH_DOCS: tuple[str, ...] = ("world_state", "campaign_state")
+#: The documents `synth` can draft.
+SYNTH_DOCS: tuple[str, ...] = DOCS
 
 
 def resolve_under(root, value):

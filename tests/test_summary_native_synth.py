@@ -189,8 +189,9 @@ def test_audit_rejected_for_world_state(camp):
     assert main(["synth", "world_state", *ARGS, "--dump-only", "--audit", "track.md"]) == 2
 
 
-def test_other_docs_refused_until_later(camp):
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
+def test_unknown_doc_rejected_by_parser(camp):
+    with pytest.raises(SystemExit):
+        main(["synth", "nonsense", *ARGS, "--dump-only"])
 
 
 def test_never_writes_live_docs(camp, fake):
@@ -429,3 +430,150 @@ def test_failed_model_call_still_writes_record(camp, monkeypatch, fake):
     record = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
     assert record["check"]["complete"] is False
     assert "upstream 529" in record["check"]["error"]
+
+
+# ── US4: party and planning (T039) ──────────────────────────────────────────
+
+SENTINEL = "_No arc scores configured._"
+
+
+def write_party(camp, *, trackless=False, missing_sheet=False):
+    (camp / "docs").mkdir(exist_ok=True)
+    (camp / "docs" / "Daz.md").write_text("SHEET-OF-DAZ level 5 fighter\n")
+    (camp / "docs" / "daz_backstory.md").write_text("BACKSTORY-OF-DAZ was a sellsword\n")
+    entry = {"name": "Daz", "sheet": "docs/Nope.md" if missing_sheet else "docs/Daz.md",
+             "backstory": "docs/daz_backstory.md"}
+    if trackless:
+        entry["arc_score"] = None
+    (camp / "config" / "party.yaml").write_text(yaml.safe_dump({"characters": [entry]}, sort_keys=False))
+
+
+def write_planning(camp, *, with_score=False):
+    entry = {"name": "Gith", "dossier": "docs/gith.md"}
+    if with_score:
+        (camp / "docs" / "gith_score.md").write_text("MECHANIC: +1 Rage when Gith is insulted\n")
+        entry["arc_score"] = "docs/gith_score.md"
+    (camp / "config" / "planning.yaml").write_text(
+        yaml.safe_dump({"npcs": [entry], "factions": [{"name": "Gauntlet", "arc_score": None}]}, sort_keys=False)
+    )
+
+
+def test_party_reads_party_config_and_sheets(camp):
+    write_party(camp, trackless=True)
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
+    run = latest_run(camp, "party")
+    user = (run / "part-1.user.md").read_text()
+    system = (run / "part-1.system.md").read_text()
+    assert "SHEET-OF-DAZ" in user and "BACKSTORY-OF-DAZ" in user
+    assert "docs/Daz.md" in user and "docs/daz_backstory.md" in user
+    assert "trackless" in user.lower()
+    assert "## Party Overview" in system and "## Characters" in system
+    # an explicit --party-config wins over the default
+    (camp / "alt.yaml").write_text(yaml.safe_dump({"characters": [{"name": "Zed", "sheet": "docs/Daz.md"}]}))
+    assert main(["synth", "party", *ARGS, "--dump-only", "--party-config", "alt.yaml"]) == 0
+    assert "### Zed" in (latest_run(camp, "party") / "part-1.user.md").read_text()
+
+
+def test_party_config_missing_or_invalid_exits_2(camp, capsys):
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2  # no config/party.yaml
+    (camp / "config" / "party.yaml").write_text("characters: not-a-list\n")
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
+    write_party(camp, missing_sheet=True)
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
+    assert "Nope.md" in capsys.readouterr().err
+    assert not run_dirs(camp, "party")
+
+
+def test_planning_no_arc_scores_prompt_states_empty(camp):
+    write_planning(camp)
+    assert main(["synth", "planning", *ARGS, "--dump-only"]) == 0
+    run = latest_run(camp, "planning")
+    system = (run / "part-1.system.md").read_text()
+    user = (run / "part-1.user.md").read_text()
+    assert "## Threat Tracker" in system
+    assert SENTINEL in system and SENTINEL in user
+    assert "No arc scores are configured" in user
+    assert "### Gith" in user and "### Gauntlet" in user
+    sel = json.loads((run / "selection.json").read_text())
+    assert all(i["subject"] for i in sel["selected"])
+
+
+def test_planning_selection_is_npc_only_with_reasons(camp):
+    write_planning(camp)
+    assert main(["synth", "planning", *ARGS, "--dump-only", "--recent-chapters", "0"]) == 0
+    sel = json.loads((latest_run(camp, "planning") / "selection.json").read_text())
+    from pipelines.summary_native import select as sel_mod
+    cats = {d.stem: d.category for d in sel_mod.read_corpus_dossiers(camp / RD)}
+    assert sel["selected"] and all(cats[i["dossier"]] == "npc" for i in sel["selected"])
+    assert all(i["reason"] for i in sel["selected"])
+
+
+def test_planning_threat_tracker_score_line_fails(camp, fake, capsys):
+    write_planning(camp)
+    _, state = fake
+    text = full_text("planning").replace(
+        "## Threat Tracker\n\nBody for ## Threat Tracker (ch 2, 002.01).\n",
+        "## Threat Tracker\n\n| Rage | Gith | 3 |\n",
+    )
+    state["texts"] = text
+    assert main(["synth", "planning", *ARGS]) == 3
+    err = capsys.readouterr()
+    assert "threat tracker must be empty: no arc scores configured" in err.out + err.err
+    assert (camp / RD / "drafts/planning.incomplete.md").is_file()
+    assert not (camp / RD / "drafts/planning.draft.md").exists()
+    rec = json.loads((latest_run(camp, "planning") / "record.json").read_text())
+    assert rec["check"]["complete"] is False
+    assert any("threat tracker must be empty" in p for p in rec["check"]["problems"])
+
+
+def test_planning_sentinel_only_threat_tracker_passes(camp, fake):
+    write_planning(camp)
+    _, state = fake
+    state["texts"] = full_text("planning").replace(
+        "## Threat Tracker\n\nBody for ## Threat Tracker (ch 2, 002.01).\n",
+        f"## Threat Tracker\n\n  {SENTINEL}  \n",
+    )
+    assert main(["synth", "planning", *ARGS]) == 0
+
+
+def test_planning_with_arc_scores_needs_no_extra_check(camp, fake):
+    write_planning(camp, with_score=True)
+    _, state = fake
+    state["texts"] = full_text("planning")
+    assert main(["synth", "planning", *ARGS, "--dump-only"]) == 0
+    user = (latest_run(camp, "planning") / "part-1.user.md").read_text()
+    assert "MECHANIC: +1 Rage" in user and SENTINEL not in user
+    assert main(["synth", "planning", *ARGS]) == 0
+
+
+def test_planning_without_any_config_means_no_arc_scores(camp):
+    assert main(["synth", "planning", *ARGS, "--dump-only"]) == 0
+    assert SENTINEL in (latest_run(camp, "planning") / "part-1.user.md").read_text()
+
+
+def test_planning_explicit_missing_config_exits_2(camp):
+    assert main(["synth", "planning", *ARGS, "--dump-only", "--planning-config", "nope.yaml"]) == 2
+
+
+def test_party_planning_require_explicit_upstream_flags(camp):
+    write_party(camp)
+    write_planning(camp)
+    drafts = camp / RD / "drafts"
+    drafts.mkdir(parents=True)
+    (drafts / "world_state.draft.md").write_text("UNREVIEWED WORLD\n")
+    (drafts / "campaign_state.draft.md").write_text("UNREVIEWED CAMPAIGN\n")
+    for doc in ("party", "planning"):
+        assert main(["synth", doc, *ARGS, "--dump-only", "--force"]) == 0
+        user = (latest_run(camp, doc) / "part-1.user.md").read_text()
+        assert "UNREVIEWED" not in user and "UPSTREAM DRAFT" not in user
+        assert main(["synth", doc, *ARGS, "--dump-only", "--force",
+                     "--world-state", "docs/world_state.md", "--campaign-state", "docs/campaign_state.md"]) == 0
+        user = (latest_run(camp, doc) / "part-1.user.md").read_text()
+        assert "UPSTREAM DRAFT (GM-reviewed): world_state" in user and "LIVE WORLD" in user
+        assert "UPSTREAM DRAFT (GM-reviewed): campaign_state" in user and "LIVE CAMPAIGN" in user
+
+
+def test_party_flags_rejected_for_other_docs(camp):
+    write_party(camp)
+    assert main(["synth", "world_state", *ARGS, "--dump-only", "--party-config", "config/party.yaml"]) == 2
+    assert main(["synth", "party", *ARGS, "--dump-only", "--planning-config", "config/planning.yaml"]) == 2

@@ -39,7 +39,7 @@ summary_native:
 |---|---|
 | `/run/validate` | `summary_native validate --summaries-dir … --since … --until … [--dup-threshold R]` |
 | `/run/build` | `… build … [--dup-threshold R] [--force]` |
-| `/run/synth/{doc}` | `… synth <doc> … [--world-state] [--campaign-state] [--audit …] [--name …] [--recent-chapters N] [--recurring-min N] [--parts N] [--max-tokens N] [--dump-only] [--force] --backend/--model` from the selection. `recent_chapters`/`recurring_min`/`parts` fall back to config; `name`, `max_tokens`, `dump_only` are per-run |
+| `/run/synth/{doc}` | `… synth <doc> … [--world-state] [--campaign-state] [--party-config PATH] [--planning-config PATH] [--audit …] [--name …] [--recent-chapters N] [--recurring-min N] [--parts N] [--max-tokens N] [--dump-only] [--force] --backend/--model` from the selection. `recent_chapters`/`recurring_min`/`parts` fall back to config; `name`, `max_tokens`, `dump_only` are per-run. `party_config` / `planning_config` are passed only when the request names one (the CLI defaults to `<config>/party.yaml` / `<config>/planning.yaml`) |
 | `/run/compare/{doc}` | `… compare <doc> --live docs/<doc>.md` |
 
 **Refusals** (HTTP 400, before spawning):

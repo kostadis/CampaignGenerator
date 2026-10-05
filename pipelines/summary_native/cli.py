@@ -48,6 +48,10 @@ def build_parser() -> argparse.ArgumentParser:
         if name == "synth":
             p.add_argument("--world-state", default=None, metavar="FILE", help="GM-reviewed world-state draft to use as context")
             p.add_argument("--campaign-state", default=None, metavar="FILE", help="GM-reviewed campaign-state draft to use as context")
+            p.add_argument("--party-config", default=None, metavar="FILE",
+                           help="party roster (party; default <config>/party.yaml)")
+            p.add_argument("--planning-config", default=None, metavar="FILE",
+                           help="tracked NPCs/factions and arc scores (planning; default <config>/planning.yaml)")
             p.add_argument("--audit", nargs="+", default=None, metavar="FILE",
                            help="tracking/planning/module files treated as questions "
                                 "(campaign_state; default grounding.yaml campaign_state.track_files)")
@@ -205,6 +209,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         range_dir=range_dir,
         report=report,
         audit_default=[str(t) for t in track],
+        config_dir=config_path.expanduser().resolve().parent,
         recent_chapters=_pick(args.recent_chapters, cfg, "recent_chapters", schema.DEFAULT_RECENT_CHAPTERS),
         recurring_min=_pick(args.recurring_min, cfg, "recurring_min", schema.DEFAULT_RECURRING_MIN),
         parts=_pick(args.parts, cfg, "parts", schema.DEFAULT_PARTS),
