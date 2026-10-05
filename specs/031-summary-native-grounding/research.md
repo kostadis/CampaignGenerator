@@ -39,7 +39,7 @@ script, `summary_native`, with subcommands: `validate`, `build`, `synth`,
   id (FR-009), and applies the registry's first-token inference without regard to
   category (FR-013).
 - Four separate console scripts, one per stage. Rejected: four `[project.scripts]`
-  entries and four sets of shared flags (`--summaries`, `--out-dir`, `--from`, `--to`)
+  entries and four sets of shared flags (`--summaries-dir`, `--out-dir`, `--since`, `--until`)
   is a dialect-drift risk under Principle XII.
 
 ## R2. Validation is a collector, not a raiser
@@ -278,15 +278,16 @@ check is the only completeness signal that every backend shares.
 - **Config group.** Add a `summary_native: SummaryNativeRun` group to the existing
   strict `GroundingConfig` (`server/grounding_config_shared.py`). Its fields:
   `summaries_dir`, `out_root` (default `docs/summary_native`), `canon_file` (default
-  `docs/summary_native/canon.yaml`), `range_from`/`range_to` (`None` = unset),
+  `docs/summary_native/canon.yaml`), `range_since`/`range_until` (`None` = unset),
   `recent_chapters` (4), `recurring_min` (10), `parts` (0 = single call),
-  `audit_files` (list), and per-doc `output` overrides.
+  and per-doc `output` overrides.
 - **No migration needed.** The group is new and every field has a default, so an
   existing `grounding.yaml` still loads and needs no migration (Principle XIII does
   not trigger). This is confirmed by `load_grounding_config` returning defaults for
   absent keys.
 - **Reuse existing groups.** Party characters/backstory and the planning config path
-  come from the existing `party`/`planning` groups. They are not duplicated
+  come from the existing `party`/`planning` groups. The `--audit` default comes from the existing
+  `campaign_state.track_files`. They are not duplicated
   (Principle XII).
 - **Router.** New file `server/routers/summary_native.py`, mounted under
   `/api/grounding/summary-native`. Every run route builds argv through
@@ -301,7 +302,7 @@ check is the only completeness signal that every backend shares.
 - **Explicit range in the UI.** The run routes refuse when `from`/`to` are unset. The
   UI "All chapters" button writes the first and last chapters present as explicit
   values (Principle X). The CLI keeps "no range = whole named directory", because a
-  typed `--summaries DIR` is an explicit act.
+  typed `--summaries-dir DIR` is an explicit act.
 - **Page and sidebar.** A Vue page at `frontend/src/views/grounding/SummaryNative.vue`
   on `/grounding/summary-native`. A fourth `RenderingPath` in `AppSidebar.vue`: id
   `summary-native`, label "Summary-native", description "Parses reviewed session

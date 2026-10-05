@@ -24,7 +24,7 @@ included.
 
 ```bash
 cd <campaign-root>
-summary_native validate --summaries docs/summaries
+summary_native validate --summaries-dir docs/summaries
 ```
 Expected on the **unfixed** OOTA corpus: exit 1. `070-session-untitled.md L1
 title-chapter-mismatch expected "# Chapter 70" found "# Chapter 66"`. Any other
@@ -37,18 +37,18 @@ asserts that every finding appears in a single report.
 ## Q3. Range selection and the non-blocking out-of-range section
 
 ```bash
-summary_native validate --summaries docs/summaries --from 2 --to 40
+summary_native validate --summaries-dir docs/summaries --since 2 --until 40
 ```
 Expected: exit 0 (if 002–040 are clean). The 070 mismatch is listed under "Outside
-range — not blocking". `--from 1` exits 2 and names the chapters present (002…).
+range — not blocking". `--since 1` exits 2 and names the chapters present (002…).
 
 ## Q4. Deterministic build is fast and byte-stable
 
 After the GM fixes 070's title:
 ```bash
-time summary_native build --summaries docs/summaries
+time summary_native build --summaries-dir docs/summaries
 cp -r docs/summary_native/ch002-070 /tmp/snA
-summary_native build --summaries docs/summaries --force
+summary_native build --summaries-dir docs/summaries --force
 diff -r /tmp/snA docs/summary_native/ch002-070 && echo BYTE-STABLE
 ```
 Expected: under 2 minutes, 67 files and 409 scenes in `manifest.json`, and
@@ -59,7 +59,7 @@ Expected: under 2 minutes, 67 files and 409 scenes in `manifest.json`, and
 ## Q5. Corpus separation refuses mixing
 
 ```bash
-summary_native build --summaries docs/summaries --out-root docs/ensemble
+summary_native build --summaries-dir docs/summaries --out-root docs/ensemble
 ```
 Expected: exit 2, "refusing to write a summary-native corpus into a directory holding
 ensemble artifacts".
@@ -67,7 +67,7 @@ ensemble artifacts".
 ## Q6. Duplicates are listed for fixing at source, never merged
 
 ```bash
-summary_native validate --summaries tests/fixtures/summary_native/aliases
+summary_native validate --summaries-dir tests/fixtures/summary_native/aliases
 ```
 Expected: "Manshon" vs "Manshoon" and "Manshoon (Simulacrum)" vs "Manshoon" are
 listed under "Possible duplicates — fix in the summaries", each with `file:line`.
@@ -81,12 +81,12 @@ listed. Add an `accepted:` key and re-run: refused (the file cannot express a me
 ## Q7. Synthesis drafts + GM golden comparison
 
 ```bash
-summary_native synth world_state --summaries docs/summaries --backend claude-code --model claude-opus-5-5
+summary_native synth world_state --summaries-dir docs/summaries --backend claude-code --model claude-opus-5-5
 # GM reviews drafts/world_state.draft.md, then:
-summary_native synth campaign_state --summaries docs/summaries \
+summary_native synth campaign_state --summaries-dir docs/summaries \
   --world-state docs/summary_native/ch002-070/drafts/world_state.draft.md \
   --audit <tracking files> --backend claude-code --model claude-opus-5-5
-summary_native compare world_state --summaries docs/summaries --live docs/world_state.md
+summary_native compare world_state --summaries-dir docs/summaries --live docs/world_state.md
 ```
 Expected:
 - The drafts land under `drafts/`, and `git status docs/*.md` shows the live docs

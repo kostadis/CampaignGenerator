@@ -74,7 +74,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `test_title_mismatch_blocks_no_override`.
   - `test_scene_chapter_mismatch_blocks`.
   - `test_duplicate_chapter_blocks_even_outside_range`.
-  - `test_out_of_range_errors_listed_not_blocking`: `out_of_range` with `--to 5`.
+  - `test_out_of_range_errors_listed_not_blocking`: `out_of_range` with `--until 5`.
   - `test_range_bound_without_file_refused_lists_present`.
   - `test_start_after_end_refused`.
   - `test_gaps_reported_not_errors`: 004 in `clean`.
@@ -109,8 +109,8 @@ description: "Task list for 031 summary-native grounding docs"
   - `render_chronology`, `render_memorable_moments`, `write_dossiers` (frontmatter per data-model.md: `subject`, `type`, `n_facts`, `chapters: lo-hi`, `source_kind`, `headings`, `grouped_by`; one block per observation; sha suffix on slug collision) and `write_manifest` (no timestamps; sha256 per file; counts).
   - Write every file through `campaignlib.util.atomic_write_text`.
   - For US1, group by identical heading within a category only; US3 adds exact same-type registry aliases.
-- [ ] T015 [US1] Wire up `validate` and `build` in `pipelines/summary_native/cli.py` with the shared flags `--summaries --from --to --out-root --registry --canon --config --force`.
-  - Resolve config after `parse_args` via `find_default_config()`. If `--summaries` is absent, read `grounding.yaml summary_native.summaries_dir` (a plain YAML read, so this works before US5's model exists); error if neither is set.
+- [ ] T015 [US1] Wire up `validate` and `build` in `pipelines/summary_native/cli.py` with the shared flags `--summaries-dir --since --until --out-root --registry --canon --config --force`.
+  - Resolve config after `parse_args` via `find_default_config()`. If `--summaries-dir` is absent, read `grounding.yaml summary_native.summaries_dir` (a plain YAML read, so this works before US5's model exists); error if neither is set.
   - Print the report to stdout; exit codes per contract.
   - `build` runs `scan` first and refuses on blocking findings.
 - [ ] T016 [US1] Run T009–T012 and the full suite until green. Then run quickstart Q2 against the real OOTA directory (read-only; the 070 file is still unfixed) and record the report summary in the commit message.
@@ -144,6 +144,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `test_audit_files_fenced_as_questions`: the prompt contains the audit block label, and the system prompt requires the `## Audit: Tracking Claims` section with `NOT FOUND IN SUMMARIES`;
   - `test_never_writes_live_docs`: snapshot `docs/*.md` before and after;
   - `test_existing_draft_needs_force`;
+  - `test_synth_refuses_stale_corpus`: edit a summary after `build` and expect exit 2;
   - `test_record_json_fields`.
 - [ ] T021 [P] [US2] Extend `tests/test_summary_native_cli.py` with the `synth`/`compare` argument contract (`add_backend_args` flags present; unknown doc refused) and `compare` (writes `.vs-live.diff`, reads both inputs only).
 
@@ -165,7 +166,8 @@ description: "Task list for 031 summary-native grounding docs"
 - [ ] T026 [P] [US2] `pipelines/summary_native/compare.py`: `compare(draft, live) -> CompareReport` (bytes, lines, heuristic highest chapter labelled as a heuristic), plus a unified diff written to `drafts/<doc>.vs-live.diff`.
 - [ ] T027 [US2] Wire `synth <doc>` and `compare <doc>` into `cli.py`.
   - Flags: `--world-state --campaign-state --audit --recent-chapters --recurring-min --name --parts --dump-only --force`, plus `add_backend_args(parser)`, `--model`, `--max-tokens`, with model resolution via `resolve_cli_model` as in `synthesise_world_state.main`.
-  - `synth` refuses unless the range dir has a summary-native manifest.
+  - `synth` refuses unless the range dir has a summary-native manifest. It then re-runs `validate.scan` and compares every in-range file's sha256 with `manifest.json`; on mismatch it exits 2 with "summaries changed since build — run `summary_native build --force`".
+  - `--audit` defaults to `grounding.yaml campaign_state.track_files`.
   - Accept only `world_state` and `campaign_state` until US4.
 - [ ] T028 [US2] Make T019–T021 and the full suite green, including `tests/test_retrieve_render_isolation.py`. Run `synth world_state --dump-only` on a fixture build and inspect the prompts.
 - [ ] T029 [US2] COMMIT "summary_native: world/campaign state drafts with outline check and run records"
@@ -256,6 +258,7 @@ description: "Task list for 031 summary-native grounding docs"
   - unset range gives 400 "choose a chapter range";
   - unset `summaries_dir` gives 400;
   - unknown doc gives 400;
+  - synth argv carries `--name`, `--dump-only`, `--max-tokens`, `--recent-chapters`, `--recurring-min` when supplied, and never carries `--registry`, `--canon` or `--out-root` (the CLI-only ruling in contracts/http.md);
   - `/chapters` lists prefixes and duplicates without parsing content;
   - `/report` and `/drafts` read files only (404 when absent).
 
@@ -266,7 +269,7 @@ description: "Task list for 031 summary-native grounding docs"
 - [ ] T049 [P] [US5] `frontend/src/views/grounding/SummaryNative.vue`:
   - summaries-dir field;
   - range picker fed by `/chapters`, with an "All chapters" button that writes the first and last chapters explicitly;
-  - Validate / Build / Synth (doc select, upstream draft paths, audit files, parts, force) / Compare buttons, streaming output via the existing grounding run composable (`frontend/src/composables/useGroundingRun.ts`);
+  - Validate / Build / Synth (doc select, upstream draft paths, audit files, named subjects, recent-chapters, recurring-min, parts, max-tokens, dump-only, force) / Compare buttons, streaming output via the existing grounding run composable (`frontend/src/composables/useGroundingRun.ts`);
   - panels for the validation report (with its possible-duplicates section) and the drafts list;
   - no promote button and no rulings editor;
   - persist field values through `PUT /api/grounding/config`.

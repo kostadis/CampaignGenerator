@@ -8,8 +8,8 @@ One console script, `summary_native = "pipelines.summary_native.cli:main"` in
 
 | Flag | Meaning | Default |
 |---|---|---|
-| `--summaries DIR` | directory of structured summaries (`*.md`) | `grounding.yaml summary_native.summaries_dir`; error if neither is set |
-| `--from N` / `--to N` | inclusive chapter range (filename prefixes) | unset = whole directory |
+| `--summaries-dir DIR` | directory of structured summaries (`*.md`). Not `--summaries`, which `party.py`/`planning.py` use for a single FILE (Principle XII) | `grounding.yaml summary_native.summaries_dir`; error if neither is set |
+| `--since N` / `--until N` | inclusive chapter range (filename prefixes). `--since` matches `planning.py`'s chapter lower bound; `--from`/`--to` are taken (`sd_review`, `registry`) | unset = whole directory |
 | `--out-root DIR` | output root | `docs/summary_native` |
 | `--registry PATH` | entity registry | auto-discover `docs/entity_registry.yaml` (`resolve_registry_arg`) |
 | `--canon PATH` | hand-authored not-a-duplicate rulings | `<out-root>/canon.yaml` (absent = none) |
@@ -34,7 +34,7 @@ Scans every file, prints the full report, and writes
 makes no model call. Exit 0 or 1.
 
 ```text
-summary_native validate --summaries docs/summaries --from 2 --to 40
+summary_native validate --summaries-dir docs/summaries --since 2 --until 40
 ```
 
 Stdout shape:
@@ -66,13 +66,15 @@ adds the pair to `canon.yaml` under `not_duplicates`, and re-runs.
 ## `summary_native synth <doc>`
 
 `<doc>` is one of `world_state`, `campaign_state`, `party`, `planning`. It requires a
-built range directory and refuses otherwise.
+built range directory and refuses otherwise. Before rendering, it re-runs validation and compares
+every in-range file's sha256 against `manifest.json`. On any mismatch it exits 2 with
+"summaries changed since build — run `summary_native build --force`" (FR-005b).
 
 | Flag | Applies to | Meaning |
 |---|---|---|
 | `--world-state FILE` | campaign_state, party, planning | GM-reviewed world-state draft to use as context (FR-020) |
 | `--campaign-state FILE` | party, planning | GM-reviewed campaign-state draft |
-| `--audit FILE…` | campaign_state | tracking / planning / module files treated as questions (FR-019) |
+| `--audit FILE…` | campaign_state | tracking / planning / module files treated as questions (FR-019); default `grounding.yaml campaign_state.track_files` |
 | `--party-config PATH` | party | `config/party.yaml` (existing flag name) |
 | `--planning-config PATH` | planning | `config/planning.yaml` (existing flag name) |
 | `--recent-chapters N` | all | default 4 (from config) |
