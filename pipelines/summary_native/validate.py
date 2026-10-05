@@ -83,6 +83,8 @@ class Finding:
     found: str | None
     blocking: bool
     in_range: bool
+    # possible-duplicate only: {spelling: ["file:line", ...]}.
+    locations: dict | None = None
 
 
 @dataclass
@@ -96,6 +98,7 @@ class ValidationReport:
     input_files: list[Path] = field(default_factory=list, repr=False)
     # Set by the CLI: how an existing corpus in the range dir relates to this input.
     existing_corpus: dict | None = None
+    dup_threshold: float = schema.DEFAULT_DUP_THRESHOLD
 
     @property
     def blocking_count(self) -> int:
@@ -123,7 +126,8 @@ class ValidationReport:
             "blocking_count": self.blocking_count,
             "files_failing": self.files_failing,
             "non_blocking_count": self.non_blocking_count,
-            "findings": [asdict(f) for f in self.findings],
+            "dup_threshold": self.dup_threshold,
+            "findings": [_finding_dict(f) for f in self.findings],
             **({"existing_corpus": self.existing_corpus} if self.existing_corpus else {}),
         }
 
@@ -162,14 +166,17 @@ class ValidationReport:
             f"- Files scanned: {self.files_scanned}",
             f"- Files in range: {self.files_in_range}",
             f"- Gaps: {gaps}",
+            f"- Duplicate threshold: {self.dup_threshold}",
             *self._existing_lines(),
             "",
             "## In range",
             "",
         ]
-        out += _group(f for f in self.findings if f.in_range)
+        out += _group(f for f in self.findings if f.in_range and f.code not in _DUP_CODES)
         out += ["## Outside range — not blocking", ""]
         out += _group(f for f in self.findings if not f.in_range)
+        out += ["## Possible duplicates — fix in the summaries", ""]
+        out += _dup_lines([f for f in self.findings if f.code in _DUP_CODES])
         out += [
             "## Summary",
             "",
@@ -179,6 +186,28 @@ class ValidationReport:
             "",
         ]
         return "\n".join(out)
+
+
+_DUP_CODES = (schema.POSSIBLE_DUPLICATE, schema.STALE_RULING)
+
+
+def _finding_dict(f: Finding) -> dict:
+    d = asdict(f)
+    if d["locations"] is None:
+        del d["locations"]
+    return d
+
+
+def _dup_lines(findings: list[Finding]) -> list[str]:
+    if not findings:
+        return ["(none)", ""]
+    out: list[str] = []
+    for f in sorted(findings, key=lambda f: (f.code != schema.POSSIBLE_DUPLICATE, _sort_key(f), f.message)):
+        out.append(f"- {f.code}  — {f.message}")
+        for spelling, locs in (f.locations or {}).items():
+            out.append(f"  - '{spelling}': {', '.join(locs)}")
+    out.append("")
+    return out
 
 
 def _chapter_of(name: str) -> int | None:
@@ -325,6 +354,9 @@ def scan(
     campaign_root: Path,
     since: int | None,
     until: int | None,
+    registry=None,
+    rulings=None,
+    dup_threshold: float = schema.DEFAULT_DUP_THRESHOLD,
 ) -> ValidationReport:
     """Validate every summary in ``summaries_dir``. See the module docstring."""
     files = _check_input_dir(Path(summaries_dir))
@@ -404,8 +436,22 @@ def scan(
             )
         )
 
+    from pipelines.summary_native import corpus, duplicates
+
+    obs = corpus.build_observations(
+        sorted(
+            (pf for pf in parsed if pf.prefix_chapter is not None and rng.contains(pf.prefix_chapter)),
+            key=lambda pf: (pf.prefix_chapter, pf.path),
+        ),
+        duplicates.make_grouper(registry),
+    )
+    rulings = rulings if rulings is not None else duplicates.Rulings()
+    findings += duplicates.find_possible_duplicates(obs, registry, rulings, dup_threshold)
+    findings += duplicates.stale_rulings(rulings, duplicates.headings_by_category(obs))
+
     findings.sort(key=_sort_key)
     return ValidationReport(
+        dup_threshold=dup_threshold,
         summaries_dir=dir_rel,
         range=rng,
         files_scanned=len(parsed) + len(unreadable),

@@ -14,12 +14,12 @@ from pathlib import Path
 import yaml
 
 from campaignlib.config import ConfigLocationError, campaign_root_for_config, find_default_config
-from campaignlib.registry import resolve_registry_arg
+from campaignlib.registry import load_registry, resolve_registry_arg
 from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
 from campaignlib.api.client import resolve_cli_model
 from pipelines.summary_native import compare as compare_mod
-from pipelines.summary_native import corpus, schema, synth
+from pipelines.summary_native import corpus, duplicates, schema, synth
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
 SUBCOMMANDS = ("validate", "build", "synth", "compare")
@@ -112,13 +112,11 @@ def main(argv: list[str] | None = None) -> int:
             "grounding.yaml summary_native.summaries_dir"
         )
     out_root = _under(root, args.out_root or cfg.get("out_root") or schema.DEFAULT_OUT_ROOT)
-    # Accepted and recorded now; used by duplicate detection (US3).
     dup_threshold = (
         args.dup_threshold
         if args.dup_threshold is not None
         else float(cfg.get("dup_threshold", schema.DEFAULT_DUP_THRESHOLD))
     )
-    del dup_threshold
 
     try:
         registry, _, _ = resolve_registry_arg(args.registry, False, parser)
@@ -126,10 +124,19 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     registry_path = _under(root, registry) if registry else None
     canon_path = _under(root, args.canon) if args.canon else out_root / "canon.yaml"
+    try:
+        reg_obj = load_registry(registry_path) if registry_path else None
+        rulings = duplicates.load_rulings(canon_path)
+    except (duplicates.RulingsError, ValueError, OSError) as e:
+        return _err(str(e))
+    grouper = duplicates.make_grouper(reg_obj)
 
     summaries_dir = _under(root, summaries)
     try:
-        report = scan(summaries_dir, root, args.since, args.until)
+        report = scan(
+            summaries_dir, root, args.since, args.until,
+            registry=reg_obj, rulings=rulings, dup_threshold=dup_threshold,
+        )
         rng = report.range
         range_dir = out_root / f"ch{rng.since:03d}-{rng.until:03d}"
         corpus.check_not_foreign(range_dir)
@@ -140,10 +147,10 @@ def main(argv: list[str] | None = None) -> int:
     except (ValidationRefusal, corpus.CorpusError) as e:
         return _err(str(e))
 
-    return _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path, canon_path)
+    return _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path, canon_path, grouper)
 
 
-def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path, canon_path) -> int:
+def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path, canon_path, grouper) -> int:
     if args.command == "synth":
         return _synth(args, root, config_path, cfg, report, range_dir)
     if args.command == "compare":
@@ -164,6 +171,7 @@ def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, 
             report,
             range_dir,
             force=args.force,
+            grouper=grouper,
             registry_sha256=_sha_if_file(registry_path),
             canon_sha256=_sha_if_file(canon_path),
         )

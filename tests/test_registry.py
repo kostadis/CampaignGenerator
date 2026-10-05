@@ -346,3 +346,26 @@ entities:
     assert flat["Sporehold"] == "Sporehold Cavern"
     assert norm_subject("Adabra") in known
     assert flat["Adabra"] == "Adabra Gwynn"
+
+
+def test_explicit_aliases_by_type_has_no_first_token_entries(tmp_path):
+    """Exact names and aliases only, keyed by type then casefold (spec 031 FR-013)."""
+    yaml_text = """
+version: 1
+campaign: test
+entities:
+  - name: Kazryn Nyantani
+    type: npc
+    aliases: [Nyantani]
+  - name: Candlekeep
+    type: location
+    aliases: [The Keep]
+"""
+    reg = load_registry(_write(tmp_path, yaml_text))
+    got = reg.explicit_aliases_by_type()
+    assert got == {
+        "npc": {"kazryn nyantani": "Kazryn Nyantani", "nyantani": "Kazryn Nyantani"},
+        "location": {"candlekeep": "Candlekeep", "the keep": "Candlekeep"},
+    }
+    assert "kazryn" not in got["npc"]
+    assert reg.alias_to_canonical()["Kazryn"] == "Kazryn Nyantani"  # inference still lives there

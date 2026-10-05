@@ -183,7 +183,7 @@ description: "Task list for 031 summary-native grounding docs"
 
 ### Tests for User Story 3 (write first)
 
-- [ ] T031 [P] [US3] `tests/test_summary_native_duplicates.py`:
+- [X] T031 [P] [US3] `tests/test_summary_native_duplicates.py`:
   - `test_registry_exact_same_type_alias_groups_and_keeps_headings` (npc);
   - `test_registry_first_token_inference_not_applied`;
   - `test_spells_never_registry_grouped`: a registry entry naming a spell string has no effect on the `spell` category;
@@ -198,25 +198,25 @@ description: "Task list for 031 summary-native grounding docs"
   - `test_stale_ruling_reported`;
   - `test_dup_threshold_flag_changes_listing`: a pair at ratio ~0.85 is listed at `--dup-threshold 0.8` and not at the default;
   - `test_canon_yaml_never_written`: bytes and mtime unchanged after validate and build.
-- [ ] T032 [P] [US3] Test for `Registry.explicit_aliases_by_type()` in the existing registry test file (find it via codebase-memory-mcp `search_graph name_pattern="test_.*alias_to_canonical"`). It returns exact names and aliases only, keyed `{type: {casefold(alias): canonical}}`, with no first-token entries.
+- [X] T032 [P] [US3] Test for `Registry.explicit_aliases_by_type()` in the existing registry test file (find it via codebase-memory-mcp `search_graph name_pattern="test_.*alias_to_canonical"`). It returns exact names and aliases only, keyed `{type: {casefold(alias): canonical}}`, with no first-token entries.
 
 ### Implementation for User Story 3
 
-- [ ] T033 [US3] Add `Registry.explicit_aliases_by_type()` to `campaignlib/registry.py`, next to `alias_to_canonical`. Its docstring must say first-token inference is excluded because grouping here must be exact (spec FR-013, research R7). Do not add a spell type to the registry (GM ruling).
-- [ ] T034 [US3] `pipelines/summary_native/duplicates.py`:
+- [X] T033 [US3] Add `Registry.explicit_aliases_by_type()` to `campaignlib/registry.py`, next to `alias_to_canonical`. Its docstring must say first-token inference is excluded because grouping here must be exact (spec FR-013, research R7). Do not add a spell type to the registry (GM ruling).
+- [X] T034 [US3] `pipelines/summary_native/duplicates.py`:
   - `load_rulings(path) -> Rulings`: strict, `not_duplicates` is the only key, and any other key exits 2 with "canon.yaml records not-a-duplicate rulings only; fix duplicates in the summary files";
   - `make_grouper(registry) -> Callable[[category, heading], (canonical, grouped_by)]`, which allows identical text and exact same-type registry aliases only, with no registry for `spell`/`ability`;
   - `find_possible_duplicates(observations, registry, rulings, threshold)` (the default 0.88 comes only from `SummaryNativeRun.dup_threshold` / `--dup-threshold`, never a literal here; the report header records the value used) -> list[Finding]`, using the difflib ratio within a category plus a parenthetical-qualifier strip, with `locations` listing every `file:line` per spelling, excluding ruled pairs and the registry's `distinct`/`rejected_aliases`;
   - `stale_rulings(rulings, headings) -> list[Finding]`.
-- [ ] T035 [US3] Wire the US3 functions into the US1 code:
+- [X] T035 [US3] Wire the US3 functions into the US1 code:
   - `validate.scan` now also parses entity sections of in-range files and appends `possible-duplicate` (non-blocking) and `stale-ruling` (non-blocking) findings.
   - `validation_report.md` gains a "Possible duplicates — fix in the summaries" section.
   - Replace US1's identity grouper in `corpus.build_observations` with `duplicates.make_grouper`.
   - Record `grouped_by` in the dossier frontmatter, and the registry and canon sha256 in the manifest.
   - Add `possible-duplicate` and `stale-ruling` to `schema.py`.
   - Re-run T010 (byte-stability still holds).
-- [ ] T036 [US3] Green the suite.
-- [ ] T037 [US3] COMMIT "summary_native: fix-at-source duplicate detection"
+- [X] T036 [US3] Green the suite.
+- [X] T037 [US3] COMMIT "summary_native: fix-at-source duplicate detection"
 - [ ] T038 [US3] REVIEW `/code-review` on T037's commit. Fix and commit.
 
 ---
