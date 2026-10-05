@@ -577,3 +577,14 @@ def test_party_flags_rejected_for_other_docs(camp):
     write_party(camp)
     assert main(["synth", "world_state", *ARGS, "--dump-only", "--party-config", "config/party.yaml"]) == 2
     assert main(["synth", "party", *ARGS, "--dump-only", "--planning-config", "config/planning.yaml"]) == 2
+
+
+def test_planning_empty_threat_tracker_fails(camp, fake):
+    """An empty section is not the sentinel: it could be a dropped section."""
+    write_planning(camp)
+    _, state = fake
+    state["texts"] = full_text("planning").replace(
+        "## Threat Tracker\n\nBody for ## Threat Tracker (ch 2, 002.01).\n",
+        "## Threat Tracker\n\n",
+    )
+    assert main(["synth", "planning", *ARGS]) == 3

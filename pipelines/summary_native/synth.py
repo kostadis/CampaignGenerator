@@ -85,7 +85,9 @@ def check_threat_tracker(text: str) -> list[str]:
         return []  # a missing heading is check_outline's report
     end = next((n for n in range(start + 1, len(lines)) if lines[n].startswith("## ")), len(lines))
     body = " ".join("\n".join(lines[start + 1 : end]).split())
-    if body in ("", context.NO_ARC_SENTINEL):
+    # The sentinel is required, not merely allowed: an empty section cannot be
+    # told apart from a dropped or truncated one.
+    if body == context.NO_ARC_SENTINEL:
         return []
     return ["threat tracker must be empty: no arc scores configured"]
 
@@ -226,6 +228,8 @@ def run_synth(
             tuple(args.name or ()),
         )
     except select.SelectionError as e:
+        if doc == "planning":
+            return _refuse(f"{e} (planning selects NPC dossiers only)")
         return _refuse(str(e))
 
     headings = load_outline(doc)

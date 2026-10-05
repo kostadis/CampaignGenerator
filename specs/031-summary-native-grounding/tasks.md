@@ -241,7 +241,7 @@ description: "Task list for 031 summary-native grounding docs"
   - enable `party` and `planning` in the `synth` choices with `--party-config` / `--planning-config`.
 - [X] T042 [US4] Green the suite.
 - [X] T043 [US4] COMMIT "summary_native: party and planning drafts"
-- [ ] T044 [US4] REVIEW `/code-review` on T043's commit. Fix and commit.
+- [X] T044 [US4] REVIEW `/code-review` on T043's commit. Fix and commit.
 
 ---
 
