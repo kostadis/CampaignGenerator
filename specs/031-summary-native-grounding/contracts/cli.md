@@ -11,8 +11,8 @@ One console script, `summary_native = "pipelines.summary_native.cli:main"` in
 | `--summaries-dir DIR` | directory of structured summaries (`*.md`). Not `--summaries`, which `party.py`/`planning.py` use for a single FILE (Principle XII) | `grounding.yaml summary_native.summaries_dir`; error if neither is set |
 | `--since N` / `--until N` | inclusive chapter range (filename prefixes). `--since` matches `planning.py`'s chapter lower bound; `--from`/`--to` are taken (`sd_review`, `registry`) | unset = whole directory |
 | `--out-root DIR` | output root | `docs/summary_native` |
-| `--registry PATH` | entity registry | file or campaign dir. Default: `grounding.yaml summary_native.registry`, else auto-discover `docs/entity_registry.yaml` under the campaign root |
-| `--canon PATH` | hand-authored not-a-duplicate rulings | `grounding.yaml summary_native.canon_file`, else `<out-root>/canon.yaml` (absent = none) |
+| `--registry PATH` | entity registry | file or campaign dir. Default: `grounding.yaml summary_native.registry`, else auto-discover `docs/entity_registry.yaml` under the campaign root. An explicitly set path that does not exist → exit 2 |
+| `--canon PATH` | hand-authored not-a-duplicate rulings | `grounding.yaml summary_native.canon_file`, else `<out-root>/canon.yaml`. The default may be absent (no rulings); an explicitly set path that does not exist → exit 2 |
 | `--dup-threshold R` | similarity ratio at or above which two same-category headings are listed as a possible duplicate | `grounding.yaml summary_native.dup_threshold` (0.88) |
 | `--config PATH` | campaign config | `<cwd>/config/config.yaml` |
 

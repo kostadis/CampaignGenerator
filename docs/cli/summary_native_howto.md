@@ -88,6 +88,8 @@ against the campaign root, and `~` is expanded. With no
 summaries directory from either place it refuses (see
 [the refusal table](#every-refusal-and-exit-code-decoded)).
 
+A `canon_file` or `registry` you set explicitly (flag or `grounding.yaml`) must exist; a missing one is refused with exit 2 rather than silently read as "no rulings" or "no registry". Only the defaults may be absent. A non-string value in `grounding.yaml` (for example `registry: 5`) is refused the same way.
+
 ---
 
 ## What a valid summary looks like

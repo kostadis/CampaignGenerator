@@ -364,3 +364,51 @@ def test_configured_registry_directory_without_registry_exits_2(camp, capsys):
     _grounding(camp, registry="empty")
     assert _validate() == 2
     assert "no entity_registry.yaml found" in capsys.readouterr().err
+
+
+# ── explicit paths must exist; hand-edited non-strings are refused ──────────
+
+def _camp_for_paths(tmp_path, monkeypatch, grounding: str = ""):
+    import shutil
+    root = tmp_path / "camp"
+    (root / "config").mkdir(parents=True)
+    (root / "config" / "config.yaml").write_text("paths: {}\n")
+    if grounding:
+        (root / "config" / "grounding.yaml").write_text(grounding)
+    shutil.copytree(FIX / "clean", root / "summaries")
+    monkeypatch.chdir(root)
+    return root
+
+
+def test_explicit_missing_canon_flag_refused(tmp_path, monkeypatch, capsys):
+    from pipelines.summary_native.cli import main as _main
+    _camp_for_paths(tmp_path, monkeypatch)
+    assert _main(["validate", "--summaries-dir", "summaries", "--canon", "nope.yaml"]) == 2
+    assert "canon file" in capsys.readouterr().err
+
+
+def test_configured_missing_canon_file_refused(tmp_path, monkeypatch, capsys):
+    from pipelines.summary_native.cli import main as _main
+    _camp_for_paths(tmp_path, monkeypatch, "summary_native:\n  canon_file: typo/canon.yaml\n")
+    assert _main(["validate", "--summaries-dir", "summaries"]) == 2
+    assert "not found" in capsys.readouterr().err
+
+
+def test_default_canon_may_be_absent(tmp_path, monkeypatch):
+    from pipelines.summary_native.cli import main as _main
+    _camp_for_paths(tmp_path, monkeypatch)
+    assert _main(["validate", "--summaries-dir", "summaries"]) == 0
+
+
+def test_configured_missing_registry_file_refused(tmp_path, monkeypatch, capsys):
+    from pipelines.summary_native.cli import main as _main
+    _camp_for_paths(tmp_path, monkeypatch, "summary_native:\n  registry: docs/missing.yaml\n")
+    assert _main(["validate", "--summaries-dir", "summaries"]) == 2
+    assert "registry" in capsys.readouterr().err
+
+
+def test_non_string_config_value_refused(tmp_path, monkeypatch, capsys):
+    from pipelines.summary_native.cli import main as _main
+    _camp_for_paths(tmp_path, monkeypatch, "summary_native:\n  registry: 5\n")
+    assert _main(["validate", "--summaries-dir", "summaries"]) == 2
+    assert "must be a path string" in capsys.readouterr().err

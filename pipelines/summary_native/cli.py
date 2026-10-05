@@ -128,7 +128,10 @@ def main(argv: list[str] | None = None) -> int:
             registry_path = resolve.resolve_registry_path(root, args.registry, cfg)
         except resolve.PathRefusal as e:
             return _err(str(e))
-    canon_path = resolve.resolve_canon_path(root, out_root, args.canon, cfg)
+    try:
+        canon_path = resolve.resolve_canon_path(root, out_root, args.canon, cfg)
+    except resolve.PathRefusal as e:
+        return _err(str(e))
     reg_obj = None
     if registry_path is not None and args.command in ("validate", "build"):
         try:
