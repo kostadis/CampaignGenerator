@@ -304,3 +304,40 @@ def test_drafts_absent_is_404_and_empty_dir_is_empty(campaign):
     (root / "docs" / "summary_native" / "ch003-009").mkdir(parents=True)
     r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
     assert r.status_code == 200 and r.json() == []
+
+
+# ── path resolution: one resolver shared with the CLI ──────────────────────
+
+def test_tilde_out_root_is_expanded_for_report_and_drafts(campaign, monkeypatch, tmp_path_factory):
+    _, svc, _ = campaign
+    home = tmp_path_factory.mktemp("home")
+    monkeypatch.setenv("HOME", str(home))
+    rd = home / "sn" / "ch003-009"
+    (rd / "drafts").mkdir(parents=True)
+    (rd / "validation_report.json").write_text(json.dumps({"blocking_count": 0}))
+    (rd / "drafts" / "world_state.draft.md").write_text("abc")
+    svc.update_config({"summary_native": {"out_root": "~/sn"}})
+    assert client.get(f"{BASE}/report", params={"since": 3, "until": 9}).json() == {"blocking_count": 0}
+    r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
+    assert r.status_code == 200 and len(r.json()) == 1
+
+
+def test_absolute_out_root_outside_campaign_is_200_with_absolute_paths(campaign, tmp_path_factory):
+    _, svc, _ = campaign
+    out = tmp_path_factory.mktemp("elsewhere")
+    dd = out / "ch003-009" / "drafts"
+    dd.mkdir(parents=True)
+    (dd / "world_state.draft.md").write_text("abc")
+    svc.update_config({"summary_native": {"out_root": str(out)}})
+    r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
+    assert r.status_code == 200
+    assert r.json()[0]["path"] == str(dd / "world_state.draft.md")
+
+
+def test_tilde_summaries_dir_lists_chapters(campaign, monkeypatch, tmp_path_factory):
+    home = tmp_path_factory.mktemp("home")
+    monkeypatch.setenv("HOME", str(home))
+    (home / "summaries").mkdir()
+    (home / "summaries" / "004-x.md").write_text("x")
+    r = client.get(f"{BASE}/chapters", params={"summaries_dir": "~/summaries"})
+    assert r.status_code == 200 and r.json()["present"] == [4]

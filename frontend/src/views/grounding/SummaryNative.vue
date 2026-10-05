@@ -58,7 +58,9 @@ const auditText = ref('')
 const namesText = ref('')
 const maxTokens = ref<Num>('')
 const dumpOnly = ref(false)
-const force = ref(false)
+const forceBuild = ref(false)
+// Per-run, never persisted: replacing a reviewed draft must be a deliberate act each time.
+const forceSynth = ref(false)
 
 const lines = (t: string) => t.split('\n').map(l => l.trim()).filter(Boolean)
 const num = (n: Num) => (typeof n === 'number' ? n : undefined)
@@ -119,7 +121,7 @@ const validateParams = computed(() => ({
   ...baseParams.value, dup_threshold: num(dupThreshold.value),
 }))
 const buildParams = computed(() => ({
-  ...baseParams.value, dup_threshold: num(dupThreshold.value), force: force.value,
+  ...baseParams.value, dup_threshold: num(dupThreshold.value), force: forceBuild.value,
 }))
 const synthParams = computed(() => ({
   ...baseParams.value,
@@ -132,7 +134,7 @@ const synthParams = computed(() => ({
   parts: num(parts.value),
   max_tokens: num(maxTokens.value),
   dump_only: dumpOnly.value,
-  force: force.value,
+  force: forceSynth.value,
   model: config.model || undefined,
 }))
 
@@ -178,6 +180,11 @@ async function refreshOutputs() {
       ? 'Nothing built for this range yet. Run Build.'
       : (e instanceof Error ? e.message : String(e))
   }
+}
+
+function onSynthDone() {
+  forceSynth.value = false
+  refreshOutputs()
 }
 
 watch([rangeSince, rangeUntil], refreshOutputs)
@@ -250,7 +257,7 @@ onMounted(async () => {
       <div class="form-section">
         <h3 class="step">2. Build corpus</h3>
         <label class="checkbox-label">
-          <input type="checkbox" v-model="force" /> Force &mdash; rewrite an existing corpus / overwrite an existing draft
+          <input type="checkbox" v-model="forceBuild" /> Rebuild existing corpus (--force)
         </label>
         <RunPanel :endpoint="`${BASE}/run/build`" :params="buildParams" :disabled="!ready"
           label="Build" @done="refreshOutputs" />
@@ -305,9 +312,12 @@ onMounted(async () => {
         <label class="checkbox-label">
           <input type="checkbox" v-model="dumpOnly" /> Dump only &mdash; write the prompts and run record, make no model call
         </label>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="forceSynth" /> Replace existing reviewed draft (--force)
+        </label>
         <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
           :label="`Synthesize ${doc}`" selection-service="grounding" selection-doc="summary_native"
-          :selection-can-override="true" @done="refreshOutputs" />
+          :selection-can-override="true" @done="onSynthDone" />
       </div>
 
       <!-- 4. Compare -->

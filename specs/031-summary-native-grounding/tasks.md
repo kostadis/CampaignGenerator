@@ -277,7 +277,7 @@ description: "Task list for 031 summary-native grounding docs"
 - [X] T050 [P] [US5] `frontend/src/router.ts`: add the child route `summary-native` → `SummaryNative.vue` under `/grounding`. In `frontend/src/components/layout/AppSidebar.vue`, widen the `RenderingPath.id` union and add a fourth path `{ id: 'summary-native', label: 'Summary-native', description: 'Parses reviewed session summaries directly — no extraction pass.', usesSharedExtraction: false, matchPrefixes: ['/grounding/summary-native'], items: [{ label: 'Summary-native', path: '/grounding/summary-native' }] }`. Update the comment that says "three rendering paths".
 - [X] T051 [US5] `cd frontend && npm run build` (type-check must pass). Green the pytest suite, explicitly confirming the existing grounding/ensemble/projection route tests and any sidebar tests still pass unchanged (FR-028). Run quickstart Q8 by hand via the `run` skill or Chrome tools and report what was seen.
 - [X] T052 [US5] COMMIT "summary_native: Grounding UI page and routes"
-- [ ] T053 [US5] REVIEW `/code-review` on T052's commit. Fix and commit.
+- [X] T053 [US5] REVIEW `/code-review` on T052's commit. Fix and commit.
 
 ---
 

@@ -115,3 +115,26 @@ DEFAULT_MAX_TOKENS = 16000
 DOCS: tuple[str, ...] = ("world_state", "campaign_state", "party", "planning")
 #: The documents `synth` can draft today; US4 adds the others.
 SYNTH_DOCS: tuple[str, ...] = ("world_state", "campaign_state")
+
+
+def resolve_under(root, value):
+    """Resolve a configured path: ``~`` expanded, relative ones against ``root``.
+
+    The one resolver shared by the CLI and the web routes, so both read the
+    same file for the same configured value.
+    """
+    from pathlib import Path
+
+    p = Path(value).expanduser()
+    return p if p.is_absolute() else Path(root) / p
+
+
+def display_path(path, root):
+    """``path`` relative to ``root`` when inside it, else absolute. Never raises."""
+    from pathlib import Path
+
+    p = Path(path)
+    try:
+        return str(p.relative_to(Path(root)))
+    except ValueError:
+        return str(p)

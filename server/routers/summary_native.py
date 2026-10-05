@@ -104,7 +104,7 @@ def _base_cmd(command: str, doc: str | None, summaries_dir: str, since: int, unt
 
 
 def _range_dir(run: SummaryNativeRun, since: int, until: int) -> Path:
-    return Path.cwd() / run.out_root / f"ch{since:03d}-{until:03d}"
+    return schema.resolve_under(Path.cwd(), run.out_root) / f"ch{since:03d}-{until:03d}"
 
 
 # ── Read-only ───────────────────────────────────────────────────────────────
@@ -117,7 +117,7 @@ def get_chapters(request: Request, summaries_dir: str = ""):
     range picker offers exactly the values ``--since``/``--until`` accept. The
     content of a file is never opened here.
     """
-    directory = Path.cwd() / _require_dir(_run_config(request), summaries_dir)
+    directory = schema.resolve_under(Path.cwd(), _require_dir(_run_config(request), summaries_dir))
     if not directory.is_dir():
         raise HTTPException(status_code=404, detail=f"{directory}: not a directory")
     by_chapter: dict[int, list[str]] = {}
@@ -166,7 +166,7 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
             if p.is_file():
                 out.append({
                     "doc": doc,
-                    "path": str(p.relative_to(Path.cwd())),
+                    "path": schema.display_path(p, Path.cwd()),
                     "status": status,
                     "bytes": p.stat().st_size,
                 })

@@ -88,8 +88,7 @@ def _grounding_section(config_file: Path) -> dict:
 
 
 def _under(root: Path, value: str | Path) -> Path:
-    p = Path(value).expanduser()
-    return p if p.is_absolute() else root / p
+    return schema.resolve_under(root, value)
 
 
 def _sha_if_file(path: Path | None) -> str | None:
