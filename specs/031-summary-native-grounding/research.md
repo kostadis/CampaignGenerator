@@ -164,7 +164,7 @@ never nested in it. Input files are refused if they live under an ensemble direc
    using them does not paper over errors.
 2. **Detection.** Within each category, the remaining distinct headings are compared
    deterministically: the `difflib.SequenceMatcher` ratio, at or above
-   `dup_threshold` (default **0.88**, declared once in `SummaryNativeRun`, CLI
+   `dup_threshold` (default **0.88**, declared once in `schema.py` and imported by `SummaryNativeRun`, CLI
    `--dup-threshold`, a page control, and recorded in the report header). This is
    the approach already used in `synthesise_facts.detect_clusters`, plus a parenthetical-qualifier strip
    (`"Manshoon (Simulacrum)"` vs `"Manshoon"`). Each hit is a non-blocking

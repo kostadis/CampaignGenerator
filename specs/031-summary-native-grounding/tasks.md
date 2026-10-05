@@ -109,7 +109,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `render_chronology`, `render_memorable_moments`, `write_dossiers` (frontmatter per data-model.md: `subject`, `type`, `n_facts`, `chapters: lo-hi`, `source_kind`, `headings`, `grouped_by`; one block per observation; sha suffix on slug collision) and `write_manifest` (no timestamps; sha256 per file; counts).
   - Write every file through `campaignlib.util.atomic_write_text`.
   - For US1, group by identical heading within a category only; US3 adds exact same-type registry aliases.
-- [ ] T015 [US1] Wire up `validate` and `build` in `pipelines/summary_native/cli.py` with the shared flags `--summaries-dir --since --until --out-root --registry --canon --dup-threshold --config --force`. Defaults for `--out-root` and `--dup-threshold` come from `grounding.yaml summary_native` (plain YAML read until T047), falling back to the documented defaults in one module-level constant block in `schema.py`.
+- [ ] T015 [US1] Wire up `validate` and `build` in `pipelines/summary_native/cli.py` with the shared flags `--summaries-dir --since --until --out-root --registry --canon --dup-threshold --config --force`. Defaults for `--out-root` and `--dup-threshold` come from `grounding.yaml summary_native` (plain YAML read until T047), falling back to the defaults declared **once** as constants in `pipelines/summary_native/schema.py` (`DEFAULT_OUT_ROOT`, `DEFAULT_RECENT_CHAPTERS`, `DEFAULT_RECURRING_MIN`, `DEFAULT_DUP_THRESHOLD`, `DEFAULT_PARTS`).
   - Resolve config after `parse_args` via `find_default_config()`. If `--summaries-dir` is absent, read `grounding.yaml summary_native.summaries_dir` (a plain YAML read, so this works before US5's model exists); error if neither is set.
   - Print the report to stdout; exit codes per contract.
   - `build` runs `scan` first and refuses on blocking findings.
@@ -265,7 +265,7 @@ description: "Task list for 031 summary-native grounding docs"
 
 ### Implementation for User Story 5
 
-- [ ] T047 [US5] Add `class SummaryNativeRun(BaseModel)` (strict) to `server/grounding_config_shared.py`, with the fields from `contracts/http.md`, and `summary_native: SummaryNativeRun = Field(default_factory=SummaryNativeRun)` on `GroundingConfig`. Do not add it to `GROUNDING_DOCS`: it is a pipeline, not a fifth promotable doc. Update the `cli.py` config read (T015) to use `load_grounding_config` for the `summaries_dir` default.
+- [ ] T047 [US5] Add `class SummaryNativeRun(BaseModel)` (strict) to `server/grounding_config_shared.py`, with the fields from `contracts/http.md`. Its field defaults MUST import the `DEFAULT_*` constants from `pipelines/summary_native/schema.py`, never re-spell them (Principle XII: one declaration), and `summary_native: SummaryNativeRun = Field(default_factory=SummaryNativeRun)` on `GroundingConfig`. Do not add it to `GROUNDING_DOCS`: it is a pipeline, not a fifth promotable doc. Update the `cli.py` config read (T015) to use `load_grounding_config` for the `summaries_dir` default.
 - [ ] T048 [US5] `server/routers/summary_native.py`: argv builders for validate/build/synth/compare (the synth backend/model come via the existing `selection_cli_args(resolve_selection(...))` pattern used in `server/routers/grounding.py`), the read-only routes, SSE via the same `stream_subprocess` helper. Mount it in `server/main.py` with `prefix="/api/grounding/summary-native"`.
 - [ ] T049 [P] [US5] `frontend/src/views/grounding/SummaryNative.vue`:
   - summaries-dir field;
