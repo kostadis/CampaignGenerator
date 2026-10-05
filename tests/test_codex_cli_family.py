@@ -61,12 +61,12 @@ def _has_omission_default(node: ast.Call) -> bool:
     )
 
 
-def test_direct_inventory_contains_26_model_bearing_commands():
-    """The four dispatchers are excluded from the 30-surface direct set."""
-    assert len(REGISTRARS) == 26
+def test_direct_inventory_contains_27_model_bearing_commands():
+    """The four dispatchers are excluded from the 31-surface direct set."""
+    assert len(REGISTRARS) == 27
     assert len(HAND_WRITTEN) == 4
     assert len(DISPATCHERS) == 4
-    assert len(DIRECT_COMMANDS) == 26
+    assert len(DIRECT_COMMANDS) == 27
 
 
 @pytest.mark.parametrize("relative_path", DIRECT_COMMANDS)

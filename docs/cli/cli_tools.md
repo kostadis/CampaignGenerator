@@ -128,9 +128,9 @@ loop. The consistency-auditor and `consistency-check`/`staged-consistency`
 Codex skills remain supported. `--batch` is the Anthropic Message Batches API
 and is always refused with `codex-cli`.
 
-## Canonical command family (30)
+## Canonical command family (31)
 
-The shared backend vocabulary covers these 30 production commands: 26 shared-
+The shared backend vocabulary covers these 31 production commands: 27 shared-
 registrar entries, the plural-endpoint `facts_to_state` command, and three
 hand-written forwarding dispatchers (`ensemble`, `ensemble_batch`, and
 `ensemble_extract`). `sd_agent` is also a runtime dispatcher even though it uses
@@ -142,7 +142,7 @@ artifacts, resume/skip behavior, and human checkpoints.
 |---|---|
 | Session document (8) | `check_consistency`, `enhance_summary`, `scene_extract`, `sd_agent`, `sd_consistency`, `sd_plan`, `sd_narrate`, `vtt_voice_compare` |
 | Prep, ingest, search, integration (5) | `prep`, `transform`, `dnd_sheet`, `query`, `scabard_sync` |
-| Grounding (8) | `planning`, `party`, `make_tracking`, `distill`, `campaign_state`, `npc_table`, `grounding_sections`, `thread_registry` |
+| Grounding (9) | `planning`, `party`, `make_tracking`, `distill`, `campaign_state`, `npc_table`, `grounding_sections`, `thread_registry`, `summary_native` |
 | Ensemble (9) | `synthesise_world_state`, `synthesise_polish`, `extract_facts`, `facts_to_state`, `narrate_chapter`, `polish`, `ensemble`, `ensemble_batch`, `ensemble_extract` |
 
 ### Codex setup, model, and reasoning rules

@@ -81,6 +81,26 @@ class Registry:
 
     # ── projections consumed by existing pipelines ──────────────────────
 
+    def explicit_aliases_by_type(self) -> dict[str, dict[str, str]]:
+        """``{type: {casefold(name_or_alias): canonical}}``, explicit entries only.
+
+        Unlike :meth:`alias_to_canonical` this applies NO first-token inference
+        ("Kazryn" -> "Kazryn Nyantani"): grouping headings by a guessed short
+        form would merge things the GM never declared the same (spec 031 FR-013,
+        research R7). Only a name or alias the registry states verbatim
+        resolves. Keyed by entity type so a caller can restrict to the types a
+        category may use. If two entities of one type claim the same alias the
+        first one wins.
+        """
+        out: dict[str, dict[str, str]] = {}
+        for e in self.entities:
+            table = out.setdefault(e.type, {})
+            for s in [e.name, *e.aliases]:
+                key = s.strip().casefold()
+                if key:
+                    table.setdefault(key, e.name)
+        return out
+
     def alias_to_canonical(self) -> dict[str, str]:
         """Flat ``{variant: canonical}``, RAW (non-normalized) strings.
 

@@ -163,12 +163,13 @@ interface NavItem {
   matchPrefix?: string
 }
 
-// One of feature 006's three independent routes from session record to
-// grounding documents (022-grounding-nav-hierarchy, data-model.md). The
+// One of the independent routes from session record to grounding documents:
+// feature 006's three (022-grounding-nav-hierarchy, data-model.md) plus the
+// summary-native path (031-summary-native-grounding). The
 // sidebar shows them as siblings so their overlap is visible; it does not rank
 // them, and the order is 006's own numbering.
 interface RenderingPath {
-  id: 'per-tool' | 'dossier-synthesis' | 'state-projection'
+  id: 'per-tool' | 'dossier-synthesis' | 'state-projection' | 'summary-native'
   label: string
   // GM-approved wording (research R8). Says how this path differs from its
   // siblings, and whether it reads the shared ensemble extraction.
@@ -196,9 +197,10 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    // Feature 006's three rendering paths, shown as siblings so it is visible
-    // that they are alternative routes to the same documents. Order is 006's
-    // own numbering (paths 1, 2, 3), not a recommendation.
+    // Feature 006's three rendering paths plus feature 031's summary-native
+    // path (four in all), shown as siblings so it is visible that they are
+    // alternative routes to the same documents. Order is 006's own numbering
+    // (paths 1, 2, 3) with 031 appended, not a recommendation.
     title: 'GROUNDING DOCS',
     paths: [
       {
@@ -237,6 +239,16 @@ const navGroups: NavGroup[] = [
         items: [
           { label: 'State Projection', path: '/grounding/projections' },
           { label: 'Threads', path: '/grounding/threads' },
+        ],
+      },
+      {
+        id: 'summary-native',
+        label: 'Summary-native',
+        description: 'Parses reviewed session summaries directly — no extraction pass.',
+        usesSharedExtraction: false,
+        matchPrefixes: ['/grounding/summary-native'],
+        items: [
+          { label: 'Summary-native', path: '/grounding/summary-native' },
         ],
       },
     ],
