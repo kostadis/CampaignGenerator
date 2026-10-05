@@ -56,8 +56,8 @@ description: "Task list for 031 summary-native grounding docs"
 
 **Checkpoint**: parsing works on all fixtures.
 
-- [ ] T007 COMMIT "summary_native: package skeleton, schema, parser" (Co-Authored-By trailer per session attribution)
-- [ ] T008 REVIEW `/code-review` on T007's commit. Fix confirmed findings and commit.
+- [X] T007 COMMIT "summary_native: package skeleton, schema, parser" (Co-Authored-By trailer per session attribution)
+- [X] T008 REVIEW `/code-review` on T007's commit. Fix confirmed findings and commit.
 
 ---
 

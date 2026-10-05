@@ -160,3 +160,40 @@ def test_real_corpus_parses_if_available():
         for scene in pf.scenes:
             if scene.source_scene_id is not None:
                 assert re.fullmatch(r"\d{3}\.\d{2}", scene.source_scene_id)
+
+
+def test_bom_prefixed_file_still_finds_title(tmp_path):
+    body = "# Chapter 3\n\nDate: 2026-01-17\n\n## Scenes\n\n### 003.01 A\n\nprose\n"
+    plain = tmp_path / "plain" / "003-x.md"
+    bom = tmp_path / "bom" / "003-x.md"
+    for p, data in ((plain, body.encode()), (bom, b"\xef\xbb\xbf" + body.encode())):
+        p.parent.mkdir()
+        p.write_bytes(data)
+    pf = parse_file(bom, bom.parent)
+    assert pf.title_chapter == 3
+    assert pf.title_line == parse_file(plain, plain.parent).title_line == 1
+    assert pf.scenes[0].line == parse_file(plain, plain.parent).scenes[0].line
+
+
+def test_fence_closes_only_with_same_char():
+    text = (
+        "# Chapter 3\n\n## Scenes\n\n### 003.01 A\n\n~~~\n```py\n~~~\n\n### 003.02 B\n\nprose\n"
+    )
+    ids = [s.source_scene_id for s in parse_text(text, "003-x.md").scenes]
+    assert ids == ["003.01", "003.02"]
+
+
+def test_fence_closing_needs_at_least_as_many_chars():
+    text = "# Chapter 3\n\n## Scenes\n\n### 003.01 A\n\n````\n```\n### 003.99 X\n````\n\n### 003.02 B\n\nprose\n"
+    ids = [s.source_scene_id for s in parse_text(text, "003-x.md").scenes]
+    assert ids == ["003.01", "003.02"]
+
+
+def test_synopsis_ignores_h4_inside_fence():
+    body = "\n```\n#### fake\n```\n\nReal paragraph.\n"
+    assert synopsis_of(body) == "Real paragraph."
+
+
+def test_synopsis_paragraph_fallback_skips_fenced_content():
+    body = "\n```\nfenced line\n```\nReal paragraph.\n"
+    assert synopsis_of(body) == "Real paragraph."

@@ -107,16 +107,44 @@ def split_lines(text: str) -> list[str]:
     return _LINE_RE.findall(text)
 
 
+_FENCE_RE = re.compile(r"^\s*(`{3,}|~{3,})(.*)$")
+
+
+class _Fence:
+    """CommonMark fence state, shared by every scan in this module.
+
+    A fence closes only on the same character, at least as many of them as
+    opened it, with nothing after but whitespace.
+    """
+
+    def __init__(self) -> None:
+        self._open: str | None = None
+
+    def skip(self, line: str) -> bool:
+        """Feed one line; True if it is a fence line or inside a fence."""
+        m = _FENCE_RE.match(line.rstrip("\n").rstrip("\r"))
+        if self._open is None:
+            if m:
+                self._open = m.group(1)
+                return True
+            return False
+        if (
+            m
+            and m.group(1)[0] == self._open[0]
+            and len(m.group(1)) >= len(self._open)
+            and not m.group(2).strip()
+        ):
+            self._open = None
+        return True
+
+
 def _heading_positions(lines: list[str], pattern: re.Pattern[str]) -> list[tuple[int, str]]:
     """``(index, text)`` of lines matching ``pattern`` outside fenced code."""
     found: list[tuple[int, str]] = []
-    in_fence = False
+    fence = _Fence()
     for i, raw in enumerate(lines):
         stripped = raw.rstrip("\n").rstrip("\r")
-        if stripped.lstrip().startswith(("```", "~~~")):
-            in_fence = not in_fence
-            continue
-        if in_fence:
+        if fence.skip(stripped):
             continue
         m = pattern.match(stripped)
         if m:
@@ -137,15 +165,17 @@ def _all_heading_indexes(lines: list[str]) -> list[tuple[int, int, str]]:
 def synopsis_of(body: str) -> str:
     """``####`` lines joined with ' / '; else the first non-heading paragraph."""
     lines = body.split("\n")
+    fence = _Fence()
+    unfenced = [ln for ln in lines if not fence.skip(ln)]
     h4 = []
-    for ln in lines:
+    for ln in unfenced:
         m = schema.H4_RE.match(ln.rstrip("\r"))
         if m:
             h4.append(m.group(1))
     if h4:
         return " / ".join(h4)
     para: list[str] = []
-    for ln in lines:
+    for ln in unfenced:
         if ln.strip() == "":
             if para:
                 break
@@ -218,13 +248,10 @@ def parse_text(text: str, path: str) -> ParsedFile:
 
     title_chapter: int | None = None
     title_line: int | None = None
-    in_fence = False
+    fence = _Fence()
     for i, raw in enumerate(lines):
         stripped = raw.rstrip("\n").rstrip("\r")
-        if stripped.lstrip().startswith(("```", "~~~")):
-            in_fence = not in_fence
-            continue
-        if in_fence:
+        if fence.skip(stripped):
             continue
         tm = schema.TITLE_RE.match(stripped)
         if tm:
@@ -265,5 +292,5 @@ def parse_text(text: str, path: str) -> ParsedFile:
 
 def parse_file(path: Path, campaign_root: Path) -> ParsedFile:
     """Read and parse one summary. Raises only if the file cannot be read."""
-    text = Path(path).read_bytes().decode("utf-8")
+    text = Path(path).read_bytes().decode("utf-8-sig")
     return parse_text(text, _relpath(path, campaign_root))
