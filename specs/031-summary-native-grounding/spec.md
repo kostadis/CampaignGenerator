@@ -31,13 +31,13 @@ The GM points the pipeline at a directory (or file pattern) of structured sessio
 **Acceptance Scenarios**:
 
 1. **Given** a directory of 67 well-formed summaries, **When** the GM runs the parse stage, **Then** all 67 are parsed and every `### <scene>` heading appears in the chronology in chapter-then-scene order.
-2. **Given** a summary whose filename says chapter 70 but whose title line says "Chapter 66", **When** the corpus is parsed, **Then** the run fails loudly before writing any artifact. The report names the file, both chapter numbers, and what to fix. Nothing guesses which number is right; the GM corrects the summary and re-runs.
+2. **Given** a summary whose filename says chapter 70 but whose title line says "Chapter 66", **When** that chapter is inside the selected range, **Then** the run fails loudly before writing any corpus or draft artifact (only the validation report is written). The report names the file, both chapter numbers, and what to fix. Nothing guesses which number is right; the GM corrects the summary and re-runs.
 3. **Given** a summary with no `## Scenes` section, or a filename with no numeric chapter prefix, **When** the corpus is validated, **Then** the report names the file and the specific problem, and the file is not silently processed as one undifferentiated block.
 4. **Given** a corpus where five files have problems of different kinds (a title/filename conflict, a missing `## Scenes`, a duplicate scene id, a scene id from another chapter, two files sharing a chapter number), **When** the GM runs validation, **Then** one run reports every problem in every file in a single report, grouped by file. It does not stop at the first error, and fixing them takes one pass rather than five re-runs.
 5. **Given** any corpus, **When** the GM runs validation alone, **Then** the full report is produced without writing any corpus artifact or calling any model, so the GM can check the summaries before committing to a run.
 6. **Given** the same input directory, **When** the parse stage is run twice, **Then** every artifact it writes is byte-identical across runs.
 7. **Given** an entity that appears under `## NPCs` in 12 chapters, **When** its dossier is produced, **Then** it contains all 12 observations. Each one records the source file, the chapter, the heading as written, the category, and the scene it falls under where the summary places it in one.
-8. **Given** a directory of chapters 2–70, **When** the GM selects chapters 2–40, **Then** only those summaries are validated, parsed and synthesised. The drafts describe the campaign as of chapter 40, with nothing from chapters 41–70 in any artifact or prompt. The chosen range is recorded in the manifest and in every draft's provenance.
+8. **Given** a directory of chapters 2–70, **When** the GM selects chapters 2–40, **Then** only those summaries are parsed and synthesised (files outside the range are still scanned, and their problems are reported as non-blocking). The drafts describe the campaign as of chapter 40, with no content from chapters 41–70 in the corpus, any prompt or any draft. The validation report may name out-of-range files and their problems. The chosen range is recorded in the manifest and in every draft's provenance.
 9. **Given** a run for chapters 2–40 already exists, **When** the GM runs chapters 2–70, **Then** neither run's corpus or drafts overwrite the other's.
 
 ---
@@ -112,7 +112,7 @@ Every stage reachable from the command line is also reachable from the web UI. T
 
 ### Edge Cases
 
-- **Filename vs. title chapter conflict**: hard failure. The run refuses before writing any artifact and names every conflicting file. There is no override: the GM fixes the summary.
+- **Filename vs. title chapter conflict**: hard failure for in-range files. The run refuses before writing any corpus or draft artifact (only the validation report is written) and names every conflicting file. There is no override: the GM fixes the summary.
 - **Two files claiming the same chapter number**: refuse, naming both files. Ordering would be ambiguous.
 - **A file missing `## Scenes`, or with no scene headings under it**: reported as a structural error. The file is never chunked as a whole document. The run refuses.
 - **Scene heading whose id does not match its file's chapter** (e.g. `### 066.02` inside `070-…md`): hard failure, the same as a title conflict.
@@ -138,7 +138,7 @@ Every stage reachable from the command line is also reachable from the web UI. T
 
 - **FR-001**: The pipeline MUST take its input as an explicitly specified directory or file pattern of structured session summaries. It MUST NOT create, edit, repair or regenerate any summary file.
 - **FR-002**: The pipeline MUST require each file's numeric filename prefix, its title-line chapter number, and the chapter part of every scene id to agree. Any disagreement in a file inside the selected range MUST fail the run loudly before any corpus or draft artifact is written (out-of-range files are reported non-blocking per FR-005c; duplicate chapter numbers block wherever they occur), naming the file and the conflicting values. The pipeline MUST NOT pick a winner, and there is no override. The fix is to correct the summary.
-- **FR-003**: The pipeline MUST validate the expected summary structure (a title line, a `## Scenes` section with `### <scene>` headings, and recognised entity sections). It MUST produce an actionable validation report naming each file and each problem.
+- **FR-003**: The pipeline MUST validate the expected summary structure (a title line and a `## Scenes` section with `### <scene>` headings, both required; entity sections such as `## NPCs` are optional and recognised when present). It MUST produce an actionable validation report naming each file and each problem.
 - **FR-004**: The pipeline MUST NOT fall back to treating a file as one undifferentiated block when scene identity would be lost. Any in-range file that fails validation MUST stop the run before any corpus or draft artifact is written. There is no per-file exclusion or override.
 - **FR-005**: The pipeline MUST refuse a run in which two files claim the same chapter, an input directory is empty, or no input location is given.
 - **FR-005a**: Validation MUST scan every input file and collect every problem across the whole corpus before reporting. It MUST NOT stop at the first failing file or the first error within a file. The report MUST list each non-conforming file with all of its problems (file, location in the file, problem, expected vs. found), end with a summary count of failing files and errors, and also be written to a file the GM can work through.
@@ -161,7 +161,7 @@ Every stage reachable from the command line is also reachable from the web UI. T
 **Canonicalization (human-ruled)**
 
 - **FR-013**: The pipeline MUST group headings only when they are identical within a category, or when the entity registry lists them as exact aliases of an entity whose type matches the category. The registry's inferred aliases MUST NOT be used. Spells and abilities have no registry type and are grouped by identical heading only.
-- **FR-014**: The pipeline MUST detect likely duplicate headings within a category (near-identical spelling, or the same name with and without a parenthetical qualifier). It MUST list each pair in the validation report, with every file and line where each spelling occurs, as a non-blocking fix-at-source item. It MUST NOT merge, rename or alias them.
+- **FR-014**: The pipeline MUST detect likely duplicate headings within a category (near-identical spelling at or above a configurable similarity threshold, default 0.88, or the same name with and without a parenthetical qualifier). It MUST list each pair in the validation report, with every file and line where each spelling occurs, as a non-blocking fix-at-source item. It MUST NOT merge, rename or alias them.
 - **FR-015**: The GM MUST be able to record a pair as not-a-duplicate in a hand-authored rulings file (`canon.yaml`), which the pipeline only reads. Recorded pairs MUST NOT be listed again. A ruling whose headings no longer occur in the selected range MUST be reported as stale. The file MUST NOT be able to express a merge or alias.
 - **FR-016**: No merge decision MAY be made by a model or a similarity score. Duplicates are resolved by the GM editing the summary files.
 
@@ -180,7 +180,7 @@ Every stage reachable from the command line is also reachable from the web UI. T
 - **FR-024**: For every run, the pipeline MUST retain the exact prompts (system and user), the input file list with content digests, the chapter range, the selection decisions, and the digests of the registry and `canon.yaml` that were read.
 - **FR-025**: Synthesis MUST write only draft files. It MUST NEVER modify the live grounding documents. Promotion stays a separate human act.
 - **FR-026**: The pipeline MUST be able to report a comparison between each draft and the current live document (size, chapter coverage, and a textual diff) to support the promotion decision.
-- **FR-027**: Existing outputs MUST NOT be overwritten unless the GM passes the standard overwrite flag.
+- **FR-027**: Existing corpus and draft outputs MUST NOT be overwritten unless the GM passes the standard overwrite flag. The validation report is exempt: it is regenerated on every run, because it describes the summaries as they are now.
 
 **Coexistence & surfaces**
 

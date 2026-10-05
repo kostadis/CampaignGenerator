@@ -22,6 +22,7 @@ summary_native:
   range_until: null
   recent_chapters: 4
   recurring_min: 10
+  dup_threshold: 0.88
   parts: 0
 ```
 
@@ -37,8 +38,8 @@ summary_native:
 
 | Path | argv |
 |---|---|
-| `/run/validate` | `summary_native validate --summaries-dir … --since … --until …` |
-| `/run/build` | `… build … [--force]` |
+| `/run/validate` | `summary_native validate --summaries-dir … --since … --until … [--dup-threshold R]` |
+| `/run/build` | `… build … [--dup-threshold R] [--force]` |
 | `/run/synth/{doc}` | `… synth <doc> … [--world-state] [--campaign-state] [--audit …] [--name …] [--recent-chapters N] [--recurring-min N] [--parts N] [--max-tokens N] [--dump-only] [--force] --backend/--model` from the selection. `recent_chapters`/`recurring_min`/`parts` fall back to config; `name`, `max_tokens`, `dump_only` are per-run |
 | `/run/compare/{doc}` | `… compare <doc> --live docs/<doc>.md` |
 

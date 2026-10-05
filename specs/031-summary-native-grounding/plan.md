@@ -19,7 +19,7 @@ Grounding page, plus a CLI how-to in `docs/cli/`.
 
 ## Technical Context
 
-**Language/Version**: Python 3.12 (backend/CLI); TypeScript + Vue 3 (frontend page)
+**Language/Version**: Python ≥ 3.10, per `pyproject.toml` `requires-python` (backend/CLI); TypeScript + Vue 3 (frontend page)
 
 **Primary Dependencies**: existing only. `pyyaml`, `pydantic`, `fastapi`, and stdlib
 `difflib`/`hashlib`/`re`. No new third-party packages.
@@ -106,7 +106,7 @@ pipelines/summary_native/
 ├── parse.py         # SummaryFile / Section / Entry / Scene (deterministic)
 ├── validate.py      # scan() → ValidationReport; ChapterRange resolution
 ├── corpus.py        # chronology, moments, dossiers, manifest; corpus-kind guard
-├── canon.py         # exact same-type registry grouping, canon.yaml rulings, possible-duplicate detection
+├── duplicates.py    # exact same-type registry grouping, canon.yaml rulings, possible-duplicate detection
 ├── select.py        # recent/recurring selection → selection.json
 ├── context.py       # prompt assembly per doc (string building only)
 ├── synth.py         # render_part() via campaignlib; outline completeness check
@@ -131,7 +131,7 @@ tests/fixtures/summary_native/{clean,multi_error,out_of_range,gaps,aliases}/
 tests/test_summary_native_parse.py
 tests/test_summary_native_validate.py
 tests/test_summary_native_corpus.py       # byte-stability, read_dossiers compat, separation
-tests/test_summary_native_canon.py
+tests/test_summary_native_duplicates.py
 tests/test_summary_native_select.py
 tests/test_summary_native_synth.py        # fake client; outline check; audit/threat-tracker guards
 tests/test_summary_native_cli.py

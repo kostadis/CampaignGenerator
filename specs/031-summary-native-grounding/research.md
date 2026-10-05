@@ -163,8 +163,10 @@ never nested in it. Input files are refused if they live under an ensemble direc
    approved alternate names, never misspellings (the `registry-cleanup` rule), so
    using them does not paper over errors.
 2. **Detection.** Within each category, the remaining distinct headings are compared
-   deterministically: the `difflib.SequenceMatcher` ratio (the approach already in
-   `synthesise_facts.detect_clusters`), plus a parenthetical-qualifier strip
+   deterministically: the `difflib.SequenceMatcher` ratio, at or above
+   `dup_threshold` (default **0.88**, declared once in `SummaryNativeRun`, CLI
+   `--dup-threshold`, a page control, and recorded in the report header). This is
+   the approach already used in `synthesise_facts.detect_clusters`, plus a parenthetical-qualifier strip
    (`"Manshoon (Simulacrum)"` vs `"Manshoon"`). Each hit is a non-blocking
    `possible-duplicate` finding in the validation report. It lists every file and
    line for both spellings, so the GM can fix the summaries in the same pass as
@@ -279,7 +281,7 @@ check is the only completeness signal that every backend shares.
   strict `GroundingConfig` (`server/grounding_config_shared.py`). Its fields:
   `summaries_dir`, `out_root` (default `docs/summary_native`), `canon_file` (default
   `docs/summary_native/canon.yaml`), `range_since`/`range_until` (`None` = unset),
-  `recent_chapters` (4), `recurring_min` (10), `parts` (0 = single call),
+  `recent_chapters` (4), `recurring_min` (10), `dup_threshold` (0.88), `parts` (0 = single call),
   and per-doc `output` overrides.
 - **No migration needed.** The group is new and every field has a default, so an
   existing `grounding.yaml` still loads and needs no migration (Principle XIII does
