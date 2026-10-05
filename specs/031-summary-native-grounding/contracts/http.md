@@ -30,7 +30,7 @@ summary_native:
 
 | Method & path | Returns |
 |---|---|
-| `GET /chapters?summaries_dir=` | `{present: [int], files: [{chapter, path}], duplicates: [...]}`, filled from filename prefixes only, for the range picker |
+| `GET /chapters?summaries_dir=` | `{present: [int], files: [{chapter, path}], duplicate_chapters: [...]}`, filled from filename prefixes only, for the range picker |
 | `GET /report?since=&until=` | the range directory's `validation_report.json` (404 if not run) |
 | `GET /drafts?since=&until=` | `[{doc, path, status: draft|incomplete, bytes}]` |
 
@@ -44,8 +44,8 @@ summary_native:
 | `/run/compare/{doc}` | `… compare <doc> --live docs/<doc>.md` |
 
 **Refusals** (HTTP 400, before spawning):
-- `from`/`to` unset in both the request and the config (Principle X: no silent
-  "all" in the UI).
+- `since`/`until` unset in both the request and the config (`range_since`/`range_until`)
+  (Principle X: no silent "all" in the UI).
 - `summaries_dir` unset.
 - An unknown `doc`.
 

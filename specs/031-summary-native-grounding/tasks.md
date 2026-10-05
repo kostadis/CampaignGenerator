@@ -98,9 +98,9 @@ description: "Task list for 031 summary-native grounding docs"
 ### Implementation for User Story 1
 
 - [ ] T013 [US1] `pipelines/summary_native/validate.py`:
-  - Write `ChapterRange.resolve(present, start, end)`, which raises `RangeError` with the present chapters on a bad bound, start > end, or an empty range, and computes the gaps.
+  - Write `ChapterRange.resolve(present, since, until)`, which raises `RangeError` with the present chapters on a bad bound, since > until, or an empty range, and computes the gaps.
   - Write the `Finding` and `ValidationReport` dataclasses (`blocking_count`, `files_failing`, `to_json()`, `to_markdown()`). The markdown has in-range findings grouped by file, then "Outside range — not blocking", then summary counts.
-  - Write `scan(summaries_dir, campaign_root, start, end) -> ValidationReport`, which runs every check on every file and never stops early.
+  - Write `scan(summaries_dir, campaign_root, since, until) -> ValidationReport`, which runs every check on every file and never stops early.
   - `duplicate-chapter` is checked across the whole directory and always blocks.
   - Refuse input that lives under a `docs/ensemble/` path.
 - [ ] T014 [US1] `pipelines/summary_native/corpus.py`:

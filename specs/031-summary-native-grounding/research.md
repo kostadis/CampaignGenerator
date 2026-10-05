@@ -66,6 +66,8 @@ Problem codes (stable strings, so tests and the UI can key on them):
 | `scene-chapter-mismatch` | yes | scene id's chapter part ≠ filename prefix |
 | `duplicate-scene-id` | yes | the same scene id appears twice in one file |
 | `unknown-section` | no | an H2 not in the recognised set (it is preserved) |
+| `possible-duplicate` | no | two same-category headings at or above `dup_threshold`, or equal after a qualifier strip; lists every `file:line` (R7) |
+| `stale-ruling` | no | a `canon.yaml` `not_duplicates` pair whose headings no longer occur in the range (R7) |
 | `range-gap` | no (informational) | a chapter number inside the range has no file |
 
 Out-of-range files are scanned with the same checks. Their findings carry
@@ -301,7 +303,7 @@ check is the only completeness signal that every backend shares.
 - **Read-only routes.** These serve the validation report JSON (including
   possible duplicates), the list of chapters present (for the range picker), and the list of
   drafts. They read files only.
-- **Explicit range in the UI.** The run routes refuse when `from`/`to` are unset. The
+- **Explicit range in the UI.** The run routes refuse when `since`/`until` are unset. The
   UI "All chapters" button writes the first and last chapters present as explicit
   values (Principle X). The CLI keeps "no range = whole named directory", because a
   typed `--summaries-dir DIR` is an explicit act.

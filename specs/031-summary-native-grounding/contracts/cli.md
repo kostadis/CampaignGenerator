@@ -16,7 +16,7 @@ One console script, `summary_native = "pipelines.summary_native.cli:main"` in
 | `--dup-threshold R` | similarity ratio at or above which two same-category headings are listed as a possible duplicate | `grounding.yaml summary_native.dup_threshold` (0.88) |
 | `--config PATH` | campaign config | `<cwd>/config/config.yaml` |
 
-The range directory is `<out-root>/ch<start:03d>-<end:03d>/`. For an unset range,
+The range directory is `<out-root>/ch<since:03d>-<until:03d>/`. For an unset range,
 the start and end are the first and last chapters present.
 
 ## Exit codes

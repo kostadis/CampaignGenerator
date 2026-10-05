@@ -37,9 +37,9 @@ scene id's chapter part `== chapter`.
 ## Validation
 
 ### ChapterRange
-`start: int | None`, `end: int | None`, `present: list[int]`, `gaps: list[int]`.
+`since: int | None`, `until: int | None`, `present: list[int]`, `gaps: list[int]`. The names match the `--since`/`--until` flags and `range_since`/`range_until` config.
 - Both bounds unset means every file in the directory (CLI only; the UI always sets both).
-- Refused if a bound matches no file, `start > end`, or the range holds no file (FR-005d).
+- Refused if a bound matches no file, `since > until`, or the range holds no file (FR-005d).
 
 ### Finding
 `file`, `line | None`, `code` (see research R2 table), `message`, `expected | None`,
@@ -154,7 +154,7 @@ It never overwrites a live `docs/*.md` (FR-025). An existing draft needs `--forc
 ```text
 <out_root>/                         # default docs/summary_native/
 ├── canon.yaml                      # human-authored not-a-duplicate rulings, range-independent
-└── ch002-070/                      # one directory per range: ch<start>-<end>, 3-digit
+└── ch002-070/                      # one directory per range: ch<since>-<until>, 3-digit
     ├── manifest.json
     ├── validation_report.{json,md}
     ├── chronology.md
