@@ -65,6 +65,7 @@ Problem codes (stable strings, so tests and the UI can key on them):
 | `bad-scene-id` | yes | a `###` under Scenes does not start with `NNN.SS` |
 | `scene-chapter-mismatch` | yes | scene id's chapter part ≠ filename prefix |
 | `duplicate-scene-id` | yes | the same scene id appears twice in one file |
+| `unreadable-file` | yes | the file cannot be read or decoded (OSError / UnicodeDecodeError text in the message); the scan continues with the other files |
 | `unknown-section` | no | an H2 not in the recognised set (it is preserved) |
 | `possible-duplicate` | no | two same-category headings at or above `dup_threshold`, or equal after a qualifier strip; lists every `file:line` (R7) |
 | `stale-ruling` | no | a `canon.yaml` `not_duplicates` pair whose headings no longer occur in the range (R7) |

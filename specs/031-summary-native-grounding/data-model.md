@@ -88,7 +88,7 @@ A slug collision appends the first 8 hex characters of
 `sha256(category\0subject)`, as the prototype did.
 
 ### Chronology — `chronology.md`
-One H2 per chapter (`## Chapter 070`), one H3 per scene
+One H2 per chapter (`## Chapter 070 — <date>`, or `date not stated`), one H3 per scene
 (`### 070.03 — <title>`), each with its synopsis and a provenance line. Where a
 `Session-End State` section exists, it is copied verbatim under its chapter.
 
@@ -100,8 +100,8 @@ not an error.
 ### CorpusManifest — `manifest.json`
 `kind: "summary_native"`, `schema: 1`, `range`, `files: [{path, chapter, sha256}]`,
 `counts` (scenes, observations per category, dossiers),
-`absent_optional_sections`, `unknown_sections`, `canon` (the sha256 of the registry
-and `canon.yaml` read, and the number of registry-alias groupings). It contains no timestamps.
+`absent_optional_sections`, `unknown_sections`, `canon` (`{registry_sha256, canon_sha256}`: the sha256 of the registry
+and `canon.yaml` read). It contains no timestamps.
 
 ## Duplicate detection (fix at source)
 

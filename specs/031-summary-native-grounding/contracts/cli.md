@@ -38,14 +38,36 @@ makes no model call. Exit 0 or 1.
 summary_native validate --summaries-dir docs/summaries --since 2 --until 40
 ```
 
-Stdout shape:
+Stdout is the same markdown as `validation_report.md` (an excerpt):
 ```text
-[summary-native] scanned 67 files (39 in range 2–40)
-070-session-untitled.md  (outside range — not blocking)
-  L1   title-chapter-mismatch   expected "# Chapter 70"  found "# Chapter 66"
-...
-[summary-native] 0 blocking problems in range; 1 outside range; gaps: none
+# Validation report
+
+- Summaries directory: docs/summaries
+- Range: 2–40
+- Files scanned: 67
+- Files in range: 39
+- Gaps: none
+
+## In range
+
+### docs/summaries/070-session-untitled.md
+
+missing-title  expected "# Chapter 70"  found "# Session 2025-04-14"  — no `# Chapter N` title line
+
+L12  title-chapter-mismatch  expected "# Chapter 71"  found "# Chapter 66"  — title chapter disagrees with the filename prefix; fix the summary
+
+## Outside range — not blocking
+
+(none)
+
+## Summary
+
+- Blocking problems: 2
+- Files failing: 1
+- Non-blocking findings: 0
 ```
+A finding with no line number omits the `L<n>` token. An unreadable file is an
+`unreadable-file` finding, not an abort.
 
 ## `summary_native build`
 

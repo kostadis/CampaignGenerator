@@ -69,7 +69,7 @@ description: "Task list for 031 summary-native grounding docs"
 
 ### Tests for User Story 1 (write first)
 
-- [ ] T009 [P] [US1] `tests/test_summary_native_validate.py`:
+- [X] T009 [P] [US1] `tests/test_summary_native_validate.py`:
   - `test_all_errors_one_pass`: the `multi_error` fixture gives every code and both errors of the double-error file in one report.
   - `test_title_mismatch_blocks_no_override`.
   - `test_scene_chapter_mismatch_blocks`.
@@ -80,7 +80,7 @@ description: "Task list for 031 summary-native grounding docs"
   - `test_gaps_reported_not_errors`: 004 in `clean`.
   - `test_empty_dir_refused`.
   - `test_report_md_grouped_by_file_with_summary_counts`.
-- [ ] T010 [P] [US1] `tests/test_summary_native_corpus.py`:
+- [X] T010 [P] [US1] `tests/test_summary_native_corpus.py`:
   - `test_build_byte_stable`: build twice into two tmp dirs and `filecmp` every file.
   - `test_chronology_order_and_ids`.
   - `test_memorable_moments_verbatim`.
@@ -92,29 +92,29 @@ description: "Task list for 031 summary-native grounding docs"
   - `test_no_absolute_paths_in_artifacts`.
   - `test_absent_optional_sections_in_manifest`.
   - `test_unknown_section_preserved_and_reported`.
-- [ ] T011 [P] [US1] `tests/test_summary_native_no_llm.py`: AST-walk `parse.py`, `validate.py`, `corpus.py`, `duplicates.py`, `select.py`, `context.py` and `compare.py`. Fail if any of them imports `campaignlib.api`/`anthropic`, or calls `stream_api`, `call_api`, `make_client` or `client_from_args`. Model on `tests/test_block_model_no_llm.py`.
-- [ ] T012 [P] [US1] `tests/test_summary_native_cli.py` (validate/build part): exit codes 0/1/2 per `contracts/cli.md`; `validate` writes only `validation_report.{md,json}`; the range dir name is `ch002-005`.
+- [X] T011 [P] [US1] `tests/test_summary_native_no_llm.py`: AST-walk `parse.py`, `validate.py`, `corpus.py`, `duplicates.py`, `select.py`, `context.py` and `compare.py`. Fail if any of them imports `campaignlib.api`/`anthropic`, or calls `stream_api`, `call_api`, `make_client` or `client_from_args`. Model on `tests/test_block_model_no_llm.py`.
+- [X] T012 [P] [US1] `tests/test_summary_native_cli.py` (validate/build part): exit codes 0/1/2 per `contracts/cli.md`; `validate` writes only `validation_report.{md,json}`; the range dir name is `ch002-005`.
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] `pipelines/summary_native/validate.py`:
+- [X] T013 [US1] `pipelines/summary_native/validate.py`:
   - Write `ChapterRange.resolve(present, since, until)`, which raises `RangeError` with the present chapters on a bad bound, since > until, or an empty range, and computes the gaps.
   - Write the `Finding` and `ValidationReport` dataclasses (`blocking_count`, `files_failing`, `to_json()`, `to_markdown()`). The markdown has in-range findings grouped by file, then "Outside range — not blocking", then summary counts.
   - Write `scan(summaries_dir, campaign_root, since, until) -> ValidationReport`, which runs every check on every file and never stops early.
   - `duplicate-chapter` is checked across the whole directory and always blocks.
   - Refuse input that lives under a `docs/ensemble/` path.
-- [ ] T014 [US1] `pipelines/summary_native/corpus.py`:
+- [X] T014 [US1] `pipelines/summary_native/corpus.py`:
   - `guard_out_dir(range_dir, force)` refuses: an ensemble marker (`merged.json`, `state_dossiers/`, `merged_dossiers/`, `facts_*.json`, `extract_*.md`); a manifest of another `kind`; a non-empty dir with no manifest; an existing summary-native manifest without `force`.
   - `build_observations(files, aliases_fn)`.
   - `render_chronology`, `render_memorable_moments`, `write_dossiers` (frontmatter per data-model.md: `subject`, `type`, `n_facts`, `chapters: lo-hi`, `source_kind`, `headings`, `grouped_by`; one block per observation; sha suffix on slug collision) and `write_manifest` (no timestamps; sha256 per file; counts).
   - Write every file through `campaignlib.util.atomic_write_text`.
   - For US1, group by identical heading within a category only; US3 adds exact same-type registry aliases.
-- [ ] T015 [US1] Wire up `validate` and `build` in `pipelines/summary_native/cli.py` with the shared flags `--summaries-dir --since --until --out-root --registry --canon --dup-threshold --config --force`. Defaults for `--out-root` and `--dup-threshold` come from `grounding.yaml summary_native` (plain YAML read until T047), falling back to the defaults declared **once** as constants in `pipelines/summary_native/schema.py` (`DEFAULT_OUT_ROOT`, `DEFAULT_RECENT_CHAPTERS`, `DEFAULT_RECURRING_MIN`, `DEFAULT_DUP_THRESHOLD`, `DEFAULT_PARTS`).
+- [X] T015 [US1] Wire up `validate` and `build` in `pipelines/summary_native/cli.py` with the shared flags `--summaries-dir --since --until --out-root --registry --canon --dup-threshold --config --force`. Defaults for `--out-root` and `--dup-threshold` come from `grounding.yaml summary_native` (plain YAML read until T047), falling back to the defaults declared **once** as constants in `pipelines/summary_native/schema.py` (`DEFAULT_OUT_ROOT`, `DEFAULT_RECENT_CHAPTERS`, `DEFAULT_RECURRING_MIN`, `DEFAULT_DUP_THRESHOLD`, `DEFAULT_PARTS`).
   - Resolve config after `parse_args` via `find_default_config()`. If `--summaries-dir` is absent, read `grounding.yaml summary_native.summaries_dir` (a plain YAML read, so this works before US5's model exists); error if neither is set.
   - Print the report to stdout; exit codes per contract.
   - `build` runs `scan` first and refuses on blocking findings.
-- [ ] T016 [US1] Run T009–T012 and the full suite until green. Then run quickstart Q2 against the real OOTA directory (read-only; the 070 file is still unfixed) and record the report summary in the commit message.
-- [ ] T017 [US1] COMMIT "summary_native: whole-directory validation, chapter range, deterministic corpus build"
+- [X] T016 [US1] Run T009–T012 and the full suite until green. Then run quickstart Q2 against the real OOTA directory (read-only; the 070 file is still unfixed) and record the report summary in the commit message.
+- [X] T017 [US1] COMMIT "summary_native: whole-directory validation, chapter range, deterministic corpus build"
 - [ ] T018 [US1] REVIEW `/code-review` on T017's commit. Fix and commit.
 
 **Checkpoint**: MVP. The GM can validate and build a corpus from the CLI with no tokens spent.

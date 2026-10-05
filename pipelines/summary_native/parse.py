@@ -89,6 +89,7 @@ class ParsedFile:
     sections: tuple[Section, ...]  # H2s in file order
     scenes: tuple[Scene, ...]
     entities: tuple[EntityEntry, ...]
+    first_h1: str | None = None  # first `# ` line verbatim, fence-aware
 
     def section(self, name: str) -> Section | None:
         for s in self.sections:
@@ -248,11 +249,14 @@ def parse_text(text: str, path: str) -> ParsedFile:
 
     title_chapter: int | None = None
     title_line: int | None = None
+    first_h1: str | None = None
     fence = _Fence()
     for i, raw in enumerate(lines):
         stripped = raw.rstrip("\n").rstrip("\r")
         if fence.skip(stripped):
             continue
+        if first_h1 is None and re.match(r"#(?!#)\s", stripped):
+            first_h1 = stripped
         tm = schema.TITLE_RE.match(stripped)
         if tm:
             title_chapter, title_line = int(tm.group(1)), i + 1
@@ -287,6 +291,7 @@ def parse_text(text: str, path: str) -> ParsedFile:
         sections=sections,
         scenes=tuple(scenes),
         entities=tuple(entities),
+        first_h1=first_h1,
     )
 
 

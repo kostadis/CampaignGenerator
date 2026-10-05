@@ -61,6 +61,7 @@ UNKNOWN_SECTION = "unknown-section"
 POSSIBLE_DUPLICATE = "possible-duplicate"
 STALE_RULING = "stale-ruling"
 RANGE_GAP = "range-gap"
+UNREADABLE_FILE = "unreadable-file"
 
 #: Codes that stop `build` / `synth`. Everything else is advisory.
 BLOCKING_CODES: frozenset[str] = frozenset(
@@ -74,6 +75,7 @@ BLOCKING_CODES: frozenset[str] = frozenset(
         BAD_SCENE_ID,
         SCENE_CHAPTER_MISMATCH,
         DUPLICATE_SCENE_ID,
+        UNREADABLE_FILE,
     }
 )
 NON_BLOCKING_CODES: frozenset[str] = frozenset(
