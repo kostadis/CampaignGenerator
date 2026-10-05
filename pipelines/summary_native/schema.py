@@ -107,3 +107,11 @@ DEFAULT_RECENT_CHAPTERS = 4
 DEFAULT_RECURRING_MIN = 10
 DEFAULT_DUP_THRESHOLD = 0.88
 DEFAULT_PARTS = 0
+DEFAULT_MAX_TOKENS = 16000
+
+# ── Documents ───────────────────────────────────────────────────────────────
+
+#: Every document the pipeline will eventually draft (FR-018).
+DOCS: tuple[str, ...] = ("world_state", "campaign_state", "party", "planning")
+#: The documents `synth` can draft today; US4 adds the others.
+SYNTH_DOCS: tuple[str, ...] = ("world_state", "campaign_state")

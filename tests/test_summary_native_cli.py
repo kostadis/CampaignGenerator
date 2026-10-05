@@ -137,12 +137,6 @@ def test_manifest_records_registry_and_canon_digests(camp):
     assert len(m["canon"]["registry_sha256"]) == 64 and len(m["canon"]["canon_sha256"]) == 64
 
 
-def test_synth_and_compare_are_stubs(camp, capsys):
-    assert main(["synth"]) == 2
-    assert main(["compare"]) == 2
-    assert "not implemented yet" in capsys.readouterr().err
-
-
 def test_unreadable_file_reported_with_other_findings_exit_1(camp, capsys):
     d = camp / "summaries"
     d.mkdir()
@@ -230,3 +224,49 @@ def test_report_notes_existing_corpus_state(camp):
     assert "differ from current input" in md and "build --force" in md and f.name in md
     ec = json.loads((_rd(camp) / "validation_report.json").read_text())["existing_corpus"]
     assert ec["differ"] == 1 and ec["changed"]
+
+
+# ── synth / compare argument contract (T021) ───────────────────────────────
+
+
+def test_synth_has_backend_flags_and_rejects_unknown_doc(camp, capsys):
+    from pipelines.summary_native.cli import build_parser
+
+    p = build_parser()
+    ns = p.parse_args(["synth", "world_state", "--backend", "dgx", "--endpoint", "http://x", "--model", "m",
+                       "--max-tokens", "5", "--parts", "2", "--name", "A", "B", "--audit", "a", "b"])
+    assert (ns.backend, ns.endpoint, ns.model, ns.max_tokens, ns.parts) == ("dgx", "http://x", "m", 5, 2)
+    assert ns.name == ["A", "B"] and ns.audit == ["a", "b"]
+    with pytest.raises(SystemExit):
+        p.parse_args(["synth", "bogus"])
+    with pytest.raises(SystemExit):
+        p.parse_args(["compare", "world_state"])  # --live is required
+
+
+def test_compare_writes_diff_and_reads_inputs_only(camp, capsys):
+    _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+    rd = camp / "docs/summary_native/ch002-005"
+    (rd / "drafts").mkdir()
+    draft = rd / "drafts/world_state.draft.md"
+    draft.write_text("## A\n\nSee ch 7 and Chapter 12.\nnew line\n")
+    live = camp / "live.md"
+    live.write_text("## A\n\nSee ch 3.\n")
+    before = (draft.read_bytes(), live.read_bytes())
+    assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
+    out = capsys.readouterr().out
+    assert "heuristic" in out and "12" in out
+    diff = (rd / "drafts/world_state.vs-live.diff").read_text()
+    assert "--- a/" in diff and "+++ b/" in diff and "+new line" in diff
+    assert (draft.read_bytes(), live.read_bytes()) == before
+
+
+def test_compare_errors_when_draft_or_live_missing(camp):
+    _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+    (camp / "live.md").write_text("x\n")
+    assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "live.md"]) == 2
+    rd = camp / "docs/summary_native/ch002-005"
+    (rd / "drafts").mkdir()
+    (rd / "drafts/world_state.draft.md").write_text("x\n")
+    assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "nope.md"]) == 2

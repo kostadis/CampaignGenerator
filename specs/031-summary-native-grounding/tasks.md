@@ -129,13 +129,13 @@ description: "Task list for 031 summary-native grounding docs"
 
 ### Tests for User Story 2 (write first)
 
-- [ ] T019 [P] [US2] `tests/test_summary_native_select.py`:
+- [X] T019 [P] [US2] `tests/test_summary_native_select.py`:
   - recent is counted from `range_end`, not from the newest dossier;
   - recurring uses `>= recurring_min`;
   - `named` force-includes;
   - `selection.json` records the reason, `last_chapter` and `n_observations`;
   - the corpus files are unchanged after selection.
-- [ ] T020 [P] [US2] `tests/test_summary_native_synth.py`, with a fake client injected by monkeypatching `client_from_args`/`stream_api` in `pipelines.summary_native.synth`:
+- [X] T020 [P] [US2] `tests/test_summary_native_synth.py`, with a fake client injected by monkeypatching `client_from_args`/`stream_api` in `pipelines.summary_native.synth`:
   - `test_dump_only_writes_prompts_no_call`;
   - `test_draft_written_when_outline_complete`;
   - `test_incomplete_when_heading_missing_exit3`;
@@ -146,31 +146,31 @@ description: "Task list for 031 summary-native grounding docs"
   - `test_existing_draft_needs_force`;
   - `test_synth_refuses_stale_corpus`: edit a summary after `build` and expect exit 2;
   - `test_record_json_fields`.
-- [ ] T021 [P] [US2] Extend `tests/test_summary_native_cli.py` with the `synth`/`compare` argument contract (`add_backend_args` flags present; unknown doc refused) and `compare` (writes `.vs-live.diff`, reads both inputs only).
+- [X] T021 [P] [US2] Extend `tests/test_summary_native_cli.py` with the `synth`/`compare` argument contract (`add_backend_args` flags present; unknown doc refused) and `compare` (writes `.vs-live.diff`, reads both inputs only).
 
 ### Implementation for User Story 2
 
-- [ ] T022 [P] [US2] `pipelines/summary_native/select.py`: `select_dossiers(dossiers, range_end, recent_chapters, recurring_min, named) -> Selection` and `Selection.to_json()`. Read dossiers by parsing their frontmatter. Do not import from `pipelines.ensemble`.
-- [ ] T023 [P] [US2] Prompts:
+- [X] T022 [P] [US2] `pipelines/summary_native/select.py`: `select_dossiers(dossiers, range_end, recent_chapters, recurring_min, named) -> Selection` and `Selection.to_json()`. Read dossiers by parsing their frontmatter. Do not import from `pipelines.ensemble`.
+- [X] T023 [P] [US2] Prompts:
   - `pipelines/summary_native/prompts/world_state.system.md` and `world_state.outline.yaml`, adapting the section structure of the OOTA promoted draft. Read it from the experiments branch with `git show experiments/oota-ensemble-summary-prototype:experiments/20261004-oota-ensemble-summary-prototype/summary_native/world_state_synthesis_prompt.md.system.md`.
   - `campaign_state.system.md` and `campaign_state.outline.yaml`, including the required `## Audit: Tracking Claims` section and its `SUPPORTED (ch N, scene X)` / `NOT FOUND IN SUMMARIES` tagging rule.
   - Each system prompt states: drafts only, cite chapter and scene ids, never import audit or module claims as history.
-- [ ] T024 [US2] `pipelines/summary_native/context.py`: `build_context(doc, range_dir, selection, upstream: dict[str, Path], audit: list[Path], extra: dict) -> (system, user)`. It only concatenates strings. The audit block is fenced and labelled "AUDIT QUESTIONS — NOT EVIDENCE"; the chronology and memorable moments are included whole.
-- [ ] T025 [US2] `pipelines/summary_native/synth.py`:
+- [X] T024 [US2] `pipelines/summary_native/context.py`: `build_context(doc, range_dir, selection, upstream: dict[str, Path], audit: list[Path], extra: dict) -> (system, user)`. It only concatenates strings. The audit block is fenced and labelled "AUDIT QUESTIONS — NOT EVIDENCE"; the chronology and memorable moments are included whole.
+- [X] T025 [US2] `pipelines/summary_native/synth.py`:
   - `load_outline(doc)`;
   - `check_outline(text, outline) -> list[str]` (missing or empty headings, order);
   - `render_part(client, system, user, model, max_tokens)` calls `stream_api`;
   - `run_synth(args)` writes `runs/<doc>/part-k.{system,user,out}.md` and `record.json`, then `drafts/<doc>.draft.md` with a provenance comment, or `.incomplete.md` and exit 3;
   - `--parts N` splits the outline headings into N contiguous groups.
   - The context-building and model-calling functions stay separate, so `tests/test_retrieve_render_isolation.py` passes.
-- [ ] T026 [P] [US2] `pipelines/summary_native/compare.py`: `compare(draft, live) -> CompareReport` (bytes, lines, heuristic highest chapter labelled as a heuristic), plus a unified diff written to `drafts/<doc>.vs-live.diff`.
-- [ ] T027 [US2] Wire `synth <doc>` and `compare <doc>` into `cli.py`.
+- [X] T026 [P] [US2] `pipelines/summary_native/compare.py`: `compare(draft, live) -> CompareReport` (bytes, lines, heuristic highest chapter labelled as a heuristic), plus a unified diff written to `drafts/<doc>.vs-live.diff`.
+- [X] T027 [US2] Wire `synth <doc>` and `compare <doc>` into `cli.py`.
   - Flags: `--world-state --campaign-state --audit --recent-chapters --recurring-min --name --parts --dump-only --force`, plus `add_backend_args(parser)`, `--model`, `--max-tokens`, with model resolution via `resolve_cli_model` as in `synthesise_world_state.main`.
   - `synth` refuses unless the range dir has a summary-native manifest. It then re-runs `validate.scan` and compares every in-range file's sha256 with `manifest.json`; on mismatch it exits 2 with "summaries changed since build — run `summary_native build --force`".
   - `--audit` defaults to `grounding.yaml campaign_state.track_files`.
   - Accept only `world_state` and `campaign_state` until US4.
-- [ ] T028 [US2] Make T019–T021 and the full suite green, including `tests/test_retrieve_render_isolation.py`. Run `synth world_state --dump-only` on a fixture build and inspect the prompts.
-- [ ] T029 [US2] COMMIT "summary_native: world/campaign state drafts with outline check and run records"
+- [X] T028 [US2] Make T019–T021 and the full suite green, including `tests/test_retrieve_render_isolation.py`. Run `synth world_state --dump-only` on a fixture build and inspect the prompts.
+- [X] T029 [US2] COMMIT "summary_native: world/campaign state drafts with outline check and run records"
 - [ ] T030 [US2] REVIEW `/code-review` on T029's commit. Fix and commit.
 
 ---
@@ -311,7 +311,7 @@ description: "Task list for 031 summary-native grounding docs"
 - US2 (T019–T030) depends on US1 (it needs a built corpus).
 - US3 (T031–T038) depends on US1 only. It touches `validate.py` and `corpus.py`, so run it **after** US2 commits, not concurrently, to keep diffs reviewable.
 - US4 (T039–T044) depends on US2 (`context.py`/`synth.py`).
-- US5 (T045–T053) depends on the CLI contract being frozen (after US4). T045/T046 can be written earlier.
+- US5 (T045–T053) — **moved up to run immediately after US2** (orchestrator decision, 2026-10-05). US2's `add_backend_args` makes `summary_native` a model-bearing surface, so the backend-seam guardrails (`tests/test_backend_seam_guardrails.py`, `tests/test_codex_cli_family.py`) require its inventory row and UI-reachability mapping. Those land with the UI face in US5. US3/US4 then extend the page with their own controls.
 - Polish (T054–T059) is last.
 - Every COMMIT is followed by its REVIEW before the next phase's coding begins.
 

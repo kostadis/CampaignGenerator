@@ -24,7 +24,7 @@ def _existing():
 
 def test_guard_covers_the_modules_that_exist():
     names = {n for n, _ in _existing()}
-    assert {"parse", "validate", "corpus"} <= names
+    assert {"parse", "validate", "corpus", "select", "context", "compare"} <= names
 
 
 @pytest.mark.parametrize("name,path", _existing(), ids=lambda v: v if isinstance(v, str) else "")
