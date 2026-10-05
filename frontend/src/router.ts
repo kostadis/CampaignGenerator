@@ -77,6 +77,11 @@ const routes = [
         name: 'threads',
         component: () => import('./views/grounding/Threads.vue'),
       },
+      {
+        path: 'summary-native',
+        name: 'summary-native',
+        component: () => import('./views/grounding/SummaryNative.vue'),
+      },
     ],
   },
   {

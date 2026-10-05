@@ -112,6 +112,7 @@ EXPECTED_REGISTRAR_FILES = frozenset(
         "pipelines/grounding/npc_table.py",
         "pipelines/grounding/grounding_sections.py",
         "pipelines/grounding/thread_registry.py",
+        "pipelines/summary_native/cli.py",
         "pipelines/ensemble/synthesise_world_state.py",
         "pipelines/ensemble/synthesise_polish.py",
         "pipelines/ensemble/extract_facts.py",
@@ -306,7 +307,7 @@ _CANDIDATE_IDS = [str(p.relative_to(REPO_ROOT)) for p in _CANDIDATE_FILES]
 # ── Production inventory (spec 016) ────────────────────────────────────────
 
 def test_production_backend_surface_inventory_is_exact():
-    """All and only the 30 production backend surfaces are parser-discovered.
+    """All and only the 31 production backend surfaces are parser-discovered.
 
     The old guardrail listed 22 registrar paths and silently let newly moved
     commands disappear from coverage.  Discovering parser calls from tracked
@@ -314,11 +315,11 @@ def test_production_backend_surface_inventory_is_exact():
     """
     registrars, hand_written = discover_backend_surfaces()
 
-    assert len(registrars) == 26, sorted(registrars)
+    assert len(registrars) == 27, sorted(registrars)
     assert registrars == EXPECTED_REGISTRAR_FILES
     assert len(hand_written) == 4, sorted(hand_written)
     assert hand_written == EXPECTED_HAND_WRITTEN_FILES
-    assert len(registrars | hand_written) == 30
+    assert len(registrars | hand_written) == 31
 
 
 def test_runtime_dispatcher_inventory_is_exact():
@@ -456,6 +457,11 @@ _UI_REACHABILITY: dict[str, _UIReachability] = {
         ("frontend/src/views/grounding/ProjectionSections.vue",),
         ("/api/projections/run/build",),
     ),
+    "summary_native": _UIReachability(
+        "direct", ("server/routers/summary_native.py",),
+        ("frontend/src/views/grounding/SummaryNative.vue",),
+        ("/api/grounding/summary-native/run/synth",),
+    ),
     "thread_registry": _UIReachability(
         "direct", ("server/routers/projections.py",),
         ("frontend/src/views/grounding/Threads.vue",),
@@ -558,9 +564,19 @@ _UI_REACHABILITY: dict[str, _UIReachability] = {
 }
 
 
+def _command_name(rel: str) -> str:
+    """The console-script name of an inventory file.
+
+    A file's stem is its command, except a package whose entry point is
+    ``cli.py`` (``pipelines/summary_native/cli.py`` -> ``summary_native``).
+    """
+    path = Path(rel)
+    return path.parent.name if path.stem == "cli" else path.stem
+
+
 def _inventory_command_names() -> frozenset[str]:
     return frozenset(
-        Path(rel).stem
+        _command_name(rel)
         for rel in EXPECTED_REGISTRAR_FILES | EXPECTED_HAND_WRITTEN_FILES
     )
 
@@ -576,8 +592,8 @@ def _has_console_script(tree: ast.Module, command: str) -> bool:
 
 
 def test_every_canonical_inventory_row_has_ui_reachability_mapping():
-    """The 30-row capability inventory cannot silently lose a UI mapping."""
-    assert len(_inventory_command_names()) == 30
+    """The 31-row capability inventory cannot silently lose a UI mapping."""
+    assert len(_inventory_command_names()) == 31
     assert set(_UI_REACHABILITY) == set(_inventory_command_names())
     assert {row.kind for row in _UI_REACHABILITY.values()} == {
         "direct", "transitive", "new-face"
@@ -955,10 +971,10 @@ def test_batch_flag_only_built_by_selection_cli_args():
     )
 
 
-def test_all_30_codex_surfaces_share_reasoning_effort_registration():
+def test_all_31_codex_surfaces_share_reasoning_effort_registration():
     registrars, hand_written = discover_backend_surfaces()
     dispatchers = discover_runtime_dispatchers(registrars, hand_written)
-    assert len(registrars | hand_written) == 30
+    assert len(registrars | hand_written) == 31
     assert len(dispatchers) == 4
 
     for relative_path in sorted(hand_written):
@@ -972,7 +988,7 @@ def test_all_30_codex_surfaces_share_reasoning_effort_registration():
         )
 
 
-def test_all_30_claude_code_surfaces_share_effort_registration():
+def test_all_31_claude_code_surfaces_share_effort_registration():
     """Feature 021's half of the same inventory.
 
     The registrars get the option for free, because `add_backend_args` calls
@@ -985,7 +1001,7 @@ def test_all_30_claude_code_surfaces_share_effort_registration():
     """
     registrars, hand_written = discover_backend_surfaces()
     dispatchers = discover_runtime_dispatchers(registrars, hand_written)
-    assert len(registrars | hand_written) == 30
+    assert len(registrars | hand_written) == 31
     assert len(dispatchers) == 4
 
     for relative_path in sorted(hand_written):
@@ -996,12 +1012,12 @@ def test_all_30_claude_code_surfaces_share_effort_registration():
         )
 
 
-def test_all_30_claude_code_surfaces_share_thinking_registration():
+def test_all_31_claude_code_surfaces_share_thinking_registration():
     """Issue #365. The effort control offers two levels (`xhigh`, `max`) that
     only a thinking-enabled run can use, so a CLI that accepts effort without
     thinking hands the operator a choice that always fails there."""
     registrars, hand_written = discover_backend_surfaces()
-    assert len(registrars | hand_written) == 30
+    assert len(registrars | hand_written) == 31
     for relative_path in sorted(hand_written):
         tree = _parse(REPO_ROOT / relative_path)
         calls = {_call_func_name(node) for node in _all_calls(tree)}
@@ -1040,7 +1056,7 @@ def test_thinking_is_forwarded_in_both_directions():
 
 def test_add_backend_args_registers_both_subscription_effort_options():
     """The structural claim the test above depends on: the two registrars are
-    called from the one shared helper, so the 30 CLIs cannot diverge."""
+    called from the one shared helper, so the 31 CLIs cannot diverge."""
     import argparse
 
     from campaignlib.api.client import add_backend_args

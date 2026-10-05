@@ -17,7 +17,6 @@ The config is stored in the existing `grounding.yaml` under a new strict group,
 summary_native:
   summaries_dir: docs/summaries
   out_root: docs/summary_native
-  canon_file: docs/summary_native/canon.yaml
   range_since: null
   range_until: null
   recent_chapters: 4

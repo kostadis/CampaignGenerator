@@ -46,6 +46,13 @@ from campaignlib.selection import ModelSelection
 from pydantic import BaseModel, ConfigDict, Field
 
 from campaignlib.util import atomic_write_text
+from pipelines.summary_native.schema import (
+    DEFAULT_DUP_THRESHOLD,
+    DEFAULT_OUT_ROOT,
+    DEFAULT_PARTS,
+    DEFAULT_RECENT_CHAPTERS,
+    DEFAULT_RECURRING_MIN,
+)
 from server.platform_config_shared import OptStr
 
 GROUNDING_CONFIG_FILENAME = "grounding.yaml"
@@ -146,6 +153,34 @@ class PlanningRun(GroundingRun):
     dossiers: DossierBuild = Field(default_factory=DossierBuild)
 
 
+class SummaryNativeRun(BaseModel):
+    """The summary_native pipeline (feature 031): grounding-doc drafts built
+    straight from reviewed session summaries.
+
+    A pipeline, not a fifth promotable doc, so it is deliberately absent from
+    ``GROUNDING_DOCS``. Every default is imported from
+    ``pipelines/summary_native/schema.py`` — the one place they are declared
+    (Principle XII); re-spelling a literal here is how two copies drift.
+
+    ``range_since``/``range_until`` are ``None`` by design: the UI refuses to
+    run without an explicit range (no silent "all", FR-005f). ``--audit`` is
+    not stored here — it defaults to ``campaign_state.track_files``. Neither
+    is the ``canon.yaml`` path: ``--canon`` is CLI-only by GM ruling and
+    defaults to ``<out_root>/canon.yaml``, so a stored copy would only drift.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    summaries_dir: OptStr = None
+    out_root: str = DEFAULT_OUT_ROOT
+    range_since: int | None = None
+    range_until: int | None = None
+    recent_chapters: int = DEFAULT_RECENT_CHAPTERS
+    recurring_min: int = DEFAULT_RECURRING_MIN
+    dup_threshold: float = DEFAULT_DUP_THRESHOLD
+    parts: int = DEFAULT_PARTS
+
+
 class GroundingConfig(BaseModel):
     """Root model — the ``<config>/grounding.yaml`` shape."""
 
@@ -166,6 +201,7 @@ class GroundingConfig(BaseModel):
     distill: DistillRun = Field(default_factory=DistillRun)
     party: PartyRun = Field(default_factory=PartyRun)
     planning: PlanningRun = Field(default_factory=PlanningRun)
+    summary_native: SummaryNativeRun = Field(default_factory=SummaryNativeRun)
 
     def input_for(self, doc: str) -> str | None:
         """The effective input for ``doc``: its own ``input``, else the shared

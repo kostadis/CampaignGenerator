@@ -96,6 +96,13 @@ const PATHS = [
     description: 'Rebuilds only the sections that went stale. Reads the shared ensemble extraction.',
     items: ['State Projection', 'Threads'],
   },
+  {
+    // Feature 031: a fourth path, appended after the three 006 numbered ones.
+    id: 'summary-native',
+    label: 'Summary-native',
+    description: 'Parses reviewed session summaries directly — no extraction pass.',
+    items: ['Summary-native'],
+  },
 ]
 
 // Groups outside the grounding section: unchanged in title, entries and order.
@@ -144,6 +151,7 @@ const ACTIVE: [string, string, string | null][] = [
   ['/ensemble/extract', 'Ensemble', 'Dossier synthesis'],
   ['/ensemble/synthesize', 'Ensemble', 'Dossier synthesis'],
   ['/grounding/threads', 'Threads', 'State projection'],
+  ['/grounding/summary-native', 'Summary-native', 'Summary-native'],
   ['/prep/query', 'Query Summaries', null],
 ]
 
@@ -161,7 +169,7 @@ test('active page and its path are both marked', async ({ page }) => {
 
 test('descriptions state the shared extraction truthfully', async ({ page }) => {
   const grounding = group(page, 'GROUNDING DOCS')
-  for (const id of ['per-tool', 'dossier-synthesis', 'state-projection']) {
+  for (const id of ['per-tool', 'dossier-synthesis', 'state-projection', 'summary-native']) {
     const section = grounding.locator(`[data-path-id="${id}"]`)
     const desc = (await section.locator('.nav-path-desc').innerText()).trim()
     const shared = await section.getAttribute('data-uses-shared-extraction')
@@ -174,4 +182,5 @@ test('descriptions state the shared extraction truthfully', async ({ page }) => 
   await expect(grounding.locator('[data-path-id="per-tool"]')).toHaveAttribute('data-uses-shared-extraction', 'false')
   await expect(grounding.locator('[data-path-id="dossier-synthesis"]')).toHaveAttribute('data-uses-shared-extraction', 'true')
   await expect(grounding.locator('[data-path-id="state-projection"]')).toHaveAttribute('data-uses-shared-extraction', 'true')
+  await expect(grounding.locator('[data-path-id="summary-native"]')).toHaveAttribute('data-uses-shared-extraction', 'false')
 })

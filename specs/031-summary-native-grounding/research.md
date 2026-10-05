@@ -282,8 +282,7 @@ check is the only completeness signal that every backend shares.
 **Decision**:
 - **Config group.** Add a `summary_native: SummaryNativeRun` group to the existing
   strict `GroundingConfig` (`server/grounding_config_shared.py`). Its fields:
-  `summaries_dir`, `out_root` (default `docs/summary_native`), `canon_file` (default
-  `docs/summary_native/canon.yaml`), `range_since`/`range_until` (`None` = unset),
+  `summaries_dir`, `out_root` (default `docs/summary_native`), `range_since`/`range_until` (`None` = unset),
   `recent_chapters` (4), `recurring_min` (10), `dup_threshold` (0.88), `parts` (0 = single call),
   and per-doc `output` overrides.
 - **No migration needed.** The group is new and every field has a default, so an

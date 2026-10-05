@@ -18,7 +18,7 @@ import { useConfigStore } from '../stores/config'
  * the same `fields` object is both what gets loaded and what gets saved.
  */
 export function useGroundingRun<T extends Record<string, Ref<any>>>(
-  doc: 'campaign_state' | 'distill' | 'party' | 'planning',
+  doc: 'campaign_state' | 'distill' | 'party' | 'planning' | 'summary_native',
   fields: T,
   opts: { debounceMs?: number } = {},
 ) {

@@ -253,8 +253,8 @@ description: "Task list for 031 summary-native grounding docs"
 
 ### Tests for User Story 5 (write first)
 
-- [ ] T045 [P] [US5] `tests/test_summary_native_config_defaults.py`: `SummaryNativeRun` defaults (`out_root=docs/summary_native`, `recent_chapters=4`, `recurring_min=10`, `dup_threshold=0.88`, `parts=0`); an existing `grounding.yaml` without the group loads; an unknown key gives 400. Add a source scan of `server/routers/summary_native.py` that fails on default literals such as `"docs/summary_native"`, `= 4`, `= 10`, `0.88`, or `backend: str = "anthropic"`, modelled on `tests/test_ensemble_config_defaults.py`.
-- [ ] T046 [P] [US5] `tests/test_summary_native_routes.py`, modelled on the existing grounding route tests found via codebase-memory-mcp:
+- [X] T045 [P] [US5] `tests/test_summary_native_config_defaults.py`: `SummaryNativeRun` defaults (`out_root=docs/summary_native`, `recent_chapters=4`, `recurring_min=10`, `dup_threshold=0.88`, `parts=0`); an existing `grounding.yaml` without the group loads; an unknown key gives 400. Add a source scan of `server/routers/summary_native.py` that fails on default literals such as `"docs/summary_native"`, `= 4`, `= 10`, `0.88`, or `backend: str = "anthropic"`, modelled on `tests/test_ensemble_config_defaults.py`.
+- [X] T046 [P] [US5] `tests/test_summary_native_routes.py`, modelled on the existing grounding route tests found via codebase-memory-mcp:
   - every run route builds argv from `console_script("summary_native")`, with stored-config resolution and explicit-request precedence (`_pick` semantics);
   - unset range gives 400 "choose a chapter range";
   - unset `summaries_dir` gives 400;
@@ -265,18 +265,18 @@ description: "Task list for 031 summary-native grounding docs"
 
 ### Implementation for User Story 5
 
-- [ ] T047 [US5] Add `class SummaryNativeRun(BaseModel)` (strict) to `server/grounding_config_shared.py`, with the fields from `contracts/http.md`. Its field defaults MUST import the `DEFAULT_*` constants from `pipelines/summary_native/schema.py`, never re-spell them (Principle XII: one declaration), and `summary_native: SummaryNativeRun = Field(default_factory=SummaryNativeRun)` on `GroundingConfig`. Do not add it to `GROUNDING_DOCS`: it is a pipeline, not a fifth promotable doc. Update the `cli.py` config read (T015) to use `load_grounding_config` for the `summaries_dir` default.
-- [ ] T048 [US5] `server/routers/summary_native.py`: argv builders for validate/build/synth/compare (the synth backend/model come via the existing `selection_cli_args(resolve_selection(...))` pattern used in `server/routers/grounding.py`), the read-only routes, SSE via the same `stream_subprocess` helper. Mount it in `server/main.py` with `prefix="/api/grounding/summary-native"`.
-- [ ] T049 [P] [US5] `frontend/src/views/grounding/SummaryNative.vue`:
+- [X] T047 [US5] Add `class SummaryNativeRun(BaseModel)` (strict) to `server/grounding_config_shared.py`, with the fields from `contracts/http.md`. Its field defaults MUST import the `DEFAULT_*` constants from `pipelines/summary_native/schema.py`, never re-spell them (Principle XII: one declaration), and `summary_native: SummaryNativeRun = Field(default_factory=SummaryNativeRun)` on `GroundingConfig`. Do not add it to `GROUNDING_DOCS`: it is a pipeline, not a fifth promotable doc. Update the `cli.py` config read (T015) to use `load_grounding_config` for the `summaries_dir` default.
+- [X] T048 [US5] `server/routers/summary_native.py`: argv builders for validate/build/synth/compare (the synth backend/model come via the existing `selection_cli_args(resolve_selection(...))` pattern used in `server/routers/grounding.py`), the read-only routes, SSE via the same `stream_subprocess` helper. Mount it in `server/main.py` with `prefix="/api/grounding/summary-native"`.
+- [X] T049 [P] [US5] `frontend/src/views/grounding/SummaryNative.vue`:
   - summaries-dir field;
   - range picker fed by `/chapters`, with an "All chapters" button that writes the first and last chapters explicitly;
   - Validate / Build (dup-threshold) / Synth (doc select, upstream draft paths, audit files, named subjects, recent-chapters, recurring-min, parts, max-tokens, dump-only, force) / Compare buttons, streaming output via the existing grounding run composable (`frontend/src/composables/useGroundingRun.ts`);
   - panels for the validation report (with its possible-duplicates section) and the drafts list;
   - no promote button and no rulings editor;
   - persist field values through `PUT /api/grounding/config`.
-- [ ] T050 [P] [US5] `frontend/src/router.ts`: add the child route `summary-native` → `SummaryNative.vue` under `/grounding`. In `frontend/src/components/layout/AppSidebar.vue`, widen the `RenderingPath.id` union and add a fourth path `{ id: 'summary-native', label: 'Summary-native', description: 'Parses reviewed session summaries directly — no extraction pass.', usesSharedExtraction: false, matchPrefixes: ['/grounding/summary-native'], items: [{ label: 'Summary-native', path: '/grounding/summary-native' }] }`. Update the comment that says "three rendering paths".
-- [ ] T051 [US5] `cd frontend && npm run build` (type-check must pass). Green the pytest suite, explicitly confirming the existing grounding/ensemble/projection route tests and any sidebar tests still pass unchanged (FR-028). Run quickstart Q8 by hand via the `run` skill or Chrome tools and report what was seen.
-- [ ] T052 [US5] COMMIT "summary_native: Grounding UI page and routes"
+- [X] T050 [P] [US5] `frontend/src/router.ts`: add the child route `summary-native` → `SummaryNative.vue` under `/grounding`. In `frontend/src/components/layout/AppSidebar.vue`, widen the `RenderingPath.id` union and add a fourth path `{ id: 'summary-native', label: 'Summary-native', description: 'Parses reviewed session summaries directly — no extraction pass.', usesSharedExtraction: false, matchPrefixes: ['/grounding/summary-native'], items: [{ label: 'Summary-native', path: '/grounding/summary-native' }] }`. Update the comment that says "three rendering paths".
+- [X] T051 [US5] `cd frontend && npm run build` (type-check must pass). Green the pytest suite, explicitly confirming the existing grounding/ensemble/projection route tests and any sidebar tests still pass unchanged (FR-028). Run quickstart Q8 by hand via the `run` skill or Chrome tools and report what was seen.
+- [X] T052 [US5] COMMIT "summary_native: Grounding UI page and routes"
 - [ ] T053 [US5] REVIEW `/code-review` on T052's commit. Fix and commit.
 
 ---
