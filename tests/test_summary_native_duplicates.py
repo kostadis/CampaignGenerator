@@ -286,3 +286,81 @@ def test_narrow_range_does_not_report_out_of_range_ruling_stale(tiny):
     assert stale() == []
     (tiny / "summaries" / "005-c.md").unlink()
     assert len(stale()) == 1
+
+
+# ── canon_file / registry from grounding.yaml (flag > config > default) ─────
+def _grounding(camp, **kv):
+    import yaml
+
+    (camp / "config" / "grounding.yaml").write_text(yaml.safe_dump({"summary_native": kv}))
+
+
+def _manshon_flagged(camp) -> bool:
+    return bool([f for f in _dups(camp) if "similarity" in f["message"] and "Manshon'" in f["message"]])
+
+
+RULING = 'not_duplicates:\n  - {category: npc, a: "Manshon", b: "Manshoon"}\n'
+
+
+def test_canon_file_in_config_is_used_without_flag(camp):
+    (camp / "elsewhere").mkdir()
+    (camp / "elsewhere" / "rulings.yaml").write_text(RULING)
+    _validate()
+    assert _manshon_flagged(camp)
+    _grounding(camp, canon_file="elsewhere/rulings.yaml")
+    _validate()
+    assert not _manshon_flagged(camp)
+
+
+def test_canon_flag_overrides_config(camp):
+    (camp / "good.yaml").write_text(RULING)
+    (camp / "empty.yaml").write_text("not_duplicates: []\n")
+    _grounding(camp, canon_file="empty.yaml")
+    _validate()
+    assert _manshon_flagged(camp)
+    _validate("--canon", "good.yaml")
+    assert not _manshon_flagged(camp)
+    _grounding(camp, canon_file="good.yaml")
+    _validate("--canon", "empty.yaml")
+    assert _manshon_flagged(camp)
+
+
+def _built_registry_sha(camp, *extra):
+    assert main(["build", "--summaries-dir", "summaries", "--force", *extra]) == 0
+    m = json.loads((camp / "docs/summary_native/ch001-003/manifest.json").read_text())
+    return m["canon"]["registry_sha256"]
+
+
+@pytest.mark.parametrize("form", ["file", "dir"])
+def test_registry_in_config_is_used_for_grouping_and_hash(camp, form):
+    import hashlib
+
+    alt = camp / "alt"
+    (alt / "docs").mkdir(parents=True)
+    shutil.copy(camp / "docs/entity_registry.yaml", alt / "docs/entity_registry.yaml")
+    (alt / "docs/entity_registry.yaml").write_text(
+        (alt / "docs/entity_registry.yaml").read_text() + "# alt\n"
+    )
+    (camp / "docs/entity_registry.yaml").unlink()  # nothing to auto-discover
+    _grounding(camp, registry="alt/docs/entity_registry.yaml" if form == "file" else "alt")
+    sha = _built_registry_sha(camp)
+    assert sha == hashlib.sha256((alt / "docs/entity_registry.yaml").read_bytes()).hexdigest()
+
+
+def test_registry_flag_overrides_config(camp):
+    import hashlib
+
+    other = camp / "other.yaml"
+    other.write_text((camp / "docs/entity_registry.yaml").read_text() + "# other\n")
+    cfgreg = camp / "cfg.yaml"
+    cfgreg.write_text((camp / "docs/entity_registry.yaml").read_text() + "# cfg\n")
+    _grounding(camp, registry="cfg.yaml")
+    assert _built_registry_sha(camp) == hashlib.sha256(cfgreg.read_bytes()).hexdigest()
+    assert _built_registry_sha(camp, "--registry", "other.yaml") == hashlib.sha256(other.read_bytes()).hexdigest()
+
+
+def test_configured_registry_directory_without_registry_exits_2(camp, capsys):
+    (camp / "empty").mkdir()
+    _grounding(camp, registry="empty")
+    assert _validate() == 2
+    assert "no entity_registry.yaml found" in capsys.readouterr().err

@@ -71,6 +71,8 @@ or once in `config/grounding.yaml`:
 summary_native:
   summaries_dir: docs/summaries
   out_root: docs/summary_native      # default
+  canon_file: null                   # default: <out_root>/canon.yaml
+  registry: null                     # default: auto-discover docs/entity_registry.yaml; a file or a campaign dir
   range_since: null                  # the UI reads these; the CLI does not
   range_until: null
   recent_chapters: 4                 # default
@@ -79,8 +81,10 @@ summary_native:
   parts: 0                           # default (0 = one call)
 ```
 
-The CLI reads `summaries_dir`, `out_root`, `dup_threshold`, `recent_chapters`,
-`recurring_min` and `parts` from that group; a flag always wins. With no
+The CLI reads `summaries_dir`, `out_root`, `canon_file`, `registry`, `dup_threshold`,
+`recent_chapters`, `recurring_min` and `parts` from that group; a flag always wins
+(flag > `grounding.yaml` > default). A relative `canon_file`/`registry` resolves
+against the campaign root, and `~` is expanded. With no
 summaries directory from either place it refuses (see
 [the refusal table](#every-refusal-and-exit-code-decoded)).
 
@@ -405,7 +409,8 @@ registry's first-token inference (turning `Kazryn` into `Kazryn Nyantani`) is
 deliberately not used.
 
 The registry is found automatically (`docs/entity_registry.yaml` under the
-campaign root); `--registry` overrides it. A pair the registry holds apart
+campaign root); `summary_native.registry` in `grounding.yaml` overrides that, and
+`--registry` overrides both. A pair the registry holds apart
 (`distinct` or `rejected_aliases`) is not listed.
 
 ### Two ways to clear a listing
@@ -415,8 +420,8 @@ campaign root); `--registry` overrides it. A pair the registry holds apart
 already built, `build --force`.
 
 **2. Rule that the two are genuinely different**, in `canon.yaml`
-(`<out-root>/canon.yaml`, default `docs/summary_native/canon.yaml`; `--canon`
-overrides). It is hand-authored, shared by every range, and read-only to the
+(`<out-root>/canon.yaml`, default `docs/summary_native/canon.yaml`; `summary_native.canon_file` in
+`grounding.yaml` overrides that and `--canon` overrides both). It is hand-authored, shared by every range, and read-only to the
 tool. Its one and only key is `not_duplicates`:
 
 ```yaml
@@ -632,8 +637,8 @@ summaries, then build --force`, and exits **1** (the same as `validate` and
 `build`). The stale-corpus refusal itself exits 2.
 
 The entity registry counts too. `synth` hashes the registry `build` would use
-now (auto-discovered `docs/entity_registry.yaml`, or the `--registry` you pass;
-none if absent) and compares it with the one recorded in `manifest.json`. If it
+now (the `summary_native.registry` configured in `grounding.yaml`, the `--registry` you pass, or the
+auto-discovered `docs/entity_registry.yaml`; none if absent) and compares it with the one recorded in `manifest.json`. If it
 changed, it refuses:
 
 ```text
@@ -641,7 +646,7 @@ Error: entity registry changed since build — run `summary_native build --force
 ```
 
 `canon.yaml` does **not** make a corpus stale: it holds not-a-duplicate rulings
-that change validation findings only, never the corpus. Pass `synth` the same `--registry` you gave `build`, or an auto-discovered registry will be compared instead.
+that change validation findings only, never the corpus. A registry set in `grounding.yaml` is resolved the same way at `build` and `synth`. If you gave `build` a `--registry` flag, pass `synth` the same one, or the configured/auto-discovered registry will be compared instead.
 
 ---
 
@@ -719,13 +724,13 @@ force, and the model/backend selection. `recent_chapters`, `recurring_min`,
 What it deliberately does **not** do: promote a draft, or edit `canon.yaml`.
 Those are judgment steps and stay by hand.
 
-**`--registry`, `--canon` and `--out-root` are CLI-only.** They are
-campaign-layout paths set once, so the routes never pass them and the CLI
-resolves its own defaults: `docs/entity_registry.yaml` auto-discovery,
-`<out-root>/canon.yaml`, and `grounding.yaml summary_native.out_root`. A
-per-run control for them would invite two runs of the same range using
-different canons, and the page would not show it. Set `out_root` in
-`grounding.yaml`, or use the CLI flag.
+**`--registry`, `--canon` and `--out-root` have no per-run control on the page.** They are
+campaign-layout paths set once, so the routes never pass them; the CLI reads
+`grounding.yaml summary_native.registry`, `canon_file` and `out_root` itself
+(flag > config > default: `docs/entity_registry.yaml` auto-discovery,
+`<out-root>/canon.yaml`, `docs/summary_native`). A per-run control for them would
+invite two runs of the same range using different canons, and the page would not
+show it. Change them in `grounding.yaml`, or use the CLI flag.
 
 The page's Compare always diffs against `docs/<doc>.md`.
 
@@ -750,7 +755,7 @@ The page's Compare always diffs against `docs/<doc>.md`.
 | `--since N matches no file; chapters present: …` (also `--until`) | Pick a chapter in the list. |
 | `--since A is after --until B; chapters present: …` | Swap or fix them. |
 | `range A-B contains no file; chapters present: …` | Widen the range. |
-| `--registry D: no entity_registry.yaml found under D/docs/` | Pass the registry file, or a campaign root that has `docs/entity_registry.yaml`. |
+| `registry D: no entity_registry.yaml found under D/docs/` | The `--registry` flag or `summary_native.registry` names a directory without one. Name the registry file, or a campaign root that has `docs/entity_registry.yaml`. |
 | `invalid entity registry …` | The registry will not load; fix it (`registry check`). |
 | `canon.yaml records not-a-duplicate rulings only; fix duplicates in the summary files` | `canon.yaml` has a key other than `not_duplicates`. Remove it; fix the summary instead. |
 | `…: cannot read canon.yaml (…)` | Not valid YAML. |

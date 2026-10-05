@@ -13,7 +13,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 PKG = ROOT / "pipelines" / "summary_native"
-GUARDED = ["parse", "validate", "corpus", "duplicates", "select", "context", "compare"]
+GUARDED = ["parse", "validate", "corpus", "duplicates", "select", "context", "compare", "resolve"]
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")
 

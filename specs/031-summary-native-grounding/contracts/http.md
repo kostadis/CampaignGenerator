@@ -17,6 +17,8 @@ The config is stored in the existing `grounding.yaml` under a new strict group,
 summary_native:
   summaries_dir: docs/summaries
   out_root: docs/summary_native
+  canon_file: null   # null = <out_root>/canon.yaml
+  registry: null     # null = auto-discover docs/entity_registry.yaml; a file or a campaign dir
   range_since: null
   range_until: null
   recent_chapters: 4
@@ -53,8 +55,11 @@ The CLI owns every other refusal and reports it through the stream.
 ## Deliberately CLI-only (Principle XI ruling)
 
 `--registry`, `--canon` and `--out-root` have no per-run UI control. The routes never
-pass them, so the CLI resolves its defaults: `docs/entity_registry.yaml`
-auto-discovery, `<out-root>/canon.yaml`, and `grounding.yaml summary_native.out_root`.
-These are campaign-layout paths, set once. Ruled by the GM (kostadis) on 2026-10-05,
+pass them. The CLI reads the `summary_native` group itself, with precedence
+command-line flag > `grounding.yaml` (`registry`, `canon_file`, `out_root`) > default
+(`docs/entity_registry.yaml` auto-discovery, `<out-root>/canon.yaml`,
+`docs/summary_native`). The config file is where these change. Relative values
+resolve against the campaign root (`~` expanded). These are campaign-layout paths,
+set once. Ruled by the GM (kostadis) on 2026-10-05,
 in the `/speckit-analyze` remediation, option B. Recorded in plan.md's Constitution
 Check.

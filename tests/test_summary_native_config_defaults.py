@@ -61,7 +61,26 @@ class TestModelDefaults:
         assert run.recurring_min == schema.DEFAULT_RECURRING_MIN
         assert run.dup_threshold == schema.DEFAULT_DUP_THRESHOLD
         assert run.parts == schema.DEFAULT_PARTS
-        assert not hasattr(run, "canon_file")  # --canon is CLI-only; no stored copy
+
+    def test_path_keys_default_to_none_the_derive_it_sentinel(self):
+        run = SummaryNativeRun()
+        assert run.canon_file is None and run.registry is None
+
+    def test_old_grounding_yaml_without_the_path_keys_loads(self, tmp_path):
+        path = tmp_path / "grounding.yaml"
+        path.write_text(
+            yaml.safe_dump({"summary_native": {"out_root": "docs/sn", "parts": 2}}),
+            encoding="utf-8",
+        )
+        run = load_grounding_config(path).summary_native
+        assert run.canon_file is None and run.registry is None and run.parts == 2
+
+    def test_path_keys_round_trip(self, tmp_path):
+        path = tmp_path / "grounding.yaml"
+        cfg = GroundingConfig(summary_native=SummaryNativeRun(canon_file="c.yaml", registry="~/reg"))
+        save_grounding_config(path, cfg)
+        run = load_grounding_config(path).summary_native
+        assert (run.canon_file, run.registry) == ("c.yaml", "~/reg")
 
     def test_strict(self):
         with pytest.raises(Exception):

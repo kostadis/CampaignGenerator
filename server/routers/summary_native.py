@@ -8,7 +8,9 @@ route takes sentinels (``""`` / ``None``), never a default literal, and the
 declared defaults live in ``pipelines/summary_native/schema.py`` (Principle XII).
 
 ``--registry``, ``--canon`` and ``--out-root`` are deliberately never passed:
-they are campaign-layout paths set once, so the CLI resolves its own defaults
+they are campaign-layout paths with no per-run UI control (GM ruling). The CLI
+reads ``grounding.yaml``'s ``summary_native`` group itself (``out_root``,
+``canon_file``, ``registry``), so the config file is where they change
 (contracts/http.md, "Deliberately CLI-only").
 
 The read-only routes (``/chapters``, ``/report``, ``/drafts``) only list files

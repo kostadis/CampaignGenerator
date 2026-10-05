@@ -164,15 +164,25 @@ class SummaryNativeRun(BaseModel):
 
     ``range_since``/``range_until`` are ``None`` by design: the UI refuses to
     run without an explicit range (no silent "all", FR-005f). ``--audit`` is
-    not stored here — it defaults to ``campaign_state.track_files``. Neither
-    is the ``canon.yaml`` path: ``--canon`` is CLI-only by GM ruling and
-    defaults to ``<out_root>/canon.yaml``, so a stored copy would only drift.
+    not stored here — it defaults to ``campaign_state.track_files``. The two
+    paths ``canon_file`` and
+    ``registry`` are ``None`` by design, and ``None`` means "derive it"
+    (``<out_root>/canon.yaml``; auto-discover the entity registry from the
+    campaign root). The derivation lives once, in
+    ``pipelines/summary_native/resolve.py``. Precedence everywhere is
+    command-line flag > this file > derived default. There is no per-run UI
+    control for either (GM ruling): this file is where they change, and the
+    routes never pass ``--canon``/``--registry``/``--out-root`` because the CLI
+    reads this group itself. A relative value resolves against the campaign
+    root (``~`` expanded); ``registry`` may be a file or a campaign directory.
     """
 
     model_config = ConfigDict(extra="forbid")
 
     summaries_dir: OptStr = None
     out_root: str = DEFAULT_OUT_ROOT
+    canon_file: OptStr = None
+    registry: OptStr = None
     range_since: int | None = None
     range_until: int | None = None
     recent_chapters: int = DEFAULT_RECENT_CHAPTERS

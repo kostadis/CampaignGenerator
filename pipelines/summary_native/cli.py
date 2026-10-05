@@ -14,12 +14,12 @@ from pathlib import Path
 import yaml
 
 from campaignlib.config import ConfigLocationError, campaign_root_for_config, find_default_config
-from campaignlib.registry import find_registry, load_registry
+from campaignlib.registry import load_registry
 from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
 from campaignlib.api.client import resolve_cli_model
 from pipelines.summary_native import compare as compare_mod
-from pipelines.summary_native import corpus, duplicates, schema, synth
+from pipelines.summary_native import corpus, duplicates, resolve, schema, synth
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
 SUBCOMMANDS = ("validate", "build", "synth", "compare")
@@ -39,8 +39,8 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--since", type=int, default=None, help="first chapter (inclusive)")
         p.add_argument("--until", type=int, default=None, help="last chapter (inclusive)")
         p.add_argument("--out-root", default=None, help=f"output root (default {schema.DEFAULT_OUT_ROOT})")
-        p.add_argument("--registry", default=None, help="entity registry (default: auto-discover)")
-        p.add_argument("--canon", default=None, help="not-a-duplicate rulings (default <out-root>/canon.yaml)")
+        p.add_argument("--registry", default=None, help="entity registry file or campaign dir (default: grounding.yaml summary_native.registry, else auto-discover)")
+        p.add_argument("--canon", default=None, help="not-a-duplicate rulings (default: grounding.yaml summary_native.canon_file, else <out-root>/canon.yaml)")
         p.add_argument("--dup-threshold", type=float, default=None, help="possible-duplicate similarity ratio")
         p.add_argument("--config", default=None)
         if name == "build":
@@ -124,17 +124,11 @@ def main(argv: list[str] | None = None) -> int:
 
     registry_path = None
     if args.command != "compare":  # synth hashes the registry for its staleness check
-        if args.registry:
-            given = _under(root, args.registry)
-            if given.is_dir():
-                registry_path = find_registry(given)
-                if registry_path is None:
-                    return _err(f"--registry {given}: no entity_registry.yaml found under {given}/docs/")
-            else:
-                registry_path = given
-        else:
-            registry_path = find_registry(root)  # the campaign root, not the cwd
-    canon_path = _under(root, args.canon) if args.canon else out_root / "canon.yaml"
+        try:
+            registry_path = resolve.resolve_registry_path(root, args.registry, cfg)
+        except resolve.PathRefusal as e:
+            return _err(str(e))
+    canon_path = resolve.resolve_canon_path(root, out_root, args.canon, cfg)
     reg_obj = None
     if registry_path is not None and args.command in ("validate", "build"):
         try:

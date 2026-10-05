@@ -650,3 +650,22 @@ def test_canon_change_does_not_make_corpus_stale(camp, fake):
     (camp / "docs" / "summary_native").mkdir(parents=True, exist_ok=True)
     (camp / "docs" / "summary_native" / "canon.yaml").write_text("not_duplicates: []\n")
     assert main(["synth", "world_state", *ARGS]) == 0
+
+
+def test_configured_registry_not_stale_after_build_then_stale_on_change(camp, fake, capsys):
+    calls, state = fake
+    reg = camp / "docs" / "entity_registry.yaml"
+    reg.write_text("entities: []\n")
+    (camp / "reg_cfg.yaml").write_text("entities: []\n")
+    (camp / "config" / "grounding.yaml").write_text(
+        yaml.safe_dump({"summary_native": {"registry": "reg_cfg.yaml"}})
+    )
+    assert main(["build", *ARGS, "--force"]) == 0
+    state["texts"] = full_text("world_state")
+    assert main(["synth", "world_state", *ARGS]) == 0
+    assert calls
+    (camp / "reg_cfg.yaml").write_text("entities: []\n# changed\n")
+    calls.clear()
+    assert main(["synth", "world_state", *ARGS]) == 2
+    assert "entity registry changed since build" in capsys.readouterr().err
+    assert not calls
