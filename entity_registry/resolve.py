@@ -56,6 +56,7 @@ from pathlib import Path
 
 import yaml
 
+from campaignlib.npc import refuse_unmigrated_dossier_dir
 from campaignlib.party import load_pc_names
 from campaignlib.registry import Registry, find_registry, load_registry
 from campaignlib.textproc import norm_subject
@@ -67,7 +68,7 @@ PC_TIERS = frozenset({0, 1})
 
 GLOSSARY_REL = Path("notes") / "vtt_transcription_corrections.md"
 KNOWN_ADDITIONS_REL = Path("notes") / "vtt_known_additions.md"
-DOSSIER_REL = Path("docs") / "npcs"
+DOSSIER_REL = Path("docs") / "npcs" / "distilled"   # spec 032 FR-022b
 
 
 # ── source caching ───────────────────────────────────────────────────────────
@@ -217,6 +218,7 @@ def _party(campaign_dir: Path) -> list[str]:
 
 def _dossiers(campaign_dir: Path) -> "tuple[tuple[str, str, tuple], ...]":
     d = Path(campaign_dir) / DOSSIER_REL
+    refuse_unmigrated_dossier_dir(d)   # raises DossierLayoutError naming the migration
     key = _dossier_dir_key(d)
     return _dossiers_cached(key, str(d)) if key else ()
 

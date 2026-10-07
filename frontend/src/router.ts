@@ -112,6 +112,18 @@ const routes = [
     ],
   },
   {
+    // Spec 032: NPC dossiers are their own area, separate from Grounding.
+    path: '/npcs',
+    children: [
+      { path: '', redirect: '/npcs/dossiers' },
+      {
+        path: 'dossiers',
+        name: 'npc-dossiers',
+        component: () => import('./views/npcs/NpcDossiers.vue'),
+      },
+    ],
+  },
+  {
     path: '/prep',
     component: () => import('./views/PrepTools.vue'),
     children: [

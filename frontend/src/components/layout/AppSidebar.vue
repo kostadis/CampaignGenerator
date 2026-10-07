@@ -169,7 +169,7 @@ interface NavItem {
 // sidebar shows them as siblings so their overlap is visible; it does not rank
 // them, and the order is 006's own numbering.
 interface RenderingPath {
-  id: 'per-tool' | 'dossier-synthesis' | 'state-projection' | 'summary-native'
+  id: 'per-tool' | 'dossier-synthesis' | 'state-projection' | 'summary-native' | 'npcs'
   label: string
   // GM-approved wording (research R8). Says how this path differs from its
   // siblings, and whether it reads the shared ensemble extraction.
@@ -249,6 +249,23 @@ const navGroups: NavGroup[] = [
         matchPrefixes: ['/grounding/summary-native'],
         items: [
           { label: 'Summary-native', path: '/grounding/summary-native' },
+        ],
+      },
+    ],
+  },
+  {
+    // Spec 032: NPC dossiers are not a grounding document, so this is its own
+    // top-level path rather than a fifth sibling under GROUNDING DOCS.
+    title: 'NPCS',
+    paths: [
+      {
+        id: 'npcs',
+        label: 'NPC dossiers',
+        description: 'Per-NPC dossiers drafted from reviewed summaries, then verified and published.',
+        usesSharedExtraction: false,
+        matchPrefixes: ['/npcs'],
+        items: [
+          { label: 'NPC Dossiers', path: '/npcs/dossiers' },
         ],
       },
     ],

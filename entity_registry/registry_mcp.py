@@ -495,7 +495,7 @@ def build_server(campaign_dir: Path):
     @mcp.tool()
     def registry_import_frontmatter_tool(dossier_dir: str) -> str:
         """Bulk-migration tool: merge NPC entities from dossier frontmatter (e.g.
-        docs/npcs/). Run AFTER registry_import_dedup_tool — it only fills gaps
+        docs/npcs/distilled/). Run AFTER registry_import_dedup_tool — it only fills gaps
         (singleton dossiers no dedup cluster ever grouped) rather than fighting
         dedup's merge decisions.
         """

@@ -15,7 +15,10 @@ from pipelines.summary_native.cli import main
 from pipelines.summary_native.validate import scan
 
 FIX = Path(__file__).parent / "fixtures" / "summary_native"
-CANON_MSG = "canon.yaml records not-a-duplicate rulings only; fix duplicates in the summary files"
+CANON_MSG = (
+    "canon.yaml records not-a-duplicate rulings and link rulings for generic forms only; "
+    "fix duplicates in the summary files"
+)
 
 
 @pytest.fixture
@@ -220,7 +223,56 @@ def test_canon_yaml_rejects_malformed_entries(tmp_path):
 
 def test_absent_canon_is_empty(tmp_path):
     r = duplicates.load_rulings(tmp_path / "nope.yaml")
-    assert not r.pairs
+    assert not r.pairs and r.link_rulings == {}
+
+
+def test_link_rulings_load_alongside_not_duplicates(tmp_path):
+    p = tmp_path / "canon.yaml"
+    p.write_text(
+        "not_duplicates:\n  - {category: npc, a: Sarith, b: Sarith Kzekarit}\n"
+        "link_rulings:\n  - {form: Stool, ruling: safe}\n  - {form: Spider, ruling: never}\n"
+    )
+    r = duplicates.load_rulings(p)
+    assert r.link_rulings == {"Stool": "safe", "Spider": "never"}
+    assert len(r.entries) == 1
+
+
+def test_link_rulings_alone_load(tmp_path):
+    p = tmp_path / "canon.yaml"
+    p.write_text("link_rulings:\n  - {form: Stool, ruling: safe}\n")
+    r = duplicates.load_rulings(p)
+    assert r.link_rulings == {"Stool": "safe"} and r.entries == ()
+
+
+def test_not_duplicates_only_file_still_loads(tmp_path):
+    p = tmp_path / "canon.yaml"
+    p.write_text("not_duplicates:\n  - {category: npc, a: x, b: y}\n")
+    assert duplicates.load_rulings(p).link_rulings == {}
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "link_rulings: [oops]\n",
+        "link_rulings:\n  - {form: Stool, ruling: maybe}\n",
+        "link_rulings:\n  - {form: Stool}\n",
+        "link_rulings:\n  - {form: Stool, ruling: safe, entity: Stool Man}\n",
+        "link_rulings:\n  - {form: '', ruling: safe}\n",
+        "link_rulings:\n  - {form: Stool, ruling: safe}\n  - {form: Stool, ruling: never}\n",
+        "link_rulings: not-a-list\n",
+    ],
+)
+def test_link_rulings_refuse_bad_shapes(tmp_path, body):
+    p = tmp_path / "canon.yaml"
+    p.write_text(body)
+    with pytest.raises(duplicates.RulingsError):
+        duplicates.load_rulings(p)
+
+
+def test_link_ruling_forms_are_case_sensitive(tmp_path):
+    p = tmp_path / "canon.yaml"
+    p.write_text("link_rulings:\n  - {form: Stool, ruling: safe}\n  - {form: stool, ruling: never}\n")
+    assert duplicates.load_rulings(p).link_rulings == {"Stool": "safe", "stool": "never"}
 
 
 def test_stale_ruling_reported(camp):

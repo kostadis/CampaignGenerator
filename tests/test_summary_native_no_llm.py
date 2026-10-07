@@ -13,7 +13,14 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 PKG = ROOT / "pipelines" / "summary_native"
-GUARDED = ["parse", "validate", "corpus", "duplicates", "select", "context", "compare", "resolve"]
+GUARDED = [
+    "parse", "validate", "corpus", "duplicates", "select", "context", "compare", "resolve",
+    # spec 032: every NPC module except npc_draft, which is the one model step.
+    "npc_forms", "npc_link", "npc_verify", "npc_compose", "npc_publish", "npc_slug", "npc_authored",
+    "freshness",
+    # chunked drafting's deterministic half and the shared quote/citation primitives (T062)
+    "npc_check", "npc_chunked", "npc_config",
+]
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")
 
@@ -25,6 +32,9 @@ def _existing():
 def test_guard_covers_the_modules_that_exist():
     names = {n for n, _ in _existing()}
     assert {"parse", "validate", "corpus", "select", "context", "compare"} <= names
+    # Modules from spec 032 that exist are checked; those still to come are skipped by name.
+    assert {"npc_slug", "npc_authored", "freshness", "npc_check", "npc_chunked", "npc_config", "npc_verify"} <= names
+    assert "npc_draft" not in GUARDED  # the model step, deliberately not guarded
 
 
 @pytest.mark.parametrize("name,path", _existing(), ids=lambda v: v if isinstance(v, str) else "")

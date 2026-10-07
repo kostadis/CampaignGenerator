@@ -6,6 +6,84 @@ from pathlib import Path
 
 from .party_md import parse_party_md
 
+#: First characters of the header ``summary_native npc-publish`` stamps on a published
+#: dossier. Declared here (campaignlib must not import pipelines/) so the writer in
+#: pipelines/summary_native and any guard that must recognise it share one spelling.
+PUBLISH_HEADER_PREFIX = "<!-- published by summary_native npc-publish"
+
+#: The command a refusal points the GM at (spec 032 FR-022b).
+MIGRATE_COMMAND = "python -m server.migrate_npc_dossiers --campaign-dir DIR"
+
+
+class DossierLayoutError(ValueError):
+    """A reader was pointed at the wrong ``docs/npcs`` layout (spec 032 FR-022c).
+
+    Raised by :func:`refuse_unmigrated_dossier_dir`. The message always names the
+    migration command, so a refusal is a next step rather than a dead end.
+    """
+
+
+def refuse_unmigrated_dossier_dir(path) -> None:
+    """Refuse a distilled-dossier read against the wrong ``docs/npcs`` layout.
+
+    Two cases (spec 032 FR-022c, FR-022d, research R12):
+
+    * **Wrong directory** -- ``path`` is ``<campaign>/docs/npcs`` itself. That
+      directory now holds *published* dossiers, and reading them as distilled
+      ones would feed generated output back into identity.
+    * **Unmigrated** -- ``path`` is ``<campaign>/docs/npcs/distilled`` and
+      ``<campaign>/docs/npcs/`` directly holds a ``*.md`` whose first line does not
+      start with :data:`PUBLISH_HEADER_PREFIX`: material nobody has classified.
+
+    Published files never trigger the second case, so a campaign that never had
+    distilled dossiers (nothing in ``distilled/``, only published files above it)
+    keeps working. A missing ``distilled/`` with nothing unmigrated is not an error.
+    Any other path (a scratch directory, a session's own dossier folder) is not a
+    campaign layout and is left alone. Raises :class:`DossierLayoutError`.
+    """
+    if path is None:
+        return
+    p = Path(path).expanduser()
+    try:
+        p = p.resolve()
+    except OSError:
+        pass
+    if p.name == "npcs" and p.parent.name == "docs":
+        raise DossierLayoutError(
+            f"{p} holds published NPC dossiers, not distilled ones; reading it as "
+            f"distilled dossiers would feed generated output back into identity. "
+            f"Point the tool at {p / 'distilled'}. If this campaign has not been "
+            f"migrated yet, run: {MIGRATE_COMMAND} --propose"
+        )
+    if p.name == "distilled" and p.parent.name == "npcs" and p.parent.parent.name == "docs":
+        loose = _unmigrated_loose_files(p.parent)
+        if loose:
+            shown = ", ".join(loose[:5]) + (f" (+{len(loose) - 5} more)" if len(loose) > 5 else "")
+            raise DossierLayoutError(
+                f"{p.parent} still holds {len(loose)} unmigrated dossier file(s) "
+                f"without the publishing header: {shown}. Classify and move them: "
+                f"{MIGRATE_COMMAND} --propose, review "
+                f"docs/npcs/migration_classification.yaml, then {MIGRATE_COMMAND} --apply"
+            )
+
+
+def _unmigrated_loose_files(npcs_dir: Path) -> list[str]:
+    """Sorted names of loose ``*.md`` directly in ``npcs_dir`` lacking the header."""
+    if not npcs_dir.is_dir():
+        return []
+    out = []
+    for f in sorted(npcs_dir.glob("*.md")):
+        if not f.is_file():
+            continue
+        try:
+            with f.open(encoding="utf-8", errors="replace") as fh:
+                first = fh.readline()
+        except OSError:
+            first = ""
+        if not first.startswith(PUBLISH_HEADER_PREFIX):
+            out.append(f.name)
+    return out
+
 
 _DOSSIER_FRONTMATTER_RE = re.compile(r"\A---\n(.*?)\n---\n\n?(.*)\Z", re.DOTALL)
 
@@ -178,7 +256,13 @@ def load_alias_map(dossier_dir, registry_path=None) -> dict[str, list[str]]:
 
     Returns `{}` when neither a registry nor any dossiers are available —
     makes the caller a no-op for campaigns without planning.
+
+    A given ``dossier_dir`` is checked first by
+    :func:`refuse_unmigrated_dossier_dir` -- even when a registry then replaces the
+    scan -- so an unmigrated ``docs/npcs/`` is never silently ignored.
     """
+    if dossier_dir is not None:
+        refuse_unmigrated_dossier_dir(dossier_dir)
     if registry_path is not None:
         rp = Path(registry_path).expanduser()
         if rp.is_file():
@@ -197,6 +281,16 @@ def load_alias_map(dossier_dir, registry_path=None) -> dict[str, list[str]]:
         name, aliases, _, _ = parse_dossier(f)
         result[name] = aliases
     return result
+
+
+def load_alias_map_or_exit(dossier_dir, registry_path=None, *, exit_code: int = 1) -> dict[str, list[str]]:
+    """``load_alias_map`` for a CLI entry point: a layout refusal becomes ``Error: <message>``
+    on stderr and ``sys.exit(exit_code)`` instead of a traceback (spec 032 FR-022c)."""
+    try:
+        return load_alias_map(dossier_dir, registry_path=registry_path)
+    except DossierLayoutError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(exit_code)
 
 
 def find_alias_registry(campaign_dir, *, announce=True):

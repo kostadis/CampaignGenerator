@@ -61,7 +61,7 @@ const dossiers = computed({
   }),
   set: (v: Record<string, any>) => {
     dossierSummaries.value = v.summaries ?? ''
-    dossierDir.value = v.dossier_dir ?? 'docs/npcs/'
+    dossierDir.value = v.dossier_dir ?? 'docs/npcs/distilled/'
     dossierExtractDir.value = v.extract_dir ?? ''
     dossierSplitChapters.value = v.split_chapters ?? '# Chapter'
     dossierSince.value = v.since ?? 0
@@ -138,10 +138,9 @@ watch(output, (newOutput) => {
 
 watch(dossierDir, (newDir) => {
   if (!dossierExtractDir.value && newDir) {
-    const trimmed = newDir.replace(/\/$/, '')
-    const idx = trimmed.lastIndexOf('/')
-    const parent = idx >= 0 ? trimmed.slice(0, idx) : ''
-    dossierExtractDir.value = parent ? `${parent}/planning_extractions` : 'planning_extractions'
+    // Not derived from the dossier dir: docs/npcs/ may hold only published dossiers.
+    const cd = (config.resolved.campaign_dir || '').replace(/\/+$/, '')
+    dossierExtractDir.value = cd ? `${cd}/docs/planning_extractions` : 'docs/planning_extractions'
   }
 })
 

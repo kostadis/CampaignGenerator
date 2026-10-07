@@ -62,6 +62,7 @@ from pydantic import ValidationError
 
 from campaignlib import DEFAULT_MODEL, wiring_get
 from campaignlib.constants import config_path
+from campaignlib.npc import DossierLayoutError, refuse_unmigrated_dossier_dir
 from campaignlib.party_config import PARTY_CONFIG_FILENAME
 from server.platform_config_shared import (
     LOCAL_CONFIG_NAME,
@@ -1147,7 +1148,15 @@ class PlatformConfigService:
 
         # docs/npcs/*.md — one file per NPC dossier; the set of filenames
         # IS the answer, there is no fixed name to check for.
-        npcs_dir = docs / "npcs"
+        # Distilled dossiers live under docs/npcs/distilled/ (spec 032 FR-022b);
+        # docs/npcs/ itself now holds published dossiers, which are not planning
+        # inputs. The guard raises, naming the migration, while docs/npcs/ still
+        # holds unclassified files.
+        npcs_dir = docs / "npcs" / "distilled"
+        try:
+            refuse_unmigrated_dossier_dir(npcs_dir)
+        except DossierLayoutError as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
         if npcs_dir.is_dir():
             npc_files = sorted(npcs_dir.glob("*.md"))
             if npc_files:

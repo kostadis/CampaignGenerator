@@ -1,0 +1,24 @@
+version: 1
+campaign: npc-fixture
+entities:
+  - name: Jimjar
+    type: npc
+  - name: Eldeth Feldrun
+    type: npc
+    aliases: [Eldeth]
+  - name: Sarith Kzekarit
+    type: npc
+    aliases: [Sarith]
+  - name: Sarith Vale
+    type: npc
+  - name: Spider
+    type: npc
+  - name: Thorin
+    type: npc
+    aliases: [Thorin Giantfriend]
+  - name: Kaelis
+    type: npc
+    scope: chapter-3
+  - name: Mantol-Derith
+    type: location
+    aliases: [Mantol]

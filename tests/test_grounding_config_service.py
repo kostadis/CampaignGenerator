@@ -69,7 +69,7 @@ def test_round_trip_preserves_values(tmp_path):
             "track_files": ["notes/a.txt", "notes/b.txt"],
             "track_items": ["Party freed the sovereign"],
         },
-        "planning": {"dossiers": {"dossier_dir": "docs/npcs/", "since": 3}},
+        "planning": {"dossiers": {"dossier_dir": "docs/npcs/distilled/", "since": 3}},
     })
     save_grounding_config(p, cfg)
     back = load_grounding_config(p)

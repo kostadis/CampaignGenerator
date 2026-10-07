@@ -10,7 +10,7 @@ module never merges, renames or aliases one. It does three small things:
 * ``find_possible_duplicates`` — LISTS likely duplicates as non-blocking
   findings with every ``file:line`` of each spelling.
 * ``load_rulings`` / ``stale_rulings`` — read ``canon.yaml``, hand-authored and
-  read-only here; its only key is ``not_duplicates``.
+  read-only here; its keys are ``not_duplicates`` and (spec 032) ``link_rulings``.
 
 No model call (guarded by ``tests/test_summary_native_no_llm.py``).
 """
@@ -29,7 +29,11 @@ from pipelines.summary_native import schema
 from pipelines.summary_native.validate import Finding
 
 CATEGORIES: tuple[str, ...] = tuple(schema.ENTITY_CATEGORIES.values())
-RULINGS_MESSAGE = "canon.yaml records not-a-duplicate rulings only; fix duplicates in the summary files"
+RULINGS_MESSAGE = (
+    "canon.yaml records not-a-duplicate rulings and link rulings for generic forms only; "
+    "fix duplicates in the summary files"
+)
+LINK_RULING_VALUES: tuple[str, ...] = ("safe", "never")
 CANON_FILE = "canon.yaml"
 _QUALIFIER_RE = re.compile(r"\s*\([^()]*\)\s*$")
 
@@ -51,6 +55,8 @@ class Rulings:
 
     entries: tuple[tuple[str, str, str], ...] = ()  # (category, a, b) as written
     pairs: frozenset = field(default_factory=frozenset)
+    #: ``form`` (exact, case-sensitive, as written) -> ``safe`` | ``never`` (spec 032 R5).
+    link_rulings: dict = field(default_factory=dict)
 
     def rules_out(self, category: str, names_a: set[str], names_b: set[str]) -> bool:
         """True if some ruling names one spelling from each side."""
@@ -64,7 +70,12 @@ class Rulings:
 
 
 def load_rulings(path: Path | None) -> Rulings:
-    """Read ``canon.yaml`` strictly. An absent file is an empty record."""
+    """Read ``canon.yaml`` strictly. An absent file is an empty record.
+
+    Two record types: ``not_duplicates`` (031) and ``link_rulings`` (032). Whether a
+    link ruling is NEEDED, or collides with an ambiguous form, is decided by the link
+    stage, which knows the forms; this loader checks shape only.
+    """
     if path is None or not Path(path).is_file():
         return Rulings()
     try:
@@ -75,7 +86,7 @@ def load_rulings(path: Path | None) -> Rulings:
         return Rulings()
     if not isinstance(data, dict):
         raise RulingsError(f"{path}: {RULINGS_MESSAGE}")
-    if set(data) - {"not_duplicates"}:
+    if set(data) - {"not_duplicates", "link_rulings"}:
         raise RulingsError(RULINGS_MESSAGE)
     raw = data.get("not_duplicates") or []
     if not isinstance(raw, list):
@@ -95,7 +106,30 @@ def load_rulings(path: Path | None) -> Rulings:
     return Rulings(
         entries=tuple(entries),
         pairs=frozenset(_pair_key(c, a, b) for c, a, b in entries),
+        link_rulings=_load_link_rulings(path, data.get("link_rulings")),
     )
+
+
+def _load_link_rulings(path: Path, raw) -> dict[str, str]:
+    if raw is None:
+        return {}
+    if not isinstance(raw, list):
+        raise RulingsError(f"{path}: link_rulings must be a list of {{form, ruling}}")
+    out: dict[str, str] = {}
+    for i, item in enumerate(raw, 1):
+        if not isinstance(item, dict) or set(item) != {"form", "ruling"}:
+            raise RulingsError(f"{path}: link_rulings entry {i} must be exactly {{form, ruling}}")
+        form, ruling = item["form"], item["ruling"]
+        if not (isinstance(form, str) and form.strip()):
+            raise RulingsError(f"{path}: link_rulings entry {i}: form must be a non-empty string")
+        if ruling not in LINK_RULING_VALUES:
+            raise RulingsError(
+                f"{path}: link_rulings entry {i}: ruling {ruling!r} is not one of {', '.join(LINK_RULING_VALUES)}"
+            )
+        if form in out:
+            raise RulingsError(f"{path}: link_rulings entry {i}: form {form!r} is ruled twice")
+        out[form] = ruling
+    return out
 
 
 # ── Grouping ───────────────────────────────────────────────────────────────

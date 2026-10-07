@@ -77,7 +77,7 @@ def _campaign(tmp_path, *, glossary=GLOSSARY, known=KNOWN_ADDITIONS,
 
 
 def _dossier(campaign, filename, body):
-    d = campaign / "docs" / "npcs"
+    d = campaign / "docs" / "npcs" / "distilled"
     d.mkdir(parents=True, exist_ok=True)
     (d / filename).write_text(body, encoding="utf-8")
 

@@ -338,7 +338,7 @@ onMounted(() => {
   if (cd) {
     const base = cd.replace(/\/+$/, '')
     docsDir.value = base + '/docs'
-    dossierDir.value = base + '/docs/npcs'
+    dossierDir.value = base + '/docs/npcs/distilled'
     cachePath.value = base + '/docs/connections.json'
   }
   loadCached()

@@ -57,6 +57,7 @@ from campaignlib import (
     load_agent_prompt,
     find_alias_registry,
     load_alias_map,
+    load_alias_map_or_exit,
     load_players_config_arg,
     normalize_vtt_speakers,
     parse_gmassist_scenes,
@@ -565,7 +566,7 @@ def main() -> None:
     for i, s in enumerate(scenes, 1):
         print(f"  {i}. {s['name']}")
 
-    alias_map = load_alias_map(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
+    alias_map = load_alias_map_or_exit(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
     if alias_map:
         print(f"  Alias map: {len(alias_map)} NPC(s) from {args.dossier_dir}")
 

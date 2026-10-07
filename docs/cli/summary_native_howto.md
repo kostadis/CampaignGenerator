@@ -759,7 +759,7 @@ The page's Compare always diffs against `docs/<doc>.md`.
 | `range A-B contains no file; chapters present: …` | Widen the range. |
 | `registry D: no entity_registry.yaml found under D/docs/` | The `--registry` flag or `summary_native.registry` names a directory without one. Name the registry file, or a campaign root that has `docs/entity_registry.yaml`. |
 | `invalid entity registry …` | The registry will not load; fix it (`registry check`). |
-| `canon.yaml records not-a-duplicate rulings only; fix duplicates in the summary files` | `canon.yaml` has a key other than `not_duplicates`. Remove it; fix the summary instead. |
+| `canon.yaml records not-a-duplicate rulings and link rulings for generic forms only; fix duplicates in the summary files` | `canon.yaml` has a key other than `not_duplicates` or `link_rulings`. Remove it; fix the summary instead. |
 | `…: cannot read canon.yaml (…)` | Not valid YAML. |
 | `…: not_duplicates must be a list of {category, a, b}` | Make it a list. |
 | `…: not_duplicates entry N must be exactly {category, a, b}` | Wrong or extra keys in entry N. |
