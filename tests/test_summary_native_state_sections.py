@@ -8,12 +8,14 @@ for identical inputs.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
 import yaml
 
 from pipelines.summary_native import notes, schema, state_sections
+from tests import conftest_state as cs
 
 FIXTURE = Path(__file__).parent / "fixtures" / "summary_native" / "state"
 CHAPTERS = notes.load_chapters(FIXTURE / "docs" / "summaries", 2, 5)
@@ -323,3 +325,139 @@ class TestReadingContract:
 
     def test_it_is_deterministic(self):
         assert self._md() == self._md()
+
+
+# ── The session-prep contract (spec 033 US7, T052) ──────────────────────────
+#
+# contracts/session-prep.md promises session prep four things about the documents. These tests build
+# both documents end to end (extract, then synth with the fixture's published dossier, annotate
+# included) with the model faked, and read the files back.
+#
+# A "content line" is a line a reader could take as a claim. Counted: every list item, table data row
+# and prose line inside a ``## `` section. Excluded, each by a structural rule and not by wording:
+#   * headings (``#``) and blank lines;
+#   * the HTML provenance comment and the reading-contract blockquote (``>``): apparatus, tested below;
+#   * a pointer line, which is a whole italic line (``_..._``): "Full notes: reference/x.md", the
+#     Key NPCs "Source:" line. It names a file; it asserts nothing about the campaign;
+#   * annotation sub-bullets (``annotate.ANNOTATION_RE``): they sit under a cited line and are not a
+#     claim of the draft; their citations are checked separately;
+#   * table header and separator rows;
+#   * the body of two sections that are code-built pointers or status, not claims: ``## Canon Events
+#     Timeline`` (a pointer to the timeline file, asserted to name it) and ``## Audit: Tracking
+#     Claims`` when it says the audit was not run.
+
+
+def _build_both(tmp_path, monkeypatch):
+    root = cs.state_campaign(tmp_path)
+    fm = cs.fake_models(monkeypatch)
+    assert cs.run_cli(cs.extract_args(root))[0] == 0
+    fm.prose_override.update({
+        "## Party": (
+            "## Party\n\n### Dealings\n\n- The party bargained with Ilvara Mizzrym. [ch 002 / 002.02]\n"
+            "- The party left the pens by night. [ch 003 / 003.02]\n"),
+        "## Locations": "## Locations\n\n- **Velkynvelve** — A drow outpost. [ch 002 / locations]\n",
+    })
+    for doc, extra in (("world_state", ["--fallback-npc-lines"]), ("campaign_state", [])):
+        rc, out, err = cs.run_cli(["synth", doc, *cs.common(root), *extra])
+        assert rc == 0, err
+    drafts = cs.range_dir(root) / schema.STATE_DIR / "drafts"
+    texts = {d: (drafts / f"{d}.draft.md").read_text(encoding="utf-8") for d in ("world_state", "campaign_state")}
+    return drafts, texts
+
+
+def _content_lines(text):
+    """``[(section heading, line)]`` for the content lines, by the rules in the comment above."""
+    from pipelines.summary_native import annotate
+
+    out, section, table_rows = [], None, 0
+    for line in text.splitlines():
+        if line.startswith("## "):
+            section, table_rows = line, 0
+            continue
+        if section is None or not line.strip() or line.startswith(("#", "<!--", ">")):
+            continue
+        if section == "## Canon Events Timeline" or (section.startswith("## Audit") and "not run" in line):
+            continue
+        if line.startswith("_") and line.rstrip().endswith("_"):
+            continue
+        if annotate.ANNOTATION_RE.match(line):
+            continue
+        if line.startswith("|"):
+            table_rows += 1
+            if table_rows <= 2:  # header row and separator row
+                continue
+        out.append((section, line))
+    return out
+
+
+class TestSessionPrepContract:
+    @pytest.fixture
+    def built(self, tmp_path, monkeypatch):
+        return _build_both(tmp_path, monkeypatch)
+
+    def test_the_content_lines_are_the_ones_the_comment_says(self, built):
+        # Guards the definition itself: a rule that silently matched nothing would pass vacuously.
+        _, docs = built
+        ws = [ln for _, ln in _content_lines(docs["world_state"])]
+        assert any(ln.startswith("- **Ilvara Mizzrym**") for ln in ws)
+        assert "- **Velkynvelve** — A drow outpost. [ch 002 / locations]" in ws
+        assert not any(ln.startswith(("_Full notes", "_Source", ">")) for ln in ws)
+        cs_lines = [ln for _, ln in _content_lines(docs["campaign_state"])]
+        assert sum(ln.startswith("| ") for ln in cs_lines) == 3  # three NPC rows, no header or separator
+        assert len(ws) >= 8 and len(cs_lines) >= 6
+
+    def test_guarantee_1_every_content_line_has_at_least_one_resolving_citation(self, built):
+        _, docs = built
+        allowed = {c.number: c.targets for c in CHAPTERS}
+        for doc, text in docs.items():
+            for section, line in _content_lines(text):
+                assert notes.cite_problem(line, allowed) is None, f"{doc} {section}: {line}"
+
+    def test_every_annotation_citation_resolves_too(self, built):
+        from pipelines.summary_native import annotate
+
+        _, docs = built
+        allowed = {c.number: c.targets for c in CHAPTERS}
+        found = 0
+        for text in docs.values():
+            for line in text.splitlines():
+                if annotate.ANNOTATION_RE.match(line):
+                    found += 1
+                    assert notes.cite_problem(line, allowed) is None, line
+        assert found >= 1  # the Velkynvelve line gets a "later" annotation
+
+    def test_guarantee_2_world_state_opens_with_the_reading_contract(self, built):
+        drafts, docs = built
+        body = docs["world_state"].split("\n", 1)[1]  # past the provenance comment
+        contract = [ln for ln in body.split("\n## ", 1)[0].splitlines() if ln.strip()]
+        assert contract and all(ln.startswith(">") for ln in contract)
+        md = "\n".join(contract)
+        for marker in (schema.LATER, schema.SINCE, schema.UNVERIFIED):
+            assert marker in md
+        assert "[ch NNN / target]" in md and "docs/summaries/NNN-*.md" in md
+        for target in ("npcs", "locations", "items", "spells", "moment", "end"):
+            assert target in md
+        assert f"docs/{schema.TIMELINE_FILE}" in md
+        for kind in state_sections.REFERENCE_KINDS:
+            assert f"docs/reference/{kind}.md" in md
+        assert "decision for the GM" in md and "outrank" in md
+        # ... and the files it names exist beside the drafts, ready to promote.
+        assert (drafts / schema.TIMELINE_FILE).is_file()
+        for kind in state_sections.REFERENCE_KINDS:
+            assert (drafts / "reference" / f"{kind}.md").is_file()
+
+    def test_guarantee_3_every_key_npcs_line_has_a_dossier_pointer_or_the_fallback_mark(self, built):
+        from pipelines.summary_native import key_npcs
+
+        _, docs = built
+        lines = [ln for sec, ln in _content_lines(docs["world_state"]) if sec == "## Key NPCs"]
+        assert len(lines) == 3
+        pointers = fallbacks = 0
+        for ln in lines:
+            if ln.rstrip().endswith(key_npcs.FALLBACK_MARK):
+                fallbacks += 1
+                assert "→ docs/npcs/" not in ln  # the mark means "no dossier", so no pointer beside it
+            else:
+                pointers += 1
+                assert re.search(r"→ docs/npcs/[a-z0-9-]+\.md$", ln.rstrip()), ln
+        assert pointers == 1 and fallbacks == 2  # Ilvara is published in the fixture; Kalan and Sarith are not

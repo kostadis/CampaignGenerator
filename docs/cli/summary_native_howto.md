@@ -708,6 +708,89 @@ The tool never writes `docs/<doc>.md`. To promote:
 
 ---
 
+## What session prep may rely on — the documents are an index
+
+The chunked state documents (`campaign_state.md`, `world_state.md`, built by
+`extract` → `synth` → `annotate` → `audit`) are designed to be read by session
+prep as an **index**, not as proof. The summaries stay the authority. The
+agreement is written down in
+[`specs/033-chunked-grounding-docs/contracts/session-prep.md`](../../specs/033-chunked-grounding-docs/contracts/session-prep.md);
+this section is what it means for you at the keyboard. The consumer is the
+gm-assistant `gm-session-prep` skill, which lives in another repository and
+has not adopted the contract yet. The draft skill text is
+[`experiments/20261007-chunked-state-docs/skills_variant/gm-session-prep-pointer/SKILL.md`](../../experiments/20261007-chunked-state-docs/skills_variant/gm-session-prep-pointer/SKILL.md);
+nothing in this repo installs it.
+
+### What the documents promise
+
+Four things, each checked by `tests/test_summary_native_state_sections.py`
+(`TestSessionPrepContract`) on the fixture campaign:
+
+1. **Every content line carries a citation** `[ch NNN / target]` that resolves
+   to a scene id (`NNN.SS`) or a named section (`npcs`, `locations`, `items`,
+   `spells`, `moment`, `end`) of `docs/summaries/NNN-*.md`. A table row cites in
+   its last column. Not counted: headings, the reading-contract blockquote, the
+   italic pointer lines (`_Full notes: ..._`, `_Source: ..._`), annotation
+   sub-bullets, the Timeline section (a pointer to the timeline file) and an
+   "Audit not run" notice.
+2. **`world_state.md` opens with a reading contract.** A blockquote that names
+   the three markers (`⚠ later:`, `ℹ since:`, `⚠ unverified:`), the citation
+   grammar, the six `docs/reference/*.md` files, `docs/canon_events_timeline.md`,
+   and says that anything the document does not settle is a decision for the GM.
+3. **Every Key NPCs line ends in `→ docs/npcs/<slug>.md`**, or in
+   `(no published dossier — from checked notes)`. The second form means there is
+   no dossier to open: the line is the NPC's latest status and checked notes.
+4. **No model rewrote a line after the code check.** After drafting, a line
+   changes only by an annotation under it, or by removal of a player-character
+   line from an NPC group. `annotations.md` in the drafts folder lists each one.
+
+The markers mean: `⚠ later:` is newer information about the same subject (where
+they conflict, the later one wins); `ℹ since:` is the later status of someone the
+line mentions (context, not a correction); `⚠ unverified:` is a quotation that is
+not verbatim in the chapter it cites, or a citation that does not resolve (read
+it as a paraphrase).
+
+### What the contract asks of session prep
+
+The skill, not this tool, does these. They are listed so you know what a prep
+run should have done, and what to check if it did not:
+
+1. **Index pass.** Read the state documents, following `world_state`'s reading
+   contract, to decide what the session puts on stage.
+2. **Read the last two summaries in full.**
+3. **Verify pass.** For each NPC, item, faction or thread the prep *uses*,
+   follow its citation (or its dossier pointer, or a search of the summaries) to
+   the latest mention and confirm the state there. Background mentions are not
+   verified.
+4. **The summary wins** when it disagrees with a document.
+5. **Tag provenance.** `[TABLE chNN NNN.SS]` for a verified state claim,
+   `[DOC unverified: <doc>]` for one taken from a generated document unchecked.
+6. **End with "Doc errors found".** One entry per disagreement: the document and
+   line, what it says, what the summary says (with its citation), which the prep
+   used. "none" when everything agreed.
+
+### What to do with "Doc errors found"
+
+That list is your fix-at-source queue. It is never patched in the generated
+document. Fix the **summary** (then `build --force` and `synth --force` again),
+the **entity registry**, a dossier's **authored file**, or rebuild, whichever the
+entry points at. A citation that does not lead to the claim is itself a document
+error: guarantee 1 says a citation *resolves*, not that it *supports* the line.
+`audit` and `annotate` narrow that gap; they do not close it.
+
+### What is not promised
+
+- That a line is **true**. Only that it is cited, so it can be checked. The
+  experiment that motivated this (round 5 in `experiments/20261007-chunked-state-docs/`)
+  found a stale fact marked "verified" when the documents were the old,
+  uncited ones; verification is only as good as the citation it follows.
+- That the documents are current. The reading contract states the range they
+  cover and that the last two summaries outrank them.
+- That the skill has adopted any of this. Until the gm-assistant follow-up
+  lands, prep behaves as it did before; the documents are still safe to read.
+
+---
+
 ## The web page
 
 Sidebar **Grounding Docs → Summary-native** (`/grounding/summary-native`). The

@@ -332,8 +332,8 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 **Independent Test**: quickstart S7.
 
-- [ ] T052 [US7] Add a test in `tests/test_summary_native_state_sections.py` asserting the guarantees from `contracts/session-prep.md` on the fixture drafts: every line of both documents carries at least one resolving citation; world_state's contract names the markers, citation grammar, timeline and reference paths; and every Key NPCs line has a dossier pointer or the fallback mark.
-- [ ] T053 [US7] Write the operator-facing session-prep contract section in `docs/cli/summary_native_howto.md`, linking `specs/033-chunked-grounding-docs/contracts/session-prep.md` and the draft skill `experiments/20261007-chunked-state-docs/skills_variant/gm-session-prep-pointer/SKILL.md`.
+- [X] T052 [US7] Add a test in `tests/test_summary_native_state_sections.py` asserting the guarantees from `contracts/session-prep.md` on the fixture drafts: every line of both documents carries at least one resolving citation; world_state's contract names the markers, citation grammar, timeline and reference paths; and every Key NPCs line has a dossier pointer or the fallback mark.
+- [X] T053 [US7] Write the operator-facing session-prep contract section in `docs/cli/summary_native_howto.md`, linking `specs/033-chunked-grounding-docs/contracts/session-prep.md` and the draft skill `experiments/20261007-chunked-state-docs/skills_variant/gm-session-prep-pointer/SKILL.md`.
 - [ ] T054 [US7] File the gm-assistant follow-up issue ("adopt the docs-as-index contract in gm-session-prep") with the GitHub MCP tools, and record its URL in `specs/033-chunked-grounding-docs/plan.md` under Follow-ups.
 
 **Checkpoint**: Every story is independently functional.
