@@ -160,5 +160,7 @@ No constitution violations to justify.
 
 ## Follow-ups (outside this feature)
 
-- **gm-assistant:** adopt `contracts/session-prep.md` in `gm-session-prep` (file an issue in that repo).
+- **kostadis/campaigns#380:** adopt `contracts/session-prep.md` in gm-assistant's `gm-session-prep` (filed 2026-10-07).
+- **#509, #510, #511:** reference-file subject grouping by registry identity; the reading contract's hard-coded promoted paths; `check_outline` on a draft that opens with the contract.
+- **#512:** incremental rebuild after a new session (extract cache across ranges; carry over Key NPC dossiers untouched by the new chapters). Do after this feature merges.
 - **kostadis/campaigns#379:** add the `Edvaldo` registry alias. **#506:** the Manshoon dossier, and npc-verify's blindness to whether a citation supports its claim. Both were surfaced by this work and are fixed at their source.
