@@ -306,7 +306,7 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Tests for User Story 6
 
-- [ ] T046 [P] [US6] `tests/test_summary_native_audit.py`:
+- [X] T046 [P] [US6] `tests/test_summary_native_audit.py`:
   - items numbered from `- ` lines;
   - candidate chapters picked by registry forms and non-generic tokens, at most `--candidates`, deterministic;
   - no candidates → NOT FOUND (no-candidates) with zero calls;
@@ -316,11 +316,11 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Implementation for User Story 6
 
-- [ ] T047 [US6] Implement `pipelines/summary_native/audit_select.py` (deterministic): `load_items(track_files)`, `candidate_chapters(item, chapters, forms, wordlist, n)` (using `npc_forms.load_wordlist` for generic words), `check_verdict(...)` and `render_audit_md(...)`.
-- [ ] T048 [US6] Implement `pipelines/summary_native/audit.py` (model step). It makes one call per item via `client_from_args`/`stream_api`, using the extraction backend family and the multi-endpoint queue from T042, with per-item cache keys, `state/audit/{items,audit}.json` and `audit.md`, and a run record.
-- [ ] T049 [US6] Add the `audit` subcommand to `pipelines/summary_native/cli.py`, with `--track-file` (repeatable, same spelling as `campaign_state`), `--candidates`, the backend family, `--endpoints --parallel --dump-only --force`, defaulting to `grounding.yaml campaign_state.track_files`. Render the Audit section from `audit.json` in `pipelines/summary_native/state_sections.py`.
-- [ ] T050 [US6] Add `GET /run/audit` to `server/routers/summary_native.py`, plus an `audit` block in `/state` and `audit.md` in `/drafts`. Add an "Audit" step to `frontend/src/views/grounding/SummaryNative.vue` (track files prefilled from config and editable per run, candidates, model, run / dump-only / force).
-- [ ] T051 [P] [US6] Extend `tests/test_summary_native_routes.py`: the `/run/audit` argv, including repeated `--track-file`.
+- [X] T047 [US6] Implement `pipelines/summary_native/audit_select.py` (deterministic): `load_items(track_files)`, `candidate_chapters(item, chapters, forms, wordlist, n)` (using `npc_forms.load_wordlist` for generic words), `check_verdict(...)` and `render_audit_md(...)`.
+- [X] T048 [US6] Implement `pipelines/summary_native/audit.py` (model step). It makes one call per item via `client_from_args`/`stream_api`, using the extraction backend family and the multi-endpoint queue from T042, with per-item cache keys, `state/audit/{items,audit}.json` and `audit.md`, and a run record.
+- [X] T049 [US6] Add the `audit` subcommand to `pipelines/summary_native/cli.py`, with `--track-file` (repeatable, same spelling as `campaign_state`), `--candidates`, the backend family, `--endpoints --parallel --dump-only --force`, defaulting to `grounding.yaml campaign_state.track_files`. Render the Audit section from `audit.json` in `pipelines/summary_native/state_sections.py`.
+- [X] T050 [US6] Add `GET /run/audit` to `server/routers/summary_native.py`, plus an `audit` block in `/state` and `audit.md` in `/drafts`. Add an "Audit" step to `frontend/src/views/grounding/SummaryNative.vue` (track files prefilled from config and editable per run, candidates, model, run / dump-only / force).
+- [X] T051 [P] [US6] Extend `tests/test_summary_native_routes.py`: the `/run/audit` argv, including repeated `--track-file`.
 
 **Checkpoint**: The audit is accurate and out of the extraction step.
 

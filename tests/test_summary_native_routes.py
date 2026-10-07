@@ -703,3 +703,123 @@ def test_synth_without_an_effort_request_sends_none(campaign):
     _, _, captured = campaign
     assert _run("/run/synth/world_state", RANGE) == 200
     assert "--claude-code-effort" not in captured["cmd"]
+
+
+# ── spec 033 US6: the audit step (T051) ────────────────────────────────────
+
+
+def test_audit_argv_repeats_track_file(campaign):
+    _, _, captured = campaign
+    assert _run("/run/audit", {**RANGE, "track_file": ["docs/tracking/a.txt", "docs/tracking/b.txt"]}) == 200
+    cmd = captured["cmd"]
+    assert cmd[0] == console_script("summary_native") and cmd[1] == "audit"
+    assert _flag(cmd, "--summaries-dir") == "docs/summaries"
+    assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("3", "9")
+    flags = [cmd[i + 1] for i, a in enumerate(cmd) if a == "--track-file"]
+    assert flags == ["docs/tracking/a.txt", "docs/tracking/b.txt"]
+    # the judge's backend family is the extraction one, with its declared defaults
+    assert _flag(cmd, "--backend") == _schema.DEFAULT_DRAFT_BACKEND
+    assert _flag(cmd, "--model") == _schema.DEFAULT_DRAFT_MODEL
+    for absent in ("--candidates", "--dump-only", "--force", "--max-tokens", "--endpoints", "--parallel",
+                   "--chunk-chars", "--registry", "--canon", "--out-root"):
+        assert absent not in cmd
+
+
+def test_audit_without_track_files_in_the_request_leaves_them_to_the_config(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"campaign_state": {"track_files": ["docs/tracking/tracking.txt"]}})
+    assert _run("/run/audit", RANGE) == 200
+    assert "--track-file" not in captured["cmd"]  # the CLI reads grounding.yaml itself
+
+
+def test_audit_with_no_track_files_anywhere_is_400_before_spawning(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/audit", params=RANGE)
+    assert r.status_code == 400 and "track file" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
+def test_audit_carries_per_run_flags_endpoints_and_parallel(campaign):
+    _, _, captured = campaign
+    eps = ["http://spark:8001/v1", "http://spark2:8001/v1"]
+    assert _run("/run/audit", {**RANGE, "track_file": ["t.txt"], "candidates": 5, "max_tokens": 4000,
+                               "dump_only": True, "force": True, "model": "other-model",
+                               "endpoints": eps, "parallel": 3}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--candidates") == "5" and _flag(cmd, "--max-tokens") == "4000"
+    assert "--dump-only" in cmd and "--force" in cmd and _flag(cmd, "--model") == "other-model"
+    i = cmd.index("--endpoints")
+    assert cmd[i + 1:i + 3] == eps and _flag(cmd, "--parallel") == "3"
+    assert "--endpoint" not in cmd and _flag(cmd, "--backend") == "dgx"
+
+
+@pytest.mark.parametrize("params", [{"candidates": 0}, {"parallel": 0}])
+def test_audit_bad_numbers_are_400_before_spawning(campaign, params):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/audit", params={**RANGE, "track_file": ["t.txt"], **params})
+    assert r.status_code == 400 and "cmd" not in captured
+
+
+def test_audit_endpoints_with_a_non_dgx_backend_is_400(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "openrouter", "model": "vendor/model"}}})
+    r = client.get(f"{BASE}/run/audit", params={**RANGE, "track_file": ["t.txt"], "endpoints": ["http://spark:8001/v1"]})
+    assert r.status_code == 400 and "--endpoints" in r.json()["detail"] and "cmd" not in captured
+
+
+def test_audit_unset_range_or_directory_is_400(campaign):
+    assert client.get(f"{BASE}/run/audit", params={"summaries_dir": "docs/summaries", "track_file": ["t.txt"]}).status_code == 400
+    assert client.get(f"{BASE}/run/audit", params={"since": 1, "until": 2, "track_file": ["t.txt"]}).status_code == 400
+
+
+def _audit_files(root, *, track_sha=None, complete=True):
+    ad = root / "docs" / "summary_native" / "ch003-009" / "state" / "audit"
+    ad.mkdir(parents=True)
+    verdicts = [
+        {"id": "A1", "file": "tracking.txt", "text": "x", "verdict": "SUPPORTED", "citation": "[ch 003 / 003.01]", "span": "s"},
+        {"id": "A2", "file": "tracking.txt", "text": "y", "verdict": "NOT FOUND", "reason": "unverified"},
+        {"id": "A3", "file": "tracking.txt", "text": "z", "verdict": "NOT FOUND", "reason": "no-candidates"},
+    ]
+    if not complete:
+        verdicts.append({"id": "A4", "file": "tracking.txt", "text": "w", "verdict": "NOT JUDGED"})
+    (ad / "audit.json").write_text(json.dumps({"kind": "audit", "verdicts": verdicts}))
+    (ad / "audit.md").write_text("# Tracking audit\n")
+    (ad / "items.json").write_text(json.dumps({
+        "kind": "audit_items", "backend": "dgx", "model": "m", "candidates": 3,
+        "track_files_sha256": track_sha if track_sha is not None else [],
+        "notes_manifest_sha256": None,
+    }))
+    return ad
+
+
+def test_state_reports_the_audit_block_from_files(campaign):
+    root, _, _ = campaign
+    _audit_files(root)
+    au = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["audit"]
+    assert au["present"] is True and au["complete"] is True and au["stale"] is False
+    assert au["counts"]["supported"] == 1 and au["counts"]["unverified"] == 1 and au["counts"]["no_candidates"] == 1
+    assert au["summary"].startswith("audit: 3 items — 1 SUPPORTED, 2 NOT FOUND")
+    assert au["audit_file"].endswith("state/audit/audit.md") and au["model"] == "m"
+
+
+def test_state_marks_an_incomplete_or_stale_audit(campaign):
+    root, svc, _ = campaign
+    _audit_files(root, track_sha=[["tracking.txt", "old"]], complete=False)
+    svc.update_config({"campaign_state": {"track_files": ["docs/tracking/tracking.txt"]}})
+    au = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["audit"]
+    assert au["complete"] is False and au["stale"] is True and "summary_native audit" in au["stale_reason"]
+    assert au["track_files"] == ["docs/tracking/tracking.txt"]
+
+
+def test_state_with_no_audit_is_not_present_and_offers_the_configured_track_files(campaign):
+    _, svc, _ = campaign
+    svc.update_config({"campaign_state": {"track_files": ["docs/tracking/tracking.txt"]}})
+    au = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["audit"]
+    assert au["present"] is False and au["counts"] is None and au["track_files"] == ["docs/tracking/tracking.txt"]
+
+
+def test_drafts_lists_the_audit_report(campaign):
+    root, _, _ = campaign
+    _audit_files(root)
+    rows = {r["doc"]: r for r in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
+    assert rows["audit"]["status"] == "report" and rows["audit"]["path"].endswith("state/audit/audit.md")

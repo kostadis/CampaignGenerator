@@ -38,10 +38,8 @@ def test_guard_covers_the_modules_that_exist():
     # Modules from spec 032 that exist are checked; those still to come are skipped by name.
     assert {"npc_slug", "npc_authored", "freshness", "npc_check", "npc_chunked", "npc_config", "npc_verify"} <= names
     assert "npc_draft" not in GUARDED  # the model step, deliberately not guarded
-    # Spec 033: `notes` exists as of Phase 2 and is checked; the other four are skipped by name
-    # until their phases land (and are asserted checked below once they exist).
-    assert {"notes", "state_sections", "key_npcs", "annotate"} <= names  # annotate exists as of spec 033 phase 6
-    assert {"notes", "state_sections", "key_npcs", "annotate", "audit_select"} <= set(GUARDED)
+    # Spec 033: every deterministic module of the chunked state documents exists and is checked.
+    assert {"notes", "state_sections", "key_npcs", "annotate", "audit_select"} <= names
     # The model steps are not guarded: they are where the calls are made.
     assert {"extract", "synth", "audit"}.isdisjoint(GUARDED)
 

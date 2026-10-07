@@ -332,8 +332,7 @@ SUMMARY_NATIVE_MODEL_STEPS = ("extract", "synth", "audit")
 @pytest.mark.parametrize("module", SUMMARY_NATIVE_MODEL_STEPS)
 def test_summary_native_model_steps_check_no_credential_and_import_no_sdk(module) -> None:
     path = REPO_ROOT / "pipelines" / "summary_native" / f"{module}.py"
-    if not path.exists():  # audit lands in a later phase; the list is here so it cannot be forgotten
-        pytest.skip(f"{path.name} not written yet")
+    assert path.exists(), f"{path.name}: a model step the list names must exist"
     tree = ast.parse(path.read_text(encoding="utf-8"))
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -359,3 +358,14 @@ def test_extract_and_synth_run_with_no_anthropic_key(monkeypatch, tmp_path) -> N
     rc, _, err = run_cli(["synth", "campaign_state", "--config", str(camp / "config" / "config.yaml"),
                           "--summaries-dir", str(camp / "docs" / "summaries"), "--since", "2", "--until", "5"])
     assert rc == 0, err
+
+
+def test_audit_runs_with_no_anthropic_key(monkeypatch, tmp_path) -> None:
+    from tests.conftest_state import audit_args, fake_models, run_cli, state_campaign
+
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    camp = state_campaign(tmp_path)
+    fake_models(monkeypatch)
+    rc, out, err = run_cli(audit_args(camp))
+    assert rc == 0, err
+    assert "audit: 2 items" in out

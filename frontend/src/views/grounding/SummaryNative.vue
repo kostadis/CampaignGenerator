@@ -78,6 +78,16 @@ const forceExtract = ref(false)
 // same model; blank uses the single endpoint the backend resolves. Workers = in-flight calls per endpoint.
 const extractEndpointsText = ref('')
 const extractParallel = ref<Num>('')
+// Audit (per run, never persisted): track files are prefilled from grounding.yaml campaign_state.track_files and
+// editable here; the judge uses the extraction backend, so a blank model uses summary_native.extract.model.
+const auditTrackText = ref('')
+const auditCandidates = ref<Num>('')
+const auditMaxTokens = ref<Num>('')
+const auditDumpOnly = ref(false)
+const forceAudit = ref(false)
+const auditModel = ref('')
+const auditEndpointsText = ref('')
+const auditParallel = ref<Num>('')
 // Prose step (world_state / campaign_state): blank uses grounding.yaml summary_native.prose.
 const proseModel = ref('')
 const proseEffort = ref('')
@@ -154,6 +164,17 @@ const extractParams = computed(() => ({
   endpoints: lines(extractEndpointsText.value),
   parallel: num(extractParallel.value),
 }))
+const auditParams = computed(() => ({
+  ...baseParams.value,
+  track_file: lines(auditTrackText.value),
+  candidates: num(auditCandidates.value),
+  max_tokens: num(auditMaxTokens.value),
+  dump_only: auditDumpOnly.value,
+  force: forceAudit.value,
+  model: auditModel.value.trim() || undefined,
+  endpoints: lines(auditEndpointsText.value),
+  parallel: num(auditParallel.value),
+}))
 const synthParams = computed(() => isChunked.value
   ? {
       // The prose step takes its backend and model from grounding.yaml summary_native.prose, so the
@@ -217,7 +238,17 @@ const report = ref<Report | null>(null)
 const reportNote = ref('')
 const drafts = ref<DraftRow[]>([])
 const draftsNote = ref('')
+interface AuditCounts {
+  items: number; supported: number; not_found: number; no_candidates: number
+  not_shown: number; unverified: number; not_judged: number
+}
+interface AuditState {
+  present: boolean; complete: boolean; stale: boolean; stale_reason: string | null
+  counts: AuditCounts | null; summary?: string; backend?: string | null; model?: string | null
+  candidates?: number | null; audit_file: string | null; track_files: string[]
+}
 const extractState = ref<ExtractState | null>(null)
+const auditState = ref<AuditState | null>(null)
 // world_state's last build: words written against each prose section's budget.
 interface BudgetRow { budget: number; words: number; over: boolean }
 const worldBudgets = ref<Record<string, BudgetRow> | null>(null)
@@ -235,17 +266,23 @@ async function refreshOutputs() {
   report.value = null; reportNote.value = ''
   drafts.value = []; draftsNote.value = ''
   extractState.value = null
+  auditState.value = null
   worldBudgets.value = null
   annotations.value = {}
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
   try {
     const state = await apiFetch<{
-      extract: ExtractState; world_budgets: Record<string, BudgetRow> | null
+      extract: ExtractState; audit: AuditState; world_budgets: Record<string, BudgetRow> | null
       annotations: Record<string, AnnotationCounts>
       missing_dossiers: MissingNpc[] | null; missing_dossiers_refused: boolean
     }>(`${BASE}/state?${q}`)
     extractState.value = state.extract
+    auditState.value = state.audit
+    // Prefill the track files from the configured list, once; after that the box is the GM's.
+    if (!auditTrackText.value.trim() && state.audit?.track_files?.length) {
+      auditTrackText.value = state.audit.track_files.join('\n')
+    }
     worldBudgets.value = state.world_budgets
     annotations.value = state.annotations ?? {}
     // The latest world_state attempt's list, so a refusal is still shown after a reload.
@@ -295,6 +332,11 @@ watch(doc, () => { fallbackNpcLines.value = false })
 
 const annotateDryParams = computed(() => ({ ...baseParams.value, dry_run: true }))
 function onAnnotateDone() { refreshOutputs() }
+
+function onAuditDone() {
+  forceAudit.value = false
+  refreshOutputs()
+}
 
 function onExtractDone() {
   forceExtract.value = false
@@ -455,9 +497,88 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- 4. Synth -->
+      <!-- 4. Audit -->
       <div class="form-section">
-        <h3 class="step">4. Synthesize a draft</h3>
+        <h3 class="step">4. Audit the tracking files</h3>
+        <span class="field-help">
+          campaign_state's &ldquo;Audit: Tracking Claims&rdquo;, as its own step. For each <code>- </code> line of the tracking files,
+          code picks up to N candidate chapters by the item's names, a model judges that one item against only those chapters,
+          and code accepts SUPPORTED only when the answer cites a candidate chapter and quotes a span that is verbatim there.
+          Anything else is NOT FOUND (and says why). Verdicts are cached per item, so re-running judges only what changed.
+          Needs no extracted notes; run it before Synthesize campaign_state, which renders its Audit section from the result.
+        </span>
+        <div class="field">
+          <label class="field-label">Track files</label>
+          <textarea class="field-textarea" v-model="auditTrackText" rows="3"
+            placeholder="One path per line &mdash; blank uses grounding.yaml campaign_state.track_files" />
+          <span class="field-help">
+            Prefilled from the Campaign State page's list; edit for this run only. Synthesize compares the audit with the
+            configured list, so an audit of other files reads as stale there.
+          </span>
+        </div>
+        <div class="num-grid">
+          <div class="field">
+            <label class="field-label">Candidate chapters per item</label>
+            <input type="number" min="1" class="field-input" v-model.number="auditCandidates" />
+            <span class="field-help">At most this many chapters are shown to the judge. Blank uses the CLI default.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Max tokens</label>
+            <input type="number" min="1" class="field-input" v-model.number="auditMaxTokens" />
+            <span class="field-help">Per call. Blank uses the CLI default.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Workers per endpoint</label>
+            <input type="number" min="1" class="field-input" v-model.number="auditParallel" />
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 1.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Model</label>
+          <input class="field-input" v-model="auditModel" placeholder="blank uses summary_native.extract.model" />
+          <span class="field-help">The judge runs on the extraction backend.</span>
+        </div>
+        <div class="field">
+          <label class="field-label">Endpoints</label>
+          <textarea class="field-textarea" v-model="auditEndpointsText" rows="2"
+            placeholder="One URL per line &mdash; blank uses the single configured endpoint" />
+          <span class="field-help">
+            Several endpoints share one queue of items (<code>--endpoints</code>, dgx backend only); each is checked before any call. Not saved.
+          </span>
+        </div>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="auditDumpOnly" /> Dump only &mdash; write the prompts, make no model call
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="forceAudit" /> Re-judge every item (--force)
+        </label>
+        <RunPanel :endpoint="`${BASE}/run/audit`" :params="auditParams" :disabled="!ready"
+          label="Run audit" @done="onAuditDone" />
+        <div v-if="auditState && auditState.present && auditState.counts" class="panel audit-state">
+          <div class="counts">
+            <span :class="auditState.complete ? 'ok' : 'bad'">{{ auditState.complete ? 'complete' : 'incomplete' }}</span>
+            <span>{{ auditState.counts.items }} items</span>
+            <span class="ok">{{ auditState.counts.supported }} supported</span>
+            <span>{{ auditState.counts.not_found }} not found</span>
+            <span>({{ auditState.counts.no_candidates }} no candidate chapters,
+              {{ auditState.counts.not_shown }} not shown,
+              <span :class="auditState.counts.unverified ? 'bad' : ''">{{ auditState.counts.unverified }} unverified</span>)</span>
+            <span v-if="auditState.counts.not_judged" class="bad">{{ auditState.counts.not_judged }} not judged</span>
+            <span v-if="auditState.model">{{ auditState.backend }} / {{ auditState.model }}</span>
+          </div>
+          <p v-if="auditState.stale" class="field-error">The audit is stale: {{ auditState.stale_reason }}</p>
+          <p v-if="!auditState.complete" class="field-error">
+            Some items have no verdict (their call failed). Run the audit again: only those are judged.
+          </p>
+          <span v-if="auditState.audit_file" class="field-help">
+            Every verdict, with its citation and span or the reason it was not accepted: <code>{{ auditState.audit_file }}</code>
+          </span>
+        </div>
+      </div>
+
+      <!-- 5. Synth -->
+      <div class="form-section">
+        <h3 class="step">5. Synthesize a draft</h3>
         <div class="field">
           <label class="field-label">Document</label>
           <select class="field-input narrow" v-model="doc">
@@ -583,9 +704,9 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- 5. Annotate -->
+      <!-- 6. Annotate -->
       <div v-if="isChunked" class="form-section">
-        <h3 class="step">5. Annotate the {{ doc }} draft</h3>
+        <h3 class="step">6. Annotate the {{ doc }} draft</h3>
         <span class="field-help">
           Deterministic: no model is called and no line is reworded. Where a newer checked note, a mentioned NPC's later status,
           another section, a non-verbatim quotation or an unresolved citation bears on a line, the evidence is appended under it
@@ -610,9 +731,9 @@ onMounted(async () => {
           :label="`Annotate ${doc}`" @done="onAnnotateDone" />
       </div>
 
-      <!-- 6. Compare -->
+      <!-- 7. Compare -->
       <div class="form-section">
-        <h3 class="step">6. Compare with the live document</h3>
+        <h3 class="step">7. Compare with the live document</h3>
         <span class="field-help">Diffs the {{ doc }} draft against docs/{{ doc }}.md. Read-only.</span>
         <RunPanel :endpoint="`${BASE}/run/compare/${doc}`" :params="baseParams" :disabled="!ready"
           :label="`Compare ${doc}`" />
@@ -671,7 +792,7 @@ onMounted(async () => {
         <span v-if="drafts.length" class="field-help">
           An incomplete draft failed its outline check and is not promotable. A report is read-only evidence
           (drops.md lists every dropped note; npc_status_report.md the merged, unresolved and player-character names;
-          canon_events_timeline.md every event in order; annotations.md every annotation and removal; key_npcs_report.md
+          canon_events_timeline.md every event in order; audit.md every tracking-item verdict; annotations.md every annotation and removal; key_npcs_report.md
           who was selected for Key NPCs and what code replaced; reference/*.md every checked note by subject, which each
           world_state section and campaign_state's thread sections point to).
           Review a draft in your editor; promotion is manual.
@@ -724,6 +845,6 @@ onMounted(async () => {
 .drafts { border-collapse: collapse; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 .drafts th, .drafts td { text-align: left; padding: 3px 14px 3px 0; }
 .drafts th { font-weight: 600; color: var(--text); }
-.extract-state, .budgets, .missing-npcs, .annotations { margin-top: 10px; }
+.extract-state, .audit-state, .budgets, .missing-npcs, .annotations { margin-top: 10px; }
 .chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
 </style>

@@ -12,13 +12,14 @@ Guarded by ``tests/test_summary_native_no_llm.py``.
 
 from __future__ import annotations
 
+import json
 import re
 from collections.abc import Sequence
 from pathlib import Path
 
 from campaignlib.players_config import load_players_config
 from campaignlib.registry import load_registry
-from pipelines.summary_native import freshness, notes, schema
+from pipelines.summary_native import audit_select, freshness, notes, schema
 
 # ── Timeline and completed encounters ───────────────────────────────────────
 
@@ -307,10 +308,15 @@ def route_notes(route: str, results: Sequence[notes.CheckedChunk]) -> list[str]:
 
 
 def audit_md(range_dir: Path) -> str:
-    """campaign_state's ``## Audit: Tracking Claims`` body: ``state/audit/audit.md`` when the audit
-    has run, else the single line "Audit not run for this range." (the audit is ``summary_native audit``)."""
+    """campaign_state's ``## Audit: Tracking Claims`` body, rendered from ``state/audit/audit.json``
+    when the audit has run, else the single line "Audit not run for this range." (the audit is
+    ``summary_native audit``). Whether the audit is stale is ``freshness.check_audit_fresh``'s call,
+    made by ``synth`` before this is read; an unreadable ``audit.json`` reads as not run."""
     if freshness.audit_exists(range_dir):
-        p = freshness.audit_dir(range_dir) / "audit.md"
-        if p.is_file():
-            return p.read_text(encoding="utf-8").strip()
+        try:
+            data = json.loads((freshness.audit_dir(range_dir) / "audit.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return schema.AUDIT_NOT_RUN
+        if isinstance(data, dict) and data.get("kind") == "audit" and data.get("verdicts"):
+            return audit_select.render_audit_md(data).strip()
     return schema.AUDIT_NOT_RUN

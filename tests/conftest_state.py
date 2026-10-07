@@ -13,7 +13,7 @@ import re
 import shutil
 from pathlib import Path
 
-from pipelines.summary_native import extract, schema, synth
+from pipelines.summary_native import audit, extract, schema, synth
 from pipelines.summary_native.cli import main
 
 STATE_FIXTURE = Path(__file__).parent / "fixtures" / "summary_native" / "state"
@@ -159,6 +159,17 @@ def extract_args(root: Path, *extra: str) -> list[str]:
     ]
 
 
+def audit_args(root: Path, *extra: str) -> list[str]:
+    return [
+        "audit", *common(root), "--track-file", "docs/tracking/tracking.txt",
+        "--backend", "dgx", "--model", "fake-model", "--endpoint", "http://spark:8001/v1", *extra,
+    ]
+
+
+def audit_dir(root: Path) -> Path:
+    return range_dir(root) / schema.STATE_DIR / "audit"
+
+
 class _Anything(list):
     """A /models listing that serves whatever model is asked for."""
 
@@ -178,6 +189,9 @@ class FakeModels:
         self.served: dict[str, list[str]] = {}  # endpoint -> model ids its /models lists (default: any asked)
         self.unreachable: set[str] = set()  # endpoints whose /models raises
         self.preflighted: list[str] = []  # every endpoint asked, in order
+        self.audit_calls: list[dict] = []
+        self.audit_fail: dict[str, int] = {}  # item id -> number of calls that raise
+        self.audit_answers: dict[str, str] = {}  # item id -> the judge's full answer (default: NOT SHOWN)
         self.client_args: list[dict] = []  # (backend, model, effort, endpoint) each client was built with
 
     def served_models(self, endpoint):
@@ -202,6 +216,15 @@ class FakeModels:
             raise RuntimeError(f"upstream failure for {rng}")
         return CANNED[int(rng[:3])]
 
+    def audit_render(self, client, system, user, model, max_tokens):
+        item_id = re.search(r"^TRACKING ITEM .*?: \[(A\d+)\]", user, re.M).group(1)
+        self.audit_calls.append({"id": item_id, "system": system, "user": user, "model": model})
+        left = self.audit_fail.get(item_id, 0)
+        if left:
+            self.audit_fail[item_id] = left - 1
+            raise RuntimeError(f"upstream failure for {item_id}")
+        return self.audit_answers.get(item_id, "NOT SHOWN\nThe candidate chapters do not show it.\n")
+
     def prose_render(self, client, system, user, model, max_tokens):
         heading = re.search(r"^SECTION: (## .+)$", user, re.M).group(1)
         self.prose_calls.append({"heading": heading, "system": system, "user": user, "model": model})
@@ -217,6 +240,8 @@ def fake_models(monkeypatch) -> FakeModels:
     monkeypatch.setattr(extract, "render_part", fm.extract_render)
     monkeypatch.setattr(extract, "client_from_args", fm.make_client)
     monkeypatch.setattr(extract, "_served_models", fm.served_models)
+    monkeypatch.setattr(audit, "render_part", fm.audit_render)
+    monkeypatch.setattr(audit, "client_from_args", fm.make_client)
     monkeypatch.setattr(synth, "render_part", fm.prose_render)
     monkeypatch.setattr(synth, "client_from_args", fm.make_client)
     return fm
