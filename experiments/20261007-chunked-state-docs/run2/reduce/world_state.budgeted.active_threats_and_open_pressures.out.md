@@ -1,0 +1,19 @@
+## Active Threats and Open Pressures
+
+- **Manshoon's breached keep** — The party holds the four surviving prophecy crystals, but the real Manshoon's enmity is assured after the party killed two of his simulacra, one of which promised his vengeance forever; the slain simulacrum also carried an explosive fail-safe (avoided by the anti-magic field) and may have had a dead-man switch [ch 070 / 070.02; ch 070 / npcs].
+- **The Book of Vile Darkness** — Daz chose to receive "information about Underdark events" from the sentient book, whose narrator "cannot be trusted"; its fate is unresolved [ch 070 / 070.04].
+- **Avowed Readers incoming** — Surviving Avowed will not permit Alaundo's artifacts to disappear unnoticed, and Manshoon breached Candlekeep with a Staff of Power [ch 070 / 070.01; ch 070 / 070.04].
+- **Edvaldo's flight** — The doppelganger who served Manshoon fled toward the anti-magic barrier after failing to get the book [ch 070 / 070.03; ch 070 / npcs].
+- **Destroyed prophecies** — Edvaldo smashed two of the six prophecy crystals; the remaining four may concern the party, and the party "cannot walk away" unnoticed with them [ch 070 / 070.03; ch 070 / 070.04].
+- **A'lai's pending judgment** — A'lai is to be turned over to the Avowed's council for imprisonment in Candlekeep's null-magic prison, and he holds withheld intelligence, including the cryptogram's key lines and "the name of the person in Menzoberranzan who has been paying to keep your drow breathing"; vengeful Avowed may target him [ch 065 / 065.01; ch 065 / 065.02; ch 065 / 065.03; ch 067 / 067.02].
+- **House T'sarran surveillance** — Agents watch Daz specifically to report who approaches him, as bait to identify his unknown protector who paid for his safe extraction; the house seeks to identify that protector [ch 054 / 054.04].
+- **Surface-madness bleed** — The Underdark's madness is affecting the surface, twisting minds from within; Elin's six-day drawing of the six-pointed shape ("The wells are not wells anymore") and the widespread, subtly wrong "Endless Chant" recurrences remain unexplained [ch 056 / 056.02; ch 056 / 056.03].
+- **Daz's headache and identity** — Pressure behind Daz's eyes is tenuously connected to Elin's affliction; his search at Candlekeep found records of a drow house erased, including a razored-out appendix and a footnote referencing "Daz'issin" [ch 056 / 056.07; ch 056 / 056.04].
+- **The miniature drow spy** — The House T'sarran spy remains in the bag of holding under Glabbagool's watch; she demands restoration to normal size and formal imprisonment [ch 056 / 056.04].
+- **Sylvira's grief deferred** — Tadric insisted someone must tell Sylvira her abyssal son Moziqodo is dead; the party has not yet done so [ch 064 / 064.01; ch 065 / NPCs].
+- **Zuggtmoy's encroachment** — With the Pudding King dead, fungi grow at accelerated rates and a fast-growing puffball appeared at the departure tunnels; "this is not the last you and Zuggtmoy are going to be talking to each other" [ch 048 / 048.01; ch 048 / 048.07].
+- **Juiblex's resurgence** — A demonic voice, possibly Juiblex, declared he would be reborn and consume "the banquet of the queen of the fungi" [ch 047 / 047.10; ch 047 / npcs].
+- **House T'sarran's elite warrior** — The surviving warrior vowed "We will meet again. Enjoy your victory for the moment," establishing future enmity [ch 051 / 051.06].
+- **The Bone King note** — Khell-Vire's desk holds an unexplained note: "Zalthir, the Underdark, until the Bone King sings" [ch 056 / 056.05].
+- **The Endless Chant silence** — The perpetual prophecy chant fell suddenly silent, which never happens; significance unexplained [ch 064 / 064.01].
+- **Deferred investigation of Bookwyrm** — The party plans to return with proof of Bookwyrm's involvement in Janussi's murder cover-up after she believes the danger has passed [ch 062 / 062.02].

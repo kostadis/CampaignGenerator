@@ -1,0 +1,1089 @@
+{
+  "wall_secs": 0.1,
+  "workers_per_endpoint": 6,
+  "calls_per_endpoint": {
+    "cache-only": 0
+  },
+  "chunks": [
+    {
+      "chunk": 1,
+      "chapters": "002-002",
+      "chars": 39304,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 11,
+        "## Concluded": 1,
+        "## Threads": 5,
+        "## NPC Status": 12,
+        "## World": 9,
+        "## Party": 6,
+        "## Audit": 15
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 2,
+      "chapters": "003-003",
+      "chars": 32977,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 11,
+        "## Concluded": 3,
+        "## Threads": 2,
+        "## NPC Status": 13,
+        "## World": 3,
+        "## Party": 6,
+        "## Audit": 13
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 3,
+      "chapters": "004-005",
+      "chars": 53713,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 24,
+        "## Concluded": 4,
+        "## Threads": 7,
+        "## NPC Status": 11,
+        "## World": 9,
+        "## Party": 8,
+        "## Audit": 12
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 4,
+      "chapters": "006-006",
+      "chars": 35909,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 17,
+        "## Concluded": 5,
+        "## Threads": 5,
+        "## NPC Status": 10,
+        "## World": 6,
+        "## Party": 5,
+        "## Audit": 5
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 5,
+      "chapters": "007-008",
+      "chars": 53078,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 9,
+        "## Concluded": 4,
+        "## Threads": 6,
+        "## NPC Status": 13,
+        "## World": 7,
+        "## Party": 6,
+        "## Audit": 12
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 6,
+      "chapters": "009-010",
+      "chars": 57901,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 23,
+        "## Concluded": 4,
+        "## Threads": 5,
+        "## NPC Status": 13,
+        "## World": 8,
+        "## Party": 5,
+        "## Audit": 7
+      },
+      "dropped": 2
+    },
+    {
+      "chunk": 7,
+      "chapters": "011-011",
+      "chars": 33132,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 11,
+        "## Concluded": 4,
+        "## Threads": 4,
+        "## NPC Status": 9,
+        "## World": 9,
+        "## Party": 6,
+        "## Audit": 2
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 8,
+      "chapters": "012-012",
+      "chars": 32550,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 3,
+        "## Threads": 6,
+        "## NPC Status": 6,
+        "## World": 5,
+        "## Party": 6,
+        "## Audit": 5
+      },
+      "dropped": 2
+    },
+    {
+      "chunk": 9,
+      "chapters": "013-013",
+      "chars": 36852,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 21,
+        "## Concluded": 2,
+        "## Threads": 9,
+        "## NPC Status": 7,
+        "## World": 9,
+        "## Party": 4,
+        "## Audit": 7
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 10,
+      "chapters": "014-014",
+      "chars": 38757,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 9,
+        "## Concluded": 2,
+        "## Threads": 6,
+        "## NPC Status": 9,
+        "## World": 10,
+        "## Party": 6,
+        "## Audit": 12
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 11,
+      "chapters": "015-015",
+      "chars": 33824,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 21,
+        "## Concluded": 1,
+        "## Threads": 6,
+        "## NPC Status": 8,
+        "## World": 8,
+        "## Party": 5,
+        "## Audit": 6
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 12,
+      "chapters": "016-017",
+      "chars": 55505,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 4,
+        "## Threads": 8,
+        "## NPC Status": 9,
+        "## World": 13,
+        "## Party": 11,
+        "## Audit": 7
+      },
+      "dropped": 4
+    },
+    {
+      "chunk": 13,
+      "chapters": "018-018",
+      "chars": 46125,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 13,
+        "## Concluded": 3,
+        "## Threads": 6,
+        "## NPC Status": 6,
+        "## World": 8,
+        "## Party": 6,
+        "## Audit": 8
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 14,
+      "chapters": "019-019",
+      "chars": 36110,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 20,
+        "## Concluded": 1,
+        "## Threads": 5,
+        "## NPC Status": 9,
+        "## World": 6,
+        "## Party": 6,
+        "## Audit": 5
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 15,
+      "chapters": "020-020",
+      "chars": 27152,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 9,
+        "## Concluded": 1,
+        "## Threads": 3,
+        "## NPC Status": 8,
+        "## World": 4,
+        "## Party": 8,
+        "## Audit": 0
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 16,
+      "chapters": "021-021",
+      "chars": 35086,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 10,
+        "## Concluded": 3,
+        "## Threads": 6,
+        "## NPC Status": 7,
+        "## World": 9,
+        "## Party": 5,
+        "## Audit": 5
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 17,
+      "chapters": "022-022",
+      "chars": 31119,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 22,
+        "## Concluded": 3,
+        "## Threads": 4,
+        "## NPC Status": 7,
+        "## World": 5,
+        "## Party": 7,
+        "## Audit": 3
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 18,
+      "chapters": "023-024",
+      "chars": 54336,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 15,
+        "## Concluded": 2,
+        "## Threads": 6,
+        "## NPC Status": 9,
+        "## World": 10,
+        "## Party": 7,
+        "## Audit": 6
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 19,
+      "chapters": "025-025",
+      "chars": 45192,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 3,
+        "## Threads": 6,
+        "## NPC Status": 10,
+        "## World": 7,
+        "## Party": 6,
+        "## Audit": 4
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 20,
+      "chapters": "026-026",
+      "chars": 38430,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 4,
+        "## Threads": 5,
+        "## NPC Status": 6,
+        "## World": 7,
+        "## Party": 7,
+        "## Audit": 6
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 21,
+      "chapters": "027-027",
+      "chars": 29609,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 19,
+        "## Concluded": 3,
+        "## Threads": 5,
+        "## NPC Status": 12,
+        "## World": 6,
+        "## Party": 5,
+        "## Audit": 0
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 22,
+      "chapters": "028-028",
+      "chars": 40277,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 22,
+        "## Concluded": 4,
+        "## Threads": 6,
+        "## NPC Status": 9,
+        "## World": 6,
+        "## Party": 5,
+        "## Audit": 2
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 23,
+      "chapters": "029-029",
+      "chars": 35914,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 20,
+        "## Concluded": 3,
+        "## Threads": 3,
+        "## NPC Status": 10,
+        "## World": 7,
+        "## Party": 6,
+        "## Audit": 6
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 24,
+      "chapters": "030-030",
+      "chars": 32746,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 22,
+        "## Concluded": 3,
+        "## Threads": 5,
+        "## NPC Status": 8,
+        "## World": 9,
+        "## Party": 4,
+        "## Audit": 3
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 25,
+      "chapters": "031-031",
+      "chars": 43267,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 10,
+        "## Concluded": 3,
+        "## Threads": 8,
+        "## NPC Status": 10,
+        "## World": 6,
+        "## Party": 5,
+        "## Audit": 4
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 26,
+      "chapters": "032-032",
+      "chars": 45624,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 19,
+        "## Concluded": 4,
+        "## Threads": 8,
+        "## NPC Status": 10,
+        "## World": 8,
+        "## Party": 9,
+        "## Audit": 7
+      },
+      "dropped": 2
+    },
+    {
+      "chunk": 27,
+      "chapters": "034-034",
+      "chars": 40441,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 3,
+        "## Threads": 3,
+        "## NPC Status": 3,
+        "## World": 5,
+        "## Party": 7,
+        "## Audit": 3
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 28,
+      "chapters": "035-036",
+      "chars": 48744,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 11,
+        "## Concluded": 3,
+        "## Threads": 4,
+        "## NPC Status": 5,
+        "## World": 6,
+        "## Party": 4,
+        "## Audit": 5
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 29,
+      "chapters": "037-037",
+      "chars": 35051,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 11,
+        "## Concluded": 2,
+        "## Threads": 5,
+        "## NPC Status": 7,
+        "## World": 9,
+        "## Party": 6,
+        "## Audit": 7
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 30,
+      "chapters": "038-038",
+      "chars": 42365,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 17,
+        "## Concluded": 4,
+        "## Threads": 5,
+        "## NPC Status": 9,
+        "## World": 7,
+        "## Party": 5,
+        "## Audit": 8
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 31,
+      "chapters": "039-039",
+      "chars": 47197,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 11,
+        "## Concluded": 3,
+        "## Threads": 6,
+        "## NPC Status": 12,
+        "## World": 8,
+        "## Party": 0,
+        "## Audit": 9
+      },
+      "dropped": 7
+    },
+    {
+      "chunk": 32,
+      "chapters": "040-040",
+      "chars": 37717,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 13,
+        "## Concluded": 3,
+        "## Threads": 7,
+        "## NPC Status": 8,
+        "## World": 8,
+        "## Party": 7,
+        "## Audit": 5
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 33,
+      "chapters": "041-041",
+      "chars": 37465,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 7,
+        "## Concluded": 3,
+        "## Threads": 4,
+        "## NPC Status": 7,
+        "## World": 10,
+        "## Party": 6,
+        "## Audit": 0
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 34,
+      "chapters": "042-042",
+      "chars": 40265,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 13,
+        "## Concluded": 4,
+        "## Threads": 3,
+        "## NPC Status": 6,
+        "## World": 6,
+        "## Party": 7,
+        "## Audit": 4
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 35,
+      "chapters": "043-043",
+      "chars": 45751,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 19,
+        "## Concluded": 4,
+        "## Threads": 6,
+        "## NPC Status": 10,
+        "## World": 7,
+        "## Party": 6,
+        "## Audit": 16
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 36,
+      "chapters": "044-044",
+      "chars": 38433,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 12,
+        "## Concluded": 4,
+        "## Threads": 3,
+        "## NPC Status": 7,
+        "## World": 7,
+        "## Party": 6,
+        "## Audit": 2
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 37,
+      "chapters": "045-045",
+      "chars": 36139,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 23,
+        "## Concluded": 3,
+        "## Threads": 4,
+        "## NPC Status": 12,
+        "## World": 16,
+        "## Party": 8,
+        "## Audit": 10
+      },
+      "dropped": 3
+    },
+    {
+      "chunk": 38,
+      "chapters": "046-046",
+      "chars": 40312,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 24,
+        "## Concluded": 2,
+        "## Threads": 2,
+        "## NPC Status": 12,
+        "## World": 6,
+        "## Party": 4,
+        "## Audit": 3
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 39,
+      "chapters": "047-047",
+      "chars": 34458,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 15,
+        "## Concluded": 1,
+        "## Threads": 4,
+        "## NPC Status": 6,
+        "## World": 3,
+        "## Party": 5,
+        "## Audit": 5
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 40,
+      "chapters": "048-048",
+      "chars": 41633,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 6,
+        "## Threads": 6,
+        "## NPC Status": 10,
+        "## World": 10,
+        "## Party": 7,
+        "## Audit": 12
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 41,
+      "chapters": "049-049",
+      "chars": 29399,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 12,
+        "## Concluded": 3,
+        "## Threads": 5,
+        "## NPC Status": 7,
+        "## World": 8,
+        "## Party": 6,
+        "## Audit": 1
+      },
+      "dropped": 2
+    },
+    {
+      "chunk": 42,
+      "chapters": "050-050",
+      "chars": 30716,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 2,
+        "## Threads": 4,
+        "## NPC Status": 6,
+        "## World": 6,
+        "## Party": 6,
+        "## Audit": 0
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 43,
+      "chapters": "051-052",
+      "chars": 59126,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 21,
+        "## Concluded": 2,
+        "## Threads": 4,
+        "## NPC Status": 7,
+        "## World": 6,
+        "## Party": 6,
+        "## Audit": 0
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 44,
+      "chapters": "053-053",
+      "chars": 39956,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 6,
+        "## Concluded": 3,
+        "## Threads": 6,
+        "## NPC Status": 6,
+        "## World": 6,
+        "## Party": 6,
+        "## Audit": 2
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 45,
+      "chapters": "054-054",
+      "chars": 43067,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 12,
+        "## Concluded": 4,
+        "## Threads": 7,
+        "## NPC Status": 10,
+        "## World": 8,
+        "## Party": 6,
+        "## Audit": 6
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 46,
+      "chapters": "055-055",
+      "chars": 48435,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 24,
+        "## Concluded": 5,
+        "## Threads": 9,
+        "## NPC Status": 10,
+        "## World": 11,
+        "## Party": 7,
+        "## Audit": 20
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 47,
+      "chapters": "056-056",
+      "chars": 53604,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 23,
+        "## Concluded": 3,
+        "## Threads": 7,
+        "## NPC Status": 0,
+        "## World": 17,
+        "## Party": 7,
+        "## Audit": 18
+      },
+      "dropped": 18
+    },
+    {
+      "chunk": 48,
+      "chapters": "057-057",
+      "chars": 51982,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 14,
+        "## Concluded": 0,
+        "## Threads": 4,
+        "## NPC Status": 13,
+        "## World": 5,
+        "## Party": 4,
+        "## Audit": 4
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 49,
+      "chapters": "058-058",
+      "chars": 28411,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 12,
+        "## Concluded": 2,
+        "## Threads": 5,
+        "## NPC Status": 11,
+        "## World": 9,
+        "## Party": 4,
+        "## Audit": 8
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 50,
+      "chapters": "059-059",
+      "chars": 39371,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 11,
+        "## Concluded": 4,
+        "## Threads": 5,
+        "## NPC Status": 11,
+        "## World": 5,
+        "## Party": 5,
+        "## Audit": 6
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 51,
+      "chapters": "060-060",
+      "chars": 51103,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 2,
+        "## Threads": 0,
+        "## NPC Status": 18,
+        "## World": 8,
+        "## Party": 0,
+        "## Audit": 6
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 52,
+      "chapters": "061-061",
+      "chars": 50109,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 3,
+        "## Threads": 8,
+        "## NPC Status": 12,
+        "## World": 8,
+        "## Party": 3,
+        "## Audit": 4
+      },
+      "dropped": 4
+    },
+    {
+      "chunk": 53,
+      "chapters": "062-062",
+      "chars": 40655,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 4,
+        "## Threads": 4,
+        "## NPC Status": 7,
+        "## World": 6,
+        "## Party": 6,
+        "## Audit": 0
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 54,
+      "chapters": "063-063",
+      "chars": 46359,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 14,
+        "## Concluded": 5,
+        "## Threads": 4,
+        "## NPC Status": 8,
+        "## World": 7,
+        "## Party": 5,
+        "## Audit": 11
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 55,
+      "chapters": "064-064",
+      "chars": 31288,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 27,
+        "## Concluded": 3,
+        "## Threads": 5,
+        "## NPC Status": 6,
+        "## World": 8,
+        "## Party": 6,
+        "## Audit": 5
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 56,
+      "chapters": "065-065",
+      "chars": 36523,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 9,
+        "## Concluded": 3,
+        "## Threads": 4,
+        "## NPC Status": 0,
+        "## World": 7,
+        "## Party": 6,
+        "## Audit": 6
+      },
+      "dropped": 14
+    },
+    {
+      "chunk": 57,
+      "chapters": "067-067",
+      "chars": 40049,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 13,
+        "## Concluded": 3,
+        "## Threads": 4,
+        "## NPC Status": 6,
+        "## World": 8,
+        "## Party": 5,
+        "## Audit": 18
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 58,
+      "chapters": "068-068",
+      "chars": 42064,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 12,
+        "## Concluded": 2,
+        "## Threads": 4,
+        "## NPC Status": 5,
+        "## World": 5,
+        "## Party": 5,
+        "## Audit": 6
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 59,
+      "chapters": "069-069",
+      "chars": 41609,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 0,
+        "## Concluded": 0,
+        "## Threads": 4,
+        "## NPC Status": 4,
+        "## World": 6,
+        "## Party": 0,
+        "## Audit": 12
+      },
+      "dropped": 33
+    },
+    {
+      "chunk": 60,
+      "chapters": "070-070",
+      "chars": 31374,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "cache-only",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 3,
+        "## Threads": 5,
+        "## NPC Status": 3,
+        "## World": 8,
+        "## Party": 6,
+        "## Audit": 11
+      },
+      "dropped": 0
+    }
+  ]
+}

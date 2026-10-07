@@ -1,0 +1,159 @@
+DOCUMENT: world_state
+SECTION: ## Locations
+BRIEF: Places as they stand NOW: what each is, who controls it, what the party did there and left unresolved.
+
+VERIFIED NOTES (149 bullets, chapter order, every one already checked by code):
+
+- [LOCATION] **Velkynvelve** — A drow outpost suspended in a cavern, featuring hanging towers, rope bridges, webs, a slave pen, and a waterfall feeding a pool and underground river [ch 002 / locations].
+- [LOCATION] **The Lift** — A winch-and-basket mechanism attached to the barracks, supervised by quaggoths, and the only safe visible descent from the barracks level [ch 002 / locations; ch 002 / 002.02].
+- [LOCATION] **Ilvara’s Quarters** — Located beneath the shrine to Lolth in the largest hanging tower, containing a bathtub, a treasure chest, and a passage to Shoor Vandree’s quarters [ch 002 / locations; ch 002 / 002.03].
+- [LOCATION] **Velkynvelve Guard Tower** — The lower chamber is now secured by escaped prisoners; the upper armory has been looted of most weapons and armor [ch 003 / 003.04].
+- [LOCATION] **Velkynvelve** — A drow prison outpost featuring towers, webs, and a pool; currently under attack by demons [ch 004 / 004.01; ch 004 / locations].
+- [LOCATION] **Darklake** — A massive network of underground waterways stretching over 100 miles, serving as a major travel route [ch 004 / 004.04; ch 004 / locations].
+- [LOCATION] **Narrow Tunnel** — A tight passage lined with Ormu moss, now blocked and disguised to look natural. [ch 006 / 006.01; ch 006 / 006.03]
+- [LOCATION] **Silken Paths** — A massive chasm (500 ft deep, 2000 ft wide) filled with shifting giant spider webs acting as bridges; paths are unstable and change frequently. [ch 006 / 006.04; ch 006 / locations]
+- [LOCATION] **Silken Paths** — A chasm of giant spider webs with five-hit-point strands; the party exited toward Sloobludop. [ch 007 / 007.01; ch 007 / 007.04]
+- [LOCATION] **Sloobludop** — A Kuo-toa settlement on the Darklake featuring docks, jetties, and a sacrificial altar. [ch 008 / 008.01; ch 008 / locations]
+- [LOCATION] **Sloobludop** — A kuo-toa village on the Darklake, devastated by Demogorgon's arrival [ch 009 / 009.01].
+- [LOCATION] **Darklake** — A vast subterranean waterway in the Underdark, characterized by low ceilings, submerged hazards, and dangerous aquatic life [ch 009 / locations].
+- [LOCATION] **Darklake** — A subterranean waterway containing hazards like blind cavefish, bone pyramids, undead, and trolls; the tunnel forked around the Bone Pyramid Islet. [ch 011 / locations; ch 011 / 011.02]
+- [LOCATION] **Bone Pyramid Islet** — A diamond-shaped limestone islet with a bone monument, sunken boats, and undead guardians; associated with an "evil altar" rumor. [ch 011 / locations; ch 011 / 011.02; ch 011 / 011.04]
+- [LOCATION] **Gracklstugh** — A duergar city with draconian laws against foreigners, disliked by the Drow, and featuring guards at the doors rather than the docks. [ch 011 / locations; ch 011 / 011.07]
+- [LOCATION] **Blade Bazaar** — A trading hub within Gracklstugh where the party plans to sell stolen gear and buy equipment. [ch 011 / locations; ch 011 / 011.07]
+- [LOCATION] **Gracklstugh** — Grim duergar city with harsh laws, invisible guards, and slavery; non-duergar restricted to the Darklake district [ch 012 / 012.01; ch 012 / locations].
+- [LOCATION] **Darklake District** — Walled-off area in Gracklstugh where outsiders can trade; contains the Blade Bazaar [ch 012 / locations].
+- [LOCATION] **Blade Bazaar** — Marketplace in the Darklake district selling non-magical goods; merchants display signs of madness [ch 012 / 012.02; ch 012 / locations].
+- [LOCATION] **Gracklstugh** — A grim duergar city in the Underdark currently plagued by a wave of citizen madness and paranoid laws, with non-duergar treated as irrelevant civilians if uninvolved. [ch 013 / locations; ch 013 / 013.05]
+- [LOCATION] **Cairngorm Cavern** — The residence of the stone giants in Gracklstugh, where Rihuud went mad while communing with the stone. [ch 013 / locations; ch 013 / 013.03]
+- [LOCATION] **West Cleft District** — A volatile district where the Stone Guard enters only in force; home to the derro Droki. [ch 013 / locations; ch 013 / 013.06]
+- [LOCATION] **Overlake Hold** — The prison and Stone Guard front office where Errde Blackskull conducted her meeting with the party. [ch 013 / locations; ch 013 / 013.06]
+- [LOCATION] **Gracklstugh** — A Duergar city where the party navigates factions including the Stone Guard and Keepers of the Flame [ch 014 / locations].
+- [LOCATION] **Themberchaud's Lair** — A massive cavern in the Flowstone District containing a mountain of gold [ch 014 / locations].
+- [LOCATION] **Cairngorm Cavern** — Home of the Stone Giants in the Southfurrow District, accessed via a long tunnel. [ch 015 / 015.01]
+- [LOCATION] **West Cleft District** — A squalid, chaotic derro slum and the original home of derro slaves. [ch 015 / 015.05]
+- [LOCATION] **Whorlstone Tunnels** — A cavern network beneath Gracklstugh, filled with faerzress and size-altering fungi; entrance hidden in the West Cleft District. [ch 015 / 015.05]
+- [LOCATION] **Whorlstone Tunnels** — A complex cave system beneath Gracklstugh holding factions plotting against the Deepking, currently plagued by corruption and derro activity [ch 016 / locations; ch 016 / 016.02].
+- [LOCATION] **Blingdenstone** — The ancestral home of deep gnomes, where the number eight is taboo due to its association with spiders and Lolth [ch 016 / 016.01].
+- [LOCATION] **Obelisk Chamber** — A room in the Gray Ghost lair containing an obelisk and the dragon egg, guarded by ten derro [ch 017 / locations].
+- [LOCATION] **Gracklstugh** — The city is a political tinderbox where misinformation could trigger all-out war; Stone Guard integrity is declining due to bribery [ch 018 / 018.04].
+- [LOCATION] **Clan Ironhead** — The clan is barred from direct weapon orders and takes surplus work from Clan Steelshadow; they are openly opposed to the Deepking [ch 018 / 018.03].
+- [LOCATION] **Clan Xardelvar** — The clan fears the Deepking will take over their work as it resembles weaponsmithing; they are chafing under new regulations [ch 018 / 018.03].
+- [LOCATION] **Whorlstone Caverns** — Inhabited by Derro who have built traps capable of catching invisible intruders; known to both Keepers and Stone Guard as a source of dangerous secrets [ch 018 / 018.01].
+- [LOCATION] **Whorlstone Caverns** — Contains the territory of the Empty-Scabbard Killers and the Obelisk Chamber; accessible via main doors or north route past Council of Savants [ch 019 / 019.01; ch 019 / locations].
+- [LOCATION] **Obelisk Chamber** — A cavern in the Whorlstone Tunnels featuring a ten-foot ledge and a lower level, plunged into magical darkness. [ch 020 / locations]
+- [LOCATION] **The Corrupted Chamber** — A lab-like space containing evidence of the Council of Savants' corruption, distinct from a treasure storehouse [ch 021 / locations].
+- [LOCATION] **Whorlstone Tunnels** — A vast network beneath Gracklstugh characterized by faerzress, pits of zombies, and derro cult activity [ch 022 / locations].
+- [LOCATION] **Brimstone Cavern** — A damp chamber in the Whorlstone Tunnels smelling of brimstone, filled with fungi, a pit trap, and a ritual platform [ch 022 / locations].
+- [LOCATION] **Ritual Cavern** — A foul-smelling cavern in the Whorlstone Tunnels used by Derro cultists for Demogorgon rituals; currently empty of enemies but littered with loot and evidence [ch 023 / 023.01; ch 024 / 024.04].
+- [LOCATION] **Buppido's Resting Place** — A secluded, safe alcove in the tunnels where the party took a long rest; previously used by Buppido without issue [ch 023 / 023.02].
+- [LOCATION] **Whorlstone Caverns** — A complex beneath Gracklstugh containing derro ruins, Myconid refugees, and connections to spore networks [ch 025 / locations].
+- [LOCATION] **Neverlight Grove** — Home of the Myconids, where Voosbur released spores causing teleportation; potentially the source of Zuggtmoy’s influence [ch 025 / locations].
+- [LOCATION] **West Cleft Exit** — A heavily guarded checkpoint in Gracklstugh currently under lockdown due to fears of a drow raid; it features a 30-foot passage with invisible guards and corrupt officials demanding bribes [ch 026 / 026.01; ch 026 / 026.02].
+- [LOCATION] **Laduguer's Furrow** — The affluent district of Gracklstugh, home to the Ironhead faction; it has a "Dickensian London" or "19th-century Pittsburgh" industrial vibe with heavy smog [ch 026 / 026.03; ch 026 / 026.05].
+- [LOCATION] **Cairngorm Cavern** — The stone giant residence in Gracklstugh, now closed to outsiders while Hgraam consults the stones regarding the curse [ch 026 / 026.04].
+- [LOCATION] **Gracklstugh** — Duergar city in a massive cavern; the party caused mass panic by riding Themberchaud [ch 027 / 027.03; ch 027 / locations].
+- [LOCATION] **Forge of Thrazgad** — Major industrial forge in Gracklstugh; lit by Themberchaud's breath [ch 027 / 027.03; ch 027 / locations].
+- [LOCATION] **Darklake** — Vast subterranean waterway; described as a "Swiss cheese" of passages [ch 027 / locations].
+- [LOCATION] **The Hidden Beach** — Desolate shore on the Darklake; entry point to the Lost Tomb of Khaem [ch 027 / 027.06; ch 027 / locations].
+- [LOCATION] **Faerzress Suffused Area** — Region with magical radiation blocking teleportation and causing madness; linked to recent demonic incursions [ch 028 / 028.01].
+- [LOCATION] **Lost Tomb of Khaem** — Ancient Netherese tomb built for sorcerer Brysis of Khaem; contents are oddly well-preserved after thousands of years [ch 028 / 028.04].
+- [LOCATION] **Lower Chamber of the Tomb** — Hidden vault accessible via hole under a rolling sarcophagus; contains a gilded sarcophagus, invisible stone chest, and rich murals [ch 028 / 028.06].
+- [LOCATION] **Neverlight Grove** — A hidden myconid colony in a vast, bioluminescent mushroom cavern with a lake and a visible mushroom tower [ch 029 / 029.05; ch 029 / 029.05].
+- [LOCATION] **Garden of Welcome** — A restricted area where visitors disappear; Basidia suspects it is the source of the corruption [ch 029 / 029.06].
+- [LOCATION] **Circle of Hunters** — A circle led by Loobamub that tracks dead creatures for reanimation rather than hunting live prey [ch 029 / 029.07].
+- [LOCATION] **Neverlight Grove Caverns** — A vast underground area filled with psychedelic mushrooms and mossy terrain, larger than previously mapped [ch 030 / 030.01].
+- [LOCATION] **Circle of Builders** — A vast cavern in Neverlight Grove featuring terraced irrigation systems and thousands of glowing fungi, led by Gasbide [ch 030 / 030.05].
+- [LOCATION] **Yggmorgus** — A colossal mushroom in Neverlight Grove that Gasbide dreams of surpassing with a new tower [ch 030 / 030.05].
+- [LOCATION] **Garden of Welcome** — A high plateau in Neverlight Grove where victims are buried alive to feed fungal growths and serve as sacrifices; accessible via a secret passage known to Rumpadump [ch 031 / 031.02; ch 031 / locations].
+- [LOCATION] **Circle of Masters** — An area beyond the Garden of Welcome dominated by a massive mushroom, serving as the source of the wedding procession's music [ch 031 / locations].
+- [LOCATION] **Majestic Mushroom** — A colossal fungal structure serving as a staging ground for Zuggtmoy’s wedding rehearsal, filled with atonal music and toxic spores [ch 032 / 032.01; ch 032 / locations].
+- [LOCATION] **Gas-Filled Cavern** — A chamber with a floor depression containing heavy, toxic, and combustible gas, safe to navigate via five-foot ledges if no open flames are present [ch 032 / 032.05].
+- [LOCATION] **Collapsed Tunnels** — A maze of passages created by a tremor, blocking the party’s original route north toward Blingdenstone [ch 032 / 032.06; ch 032 / locations].
+- [LOCATION] **Oozing Temple** — A flooded Underdark temple with 10-foot ceilings, pit traps, and high concentrations of oozes, now breached and drained by the party's escape [ch 034 / locations].
+- [LOCATION] **Large Cavern** — A vast underground space with breathable air, accessible by swimming up through a breached river passage [ch 034 / locations].
+- [LOCATION] **Underdark** — Characterized by shifting passages and geology destabilized by recent tremors, causing flooding in the Oozing Temple [ch 034 / locations].
+- [LOCATION] **Blingdenstone** — A deep gnome settlement in the Underdark, currently in disarray due to an "oozapalooza" or aggressive ooze infestation, featuring gates of steel, mithral, and adamantine [ch 035 / 035.02; ch 036 / locations].
+- [LOCATION] **The Maze** — A defensive network within Blingdenstone consisting of twisting tunnels and deadly traps designed to halt invading armies [ch 035 / locations].
+- [LOCATION] **Diggermattock Hall** — Central meeting place in Blingdenstone where leadership debates policy [ch 037 / 037.01].
+- [LOCATION] **Traders' Grotto** — Blingdenstone's central market, a moist cavern where fungi were petrified by a medusa's spell centuries ago [ch 037 / 037.05].
+- [LOCATION] **Catacombs** — Burial chambers beneath the Temple of the Ruby in the Rough containing sealed tombs and a large skull decoration [ch 037 / 037.03].
+- [LOCATION] **Goldwhisker Warrens** — Contested territory north of the Traders' Grotto occupied by wererat gnomes who claim squatter's rights following the drow abandonment [ch 038 / 038.02; ch 038 / locations].
+- [LOCATION] **Pudding King's Throne Room** — A cave illuminated by phosphorescent lichen, covered in green slime pools and drapes, with a slime-covered ceiling [ch 038 / 038.04; ch 038 / locations].
+- [LOCATION] **Residential Cave** — An abandoned neighborhood with homes dug into walls, now a refuse pile containing evidence of ooze predation on gnomes [ch 038 / 038.03; ch 038 / locations].
+- [LOCATION] **Goldwhisker Warrens** — Home of Clan Goldwhisker, accessed via massive 50-foot locked doors; contains a moss-covered court for Chief Chipgrin. [ch 039 / 039.03; ch 039 / locations]
+- [LOCATION] **Rockblight** — Corrupted district surrounding the Temple of the Steadfast Stone, influenced by Ogrémoch's Bane; must be cleansed to protect Earth Elementals. [ch 039 / 039.08; ch 039 / locations]
+- [LOCATION] **Temple of the Steadfast Stone** — Proposed staging ground for the attack, currently under malign influence; requires placement of a Hallow gem in its menhir to cleanse. [ch 039 / 039.08; ch 039 / locations]
+- [LOCATION] **Foaming Mug Tavern** — A large inn in Blingdenstone built for non-gnome visitors, serving Darklake Stout from Mantol-Derith [ch 040 / 040.02; ch 040 / locations].
+- [LOCATION] **Cultivation Cave** — A complex managed by the Stoneheart Enclave that grows useful fungi and connects to the Rockblight via a blocked path [ch 040 / 040.03; ch 040 / locations].
+- [LOCATION] **Rockblight** — Dark, damp caverns mirroring Inner Blingdenstone, featuring gaze-protecting crystals and affected by Ogrémoch’s Bane, which drives earth elementals mad [ch 040 / 040.04; ch 040 / 040.06; ch 040 / locations].
+- [LOCATION] **Dark Chamber with Earth Elemental** — A dark area with an upper level 30 feet above the floor, containing magical darkness where the elemental fought [ch 041 / locations].
+- [LOCATION] **Passageway** — A barren, narrow path illuminated by Dawnbringer that leads to a junction with east and west caves [ch 041 / locations].
+- [LOCATION] **Drow Statue Chamber** — A room filled with statues of Drow warriors; six animate when entered, and the statues stop moving if the party leaves [ch 041 / locations].
+- [LOCATION] **Medusa's Chamber** — A chamber decorated with Drow city-style items, including spider-themed tapestries, zurkhwood furniture, and expensive clothing, where a bed was ignited for light [ch 041 / locations; ch 041 / 041.07].
+- [LOCATION] **Neheedra's Lair** — The Medusa's lair contained a rack of five dresses made of drow spider silk worth 200 gold pieces each [ch 042 / 042.01].
+- [LOCATION] **Steadfast Stone** — A temple chamber with a menhir of stalagmite featuring gem sockets; the walls outline large humanoid shapes and are infested by Ogrémoch's Bane [ch 042 / 042.02].
+- [LOCATION] **Diggermattock Hall** — Now crowded with ~60 people; main meeting point for Blingdenstone leadership [ch 043 / 043.04; ch 043 / locations].
+- [LOCATION] **Festering Fissure** — Humid, hot cavern with pulsing white mold and fungi shaped like gnome children; contains a dead giant [ch 043 / 043.07; ch 043 / locations].
+- [LOCATION] **Pickshine Mine** — A gem mine co-owned by Dasco Pickshine, recently unblocked by the party solving a Galeb Duhr puzzle; the air smells of ozone and crushed quartz [ch 044 / 044.04; ch 044 / locations].
+- [LOCATION] **Whiteshell Mine** — Blingdenstone's largest salt mine, located south of Pickshine Mine; it produces salt for Blingdenstone and Mantol-Derith [ch 044 / 044.05; ch 044 / locations].
+- [LOCATION] **Summoning Circle Cavern** — A cavern in Whiteshell Mine with runes in Giant script; it guards Entémoch and requires specific sacrifices to open [ch 044 / 044.07; ch 044 / locations].
+- [LOCATION] **Blingdenstone** — Preparing for battle against the Pudding King; the party's intervention has shifted economic policy against summoned labor, making them "the toasts of the town" [ch 045 / 045.02].
+- [LOCATION] **Entémoch's Boon** — Ritual site where the boon was released, granting Stone Skin and Earth Elemental summoning rights [ch 045 / 045.01].
+- [LOCATION] **Traders' Grotto** — Market area in Blingdenstone where Starlace Curios and Arcana is set up [ch 045 / 045.03].
+- [LOCATION] **The Gilded Sheath** — Valimor Brightgem's workshop, famous for scabbards; smells of metal, gem dust, and oil [ch 045 / 045.04].
+- [LOCATION] **Area 22 (Steadfast Stone)** — Staging area for allied forces, located near the Traders' Grotto and accessible through rubble that also allows ooze access. [ch 046 / locations]
+- [LOCATION] **House of Horrors Corridor** — A tunnel with polished salt walls that have become psychic slime mirrors, guarded by a brain slime. [ch 046 / 046.06]
+- [LOCATION] **Black Pudding Pit Passageway** — A passage with a massive black pudding pit bridged by mithral braces; it blocks ooze movement if maintained. [ch 046 / locations]
+- [LOCATION] **Throne Room** — The Pudding King's lair, marked by green slime hazards on the ceiling that now fall only on those directly beneath them after his death [ch 047 / 047.01; ch 047 / 047.09].
+- [LOCATION] **Blingdenstone** — Stabilized politically after the party brokered peace; now considered "open for business" but not for tourism [ch 048 / 048.06].
+- [LOCATION] **Traders' Grotto** — The ooze breach was pacified, with oozes returning to mindless states and dispersing into the stonework [ch 048 / 048.05].
+- [LOCATION] **The Overbright** — The surface world, referred to by Underdark dwellers as "the Overbright" [ch 049 / 049.01].
+- [LOCATION] **Gracklstugh** — Duergar city that ambushed Ilvara's party, mistaking them for the Ember Vanguard due to rumors [ch 049 / 049.03].
+- [LOCATION] **The Fungal Altar** — A drow camp featuring elevated platforms, poisonous vents, and a massive heart fungus creature commanded by Ilvara [ch 049 / 049.04].
+- [LOCATION] **The Fungal Altar** — A cavern in the Underdark dominated by a massive Heart Fungus, featuring shallow pools, bridges, and randomly erupting vents that cause blindness [ch 050 / locations].
+- [LOCATION] **Fungal Altar** — A high-ceilinged chamber dominated by a destroyed heart fungus and elevated walkways, now littered with spores and rubble [ch 051 / locations].
+- [LOCATION] **The Overbright** — The surface world; sunlight destroys Drow-crafted items like the cloak of elvenkind. [ch 053 / 053.05; ch 053 / locations]
+- [LOCATION] **Candlekeep** — A fortress-library south of Waterdeep selected as the destination for researching obscure subjects and the party's mysteries. [ch 053 / 053.06; ch 053 / locations]
+- [LOCATION] **The Overbright** — The surface world, characterized by sunlight and stars, which is uncomfortable for drow [ch 054 / locations].
+- [LOCATION] **Candlekeep** — An impregnable fortress-library on the Sword Coast, guarded by the Avowed, requiring a unique book for entry [ch 054 / locations; ch 054 / 054.06].
+- [LOCATION] **Gauntlgrym and Mithral Hall** — Dwarven strongholds where Eldeth is traveling to warn the lords of Underdark dangers [ch 054 / locations; ch 054 / 054.01].
+- [LOCATION] **The Silver Marches** — Devastated by the War of the Giants and subsequent Uthgardt raids; features burned hamlets, refugee families, and an unnatural stillness in nature [ch 055 / 055.02].
+- [LOCATION] **Mirabar** — A dwarven mining city that held during raids but is filled with refugees; home to a bronze Stroud bust and Order of the Gauntlet shrines [ch 055 / 055.03].
+- [LOCATION] **Triboar** — A caravan town in partial ruins with a memorial square for 243 dead, known for the Mountain's Mouth inn [ch 055 / 055.04].
+- [LOCATION] **Waterdeep** — A metropolis that forbids oozes within its walls; features Castle Ward statues of Stroud and Protanther and the Field Ward district [ch 055 / 055.05; ch 055 / 055.07].
+- [LOCATION] **Rishaal's Pageturners** — A Waterdeep bookstore that sells Milo Goodbarrel's volumes and displays a framed painting of the First Faction [ch 055 / 055.06].
+- [LOCATION] **Daggerford** — A quiet town south of the Silver Marches, spared from Uthgardt barbarian raids, marked by a monument to fallen paladin Travis Houlin. [ch 056 / 056.01]
+- [LOCATION] **Beregost** — A coastal waystop before Candlekeep; Thorin experiences the sea here for the first time. [ch 056 / 056.03]
+- [LOCATION] **Candlekeep** — A massive fortress-library with antimagic cells in the Bell Tower; entry requires a book; it does not keep prisoners long-term but exiles them. [ch 056 / 056.04]
+- [LOCATION] **Hall of Divination** — A section of Candlekeep’s Arcanium where spectral mage hands fetch tomes and Sister Yvenne serves as the public record. [ch 056 / 056.07]
+- [LOCATION] **Immortal Chambers** — Theology library in Candlekeep's West Inner Ward, featuring deity-symbol floor tiles and Brother Vareth's office [ch 057 / 057.01].
+- [LOCATION] **Drakonoikos** — Building made of dragon scales/bones housing fire-breathing lore; contains a lethal dragon breath simulation chamber requiring Keeper's permission [ch 057 / 057.04].
+- [LOCATION] **Chapter House** — Executive meeting room in the Exaltation bastion, featuring a dodecagonal table for the Council of Twelve [ch 057 / 057.05].
+- [LOCATION] **Janussi's Chambers** — Circular chamber atop a tower, cluttered with books, smoke, and evidence of violent struggle and partial robbery [ch 057 / 057.07].
+- [LOCATION] **Janussi's Chambers** — A stone tower room filled with books, a safe, and tobacco smoke; contains a toppled marble statue and an armchair damaged by magic missiles [ch 058 / 058.02].
+- [LOCATION] **Deneir’s Sanctum** — A shrine and library dedicated to the art of writing, now serving as the party’s private office and base of operations in Candlekeep. [ch 059 / locations; ch 059 / 059.01]
+- [LOCATION] **Oval Theatre** — Venue for major disputes; currently hosting the emergency debate on the Gyrgumite triangle [ch 060 / 060.01]
+- [LOCATION] **Southern Dining Hall** — Site of the Deadwinter feast; contains statue of Milil holding a lead-lined chalice [ch 060 / 060.05]
+- [LOCATION] **Oak Tree Apothecary** — Satyr-operated treehouse apothecary between Sea Warden’s Tower and House of Mechanus; rear exit leads to magical greenhouse [ch 060 / 060.08]
+- [LOCATION] **Janussi’s Chambers** — The third floor contains a love nest and a note confirming Janussi’s obstruction of Kalan’s career [ch 061 / 061.04].
+- [LOCATION] **Oak Tree Apothecary** — Leuwin’s shop, where Alkrist stole Midnight Tears after A'lai distracted Leuwin [ch 061 / 061.07].
+- [LOCATION] **Deneir's Sanctum** — A chamber within Candlekeep furnished with bookshelves and tables, used to confine the party under guard; breached by flying constructs [ch 062 / 062.04; ch 062 / 062.06].
+- [LOCATION] **Candlekeep Wards** — The fortress’s magical defense prevents teleportation and suppresses fire; Gyrgum confirmed they are active but vulnerable if both keys are used [ch 063 / 063.02].
+- [LOCATION] **North Galleries** — A section of Candlekeep away from barracks where Tadric was hidden; features a domed rotunda [ch 063 / locations].
+- [LOCATION] **High Tower Lobby** — Contains bookshelves and a landing; the sealed inner door requires both High Tower keys to open. [ch 064 / 064.03; ch 064 / locations]
+- [LOCATION] **Walkway to High Tower** — Scene of a Watcher's murder; evidence of foreign attackers passing through recently. [ch 064 / 064.02; ch 064 / locations]
+- [LOCATION] **Candlekeep** — The library’s legendary magical wards were broken by Daz’s *fireball*, causing alarm among the Avowed who began recording the failure [ch 065 / 065.01].
+- [LOCATION] **High Tower** — Contains a security control room protected by a magical door requiring two real keys; the door was shattered by Manshoon’s simulacrum [ch 065 / 065.03].
+- [LOCATION] **Candlekeep Prison** — A magic-nullifying detention area; A'lai sought confinement there for protection from Manshoon and Avowed vengeance [ch 065 / 065.01; ch 065 / npcs].
+- [LOCATION] **Candlekeep** — The inner sanctum door was shattered by Manshoon's simulacrum using a wall of force, allowing entry to the vault area [ch 067 / 067.01].
+- [LOCATION] **House of Mechanus** — A building housing thirteen modrons and Spanner, who provided tools for the dormant gears in exchange for future studies of the party's constructs [ch 067 / 067.05].
+- [LOCATION] **Candlekeep Depths** — A massive vertical shaft descends roughly one thousand feet beneath the library, ending in a lava cavern with an Obsidian Tower [ch 068 / locations].
+- [LOCATION] **Obsidian Tower** — A three-story stone tower on a glassy obsidian pedestal in the lava lake; it contains a guardian chamber, a vault of dangerous tomes, and a destruction mechanism chamber above [ch 068 / locations].
+- [LOCATION] **Tower Library** — A chamber above the magma containing a hundred magically warded books with *Glyphs of Warding* that risk a catastrophic explosion if mishandled [ch 069 / 069.05].
+- [LOCATION] **The Obsidian Door** — A seamless black stone door with eleven scorch marks; it has no lock, only a riddle requiring a spoken answer about light in darkness by a verified reader [ch 069 / 069.05].
+- [LOCATION] **Candlekeep Depths** — Contains a volcanic cavern with a central tower, lava pit, and obsidian structures; accessed via a hidden stairway undiscovered for 150 years [ch 070 / locations].
+- [LOCATION] **Inner Book Chamber** — A dark room behind a magically locked door at the top of the tower, containing the Book of Vile Darkness on a podium [ch 070 / locations].
+
+OUTLINE: write exactly this one `##` heading and its body, nothing else at that level:
+
+## Locations

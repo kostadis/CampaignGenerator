@@ -1,0 +1,137 @@
+# NPC table identity report
+
+230 rows. ⚠ marks a name the registry does not know (kept as written, never guessed).
+
+## Forms merged by registry name/alias (21)
+
+- Bookwyrm (First Reader): Bookwyrm, Bookwyrm (First Reader), The First Reader
+- Brysis Of Khaem: Brysis, Brysis of Khaem
+- Chipgrin Goldwhisker: Chief Chipgrin, Chipgrin, Chipgrin Goldwhisker
+- Daral Yashenti: Daral, Daral Yashenti
+- Eldeth Feldrun: Eldeth, Eldeth Feldrun
+- Errde Blackskull: Errde, Errde Blackskull
+- Flumph: Flumph, The Flumph
+- Gartokkar Xundorn: Gartokkar, Gartokkar Xundorn
+- Ilvara Mizzrym: Ilvara, Ilvara Mizzrym
+- Jorlan Duskryn: Jorlan, Jorlan Duskryn
+- Miss Hollypocket: Hollypocket, Miss Hollypocket
+- Sarith Kzekarit: Sarith, Sarith Kzekarit
+- Senni Diggermattock: Quartermaster Senni Diggermattock, Senni Diggermattock
+- Shuushar the Awakened: Shuushar, Shuushar the Awakened
+- Sovereign Basidia: Basidia, Sovereign Basidia
+- Sovereign Phylo: Phylo, Sovereign Phylo
+- Stonespeaker Hgraam: Hgraam, Stonespeaker Hgraam
+- Sylvira Savikas: Sylvira, Sylvira Savikas
+- The Pudding King: Pudding King, The Pudding King
+- Vareth: Brother Vareth, Vareth
+- Whistler: Ardragon, Whistler
+
+## Unresolved names (100) — add to the registry or fix at source
+
+- Alaundo (recorded voice)
+- Animated Drow Statues
+- Aquatic Troll
+- Basilisk (charmed one)
+- Basilisk (Daz's)
+- Basilisk (second)
+- Basilisk (Zalthir's)
+- Batman (Familiar)
+- Beholder Zombie
+- Bookwyrm (Skoda Vanaster)
+- Brother Khell-Vire
+- Captain of the Wall
+- Crazed Earth Elemental
+- Daz's Bat Familiar
+- Death Dog
+- Deep Gnome Miners
+- Deep Gnome Scout
+- Derro Cultists
+- Derro Cultists (five)
+- Derro Guards (four)
+- Derro Patrol (four cultists)
+- Derro Spies
+- Drow Scouts
+- Drow Spy ("Polly Pocket")
+- Duergar Guard
+- Duergar Informant
+- Duergar Slavers
+- Earth Elemental
+- Earth Elementals
+- Edvaldo
+- Eldred (The Dual-Voiced Local)
+- Fuurm
+- Galeb Duhr
+- Galeb Duhr (four)
+- Gargoyle
+- Giant Spiders
+- Gnome Chef
+- Goldwhisker Guards
+- Gracklstugh Merchant
+- Gray Ghosts (leader and four others)
+- Grick Alpha
+- Grimgrim ("Bob")
+- Heart Fungus
+- Helmed Horrors
+- Hgraam's apprentice
+- Horgar Steelshadow
+- House T'sarran Spy
+- Imbros, the Drow Elite Warrior
+- Ixitxachitl
+- Jezebel
+- Kuo-toan Refugees
+- Manshoon (Simulacrum)
+- Manshoon (Simulacrum, first)
+- Manshoon (Simulacrum, second)
+- Master Archivist Philemon
+- Master Kenshi
+- Master Thief
+- Matron Mother of House T'sarran
+- Medusa
+- Miirym
+- Modrons
+- Myconid Sovereign
+- Narrak's death dog handler
+- Neheedra the Medusa
+- rocktopus
+- Sergeant
+- Shambling Mound
+- Spectator
+- Sporewalkers
+- Stoneheart Enclave Member
+- Stroud School Polemicist
+- The Bard
+- The drow inside Glabbagool
+- The drow patron
+- The Field Ward Street Preacher
+- The figure in the background
+- The Ghost (Pelek)
+- The halfling informant
+- The House T'sarran elite warrior
+- The House T'sarran Mage
+- The Human Scholar
+- The other drow prisoner in Daz's chamber-pot cleaning detail
+- The rest of the companion crew
+- The Specters
+- The three Galeb Duhr
+- The Trapper
+- The Village Priest
+- The Voice
+- The Wraith
+- The Xenobiology Sage
+- Two psionic assassins
+- Two-Headed Stone Giant
+- Vecna
+- Violet Fungus
+- Violet Fungus (hybrids)
+- Wererat scout
+- Zhentarim Assassin
+- Zhentarim Raiders (first)
+- Zhentarim Raiders (second)
+- Zhentarim Thugs
+
+## Player-character rows dropped (4)
+
+- Daz
+- Gyrgum
+- Thorin
+- Zalthir

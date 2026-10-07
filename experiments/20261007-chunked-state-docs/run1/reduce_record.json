@@ -1,0 +1,47 @@
+{
+  "world_state.factions_and_powers": {
+    "secs": 0.0,
+    "prompt_chars": 11892,
+    "endpoint": "cache-only"
+  },
+  "world_state.party": {
+    "secs": 0.0,
+    "prompt_chars": 74270,
+    "endpoint": "cache-only"
+  },
+  "world_state.locations": {
+    "secs": 0.0,
+    "prompt_chars": 27041,
+    "endpoint": "cache-only"
+  },
+  "world_state.items_and_artifacts": {
+    "secs": 0.0,
+    "prompt_chars": 20534,
+    "endpoint": "cache-only"
+  },
+  "campaign_state.party_current_situation": {
+    "secs": 0.0,
+    "prompt_chars": 74261,
+    "endpoint": "cache-only"
+  },
+  "campaign_state.active_quests_and_open_threads": {
+    "secs": 0.0,
+    "prompt_chars": 88459,
+    "endpoint": "cache-only"
+  },
+  "world_state.active_threats_and_open_pressures": {
+    "secs": 0.0,
+    "prompt_chars": 63944,
+    "endpoint": "cache-only"
+  },
+  "campaign_state.resolved_plot_threads": {
+    "secs": 0.0,
+    "prompt_chars": 56901,
+    "endpoint": "cache-only"
+  },
+  "world_state.key_npcs": {
+    "secs": 0.0,
+    "prompt_chars": 32404,
+    "endpoint": "cache-only"
+  }
+}

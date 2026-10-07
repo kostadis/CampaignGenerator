@@ -1,0 +1,134 @@
+DOCUMENT: world_state
+SECTION: ## Items and Artifacts
+BRIEF: Significant items NOW: what each does, who holds it, open questions about it.
+
+VERIFIED NOTES (124 bullets, chapter order, every one already checked by code):
+
+- [ITEM] **Spider Silk Cord** — Extremely strong but flammable, used in the lift and for rapid descents; vulnerable to fire but resistant to cutting [ch 002 / items; ch 002 / 002.02].
+- [ITEM] **List of People** — A document found in the lift basket containing names from a nearby settlement, significance unknown [ch 002 / items; ch 002 / 002.02].
+- [ITEM] **Kitchen Knives** — Two mundane knives stolen from the drow kitchen, used as makeshift daggers by the prisoners [ch 002 / items; ch 002 / 002.04].
+- [ITEM] **Ilvara’s Treasure Chest** — A chest in Ilvara’s private chamber believed to contain the prisoners’ confiscated equipment based on drow custom [ch 002 / items; ch 002 / 002.05].
+- [ITEM] **Rapport Spores** — Stool's spores allow telepathic communication for one hour, linking the prisoners and enabling silent coordination [ch 003 / 003.01].
+- [ITEM] **Tongue of Madness** — An edible fungus that causes involuntary honesty for one hour; considered a harmless joke by Underdark denizens [ch 004 / 004.05; ch 004 / items].
+- [ITEM] **Carrion Crawler Rations** — Edible meat harvested from a crawler carcass, tasting like chicken [ch 005 / 005.02; ch 005 / items].
+- [ITEM] **Ormu** — A green phosphorescent moss found in warm, damp tunnels; it sheds dim light and can be made into pigment. [ch 006 / 006.01; ch 006 / items]
+- [ITEM] **Improvised Map** — Drawn by Sarith using stick and green paint, showing the Darklake, Velkynvelve, Sloobludop, Gracklstugh, and the approximate location of the Lost Tomb of Khaem. [ch 007 / 007.02]
+- [ITEM] **Alchemy Jug** — A magical item found on the duergar boat that can produce a gallon of liquid (water, wine, mayonnaise, etc.) once per day [ch 010 / items].
+- [ITEM] **Duergar Keelboat** — A vessel with oars captured from the slavers, providing the party with a second boat [ch 010 / items].
+- [ITEM] **Sunken Chest** — Contained 120 silver, 30 gold, four spell scrolls (Poison Spray, Burning Hands, Mirror Image, Inflict Wounds), and a driftglobe. [ch 011 / items; ch 011 / 011.05]
+- [ITEM] **Driftglobe** — A magical sphere that can follow its owner and emit light or daylight (dispels 3rd level or lower darkness). [ch 011 / items; ch 011 / 011.05]
+- [ITEM] **Golden Badge** — A gold badge bearing Themberchaud's profile, signifying agent status [ch 014 / items].
+- [ITEM] **Holy Symbol of Laduguer** — Grants the party passage beyond the Darklake District [ch 014 / items].
+- [ITEM] **Red Dragon Egg** — Stolen from the Keepers by the Gray Ghosts, intended to hatch Themberchaud's successor [ch 014 / items].
+- [ITEM] **Stonespeaker Crystal** — Gifted by Hgraam; allows communication with animals/plants/dead and grants Investigation advantage. [ch 015 / 015.03]
+- [ITEM] **Pelek's Bones** — Remains of the deep gnome Pelek, carried by Gyrgum; binding Pelek's spirit to the party's travels [ch 016 / items].
+- [ITEM] **Obsidian Ring** — A ring worn by Pelek in life, last seen on his animated severed hand which scuttled away; may have magical properties [ch 016 / items].
+- [ITEM] **Red Dragon Egg** — A stolen egg being mutated by Plinki into a two-headed mount for Demogorgon; bears inscriptions used as evidence against the Gray Ghosts [ch 017 / items].
+- [ITEM] **Empty Spell Gems** — Five gems given by Werz, identified by Jimjar as empty spell gems used in Blingdenstone's defenses, highly valuable to gnomish alchemists [ch 018 / 018.06].
+- [ITEM] **Royal Contract of Gracklstugh** — Document stolen by Daz; bears the Deepking's signature and seal, proving royal ties to assassins [ch 019 / items].
+- [ITEM] **Corrupted Dragon Egg** — Stolen red dragon egg infused with demonic energy by Plinki; destined to hatch a two-headed dragon possessed by Demogorgon [ch 019 / items].
+- [ITEM] **Black Metal Obelisk** — 50-foot structure used by Plinki to channel demonic energy into the egg [ch 019 / items].
+- [ITEM] **Missing Red Dragon Egg** — A coveted object stolen from the Keepers of the Flame; the Derro believe it is the egg of Demogorgon and that "he who has the egg rules." [ch 020 / items]
+- [ITEM] **Dragon's Egg** — Demonic corruption prevents hatching sooner than 44 weeks; lesser restoration does not cleanse it [ch 021 / items; ch 021 / 021.02].
+- [ITEM] **Dragon Baby Rattle** — Heavy, inscribed with Clan Thrazgad, likely for a dragon hatchling, usable as an improvised weapon (1d4) or leverage [ch 021 / items; ch 021 / 021.03].
+- [ITEM] **Assassin's List** — Documentation proving the Deepking supports the Assassin's Guild; currently held secret by the party [ch 021 / items; ch 021 / 021.03].
+- [ITEM] **Trillimac Cap Books** — Books with pages made from trillimac mushroom caps containing mad scribblings, potentially serving as evidence of demonic conspiracy for Errde Blackskull [ch 022 / items].
+- [ITEM] **Stone Giant Statues** — Two-foot-tall, 100-pound miniatures that serve as focal points for the curse; they do not come alive but facilitate the transformation of real giants [ch 023 / 023.01; ch 024 / 024.04].
+- [ITEM] **Heretical Cult Texts** — Volumes detailing Demogorgon worship and giant-corruption rituals, including *The Rituals of the Two-Headed Beast*; held by the party as evidence against the Council of Savants [ch 023 / 023.01; ch 024 / 024.04].
+- [ITEM] **Keoghtom’s Ointment** — Five doses of a magical salve found in Narrak’s chest that cures wounds and removes poison conditions [ch 024 / 024.04].
+- [ITEM] **Growy Shrinky Mushrooms** — Fungi that alter creature size; identified by Gyrgum as the likely vector for the Myconid teleportation/madness [ch 025 / items; ch 025 / 025.04].
+- [ITEM] **Two-headed Dragon Egg** — A corrupted egg proving derro alignment with Demogorgon; intended for Gartokkar [ch 025 / items; ch 025 / 025.01].
+- [ITEM] **Letter from the Council of Savants** — A document ordering Gray Ghosts to kill duergar who assisted the Ember Vanguard, proving the derro know the party's identities [ch 026 / 026.07].
+- [ITEM] **Quartz Crystals** — Fist-sized stones in Faerzress zones that create a blinding flash (DC 10 Con save) when thrown; blocked by magical darkness [ch 028 / 028.01].
+- [ITEM] **Dawnbringer** — A sentient, +2 magical sword that deals radiant damage, grants lesser restoration, and fears the dark [ch 029 / 029.01; ch 029 / 029.01; ch 029 / 029.07].
+- [ITEM] **Scroll of Protection against Fiends** — Given to the party by Basidia; lasts five minutes [ch 029 / 029.06].
+- [ITEM] **Grick Alpha Hide** — Harvested from the Grick Alpha; can be crafted into a cloak granting advantage on stealth in rocky terrain (takes six days) [ch 030 / 030.03; ch 030 / items].
+- [ITEM] **Shambling Mound Vines** — Harvested from the Shambling Mound; not magical themselves but valuable for crafting enchanted ropes (worth 300 gp for six ropes) [ch 030 / 030.05; ch 030 / items].
+- [ITEM] **Dawnbringer** — A legendary sentient sunblade that emits sunlight, deals radiant damage, and can cast lesser restoration; it fears darkness and abandonment and may try to control its wielder in the dark [ch 031 / 031.01; ch 031 / items].
+- [ITEM] **Spider Medallion** — A drow holy symbol retrieved from Xinaya's remains by Zalthir [ch 031 / 031.05; ch 031 / items].
+- [ITEM] **Potions of Greater Healing** — Four potions gifted by Basidia as a reward for saving myconid survivors [ch 032 / 032.03; ch 032 / items].
+- [ITEM] **Treasure Box** — A container holding 975 gold pieces, given by Basidia to the party [ch 032 / 032.03; ch 032 / items].
+- [ITEM] **Studded Leather Armor +2** — Found near Xinaya’s grave, collected by the party [ch 032 / 032.02; ch 032 / items].
+- [ITEM] **Glabbagool's Cache** — Contains 112 silver pieces, 3 gold pieces, a plus-one drow dagger, and a vial of oil of slipperiness, currently inside Glabbagool [ch 034 / items].
+- [ITEM] **Dawnbringer** — A sword that becomes agitated and upset in prolonged darkness [ch 035 / items].
+- [ITEM] **Eldritch Claw Tattoo** — Zalthir's tattoo that allows ranged melee attacks via tentacles resembling pseudopods [ch 037 / 037.06].
+- [ITEM] **Red Spell Gem** — Contains the Hallow spell; must be placed in the Steadfast Stone's menhir and defended to awaken three temple guardians. [ch 039 / 039.08; ch 039 / items]
+- [ITEM] **Stone of Controlling Earth Elementals** — Offered as reward for cleansing the Rockblight; summons an Earth Elemental for an hour, but the party prefers befriending rather than enslaving. [ch 039 / 039.09; ch 039 / items]
+- [ITEM] **Protective Crystals** — Semi-transparent crystals found in the Rockblight that distort images and protect the viewer from gaze attacks when held to the face [ch 040 / 040.04; ch 040 / items].
+- [ITEM] **Udhask’s Stash** — Six gems worth 600 gp each and a potion of invisibility found in a hidden compartment in Udhask’s burrow [ch 040 / 040.05; ch 040 / items].
+- [ITEM] **Spoiled Booze** — Alcohol acquired from Tappy Foamstrap; the party discovered alcohol can intoxicate gelatinous cubes and oozes [ch 040 / 040.02; ch 040 / items].
+- [ITEM] **Yellow Diamond Elemental Gem** — A one-time summoning item found in the elemental's remains; it is cursed by the area’s malevolent influence, causing summoned elementals to go mad [ch 041 / items; ch 041 / 041.02].
+- [ITEM] **Scroll of Remove Curse** — A magical scroll in the party's possession capable of potentially removing curses from items or areas [ch 041 / items].
+- [ITEM] **Ice Mirror** — A reflective surface crafted from shaped water and gems by Daz, designed to reflect the Medusa's gaze [ch 041 / items; ch 041 / 041.06].
+- [ITEM] **Anti-Medusa Sunglasses** — Special eyewear providing advantage on Constitution saves against the Medusa's petrifying gaze [ch 041 / items; ch 041 / 041.07].
+- [ITEM] **Ruby Spell Gem** — A gem provided by Gurnik Tapfinger to hallow the temple; placing it in the menhir triggers the emergence of elementals [ch 042 / 042.02].
+- [ITEM] **Drow Spider Silk Dresses** — Five dresses worth 200 gold pieces each, found in the Medusa's lair and added to party inventory [ch 042 / 042.01].
+- [ITEM] **Empty Fourth-Level Spell Gem** - Can be attuned to and loaded via ritual; Gyrgum holds it [ch 043 / 043.02; ch 043 / items].
+- [ITEM] **Resonant Geodes** — Stones found in Pickshine Mine that mimic sounds; they were used to complete the Galeb Duhr handshake and now act as a signal tracer for Entémoch's location [ch 044 / 044.04; ch 044 / items].
+- [ITEM] **Ruby Gems** — Two gems worth 500 gold given by the Pickshine miners; one is intended for the wealth sacrifice at the summoning circle [ch 044 / 044.04; ch 044 / items].
+- [ITEM] **Rude Powder** — Specialized gnomish explosives used to breach the time-snagged wall at Whiteshell Mine [ch 044 / 044.06; ch 044 / items].
+- [ITEM] **Dustsight Spectacles** — Crystal lenses allowing sight of invisible creatures and through magical darkness for ten one-minute periods per day; owned by Daz [ch 045 / 045.03].
+- [ITEM] **Stone Skin** — Homebrew buff granted by Entémoch's boon; allows reaction to turn skin to stone for resistance once per long rest for one week [ch 045 / 045.01].
+- [ITEM] **Mace +1** — Gyrgum's mace, enchanted by Starlace for 360 gold [ch 045 / 045.03].
+- [ITEM] **Shield +1** — Thorin's shield, enchanted by Starlace for 270 gold [ch 045 / 045.03].
+- [ITEM] **Vaultmaster Locking Scabbard** — Custom scabbard for Dawnbringer purchased for 180 gold, hooks the sword securely [ch 045 / 045.04].
+- [ITEM] **Elemental Gem** — No longer cursed now that Entémoch's Doom is gone [ch 045 / 045.03].
+- [ITEM] **Dasco Pickshine Patch** — A branded logo patch sewn onto Zalthir’s clothing by Dasco Pickshine. [ch 046 / items]
+- [ITEM] **Spellbooks** — Two spellbooks containing numerous magical formulas were found in Princess Ebonmire's stomach [ch 047 / 047.10].
+- [ITEM] **Bone Die** — A spent 20-sided die carved from a saint's knucklebone, currently in Gyrgum's pouch [ch 048 / 048.05].
+- [ITEM] **Voucher of the Varmint** — A braided rat's foot held by Daz, signifying friendship with wererats and outcasts in the Underdark [ch 048 / 048.07].
+- [ITEM] **Glowing Geode** — A 100 gp token of favor from the Earth Elemental, added to the party's loot [ch 048 / 048.01].
+- [ITEM] **Dawnbringer** — Thorin's sentient sword used to cast lesser restoration on Valen [ch 049 / 049.03].
+- [ITEM] **Valen's Map** — A crude, psychedelic map of the Fungal Altar drawn by Valen [ch 049 / 049.04].
+- [ITEM] **Ilvara's Mushroom** — A corrupted mushroom artifact serving as a conduit for Zuggtmoy's control, targeted by Daz's fireball [ch 050 / items; ch 050 / 050.04].
+- [ITEM] **The Icon** — A mysterious object linked to Zuggtmoy that remains in the cavern; proximity is deemed dangerous to Thorin [ch 051 / items].
+- [ITEM] **Spellbook** — A recovered book whose contents can be prepared by Daz, now supplemented by his Fey Touched feat [ch 052 / items].
+- [ITEM] **Javelins** — Thrown weapons Thorin plans to acquire; his Sharpshooter feat allows them to bypass cover and deal high damage [ch 052 / items].
+- [ITEM] **Rope** — Standard gear now used by Zalthir to restrain bound enemies via the Street Justice feat [ch 052 / items].
+- [ITEM] **Prayer Beads of Bahamut** — Holy items used to intimidate the drow spy, noted to be potentially more potent when shrunken [ch 054 / items; ch 054 / 054.04].
+- [ITEM] **Stroud's Gambit** — A record of a legendary chess game between Stroud and Protanther, held by Vareth [ch 054 / items; ch 054 / 054.06].
+- [ITEM] **Malfire, the Vindicator of Nature** — A figure depicted in a painting by Milo Goodbarrel in Mirabar, shown with a gray wolf and longbow [ch 055 / 055.03; ch 055 / items].
+- [ITEM] **Stroud and the Human Agency Hypothesis** — A pamphlet given to Gyrgum arguing against divine/dragon influence in history [ch 055 / 055.03; ch 055 / items].
+- [ITEM] **Letter of Introduction to Khell-Vire** — A document from a Waterdeep monastery introducing Zalthir to the shadow master at Candlekeep [ch 055 / 055.07; ch 055 / items].
+- [ITEM] **Javelin of Lightning** — A magical weapon available for purchase in Waterdeep; Gyrgum confirms interest and the GM approves availability [ch 055 / 055.09; ch 055 / items].
+- [ITEM] **Bronze Cast Forearm Monument** — A sculpture of Travis Houlin’s severed hand with a Dwarven inscription "The move is yours," funded by the Metalworkers Guild. [ch 056 / 056.01]
+- [ITEM] **Travis's Hand Medallion** — A pewter reproduction of the monument, acquired by Gyrgum for a gold piece. [ch 056 / 056.01]
+- [ITEM] **Dawnbringer** — A sentient Netherese sun-sword held by Thorin; she compulsively illuminates darkness due to millennia of exposure. [ch 056 / 056.03; ch 056 / 056.06]
+- [ITEM] **Note of the Bone King** — A mysterious note on Khell-Vire’s desk reading "Zalthir, the Underdark, until the Bone King sings." [ch 056 / 056.05]
+- [ITEM] **Vial of Resonant Slime** — A biological sample given to the party after Zalthir defended Glabbagool’s intelligence. [ch 056 / 056.05]
+- [ITEM] **Geography and Cities, Menzoberranzan, Pillars of Woe** — A heraldry book with a razored appendix and a footnote referencing "Daz'issin." [ch 056 / 056.07]
+- [ITEM] **The Golden Ass** — A comedic book suspected to be missing from the scene, potentially holding a cipher; seen being carried away by Daral Yashenti [ch 058 / 058.03; ch 058 / 058.06].
+- [ITEM] **Janussi's Locket** — A piece of jewelry worn constantly by Janussi, containing one of two keys to the High Tower Library; forcibly torn away during the murder [ch 058 / 058.02; ch 058 / 058.06].
+- [ITEM] **The Discoveries** — A spell book on Janussi's desk, the last thing he was annotating before his death [ch 058 / 058.03].
+- [ITEM] **The Second High Tower Key** — A small brass key held by Gyrgum; Kalan Strongbranch secretly transferred it from his possession to protect it, revealing that both keys are required simultaneously to enter the High Tower. [ch 059 / items; ch 059 / 059.03]
+- [ITEM] **Midnight Tears** — A highly toxic pale ochre dust from the Feywild that deals lethal poison damage at midnight; it is neutralized by sap from a specific Feywild tree. [ch 059 / items; ch 059 / 059.04]
+- [ITEM] **The Golden Ass** — A book given by Daral to Janussi, now identified as the delivery mechanism for the midnight tears poison; it is in the party’s custody. [ch 059 / items; ch 059 / 059.05]
+- [ITEM] **Midnight Tears** — Poison activated by contact with living humanoid at local midnight; turns black upon activation [ch 060 / 060.01]
+- [ITEM] **Lead-lined Chalice of Milil** — Brass chalice holding Janussi’s heart; lead blocks divination spells like *Locate Object* [ch 060 / 060.05]
+- [ITEM] **1001 Tashalian Nights** — Book found in Alkrist’s room; bookmarked to a tale mirroring Janussi’s murder method [ch 060 / 060.09]
+- [ITEM] **1001 Tashalian Nights** — A book in Alkrist’s quarters bookmarked at the passage describing Midnight Tears murder [ch 061 / 061.07; ch 061 / items].
+- [ITEM] **Janussi’s Heart** — Removed post-mortem and hidden in a chalice; Alkrist did not participate in this act [ch 061 / 061.07; ch 061 / items].
+- [ITEM] **The Inert Key** — A mysterious key that reads as non-magical under Detect Magic but attracts helmed horrors; currently held by Gyrgum [ch 062 / items; ch 062 / 062.06].
+- [ITEM] **Potion of Flying** — Stolen by Zalthir via Glabbagool from Alkrist's safe; undetected by the Avowed [ch 062 / 062.04].
+- [ITEM] **Fake High Tower Key** — A mundane decoy given to the party by Kalan to draw attention away from the real artifact [ch 063 / 063.01; ch 063 / items].
+- [ITEM] **Real High Tower Key** — One of two magical keys required to open the High Tower; currently held by Tadric [ch 063 / 063.03; ch 063 / items].
+- [ITEM] **Watcher's Stair Key** — A physical key granting shortcut access to the North Gallery [ch 063 / 063.03; ch 063 / items].
+- [ITEM] **Real High Tower Key (#2)** — Genuine key held by Gyrgum; required with key #1 to open the inner door. [ch 064 / 064.01; ch 064 / items]
+- [ITEM] **Sapphire Artifact** — Magical gem held by Gyrgum; smashing it triggers an effect related to the High Tower keys. [ch 064 / 064.04; ch 064 / items]
+- [ITEM] **Written Manifest** — A list used by Zhentarim raiders to target specific books for removal, corroborating A'lai's confession. [ch 064 / 064.03; ch 064 / items]
+- [ITEM] **Stolen Sapphire** — Bound to the real High Tower key held by Gyrgum; smashing it would recall that key, not the other real key [ch 065 / items].
+- [ITEM] **Real High Tower Key** — Two real keys exist; one is held by Gyrgum, the other is hidden inside Glabbagool [ch 065 / items; ch 065 / end].
+- [ITEM] **Statue of Alaundo** — A brass statue in the House of Alaundo that reveals a hidden staircase when ink is poured into its empty ink pot [ch 067 / 067.04].
+- [ITEM] **Modron Tools** — Specialized instruments lent by Spanner, serving as the alternative to killing a modron for Dust of Mechanus [ch 067 / 067.05].
+- [ITEM] **High Tower Key** — Stored inside Glabbagool for safekeeping [ch 067 / items].
+- [ITEM] **Vault of Dangerous Secrets** — Contains approximately one hundred dangerous magical tomes; a note permits consultation but forbids removal, warning that the collection can be destroyed if threatened [ch 068 / locations; ch 068 / 068.05].
+- [ITEM] **Prismatic Gemstones** — Ten stones (four dark) in the tower chamber containing prophecies, including one about a dwarf, demons, and an unlit forge [ch 069 / 069.05].
+- [ITEM] **Tool of Mechanus** — A device used to create an extending bridge across the magma's anti-magic zone [ch 069 / items].
+- [ITEM] **Robe of the Archmagi** — A legendary black robe recovered from the first Manshoon simulacrum; requires attunement for its powers [ch 070 / 070.01].
+- [ITEM] **Staff of Power** — Used by Manshoon to breach Candlekeep's defenses, depleting his magical reserves and forcing him to negotiate [ch 070 / 070.01].
+- [ITEM] **Prophecy Crystals** — Six delicate gems containing Alaundo's lost prophecies; two were destroyed, four remain [ch 070 / 070.03].
+- [ITEM] **Book of Vile Darkness** — A sentient artifact of cosmic evil purportedly written by Vecna; located in the inner book chamber of Candlekeep [ch 070 / 070.04].
+
+OUTLINE: write exactly this one `##` heading and its body, nothing else at that level:
+
+## Items and Artifacts

@@ -1,0 +1,70 @@
+## Events
+- The party fled south through the Silken Paths, pursued by giant spiders, severing web strands to cut off the attackers. Gyrgum disengaged while Daz used magic missiles to sever the web intersection, allowing the group to escape into safety. [ch 007 / 007.01]
+- The party interrogated Fargas, who revealed the location and secrets of the Lost Tomb of Khaem, explaining it was a floating Netherese tomb containing a decoy sarcophagus and a hidden vault. Sarith drew a map narrowing the tomb’s location to three or four spots on the Darklake’s northeastern edge. [ch 007 / 007.02]
+- A spectator aberration approached the party telepathically to warn of rising demons but turned hostile due to madness. The party slew the creature after it paralyzed Zalthir and confused Thorin; its dying warning was that demons were coming. [ch 007 / 007.03]
+- The party encountered a chest stuck in webs near the Silken Paths exit, suspected it to be a mimic, attempted telepathic communication via spores, failed, and bypassed it to rest. [ch 007 / 007.04]
+- At the end of the Silken Paths, Jimjar negotiated to keep goblin guides Yuk Yuk and Spiderbait by promising future payment, while Buppido cryptically invited the party into his "divine plan." [ch 007 / 007.05]
+- The party was escorted to the Altar of the Deep Father in Sloobludop as sacrifices for the Kuo-toa archpriests Ploopploopeen and Bloppblippodd. Gyrgum identified the ritual as a throat-slitting and noted the guards had not disarmed the party. [ch 008 / 008.01]
+- Ploopploopeen betrayed his daughter Bloppblippodd during the ritual, striking her with his scepters and triggering a civil war between Sea Mother and Deep Father cultists. The party used the chaos to disengage. [ch 008 / 008.01; ch 008 / 008.02]
+- Gyrgum looted Ploopploopeen’s hut during the melee, taking coin, pearls, potions, and a scroll. The party then walked confidently toward the isolated northeastern boat while blood appeared in the Darklake, suggesting an underwater predator. [ch 008 / 008.03]
+- Bloppblippodd was killed by Ploopploopeen, and her dying cry summoned Demogorgon from the Darklake. The demon lord erupted from the water, and the party fled immediately. [ch 008 / 008.04]
+
+## Concluded
+- The party completed their traversal of the Silken Paths, escaping giant spiders and reaching the settlement of Sloobludop. [ch 007 / 007.04; ch 008 / 008.01]
+- The party defeated the spectator aberration in the Silken Paths, slaying it after it attacked them. [ch 007 / 007.03]
+- The party bypassed the web-bound chest in the Silken Paths without opening or destroying it, concluding the immediate encounter by ignoring it. [ch 007 / 007.04]
+- The party survived the attempted ritual sacrifice in Sloobludop by leveraging the Kuo-toa civil war initiated by Ploopploopeen’s betrayal. [ch 008 / 008.01; ch 008 / 008.03]
+
+## Threads
+- [ADVANCED] **Escape from the Silken Paths** — The party successfully navigated the web chasm, defeated a spectator, and exited into Sloobludop. [ch 007 / 007.04; ch 008 / 008.01]
+- [OPENED] **Lost Tomb of Khaem** — Fargas revealed the tomb’s nature and approximate location, prompting Sarith to map potential sites on the Darklake’s edge. [ch 007 / 007.02]
+- [OPENED] **Rising Demons** — A dying spectator and Demogorgon’s emergence confirmed that demon lords are active in the Underdark. [ch 007 / 007.03; ch 008 / 008.04]
+- [OPENED] **Buppido’s Divine Plan** — The derro companion Buppido invited the party to join his sinister plan, which Zalthir viewed with suspicion. [ch 007 / 007.05]
+- [ADVANCED] **Goblin Guides** — Yuk Yuk and Spiderbait agreed to continue guiding the party in exchange for deferred payment of twenty gold pieces owed by Jimjar. [ch 007 / 007.05]
+- [ADVANCED] **Darklake Pursuit** — The party escaped Sloobludop amid chaos, pursued by the immediate threat of Demogorgon. [ch 008 / 008.04]
+
+## NPC Status
+- Fargas Rumblefoot | Alive | Silken Paths (escaped) | Cautious/Offended by party's scrutiny [ch 007 / 007.02]
+- Yuk Yuk | Alive | Sloobludop Docks | Mercenary/Boastful [ch 007 / 007.05; ch 008 / 008.03]
+- Spiderbait | Alive | Sloobludop Docks | Scared/Reluctant [ch 007 / 007.05; ch 008 / 008.03]
+- Spectator | Dead | Silken Paths | Hostile [ch 007 / 007.03]
+- Sarith | Alive | Sloobludop Docks | Cooperative [ch 007 / 007.02; ch 008 / 008.03]
+- Buppido | Alive | Sloobludop Docks | Sinister/Ominous [ch 007 / 007.05; ch 008 / 008.03]
+- Ploopploopeen | Unknown | Sloobludop Altar | Hostile (betrayed daughter, fate unresolved) [ch 008 / 008.04]
+- Bloppblippodd | Dead | Sloobludop Altar | Hostile (killed by father) [ch 008 / 008.04]
+- Hemeth | Alive | Sloobludop | Hopeful/Desperate [ch 008 / 008.01]
+- Jimjar | Alive | Sloobludop Docks | Wary/Optimistic [ch 008 / 008.03]
+- Topsy and Turvy | Alive | Sloobludop (Bloppblippodd's lair) | Loot-focused [ch 008 / 008.02; ch 008 / 008.03]
+- Eldeth | Alive | Sloobludop Docks | Friendly to Gyrgum [ch 008 / 008.02]
+- Demogorgon | Alive | Darklake | Hostile/Unstoppable [ch 008 / 008.04]
+
+## World
+- [LOCATION] **Silken Paths** — A chasm of giant spider webs with five-hit-point strands; the party exited toward Sloobludop. [ch 007 / 007.01; ch 007 / 007.04]
+- [ITEM] **Improvised Map** — Drawn by Sarith using stick and green paint, showing the Darklake, Velkynvelve, Sloobludop, Gracklstugh, and the approximate location of the Lost Tomb of Khaem. [ch 007 / 007.02]
+- [FACTION] **Kuo-toa Civil War** — The settlement of Sloobludop is divided between the Sea Mother faction (led by Ploopploopeen) and the Deep Father faction (led by Bloppblippodd). [ch 008 / 008.01; ch 008 / 008.02]
+- [LOCATION] **Sloobludop** — A Kuo-toa settlement on the Darklake featuring docks, jetties, and a sacrificial altar. [ch 008 / 008.01; ch 008 / locations]
+- [NPC] **Hemeth** — A Duergar arms dealer held for sacrifice who offered Gyrgum a future connection in Gracklstugh if they survived. [ch 008 / 008.01; ch 008 / npcs]
+- [THREAT] **Demogorgon** — A demon lord who rose from the Darklake, attacking the Kuo-toa and forcing the party to flee. [ch 008 / 008.04]
+- [FACTION] **Deep Father vs. Sea Mother** — Rival Kuo-toa cults whose conflict erupted into open violence at the altar. [ch 008 / 008.02]
+
+## Party
+- The party is currently at the docks of Sloobludop, fleeing immediately to escape Demogorgon. [ch 008 / 008.04]
+- The party is Level 2. [ch 007 / 007.01]
+- Gyrgum looted Ploopploopeen’s hut, acquiring 500 cp, 2,000 sp, 150 gp, 27 pp, pearls worth 1,000 gp, two healing potions, a potion of water breathing, and a scroll of light. [ch 008 / 008.03]
+- Daz is out of spell slots after using Magic Missiles in the Silken Paths and against the spectator. [ch 007 / spells]
+- Zalthir was absent in Chapter 8; the GM ran his character, who cast Darkness. [ch 008 / spells]
+- The party intends to escape Sloobludop via boat, prioritizing safety from Demogorgon over looting further. [ch 008 / 008.03; ch 008 / 008.04]
+
+## Audit
+- [A8] SHOWN — The party arrives at Sloobludop, the Kuo-toa settlement on the Darklake. [ch 008 / 008.01]
+- [A46] SHOWN — The party visits Sloobludop, encountering the Kuo-toa archpriests and the Darklake. [ch 008 / 008.01]
+- [A51] SHOWN — The party visits the Darklake, where they observe rituals and Demogorgon's emergence. [ch 008 / 008.03; ch 008 / 008.04]
+- [A66] SHOWN — The party traverses the Silken Paths, escaping giant spiders and a spectator. [ch 007 / 007.01; ch 007 / 007.04]
+- [A143] SHOWN — Demogorgon rises from the Darklake at Sloobludop, ending the session on a cliffhanger. [ch 008 / 008.04]
+- [A144] SHOWN — The party becomes aware of demons rising in the dark through the spectator's warning and Demogorgon's appearance. [ch 007 / 007.03; ch 008 / 008.04]
+- [A162] SHOWN — The drow pursuit level remains active at three during the Silken Paths traversal. [ch 007 / 007.02]
+- [A169] SHOWN — The party completes the traversal of the Silken Paths. [ch 007 / 007.04]
+- [A170] SHOWN — The party encounters and retains goblin guides Yuk Yuk and Spiderbait. [ch 007 / 007.01; ch 007 / 007.05]
+- [A171] SHOWN — The party rescues and interrogates Fargas Rumblefoot in the Silken Paths. [ch 007 / 007.02]
+- [A172] SHOWN — The party is captured and brought to Sloobludop by Kuo-toa, where they are prepared for sacrifice. [ch 008 / 008.01]
+- [A68] BEGUN — The party learns about the Lost Tomb of Khaem and its approximate location but has not yet found it. [ch 007 / 007.02]

@@ -1,0 +1,50 @@
+## Key NPCs
+
+### Gracklstugh & The Keepers of the Flame
+*   **Themberchaud**: A pampered, overweight red dragon Wyrmsmith who believes he controls Gracklstugh but is actually a "glorified lighter" being groomed for replacement by the Keepers [ch 013 / 013.05; ch 014 / npcs; ch 027 / npcs]. He has recently realized he is being manipulated and is no longer fully under their control [ch 018 / 018.02]. He currently believes the party are his agents [Status Table: Themberchaud].
+*   **Gartokkar Xundorn**: Head of the Keepers of the Flame. He hired the party to retrieve a dragon egg and evidence to wage war on the Gray Ghosts [ch 017 / npcs]. He manages the party's dual-agent status and maintains a professional, discreet demeanor [ch 014 / npcs; ch 026 / 026.06; Status Table: Gartokkar Xundorn].
+*   **Horgar Steelshadow**: The Deepking of Gracklstugh. He is suffering from paranoid madness, resulting in arbitrary laws, and is increasingly isolated due to his new advisor, Shal [ch 013 / 013.05; ch 015 / 015.02]. He is implied to be hostile as the party holds evidence against him [Status Table: Deepking Tarngardt].
+*   **Shal**: The Deepking's new advisor, suspected of causing the king's paranoia and isolation. He notably never visited Hgraam [ch 015 / 015.02].
+*   **Hemeth**: A Duergar arms dealer traveling with the party. He advises quiet entry into cities to avoid heroics and claims to have connections in Gracklstugh ("I know people") [ch 009 / 009.03; ch 011 / 011.07]. He is currently in the Blade Bazaar, grateful to the party but offended by recent competition [Status Table: Hemeth].
+*   **Errde Blackskull**: Currently unaware of the party's deception regarding their cover identities; likely hostile upon learning the truth [Status Table: Errde Blackskull].
+
+### Neverlight Grove & Fungal Threats
+*   **Sovereign Basidia**: A Myconid Sovereign who is currently leaving or has escaped Neverlight Grove. She holds the party to promises of treasure for exploring the circles and is grateful/apologetic [ch 030 / 030.05; ch 032 / 032.03; Status Table: Sovereign Basidia].
+*   **Sovereign Phylo**: Co-sovereign of Neverlight Grove who foretold a "great awakening" and celebration [ch 030 / 030.05]. She is currently corrupted, delusional, and hostile [Status Table: Sovereign Phylo].
+*   **Gasbide**: Leader of the Circle of Builders. He is obsessive about architecture and a supporter of Phylo, though unaware of the true nature of Araumycos [ch 030 / 030.05]. He is curious about surface architecture [Status Table: Gasbide].
+*   **Araumycos**: A sentient fungal growth intended as Zuggtmoy’s groom. Its absence prevented the commencement of the wedding [ch 031 / 031.06; ch 032 / 032.01; ch 032 / npcs].
+*   **Zuggtmoy**: The Demon Lord of Fungi, confirmed to be the same entity Thorin previously encountered. She is preparing to wed Araumycos to spread her spores and is currently spreading fungi, hostile to the party [ch 031 / 031.06; ch 047 / 047.10; Status Table: Zuggtmoy].
+*   **Ilvara Mizzrym**: **DEAD**. A drow priestess formerly of House Mizzrym, mentally corrupted by a fungal mass (actually Zuggtmoy). She possessed fungal melding abilities and summoned sporewalkers [ch 049 / 049.03; ch 050 / 050.04; ch 053 / 053.03].
+*   **Asha Vandree**: **DEAD**. A drow priestess loyal to Lolth who avoided infection via sealed food/hygiene. She viewed Ilvara as a heretic, attempted to lead the party, and was killed by Zalthir after misinterpreting the chaos as a divine blessing [ch 049 / 049.05; ch 050 / 050.02; ch 053 / 053.02].
+*   **Jorlan Duskryn**: A bitter drow warrior and Ilvara's ex-lover. He remained uninfected and acted as a guard at the Fungal Altar. He is currently hostile or independent [ch 050 / 050.02; Status Table: Jorlan Duskryn].
+*   **Valen**: A drow scout of House T'sarran who surrendered after being healed by the party. He guides them as a cooperative guide [ch 049 / 049.03; Status Table: Valen].
+
+### Candlekeep & The Obsidian Tower
+*   **Bookwyrm**: The acting head of Candlekeep and Alkrist's aunt (Green Dragonborn, named Skoda Vanaster). She advised Janussi to bury Kalan's paper and opposed Kalan’s methods. The first Reader is dead; the current status is acting head [ch 061 / 061.07; ch 062 / npcs; ch 062 / items; Status Table: Bookwyrm (First Reader)].
+*   **Kalan Strongbranch**: Former Gatewarden, currently reinstated and in charge of the guard. He is the author of the *Threefold Proof*, a rigorous investigative framework demanding multiple sources of truth. He is supportive but disappointed with institutional resistance [ch 061 / 061.02; ch 062 / 062.02; ch 062 / 062.03; ch 067 / 067.03; Status Table: Kalan Strongbranch].
+*   **Sylvira Savikas**: A Tiefling researcher currently in the Investigator's Office. She is grateful to the party and is being framed using magic (Polymorph or similar). She provided the true name of the Sentinel Wyrm (Vydykyq) and identified the star Limniz, unaware that the party killed her son, Moziqodo [ch 061 / 061.05; ch 067 / 067.03; Status Table: Sylvira Savikas].
+*   **Miirym, the Sentinel Wyrm**: A spectral silver dragon guardian of Candlekeep bound to witness, not fight. Her true name is Vydykyq. She is neutral/supportive and currently in the Lava chamber [ch 067 / 067.03; ch 068 / npcs; ch 068 / 068.04; Status Table: Miirym, the Sentinel Wyrm].
+*   **Alkrist**: Imprisoned in Candlekeep Prison. He is confessing to murder; his safe contents were confiscated except for a stolen potion [Status Table: Alkrist].
+*   **Daral Yashenti**: A rival scholar currently anxious but supportive, relying on the party for safety. He is suspected of stealing *The Golden Ass* and visited Janussi twice on the night of the murder [ch 058 / 058.05; ch 058 / 058.06; ch 063 / 063.01; Status Table: Daral Yashenti].
+*   **Miss Hollypocket**: An elderly gnome housekeeper who witnessed confrontations and a suspicious "Sylvira" figure. She is currently a helpful witness in her apartment [ch 058 / 058.05; Status Table: Miss Hollypocket].
+*   **Manshoon**: Identified as the hidden mastermind behind 11 years of book thefts. He is associated with Zhentil Keep and has died more than once. A Simulacrum is currently alive in a Tower Chamber (hostile/transactional), while the Original is alive but hostile [ch 064 / 064.04; ch 069 / 069.05; ch 070 / 070.02; Status Table: Manshoon (Simulacrum #2), Manshoon (Original)].
+*   **Alaundo**: A legendary seer whose recorded voice guards the Obsidian Door with a riddle about light and theft [ch 069 / 069.05].
+
+### Blingdenstone & The Underdark Surface
+*   **Senni Diggermattock**: A worker who seized control of a leadership meeting and formed a coalition against the Pudding King. She is currently in the Council Room and supportive of the Alliance [ch 045 / 045.02; ch 048 / 048.06; Status Table: Senni Diggermattock].
+*   **Chief Dorbo Diggermattock**: Clan leader concerned with gross margins. He was previously blamed for the elemental labor mess and is currently wary/nervous of Daz [ch 045 / 045.02; ch 048 / 048.06; Status Table: Dorbo Diggermattock].
+*   **Dasco Pickshine**: Overseer of Pickshine Mines, previously concerned about lack of labor. He is now a reluctant ally in the Council Room [ch 045 / 045.02; ch 048 / 048.06; Status Table: Dasco Pickshine].
+*   **Starlace**: A traveling magic merchant in the Traders' Grotto offering enchantments and buying/selling magic items. Friendly/Neutral [ch 045 / 045.03; Status Table: Starlace].
+*   **Valimor Brightgem**: A renowned blacksmith in the Gilded Sheath. He was inspired by Thorin's marketing ideas to consider platform-based business models. Friendly/Inspired [ch 045 / 045.04; Status Table: Valimor Brightgem].
+*   **Chipgrin Goldwhisker**: A deep gnome in the Goldwhisker Warrens/Departure Area. Friendly [ch 048 / 048.02; ch 048 / 048.07; Status Table: Chipgrin Goldwhisker].
+
+### Companions, Guides & Others
+*   **Sarith Kzekarit**: **DEAD**. Previously the party's drow navigator, a prisoner with unstable sanity who was prideful but competent. He died in the Garden of Welcome [ch 004 / npcs; ch 005 / 005.06; ch 031 / 031.04; ch 031 / 031.05].
+*   **Shuushar**: A pacifist kuo-toa who sought to return to Sloobludop. He departed with kuo-toa refugees heading deeper into the Darklake. Friendly [ch 004 / npcs; ch 009 / 009.06; Status Table: Shuushar the Awakened].
+*   **Jimjar**: A deep gnome who appears to be a celestial or deity (immune to poison/psychic, resistant to non-magical weapons). He is enigmatic and friendly, located in the Blingdenstone Tunnels [ch 010 / 010.03; ch 048 / 048.07; Status Table: Jimjar].
+*   **Topsy & Turvy**: Deep gnome twins (wererats) who avoid Blingdenstone due to reputational issues. They are currently missing/unaccounted for, though Topsy and Turvy individually are listed as friendly in the Darklake previously [ch 004 / 004.01; ch 018 / 018.03; Status Table: Topsy and Turvy].
+*   **Spiderbait**: An eccentric goblin guide specializing in "surfing" spider webs. He is currently friendly and dependent on the party, traveling with them in Candlekeep [ch 006 / 006.05; ch 054 / 054.01; Status Table: Spiderbait].
+*   **Yuk Yuk**: Another goblin guide, mercenary and boastful. Located at Sloobludop Docks [ch 007 / 007.05; ch 008 / 008.03; Status Table: Yuk Yuk].
+*   **Fargas Rumblefoot**: A halfling adventurer rescued from a spider cocoon who claimed to know the location of a lost tomb. He is referenced as an unreliable witness [ch 006 / 006.07; ch 028 / npcs; Status Table: Fargas Rumblefoot].
+*   **Brannum Redmarch**: A low-Charisma duergar who led previous crews to their doom. He is willing to assist the party for freedom and claims the "mad" kuo-toa are his enemies [ch 011 / 011.01; ch 012 / 012.02; Status Table: Brannum Redmarch].
+*   **Daz's Bat Familiar**: Alive and loyal to Daz, last known in Pudding King's Throne Room [Status Table: Batman (Familiar)].

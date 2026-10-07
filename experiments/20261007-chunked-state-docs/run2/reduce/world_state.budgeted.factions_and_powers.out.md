@@ -1,0 +1,11 @@
+## Factions and Powers
+
+- **The Avowed (Candlekeep)** — Leaderless and critically weakened: Bookwyrm dead, Alkrist neutralized, A'lai captured, Kalan fled [ch 065 / 065.03]. The Council of Twelve is split over succession; Kalan predicts Teles Ahvoste or Fheminor will prevail [ch 062 / 062.02]. Manshoon's simulacrum breached the inner sanctum seeking something of value beneath Candlekeep [ch 067 / 067.01].
+- **Manshoon / Zhentarim** — Zhentarim raiders looted the High Tower lobby [ch 064 / 064.04]. Manshoon's simulacrum shattered a magically protected door and disregarded A'lai entirely, exposing him as a pawn [ch 067 / 067.01].
+- **House T'sarran** — Holds a grudge after the Fungal Altar ambush; the elite warrior retreated with a parting threat of revenge [ch 051 / 051.04]. The shrunken drow spy the party holds will not be delivered to them by Candlekeep [ch 056 / 056.04]. The Matron Mother sent agents to the Overbright to track the party and identify the benefactor who paid to protect Daz [ch 054 / 054.04].
+- **House Baenre** — A'lai deduced only House Baenre could afford to wait eleven years, concluding "It must be Baenre. No one else can afford to wait that long for nothing" [ch 067 / 067.02].
+- **The "bride" heresy of Zuggtmoy** — Ilvara was seduced by this cult after visiting the Neverlight Grove; it turned her followers into mindless fungal servants [ch 050 / 050.02]. Zuggtmoy corrupts Ilvara's devotion, demanding the party be hunted and killed [ch 049 / 049.03].
+- **Lolth** — Daz worried Lolth herself might be stirring in Menzoberranzan; Asha Vandree remains loyal to her [ch 049 / 049.05]. Zuggtmoy's worship has syncretized with Lolth worship [ch 053 / 053.03].
+- **The Question of the Age** — A raging scholarly controversy among Stroudite, Bahamutian, and Draconic schools, causing three duels at Candlekeep [ch 057 / 057.01].
+- **Keepers of the Flame (Gracklstugh)** — Wanted only the egg, sworn to pursue the party "to the end of time" if betrayed [ch 021 / 021.02].
+- **Ember Vanguard rumor** — The party's own name became the city's legend; wanted posters depict them inaccurately [ch 040 / 040.02].

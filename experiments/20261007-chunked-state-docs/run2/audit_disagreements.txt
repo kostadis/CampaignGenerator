@@ -1,0 +1,530 @@
+
+######## BASELINE SUPPORTED, CHUNKED NOT (26) — first 105
+
+ITEM: A'lai Aivenmore — first contact (Chapter House)
+  baseline: - "A'lai Aivenmore — first contact (Chapter House)" — `SUPPORTED (ch 57, 057.05)` A'lai pushes for an immediate vote at the council (ch 57, dossier: A'lai Aivenmore).
+  chunked:  - "A'lai Aivenmore — first contact (Chapter House)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Acquiring scavenged possessions in Velkynvelve slave pen
+  baseline: - "Acquiring scavenged possessions in Velkynvelve slave pen" — `SUPPORTED (ch 3, 003.04)` The party scavenges equipment after the guard-tower skirmish; the slave pen is not named as the source.
+  chunked:  - "Acquiring scavenged possessions in Velkynvelve slave pen" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party has begun to acquire scavenged possessions in the slave pen, including two kitchen knives and Eldeth's comb. [ch 002 / 002.02; ch 002 / 002.04] - begun, not shown done: the party scavenged guard-tower equipment including short swords, hand crossbows, armor, rope, and caltrops, but their confiscated possessions, including Thorin's pendant, remain unrecovered [ch 003 / 003.04]
+
+ITEM: Alkrist arrest — Drakonoikos confrontation
+  baseline: - "Alkrist arrest — Drakonoikos confrontation" — `SUPPORTED (ch 61, 061.07)` Alkrist confesses under Zone of Truth; "Drakonoikos" is not named.
+  chunked:  - "Alkrist arrest — Drakonoikos confrontation" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Asha Vandree — junior priestess, potential betrayal of Ilvara
+  baseline: - "Asha Vandree — junior priestess, potential betrayal of Ilvara" — `SUPPORTED (ch 50, 050.03)` Asha negotiates with the party to attack Ilvara.
+  chunked:  - "Asha Vandree — junior priestess, potential betrayal of Ilvara" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Asha Vandree, junior priestess, was recruited as an ally against Ilvara this chapter, participating in the battle [ch 050 / 050.03; ch 050 / 050.04]. - begun, not shown done: Asha Vandree asserted command and was killed by the party in this chapter [ch 053 / 053.02].
+
+ITEM: Bell Tower — Polly Pocket cells
+  baseline: - "Bell Tower — Polly Pocket cells" — `SUPPORTED (ch 56, 056.04)` Kalan describes the Bell Tower anti-magic cells as an option; there is no record she was placed there.
+  chunked:  - "Bell Tower — Polly Pocket cells" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Black obelisk — Whorlstone Tunnels discovery
+  baseline: - "Black obelisk — Whorlstone Tunnels discovery" — `SUPPORTED (ch 19, 019.05)` The party enters the black obelisk chamber.
+  chunked:  - "Black obelisk — Whorlstone Tunnels discovery" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party entered the Whorlstone Tunnels and has encountered size-altering fungi but has not yet discovered anything about a black obelisk [ch 015 / 015.05]. - begun, not shown done: The black obelisk in the Whorlstone Tunnels was seen in the flumph's vision, with the egg and about ten derro guards, but the party has not visited it [ch 017 / locations; ch 017 / 017.04]. - begun, not shown done: The black obelisk was discovered in the Whorlstone Caverns, a 50-foot-tall structure of smooth black 
+
+ITEM: Cryptogram race — six-clue chase to the Vault
+  baseline: - "Cryptogram race — six-clue chase to the Vault" — `SUPPORTED (ch 67, 067.03)` The party solves the vault cryptogram; a "six-clue" structure is not stated.
+  chunked:  - "Cryptogram race — six-clue chase to the Vault" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The cryptogram race to the Vault advanced: the party finished deciphering the cryptogram and began executing its steps, but has not yet reached the Vault [ch 067 / 067.03]
+
+ITEM: Eldeth Feldrun — return to Gauntlgrym or honor her memory
+  baseline: - "Eldeth Feldrun — return to Gauntlgrym or honor her memory" — `SUPPORTED (ch 54, 054.01)` Eldeth departs for Mithral Hall and Gauntlgrym; her arrival is not recorded.
+  chunked:  - "Eldeth Feldrun — return to Gauntlgrym or honor her memory" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Eldeth Feldrun, a shield dwarf scout and fellow prisoner, fought alongside the party in the guard tower, firing a hand crossbow from the upper level, but her fate and the return to Gauntlgrym are not yet determined [ch 003 / npcs] - begun, not shown done: Eldeth is alive and traveling with the party; no resolution yet of returning her to Gauntlgrym [ch 028 / npcs]. - begun, not shown done: Eldeth departed for Mithral Hall and Gauntlgrym to warn the lords about the Underdark, sweari
+
+ITEM: Entémoch's Boon — summoning circle discovered
+  baseline: - "Entémoch's Boon — summoning circle discovered" — `SUPPORTED (ch 44, 044.07)` The party finds the summoning circle.
+  chunked:  - "Entémoch's Boon — summoning circle discovered" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party is tasked to find Entémoch's Boon and the strange vibrations in Pickshine and Whiteshell mines are reported, but the summoning circle/boon itself has not been found in this chapter. [ch 043 / 043.04]
+
+ITEM: Escaping Velkynvelve via webs and pool
+  baseline: - "Escaping Velkynvelve via webs and pool" — `SUPPORTED (ch 4, 004.02)` The party takes a dangerous descent toward water below; webs are not mentioned.
+  chunked:  - "Escaping Velkynvelve via webs and pool" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Escaping Velkynvelve via webs and the pool is discussed and planned, with Jorlan proposing a web-and-pool route, but the escape itself has not yet happened. [ch 002 / 002.05; ch 002 / 002.06] - begun, not shown done: the party defeated the immediate guards and stands armed and positioned to continue the escape, but the actual escape via webs and pool has not yet occurred [ch 003 / 003.04]
+
+ITEM: Find Entémoch's Boon — Blingdenstone outskirts
+  baseline: - "Find Entémoch's Boon — Blingdenstone outskirts" — `SUPPORTED (ch 45, 045.01)` The party completes the ritual in the summoning circle.
+  chunked:  - "Find Entémoch's Boon — Blingdenstone outskirts" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party noted that finding Entémoch’s Boon remains a separate objective from cleansing the Steadfast Stone, but no progress was made on it this chapter [ch 040 / items]. - begun, not shown done: The party is tasked with finding Entémoch's boon; the Galeb Duhr explained the need for it, and Nomi tasked the party with investigating the strange vibrations to find the lost path, but the boon itself has not been obtained. [ch 043 / 043.03; ch 043 / 043.04] - begun, not shown done: The party is a
+
+ITEM: Forge of Mirabar — dwarven smithing city
+  baseline: - "Forge of Mirabar — dwarven smithing city" — `SUPPORTED (ch 55, 055.03)` The party visits the dwarven mining city of Mirabar; "Forge of Mirabar" is not named.
+  chunked:  - "Forge of Mirabar — dwarven smithing city" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party visited the Forge of Mirabar, the dwarven smithing city, where Thorin considered upgrading his equipment [ch 055 / 055.03]
+
+ITEM: Glabbagool's question — Pavilion Naturalis / Tower of Tall Tales / Whispering Dome
+  baseline: - "Glabbagool's question — Pavilion Naturalis / Tower of Tall Tales / Whispering Dome" — `SUPPORTED (ch 59, 059.06)` Glabbagool asks his question at the Whispering Dome.
+  chunked:  - "Glabbagool's question — Pavilion Naturalis / Tower of Tall Tales / Whispering Dome" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Glabbagool visited the Whispering Dome and formalized his apprenticeship, becoming an eighth-level sidekick [ch 059 / 059.06].
+
+ITEM: Infernal Fortress — Sylvira interview and Abyssal Plague
+  baseline: - "Infernal Fortress — Sylvira interview and Abyssal Plague" — `SUPPORTED (ch 61, 061.05)` Daz interviews the bedridden Sylvira, who has an abyssal plague; the location is her quarters, not stated to be the Infernal Fortress.
+  chunked:  - "Infernal Fortress — Sylvira interview and Abyssal Plague" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Jorlan's Gambit — gate left unlocked
+  baseline: - "Jorlan's Gambit — gate left unlocked" — `SUPPORTED (ch 3, 003.01)` The party wakes to find the cell door open after Jorlan's offer (002.05).
+  chunked:  - "Jorlan's Gambit — gate left unlocked" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Jorlan Duskryn has offered to leave the slave-pen gate unlocked and create a distraction during the changing of the guard, but the escape itself has not yet happened. [ch 002 / 002.05]
+
+ITEM: Juiblex — Faceless Lord, Underdark presence
+  baseline: - "Juiblex — Faceless Lord, Underdark presence" — `SUPPORTED (ch 43, 043.05)` Dorbo names Juiblex as allied to the Pudding King (ch 43, memorable).
+  chunked:  - "Juiblex — Faceless Lord, Underdark presence" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Juiblex, the Faceless Lord, is implicated in the ooze problem, with the party concluding he is working through a proxy, but no direct confrontation or deeper evidence has emerged [ch 038 / 038.04].
+
+ITEM: Modrons encountered — March to Nowhere
+  baseline: - "Modrons encountered — March to Nowhere" — `SUPPORTED (ch 67, 067.05)` The party meets modrons at the House of Mechanus in Candlekeep, not on a "March to Nowhere".
+  chunked:  - "Modrons encountered — March to Nowhere" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Ogrémoch's Bane — elemental entity banishment
+  baseline: - "Ogrémoch's Bane — elemental entity banishment" — `SUPPORTED (ch 43, 043.01)` The Galeb Duhr explain the defeat of Ogrémoch's influence after the hallowing.
+  chunked:  - "Ogrémoch's Bane — elemental entity banishment" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Ogrémoch's Bane was identified as the hostile influence in the Rockblight that must be defeated for the temple cleansing to succeed [ch 039 / 039.08]. - begun, not shown done: The party traveled toward the Temple of the Steadfast Stone in the Rockblight, where Ogrémoch’s Bane is the entity to be dealt with, but reached only the outer caverns and encountered its crazed earth elemental influence [ch 040 / 040.01; ch 040 / 040.06; ch 040 / items]. - begun, not shown done: Ogrémoch's Bane at the S
+
+ITEM: Refectory — dinner with Janussi alive
+  baseline: - "Refectory — dinner with Janussi alive" — `SUPPORTED (ch 57, 057.02)` The party dines at the Refectory the night before the murder; Janussi's presence is not stated.
+  chunked:  - "Refectory — dinner with Janussi alive" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party attended a Refectory dinner, but Janussi was dead before any direct first contact with him occurred in this chunk [ch 057 / 057.02].
+
+ITEM: Surface-madness gradient — party awareness established before Candlekeep
+  baseline: - "Surface-madness gradient — party awareness established before Candlekeep" — `SUPPORTED (ch 55, 055.04)` The party realizes Underdark madness is bleeding into the surface through Eldred (ch 55, memorable).
+  chunked:  - "Surface-madness gradient — party awareness established before Candlekeep" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party witnessed the same broken, fractured madness from the Underdark in Eldred's dual voices at Triboar and recognized it as bleeding into the surface world [ch 055 / 055.04] - begun, not shown done: The party established awareness of the surface-madness gradient before and at Candlekeep, with Gyrgum confirming the connection between Elin's condition and Daz's headache [ch 056 / 056.02].
+
+ITEM: Travelogue prelude — party arrival at Candlekeep gates
+  baseline: - "Travelogue prelude — party arrival at Candlekeep gates" — `SUPPORTED (ch 56, 056.04)` The party reaches Candlekeep and its bag is inspected at the gate.
+  chunked:  - "Travelogue prelude — party arrival at Candlekeep gates" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party selected Candlekeep as their destination and began the journey there on the surface [ch 053 / 053.06]. - begun, not shown done: The party arrived at Candlekeep gates in this chunk, meeting Bookwyrm and the Gatewarden, without the Five Books admission or murder-arc events yet occurring [ch 056 / 056.04].
+
+ITEM: Two "Sylvira" figures — dual-timeline disguise revelation assembled
+  baseline: - "Two "Sylvira" figures — dual-timeline disguise revelation assembled" — `SUPPORTED (ch 58, 058.06)` Queenie reports a Sylvira lookalike who did not smell like her; a 1 a.m. kitchen figure follows (ch 60, memorable).
+  chunked:  - "Two "Sylvira" figures — dual-timeline disguise revelation assembled" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Vadimir Coaxrock cube incursion — Blingdenstone traders grotto
+  baseline: - "Vadimir Coaxrock cube incursion — Blingdenstone traders grotto" — `SUPPORTED (ch 37, 037.06)` Gelatinous cubes attack the Traders' Grotto; the name "Vadimir Coaxrock" does not appear in the summaries.
+  chunked:  - "Vadimir Coaxrock cube incursion — Blingdenstone traders grotto" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Vault confrontation — Manshoon and the Book of Vile Darkness
+  baseline: - "Vault confrontation — Manshoon and the Book of Vile Darkness" — `SUPPORTED (ch 70, 070.04)` After confronting two Manshoon simulacra, Daz reaches the Book of Vile Darkness.
+  chunked:  - "Vault confrontation — Manshoon and the Book of Vile Darkness" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The Vault confrontation with Manshoon is not yet complete: Manshoon's simulacrum is already pursuing something beneath Candlekeep while the party descends toward it [ch 067 / 067.01] - begun, not shown done: The Manshoon confrontation continued from the Vault into this chunk with the first simulacrum's destruction and the second simulacrum's bargain; the second simulacrum remained alive and the deal unaccepted [ch 069 / 069.02; ch 069 / 069.05]. - begun, not shown done: The Vaul
+
+ITEM: Veyloss the bard — "The Kenku Could Not Fly" performance (Beregost)
+  baseline: - "Veyloss the bard — "The Kenku Could Not Fly" performance (Beregost)" — `SUPPORTED (ch 56, 056.03)` A bard performs at the Burning Wizard; the bard's name and song title are not recorded.
+  chunked:  - "Veyloss the bard — "The Kenku Could Not Fly" performance (Beregost)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Waterdeep — city visit and shopping arc
+  baseline: - "Waterdeep — city visit and shopping arc" — `SUPPORTED (ch 55, 055.05)` The party arrives in Waterdeep.
+  chunked:  - "Waterdeep — city visit and shopping arc" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party visited Waterdeep for a shopping arc, including Thorin's mithral plate purchase [ch 055 / 055.05]
+
+
+######## CHUNKED SUPPORTED, BASELINE NOT (105) — first 105
+
+ITEM: A'lai — fate resolution (dead / escaped)
+  baseline: - "A'lai — fate resolution (dead / escaped)" — `NOT FOUND IN SUMMARIES` He was captured and bargained for null-prison custody (ch 67, 067.02).
+  chunked:  - "A'lai — fate resolution (dead / escaped)" — `SUPPORTED` - A'lai's fate (dead or escaped) was resolved in a prior session [ch 026 / 026.01].
+
+ITEM: A'lai — sapphire smash and escape (High Tower Library)
+  baseline: - "A'lai — sapphire smash and escape (High Tower Library)" — `NOT FOUND IN SUMMARIES` He attempted to smash the sapphire, was outmaneuvered, and did not escape (ch 65, dossier: A'lai Aivenmore).
+  chunked:  - "A'lai — sapphire smash and escape (High Tower Library)" — `SUPPORTED` - A'lai's sapphire smash and escape occurred at the High Tower Library in a prior session [ch 026 / 026.01]. - A'lai Aivenmore's fate is resolved: he asked for and was granted a cell in Candlekeep's null magic prison rather than freedom [ch 067 / 067.02]
+
+ITEM: Alkrist — first contact (Chapter House)
+  baseline: - "Alkrist — first contact (Chapter House)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Alkrist — first contact (Chapter House)" — `SUPPORTED` - Alkrist's first contact at the Chapter House occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Araumycos — vast fungal entity cavern
+  baseline: - "Araumycos — vast fungal entity cavern" — `NOT FOUND IN SUMMARIES` It is named as Zuggtmoy's intended mate (ch 32, 032.01) and is never visited.
+  chunked:  - "Araumycos — vast fungal entity cavern" — `SUPPORTED` - The Darklake was described as a three-dimensional web of water-filled tunnels, with Sloobludop's location and the tomb's northeastern edge marked [ch 007 / 007.02; ch 008 / npcs].
+
+ITEM: Bath House — Daral interview and poisoning
+  baseline: - "Bath House — Daral interview and poisoning" — `NOT FOUND IN SUMMARIES` Daral was interviewed at the Hearth (ch 59, 059.05).
+  chunked:  - "Bath House — Daral interview and poisoning" — `SUPPORTED` - The Bath House scene with Daral's interview and poisoning was resolved in a prior session [ch 026 / 026.01].
+
+ITEM: Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)
+  baseline: - "Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)" — `NOT FOUND IN SUMMARIES` At the end of ch 70 Daz holds it under an illusion of ash; no final disposition is recorded (ch 70, 070.04).
+  chunked:  - "Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)" — `SUPPORTED` - The Book of Vile Darkness's fate was determined in a prior session [ch 026 / 026.01].
+
+ITEM: Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use
+  baseline: - "Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use" — `SUPPORTED` - The party identified Bookwyrm's disguise self use in a prior session [ch 026 / 026.01].
+
+ITEM: Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)
+  baseline: - "Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)" — `SUPPORTED` - Bookwyrm's Teles sighting reveal occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Bookwyrm — receives party at Candlekeep Emerald Door
+  baseline: - "Bookwyrm — receives party at Candlekeep Emerald Door" — `NOT FOUND IN SUMMARIES` The First Reader meets the party on arrival (ch 56, 056.04).
+  chunked:  - "Bookwyrm — receives party at Candlekeep Emerald Door" — `SUPPORTED` - Bookwyrm received the party at Candlekeep and assigned them to their mentors [ch 056 / 056.04]. - Bookwyrm, the green dragonborn First Reader, was identified as the one who assigned Fembris Lancer to the party [ch 058 / 058.04].
+
+ITEM: Brevin — Sloobludop recitation incident
+  baseline: - "Brevin — Sloobludop recitation incident" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Brevin — Sloobludop recitation incident" — `SUPPORTED` - Brevin's Sloobludop recitation incident occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Brevin — six-pointed star bedclothes incident
+  baseline: - "Brevin — six-pointed star bedclothes incident" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Brevin — six-pointed star bedclothes incident" — `SUPPORTED` - Brevin's six-pointed star bedclothes incident occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden
+  baseline: - "Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden" — `SUPPORTED` - Candlekeep's institutional restructuring with Fheminor as Keeper and Tadric as Gatewarden occurred post-arc in a prior session [ch 026 / 026.01].
+
+ITEM: Cursed Tower — Moziqodo and rooftop incidents
+  baseline: - "Cursed Tower — Moziqodo and rooftop incidents" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Cursed Tower — Moziqodo and rooftop incidents" — `SUPPORTED` - The Cursed Tower's Moziqodo and rooftop incidents occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7)
+  baseline: - "Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7)" — `NOT FOUND IN SUMMARIES` Daral survived (ch 62, 062.05), but the Fustilugs answer came from A'lai and Sylvira (ch 67, dossier: Vault Cryptogram).
+  chunked:  - "Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7)" — `SUPPORTED` - Daral was saved with the Alkrist ID witness and Fustilugs clue payoff in Sessions 5 / 7 of a prior session [ch 026 / 026.01].
+
+ITEM: Daral — key witness testimony (if saved, Session 5)
+  baseline: - "Daral — key witness testimony (if saved, Session 5)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Daral — key witness testimony (if saved, Session 5)" — `SUPPORTED` - Daral's key witness testimony was given if saved in Session 5 [ch 026 / 026.01].
+
+ITEM: Daz / Yvenne — Fourth-Seat synthesis investigation (DC 20 roll)
+  baseline: - "Daz / Yvenne — Fourth-Seat synthesis investigation (DC 20 roll)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Daz / Yvenne — Fourth-Seat synthesis investigation (DC 20 roll)" — `SUPPORTED` - Daz / Yvenne's Fourth-Seat synthesis investigation was completed with a DC 20 roll in a prior session [ch 026 / 026.01].
+
+ITEM: Daz / Yvenne — Vaelissa T'sarran name and Bell Tower deadline
+  baseline: - "Daz / Yvenne — Vaelissa T'sarran name and Bell Tower deadline" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Daz / Yvenne — Vaelissa T'sarran name and Bell Tower deadline" — `SUPPORTED` - Vaelissa T'sarran's name and Bell Tower deadline were delivered by Yvenne in a prior session [ch 026 / 026.01].
+
+ITEM: Daz and Yvenne — field-perception expertise confirmed (post-arc)
+  baseline: - "Daz and Yvenne — field-perception expertise confirmed (post-arc)" — `NOT FOUND IN SUMMARIES` **Good-Choice Ledger Payoffs**
+  chunked:  - "Daz and Yvenne — field-perception expertise confirmed (post-arc)" — `SUPPORTED` - Daz and Yvenne's field-perception expertise was confirmed post-arc in a prior session [ch 026 / 026.01].
+
+ITEM: Daz somatic field-perception — pressure-headache begins (Beregost)
+  baseline: - "Daz somatic field-perception — pressure-headache begins (Beregost)" — `NOT FOUND IN SUMMARIES` Daz "notices something unsettling" at Beregost (ch 56, 056.03); no headache is recorded.
+  chunked:  - "Daz somatic field-perception — pressure-headache begins (Beregost)" — `SUPPORTED` - Daz's pressure-headache is first noted as having begun at Beregost, intensifying on the way to Candlekeep [ch 056 / 056.03; ch 056 / 056.04].
+
+ITEM: Daz somatic field-perception — pressure-headache sharpens on Way of the Lion
+  baseline: - "Daz somatic field-perception — pressure-headache sharpens on Way of the Lion" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Daz somatic field-perception — pressure-headache sharpens on Way of the Lion" — `SUPPORTED` - Daz's pressure-headache sharpened on the Way of the Lion approaching Candlekeep [ch 056 / 056.04].
+
+ITEM: Disguise rosetta cracked — milestone event, level-up to 9
+  baseline: - "Disguise rosetta cracked — milestone event, level-up to 9" — `NOT FOUND IN SUMMARIES` The party remains level 8 (ch 52, 052.01).
+  chunked:  - "Disguise rosetta cracked — milestone event, level-up to 9" — `SUPPORTED` - The disguise rosetta was cracked as a milestone event, granting a level-up to 9, in a prior session [ch 026 / 026.01]. - The party leveled up to level nine at this session's end, the milestone level associated with the disguise rosetta breakthrough [ch 063 / 063.06].
+
+ITEM: Droki delivery interception — Whorlstone Tunnels
+  baseline: - "Droki delivery interception — Whorlstone Tunnels" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Droki delivery interception — Whorlstone Tunnels" — `SUPPORTED` - The Droki delivery interception is actively in progress: the party spotted Droki, followed him through a fissure into the Whorlstone Tunnels, and is trailing him north, hoping he leads them to every faction he serves [ch 015 / 015.05].
+
+ITEM: Droki — derro courier, capture objective
+  baseline: - "Droki — derro courier, capture objective" — `NOT FOUND IN SUMMARIES` The party tracks Droki (ch 15, 015.05; ch 16, 016.02), but no capture is recorded.
+  chunked:  - "Droki — derro courier, capture objective" — `SUPPORTED` - The party spotted Droki and followed him into the Whorlstone Tunnels, with Droki oblivious to being followed [ch 015 / 015.05]. - Droki is ahead of the party inside the Whorlstone Tunnels, and the party is openly following him without alerting him [ch 015 / 015.05; ch 015 / npcs].
+
+ITEM: Echo 1 activated — surface contamination prophecy
+  baseline: - "Echo 1 activated — surface contamination prophecy" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Echo 1 activated — surface contamination prophecy" — `SUPPORTED` - Echo 1 was activated as the surface contamination prophecy in a prior session [ch 026 / 026.01].
+
+ITEM: Echo 1 — prophecy names surface-contamination field-effect directly
+  baseline: - "Echo 1 — prophecy names surface-contamination field-effect directly" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Echo 1 — prophecy names surface-contamination field-effect directly" — `SUPPORTED` - Echo 1's prophecy named the surface-contamination field-effect directly in a prior session [ch 026 / 026.01].
+
+ITEM: Echo 2 activated — wedding / Zuggtmoy prophecy
+  baseline: - "Echo 2 activated — wedding / Zuggtmoy prophecy" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Echo 2 activated — wedding / Zuggtmoy prophecy" — `SUPPORTED` - Echo 2 was activated as the wedding / Zuggtmoy prophecy in a prior session [ch 026 / 026.01].
+
+ITEM: Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named)
+  baseline: - "Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named)" — `NOT FOUND IN SUMMARIES` The recorded prophecy names Thorin, Zalthir, Daz and Dawnbringer, not Gyrgum, and a "hall of stone", not Gauntlgrym (ch 69, 069.04; ch 70, dossier: Alaundo the Seer).
+  chunked:  - "Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named)" — `SUPPORTED` - Echo 3 was activated as the Gauntlgrym / Keeper prophecy naming Thorin / Zalthir / Daz / Gyrgum in a prior session [ch 026 / 026.01].
+
+ITEM: Echo 4 activated — Jimjar / Callarduran witness prophecy
+  baseline: - "Echo 4 activated — Jimjar / Callarduran witness prophecy" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Echo 4 activated — Jimjar / Callarduran witness prophecy" — `SUPPORTED` - Echo 4 was activated as the Jimjar / Callarduran witness prophecy in a prior session [ch 026 / 026.01].
+
+ITEM: Eldeth — letter delivered via courier (Session 8)
+  baseline: - "Eldeth — letter delivered via courier (Session 8)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Eldeth — letter delivered via courier (Session 8)" — `SUPPORTED` - Eldeth's letter was delivered via courier in Session 8 of a prior session [ch 026 / 026.01].
+
+ITEM: Elin the silent child — Gyrgum healing attempt (Daggerford)
+  baseline: - "Elin the silent child — Gyrgum healing attempt (Daggerford)" — `NOT FOUND IN SUMMARIES` The healing attempt was Dawnbringer's lesser restoration, not Gyrgum's (ch 56, 056.02; ch 56, memorable).
+  chunked:  - "Elin the silent child — Gyrgum healing attempt (Daggerford)" — `SUPPORTED` - Gyrgum attempted healing on Elin the silent child at Daggerford, with Dawnbringer's lesser restoration only partially effective [ch 056 / 056.02].
+
+ITEM: Endless Chant error — verse substitution witnessed (Beregost)
+  baseline: - "Endless Chant error — verse substitution witnessed (Beregost)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Endless Chant error — verse substitution witnessed (Beregost)" — `SUPPORTED` - An Endless Chant verse-substitution error was witnessed at Beregost (the scholar's chant being "almost right" but wrong by a hair) [ch 056 / 056.03].
+
+ITEM: Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand")
+  baseline: - "Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand")" — `NOT FOUND IN SUMMARIES` The recorded fragment is "the keeper falls, the heart is sold" (ch 57, memorable).
+  chunked:  - "Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand")" — `SUPPORTED` - The Endless Chant's Deadwinter Prophecy fragment was heard in a prior session [ch 026 / 026.01].
+
+ITEM: Erudite Outfitters — Bookwyrm's cloak evidence
+  baseline: - "Erudite Outfitters — Bookwyrm's cloak evidence" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Erudite Outfitters — Bookwyrm's cloak evidence" — `SUPPORTED` - Bookwyrm's cloak evidence was found at Erudite Outfitters in a prior session [ch 026 / 026.01].
+
+ITEM: Fembris — rooftop confession (Bell Tower break)
+  baseline: - "Fembris — rooftop confession (Bell Tower break)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Fembris — rooftop confession (Bell Tower break)" — `SUPPORTED` - Fembris's rooftop confession at the Bell Tower break occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Festrum the gnome innkeeper — Burning Wizard history recounted
+  baseline: - "Festrum the gnome innkeeper — Burning Wizard history recounted" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Festrum the gnome innkeeper — Burning Wizard history recounted" — `SUPPORTED` - Festrum the gnome innkeeper recounted the Burning Wizard's history at Beregost [ch 056 / 056.03].
+
+ITEM: Fheminor — appointment as Keeper of Tomes (post-arc)
+  baseline: - "Fheminor — appointment as Keeper of Tomes (post-arc)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Fheminor — appointment as Keeper of Tomes (post-arc)" — `SUPPORTED` - Fheminor was appointed Keeper of Tomes post-arc in a prior session [ch 026 / 026.01].
+
+ITEM: Fheminor — first contact (Founder's Court interview)
+  baseline: - "Fheminor — first contact (Founder's Court interview)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Fheminor — first contact (Founder's Court interview)" — `SUPPORTED` - Fheminor's first contact at the Founder's Court interview occurred in a prior session [ch 026 / 026.01]. - Fheminor, first contacted at Founder's Court, was identified as having visited Janussi's chamber around 9 p.m. per Queenie's testimony [ch 058 / 058.06].
+
+ITEM: Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence
+  baseline: - "Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence" — `NOT FOUND IN SUMMARIES` **Surface-Madness Thread**
+  chunked:  - "Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence" — `SUPPORTED` - The Gauntlgrym call was confirmed with Echo 3 and Eldeth's letter convergence in a prior session [ch 026 / 026.01].
+
+ITEM: Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)
+  baseline: - "Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)" — `NOT FOUND IN SUMMARIES` The visit occurred (ch 59, 059.06), but no boon is recorded.
+  chunked:  - "Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)" — `SUPPORTED` - Glabbagool's Whispering Dome visit earned the Echo re-coax boon in Session 8 of a prior session [ch 026 / 026.01].
+
+ITEM: Glabbagool — bad night / Juiblex reach (Session 5)
+  baseline: - "Glabbagool — bad night / Juiblex reach (Session 5)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Glabbagool — bad night / Juiblex reach (Session 5)" — `SUPPORTED` - Glabbagool's bad night and Juiblex reach (Session 5) occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Gracklstugh chaos — second visit conditions
+  baseline: - "Gracklstugh chaos — second visit conditions" — `NOT FOUND IN SUMMARIES` The party left Gracklstugh in ch 27 (027.04) and did not return; a merchant report describes later conditions (ch 40, dossier: Gracklstugh).
+  chunked:  - "Gracklstugh chaos — second visit conditions" — `SUPPORTED` - The party is in Gracklstugh under second-visit chaos conditions: lockdowns, rumors of the Ember Vanguard, assassination chaos, and a city on the edge of open conflict [ch 026 / 026.01; ch 026 / 026.06; ch 026 / 026.07].
+
+ITEM: Gyrgum / Vareth — unsigned sting (Stations 9–10)
+  baseline: - "Gyrgum / Vareth — unsigned sting (Stations 9–10)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Gyrgum / Vareth — unsigned sting (Stations 9–10)" — `SUPPORTED` - Gyrgum / Vareth's unsigned sting at Stations 9–10 was completed in a prior session [ch 026 / 026.01].
+
+ITEM: Hook Horror Lair — gnoll hunt encounter
+  baseline: - "Hook Horror Lair — gnoll hunt encounter" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Hook Horror Lair — gnoll hunt encounter" — `SUPPORTED` - The party encountered Fargas Rumblefoot in a spider cocoon and rescued him [ch 007 / 007.02; ch 007 / npcs].
+
+ITEM: Immortal Chambers — A'lai Aivenmore interview
+  baseline: - "Immortal Chambers — A'lai Aivenmore interview" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Immortal Chambers — A'lai Aivenmore interview" — `SUPPORTED` - A'lai Aivenmore's interview occurred at the Immortal Chambers in a prior session [ch 026 / 026.01].
+
+ITEM: Inda — emergence from brass statue and vault escort
+  baseline: - "Inda — emergence from brass statue and vault escort" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Inda — emergence from brass statue and vault escort" — `SUPPORTED` - Inda's emergence from the brass statue and vault escort occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Janussi — first contact (refectory dinner, Day One)
+  baseline: - "Janussi — first contact (refectory dinner, Day One)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Janussi — first contact (refectory dinner, Day One)" — `SUPPORTED` - Janussi's first contact at the refectory dinner on Day One occurred in a prior session [ch 026 / 026.01]. - Janussi, first contacted at a refectory dinner on Day One, was dead and under investigation as the murder victim in this chapter [ch 058 / 058.01; ch 058 / npcs].
+
+ITEM: Jewel of the Styx — wight shanty encounter
+  baseline: - "Jewel of the Styx — wight shanty encounter" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Jewel of the Styx — wight shanty encounter" — `SUPPORTED` - The wight shanty encounter at Jewel of the Styx occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Jimjar / Callarduran — Echo 4 witness prophecy activation
+  baseline: - "Jimjar / Callarduran — Echo 4 witness prophecy activation" — `NOT FOUND IN SUMMARIES` **Major Plot Beats**
+  chunked:  - "Jimjar / Callarduran — Echo 4 witness prophecy activation" — `SUPPORTED` - Jimjar / Callarduran's Echo 4 witness prophecy activation occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Kalan — disappearance and presumed death (Pont de Paramours)
+  baseline: - "Kalan — disappearance and presumed death (Pont de Paramours)" — `NOT FOUND IN SUMMARIES` He fled in ch 65 (session-end) and is present again in ch 67 (067.03).
+  chunked:  - "Kalan — disappearance and presumed death (Pont de Paramours)" — `SUPPORTED` - Kalan's disappearance and presumed death occurred at Pont de Paramours in a prior session [ch 026 / 026.01].
+
+ITEM: Kazryn Nyantani — interview and A'lai alibi break
+  baseline: - "Kazryn Nyantani — interview and A'lai alibi break" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Kazryn Nyantani — interview and A'lai alibi break" — `SUPPORTED` - Kazryn Nyantani's interview and A'lai alibi break occurred in a prior session [ch 026 / 026.01]. - Kazryn Nyantani distributed the gifts after dinner and personally handed each to its recipient, including Janussi's book [ch 060 / 060.06].
+
+ITEM: Kestler meeting — Gorg'Bahamut temple lead received (Triboar)
+  baseline: - "Kestler meeting — Gorg'Bahamut temple lead received (Triboar)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Kestler meeting — Gorg'Bahamut temple lead received (Triboar)" — `SUPPORTED` - Kestler meeting occurred at the Mountain's Mouth inn in Triboar, with the Gorg'Bahamut temple lead received [ch 055 / 055.04]
+
+ITEM: Kestler the half-orc lay brother — first contact (Triboar)
+  baseline: - "Kestler the half-orc lay brother — first contact (Triboar)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Kestler the half-orc lay brother — first contact (Triboar)" — `SUPPORTED` - Kestler the half-orc lay brother made first contact at Triboar [ch 055 / 055.04]
+
+ITEM: Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage
+  baseline: - "Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage" — `SUPPORTED` - Khell-Vire's Watcher's Stillness was earned with the skirmish skip and Vault Wis-save advantage in a prior session [ch 026 / 026.01].
+
+ITEM: Khell-Vire — closing letter and standing correspondence sealed
+  baseline: - "Khell-Vire — closing letter and standing correspondence sealed" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Khell-Vire — closing letter and standing correspondence sealed" — `SUPPORTED` - Khell-Vire's closing letter and standing correspondence were sealed in a prior session [ch 026 / 026.01].
+
+ITEM: Kitchens — Sprig Summerfoot witness
+  baseline: - "Kitchens — Sprig Summerfoot witness" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Kitchens — Sprig Summerfoot witness" — `SUPPORTED` - Sprig Summerfoot's witness testimony was obtained in the Kitchens in a prior session [ch 026 / 026.01]. - Sprig Summerfoot was interviewed in the kitchens and disclosed Teles's unwanted advances on Irony while recommending Orrin Glass [ch 060 / 060.07].
+
+ITEM: Leuwin — witness interview (Oak Tree Apothecary)
+  baseline: - "Leuwin — witness interview (Oak Tree Apothecary)" — `NOT FOUND IN SUMMARIES` Only the squirrel Nibbles was interviewed (ch 60, 060.08).
+  chunked:  - "Leuwin — witness interview (Oak Tree Apothecary)" — `SUPPORTED` - Leuwin's witness interview at Oak Tree Apothecary occurred in a prior session [ch 026 / 026.01]. - Leuwin was interviewed at the Oak Tree Apothecary and could not explain the broken vial [ch 060 / 060.08].
+
+ITEM: Manshoon — escape (with or without Book of Vile Darkness)
+  baseline: - "Manshoon — escape (with or without Book of Vile Darkness)" — `NOT FOUND IN SUMMARIES` Both simulacra were destroyed (ch 69, 069.02; ch 70, 070.02).
+  chunked:  - "Manshoon — escape (with or without Book of Vile Darkness)" — `SUPPORTED` - Manshoon's escape (with or without the Book of Vile Darkness) occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Manshoon — voice-only arrival announcement (Session 6)
+  baseline: - "Manshoon — voice-only arrival announcement (Session 6)" — `NOT FOUND IN SUMMARIES` His simulacrum breached the keep physically (ch 65, 065.03).
+  chunked:  - "Manshoon — voice-only arrival announcement (Session 6)" — `SUPPORTED` - Manshoon's voice-only arrival announcement occurred in Session 6 of a prior session [ch 026 / 026.01].
+
+ITEM: Marin — six-pointed star quill arrangement incident
+  baseline: - "Marin — six-pointed star quill arrangement incident" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Marin — six-pointed star quill arrangement incident" — `SUPPORTED` - Marin's six-pointed star quill arrangement incident occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Mountain's Mouth Inn — Triboar
+  baseline: - "Mountain's Mouth Inn — Triboar" — `NOT FOUND IN SUMMARIES` A Triboar inn appears, but it is unnamed (ch 55, memorable).
+  chunked:  - "Mountain's Mouth Inn — Triboar" — `SUPPORTED` - The party stayed at the Mountain's Mouth Inn in Triboar [ch 055 / 055.04]
+
+ITEM: Moziqodo binding — Cursed Tower ritual evidence
+  baseline: - "Moziqodo binding — Cursed Tower ritual evidence" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Moziqodo binding — Cursed Tower ritual evidence" — `SUPPORTED` - Moziqodo's binding was dispelled by Sylvira in the Path B High Tower fight [ch 026 / 026.01].
+
+ITEM: Moziqodo — binding break (Path B, High Tower fight)
+  baseline: - "Moziqodo — binding break (Path B, High Tower fight)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Moziqodo — binding break (Path B, High Tower fight)" — `SUPPORTED` - Moziqodo's binding break (Path B, High Tower fight) occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Obtain demon lord blood or ichor — component collection
+  baseline: - "Obtain demon lord blood or ichor — component collection" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Obtain demon lord blood or ichor — component collection" — `SUPPORTED` - No demon lord blood or ichor was obtained in this chunk; the only reference is Demogorgon's rise [ch 008 / 008.04].
+
+ITEM: Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford
+  baseline: - "Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford" — `SUPPORTED` - Gyrgum acquired an Order of the Gauntlet pewter Tarvis-medallion at Daggerford for a gold piece [ch 056 / 056.01].
+
+ITEM: Party named guest seekers of the Avowed — Inner Ward access ceremony
+  baseline: - "Party named guest seekers of the Avowed — Inner Ward access ceremony" — `NOT FOUND IN SUMMARIES` The party was deputized as Watchers instead (ch 63, dossier: Kalan Strongbranch).
+  chunked:  - "Party named guest seekers of the Avowed — Inner Ward access ceremony" — `SUPPORTED` - The party was named guest seekers of the Avowed with Inner Ward access in a prior session [ch 026 / 026.01].
+
+ITEM: Philemon — sealed letter delivery (Path C)
+  baseline: - "Philemon — sealed letter delivery (Path C)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Philemon — sealed letter delivery (Path C)" — `SUPPORTED` - Philemon's sealed letter delivery (Path C) occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)
+  baseline: - "Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)" — `SUPPORTED` - Daz witnessed a pilgrim at a corner table reciting a chant with an error — the Endless Chant verse with wrong cadence — at Beregost [ch 056 / 056.03].
+
+ITEM: Polly Pocket released as messenger — OOTA endgame thread flagged
+  baseline: - "Polly Pocket released as messenger — OOTA endgame thread flagged" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Polly Pocket released as messenger — OOTA endgame thread flagged" — `SUPPORTED` - Polly Pocket was released as a messenger with the OOTA endgame thread flagged in a prior session [ch 026 / 026.01].
+
+ITEM: Pont de Paramours — Kalan disappearance and forged note
+  baseline: - "Pont de Paramours — Kalan disappearance and forged note" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Pont de Paramours — Kalan disappearance and forged note" — `SUPPORTED` - Kalan's disappearance and the forged note were discovered at Pont de Paramours in a prior session [ch 026 / 026.01].
+
+ITEM: Prince Derendil — quaggoth prisoner, delusion exposed
+  baseline: - "Prince Derendil — quaggoth prisoner, delusion exposed" — `NOT FOUND IN SUMMARIES` The summaries show only his death (ch 3, 003.03).
+  chunked:  - "Prince Derendil — quaggoth prisoner, delusion exposed" — `SUPPORTED` - Prince Derendil, the quaggoth prisoner claiming to be a cursed elf prince, demands dignity while hauling water and is threatened by Ilvara with a knife. [ch 002 / 002.03; ch 002 / npcs]
+
+ITEM: Queenie the cat — witnessed at Candlekeep gate bollard
+  baseline: - "Queenie the cat — witnessed at Candlekeep gate bollard" — `NOT FOUND IN SUMMARIES` **Major Plot Beats / Reveals**
+  chunked:  - "Queenie the cat — witnessed at Candlekeep gate bollard" — `SUPPORTED` - Queenie the cat, first witnessed at the Candlekeep gate bollard, was interviewed by the party via the Stonespeaker Crystal and provided testimony about the night's events [ch 058 / 058.06; ch 058 / npcs].
+
+ITEM: Reach Gravenhollow — stone giant library
+  baseline: - "Reach Gravenhollow — stone giant library" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Reach Gravenhollow — stone giant library" — `SUPPORTED` - the party reached Neverlight Grove, the myconid colony, after days of travel from the Lost Tomb of Khaem. [ch 029 / 029.05]
+
+ITEM: Refugee family from Episode 1 — party interaction (Silver Marches road)
+  baseline: - "Refugee family from Episode 1 — party interaction (Silver Marches road)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Refugee family from Episode 1 — party interaction (Silver Marches road)" — `SUPPORTED` - The party interacted with a refugee family on the Silver Marches road, three generations with one ox and no grandfather [ch 055 / 055.02]
+
+ITEM: Return Sladis Vadir — Emerald Enclave scout
+  baseline: - "Return Sladis Vadir — Emerald Enclave scout" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Return Sladis Vadir — Emerald Enclave scout" — `SUPPORTED` - The party resolved the deal with Chief Dorbo and Senni Diggermattock by taking command of the operation and being tasked with recruiting Clan Goldwhisker [ch 038 / 038.06].
+
+ITEM: Return to the Underdark — second expedition
+  baseline: - "Return to the Underdark — second expedition" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Return to the Underdark — second expedition" — `SUPPORTED` - The party completed their long underground ordeal, emerging into the Overbright after several months of travel [ch 053 / 053.05; ch 053 / 053.06].
+
+ITEM: School of Drama — Batbayar statue encounter
+  baseline: - "School of Drama — Batbayar statue encounter" — `NOT FOUND IN SUMMARIES` The Batbayar answer came from A'lai's past discovery (ch 67, dossier: School of the Drama Library); no party visit is recorded.
+  chunked:  - "School of Drama — Batbayar statue encounter" — `SUPPORTED` - The School of Drama's Batbayar statue encounter occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Second High Tower key held — door opened from outside (Session 6)
+  baseline: - "Second High Tower key held — door opened from outside (Session 6)" — `NOT FOUND IN SUMMARIES` The party holds both real keys, kept apart (ch 65 session-end); no door opened from outside is recorded.
+  chunked:  - "Second High Tower key held — door opened from outside (Session 6)" — `SUPPORTED` - The second High Tower key was held and the door was opened from outside in Session 7 of a prior session [ch 026 / 026.01]. - The party learned the two High Tower Library keys are held by Janussi (in the stolen locket) and Kalan Strongbranch, and may be required together to access the library [ch 058 / 058.06; ch 058 / locations]. - The party now holds one of the two High Tower keys, given by Kalan, but one key alone opens nothing [ch 059 / 059.03; ch 059 / items]. - The party holds one of the two genuine high
+
+ITEM: Shoor Vandree — Ilvara's lieutenant, antagonist
+  baseline: - "Shoor Vandree — Ilvara's lieutenant, antagonist" — `NOT FOUND IN SUMMARIES` "Shoor" is named only as someone Jorlan hates (ch 2, memorable).
+  chunked:  - "Shoor Vandree — Ilvara's lieutenant, antagonist" — `SUPPORTED` - Shoor Vandree, Ilvara's lieutenant and antagonist, appears alongside Ilvara in her private quarters. [ch 002 / 002.03; ch 002 / npcs]
+
+ITEM: Six-pointed star — first appearance (Elin's drawings, Daggerford)
+  baseline: - "Six-pointed star — first appearance (Elin's drawings, Daggerford)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Six-pointed star — first appearance (Elin's drawings, Daggerford)" — `SUPPORTED` - The six-pointed star first appears in Elin's drawings at Daggerford, though the shape itself is not named; she draws "the same shape on every flat surface" [ch 056 / 056.02].
+
+ITEM: Spanner — Mechanus dust handoff
+  baseline: - "Spanner — Mechanus dust handoff" — `NOT FOUND IN SUMMARIES` Spanner lent modron tools instead; the dust was never obtained (ch 67, 067.05; ch 68, dossier: Dust of Mechanus — NOT obtained).
+  chunked:  - "Spanner — Mechanus dust handoff" — `SUPPORTED` - Spanner's Mechanus dust handoff occurred in a prior session [ch 026 / 026.01]. - Spanner handed off the alternative to Mechanus dust: he lent the party modron tools in exchange for a deferred study of Zalthir and Glabbagool [ch 067 / 067.05]
+
+ITEM: Sprig Summerfoot — witness interview (Kitchens)
+  baseline: - "Sprig Summerfoot — witness interview (Kitchens)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Sprig Summerfoot — witness interview (Kitchens)" — `SUPPORTED` - Sprig Summerfoot's witness interview in the Kitchens occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Stroud-school sponsorship of Tarvis monument — discovered (Daggerford)
+  baseline: - "Stroud-school sponsorship of Tarvis monument — discovered (Daggerford)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Stroud-school sponsorship of Tarvis monument — discovered (Daggerford)" — `SUPPORTED` - Stroud-school sponsorship of the Tarvis monument was discovered at Daggerford [ch 056 / 056.01].
+
+ITEM: Stroudite polemicist — first contact and pamphlet handout (Mirabar)
+  baseline: - "Stroudite polemicist — first contact and pamphlet handout (Mirabar)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Stroudite polemicist — first contact and pamphlet handout (Mirabar)" — `SUPPORTED` - The Stroudite polemicist made first contact in Mirabar and handed Gyrgum a pamphlet [ch 055 / 055.03]
+
+ITEM: Sylvira Sashenstar — first contact and demon-lord-evidence handoff (Day One)
+  baseline: - "Sylvira Sashenstar — first contact and demon-lord-evidence handoff (Day One)" — `NOT FOUND IN SUMMARIES` The dossiers name her "Sylvira Savikas"; no evidence handoff is recorded.
+  chunked:  - "Sylvira Sashenstar — first contact and demon-lord-evidence handoff (Day One)" — `SUPPORTED` - Sylvira Sashenstar's first contact and demon-lord-evidence handoff occurred on Day One in a prior session [ch 026 / 026.01].
+
+ITEM: Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)
+  baseline: - "Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)" — `SUPPORTED` - Sylvira dispelled Moziqodo's binding in the High Tower fight in a prior session [ch 026 / 026.01].
+
+ITEM: Sylvira — recruitment as battlefield ally (Path B choice point)
+  baseline: - "Sylvira — recruitment as battlefield ally (Path B choice point)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Sylvira — recruitment as battlefield ally (Path B choice point)" — `SUPPORTED` - Sylvira was recruited as a battlefield ally in the Path B choice in a prior session [ch 026 / 026.01].
+
+ITEM: Sylvira — survival and senior Great Reader status (post-arc)
+  baseline: - "Sylvira — survival and senior Great Reader status (post-arc)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Sylvira — survival and senior Great Reader status (post-arc)" — `SUPPORTED` - Sylvira survived and holds senior Great Reader status post-arc in a prior session [ch 026 / 026.01].
+
+ITEM: Tadric — acting Gatewarden appointment (post-arc)
+  baseline: - "Tadric — acting Gatewarden appointment (post-arc)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Tadric — acting Gatewarden appointment (post-arc)" — `SUPPORTED` - Tadric was appointed acting Gatewarden post-arc in a prior session [ch 026 / 026.01].
+
+ITEM: Teles Ahvoste — interview and disguise sighting (if earned)
+  baseline: - "Teles Ahvoste — interview and disguise sighting (if earned)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Teles Ahvoste — interview and disguise sighting (if earned)" — `SUPPORTED` - Teles Ahvoste's interview and disguise sighting occurred if earned in a prior session [ch 026 / 026.01].
+
+ITEM: Thorin / Philemon — Layer 2 Brysis reveal (Path C only)
+  baseline: - "Thorin / Philemon — Layer 2 Brysis reveal (Path C only)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Thorin / Philemon — Layer 2 Brysis reveal (Path C only)" — `SUPPORTED` - Thorin / Philemon's Layer 2 Brysis reveal was completed in the Path C choice [ch 026 / 026.01].
+
+ITEM: Triboar memorial square — cairn of the Triboar dead
+  baseline: - "Triboar memorial square — cairn of the Triboar dead" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Triboar memorial square — cairn of the Triboar dead" — `SUPPORTED` - The party visited the Triboar memorial square with its cairn of the Triboar dead, 243 names [ch 055 / 055.04]
+
+ITEM: Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7)
+  baseline: - "Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7)" — `SUPPORTED` - Vareth / Drakonoikos goodwill was earned with the Thava and F-A-D-E payoff in Session 7 of a prior session [ch 026 / 026.01].
+
+ITEM: Vareth — final stations and unsigned sting
+  baseline: - "Vareth — final stations and unsigned sting" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Vareth — final stations and unsigned sting" — `SUPPORTED` - Vareth's final stations and unsigned sting occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Vault tower rocket — last resort lever
+  baseline: - "Vault tower rocket — last resort lever" — `NOT FOUND IN SUMMARIES` Only "the means to destroy the collection" in the chamber above is recorded (ch 68, dossier: The Vault of Dangerous Secrets). **NPC Events**
+  chunked:  - "Vault tower rocket — last resort lever" — `SUPPORTED` - The vault tower rocket's last resort lever was the final action in the Vault in a prior session [ch 026 / 026.01].
+
+ITEM: Vault tower rocket — lever pulled or left
+  baseline: - "Vault tower rocket — lever pulled or left" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Vault tower rocket — lever pulled or left" — `SUPPORTED` - The vault tower rocket's lever was pulled or left in a prior session [ch 026 / 026.01].
+
+ITEM: Walking-permit medallions worn — wight-safe at Jewel of the Styx
+  baseline: - "Walking-permit medallions worn — wight-safe at Jewel of the Styx" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Walking-permit medallions worn — wight-safe at Jewel of the Styx" — `SUPPORTED` - Walking-permit medallions worn made the party wight-safe at Jewel of the Styx in a prior session [ch 026 / 026.01].
+
+ITEM: Ward-drop vision sequence — per-PC hallucinations (Session 6)
+  baseline: - "Ward-drop vision sequence — per-PC hallucinations (Session 6)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Ward-drop vision sequence — per-PC hallucinations (Session 6)" — `SUPPORTED` - The ward-drop vision sequence with per-PC hallucinations occurred in Session 6 of a prior session [ch 026 / 026.01].
+
+ITEM: Wards drop — ward-flex hallucination sequence (narrative, per-PC visions)
+  baseline: - "Wards drop — ward-flex hallucination sequence (narrative, per-PC visions)" — `NOT FOUND IN SUMMARIES` The wards failed (ch 65, 065.01), but no visions are recorded.
+  chunked:  - "Wards drop — ward-flex hallucination sequence (narrative, per-PC visions)" — `SUPPORTED` - The ward-drop hallucination sequence with per-PC visions occurred in Session 6 of a prior session [ch 026 / 026.01].
+
+ITEM: Way of the Lion — cliff road to Candlekeep
+  baseline: - "Way of the Lion — cliff road to Candlekeep" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Way of the Lion — cliff road to Candlekeep" — `SUPPORTED` - The party traveled the Way of the Lion, the cliff road to Candlekeep [ch 056 / 056.04].
+
+ITEM: Ylsa Henstak — duergar merchant, quest giver
+  baseline: - "Ylsa Henstak — duergar merchant, quest giver" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Ylsa Henstak — duergar merchant, quest giver" — `SUPPORTED` - The party encountered Ylsa Henstak, a duergar merchant, who sold them city advice for a gold piece in exchange for navigating Gracklstugh [ch 026 / 026.03; ch 026 / npcs].
+
+ITEM: Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7)
+  baseline: - "Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7)" — `SUPPORTED` - Yvenne's trust reached ≥4 ticks with the planar-residue trace payoff in Session 7 of a prior session [ch 026 / 026.01].
+
+ITEM: Yvenne — Fourth-Seat synthesis scene
+  baseline: - "Yvenne — Fourth-Seat synthesis scene" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Yvenne — Fourth-Seat synthesis scene" — `SUPPORTED` - Yvenne's Fourth-Seat synthesis scene occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Yvenne — Vaelissa name delivery
+  baseline: - "Yvenne — Vaelissa name delivery" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Yvenne — Vaelissa name delivery" — `SUPPORTED` - Yvenne's Vaelissa name delivery occurred in a prior session [ch 026 / 026.01].
+
+ITEM: Yvenne — names Daz's field-perception sensitivity
+  baseline: - "Yvenne — names Daz's field-perception sensitivity" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Yvenne — names Daz's field-perception sensitivity" — `SUPPORTED` - Yvenne named Daz's field-perception sensitivity in a prior session [ch 026 / 026.01].
+
+ITEM: Yvenne — third sitting and bloodline-pattern observation
+  baseline: - "Yvenne — third sitting and bloodline-pattern observation" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Yvenne — third sitting and bloodline-pattern observation" — `SUPPORTED` - Yvenne's third sitting and bloodline-pattern observation occurred in a prior session [ch 026 / 026.01].
+

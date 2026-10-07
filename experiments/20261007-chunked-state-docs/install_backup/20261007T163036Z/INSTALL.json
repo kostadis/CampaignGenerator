@@ -1,0 +1,11 @@
+{
+  "campaign": "/home/kostadis/out-of-the-abyss/out-of-the-abyss",
+  "backed_up": [
+    "world_state.md"
+  ],
+  "installed": [
+    "world_state.md",
+    "reference/",
+    "canon_events_timeline.md"
+  ]
+}

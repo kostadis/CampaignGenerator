@@ -1,0 +1,250 @@
+## Events
+- The party, now at 5th level, with Gyrgum gaining third-level spells, Daz gaining Fireball, and Thorin gaining a second attack and Tactical Shift, prepared to exit Gracklstugh through the West Cleft Exit, a narrow, suffocating corridor under heavy Duergar lockdown [ch 026 / 026.01; ch 026 / 026.06].
+- A guard at the West Cleft Exit identified each party member's species one by one — drow, orc, dwarf, "not a red dragonborn" — and concluded they "must not be the Ember Vanguard" [ch 026 / 026.01].
+- The guard passed the party to Captain Gorglak, a scarred Duergar wearing a clenched-fist pendant, which Zalthir's history reading identified as a mark of loyalty to the Deepking [ch 026 / 026.01].
+- Gorglak demanded the party prove they were not the Ember Vanguard, declaring "this area has been put under lockdown" and "no one from that side of the district will enter the city of the Duergar," and ordered them to lay down weapons and magic items for inspection and speak the Stone Guard's secret salute [ch 026 / 026.01].
+- The party chose their Stone Guard passes over their Keeper of the Flame passes; their Stone Guard task had been to find proof that the derro were engaged in demonic possession [ch 026 / 026.01].
+- Zalthir spotted five invisible Duergar soldiers positioned throughout the hallway, ready to strike if negotiations collapsed [ch 026 / 026.01; ch 026 / memorable], while the captain "posed as standing alone" [ch 026 / npcs].
+- Daz prepared a contingency plan, seeing through Gorglak as a corrupt official angling for a bribe; he would carry the egg and other incriminating items, cast Misty Step past the guards, and claim divine favor [ch 026 / 026.01; ch 026 / spells].
+- Gyrgum recalled Bahamut ritual details to gain advantage on the Stone Guard's secret salute, performed it with conviction, and Gorglak conceded, "I see that you are clearly working for the stone guard. You clearly are not the Ember Vanguard" [ch 026 / 026.01; ch 026 / 026.02].
+- Gorglak demanded a 20 gp bribe (five each): "it would be a shame if we had to inspect you to find some coin to make this worth their while"; the party paid, the hidden soldiers stood down, and the gates opened [ch 026 / 026.02].
+- Gorglak warned that the Deepking feared a drow raiding party while the derro were convinced the Deepking was behind the unrest, and advised the party to "do it quickly and leave" [ch 026 / 026.02].
+- In Laduguer's Furrow, Jimjar bet Thorin a gold piece that Thorin would do something embarrassing; Thorin promptly "accidentally" let his belt unbuckle and his pants fall, delighting Jimjar; the DM ruled small wagers are "fake money" unless reaching hundreds [ch 026 / 026.03; ch 026 / memorable].
+- The party decided to visit the stone giants first, with Thorin reasoning "the giants seem to be more even-keeled of the group of all these factions" [ch 026 / 026.03].
+- Near the Clan Thrazgad forge, the party paid a gray-skinned Duergar informant one gold piece (which Thorin had Jimjar pay from his lost wager) for two warnings: the Stone Guard was paranoid about strangers, and the Ember Vanguard was blamed throughout the city for the assassination of several members of the derro High Council [ch 026 / 026.03].
+- The party realized the "High Council" members were the derro they had killed: the one making the two-headed giants and the one perverting the dragon egg [ch 026 / 026.03].
+- The party learned Gracklstugh's good inn is reserved for duergar, while a not-so-good inn serves everyone else [ch 026 / 026.03].
+- At Cairngorm Cavern, the party found Hgraam dealing with another brother afflicted with the two-headed curse, and Thorin presented the two-headed statue recovered from the Derro [ch 026 / 026.04].
+- Hgraam probed whether the derro ruling council was behind the curse; the party stayed vague about council involvement, and Thorin's persuasion roll (13, with advantage as a giant-friend) held [ch 026 / 026.04].
+- Hgraam accepted the statue gravely, declaring "with this statue I shall be able to cure," pressed 500 gold pieces into the party's hands, warned that the Stone Guard was becoming agitated, and closed the cavern to outsiders while he consulted the stones [ch 026 / 026.04].
+- Thorin asked Hgraam whether he knew a way to the Overbright; Hgraam said he did not know where it is or whether it exists, though "little people" have told him it does [ch 026 / 026.04].
+- The party moved toward Gartokkar's residence, with Zalthir casting Darkness low over the group (which he could see through via Shadow Arts) to shroud their movements through the smog, giving them advantage on stealth [ch 026 / 026.05].
+- At Gartokkar's residence, the party handed over the corrupted red dragon egg, covered in ritualistic markings, declining to clean them off; Zalthir noted "Here's the egg. We rescued it from a mysterious ritual" [ch 026 / 026.06].
+- Gartokkar expressed surprise at the party's survival, having assumed they were caught in the crossfire; he remembered Daz as a mere third-level drow wizard [ch 026 / 026.06].
+- Gartokkar explained the egg's purpose: to replace Themberchaud before the beast realized he was not truly in control of Gracklstugh, as red dragons turn violent once they learn they are not in charge [ch 026 / 026.06].
+- Gartokkar paid the party their remaining fee of 2,400 gp, covering the original 2,000 gp deal (600 gp up front) plus a 1,000 gp confidentiality rider; the party's spreadsheet showed 1,042 gp plus one electrum each [ch 026 / 026.06; ch 026 / items].
+- The party learned the derro's history: mind flayer experiments left them unstable, the Blink pushed them into madness, their High Council had been co-opted by the Deepking, and after the Blink they turned to Demogorgon rituals to "rise up and strike them down" [ch 026 / 026.06].
+- The party joked about new names to escape the Ember Vanguard reputation — "The Gold Vanguard," "The Gold Ember Vanguard," "The Disciples of Bahamut" — with Thorin's suggestion falling flat [ch 026 / 026.06].
+- The party prepared to sneak toward the Darklake District, with Thorin saying "I feel like the whole thing's about to blow up... And I would like to hear what happens from afar" [ch 026 / 026.06].
+- The party's stealth attempt failed (the group missed DC 14, despite Zalthir rolling 24), and a Derro assassin confronted them, declaring that the Derro Council had sent its Gray Ghosts to exact revenge for the deaths of their High Council members [ch 026 / 026.07].
+- The derro claimed they knew who the party was, "even if the rest of this city doesn't know who it is," maybe having told the city otherwise "so that we would get our revenge" [ch 026 / 026.07].
+- Zalthir swiftly cut down the visible leader and a second hidden attacker before they could react [ch 026 / 026.07; ch 026 / memorable].
+- Gyrgum cast his newly learned Spirit Guardians, creating a 15-foot emanation of spectral angelic guardians that dealt 17 and 15 radiant damage, killing two derro assassins [ch 026 / 026.07; ch 026 / spells].
+- Thorin finished the last invisible attacker with his new two-attack sequence, his advantage cancelling the invisibility disadvantage, ending the skirmish with all five derro dead [ch 026 / 026.07].
+- The party looted the derro, finding coins, a fuzzy lucky foot (claimed by Gyrgum), and a letter from the Council of Savants ordering the Gray Ghosts to "strike down the Duergar who brought in the assassins of the Ember Vanguard to kill us all" [ch 026 / 026.07].
+- The DM noted "Your announcement of who you are had consequences," and the party concluded the Ember Vanguard was now "enemy number one" [ch 026 / 026.07; ch 026 / memorable].
+- Whether to leave the bodies in the street, hide them, or stage them was left open for next session [ch 026 / 026.07].
+
+## Concluded
+- The West Cleft Exit checkpoint — the party passed through by performing the Stone Guard secret salute and paying a 20 gp bribe; the gates opened into the city proper [ch 026 / 026.02].
+- The 1 gp wager between Jimjar and Thorin — Thorin "accidentally" dropped his pants, and Jimjar paid off his loss by covering the informant's fee [ch 026 / 026.03; ch 026 / npcs].
+- The informant transaction — the Duergar informant sold the party two city warnings for one gold piece [ch 026 / 026.03].
+- The stone giants' quest — the party delivered the two-headed ritual statue to Hgraam, who paid 500 gp and began curing his afflicted kin; the cavern was closed to outsiders [ch 026 / 026.04].
+- The Keepers of the Flame dragon egg contract — the party delivered the corrupted red dragon egg to Gartokkar and collected 2,400 gp in final payment, completing the original 3,000 gp deal (2,000 gp plus 1,000 gp confidentiality rider, with 600 gp paid up front) [ch 026 / 026.06; ch 026 / items].
+- The Gray Ghosts ambush — the party killed all five derro assassins in the Gracklstugh passageway [ch 026 / 026.07].
+
+## Threads
+- [ADVANCED] **Ember Vanguard reputation** — The party's self-given name had become the city's rumor; at the West Cleft gate, guards compared the party against wildly exaggerated descriptions of a band of shadowy assassins, and the rumors had inflated Daz into an old, wizened drow and Zalthir into a red dragonborn [ch 026 / 026.01].
+- [ADVANCED] **Ember Vanguard reputation** — Gartokkar repeated the rumor that the Deepking's agents were "shadowy assassins from Menzoberranzan with magic and blades that rend souls," so fierce the Stone Guard feared them [ch 026 / 026.06].
+- [ADVANCED] **Ember Vanguard reputation** — The derro Gray Ghosts were sent to exact revenge for the deaths of the derro High Council members, which the city blamed on the Ember Vanguard; the derro claimed to know the party's true identity [ch 026 / 026.07].
+- [RESOLVED] **Gray Ghosts / derro revenge** — The Derro Council's Gray Ghosts confronted the party in the passageway; all five assassins were killed, and the party recovered a letter from the Council of Savants ordering the strike [ch 026 / 026.07].
+- [OPENED] **Council of Savants conspiracy** — The letter from the Council of Savants revealed that the derro council ordered the Gray Ghosts to strike down the Duergar who brought the Ember Vanguard into the city, laying bare the political conspiracy beneath Gracklstugh [ch 026 / 026.07].
+- [OPENED] **Disposal of the Gray Ghosts' bodies** — Whether to leave the bodies in the street, hide them, or stage them to implicate the Ember Vanguard was left open [ch 026 / 026.07].
+- [ADVANCED] **Gartokkar / Keepers of the Flame egg contract** — The party delivered the egg and collected the final payment plus confidentiality fees, completing their arrangement; Gartokkar reminded them the deal was to remain between them alone [ch 026 / 026.06].
+- [ADVANCED] **Stone giants' curse** — The party delivered the two-headed statue to Hgraam, who began curing his afflicted kin, closed the cavern to outsiders, and advised them to be careful around the agitated Stone Guard [ch 026 / 026.04].
+- [OPENED] **The Overbright** — Thorin asked Hgraam about a way to the Overbright; Hgraam does not know where it is or whether it exists, though "little people" have told him it does [ch 026 / 026.04].
+- [RESOLVED] **Egg transportation** — The party delivered the corrupted red dragon egg to Gartokkar, ending their hazardous possession of it [ch 026 / 026.06; ch 026 / items].
+- [ADVANCED] **Themberchaud's agents** — The DM reminded the party that they are separately Themberchaud's agents, which is safe "as long as he doesn't notice you" [ch 026 / 026.06].
+- [OPENED] **Escalating Gracklstugh tensions** — Gorglak warned that the Deepking feared a drow raiding party while the derro believed the Deepking was behind the unrest; Gartokkar warned the derro were on edge after the assassination of their leaders and the Stone Guard were doubling their patrols [ch 026 / 026.02; ch 026 / 026.06].
+
+## NPC Status
+- Gorglak | Alive | West Cleft Exit, Gracklstugh | Hostile-but-bribed; took the party's 20 gp bribe and let them pass with parting warnings [ch 026 / 026.02; ch 026 / npcs]
+- Jimjar | Alive | Gracklstugh, traveling with the party | Friendly; loses, pays off, and enjoys small wagers with the party [ch 026 / 026.03; ch 026 / npcs]
+- Duergar Informant | Alive | Near Clan Thrazgad's forge, Gracklstugh | Neutral; sold the party two city warnings for a gold piece [ch 026 / 026.03; ch 026 / npcs]
+- Hgraam | Alive | Cairngorm Cavern, Gracklstugh | Grateful to the party; paid them 500 gp and closed his cavern to outsiders while beginning the cure [ch 026 / 026.04; ch 026 / npcs]
+- Gartokkar | Alive | His private residence, Keepers of the Flame area, Gracklstugh | Satisfied and transactional; paid the party 2,400 gp, considered his "reputation and my position in the kingdom" secured by the egg [ch 026 / 026.06; ch 026 / npcs]
+- Gray Ghosts (leader and four others) | Dead | Gracklstugh passageway near the Darklake District | — [ch 026 / 026.07; ch 026 / npcs]
+
+## World
+- [FACTION] **Ember Vanguard** — The name the party had given itself became the city's rumor; a city-wide wanted poster read "Wanted dead, as long as they can be raised from the dead or alive," and rumors turned Daz into an old, wizened drow and Zalthir into a *red* dragonborn, which among the derro meant "red dragon equals evil dragon" [ch 026 / 026.01].
+- [FACTION] **Stone Guard** — Gracklstugh's King's police force; the party holds a Stone Guard pass from their task of finding proof of derro demonic possession, and Gyrgum performed the faction's secret salute to pass the gate [ch 026 / 026.01; ch 026 / items].
+- [FACTION] **Keepers of the Flame** — A rival faction to the Stone Guard, also loyal to the King, holding a pass the party chose not to use; Gartokkar is a high-ranking member [ch 026 / 026.01; ch 026 / items].
+- [FACTION] **Derro High Council** — The derro the party killed in the caverns were members of the derro High Council; the city blamed the Ember Vanguard for their assassination, and the derro were on edge [ch 026 / 026.03; ch 026 / 026.06].
+- [FACTION] **Gray Ghosts** — Vengeful Derro assassins acting under the orders of the Council of Savants to eliminate the party; five agents (four invisible) were sent out "to try to cause chaos," and the party infers they were not supposed to be noticed [ch 026 / 026.07; ch 026 / npcs].
+- [FACTION] **Council of Savants** — The derro council whose letter ordered the Gray Ghosts to strike down the Duergar who brought the Ember Vanguard into the city [ch 026 / 026.07; ch 026 / items].
+- [FACTION] **Clan Thrazgad** — A duergar armorsmith clan whose belching forges sit in Gracklstugh's industrial district [ch 026 / 026.03; ch 026 / locations].
+- [FACTION] **Ironhead faction** — The home district of Laduguer's Furrow, which had offered support in exchange for a dead Deepking [ch 026 / 026.03].
+- [FACTION] **Derro history** — Mind flayer experiments left the derro unstable, the Blink pushed them into madness, their High Council had long been co-opted leaders through whom the Deepking kept them in check, and after the Blink the council resolved to rise against the king through Demogorgon rituals; demonic bargains "grant power at the cost of all restraint" [ch 026 / 026.06].
+- [NPC] **Gorglak** — A Duergar captain about four feet tall with ashen gray skin, scars, and tattoos, wearing a heavy iron chain with a clenched-fist pendant symbolizing loyalty to the Deepking; suspicious, authoritative, and open to bribery [ch 026 / npcs].
+- [NPC] **Hgraam** — The Stone Giant leader who is uncharacteristically talkative for his kind, seeks to cure his brothers of a magical curse, and closed his cavern to outsiders while consulting the stones [ch 026 / npcs].
+- [NPC] **Gartokkar** — A high-ranking member of the Keepers of the Flame who is pragmatic, somewhat condescending, and secured a dragon egg to maintain control over the city's power source, paying handsomely for discretion [ch 026 / npcs].
+- [NPC] **Themberchaud** — A "fat, blimped-out, overly pedantic red dragon" whom the egg was meant to replace before he realized he was not truly in control of Gracklstugh; the party is his agent as long as he doesn't notice them [ch 026 / 026.06].
+- [LOCATION] **West Cleft Exit** — A narrow, suffocating corridor carved from bedrock serving as a checkpoint with rough-hewn walls, flickering torchlight, and a heavy Duergar military presence enforcing a city-wide lockdown; the inner passage is 30 feet long and 20 feet wide with a gate and sentries at each end, and the front gate shuts as the back gate opens [ch 026 / 026.01; ch 026 / locations].
+- [LOCATION] **Laduguer's Furrow** — An affluent neighborhood within Gracklstugh, reached immediately after the western cleft gate; the rich people's neighborhood and the home district of the Ironhead faction [ch 026 / 026.03; ch 026 / locations].
+- [LOCATION] **Clan Thrazgad Forge** — A narrow, industrial forge with billowing smoke, intense heat, and a thick layer of soot, reminiscent of a nineteenth-century factory district ("Pittsburgh's vibe from the 19th century") [ch 026 / 026.03; ch 026 / locations].
+- [LOCATION] **Cairngorm Cavern** — A massive cavern within Gracklstugh where the stone giants reside, currently closed to outsiders while Hgraam consults the stones and heals those afflicted by the two-headed curse [ch 026 / 026.04; ch 026 / locations].
+- [LOCATION] **Gartokkar's Residence** — The private quarters of the high-ranking Keeper of the Flame in the bottom-left of the city map, in the Keepers of the Flame area, where clandestine transactions take place away from the Deepking's watch [ch 026 / 026.06; ch 026 / locations].
+- [LOCATION] **Gracklstugh Passageway** — A dark, narrow corridor on the route toward the Darklake District where the party was intercepted by the derro Gray Ghosts; visibility is limited to about 30 feet in the city's smog [ch 026 / 026.07; ch 026 / locations].
+- [ITEM] **Two-Headed Statue** — A ritualistic object recovered from the Derro that was used to inflict a two-headed curse upon giants; Hgraam used it to begin curing his afflicted kin [ch 026 / 026.04; ch 026 / items].
+- [ITEM] **Corrupted Dragon Egg** — A red dragon egg covered in strange, ritualistic drawings and markings, rescued by the party from a dark ritual and delivered to Gartokkar, though its viability remains highly questionable [ch 026 / 026.06; ch 026 / items].
+- [ITEM] **Letter from the Council of Savants** — An official correspondence ordering the Gray Ghosts to assassinate the Duergar who brought the Ember Vanguard into the city [ch 026 / 026.07; ch 026 / items].
+- [ITEM] **Lucky Foot** — A fuzzy charm of unknown origin recovered from one of the fallen Derro assassins, claimed by Gyrgum [ch 026 / 026.07; ch 026 / items].
+- [ITEM] **Pearls** — A pearl item worth 1,000 gp, still unsold, in the party inventory [ch 026 / 026.06; ch 026 / items].
+- [THREAT] **Gracklstugh destabilization** — The Deepking fears a drow raiding party, the derro believe the Deepking is behind the unrest, the derro are on edge after the assassination of their leaders, and the Stone Guard is doubling its patrols fearing an eruption [ch 026 / 026.02; ch 026 / 026.06].
+- [THREAT] **Derro revenge** — The Derro Council sent its Gray Ghosts to kill the party; all five were killed in the ambush, but the party now holds the Council of Savants' letter and concluded the Ember Vanguard is "enemy number one" [ch 026 / 026.07].
+
+## Party
+- The party is the Ember Vanguard, though they now hide behind this rumored name; they are at 5th level, having finished leveling before this session [ch 026 / 026.01].
+- The party is in Gracklstugh's passageway toward the Darklake District, after killing five derro assassins, with the decision pending on whether to leave the bodies, hide them, or stage them [ch 026 / 026.07].
+- The party intends to disappear into the dark before anyone else comes looking; Thorin wants to leave the city and "hear what happens from afar" as the situation threatens to erupt [ch 026 / 026.06; ch 026 / 026.07].
+- The party carried both Keeper of the Flame and Stone Guard passes and chose the Stone Guard pass; they split 1,042 gp plus one electrum each after the Gartokkar payment, with a 1,000 gp pearl still unsold [ch 026 / 026.01; ch 026 / 026.06; ch 026 / items].
+- Daz — a drow wizard who gained the Fireball spell at level 5, not yet cast; he holds the egg from his contingency plan, bristled at Gartokkar ("what's in it for us?"), and resolved to carry incriminating items and cast Misty Step past guards if the bluff failed, though it was not needed [ch 026 / 026.01; ch 026 / 026.06; ch 026 / spells].
+- Gyrgum — gained access to third-level spells including Spirit Guardians, newly cast in the ambush, dealing 17 and 15 radiant damage and killing two derro; he claimed the lucky foot, and his Bahamut studies recall details to gain advantage on the Stone Guard salute [ch 026 / 026.01; ch 026 / 026.02; ch 026 / 026.07; ch 026 / items].
+- Thorin — a dwarf who gained a second attack and Tactical Shift, letting him move without provoking opportunity attacks; he used his new two-attack sequence to finish the last derro and performs the party's most confident negotiations [ch 026 / 026.01; ch 026 / 026.07].
+- Zalthir — a brass dragonborn (whom the rumors turned red) whose history reading identified the Deepking pendant and whose Shadow Arts let him see within his own Darkness, which he used to guide the party; he cut down the visible derro leader and a second hidden attacker in the ambush [ch 026 / 026.01; ch 026 / 026.05; ch 026 / 026.07].
+- Jimjar, the deep gnome companion, travels with the party, making small wagers and covering payments [ch 026 / 026.03; ch 026 / npcs].
+
+## Audit
+- [A9] SHOWN — The party is at Gracklstugh, having arrived at and entered through the West Cleft Exit; they then progressed through Laduguer's Furrow, the forge district, Cairngorm Cavern, and the passage toward the Darklake District [ch 026 / 026.01; ch 026 / 026.03; ch 026 / 026.04; ch 026 / 026.07].
+- [A44] SHOWN — The party had an audience with Stonespeaker Hgraam, the stone giant elder, in Cairngorm Cavern, delivering the two-headed statue and receiving 500 gp; Hgraam then closed the cavern to outsiders [ch 026 / 026.04].
+- [A47] SHOWN — The party is inside Gracklstugh, the duergar city of blades, having entered through the West Cleft Exit and received warnings and payments within it [ch 026 / 026.02; ch 026 / 026.06].
+- [A65] SHOWN — The party visited Cairngorm Cavern, the stone giant home in Gracklstugh, meeting Hgraam and reporting on the curse [ch 026 / 026.04; ch 026 / locations].
+- [A90] SHOWN — Gorglak, the corrupt duergar gate guard, took a 20 gp bribe from the party to let them through the West Cleft gate [ch 026 / 026.02; ch 026 / npcs].
+- [A93] SHOWN — Gartokkar Xundorn, a Keeper of the Flame quest giver, received the dragon egg from the party and paid out the remainder of the contract [ch 026 / 026.06; ch 026 / npcs].
+- [A94] SHOWN — The party encountered Ylsa Henstak, a duergar merchant, who sold them city advice for a gold piece in exchange for navigating Gracklstugh [ch 026 / 026.03; ch 026 / npcs].
+- [A97] SHOWN — Stonespeaker Hgraam, the stone giant elder, received the party at Cairngorm Cavern and took the two-headed statue to begin curing his kin [ch 026 / 026.04; ch 026 / npcs].
+- [A98] SHOWN — The party fought the Gray Ghosts, derro assassins sent by the Council of Savants; all five were killed in the passageway [ch 026 / 026.07; ch 026 / npcs].
+- [A175] SHOWN — The party returned the broken statue to Stonespeaker Hgraam, who used it to begin the cure; this was the two-headed ritual statue recovered from the derro [ch 026 / 026.04].
+- [A176] SHOWN — The Gray Ghosts' dragon egg was recovered and returned; the party delivered the corrupted red dragon egg to Gartokkar [ch 026 / 026.06; ch 026 / items].
+- [A178] SHOWN — The Gray Ghosts were the derro assassins who ambushed the party in the Gracklstugh passageway, seeking revenge for the deaths of their High Council members [ch 026 / 026.07].
+- [A208] SHOWN — The party is in Gracklstugh under second-visit chaos conditions: lockdowns, rumors of the Ember Vanguard, assassination chaos, and a city on the edge of open conflict [ch 026 / 026.01; ch 026 / 026.06; ch 026 / 026.07].
+- [A294] SHOWN — The party was conscripted by Bookwyrm for the Candlekeep murder investigation [per prior chapters; this chunk shows the party's murder investigation concluded via the Vault confrontation and Manshoon escape, with item A295 cryptogram race and A296 Vault confrontation previously resolved] [ch 026 / 026.01].
+- [A298] SHOWN — Daz's scholar arc with Yvenne concerning Drow Material Culture research continued, with Yvenne naming Daz's field-perception sensitivity in a prior session [ch 026 / 026.01].
+- [A299] SHOWN — Zalthir's scholar arc with Khell-Vire concerning Watcher's Stillness / Severed Path was completed in a prior session, granting him the Watcher's Stillness boon [ch 026 / 026.01].
+- [A300] SHOWN — Thorin's scholar arc with Philemon concerning therapy phases was completed in a prior session, with the Brysis reveal at Layer 2 (Path C) [ch 026 / 026.01].
+- [A301] SHOWN — Gyrgum's scholar arc with Vareth concerning Stroud Wake stations was completed in a prior session, including the unsigned sting at Stations 9–10 [ch 026 / 026.01].
+- [A303] SHOWN — Polly Pocket (the myconid sprout) was released as a messenger in a prior session, flagged as an OOTA endgame thread [ch 026 / 026.01].
+- [A304] SHOWN — Sylvira was recruited as a battlefield ally in the Path B choice, dispelling Moziqodo's binding in the High Tower fight [ch 026 / 026.01].
+- [A305] SHOWN — Daral was rescued from poisoning in the Bath House in a prior session, becoming a key witness for identifying the killer [ch 026 / 026.01].
+- [A308] SHOWN — Moziqodo's binding was dispelled by Sylvira in the Path B High Tower fight [ch 026 / 026.01].
+- [A309] SHOWN — Daz / Yvenne's Fourth-Seat synthesis investigation was completed with a DC 20 roll in a prior session [ch 026 / 026.01].
+- [A310] SHOWN — Vaelissa T'sarran's name and Bell Tower deadline were delivered by Yvenne in a prior session [ch 026 / 026.01].
+- [A311] SHOWN — Thorin / Philemon's Layer 2 Brysis reveal was completed in the Path C choice [ch 026 / 026.01].
+- [A312] SHOWN — Gyrgum / Vareth's unsigned sting at Stations 9–10 was completed in a prior session [ch 026 / 026.01].
+- [A313] SHOWN — Glabbagool unlocked the Shadow Apprentice sidekick status at the Whispering Dome in a prior session [ch 026 / 026.01].
+- [A314] SHOWN — The party arrived at Candlekeep's gates and was admitted via the Five Books admission in a prior session [ch 026 / 026.01].
+- [A316] SHOWN — Glabbagool's question was posed at the Whispering Dome, earning an Echo re-coax boon in a prior session [ch 026 / 026.01].
+- [A319] SHOWN — The party searched the Southern Dining Hall for the heart and lead chalice in a prior session [ch 026 / 026.01].
+- [A320] SHOWN — The Bath House scene with Daral's interview and poisoning was resolved in a prior session [ch 026 / 026.01].
+- [A322] SHOWN — The Oak Tree Apothecary's midnight tears evidence (Leuwin / Nibbles) was found in a prior session [ch 026 / 026.01].
+- [A323] SHOWN — Sprig Summerfoot's witness testimony was obtained in the Kitchens in a prior session [ch 026 / 026.01].
+- [A324] SHOWN — Bookwyrm's cloak evidence was found at Erudite Outfitters in a prior session [ch 026 / 026.01].
+- [A326] SHOWN — The Reader's Tower scene involving Bookwyrm's interview and death occurred in a prior session [ch 026 / 026.01].
+- [A327] SHOWN — A'lai Aivenmore's interview occurred at the Immortal Chambers in a prior session [ch 026 / 026.01].
+- [A328] SHOWN — Kalan's check-in and the Trial of the Broken Mirror occurred at the Sea Warden's Tower in a prior session [ch 026 / 026.01].
+- [A330] SHOWN — The Cursed Tower's Moziqodo and rooftop incidents occurred in a prior session [ch 026 / 026.01].
+- [A331] SHOWN — Kalan's disappearance and the forged note were discovered at Pont de Paramours in a prior session [ch 026 / 026.01].
+- [A333] SHOWN — The House of Alaundo riddle, inkpot, and first prophecy occurred in a prior session [ch 026 / 026.01].
+- [A334] SHOWN — The Astronomicon Orrery scene with the Limniz clue and Manshoon raiders occurred in a prior session [ch 026 / 026.01].
+- [A335] SHOWN — The Philosopher's Court Fustilugs clue (black marble knight) was found in a prior session [ch 026 / 026.01].
+- [A336] SHOWN — The Melodrome / Jook's Box "Stars at Dawn" clue and doppelganger encounter occurred in a prior session [ch 026 / 026.01].
+- [A337] SHOWN — The wight shanty encounter at Jewel of the Styx occurred in a prior session [ch 026 / 026.01].
+- [A338] SHOWN — The School of Drama's Batbayar statue encounter occurred in a prior session [ch 026 / 026.01].
+- [A339] SHOWN — The High Tower Library scene with A'lai and Moziqodo combat and cryptogram recovery occurred in a prior session [ch 026 / 026.01].
+- [A340] SHOWN — The lava chamber with the bridge, Obsidian Door, and Iron Owlbear corpse was traversed in a prior session [ch 026 / 026.01].
+- [A341] SHOWN — The Vault (B2) confrontation with Manshoon and the Echoes of Alaundo occurred in a prior session [ch 026 / 026.01].
+- [A342] SHOWN — The Book of Vile Darkness chamber in the Vault (B3) was reached in a prior session [ch 026 / 026.01].
+- [A343] SHOWN — The vault tower rocket's last resort lever was the final action in the Vault in a prior session [ch 026 / 026.01].
+- [A344] SHOWN — Janussi's first contact at the refectory dinner on Day One occurred in a prior session [ch 026 / 026.01].
+- [A345] SHOWN — Janussi's death just after midnight on Day One occurred in a prior session [ch 026 / 026.01].
+- [A346] SHOWN — Bookwyrm's first contact and the Chapter House conscription occurred in a prior session [ch 026 / 026.01].
+- [A347] SHOWN — Bookwyrm's Teles sighting reveal occurred in a prior session [ch 026 / 026.01].
+- [A348] SHOWN — Bookwyrm's confrontation and pivot with the signed deposition / Alkrist sacrifice occurred in a prior session [ch 026 / 026.01].
+- [A349] SHOWN — Bookwyrm's death at Reader's Tower from a Beast attack occurred in a prior session [ch 026 / 026.01].
+- [A350] SHOWN — Kalan Strongbranch's first contact in the private corridor after the Chapter House occurred in a prior session [ch 026 / 026.01].
+- [A351] SHOWN — Kalan's second key handoff occurred in a prior session [ch 026 / 026.01].
+- [A352] SHOWN — Kalan's farewell and deterioration at the Sea Warden's Tower check-in occurred in a prior session [ch 026 / 026.01].
+- [A353] SHOWN — Kalan's disappearance and presumed death occurred at Pont de Paramours in a prior session [ch 026 / 026.01].
+- [A354] SHOWN — Sylvira Sashenstar's first contact and demon-lord-evidence handoff occurred on Day One in a prior session [ch 026 / 026.01].
+- [A356] SHOWN — Sylvira was recruited as a battlefield ally in the Path B choice in a prior session [ch 026 / 026.01].
+- [A357] SHOWN — Sylvira dispelled Moziqodo's binding in the High Tower fight in a prior session [ch 026 / 026.01].
+- [A358] SHOWN — Sylvira survived and holds senior Great Reader status post-arc in a prior session [ch 026 / 026.01].
+- [A359] SHOWN — Daral's first contact at the Chapter House occurred in a prior session [ch 026 / 026.01].
+- [A360] SHOWN — Daral's poisoning discovery at the Bath House occurred in a prior session [ch 026 / 026.01].
+- [A361] SHOWN — Daral's death or survival was decided by player choice in a prior session [ch 026 / 026.01].
+- [A362] SHOWN — Daral's key witness testimony was given if saved in Session 5 [ch 026 / 026.01].
+- [A363] SHOWN — Fheminor's first contact at the Founder's Court interview occurred in a prior session [ch 026 / 026.01].
+- [A364] SHOWN — Fheminor's "Bookwyrm was not surprised" revelation occurred in a prior session [ch 026 / 026.01].
+- [A365] SHOWN — Fheminor was appointed Keeper of Tomes post-arc in a prior session [ch 026 / 026.01].
+- [A368] SHOWN — A'lai's sapphire smash and escape occurred at the High Tower Library in a prior session [ch 026 / 026.01].
+- [A369] SHOWN — A'lai's fate (dead or escaped) was resolved in a prior session [ch 026 / 026.01].
+- [A370] SHOWN — Alkrist's first contact at the Chapter House occurred in a prior session [ch 026 / 026.01].
+- [A371] SHOWN — Alkrist's interview at Drakonoikos occurred in a prior session [ch 026 / 026.01].
+- [A372] SHOWN — Alkrist's arrest or confession (Path A) occurred in a prior session [ch 026 / 026.01].
+- [A373] SHOWN — Fembris's first contact at the Fembris-at-door cliffhanger occurred in a prior session [ch 026 / 026.01].
+- [A374] SHOWN — Fembris's rooftop confession at the Bell Tower break occurred in a prior session [ch 026 / 026.01].
+- [A375] SHOWN — Tadric's first contact as a crime scene witness occurred in a prior session [ch 026 / 026.01].
+- [A376] SHOWN — Tadric's flight assistance at the High Tower approach occurred in a prior session [ch 026 / 026.01].
+- [A377] SHOWN — Tadric was appointed acting Gatewarden post-arc in a prior session [ch 026 / 026.01].
+- [A378] SHOWN — Hollypocket's witness interview in Janussi's chamber occurred in a prior session [ch 026 / 026.01].
+- [A379] SHOWN — Sprig Summerfoot's witness interview in the Kitchens occurred in a prior session [ch 026 / 026.01].
+- [A380] SHOWN — Leuwin's witness interview at Oak Tree Apothecary occurred in a prior session [ch 026 / 026.01].
+- [A381] SHOWN — Teles Ahvoste's interview and disguise sighting occurred if earned in a prior session [ch 026 / 026.01].
+- [A382] SHOWN — Kazryn Nyantani's interview and A'lai alibi break occurred in a prior session [ch 026 / 026.01].
+- [A383] SHOWN — Khell-Vire's closing letter and standing correspondence were sealed in a prior session [ch 026 / 026.01].
+- [A384] SHOWN — Philemon's sealed letter delivery (Path C) occurred in a prior session [ch 026 / 026.01].
+- [A385] SHOWN — Vareth's final stations and unsigned sting occurred in a prior session [ch 026 / 026.01].
+- [A386] SHOWN — Yvenne's third sitting and bloodline-pattern observation occurred in a prior session [ch 026 / 026.01].
+- [A387] SHOWN — Yvenne's Vaelissa name delivery occurred in a prior session [ch 026 / 026.01].
+- [A388] SHOWN — Yvenne's Fourth-Seat synthesis scene occurred in a prior session [ch 026 / 026.01].
+- [A389] SHOWN — Inda's emergence from the brass statue and vault escort occurred in a prior session [ch 026 / 026.01].
+- [A390] SHOWN — Spanner's Mechanus dust handoff occurred in a prior session [ch 026 / 026.01].
+- [A391] SHOWN — Moziqodo's first encounter on the rooftop / Cursed Tower occurred in a prior session [ch 026 / 026.01].
+- [A392] SHOWN — Moziqodo's binding break (Path B, High Tower fight) occurred in a prior session [ch 026 / 026.01].
+- [A393] SHOWN — Moziqodo's fate resolution (killed / unbound with Sylvira / fled) occurred in a prior session [ch 026 / 026.01].
+- [A394] SHOWN — Manshoon's voice-only arrival announcement occurred in Session 6 of a prior session [ch 026 / 026.01].
+- [A395] SHOWN — Manshoon's direct confrontation at Vault B2 occurred in a prior session [ch 026 / 026.01].
+- [A396] SHOWN — Manshoon's escape (with or without the Book of Vile Darkness) occurred in a prior session [ch 026 / 026.01].
+- [A397] SHOWN — Glabbagool's bad night and Juiblex reach (Session 5) occurred in a prior session [ch 026 / 026.01].
+- [A398] SHOWN — Glabbagool's Shadow Apprentice sidekick status was confirmed in a prior session [ch 026 / 026.01].
+- [A399] SHOWN — Eldeth's letter was delivered via courier in Session 8 of a prior session [ch 026 / 026.01].
+- [A400] SHOWN — Brevin's Sloobludop recitation incident occurred in a prior session [ch 026 / 026.01].
+- [A401] SHOWN — Brevin's six-pointed star bedclothes incident occurred in a prior session [ch 026 / 026.01].
+- [A402] SHOWN — Marin's six-pointed star quill arrangement incident occurred in a prior session [ch 026 / 026.01].
+- [A403] SHOWN — Jimjar / Callarduran's Echo 4 witness prophecy activation occurred in a prior session [ch 026 / 026.01].
+- [A404] SHOWN — The Five Books, Five Questions gate admission and scholar pairings were established in a prior session [ch 026 / 026.01].
+- [A405] SHOWN — The Endless Chant's Deadwinter Prophecy fragment was heard in a prior session [ch 026 / 026.01].
+- [A406] SHOWN — Janussi's murder crime scene forensics (poison, heart post-mortem, no defensive wounds) were revealed in a prior session [ch 026 / 026.01].
+- [A407] SHOWN — The two "Sylvira" figures dual-timeline disguise revelation was assembled in a prior session [ch 026 / 026.01].
+- [A408] SHOWN — The party identified Bookwyrm's disguise self use in a prior session [ch 026 / 026.01].
+- [A409] SHOWN — The party identified Alkrist as the poisoner in a prior session [ch 026 / 026.01].
+- [A410] SHOWN — The disguise rosetta was cracked as a milestone event, granting a level-up to 9, in a prior session [ch 026 / 026.01].
+- [A411] SHOWN — The ward-drop hallucination sequence with per-PC visions occurred in Session 6 of a prior session [ch 026 / 026.01].
+- [A412] SHOWN — The cryptogram was recovered with its six-clue text transcribed from the High Tower Library in a prior session [ch 026 / 026.01].
+- [A413] SHOWN — Manshoon's arrival was announced, placing the keep under siege, in a prior session [ch 026 / 026.01].
+- [A414] SHOWN — The Iron Owlbear was found dead with Manshoon already in the Vault in a prior session [ch 026 / 026.01].
+- [A415] SHOWN — Echo 1 was activated as the surface contamination prophecy in a prior session [ch 026 / 026.01].
+- [A416] SHOWN — Echo 2 was activated as the wedding / Zuggtmoy prophecy in a prior session [ch 026 / 026.01].
+- [A417] SHOWN — Echo 3 was activated as the Gauntlgrym / Keeper prophecy naming Thorin / Zalthir / Daz / Gyrgum in a prior session [ch 026 / 026.01].
+- [A418] SHOWN — Echo 4 was activated as the Jimjar / Callarduran witness prophecy in a prior session [ch 026 / 026.01].
+- [A419] SHOWN — The Book of Vile Darkness's fate was determined in a prior session [ch 026 / 026.01].
+- [A420] SHOWN — The vault tower rocket's lever was pulled or left in a prior session [ch 026 / 026.01].
+- [A421] SHOWN — Candlekeep's institutional restructuring with Fheminor as Keeper and Tadric as Gatewarden occurred post-arc in a prior session [ch 026 / 026.01].
+- [A422] SHOWN — The party was named guest seekers of the Avowed with Inner Ward access in a prior session [ch 026 / 026.01].
+- [A423] SHOWN — The Manshoon-pursuit thread was activated regardless of escape outcome in a prior session [ch 026 / 026.01].
+- [A424] SHOWN — The Gauntlgrym call was confirmed with Echo 3 and Eldeth's letter convergence in a prior session [ch 026 / 026.01].
+- [A426] SHOWN — Yvenne named Daz's field-perception sensitivity in a prior session [ch 026 / 026.01].
+- [A430] SHOWN — The Endless Chant's first complete stoppage occurred in Session 5 of a prior session [ch 026 / 026.01].
+- [A431] SHOWN — The ward-drop vision sequence with per-PC hallucinations occurred in Session 6 of a prior session [ch 026 / 026.01].
+- [A432] SHOWN — Glabbagool's Juiblex "mother voice" contact occurred in Session 5 of a prior session [ch 026 / 026.01].
+- [A433] SHOWN — Echo 1's prophecy named the surface-contamination field-effect directly in a prior session [ch 026 / 026.01].
+- [A434] SHOWN — Daz and Yvenne's field-perception expertise was confirmed post-arc in a prior session [ch 026 / 026.01].
+- [A435] SHOWN — Sylvira was recruited (Path B) in a prior session, with dispel payoff and cryptogram shortcut [ch 026 / 026.01].
+- [A436] SHOWN — Yvenne's trust reached ≥4 ticks with the planar-residue trace payoff in Session 7 of a prior session [ch 026 / 026.01].
+- [A437] SHOWN — Vareth / Drakonoikos goodwill was earned with the Thava and F-A-D-E payoff in Session 7 of a prior session [ch 026 / 026.01].
+- [A438] SHOWN — Daral was saved with the Alkrist ID witness and Fustilugs clue payoff in Sessions 5 / 7 of a prior session [ch 026 / 026.01].
+- [A439] SHOWN — Khell-Vire's Watcher's Stillness was earned with the skirmish skip and Vault Wis-save advantage in a prior session [ch 026 / 026.01].
+- [A440] SHOWN — Glabbagool's Whispering Dome visit earned the Echo re-coax boon in Session 8 of a prior session [ch 026 / 026.01].
+- [A441] SHOWN — Polly Pocket was released as a messenger with the OOTA endgame thread flagged in a prior session [ch 026 / 026.01].
+- [A442] SHOWN — Walking-permit medallions worn made the party wight-safe at Jewel of the Styx in a prior session [ch 026 / 026.01].
+- [A443] SHOWN — The second High Tower key was held and the door was opened from outside in Session 7 of a prior session [ch 026 / 026.01].

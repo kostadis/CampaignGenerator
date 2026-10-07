@@ -1,0 +1,149 @@
+## Events
+- The party decided to visit the Stone Giants of Clan Cairngorm, the one group they had not yet spoken with, who had an open invitation for them, weighing their open leads before acting [ch 015 / 015.01].
+- Gyrgum's player said "we should get all the offers or assignments before we really do anything." [ch 015 / 015.01]
+- The DM confirmed as lore that Daz's previous character "was a famous writer, a hero of the realms, involved in a significant battle, and a well-known publisher of fiction and art," and Daz is a fan of that character [ch 015 / 015.01].
+- The party arrived at the entrance of Cairngorm Cavern in the Southfurrow District, a long tunnel running several hundred feet into the home of Clan Cairngorm, and were met by Hgraam, the Stone Giant clan leader, sitting thoughtfully at the entrance [ch 015 / 015.01].
+- Thorin asked "What, like the clan leaders just chilling by the entrance?" when they met Hgraam [ch 015 / 015.01].
+- Gyrgum was nervous about the meeting because he "didn't have a super relationship with them before." [ch 015 / 015.01]
+- The party prepared to initiate conversation with Hgraam, knowing stone giants "can wait a very long time before they initiate a conversation because they don't want to rush anything." [ch 015 / 015.01]
+- In the audience, Hgraam spoke gravely of his apprentice, the Stone Giant the party had earlier tried to stop without killing, who had been driven to madness not by an enemy blade but by the very stones themselves [ch 015 / 015.02].
+- Daz offered condolences to Hgraam: "Sorry for what happened to your training master. Hope you're doing okay." [ch 015 / 015.02]
+- Hgraam expressed grief: "Yes, it was a tragedy." and acknowledged the party tried to stop the apprentice rather than kill him [ch 015 / 015.02].
+- Hgraam warned of an evil stirring in the blackest depths of the Underdark and recited omens: "a cave with two faces, rock devoured, land overgrown," and "The pebble believes itself flesh. The earth rejects its wards, and the tunnels shake in fury" [ch 015 / 015.02; ch 015 / moment].
+- Hgraam explained the surface world, which he called the "Dreamlands," can be reached through the town of the deep gnomes; he has never been there, does not know the path himself, and has only heard through trade that the deep gnomes know a way out, echoing what Jimjar told the party [ch 015 / 015.02].
+- Hgraam warned the Whorlstone Tunnels beneath the city are filled with evil, saying "There is much evil in there. Many have told the Deepking that what goes underneath his city affects what goes on in his city. And what goes underneath is great evil" and "The more he enforces control, the more it escapes outside the city to seize control of the city." [ch 015 / 015.02]
+- Zalthir's Arcana check led him to suspect the apprentice's madness was tied to a growing presence of demons, which was far more widespread than the party's scattered sightings of Demogorgon, the kuo-toa's worshipped creation, the demonic manta rays, and the brawling demons at Velkynvelve had suggested [ch 015 / 015.02].
+- Daz found the giant's speech comical and senseless ("This makes absolutely no sense"), while Zalthir and Gyrgum deduced that various factions are hiding underground to escape the Deepking's rigid control, away from the invisible duergar patrolling the city above [ch 015 / 015.02].
+- Zalthir asked why the apprentice in particular went mad, and his Arcana result suggested the increasing presence of demons; since the apprentice never left the city's caves, the madness could strike anyone and "not a localized phenomenon" [ch 015 / 015.02].
+- The DM noted: "For what you normally expect outside of the abyss, it is crawling with demons," and the fact that a demon lord of Demogorgon's power is walking the earth implies an extraordinarily powerful magical force behind it [ch 015 / 015.02].
+- Hgraam knows nothing about the Gray Ghosts, though the Deepking has asked him about them, and he has advised the Deepking to be patient and "watch the stones." [ch 015 / 015.02]
+- Hgraam revealed the Deepking has become increasingly paranoid and erratic since taking on a new advisor named Shal, who has never come to visit and with whom the king no longer discusses Gracklstugh's problems with Hgraam [ch 015 / 015.02].
+- Gyrgum summed up Hgraam's point about the Deepking: "The tighter you squeeze your fist, the more it will slip through your fingers." [ch 015 / moment]
+- After a long rant about everyone being in a rush, Hgraam ended the audience: "it is time for you to leave there are rocks that need to be tended." [ch 015 / 015.02]
+- Hgraam presented the party with a polished crystal the length of a human forearm, imbued with the power to commune with animals, plants, and the dead, and to sharpen the mind's eye when searching for hidden truths; his apprentice brought it out [ch 015 / 015.02; ch 015 / 015.03].
+- The party examined the gifted Stonespeaker Crystal, learning it has 10 charges, requires attunement (possible only after a long rest), grants advantage on Investigation, with speak with dead costing four charges and speak with animals costing two [ch 015 / 015.03].
+- The DM suggested the character with the highest Intelligence carry the crystal; Daz has INT 17 and Investigation +5, Thorin has INT 14 [ch 015 / 015.03].
+- Daz was fine with someone else taking the crystal; Thorin thought speak with dead is the most useful power and that animals and plants could say whether someone came this way [ch 015 / 015.03].
+- Gyrgum was keen to meet the Deepking's advisor, but the DM warned this "might not have quite the effect you want," and it went on the checklist for later [ch 015 / 015.03].
+- The party reviewed what they know of Droki, a derro courier linked to various factions, unclear whether he belongs to a faction or just carries messages, pointed toward by both Errde Blackskull and Gartokkar [ch 015 / 015.03].
+- The party planned to head to the West Cleft District to track down Droki, deducing that a derro living in a slum where "any duergar that tried to get in there would probably get slaughtered" would be the ideal messenger [ch 015 / 015.03].
+- The DM described the West Cleft District as the original home of the city's derro slaves, remaining a dark and dangerous ghetto, with the East Cleft District settled after the derro earned their freedom [ch 015 / 015.03].
+- Upon reaching the entrance of the squalid district, the party decided to pivot and consult Buppido for local intelligence [ch 015 / 015.03].
+- The party returned to Ghohlbrorn's Lair and found Jimjar gambling with the local residents, who said "ah, yes, the crazy derro" and led them upstairs to a forlorn Buppido [ch 015 / 015.04].
+- Thorin asked "is it insulting to assume all derro know each other?" when questioning Buppido about Droki [ch 015 / 015.04].
+- Buppido laughed heartily and revealed that the entrance to the Whorlstone Tunnels is hidden within the Derro slums, offering: "I'll even show you where it is if you let me go." [ch 015 / 015.04]
+- The party had already planned to free him eventually; Thorin, the most paranoid about it, noted "he did kill one of our party members." [ch 015 / 015.04]
+- Buppido explained the Council of Savants, the derro governing body in Gracklstugh made up of more powerful derro with special abilities [ch 015 / 015.04].
+- Buppido delivered a manic rant about the corrupt Council of Savants, which he says has always promised to lead the derro to freedom and always failed, claiming he has a divine mission to free his people: "You must let me go. If you don't let me go, the Savants will do something stupid, as they've always done something stupid. I know. I have the divine mission in my hands." [ch 015 / 015.04; ch 015 / moment]
+- The party concluded Buppido is mad, with Gyrgum suspecting the demons may have affected him [ch 015 / 015.04].
+- The party saw the key insight: the derro control the entrance to the Whorlstone Tunnels, possibly why the Deepking cannot crush the factions there, recalling Errde Blackskull said marching in would cause a riot and a war [ch 015 / 015.04].
+- The party debated Buppido's fate: Zalthir wanted to wait and free him when they left the city, Thorin suggested taking him along to vouch for them with Droki [ch 015 / 015.04].
+- The party agreed to give Buppido a spare Stone Guard pass so he could accompany them and guide them into the caverns; an Insight check left them convinced he will gladly help, and Buppido said "don't you worry, I know what to do." [ch 015 / 015.04]
+- Thorin warned Buppido that a double-cross would end with him sliced up; Buppido replied "but you are now allowing me to proceed onto my grand vision." [ch 015 / 015.04; ch 015 / moment]
+- The party used their Stone Guard passes to enter the West Cleft District, accompanied by Buppido, who gleefully showed his pass to gate guards that met him with "the usual set of contempt." [ch 015 / 015.05]
+- Inside the district, the stench turned from metallic to repugnant with "hundreds of derro muttering, screaming at each other," and those who spotted the party looked at them "with a burning hatred." [ch 015 / 015.05]
+- Thorin proposed yelling for Droki, but Buppido made clear they should stay on the down low; Thorin said "It's like yelling Maria in West Side Story." [ch 015 / 015.05; ch 015 / moment]
+- The party chose to find Droki before the cave entrance, reasoning Droki may know what is in the caves; Thorin: "once you go in the dungeon, you're in the dungeon." [ch 015 / 015.05]
+- They spotted Droki, a Derro courier in a floppy hat with two tentacle-like protrusions, muttering to himself and moving with unnatural, almost magical speed: "Droki is late. They will be so angry. Delays, blocks, procrastinations, obstructions, pfah!" [ch 015 / 015.05; ch 015 / moment]
+- Droki vanished down a narrow fissure hidden behind scraps of canvas and moldy boxes; Buppido said "he's going into stone tunnels. That's one of the entrances" and immediately chased after him [ch 015 / 015.05].
+- The party let Buppido go, with Thorin reasoning "At this point, we can't coerce him without a fuss, and that could go bad." and then followed into the Whorlstone Tunnels, squeezing through a gap leaking eerie fog, Thorin entering "Warily, ready for traps or the unexpected." [ch 015 / 015.05]
+- The Whorlstone Tunnels had ceilings about 50 feet high dropping to 25 in the narrow tunnels, an air that tasted faintly of metal, all sound strangely muted, dripping water making no echo, and swirling patterns of faerzress casting dancing spirals of soft light across jagged stone pillars [ch 015 / 015.05; ch 015 / moment].
+- The party discovered unique fungi, including bigwigs and pygmyworts, with size-altering properties, and took one of each; Gyrgum worried about eating too much bigwig since only a medium creature fits through the fissure [ch 015 / 015.05].
+- Droki headed north, oblivious to the party, and the party followed openly, reasoning "doesn't seem alert to being followed" and that following him might reveal all the people he works for [ch 015 / 015.05].
+- At an intersection, the party encountered Buppido standing before a makeshift altar constructed of skeletons and bones, wiping his hands on his vest and smiling viciously [ch 015 / 015.06].
+- Buppido claimed a divine mission and demanded the party worship him as leader, declaring them his 'faithful': "I didn't expect you to find me here with my shrine nearly finished and power." ... "Yes, I sense you are ready to receive my truth into your hearts." [ch 015 / 015.06; ch 015 / moment]
+- Zalthir noted the absurdity: "Finds you here? We were with you five seconds ago." [ch 015 / moment]
+- Buppido flew into a psychotic rage and attacked with a hooked spear, with a group of skeletons rising to defend his shrine and surrounding the party [ch 015 / 015.06].
+- Thorin asked "Just to be clear, we can take him if we need to, right?" before the fight, and noted "I'll tank it and take some hits." [ch 015 / 015.06]
+- Daz cast a spell outlining three skeletons in glowing light (Faerie Fire, affecting a 20-foot cube, Dexterity save), and Zalthir conjured a sphere of absolute darkness to disorient the attackers [ch 015 / 015.06; ch 015 / 015.07].
+- In the battle, Thorin engaged the skeletons in melee, hitting one with advantage for 4 damage [ch 015 / 015.06].
+- Zalthir hit a skeleton for 5 damage and spent a focus point on a second attack which missed [ch 015 / 015.07].
+- Buppido lunged at Thorin with a hooked spear but failed to land a blow [ch 015 / 015.07].
+- Skeletons retaliated with short swords and crossbows but struggled to see through the magical dark and glowing outlines; a short bow missed Gyrgum, a short sword hit for 5 damage, and a crossbow skeleton hit Gyrgum for 5 damage [ch 015 / 015.07].
+- Gyrgum tried Turn Undead, but only three skeletons could see the symbol, so Zalthir offered to move his darkness so all could see it; Gyrgum readied the turning as a prepared action, his player calling it "Well, working together." [ch 015 / 015.07]
+- Daz unleashed unerring darts of pure magical energy (Magic Missile) striking Buppido for 15 damage against his 13 hit points, ending his delusions and his life; the DM said "Buppido's long quest of greatness and his belief in his divine mission has now ended. He's dead." [ch 015 / 015.07; ch 015 / moment]
+- Gyrgum brandished his chessboard holy symbol, channeling the divine power of Bahamut, forcing the remaining skeletons to make a DC 13 Wisdom save at -1, with three fleeing in blind panic; Thorin killed one with an 8-damage opportunity attack [ch 015 / 015.07].
+- Gyrgum said "The power of Bahamut compels you to get to the point of the matter." [ch 015 / moment]
+- The party coordinated to eliminate the retreating undead: Gyrgum's crossbow hit a faerie-fired skeleton with advantage for 8 damage, Daz split a second Magic Missile for 8 and 1 damage, Zalthir killed the last skeleton next to Thorin [ch 015 / 015.07].
+- A skeleton hit Zalthir for 5 piercing damage, and Zalthir deflected it completely, saying "Great. No damage." [ch 015 / 015.07]
+- Zalthir missed twice, prompting the DM to say "The universe does not like you," but he deflected another blow later [ch 015 / 015.07].
+- The DM declared the skeletons dead: "you are now fourth level." [ch 015 / 015.07]
+- The party stood amid the wreckage of Buppido's mad shrine; Buppido had killed Yuk Yuk, the party's goblin guide, and Thorin reflected "He was crazy, but he was our crazy." [ch 015 / 015.07; ch 015 / moment]
+- The party took a moment to collect themselves, knowing Droki was still somewhere ahead and that deeper mysteries of the Whorlstone Tunnels and the evil Hgraam warned about still lay waiting [ch 015 / 015.07].
+
+## Concluded
+- The audience with Stonespeaker Hgraam at Cairngorm Cavern concluded with Hgraam gifting the party a polished Stonespeaker Crystal and sending them off to tend his rocks [ch 015 / 015.02].
+- The consultation with the imprisoned Buppido concluded with the party agreeing to free him, giving him a spare Stone Guard pass, and taking him along as a guide [ch 015 / 015.04].
+- Buppido was slain by Daz's Magic Missile at his shrine in the Whorlstone Tunnels, ending his mad assault and his divine delusions; his skeletal guards were turned and destroyed [ch 015 / 015.07; ch 015 / moment].
+- The party reached fourth level after the battle at Buppido's shrine [ch 015 / 015.07].
+
+## Threads
+- [ADVANCED] **Whorlstone Tunnels quest** — Hgraam warned that the tunnels are filled with great evil and that the Deepking's crackdown has driven factions underground where they fester beyond his reach; Buppido then revealed the tunnel entrance hidden in the Derro slums and guided the party inside [ch 015 / 015.02; ch 015 / 015.04].
+- [ADVANCED] **Droki delivery interception** — The party entered the West Cleft District and spotted Droki moving with magical speed, muttering about being late, before he vanished into a fissure; the party followed him into the Whorlstone Tunnels, reasoning that following him might reveal all the people he works for [ch 015 / 015.05].
+- [RESOLVED] **Buppido's betrayal and madness** — Buppido, whom the party freed with a Stone Guard pass, built a shrine of bones in the tunnels, declared the party his faithful, and attacked; Daz's Magic Missile killed him, ending his divine delusions [ch 015 / 015.06; ch 015 / 015.07].
+- [ADVANCED] **Deepking's paranoia and Shal** — Hgraam revealed the Deepking has grown paranoid, erratic, and isolated since taking on a new advisor named Shal, who has never visited Hgraam; Gyrgum wants to meet Shal and the party deferred that for later [ch 015 / 015.02; ch 015 / 015.03].
+- [ADVANCED] **Route to the surface via the deep gnomes** — Hgraam confirmed Jimjar's statement that the best path back to the "Dreamlands" (the surface) runs through the town of the deep gnomes, though neither knows the way personally [ch 015 / 015.02].
+- [OPENED] **The eternal Gray Ghosts question** — The Deepking has asked Hgraam about the Gray Ghosts, but Hgraam knows nothing of them [ch 015 / 015.02].
+
+## NPC Status
+- Hgraam | Alive | Cairngorm Cavern, Southfurrow District, Gracklstugh | Friendly; gifted the party a crystal and holds genuine grief over his apprentice [ch 015 / 015.02]
+- Hgraam's apprentice | Alive | Cairngorm Cavern, Southfurrow District, Gracklstugh | Present at the audience; brought out the crystal gift [ch 015 / 015.02; ch 015 / npcs]
+- Deepking | Alive | Gracklstugh | Distant and mistrustful; Hgraam reports he has become paranoid and erratic since Shal arrived [ch 015 / 015.02; ch 015 / npcs]
+- Shal | Unknown | Gracklstugh, with the Deepking | Never visited Hgraam; suspected to influence the Deepking's paranoia; unencountered by the party [ch 015 / 015.02; ch 015 / npcs]
+- Jimjar | Alive | Ghohlbrorn's Lair, gambling with local residents | Friendly; directed the party upstairs to Buppido [ch 015 / 015.04]
+- Buppido | Dead | Whorlstone Tunnels, at his makeshift shrine | Turned on the party and was slain by Daz's Magic Missile [ch 015 / 015.07]
+- Droki | Alive | Whorlstone Tunnels, heading north ahead of the party | Oblivious to being followed; the party is tracking him [ch 015 / 015.05]
+- Errde Blackskull | Unknown | — | Previously pointed the party toward Droki and warned marching into the West Cleft District would bring "a riot and a war" [ch 015 / npcs; ch 015 / 015.04]
+- Gartokkar | Unknown | — | A Keeper of the Flame leader who pointed the party toward Droki and wants the stolen red dragon egg recovered from the Gray Ghosts; the party never committed to the job [ch 015 / npcs]
+- Themberchaud | Unknown | Gracklstugh | Upset over a stolen egg; "the dragon's getting a little uppity" [ch 015 / npcs]
+
+## World
+- [NPC] **Hgraam** — The thoughtful, patient Stone Giant clan leader of Clan Cairngorm in Gracklstugh; speaks in omens and "what the stones tell me," advised the Deepking toward patience and generosity, and calls the surface world "the Dreamlands." [ch 015 / 015.02; ch 015 / npcs]
+- [NPC] **Hgraam's apprentice** — One apprentice was the mad Stone Giant the party tried to stop, not kill; driven mad by the stones despite never leaving the city's caves; a different apprentice brought out the crystal gift [ch 015 / npcs].
+- [NPC] **Deepking** — The ruler of Gracklstugh who "used to be much calmer," now paranoid, erratic, "always in a rush," distant from old allies, and asked Hgraam about the Gray Ghosts; his crackdown has driven factions underground [ch 015 / 015.02; ch 015 / npcs].
+- [NPC] **Shal** — The Deepking's new favored advisor, never visited Hgraam, who is suspected to be the cause of the King's recent paranoia and isolation [ch 015 / npcs].
+- [NPC] **Jimjar** — A deep gnome companion who told the party the deep gnomes know a way out (confirmed by Hgraam) and who was gambling with locals at Ghohlbrorn's Lair [ch 015 / npcs; ch 015 / 015.04].
+- [NPC] **Droki** — A Derro courier with a pale face and a tentacled floppy hat; moves with magical speed and talks about himself in the third person while delivering messages between factions [ch 015 / npcs; ch 015 / 015.05].
+- [NPC] **Errde Blackskull** — A Stone Guard captain interested in the party's actions regarding Droki; she told the party marching into the West Cleft District would bring "a riot and a war." [ch 015 / npcs; ch 015 / 015.04]
+- [NPC] **Gartokkar** — A Keeper of the Flame leader linked to the stolen red dragon egg; the Keepers want the party to recover the egg from the Gray Ghosts, but the party never committed [ch 015 / npcs].
+- [NPC] **Themberchaud** — The red dragon of Gracklstugh who believes he is in charge, though his keepers disagree; upset over the stolen egg [ch 015 / npcs].
+- [FACTION] **Council of Savants** — The derro governing body in Gracklstugh made up of more powerful derro with special abilities; according to Buppido, it has always promised to lead the derro to freedom and always failed [ch 015 / npcs; ch 015 / 015.04].
+- [THREAT] **The evil stirring in the blackest depths** — An ancient, terrible evil causes the rock to cry out and the tunnels to shake in fury; omens include "a cave with two faces, rock devoured, land overgrown," and "a pebble that believes itself flesh." [ch 015 / 015.02; ch 015 / moment]
+- [THREAT] **Spreading demonic presence** — The apprentice's madness is tied to an increasing presence of demons, "not a localized phenomenon," far more widespread than the party's scattered sightings had suggested; "For what you normally expect outside of the abyss, it is crawling with demons," implying a powerful magical force behind it [ch 015 / 015.02].
+- [LOCATION] **Cairngorm Cavern** — A massive underground home carved deep into the Southfurrow District, at the end of a long tunnel running several hundred feet into the residence of the Stone Giants of Clan Cairngorm [ch 015 / 015.01; ch 015 / locations].
+- [LOCATION] **West Cleft District** — A dark, dangerous, foul-smelling ghetto carved haphazardly into the cavern walls and the chaotic, crowded home of Gracklstugh's unwanted derro population; originally home of the city's derro slaves, while East Cleft was settled after the derro earned freedom; it holds an entrance to the Whorlstone Tunnels, explaining why the Deepking cannot root out the factions below [ch 015 / 015.03; ch 015 / locations].
+- [LOCATION] **Ghohlbrorn's Lair** — The establishment where the party is staying, with a common area where residents gamble and upper rooms where they kept Buppido; about a 10-minute walk from the West Cleft District [ch 015 / locations; ch 015 / 015.04].
+- [LOCATION] **Whorlstone Tunnels** — A vast, dangerous cavern network beneath Gracklstugh suffused with faerzress that casts swirling spiral patterns of light and mutes all sound; the entrance is a fissure hidden by cloth scraps, canvas and moldy boxes leaking eerie fog; ceilings about 50 feet high dropping to 25 feet in narrow tunnels; air tastes metallic and dripping water makes no echo; filled with strange size-altering fungi and rumored to be a haven for factions hiding from the Deepking; contains Buppido's makeshift shrine of bones [ch 015 / 015.05; ch 015 / locations].
+- [ITEM] **Stonespeaker Crystal** — A polished crystal the length of a human forearm gifted by Hgraam; 10 charges, requires attunement after a long rest, grants advantage on Investigation, speak with dead costs 4 charges, speak with animals costs 2; the party has not yet decided who carries it, with Daz having the highest INT (17) [ch 015 / 015.03; ch 015 / items].
+- [ITEM] **Stone Guard Pass** — Official identification tokens granting safe passage through Gracklstugh; the party gave one of their spare passes to Buppido so he could accompany them into the West Cleft District [ch 015 / items; ch 015 / 015.04].
+- [ITEM] **Bigwig** — A four-inch tall mushroom with a thin stem and wide purple cap from the Whorlstone Tunnels; when consumed it causes the eater to grow significantly in size, comparable to an enlarge/reduce spell and probably not permanent; the party took one [ch 015 / items; ch 015 / 015.05].
+- [ITEM] **Pygmywort** — Small mushrooms from the Whorlstone Tunnels with the magical property of shrinking anyone who eats them; the party took one [ch 015 / items; ch 015 / 015.05].
+- [ITEM] **Chessboard Holy Symbol** — Gyrgum's sacred token inscribed with a chessboard pattern, used to channel divine energy for Turn Undead against a DC 13 Wisdom save; the undead must be able to see the symbol for the turning to work [ch 015 / items; ch 015 / 015.07].
+- [ITEM] **Hooked Spear** — A cruel, specialized polearm wielded by Buppido during his final, mad assault against the party [ch 015 / items].
+
+## Party
+- The party is at fourth level as of the end of this chapter, having leveled after clearing Buppido's shrine [ch 015 / 015.07].
+- The party is inside the Whorlstone Tunnels beneath Gracklstugh, having just cleared Buppido's shrine and paused to collect themselves, with Droki still somewhere ahead and the mystery of the tunnels still ahead of them [ch 015 / 015.07].
+- The party holds the Stonespeaker Crystal, undecided on its carrier, with Daz having INT 17 and Investigation +5 and Thorin INT 14 [ch 015 / 015.03].
+- The party carries one bigwig and one pygmywort taken from the Whorlstone Tunnels [ch 015 / 015.05].
+- Daz has an innate drow Faerie Fire ability that needs fixing on his sheet at the next level-up [ch 015 / spells].
+- Gyrgum is a follower of Bahamut, channeling divine power through his chessboard holy symbol to turn undead [ch 015 / 015.07; ch 015 / items].
+- Daz uses Magic Missile and Faerie Fire in combat, and is the party's highest-INT member [ch 015 / 015.07; ch 015 / spells].
+- Zalthir uses Darkness and deflect attacks, spending focus points for extra attacks [ch 015 / 015.07].
+- Jimjar remains at Ghohlbrorn's Lair in the party's lodgings in Gracklstugh [ch 015 / 015.04].
+- The party intends to continue following Droki through the Whorlstone Tunnels to discover all the factions he serves [ch 015 / 015.05; ch 015 / 015.07].
+
+## Audit
+- [A44] SHOWN — The party held their audience with Stonespeaker Hgraam, asking about the city's troubles, and received a crystal gift from him [ch 015 / 015.02].
+- [A47] SHOWN — The party is in Gracklstugh, the duergar City of Blades, and has been traversing its districts including the Southfurrow and West Cleft Districts and the Whorlstone Tunnels beneath it [ch 015 / 015.01; ch 015 / 015.05].
+- [A50] SHOWN — The party entered the Whorlstone Tunnels beneath Gracklstugh and fought Buppido and his skeletons there [ch 015 / 015.05; ch 015 / 015.07].
+- [A65] SHOWN — The party arrived at Cairngorm Cavern, the stone giant home in Gracklstugh, and held an audience with clan leader Hgraam [ch 015 / 015.01].
+- [A77] SHOWN — Buppido, whose true nature as a killer was revealed, fully succumbed to madness, targeted the party at his shrine, and was killed by Daz [ch 015 / 015.06; ch 015 / 015.07].
+- [A91] BEGUN — Errde Blackskull is mentioned as wanting the party to recover the egg from the Gray Ghosts and as one who pointed the party to Droki [ch 015 / 015.03; ch 015 / npcs].
+- [A95] SHOWN — The party spotted Droki and followed him into the Whorlstone Tunnels, with Droki oblivious to being followed [ch 015 / 015.05].
+- [A96] BEGUN — The party has agreed to take Buppido along as a guide with a spare Stone Guard pass, but did not yet complete the planned guide mission since Buppido turned on them [ch 015 / 015.04].
+- [A97] BEGUN — Hgraam is mentioned as the stone giant elder who held the party's audience and gifted them a crystal [ch 015 / 015.02].
+- [A176] BEGUN — Gartokkar wants the party to recover the stolen red dragon egg from the Gray Ghosts, but the party never committed to the job [ch 015 / npcs].
+- [A177] BEGUN — The party entered the Whorlstone Tunnels and has encountered size-altering fungi but has not yet discovered anything about a black obelisk [ch 015 / 015.05].
+- [A29] SHOWN — The Droki delivery interception is actively in progress: the party spotted Droki, followed him through a fissure into the Whorlstone Tunnels, and is trailing him north, hoping he leads them to every faction he serves [ch 015 / 015.05].
+- [A95] SHOWN — Droki is ahead of the party inside the Whorlstone Tunnels, and the party is openly following him without alerting him [ch 015 / 015.05; ch 015 / npcs].
