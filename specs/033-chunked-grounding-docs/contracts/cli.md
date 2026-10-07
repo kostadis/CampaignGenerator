@@ -22,7 +22,7 @@ The map step: per-chunk model calls, then the code check. It writes `state/notes
 |---|---|---|
 | `--backend` `--model` `--endpoint` | backend family as registered by `add_backend_args`. `--endpoint` (singular) names the one box of a single-endpoint run | `summary_native.extract.backend` / `.model`, else `schema.DEFAULT_DRAFT_BACKEND` / `DEFAULT_DRAFT_MODEL` |
 | `--endpoints URL…` | several OpenAI-compatible endpoints sharing **one** chunk queue (dgx only); spelling as in `facts_to_state`. One set of worker threads per endpoint pulls the next chunk when free, so a slower box takes fewer chunks and the tail does not stall on it. Duplicates are ignored. It coexists with `--endpoint` as a flag, but the two are **refused together** (exit 2) | the single resolved endpoint |
-| `--parallel N` | concurrent in-flight calls **per endpoint** (`--endpoints A B --parallel 4` allows 8 calls). At least 1 | 1 (sequential). `schema.DEFAULT_EXTRACT_PARALLEL` (6) is declared but is not the CLI default |
+| `--parallel N` | concurrent in-flight calls **per endpoint** (`--endpoints A B --parallel 4` allows 8 calls). At least 1 | `schema.DEFAULT_EXTRACT_PARALLEL` (6), GM ruling 2026-10-07. Unlike `extract_facts` (default 1), because the Sparks serve several sequences at once |
 | `--chunk-chars N` | chunk size limit (characters) | `summary_native.extract.chunk_chars`, else `schema.DEFAULT_CHUNK_CHARS` |
 | `--max-tokens N` | per call | `schema.DEFAULT_MAX_TOKENS` |
 | `--dump-only` | write prompts, chunks and the manifest; no model call | off |

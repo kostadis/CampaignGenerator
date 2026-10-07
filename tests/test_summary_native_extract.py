@@ -296,7 +296,7 @@ def test_every_chunk_runs_once_across_two_endpoints_and_the_record_names_the_end
     assert {a["endpoint"] for a in fm.client_args} == {EP_A, EP_B}
     (run,) = [p for p in (range_dir(camp) / schema.STATE_DIR / "runs").iterdir() if p.is_dir()]
     rec = json.loads((run / "record.json").read_text())
-    assert rec["endpoints"] == ["spark:8001", "spark2:8001"] and rec["parallel"] == 1
+    assert rec["endpoints"] == ["spark:8001", "spark2:8001"] and rec["parallel"] == schema.DEFAULT_EXTRACT_PARALLEL
     assert [c["chapters"] for c in rec["chunks"]] == RANGES
     assert all(c["endpoint"] in ("spark:8001", "spark2:8001") for c in rec["chunks"])
     assert "@spark" in out

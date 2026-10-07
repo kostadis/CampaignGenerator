@@ -81,8 +81,8 @@ def build_parser() -> argparse.ArgumentParser:
                            help="Multiple OpenAI-compatible endpoints sharing one queue of chunks "
                                 "(one worker per endpoint, work-stealing). --backend dgx only; "
                                 "all must serve --model, checked before any call.")
-            p.add_argument("--parallel", type=_positive_int, default=1, metavar="N",
-                           help="Concurrent in-flight chunk requests per endpoint (default 1 = sequential).")
+            p.add_argument("--parallel", type=_positive_int, default=schema.DEFAULT_EXTRACT_PARALLEL, metavar="N",
+                           help="Concurrent in-flight chunk requests per endpoint (default %(default)s; 1 = sequential).")
         if name.startswith("npc-") or name == "synth":
             p.add_argument("--npc-root", default=None,
                            help="NPC output root (default: npc_dossiers.yaml npc_root, else "

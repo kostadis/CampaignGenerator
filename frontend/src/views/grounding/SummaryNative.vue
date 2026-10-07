@@ -441,7 +441,7 @@ onMounted(async () => {
           <div class="field">
             <label class="field-label">Workers per endpoint</label>
             <input type="number" min="1" class="field-input" v-model.number="extractParallel" />
-            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 1.</span>
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 6.</span>
           </div>
         </div>
         <div class="field">
@@ -530,7 +530,7 @@ onMounted(async () => {
           <div class="field">
             <label class="field-label">Workers per endpoint</label>
             <input type="number" min="1" class="field-input" v-model.number="auditParallel" />
-            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 1.</span>
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 6.</span>
           </div>
         </div>
         <div class="field">
