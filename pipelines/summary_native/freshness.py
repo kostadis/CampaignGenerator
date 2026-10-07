@@ -99,24 +99,27 @@ def notes_manifest_facts(range_dir: Path, registry_path: Path | None, players_pa
     }
 
 
-def check_notes_fresh(range_dir: Path, registry_path: Path | None, players_path: Path | None) -> str | None:
+def check_notes_fresh(
+    range_dir: Path, registry_path: Path | None, players_path: Path | None, *, extract_cmd: str = "summary_native extract"
+) -> str | None:
     """A refusal message when the checked notes are missing or stale, else ``None``.
 
     Stale means the corpus manifest, the entity registry or ``players.yaml`` differs from what
-    ``extract`` recorded. The message names the command to re-run.
+    ``extract`` recorded. The message names the command to re-run; ``extract_cmd`` lets the caller
+    spell it with the range (``summary_native extract --since 2 --until 70``).
     """
     mp = notes_dir(range_dir) / NOTES_MANIFEST
     if not mp.is_file():
-        return f"no checked notes for this range; run {EXTRACT_CMD}"
+        return f"no checked notes for this range; run `{extract_cmd}`"
     try:
         m = json.loads(mp.read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        return f"state/notes/manifest.json is unreadable; run {EXTRACT_CMD} --force"
+        return f"state/notes/manifest.json is unreadable; run `{extract_cmd} --force`"
     if not isinstance(m, dict) or m.get("kind") != "state_notes":
-        return f"state/notes/manifest.json is not a state-notes manifest; run {EXTRACT_CMD} --force"
+        return f"state/notes/manifest.json is not a state-notes manifest; run `{extract_cmd} --force`"
     for k, v in notes_manifest_facts(range_dir, registry_path, players_path).items():
         if m.get(k) != v:
-            return f"checked notes are stale ({k.removesuffix('_sha256').replace('_', ' ')} changed); run {EXTRACT_CMD}"
+            return f"checked notes are stale ({k.removesuffix('_sha256').replace('_', ' ')} changed); run `{extract_cmd}`"
     return None
 
 

@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -20,7 +21,7 @@ import yaml
 from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import context, corpus, schema, select, validate
+from pipelines.summary_native import context, corpus, freshness, notes, npc_check, schema, select, state_sections, validate
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
@@ -146,6 +147,8 @@ def run_synth(
     recurring_min: int,
     parts: int,
     registry_path: Path | None = None,
+    summaries_dir: Path | None = None,
+    players_path: Path | None = None,
     now=None,
 ) -> int:
     now = now or _utcnow
@@ -154,13 +157,24 @@ def run_synth(
         return _refuse(f"synth {doc}: not implemented yet (available: {', '.join(schema.SYNTH_DOCS)})")
     if args.audit and doc != "campaign_state":
         return _refuse(f"--audit applies to campaign_state only, not {doc}")
-    for flag, owners in (("world_state", ("campaign_state", "party", "planning")),
-                         ("campaign_state", ("party", "planning"))):
+    if doc in schema.STATE_DOCS:
+        # world_state and campaign_state build from the checked notes; the one-shot path remains for
+        # party and planning (FR-029). The retired flags are refused, never silently ignored.
+        if args.parts:
+            return _refuse(schema.STATE_PARTS_REFUSAL.format(doc=doc))
+        if args.audit:
+            return _refuse(schema.STATE_AUDIT_REFUSAL)
+    for flag, owners in (("world_state", ("party", "planning")), ("campaign_state", ("party", "planning"))):
         if getattr(args, flag, None) and doc not in owners:
             return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}")
     for flag, owner in (("party_config", "party"), ("planning_config", "planning")):
         if getattr(args, flag, None) and doc != owner:
             return _refuse(f"--{flag.replace('_', '-')} applies to {owner} only, not {doc}")
+    if doc in schema.STATE_DOCS:
+        return run_state_synth(
+            args, root=root, range_dir=range_dir, report=report, summaries_dir=summaries_dir,
+            registry_path=registry_path, players_path=players_path, track_files=audit_default, now=now,
+        )
 
     if report.blocking_count:
         # Same outcome as validate/build: the summaries need fixing, not the flags.
@@ -355,6 +369,244 @@ def run_synth(
         f"| record: {record_ref} | corpus manifest sha256: {manifest_sha} -->\n"
     )
     atomic_write_text(draft_path, header + joined)
+    (drafts / f"{doc}.incomplete.md").unlink(missing_ok=True)
+    print(f"Wrote draft: {draft_path}")
+    return 0
+
+
+# ── world_state and campaign_state from checked notes (spec 033 T019) ───────
+
+STATE_SYSTEM = "state.prose.system.md"  # TODO(T027): world_state moves to state.prose_world.system.md with budgets
+_TIMELINE_HEADING = "## Canon Events Timeline"
+
+
+def _slug(heading: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", heading[3:].lower()).strip("_")
+
+
+def _prose_prompt(doc: str, heading: str, brief: str, routed: list[str], extra: str, last_chunk) -> str:
+    """The user prompt of one prose call: its routed notes, any code-built context, and (for the
+    current state) the last chunk's summaries."""
+    return (
+        f"DOCUMENT: {doc}\nSECTION: {heading}\nBRIEF: {brief}\n\n"
+        f"VERIFIED NOTES ({len(routed)} bullets, chapter order, every one already checked by code):\n\n"
+        + ("\n".join(routed) if routed else "(none)")
+        + ("\n\n" + extra if extra else "")
+        + (
+            f"\n\nEVIDENCE OF THE LAST CHUNK ONLY (chapters {last_chunk[0].number:03d}-{last_chunk[-1].number:03d}), "
+            "for the current state:\n" + "".join(notes.chapter_block(c) for c in last_chunk)
+            if last_chunk else ""
+        )
+        + f"\n\nOUTLINE: write exactly this one `##` heading and its body, nothing else at that level:\n\n{heading}\n"
+    )
+
+
+def _body_of(out: str, heading: str) -> str | None:
+    """The body the model wrote under ``heading``, or ``None`` when it wrote no such heading."""
+    secs = npc_check.parse_sections(out)
+    if heading not in secs:
+        return None
+    return npc_check.section_text(secs, heading)
+
+
+def run_state_synth(
+    args,
+    *,
+    root: Path,
+    range_dir: Path,
+    report: validate.ValidationReport,
+    summaries_dir: Path | None,
+    registry_path: Path | None,
+    players_path: Path | None,
+    track_files: list[str],
+    now=None,
+) -> int:
+    """Build ``world_state`` or ``campaign_state`` from the checked notes ``extract`` wrote.
+
+    Code builds the timeline, the completed list, the NPC status table and the audit section; a
+    model writes each remaining section from only the notes code routed to it. Output goes to
+    ``state/drafts/``; no live document is touched.
+    """
+    now = now or _utcnow
+    doc = args.doc
+    if report.blocking_count:
+        print(report.to_markdown(), end="")
+        print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
+        return EXIT_BLOCKING
+    try:
+        manifest = corpus.load_manifest(range_dir, require_complete=True)
+    except corpus.CorpusError as e:
+        return _refuse(str(e))
+    stale = check_fresh(report, range_dir, root, manifest, registry_path)
+    if stale:
+        return _refuse(stale)
+    since, until = int(manifest["range"]["since"]), int(manifest["range"]["until"])
+    extract_cmd = f"summary_native extract --since {since} --until {until}"
+    problem = freshness.check_notes_fresh(range_dir, registry_path, players_path, extract_cmd=extract_cmd)
+    if problem:
+        return _refuse(problem)
+    try:
+        notes_manifest, results = notes.load_checked(range_dir)
+    except notes.NotesIncomplete as e:
+        return _refuse(f"{e}; run `{extract_cmd}`")
+
+    track_paths: list[Path] = []
+    if doc == "campaign_state":
+        for value in track_files:
+            p = Path(value).expanduser()
+            track_paths.append(p if p.is_absolute() else root / p)
+        problem = freshness.check_audit_fresh(range_dir, track_paths)
+        if problem:
+            return _refuse(problem)
+    try:
+        forms, pcs, ambiguous = state_sections.load_identity(registry_path, players_path)
+    except (ValueError, OSError) as e:
+        return _refuse(f"cannot read the entity registry or players.yaml: {e}")
+
+    state_dir = Path(range_dir) / schema.STATE_DIR
+    drafts = schema.draft_dir(range_dir, doc)
+    draft_path = drafts / f"{doc}.draft.md"
+    if draft_path.exists() and not args.force and not args.dump_only:
+        return _refuse(f"{draft_path} exists; pass --force to overwrite it")
+
+    # ── code-owned sections ──
+    table, status_report = state_sections.npc_status_table(results, forms, pcs, ambiguous)
+    threads = notes.thread_ledger(results)
+    code_body: dict[str, str] = {}
+    if doc == "world_state":
+        # TODO(T026): the timeline moves to canon_events_timeline.md and this section points at it.
+        code_body[_TIMELINE_HEADING] = state_sections.timeline_md(results)
+    else:
+        code_body["## Completed Encounters & Quests"] = state_sections.completed_md(results)
+        code_body["## NPC Current States"] = table
+        code_body["## Audit: Tracking Claims"] = state_sections.audit_md(range_dir)
+
+    # ── prose prompts ──
+    system = (context.PROMPT_DIR / STATE_SYSTEM).read_text(encoding="utf-8")
+    last_numbers = set(notes_manifest["chunks"][-1]["numbers"]) if notes_manifest.get("chunks") else set()
+    last_chunk = []
+    if last_numbers and summaries_dir is not None:
+        last_chunk = [c for c in notes.load_chapters(Path(summaries_dir), min(last_numbers), max(last_numbers))
+                      if c.number in last_numbers]
+    jobs = []
+    for heading, route, attach in state_sections.PROSE_SECTIONS[doc]:
+        routed = state_sections.route_notes(route, results)
+        extra = ""
+        if heading == "## Key NPCs":
+            extra = "CODE-BUILT NPC STATUS TABLE (latest cited row per name; context, do not copy):\n\n" + table
+        elif heading == "## Active Threats and Open Pressures":
+            extra = "THREAD LEDGER (OPENED / ADVANCED / RESOLVED / ABANDONED):\n\n" + "\n".join(threads)
+        user = _prose_prompt(doc, heading, state_sections.BRIEFS[heading], routed, extra, last_chunk if attach else None)
+        jobs.append({"heading": heading, "route": route, "notes": len(routed), "user": user})
+
+    started = now()
+    run_dir = _new_run_dir(state_dir / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
+    run_id = run_dir.name
+    atomic_write_text(run_dir / f"{doc}.system.md", system)
+    for j in jobs:
+        atomic_write_text(run_dir / f"{doc}.{_slug(j['heading'])}.user.md", j["user"])
+    backend = resolve_cli_model(args, legacy_default=None).backend
+    record = {
+        "step": "synth",
+        "doc": doc,
+        "run_id": run_id,
+        "range": {"since": since, "until": until},
+        "backend": backend,
+        "model": args.model,
+        "effort": getattr(args, "claude_code_effort", None),
+        "max_tokens": args.max_tokens,
+        "inputs": {
+            "corpus_manifest_sha256": corpus.sha256_file(range_dir / "manifest.json"),
+            "notes_manifest_sha256": freshness.sha_file(freshness.notes_dir(range_dir) / freshness.NOTES_MANIFEST),
+            "registry_sha256": freshness.sha_file(registry_path),
+            "players_sha256": freshness.sha_file(players_path),
+            "track_files": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in track_paths if p.is_file()],
+        },
+        "calls": [],
+        "check": "not run",
+        "started": started.isoformat(timespec="seconds"),
+        "finished": None,
+    }
+
+    def save_record() -> None:
+        atomic_write_text(run_dir / "record.json", json.dumps(record, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
+
+    if args.dump_only:
+        record["finished"] = now().isoformat(timespec="seconds")
+        save_record()
+        print(f"[--dump-only: prompts written to {run_dir}; no model call]")
+        return 0
+
+    def fail(message: str) -> None:
+        record["check"] = {"complete": False, "error": message}
+        record["finished"] = now().isoformat(timespec="seconds")
+        save_record()
+
+    try:
+        client = client_from_args(args)
+    except SystemExit as e:  # client_from_args fails fast with SystemExit(message)
+        msg = str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})"
+        fail(msg)
+        return _refuse(msg)
+    except (ValueError, RuntimeError, ImportError) as e:
+        fail(str(e))
+        return _refuse(str(e))
+    bodies: dict[str, str | None] = {}
+    for j in jobs:
+        t0 = time.monotonic()
+        try:
+            out = render_part(client, system, j["user"], args.model, args.max_tokens)
+        except Exception as e:
+            fail(f"{j['heading']}: {type(e).__name__}: {e}")
+            print(
+                f"Error: model call failed in section {j['heading']}: {type(e).__name__}: {e} "
+                f"(see {schema.display_path(run_dir / 'record.json', root)})",
+                file=sys.stderr,
+            )
+            return EXIT_MODEL_FAILED
+        secs = time.monotonic() - t0
+        atomic_write_text(run_dir / f"{doc}.{_slug(j['heading'])}.out.md", out)
+        bodies[j["heading"]] = _body_of(out, j["heading"])
+        record["calls"].append({
+            "heading": j["heading"], "route": j["route"], "notes": j["notes"],
+            "secs": round(secs, 1), "prompt_chars": len(j["user"]), "out_chars": len(out),
+        })
+        print(f"{j['heading'][3:]}: {j['notes']} notes, {secs:.0f}s", flush=True)
+
+    headings = load_outline(doc)
+    parts: list[str] = []
+    for h in headings:
+        body = code_body[h] if h in code_body else bodies.get(h)
+        if body is not None:
+            parts.append(f"{h}\n{body}\n")
+    joined = "\n".join(parts)
+    problems = check_outline(joined, headings)
+    record["check"] = {"complete": not problems, "problems": problems}
+    record["finished"] = now().isoformat(timespec="seconds")
+    save_record()
+
+    drafts.mkdir(parents=True, exist_ok=True)
+    atomic_write_text(drafts / "npc_status_report.md", status_report)
+    record_ref = f"runs/{run_id}/record.json"
+    if problems:
+        target = drafts / f"{doc}.incomplete.md"
+        atomic_write_text(
+            target,
+            f"<!-- summary_native INCOMPLETE | doc: {doc} | range: ch{since:03d}-{until:03d} "
+            f"| record: {record_ref} | run: {run_id} -->\n" + joined,
+        )
+        print(f"Incomplete: {target}", file=sys.stderr)
+        for p in problems:
+            print(f"  - {p}", file=sys.stderr)
+        if draft_path.exists():
+            m = re.search(r"record: runs/([^/\s]+)/record\.json", draft_path.read_text(encoding="utf-8").split("\n", 1)[0])
+            print(f"previous draft kept: {_rel(draft_path, range_dir)} (from run {m.group(1) if m else 'unknown'})", file=sys.stderr)
+        return EXIT_INCOMPLETE
+    atomic_write_text(
+        draft_path,
+        f"<!-- summary_native draft | doc: {doc} | range: ch{since:03d}-{until:03d} "
+        f"| record: {record_ref} | notes manifest sha256: {record['inputs']['notes_manifest_sha256']} -->\n" + joined,
+    )
     (drafts / f"{doc}.incomplete.md").unlink(missing_ok=True)
     print(f"Wrote draft: {draft_path}")
     return 0

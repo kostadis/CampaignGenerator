@@ -219,6 +219,23 @@ DEFAULT_AUDIT_CANDIDATES = 3
 #: Everything 033 writes lives under ``<range_dir>/state/``.
 STATE_DIR = "state"
 TIMELINE_FILE = "canon_events_timeline.md"
+#: The two documents that build from the checked notes (FR-029); party and planning keep the one-shot path.
+STATE_DOCS: tuple[str, ...] = ("world_state", "campaign_state")
+#: Refusals shared by the CLI and the web routes (the routes answer 400 with the same words).
+STATE_PARTS_REFUSAL = (
+    "--parts does not apply to {doc}: it is built with one call per section from the checked notes"
+)
+STATE_AUDIT_REFUSAL = "--audit does not apply to campaign_state: the audit is its own step: summary_native audit"
+#: Shown in the Audit section until ``summary_native audit`` has run for the range.
+AUDIT_NOT_RUN = "Audit not run for this range."
+
+
+def draft_dir(range_dir, doc: str):
+    """Where ``doc``'s draft lives: ``state/drafts`` for the chunked documents, ``drafts`` otherwise."""
+    from pathlib import Path
+
+    base = Path(range_dir)
+    return base / STATE_DIR / "drafts" if doc in STATE_DOCS else base / "drafts"
 
 #: Annotation markers (research R10). Annotations are appended under a line; the line is never changed.
 LATER = "⚠ later:"

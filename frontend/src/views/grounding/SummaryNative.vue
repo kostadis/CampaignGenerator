@@ -16,6 +16,9 @@ const BASE = '/api/grounding/summary-native'
 const SYNTH_ENDPOINT = '/api/grounding/summary-native/run/synth'
 const DOCS = ['world_state', 'campaign_state', 'party', 'planning'] as const
 type Doc = (typeof DOCS)[number]
+// world_state and campaign_state are built from the checked notes (spec 033): Extract first, one prose
+// call per section, no --parts and no --audit. party and planning keep the one-shot path.
+const CHUNKED: readonly Doc[] = ['world_state', 'campaign_state']
 
 const config = useConfigStore()
 
@@ -63,6 +66,11 @@ const dumpOnly = ref(false)
 const forceBuild = ref(false)
 // Per-run, never persisted: replacing a reviewed draft must be a deliberate act each time.
 const forceSynth = ref(false)
+// Extract (per run, never persisted): a blank chunk size uses grounding.yaml summary_native.extract.chunk_chars.
+const extractChunkChars = ref<Num>('')
+const extractMaxTokens = ref<Num>('')
+const extractDumpOnly = ref(false)
+const forceExtract = ref(false)
 
 const lines = (t: string) => t.split('\n').map(l => l.trim()).filter(Boolean)
 const num = (n: Num) => (typeof n === 'number' ? n : undefined)
@@ -125,22 +133,39 @@ const validateParams = computed(() => ({
 const buildParams = computed(() => ({
   ...baseParams.value, dup_threshold: num(dupThreshold.value), force: forceBuild.value,
 }))
-const synthParams = computed(() => ({
+const isChunked = computed(() => CHUNKED.includes(doc.value))
+const extractParams = computed(() => ({
   ...baseParams.value,
-  world_state: worldStatePath.value.trim(),
-  campaign_state: campaignStatePath.value.trim(),
-  party_config: doc.value === 'party' ? partyConfigPath.value.trim() : '',
-  planning_config: doc.value === 'planning' ? planningConfigPath.value.trim() : '',
-  audit: lines(auditText.value),
-  name: lines(namesText.value),
-  recent_chapters: num(recentChapters.value),
-  recurring_min: num(recurringMin.value),
-  parts: num(parts.value),
-  max_tokens: num(maxTokens.value),
-  dump_only: dumpOnly.value,
-  force: forceSynth.value,
-  model: config.model || undefined,
+  chunk_chars: num(extractChunkChars.value),
+  max_tokens: num(extractMaxTokens.value),
+  dump_only: extractDumpOnly.value,
+  force: forceExtract.value,
 }))
+const synthParams = computed(() => isChunked.value
+  ? {
+      // The prose step takes its backend and model from grounding.yaml summary_native.prose, so the
+      // page does not send the app-wide model for these two documents.
+      ...baseParams.value,
+      max_tokens: num(maxTokens.value),
+      dump_only: dumpOnly.value,
+      force: forceSynth.value,
+    }
+  : {
+      ...baseParams.value,
+      world_state: worldStatePath.value.trim(),
+      campaign_state: campaignStatePath.value.trim(),
+      party_config: doc.value === 'party' ? partyConfigPath.value.trim() : '',
+      planning_config: doc.value === 'planning' ? planningConfigPath.value.trim() : '',
+      audit: lines(auditText.value),
+      name: lines(namesText.value),
+      recent_chapters: num(recentChapters.value),
+      recurring_min: num(recurringMin.value),
+      parts: num(parts.value),
+      max_tokens: num(maxTokens.value),
+      dump_only: dumpOnly.value,
+      force: forceSynth.value,
+      model: config.model || undefined,
+    })
 
 // ── Report and drafts ───────────────────────────────────────────────────────
 interface Finding {
@@ -154,12 +179,21 @@ interface Report {
   findings: Finding[]
   existing_corpus?: { state: string; [k: string]: unknown }
 }
-interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete'; bytes: number }
+interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete' | 'report'; bytes: number }
+interface ExtractChunk { index: number; chapters: string; status: string; kept: number; dropped: number; outlier: boolean }
+interface ExtractState {
+  present: boolean; complete: boolean; stale: boolean; stale_reason: string | null
+  backend?: string; model?: string; chunk_chars?: number; absent_chapters?: number[]
+  chunks: ExtractChunk[]
+  totals: { chunks: number; checked: number; kept: number; dropped: number }
+  outliers: string[]; drops_file: string | null
+}
 
 const report = ref<Report | null>(null)
 const reportNote = ref('')
 const drafts = ref<DraftRow[]>([])
 const draftsNote = ref('')
+const extractState = ref<ExtractState | null>(null)
 
 const duplicates = computed(() => report.value?.findings.filter(f => f.code === 'possible-duplicate') ?? [])
 const otherFindings = computed(() => report.value?.findings.filter(f => f.code !== 'possible-duplicate') ?? [])
@@ -167,8 +201,14 @@ const otherFindings = computed(() => report.value?.findings.filter(f => f.code !
 async function refreshOutputs() {
   report.value = null; reportNote.value = ''
   drafts.value = []; draftsNote.value = ''
+  extractState.value = null
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
+  try {
+    extractState.value = (await apiFetch<{ extract: ExtractState }>(`${BASE}/state?${q}`)).extract
+  } catch {
+    extractState.value = null // the Extract panel simply stays empty; the other outputs still load
+  }
   try {
     report.value = await apiFetch<Report>(`${BASE}/report?${q}`)
   } catch (e) {
@@ -188,6 +228,11 @@ async function refreshOutputs() {
 
 function onSynthDone() {
   forceSynth.value = false
+  refreshOutputs()
+}
+
+function onExtractDone() {
+  forceExtract.value = false
   refreshOutputs()
 }
 
@@ -267,46 +312,114 @@ onMounted(async () => {
           label="Build" @done="refreshOutputs" />
       </div>
 
-      <!-- 3. Synth -->
+      <!-- 3. Extract -->
       <div class="form-section">
-        <h3 class="step">3. Synthesize a draft</h3>
+        <h3 class="step">3. Extract notes</h3>
+        <span class="field-help">
+          Reads the full summaries a few chapters at a time and writes notes, which code then checks:
+          every citation must resolve inside its chunk, every quotation must be verbatim, every note must carry its tag.
+          world_state and campaign_state are built from these notes. Notes that fail are dropped and listed in drops.md.
+        </span>
+        <div class="num-grid">
+          <div class="field">
+            <label class="field-label">Chunk size (characters)</label>
+            <input type="number" min="1" class="field-input" v-model.number="extractChunkChars" />
+            <span class="field-help">Whole chapters per call, up to this size. Blank uses the stored default.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Max tokens</label>
+            <input type="number" min="1" class="field-input" v-model.number="extractMaxTokens" />
+            <span class="field-help">Per call. Blank uses the CLI default.</span>
+          </div>
+        </div>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="extractDumpOnly" /> Dump only &mdash; write the prompts and the manifest, make no model call
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="forceExtract" /> Re-extract every chunk (--force)
+        </label>
+        <RunPanel :endpoint="`${BASE}/run/extract`" :params="extractParams" :disabled="!ready"
+          label="Extract notes" @done="onExtractDone" />
+        <div v-if="extractState && extractState.present" class="panel extract-state">
+          <div class="counts">
+            <span :class="extractState.complete ? 'ok' : 'bad'">
+              {{ extractState.complete ? 'complete' : 'incomplete' }}
+              ({{ extractState.totals.checked }} of {{ extractState.totals.chunks }} chunks checked)
+            </span>
+            <span>{{ extractState.totals.kept }} notes kept</span>
+            <span>{{ extractState.totals.dropped }} dropped</span>
+            <span v-if="extractState.model">{{ extractState.backend }} / {{ extractState.model }}</span>
+            <span v-if="extractState.absent_chapters?.length">absent chapters: {{ extractState.absent_chapters.join(', ') }}</span>
+          </div>
+          <p v-if="extractState.stale" class="field-error">
+            The notes are stale: {{ extractState.stale_reason }}
+          </p>
+          <p v-if="!extractState.complete" class="field-error">
+            Some chunks have no checked notes. Run Extract again: only the missing chunks are extracted.
+          </p>
+          <table class="drafts chunks">
+            <thead><tr><th>Chunk</th><th>Chapters</th><th>Status</th><th>Kept</th><th>Dropped</th><th></th></tr></thead>
+            <tbody>
+              <tr v-for="c in extractState.chunks" :key="c.index" :class="{ outlier: c.outlier }">
+                <td>{{ c.index }}</td>
+                <td>{{ c.chapters }}</td>
+                <td :class="c.status === 'checked' ? 'ok' : 'bad'">{{ c.status }}</td>
+                <td>{{ c.kept }}</td>
+                <td>{{ c.dropped }}</td>
+                <td><span v-if="c.outlier" class="bad">outlier: possible runaway call</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <span v-if="extractState.drops_file" class="field-help">
+            Every dropped note and its reason: <code>{{ extractState.drops_file }}</code>
+          </span>
+        </div>
+      </div>
+
+      <!-- 4. Synth -->
+      <div class="form-section">
+        <h3 class="step">4. Synthesize a draft</h3>
         <div class="field">
           <label class="field-label">Document</label>
           <select class="field-input narrow" v-model="doc">
             <option v-for="d in DOCS" :key="d" :value="d">{{ d }}</option>
           </select>
         </div>
-        <PathField v-model="worldStatePath" label="World-state draft (context)" resolve-base="campaign"
+        <span v-if="isChunked" class="field-help">
+          Built from the checked notes: run Extract first. Code builds the timeline, completed list and NPC status table;
+          the model writes each remaining section from the notes routed to it. The tracking audit is its own step.
+        </span>
+        <PathField v-if="!isChunked" v-model="worldStatePath" label="World-state draft (context)" resolve-base="campaign"
           help="A GM-reviewed world_state draft to use as upstream context. Optional." />
-        <PathField v-model="campaignStatePath" label="Campaign-state draft (context)" resolve-base="campaign"
+        <PathField v-if="!isChunked" v-model="campaignStatePath" label="Campaign-state draft (context)" resolve-base="campaign"
           help="A GM-reviewed campaign_state draft to use as upstream context. Optional." />
         <PathField v-if="doc === 'party'" v-model="partyConfigPath" label="Party config" resolve-base="campaign"
           help="The party roster (sheets and backstories). Blank uses config/party.yaml." />
         <PathField v-if="doc === 'planning'" v-model="planningConfigPath" label="Planning config" resolve-base="campaign"
           help="Tracked NPCs, factions and arc scores. Blank uses config/planning.yaml; none means no arc scores." />
-        <div class="field">
-          <label class="field-label">Audit files (campaign_state)</label>
+        <div v-if="!isChunked" class="field">
+          <label class="field-label">Audit files</label>
           <textarea class="field-textarea" v-model="auditText" rows="3"
             placeholder="One path per line. Blank uses the Campaign State page's tracking lists." />
           <span class="field-help">Tracking, planning or module files treated as questions to answer from the summaries.</span>
         </div>
-        <div class="field">
+        <div v-if="!isChunked" class="field">
           <label class="field-label">Named subjects</label>
           <textarea class="field-textarea" v-model="namesText" rows="2"
             placeholder="One subject per line &mdash; force-includes these dossiers" />
         </div>
         <div class="num-grid">
-          <div class="field">
+          <div v-if="!isChunked" class="field">
             <label class="field-label">Recent chapters</label>
             <input type="number" min="0" class="field-input" v-model.number="recentChapters" />
             <span class="field-help">Counted back from the range end; 0 = all.</span>
           </div>
-          <div class="field">
+          <div v-if="!isChunked" class="field">
             <label class="field-label">Recurring minimum</label>
             <input type="number" min="0" class="field-input" v-model.number="recurringMin" />
             <span class="field-help">Observations that make an entity recurring.</span>
           </div>
-          <div class="field">
+          <div v-if="!isChunked" class="field">
             <label class="field-label">Parts</label>
             <input type="number" min="0" class="field-input" v-model.number="parts" />
             <span class="field-help">Split the outline into N calls; 0 = one call.</span>
@@ -324,13 +437,13 @@ onMounted(async () => {
           <input type="checkbox" v-model="forceSynth" /> Replace existing reviewed draft (--force)
         </label>
         <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
-          :label="`Synthesize ${doc}`" selection-service="grounding" selection-doc="summary_native"
-          :selection-can-override="true" @done="onSynthDone" />
+          :label="`Synthesize ${doc}`" :selection-service="isChunked ? undefined : 'grounding'"
+          selection-doc="summary_native" :selection-can-override="true" @done="onSynthDone" />
       </div>
 
       <!-- 4. Compare -->
       <div class="form-section">
-        <h3 class="step">4. Compare with the live document</h3>
+        <h3 class="step">5. Compare with the live document</h3>
         <span class="field-help">Diffs the {{ doc }} draft against docs/{{ doc }}.md. Read-only.</span>
         <RunPanel :endpoint="`${BASE}/run/compare/${doc}`" :params="baseParams" :disabled="!ready"
           :label="`Compare ${doc}`" />
@@ -380,14 +493,16 @@ onMounted(async () => {
           <tbody>
             <tr v-for="d in drafts" :key="d.path">
               <td>{{ d.doc }}</td>
-              <td :class="d.status === 'incomplete' ? 'bad' : 'ok'">{{ d.status }}</td>
+              <td :class="d.status === 'incomplete' ? 'bad' : d.status === 'draft' ? 'ok' : ''">{{ d.status }}</td>
               <td>{{ d.bytes }} B</td>
               <td><code>{{ d.path }}</code></td>
             </tr>
           </tbody>
         </table>
         <span v-if="drafts.length" class="field-help">
-          An incomplete draft failed its outline check and is not promotable. Review a draft in your editor; promotion is manual.
+          An incomplete draft failed its outline check and is not promotable. A report is read-only evidence
+          (drops.md lists every dropped note; npc_status_report.md the merged, unresolved and player-character names).
+          Review a draft in your editor; promotion is manual.
         </span>
       </div>
     </div>
@@ -437,4 +552,6 @@ onMounted(async () => {
 .drafts { border-collapse: collapse; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 .drafts th, .drafts td { text-align: left; padding: 3px 14px 3px 0; }
 .drafts th { font-weight: 600; color: var(--text); }
+.extract-state { margin-top: 10px; }
+.chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
 </style>

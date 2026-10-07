@@ -1,4 +1,4 @@
-"""summary_native CLI: validate | build | synth | compare | npc-link | npc-draft | npc-compose | npc-verify.
+"""summary_native CLI: validate | build | extract | synth | compare | npc-link | npc-draft | npc-compose | npc-verify | npc-publish.
 
 Exit codes (contracts/cli.md): 0 ok, 1 blocking validation problems, 2 refusal,
 3 incomplete synthesis, 4 model call failed, 5 npc-verify found a failing draft.
@@ -21,12 +21,12 @@ from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
 from campaignlib.api.client import resolve_cli_model
 from pipelines.summary_native import compare as compare_mod
-from pipelines.summary_native import corpus, duplicates, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
+from pipelines.summary_native import corpus, duplicates, extract, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
 from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
-SUBCOMMANDS = ("validate", "build", "synth", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish")
+SUBCOMMANDS = ("validate", "build", "extract", "synth", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -49,6 +49,20 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--config", default=None)
         if name == "build":
             p.add_argument("--force", action="store_true", help="rewrite an existing corpus")
+        if name == "extract":
+            p.add_argument("--chunk-chars", type=int, default=None,
+                           help="chunk size limit in characters "
+                                f"(default: grounding.yaml summary_native.extract.chunk_chars, else {schema.DEFAULT_CHUNK_CHARS})")
+            p.add_argument("--max-tokens", type=int, default=schema.DEFAULT_MAX_TOKENS,
+                           help=f"max_tokens per call (default {schema.DEFAULT_MAX_TOKENS})")
+            p.add_argument("--dump-only", action="store_true",
+                           help="write prompts, chunks and the manifest; make no model call")
+            p.add_argument("--force", action="store_true", help="re-extract every chunk, ignoring cache keys")
+            p.add_argument("--model", default=None,
+                           help="model id (default: grounding.yaml summary_native.extract.model, "
+                                f"else {schema.DEFAULT_DRAFT_MODEL})")
+            # no parser default: precedence is flag > grounding.yaml summary_native.extract.backend > schema
+            add_backend_args(p, default_backend=None)
         if name.startswith("npc-"):
             p.add_argument("--npc-root", default=None,
                            help="NPC output root (default: npc_dossiers.yaml npc_root, else "
@@ -99,21 +113,26 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--planning-config", default=None, metavar="FILE",
                            help="tracked NPCs/factions and arc scores (planning; default <config>/planning.yaml)")
             p.add_argument("--audit", nargs="+", default=None, metavar="FILE",
-                           help="tracking/planning/module files treated as questions "
-                                "(campaign_state; default grounding.yaml campaign_state.track_files)")
+                           help="retired for campaign_state (the audit is `summary_native audit`); "
+                                "refused for every document")
             p.add_argument("--recent-chapters", type=int, default=None,
                            help=f"chapters counted back from the range end (default {schema.DEFAULT_RECENT_CHAPTERS}; 0 = all)")
             p.add_argument("--recurring-min", type=int, default=None,
                            help=f"observations that make an entity recurring (default {schema.DEFAULT_RECURRING_MIN})")
             p.add_argument("--name", nargs="+", default=None, metavar="SUBJECT", help="force-include dossiers by subject")
             p.add_argument("--parts", type=int, default=None,
-                           help=f"split the outline into N calls (default {schema.DEFAULT_PARTS} = one call)")
+                           help=f"split the outline into N calls (party and planning; default {schema.DEFAULT_PARTS} = one call; "
+                                "refused for world_state and campaign_state, which write one call per section)")
             p.add_argument("--dump-only", action="store_true", help="write prompts and the record; make no model call")
             p.add_argument("--force", action="store_true", help="overwrite an existing draft")
-            p.add_argument("--model", default=None, help=f"model id (default: {DEFAULT_MODEL})")
+            p.add_argument("--model", default=None,
+                           help=f"model id (default: {DEFAULT_MODEL}; world_state and campaign_state: "
+                                f"grounding.yaml summary_native.prose.model, else {schema.DEFAULT_PROSE_MODEL})")
             p.add_argument("--max-tokens", type=int, default=schema.DEFAULT_MAX_TOKENS,
                            help=f"max_tokens per call (default {schema.DEFAULT_MAX_TOKENS})")
-            add_backend_args(p)
+            # no parser default: world_state/campaign_state resolve flag > grounding.yaml summary_native.prose > schema.
+            # None behaves as "anthropic" everywhere else (client_from_args, resolve_cli_model), so party and planning are unchanged.
+            add_backend_args(p, default_backend=None)
         if name == "compare":
             p.add_argument("--live", required=True, metavar="FILE", help="the live grounding document to compare against")
     return parser
@@ -210,8 +229,10 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path, canon_path, grouper) -> int:
+    if args.command == "extract":
+        return _extract(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path)
     if args.command == "synth":
-        return _synth(args, root, config_path, cfg, report, range_dir, registry_path)
+        return _synth(args, root, config_path, cfg, report, range_dir, registry_path, summaries_dir)
     if args.command == "compare":
         return _compare(args, root, range_dir)
     if args.command in ("npc-draft", "npc-compose", "npc-verify", "npc-publish"):
@@ -501,8 +522,39 @@ def _npc_compose(args, root: Path, report, npc_range_dir: Path, registry_npcs) -
     return 0
 
 
-def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, registry_path) -> int:
+def _players_path(config_path: Path) -> Path:
+    return config_path.expanduser().resolve().parent / PLAYERS_CONFIG_FILENAME
+
+
+def _extract(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, summaries_dir: Path,
+             registry_path) -> int:
+    """extract: the map step. flag > grounding.yaml summary_native.extract > schema (contracts/cli.md)."""
     try:
+        settings = resolve.resolve_extract(cfg, backend=args.backend, model=args.model, chunk_chars=args.chunk_chars)
+        args.backend, args.model = settings.backend, settings.model
+        args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
+    except ValueError as e:  # ConfigRefusal is a ValueError
+        return _err(str(e))
+    return extract.run_extract(
+        args,
+        root=root,
+        range_dir=range_dir,
+        report=report,
+        summaries_dir=summaries_dir,
+        registry_path=registry_path,
+        players_path=_players_path(config_path),
+        settings=settings,
+    )
+
+
+def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, registry_path,
+           summaries_dir: Path) -> int:
+    try:
+        if args.doc in schema.STATE_DOCS:
+            # world_state and campaign_state: flag > grounding.yaml summary_native.prose > schema.
+            prose = resolve.resolve_prose(
+                cfg, backend=args.backend, model=args.model, effort=getattr(args, "claude_code_effort", None))
+            args.backend, args.model, args.claude_code_effort = prose.backend, prose.model, prose.effort
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
     except ValueError as e:
         return _err(str(e))
@@ -518,6 +570,8 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         recent_chapters=_pick(args.recent_chapters, cfg, "recent_chapters", schema.DEFAULT_RECENT_CHAPTERS),
         recurring_min=_pick(args.recurring_min, cfg, "recurring_min", schema.DEFAULT_RECURRING_MIN),
         parts=_pick(args.parts, cfg, "parts", schema.DEFAULT_PARTS),
+        summaries_dir=summaries_dir,
+        players_path=_players_path(config_path),
     )
 
 
@@ -526,7 +580,7 @@ def _pick(flag, cfg: dict, key: str, default: int) -> int:
 
 
 def _compare(args, root: Path, range_dir: Path) -> int:
-    draft = range_dir / "drafts" / f"{args.doc}.draft.md"
+    draft = schema.draft_dir(range_dir, args.doc) / f"{args.doc}.draft.md"
     live = _under(root, args.live)
     for label, p in (("draft", draft), ("live", live)):
         if not p.is_file():
@@ -537,7 +591,7 @@ def _compare(args, root: Path, range_dir: Path) -> int:
         draft_name=draft.name,
         live_name=live.name,
     )
-    out = range_dir / "drafts" / f"{args.doc}.vs-live.diff"
+    out = schema.draft_dir(range_dir, args.doc) / f"{args.doc}.vs-live.diff"
     atomic_write_text(out, rep.diff)
     print(rep.to_text(), end="")
     print(f"diff: {out}")

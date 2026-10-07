@@ -25,7 +25,8 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Query, Request
 
-from pipelines.summary_native import schema
+from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
+from pipelines.summary_native import freshness, notes, resolve, schema
 from server.grounding_config_shared import SummaryNativeRun
 from server.platform_config_service import resolve_selection, selection_cli_args
 from server.routers.grounding import (
@@ -164,13 +165,12 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
     run = _run_config(request)
     lo, hi = _require_range(run, since, until)
     range_dir = _range_dir(run, lo, hi)
-    drafts = range_dir / "drafts"
     if not range_dir.is_dir():
         raise HTTPException(status_code=404, detail="no output for this range yet: run Build")
     out = []
     for doc in schema.DOCS:
         for status, suffix in (("draft", "draft"), ("incomplete", "incomplete")):
-            p = drafts / f"{doc}.{suffix}.md"
+            p = schema.draft_dir(range_dir, doc) / f"{doc}.{suffix}.md"
             if p.is_file():
                 out.append({
                     "doc": doc,
@@ -178,7 +178,78 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
                     "status": status,
                     "bytes": p.stat().st_size,
                 })
+    # Reports the chunked build writes beside its notes and drafts (spec 033).
+    for name, p in (
+        ("drops", freshness.notes_dir(range_dir) / "drops.md"),
+        ("npc_status_report", range_dir / schema.STATE_DIR / "drafts" / "npc_status_report.md"),
+    ):
+        if p.is_file():
+            out.append({"doc": name, "path": schema.display_path(p, Path.cwd()), "status": "report", "bytes": p.stat().st_size})
     return out
+
+
+def _read_json(path: Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def _extract_block(request: Request, run: SummaryNativeRun, lo: int, hi: int) -> dict:
+    """The checked notes' state, read from ``state/notes/`` only: no model, no CLI, no summary parsing."""
+    root = Path.cwd()
+    range_dir = _range_dir(run, lo, hi)
+    mp = freshness.notes_dir(range_dir) / freshness.NOTES_MANIFEST
+    m = _read_json(mp)
+    block: dict = {"present": False, "complete": False, "stale": False, "stale_reason": None,
+                   "chunks": [], "totals": {"chunks": 0, "checked": 0, "kept": 0, "dropped": 0},
+                   "outliers": [], "drops_file": None}
+    if not (isinstance(m, dict) and m.get("kind") == "state_notes"):
+        return block
+    chunks = [c for c in m.get("chunks", []) if isinstance(c, dict)]
+    outliers = notes.outliers_of([(c["chapters"], int(c.get("dropped", 0))) for c in chunks])
+    block.update({
+        "present": True,
+        "complete": bool(m.get("complete")),
+        "backend": m.get("backend"),
+        "model": m.get("model"),
+        "chunk_chars": m.get("chunk_chars"),
+        "absent_chapters": m.get("absent_chapters", []),
+        "chunks": [
+            {"index": c["index"], "chapters": c["chapters"], "status": c.get("status"),
+             "kept": int(c.get("kept", 0)), "dropped": int(c.get("dropped", 0)),
+             "outlier": c["chapters"] in outliers}
+            for c in chunks
+        ],
+        "totals": {
+            "chunks": len(chunks),
+            "checked": sum(1 for c in chunks if c.get("status") == "checked"),
+            "kept": sum(int(c.get("kept", 0)) for c in chunks),
+            "dropped": sum(int(c.get("dropped", 0)) for c in chunks),
+        },
+        "outliers": outliers,
+    })
+    drops = freshness.notes_dir(range_dir) / "drops.md"
+    if drops.is_file():
+        block["drops_file"] = schema.display_path(drops, root)
+    # Freshness is the CLI's own check (corpus manifest, registry, players.yaml).
+    try:
+        registry = resolve.resolve_registry_path(root, None, run.model_dump(mode="json"))
+    except resolve.PathRefusal as e:
+        block.update(stale=True, stale_reason=str(e))
+        return block
+    players = _service(request).config_path_base / PLAYERS_CONFIG_FILENAME
+    reason = freshness.check_notes_fresh(range_dir, registry, players)
+    block.update(stale=reason is not None, stale_reason=reason)
+    return block
+
+
+@router.get("/state")
+def get_state(request: Request, since: int | None = None, until: int | None = None):
+    """What is on disk for the range, per step (read-only; files only)."""
+    run = _run_config(request)
+    lo, hi = _require_range(run, since, until)
+    return {"range": f"{lo}-{hi}", "extract": _extract_block(request, run, lo, hi)}
 
 
 # ── Runs (SSE) ──────────────────────────────────────────────────────────────
@@ -241,6 +312,18 @@ async def run_synth(
 ):
     _require_doc(doc)
     run = _run_config(request)
+    chunked = doc in schema.STATE_DOCS
+    if chunked:
+        # world_state and campaign_state write one call per section from the checked notes; the CLI
+        # refuses these flags and so does the route, with the CLI's words.
+        if parts:
+            raise HTTPException(status_code=400, detail=schema.STATE_PARTS_REFUSAL.format(doc=doc))
+        if any(a.strip() for a in (audit or [])):
+            raise HTTPException(
+                status_code=400,
+                detail=schema.STATE_AUDIT_REFUSAL if doc == "campaign_state"
+                else f"--audit applies to campaign_state only, not {doc}",
+            )
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     cmd = _base_cmd("synth", doc, directory, lo, hi)
@@ -266,7 +349,8 @@ async def run_synth(
 
     cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
     cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
-    cmd += ["--parts", str(_pick_num(parts, run.parts))]
+    if not chunked:
+        cmd += ["--parts", str(_pick_num(parts, run.parts))]
     if max_tokens is not None:
         cmd += ["--max-tokens", str(max_tokens)]
     if dump_only:
@@ -274,9 +358,42 @@ async def run_synth(
     if force:
         cmd.append("--force")
 
+    if chunked:
+        # The prose step has its own backend/model block (grounding.yaml summary_native.prose).
+        service, service_name = run.prose, f"{_SERVICE_NAME}.prose"
+    else:
+        service, service_name = _selection_for(request, _SERVICE_NAME), _SERVICE_NAME
     cmd += selection_cli_args(resolve_selection(
-        request, request_model=model,
-        service=_selection_for(request, _SERVICE_NAME), service_name=_SERVICE_NAME,
+        request, request_model=model, service=service, service_name=service_name,
+    ))
+    return _sse_response(cmd)
+
+
+@router.get("/run/extract")
+async def run_extract(
+    request: Request,
+    summaries_dir: str = "",
+    since: int | None = None,
+    until: int | None = None,
+    chunk_chars: int | None = None,
+    max_tokens: int | None = None,
+    dump_only: bool = False,
+    force: bool = False,
+    model: str | None = None,
+):
+    run = _run_config(request)
+    directory = _require_dir(run, summaries_dir)
+    lo, hi = _require_range(run, since, until)
+    cmd = _base_cmd("extract", None, directory, lo, hi)
+    cmd += ["--chunk-chars", str(_pick_num(chunk_chars, run.extract.chunk_chars))]
+    if max_tokens is not None:
+        cmd += ["--max-tokens", str(max_tokens)]
+    if dump_only:
+        cmd.append("--dump-only")
+    if force:
+        cmd.append("--force")
+    cmd += selection_cli_args(resolve_selection(
+        request, request_model=model, service=run.extract, service_name=f"{_SERVICE_NAME}.extract",
     ))
     return _sse_response(cmd)
 

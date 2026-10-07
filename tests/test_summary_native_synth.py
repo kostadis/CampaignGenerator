@@ -27,6 +27,9 @@ def camp(tmp_path, monkeypatch):
     (root / "docs" / "campaign_state.md").write_text("LIVE CAMPAIGN\n")
     monkeypatch.chdir(root)
     assert main(["build", "--summaries-dir", "summaries"]) == 0
+    # The generic synth machinery (flags, runs, records, refusals) is exercised through ``party``,
+    # a one-shot document. world_state and campaign_state build from checked notes (spec 033).
+    write_party(root, trackless=True)
     return root
 
 
@@ -80,8 +83,8 @@ def test_dump_only_writes_prompts_no_call(camp, monkeypatch, fake):
         raise AssertionError("client created")
 
     monkeypatch.setattr(synth, "client_from_args", boom)
-    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    runs = latest_run(camp, "world_state")
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
+    runs = latest_run(camp, "party")
     assert (runs / "part-1.system.md").is_file() and (runs / "part-1.user.md").is_file()
     assert (runs / "selection.json").is_file()
     rec = json.loads((runs / "record.json").read_text())
@@ -94,39 +97,39 @@ test_dump_only_creates_no_client = test_dump_only_writes_prompts_no_call
 
 def test_draft_written_when_outline_complete(camp, fake):
     calls, state = fake
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS]) == 0
-    draft = (camp / RD / "drafts/world_state.draft.md").read_text()
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS]) == 0
+    draft = (camp / RD / "drafts/party.draft.md").read_text()
     first = draft.splitlines()[0]
-    run = latest_run(camp, "world_state").name
-    assert first.startswith(f"<!-- summary_native draft | doc: world_state | range: ch002-005 | record: runs/world_state/{run}/record.json | corpus manifest sha256: ")
+    run = latest_run(camp, "party").name
+    assert first.startswith(f"<!-- summary_native draft | doc: party | range: ch002-005 | record: runs/party/{run}/record.json | corpus manifest sha256: ")
     assert "## " in draft and len(calls) == 1
-    assert (latest_run(camp, "world_state") / "part-1.out.md").is_file()
+    assert (latest_run(camp, "party") / "part-1.out.md").is_file()
 
 
 def test_incomplete_when_heading_missing_exit3(camp, fake, capsys):
     _, state = fake
-    hs = headings("world_state")
-    state["texts"] = full_text("world_state", skip=(hs[2],))
-    assert main(["synth", "world_state", *ARGS]) == 3
-    assert (camp / RD / "drafts/world_state.incomplete.md").is_file()
-    assert not (camp / RD / "drafts/world_state.draft.md").exists()
+    hs = headings("party")
+    state["texts"] = full_text("party", skip=(hs[2],))
+    assert main(["synth", "party", *ARGS]) == 3
+    assert (camp / RD / "drafts/party.incomplete.md").is_file()
+    assert not (camp / RD / "drafts/party.draft.md").exists()
     err = capsys.readouterr()
     assert hs[2] in err.out + err.err and "--parts" in err.out + err.err
 
 
 def test_parts_one_call_per_part_joined_in_order(camp, fake):
     calls, state = fake
-    hs = headings("world_state")
+    hs = headings("party")
     groups = synth.split_parts(hs, 3)
     state["texts"] = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
-    assert main(["synth", "world_state", *ARGS, "--parts", "3"]) == 0
+    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 0
     assert len(calls) == 3
     for k, g in enumerate(groups):
         assert all(h in calls[k]["system"] for h in g)
         assert "write ONLY these headings" in calls[k]["system"]
-        assert (latest_run(camp, "world_state") / f"part-{k + 1}.out.md").is_file()
-    draft = (camp / RD / "drafts/world_state.draft.md").read_text()
+        assert (latest_run(camp, "party") / f"part-{k + 1}.out.md").is_file()
+    draft = (camp / RD / "drafts/party.draft.md").read_text()
     pos = [draft.index(h) for h in hs]
     assert pos == sorted(pos)
 
@@ -148,40 +151,25 @@ def test_check_outline_problems():
 
 def test_world_state_input_only_from_explicit_flag(camp, fake):
     calls, state = fake
-    state["texts"] = full_text("campaign_state")
+    state["texts"] = full_text("party")
     drafts = camp / RD / "drafts"
     drafts.mkdir(parents=True)
     (drafts / "world_state.draft.md").write_text("UNREVIEWED DRAFT TEXT\n")
-    assert main(["synth", "campaign_state", *ARGS, "--dump-only"]) == 0
-    user = (latest_run(camp, "campaign_state") / "part-1.user.md").read_text()
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
+    user = (latest_run(camp, "party") / "part-1.user.md").read_text()
     assert "UNREVIEWED DRAFT TEXT" not in user and "UPSTREAM DRAFT" not in user
     reviewed = camp / "reviewed_ws.md"
     reviewed.write_text("REVIEWED WORLD\n")
-    assert main(["synth", "campaign_state", *ARGS, "--dump-only", "--force", "--world-state", "reviewed_ws.md"]) == 0
-    user = (latest_run(camp, "campaign_state") / "part-1.user.md").read_text()
+    assert main(["synth", "party", *ARGS, "--dump-only", "--force", "--world-state", "reviewed_ws.md"]) == 0
+    user = (latest_run(camp, "party") / "part-1.user.md").read_text()
     assert "UPSTREAM DRAFT (GM-reviewed): world_state" in user and "REVIEWED WORLD" in user
     assert "UNREVIEWED DRAFT TEXT" not in user
-    assert main(["synth", "campaign_state", *ARGS, "--dump-only", "--world-state", "nope.md"]) == 2
+    assert main(["synth", "party", *ARGS, "--dump-only", "--world-state", "nope.md"]) == 2
 
 
-def test_audit_files_fenced_as_questions(camp, fake):
-    (camp / "track.md").write_text("- Reach Candlekeep\n")
-    assert main(["synth", "campaign_state", *ARGS, "--dump-only", "--audit", "track.md"]) == 0
-    runs = latest_run(camp, "campaign_state")
-    user = (runs / "part-1.user.md").read_text()
-    system = (runs / "part-1.system.md").read_text()
-    assert "AUDIT QUESTIONS — NOT EVIDENCE" in user and "Reach Candlekeep" in user and "track.md" in user
-    assert "## Audit: Tracking Claims" in system and "NOT FOUND IN SUMMARIES" in system
-    assert "SUPPORTED (ch N, scene X)" in system
-
-
-def test_audit_default_from_grounding_yaml(camp):
-    (camp / "track.md").write_text("- Default tracked thing\n")
-    (camp / "config" / "grounding.yaml").write_text(
-        yaml.safe_dump({"campaign_state": {"track_files": ["track.md"]}})
-    )
-    assert main(["synth", "campaign_state", *ARGS, "--dump-only"]) == 0
-    assert "Default tracked thing" in (latest_run(camp, "campaign_state") / "part-1.user.md").read_text()
+# The one-shot campaign_state audit tests (audit files fenced as questions, the grounding.yaml default)
+# are gone with the one-shot path for these two documents (FR-029): the audit is its own step now, and
+# its refusal and freshness are covered under "spec 033 US1" below.
 
 
 def test_audit_rejected_for_world_state(camp):
@@ -196,38 +184,38 @@ def test_unknown_doc_rejected_by_parser(camp):
 
 def test_never_writes_live_docs(camp, fake):
     _, state = fake
-    state["texts"] = full_text("world_state")
+    state["texts"] = full_text("party")
     before = {p.name: p.read_bytes() for p in (camp / "docs").glob("*.md")}
-    assert main(["synth", "world_state", *ARGS]) == 0
+    assert main(["synth", "party", *ARGS]) == 0
     assert {p.name: p.read_bytes() for p in (camp / "docs").glob("*.md")} == before
 
 
 def test_existing_draft_needs_force(camp, fake):
     calls, state = fake
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS]) == 0
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS]) == 0
     n = len(calls)
-    assert main(["synth", "world_state", *ARGS]) == 2
+    assert main(["synth", "party", *ARGS]) == 2
     assert len(calls) == n
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS, "--force"]) == 0
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS, "--force"]) == 0
 
 
 def test_existing_incomplete_never_blocks(camp, fake):
     calls, state = fake
     state["texts"] = "## nothing\n"
-    assert main(["synth", "world_state", *ARGS]) == 3
+    assert main(["synth", "party", *ARGS]) == 3
     n = len(calls)
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS]) == 0 and len(calls) == n + 1
-    assert not (camp / RD / "drafts/world_state.incomplete.md").exists()
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS]) == 0 and len(calls) == n + 1
+    assert not (camp / RD / "drafts/party.incomplete.md").exists()
 
 
 def test_synth_refuses_stale_corpus(camp, fake, capsys):
     calls, _ = fake
     f = camp / "summaries" / "002-the-gate.md"
     f.write_text(f.read_text() + "\nAn edit after build.\n")
-    assert main(["synth", "world_state", *ARGS]) == 2
+    assert main(["synth", "party", *ARGS]) == 2
     assert "summaries changed since build" in capsys.readouterr().err
     assert not calls
 
@@ -235,7 +223,7 @@ def test_synth_refuses_stale_corpus(camp, fake, capsys):
 def test_synth_refuses_blocking_validation(camp, fake, capsys):
     f = camp / "summaries" / "002-the-gate.md"
     f.write_text(f.read_text().replace("# Chapter 2", "# Chapter 9"))
-    assert main(["synth", "world_state", *ARGS]) == 1  # same as validate/build
+    assert main(["synth", "party", *ARGS]) == 1  # same as validate/build
     assert "blocking" in capsys.readouterr().out.lower()  # the report is printed
     assert not fake[0]
 
@@ -245,41 +233,41 @@ def test_synth_refuses_incomplete_manifest(camp, fake):
     m = json.loads(mp.read_text())
     m["complete"] = False
     mp.write_text(json.dumps(m))
-    assert main(["synth", "world_state", *ARGS]) == 2
+    assert main(["synth", "party", *ARGS]) == 2
     assert not fake[0]
 
 
 def test_synth_refuses_unbuilt_range(camp, fake):
     shutil.rmtree(camp / RD)
-    assert main(["synth", "world_state", *ARGS]) == 2
+    assert main(["synth", "party", *ARGS]) == 2
 
 
 def test_unmatched_name_exit_2(camp):
-    assert main(["synth", "world_state", *ARGS, "--dump-only", "--name", "Nobody Here"]) == 2
+    assert main(["synth", "party", *ARGS, "--dump-only", "--name", "Nobody Here"]) == 2
 
 
 def test_record_json_fields(camp, fake):
     _, state = fake
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS, "--backend", "anthropic", "--model", "m-test", "--max-tokens", "1234"]) == 0
-    rec = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS, "--backend", "anthropic", "--model", "m-test", "--max-tokens", "1234"]) == 0
+    rec = json.loads((latest_run(camp, "party") / "record.json").read_text())
     for k in ("doc", "backend", "model", "max_tokens", "parts", "range", "corpus_manifest_sha256",
               "upstream", "audit", "outline", "check", "started", "finished"):
         assert k in rec, k
-    assert rec["doc"] == "world_state" and rec["model"] == "m-test" and rec["max_tokens"] == 1234
+    assert rec["doc"] == "party" and rec["model"] == "m-test" and rec["max_tokens"] == 1234
     assert rec["range"] == {"since": 2, "until": 5} and rec["parts"] == 1
     assert rec["check"] == {"complete": True, "problems": []}
-    assert rec["outline"] == headings("world_state")
+    assert rec["outline"] == headings("party")
     import hashlib
     assert rec["corpus_manifest_sha256"] == hashlib.sha256((camp / RD / "manifest.json").read_bytes()).hexdigest()
 
 
 def test_prompts_are_deterministic(camp):
-    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    r1 = latest_run(camp, "world_state")
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
+    r1 = latest_run(camp, "party")
     a = (r1 / "part-1.user.md").read_bytes(), (r1 / "part-1.system.md").read_bytes()
-    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    r2 = latest_run(camp, "world_state")
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
+    r2 = latest_run(camp, "party")
     assert r1 != r2
     assert a == ((r2 / "part-1.user.md").read_bytes(), (r2 / "part-1.system.md").read_bytes())
 
@@ -303,44 +291,44 @@ def snapshot(d):
 
 def test_run_ids_are_utc_timestamps(camp, fake, clock):
     _, state = fake
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS]) == 0
-    assert [d.name for d in run_dirs(camp, "world_state")] == ["20260101T000001Z"]
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS]) == 0
+    assert [d.name for d in run_dirs(camp, "party")] == ["20260101T000001Z"]
 
 
 def test_run_id_collision_gets_suffix(camp, monkeypatch):
     from datetime import datetime, timezone
     monkeypatch.setattr(synth, "_utcnow", lambda: datetime(2026, 1, 1, tzinfo=timezone.utc))
-    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
-    assert [d.name for d in run_dirs(camp, "world_state")] == ["20260101T000000Z", "20260101T000000Z-1"]
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
+    assert [d.name for d in run_dirs(camp, "party")] == ["20260101T000000Z", "20260101T000000Z-1"]
 
 
 def test_dump_only_leaves_earlier_run_and_draft_record_intact(camp, fake, clock):
     _, state = fake
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS]) == 0
-    runs = camp / RD / "runs/world_state"
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS]) == 0
+    runs = camp / RD / "runs/party"
     before = snapshot(runs)
-    draft = camp / RD / "drafts/world_state.draft.md"
+    draft = camp / RD / "drafts/party.draft.md"
     ref = draft.read_text().splitlines()[0].split("record: ")[1].split(" |")[0]
-    assert main(["synth", "world_state", *ARGS, "--dump-only"]) == 0
+    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
     after = snapshot(runs)
     assert all(after[k] == v for k, v in before.items())
-    assert len(run_dirs(camp, "world_state")) == 2
+    assert len(run_dirs(camp, "party")) == 2
     assert (camp / RD / ref).is_file() and (camp / RD / ref).read_bytes() == before[ref.split("/", 2)[2]]
 
 
 def test_parts_run_then_single_part_run_keep_separate_dirs(camp, fake, clock):
     _, state = fake
-    groups = synth.split_parts(headings("world_state"), 3)
+    groups = synth.split_parts(headings("party"), 3)
     state["texts"] = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
-    assert main(["synth", "world_state", *ARGS, "--parts", "3"]) == 0
-    first = run_dirs(camp, "world_state")[0]
+    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 0
+    first = run_dirs(camp, "party")[0]
     before = snapshot(first)
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS, "--parts", "1", "--force"]) == 0
-    dirs = run_dirs(camp, "world_state")
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS, "--parts", "1", "--force"]) == 0
+    dirs = run_dirs(camp, "party")
     assert len(dirs) == 2 and snapshot(first) == before
     assert sorted(p.name for p in dirs[1].glob("part-*")) == ["part-1.out.md", "part-1.system.md", "part-1.user.md"]
     assert (first / "part-3.out.md").is_file()
@@ -348,51 +336,51 @@ def test_parts_run_then_single_part_run_keep_separate_dirs(camp, fake, clock):
 
 def test_incomplete_keeps_previous_draft(camp, fake, clock, capsys):
     _, state = fake
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS]) == 0
-    draft = camp / RD / "drafts/world_state.draft.md"
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS]) == 0
+    draft = camp / RD / "drafts/party.draft.md"
     kept = draft.read_bytes()
-    first_run = run_dirs(camp, "world_state")[0].name
+    first_run = run_dirs(camp, "party")[0].name
     capsys.readouterr()
     state["texts"] = "## nothing\n"
-    assert main(["synth", "world_state", *ARGS, "--force"]) == 3
+    assert main(["synth", "party", *ARGS, "--force"]) == 3
     assert draft.read_bytes() == kept
-    inc = camp / RD / "drafts/world_state.incomplete.md"
-    second_run = run_dirs(camp, "world_state")[1].name
+    inc = camp / RD / "drafts/party.incomplete.md"
+    second_run = run_dirs(camp, "party")[1].name
     assert f"run: {second_run}" in inc.read_text().splitlines()[0]
     err = capsys.readouterr()
-    assert f"previous draft kept: drafts/world_state.draft.md (from run {first_run})" in err.out + err.err
+    assert f"previous draft kept: drafts/party.draft.md (from run {first_run})" in err.out + err.err
 
 
 def test_chatty_part_preamble_makes_run_incomplete(camp, fake, capsys):
     _, state = fake
-    groups = synth.split_parts(headings("world_state"), 3)
+    groups = synth.split_parts(headings("party"), 3)
     texts = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
     texts[1] = "Here is part 2:\n" + texts[1]
     state["texts"] = texts
-    assert main(["synth", "world_state", *ARGS, "--parts", "3"]) == 3
+    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 3
     e = capsys.readouterr()
     assert "part 2" in e.out + e.err
-    assert not (camp / RD / "drafts/world_state.draft.md").exists()
+    assert not (camp / RD / "drafts/party.draft.md").exists()
 
 
 def test_extra_h2_makes_run_incomplete(camp, fake, capsys):
     _, state = fake
-    state["texts"] = full_text("world_state") + "\n## Notes\n\nextra\n"
-    assert main(["synth", "world_state", *ARGS]) == 3
+    state["texts"] = full_text("party") + "\n## Notes\n\nextra\n"
+    assert main(["synth", "party", *ARGS]) == 3
     e = capsys.readouterr()
     assert "unexpected heading: ## Notes" in e.out + e.err
 
 
 def test_part_with_foreign_heading_incomplete(camp, fake):
     _, state = fake
-    hs = headings("world_state")
+    hs = headings("party")
     groups = synth.split_parts(hs, 3)
     # part 1 also writes a heading assigned to part 3
     texts = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
     texts[0] += f"\n{groups[2][0]}\n\nstolen\n"
     state["texts"] = texts
-    assert main(["synth", "world_state", *ARGS, "--parts", "3"]) == 3
+    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 3
 
 
 def test_check_outline_unexpected_heading():
@@ -402,10 +390,10 @@ def test_check_outline_unexpected_heading():
 
 def test_record_backend_is_effective_backend(camp, fake, monkeypatch):
     _, state = fake
-    state["texts"] = full_text("world_state")
+    state["texts"] = full_text("party")
     monkeypatch.setenv("CG_BACKEND", "openrouter")
-    assert main(["synth", "world_state", *ARGS]) == 0
-    rec = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
+    assert main(["synth", "party", *ARGS]) == 0
+    rec = json.loads((latest_run(camp, "party") / "record.json").read_text())
     assert rec["backend"] == "openrouter"
 
 
@@ -416,8 +404,8 @@ def test_failed_client_setup_still_writes_record(camp, monkeypatch):
         raise SystemExit("no credentials for this backend")
 
     monkeypatch.setattr(synth, "client_from_args", boom)
-    assert main(["synth", "world_state", *ARGS]) == 2
-    record = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
+    assert main(["synth", "party", *ARGS]) == 2
+    record = json.loads((latest_run(camp, "party") / "record.json").read_text())
     assert record["check"] == {"complete": False, "error": "no credentials for this backend"}
 
 
@@ -426,11 +414,11 @@ def test_failed_model_call_still_writes_record(camp, monkeypatch, fake, capsys):
         raise RuntimeError("upstream 529")
 
     monkeypatch.setattr(synth, "render_part", explode)
-    assert main(["synth", "world_state", *ARGS]) == 4
+    assert main(["synth", "party", *ARGS]) == 4
     err = capsys.readouterr().err
     assert "Error: model call failed in part 1: RuntimeError: upstream 529" in err
-    assert f"see {RD}/runs/world_state/" in err and "record.json" in err  # campaign-relative
-    record = json.loads((latest_run(camp, "world_state") / "record.json").read_text())
+    assert f"see {RD}/runs/party/" in err and "record.json" in err  # campaign-relative
+    record = json.loads((latest_run(camp, "party") / "record.json").read_text())
     assert record["check"]["complete"] is False
     assert "upstream 529" in record["check"]["error"]
 
@@ -478,6 +466,7 @@ def test_party_reads_party_config_and_sheets(camp):
 
 
 def test_party_config_missing_or_invalid_exits_2(camp, capsys):
+    (camp / "config" / "party.yaml").unlink()
     assert main(["synth", "party", *ARGS, "--dump-only"]) == 2  # no config/party.yaml
     (camp / "config" / "party.yaml").write_text("characters: not-a-list\n")
     assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
@@ -488,6 +477,7 @@ def test_party_config_missing_or_invalid_exits_2(camp, capsys):
 
 
 def test_party_config_failure_prints_one_error_line(camp, capsys):
+    (camp / "config" / "party.yaml").unlink()
     assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
     lines = [l for l in capsys.readouterr().err.splitlines() if l.strip()]
     assert len(lines) == 1 and "--party-config" in lines[0]
@@ -614,7 +604,7 @@ def test_planning_empty_threat_tracker_fails(camp, fake):
     [
         ("world_state", "--world-state", False),
         ("world_state", "--campaign-state", False),
-        ("campaign_state", "--world-state", True),
+        ("campaign_state", "--world-state", False),  # one-shot upstream context: party and planning only
         ("campaign_state", "--campaign-state", False),
         ("party", "--world-state", True),
         ("party", "--campaign-state", True),
@@ -638,7 +628,7 @@ def test_registry_change_makes_corpus_stale(camp, fake, capsys):
     calls, _ = fake
     reg = camp / "docs" / "entity_registry.yaml"
     reg.write_text("entities: []\n")
-    assert main(["synth", "world_state", *ARGS]) == 2
+    assert main(["synth", "party", *ARGS]) == 2
     err = capsys.readouterr().err
     assert "entity registry changed since build" in err and "summary_native build --force" in err
     assert not calls
@@ -646,10 +636,10 @@ def test_registry_change_makes_corpus_stale(camp, fake, capsys):
 
 def test_canon_change_does_not_make_corpus_stale(camp, fake):
     calls, state = fake
-    state["texts"] = full_text("world_state")
+    state["texts"] = full_text("party")
     (camp / "docs" / "summary_native").mkdir(parents=True, exist_ok=True)
     (camp / "docs" / "summary_native" / "canon.yaml").write_text("not_duplicates: []\n")
-    assert main(["synth", "world_state", *ARGS]) == 0
+    assert main(["synth", "party", *ARGS]) == 0
 
 
 def test_configured_registry_not_stale_after_build_then_stale_on_change(camp, fake, capsys):
@@ -661,11 +651,307 @@ def test_configured_registry_not_stale_after_build_then_stale_on_change(camp, fa
         yaml.safe_dump({"summary_native": {"registry": "reg_cfg.yaml"}})
     )
     assert main(["build", *ARGS, "--force"]) == 0
-    state["texts"] = full_text("world_state")
-    assert main(["synth", "world_state", *ARGS]) == 0
+    state["texts"] = full_text("party")
+    assert main(["synth", "party", *ARGS]) == 0
     assert calls
     (camp / "reg_cfg.yaml").write_text("entities: []\n# changed\n")
     calls.clear()
-    assert main(["synth", "world_state", *ARGS]) == 2
+    assert main(["synth", "party", *ARGS]) == 2
     assert "entity registry changed since build" in capsys.readouterr().err
     assert not calls
+
+
+# ── spec 033 US1: world_state and campaign_state build from checked notes (T015) ─────────────
+
+
+from pipelines.summary_native import notes as notes_mod  # noqa: E402
+from pipelines.summary_native import schema  # noqa: E402
+from tests import conftest_state as cs  # noqa: E402
+
+WORLD_PROSE = ["## Party", "## Factions and Powers", "## Key NPCs", "## Locations", "## Items and Artifacts",
+               "## Active Threats and Open Pressures"]
+CAMPAIGN_PROSE = ["## Resolved Plot Threads", "## Active Quests & Open Threads", "## Party Current Situation"]
+
+
+@pytest.fixture
+def scamp(tmp_path):
+    return cs.state_campaign(tmp_path)
+
+
+@pytest.fixture
+def fm(monkeypatch):
+    return cs.fake_models(monkeypatch)
+
+
+@pytest.fixture
+def extracted(scamp, fm):
+    rc, _, err = cs.run_cli(cs.extract_args(scamp))
+    assert rc == 0, err
+    fm.extract_calls.clear()
+    return scamp
+
+
+def synth_args(root, doc, *extra):
+    return ["synth", doc, *cs.common(root), *extra]
+
+
+def state_dir(root):
+    return cs.range_dir(root) / schema.STATE_DIR
+
+
+def draft_of(root, doc):
+    return (state_dir(root) / "drafts" / f"{doc}.draft.md").read_text()
+
+
+def section(text, heading):
+    secs = notes_mod.npc_check.parse_sections(text)
+    return notes_mod.npc_check.section_text(secs, heading)
+
+
+class TestChunkedRefusals:
+    def test_without_notes_refuses_naming_the_extract_command(self, scamp, fm):
+        for doc in ("world_state", "campaign_state"):
+            rc, _, err = cs.run_cli(synth_args(scamp, doc))
+            assert rc == 2
+            assert "summary_native extract --since 2 --until 5" in err
+            assert "no checked notes" in err
+        assert not fm.prose_calls
+
+    def test_stale_notes_refuse_naming_the_command(self, extracted, fm):
+        (extracted / "config" / "players.yaml").write_text("players: []\n")
+        rc, _, err = cs.run_cli(synth_args(extracted, "world_state"))
+        assert rc == 2 and "stale" in err and "players" in err
+        assert "summary_native extract --since 2 --until 5" in err and not fm.prose_calls
+
+    def test_notes_with_a_failed_chunk_refuse(self, scamp, fm):
+        fm.fail_chunks["004-004"] = 2
+        assert cs.run_cli(cs.extract_args(scamp))[0] == 3
+        rc, _, err = cs.run_cli(synth_args(scamp, "campaign_state"))
+        assert rc == 2 and "004-004" in err and "summary_native extract --since 2 --until 5" in err
+
+    def test_dump_only_extraction_is_not_checked_notes(self, scamp, fm):
+        assert cs.run_cli(cs.extract_args(scamp, "--dump-only"))[0] == 0
+        rc, _, err = cs.run_cli(synth_args(scamp, "world_state"))
+        assert rc == 2 and "summary_native extract" in err
+
+    @pytest.mark.parametrize("doc", ["world_state", "campaign_state"])
+    def test_parts_is_retired_for_these_two_documents(self, extracted, fm, doc):
+        rc, _, err = cs.run_cli(synth_args(extracted, doc, "--parts", "2"))
+        assert rc == 2 and "--parts" in err and "one call per section" in err
+        assert not fm.prose_calls
+
+    def test_audit_is_retired_for_campaign_state_naming_the_audit_step(self, extracted, fm):
+        rc, _, err = cs.run_cli(synth_args(extracted, "campaign_state", "--audit", "docs/tracking/tracking.txt"))
+        assert rc == 2 and "the audit is its own step: summary_native audit" in err
+
+    def test_audit_is_still_refused_for_world_state(self, extracted, fm):
+        rc, _, err = cs.run_cli(synth_args(extracted, "world_state", "--audit", "docs/tracking/tracking.txt"))
+        assert rc == 2 and "campaign_state only" in err
+
+    @pytest.mark.parametrize("flag", ["--world-state", "--campaign-state"])
+    def test_one_shot_upstream_flags_do_not_apply_to_the_chunked_documents(self, extracted, flag):
+        rc, _, err = cs.run_cli(synth_args(extracted, "campaign_state", flag, "docs/npcs/ilvara-mizzrym.md"))
+        assert rc == 2 and f"{flag} does not apply" in err
+
+    def test_a_stale_audit_refuses_naming_the_audit_step(self, extracted, fm):
+        (extracted / "config" / "grounding.yaml").write_text(
+            "campaign_state:\n  track_files: [docs/tracking/tracking.txt]\n")
+        audit = state_dir(extracted) / "audit"
+        audit.mkdir(parents=True)
+        (audit / "items.json").write_text(json.dumps({"track_files_sha256": [["tracking.txt", "stale"]]}))
+        rc, _, err = cs.run_cli(synth_args(extracted, "campaign_state"))
+        assert rc == 2 and "summary_native audit" in err and not fm.prose_calls
+
+    def test_party_and_planning_keep_the_one_shot_path(self, extracted, fm):
+        (extracted / "docs" / "Daz.md").write_text("A fighter.\n")
+        (extracted / "config" / "party.yaml").write_text(
+            yaml.safe_dump({"characters": [{"name": "Daz", "sheet": "docs/Daz.md"}]}))
+        rc, out, err = cs.run_cli(synth_args(extracted, "party", "--dump-only"))
+        assert rc == 0, err
+        (run,) = (cs.range_dir(extracted) / "runs" / "party").iterdir()
+        assert (run / "part-1.system.md").is_file() and (run / "part-1.user.md").is_file()
+        rc, _, err = cs.run_cli(synth_args(extracted, "planning", "--dump-only"))
+        assert rc == 0, err
+        assert (next((cs.range_dir(extracted) / "runs" / "planning").iterdir()) / "part-1.user.md").is_file()
+        # the one-shot path never reads the checked notes
+        assert not fm.prose_calls
+
+
+class TestWorldState:
+    def test_builds_a_complete_draft_from_one_prose_call_per_section(self, extracted, fm):
+        rc, out, err = cs.run_cli(synth_args(extracted, "world_state"))
+        assert rc == 0, err
+        assert [c["heading"] for c in fm.prose_calls] == WORLD_PROSE
+        text = draft_of(extracted, "world_state")
+        assert synth.check_outline(text, synth.load_outline("world_state")) == []
+        assert "Prose for Locations" in section(text, "## Locations")
+        first = text.splitlines()[0]
+        assert first.startswith("<!-- summary_native draft | doc: world_state | range: ch002-005 | record: runs/")
+        assert (state_dir(extracted) / "drafts" / "world_state.incomplete.md").exists() is False
+
+    def test_the_timeline_is_code_built_in_chapter_order(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        body = section(draft_of(extracted, "world_state"), "## Canon Events Timeline")
+        events = [ln for ln in body.splitlines() if ln.startswith("- ")]
+        assert events[0] == "- The party wakes in the pens of Velkynvelve. [ch 002 / 002.01]"
+        assert events[-1] == "- The party rests and speaks of Ilvara Mizzrym's death. [ch 005 / 005.01]"
+        chapters = [notes_mod.first_chapter(e) for e in events]
+        assert chapters == sorted(chapters) and len(events) == 6  # chapter 3's second event cites outside its chunk and is dropped
+
+    def test_each_section_gets_only_the_notes_routed_to_it(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        by = {c["heading"]: c["user"] for c in fm.prose_calls}
+        assert "**Velkynvelve**" in by["## Locations"] and "**The Long Stair**" in by["## Locations"]
+        assert "House Mizzrym" not in by["## Locations"] and "Signet Ring" not in by["## Locations"]
+        assert "**House Mizzrym**" in by["## Factions and Powers"] and "Velkynvelve" not in by["## Factions and Powers"].split("OUTLINE")[0].split("VERIFIED NOTES")[1]
+        assert "**Signet Ring**" in by["## Items and Artifacts"]
+        assert "**The gate guards**" in by["## Active Threats and Open Pressures"]
+        # the thread ledger rides with the threats section
+        assert "[RESOLVED] **The signet ring**" in by["## Active Threats and Open Pressures"]
+        # Party: the party notes plus the last chunk's evidence for the current state
+        assert "The party rests at the gate of Velkynvelve." in by["## Party"]
+        assert "CHAPTER 005" in by["## Party"] and "CHAPTER 002" not in by["## Party"]
+        # every routed note is a verified one: the dropped bullets never reach a prompt
+        assert all("the web is a lie" not in u and "A claim about a later chapter" not in u for u in by.values())
+
+    def test_key_npcs_placeholder_gets_the_code_built_status_table(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        user = next(c["user"] for c in fm.prose_calls if c["heading"] == "## Key NPCs")
+        assert "[NPC] **Ilvara Mizzrym**" in user and "[NPC] **Kalan**" in user
+        assert "| Ilvara Mizzrym | Dead |" in user
+
+    def test_the_prose_prompt_carries_the_quotation_rule(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        assert all("Quotation marks are reserved" in c["system"] for c in fm.prose_calls)
+
+    def test_a_missing_prose_section_writes_incomplete_and_exits_3(self, extracted, fm):
+        fm.prose_missing = {"## Locations"}
+        rc, out, err = cs.run_cli(synth_args(extracted, "world_state"))
+        assert rc == 3
+        drafts = state_dir(extracted) / "drafts"
+        assert (drafts / "world_state.incomplete.md").is_file() and not (drafts / "world_state.draft.md").exists()
+        assert "missing heading: ## Locations" in err + out
+        inc = (drafts / "world_state.incomplete.md").read_text()
+        assert "## Party" in inc and "## Locations" not in inc
+
+    def test_a_good_draft_is_kept_when_a_later_run_is_incomplete(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        kept = (state_dir(extracted) / "drafts" / "world_state.draft.md").read_bytes()
+        fm.prose_missing = {"## Party"}
+        assert cs.run_cli(synth_args(extracted, "world_state", "--force"))[0] == 3
+        assert (state_dir(extracted) / "drafts" / "world_state.draft.md").read_bytes() == kept
+
+    def test_an_existing_draft_needs_force(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        n = len(fm.prose_calls)
+        rc, _, err = cs.run_cli(synth_args(extracted, "world_state"))
+        assert rc == 2 and "--force" in err and len(fm.prose_calls) == n
+
+    def test_dump_only_writes_prompts_and_makes_no_call(self, extracted, fm):
+        rc, out, err = cs.run_cli(synth_args(extracted, "world_state", "--dump-only"))
+        assert rc == 0, err
+        assert not fm.prose_calls
+        (run,) = [p for p in (state_dir(extracted) / "runs").iterdir() if p.is_dir() and (p / "record.json").exists()
+                  and json.loads((p / "record.json").read_text()).get("step") == "synth"]
+        assert json.loads((run / "record.json").read_text())["check"] == "not run"
+        assert len(list(run.glob("world_state.*.user.md"))) == 6
+        assert not (state_dir(extracted) / "drafts").exists()
+
+    def test_the_run_record_names_inputs_settings_and_every_call(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        recs = [json.loads(p.read_text()) for p in (state_dir(extracted) / "runs").glob("*/record.json")]
+        (rec,) = [r for r in recs if r.get("step") == "synth"]
+        assert rec["doc"] == "world_state" and rec["backend"] == "claude-code"
+        assert rec["model"] == "claude-sonnet-5-5" and rec["effort"] == "medium"
+        assert rec["check"] == {"complete": True, "problems": []}
+        assert [c["heading"] for c in rec["calls"]] == WORLD_PROSE
+        assert rec["inputs"]["notes_manifest_sha256"] and rec["inputs"]["registry_sha256"]
+        assert rec["started"] and rec["finished"]
+
+    def test_flags_beat_grounding_yaml_beats_schema_for_the_prose_backend(self, extracted, fm):
+        (extracted / "config" / "grounding.yaml").write_text(
+            "summary_native:\n  prose:\n    backend: openrouter\n    model: vendor/model\n")
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        assert {c["model"] for c in fm.prose_calls} == {"vendor/model"}
+        fm.prose_calls.clear()
+        assert cs.run_cli(synth_args(extracted, "world_state", "--force", "--model", "flag-model"))[0] == 0
+        assert {c["model"] for c in fm.prose_calls} == {"flag-model"}
+
+    def test_never_writes_live_docs_or_the_corpus(self, extracted, fm):
+        docs = {p.relative_to(extracted).as_posix(): p.read_bytes() for p in (extracted / "docs").rglob("*")
+                if p.is_file() and "summary_native" not in p.parts}
+        corpus = {p.name: p.read_bytes() for p in cs.range_dir(extracted).iterdir() if p.is_file()}
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        assert docs == {p.relative_to(extracted).as_posix(): p.read_bytes() for p in (extracted / "docs").rglob("*")
+                        if p.is_file() and "summary_native" not in p.parts}
+        assert corpus == {p.name: p.read_bytes() for p in cs.range_dir(extracted).iterdir() if p.is_file()}
+
+    def test_the_secret_canary_in_a_published_dossier_reaches_nothing(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        for p in state_dir(extracted).rglob("*"):
+            if p.is_file():
+                assert "SECRET-CANARY-033" not in p.read_text(encoding="utf-8", errors="ignore"), p
+
+
+class TestCampaignState:
+    def test_builds_a_complete_draft(self, extracted, fm):
+        rc, out, err = cs.run_cli(synth_args(extracted, "campaign_state"))
+        assert rc == 0, err
+        assert [c["heading"] for c in fm.prose_calls] == CAMPAIGN_PROSE
+        text = draft_of(extracted, "campaign_state")
+        assert synth.check_outline(text, synth.load_outline("campaign_state")) == []
+
+    def test_code_owned_sections(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        text = draft_of(extracted, "campaign_state")
+        completed = section(text, "## Completed Encounters & Quests")
+        assert completed.splitlines() == [
+            "- The escape from Velkynvelve ends at the foot of the stair. [ch 003 / 003.02]",
+            "- The fight at the gate ends with Sarith's death and Kalan holding the gate. [ch 004 / 004.01]",
+        ]
+        table = section(text, "## NPC Current States")
+        rows = {ln.split("|")[1].strip(): ln for ln in table.splitlines()[2:]}
+        assert set(rows) == {"Ilvara Mizzrym", "Kalan", "Sarith Kzekarit"}  # Thorin is a player character
+        assert "| Dead |" in rows["Ilvara Mizzrym"] and "| Dead |" in rows["Sarith Kzekarit"]
+        assert "| Alive |" in rows["Kalan"] and "later, status not stated" in rows["Kalan"]
+        assert section(text, "## Audit: Tracking Claims") == "Audit not run for this range."
+
+    def test_the_status_report_is_written_beside_the_drafts(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        rep = (state_dir(extracted) / "drafts" / "npc_status_report.md").read_text()
+        assert "Ilvara Mizzrym: Ilvara, Ilvara Mizzrym" in rep and "Player-character rows dropped (1)" in rep
+
+    def test_the_thread_sections_get_the_ledger_and_the_last_chunk(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        by = {c["heading"]: c["user"] for c in fm.prose_calls}
+        ledger = by["## Resolved Plot Threads"]
+        assert "[OPENED] **The signet ring**" in ledger and "[RESOLVED] **The signet ring**" in ledger
+        assert "CHAPTER 005" in by["## Active Quests & Open Threads"] and "CHAPTER 005" in by["## Party Current Situation"]
+        assert "CHAPTER 005" not in ledger
+
+    def test_the_audit_section_says_it_was_not_run(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        assert "Audit not run for this range." in draft_of(extracted, "campaign_state")
+
+
+class TestDeterminism:
+    def test_code_owned_sections_are_byte_identical_across_runs(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        first = draft_of(extracted, "campaign_state")
+        assert cs.run_cli(synth_args(extracted, "campaign_state", "--force"))[0] == 0
+        second = draft_of(extracted, "campaign_state")
+        for h in ("## Completed Encounters & Quests", "## NPC Current States", "## Audit: Tracking Claims"):
+            assert section(first, h) == section(second, h)
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        t1 = section(draft_of(extracted, "world_state"), "## Canon Events Timeline")
+        assert cs.run_cli(synth_args(extracted, "world_state", "--force"))[0] == 0
+        assert t1 == section(draft_of(extracted, "world_state"), "## Canon Events Timeline")
+
+    def test_and_identical_when_rebuilt_from_cached_notes(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        first = section(draft_of(extracted, "campaign_state"), "## NPC Current States")
+        rc, out, _ = cs.run_cli(cs.extract_args(extracted))  # all cached
+        assert rc == 0 and not fm.extract_calls
+        assert cs.run_cli(synth_args(extracted, "campaign_state", "--force"))[0] == 0
+        assert first == section(draft_of(extracted, "campaign_state"), "## NPC Current States")

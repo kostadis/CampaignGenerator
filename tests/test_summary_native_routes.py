@@ -91,7 +91,7 @@ def test_stored_config_reaches_the_command(campaign):
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
         "recent_chapters": 7, "recurring_min": 6, "parts": 3, "dup_threshold": 0.7,
     }})
-    assert _run("/run/synth/world_state") == 200
+    assert _run("/run/synth/party") == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--summaries-dir") == "docs/stored"
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("1", "5")
@@ -108,7 +108,7 @@ def test_explicit_request_beats_stored(campaign):
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
         "recent_chapters": 7, "parts": 3, "dup_threshold": 0.7,
     }})
-    assert _run("/run/synth/world_state", {
+    assert _run("/run/synth/party", {
         **RANGE, "recent_chapters": 2, "parts": 0,
     }) == 200
     cmd = captured["cmd"]
@@ -126,7 +126,7 @@ def test_explicit_request_beats_stored(campaign):
 def test_unconfigured_defaults_come_from_the_schema(campaign):
     from pipelines.summary_native import schema
     _, _, captured = campaign
-    assert _run("/run/synth/world_state", RANGE) == 200
+    assert _run("/run/synth/party", RANGE) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--recent-chapters") == str(schema.DEFAULT_RECENT_CHAPTERS)
     assert _flag(cmd, "--recurring-min") == str(schema.DEFAULT_RECURRING_MIN)
@@ -136,7 +136,7 @@ def test_unconfigured_defaults_come_from_the_schema(campaign):
 def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
     _, svc, captured = campaign
     svc.update_config({"summary_native": {"out_root": "elsewhere"}})
-    assert _run("/run/synth/campaign_state", {
+    assert _run("/run/synth/party", {
         **RANGE,
         "name": ["Brewbarry", "Vukradin"],
         "dump_only": True,
@@ -187,9 +187,9 @@ def test_compare_passes_the_live_document(campaign):
 def test_backend_and_model_come_from_the_selection_seam(campaign):
     _, svc, captured = campaign
     svc.update_config({"selection": {"backend": "anthropic", "model": "claude-test-model"}})
-    assert _run("/run/synth/world_state", RANGE) == 200
+    assert _run("/run/synth/party", RANGE) == 200
     assert _flag(captured["cmd"], "--model") == "claude-test-model"
-    assert _run("/run/synth/world_state", {**RANGE, "model": "claude-explicit"}) == 200
+    assert _run("/run/synth/party", {**RANGE, "model": "claude-explicit"}) == 200
     assert _flag(captured["cmd"], "--model") == "claude-explicit"
 
 
@@ -285,17 +285,23 @@ def test_report_absent_is_404_and_unset_range_is_400(campaign):
 
 def test_drafts_lists_draft_and_incomplete_files(campaign):
     root, _, _ = campaign
-    dd = root / "docs" / "summary_native" / "ch003-009" / "drafts"
+    rd = root / "docs" / "summary_native" / "ch003-009"
+    # world_state and campaign_state build from the checked notes: their drafts live in state/drafts/
+    dd = rd / "state" / "drafts"
     dd.mkdir(parents=True)
     (dd / "world_state.draft.md").write_text("abc")
     (dd / "campaign_state.incomplete.md").write_text("abcdef")
     (dd / "world_state.vs-live.diff").write_text("ignored")
+    # party and planning keep the one-shot path and its drafts/ directory
+    (rd / "drafts").mkdir()
+    (rd / "drafts" / "party.draft.md").write_text("pp")
     r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
     assert r.status_code == 200
     rows = {(x["doc"], x["status"]): x for x in r.json()}
-    assert set(rows) == {("world_state", "draft"), ("campaign_state", "incomplete")}
+    assert set(rows) == {("world_state", "draft"), ("campaign_state", "incomplete"), ("party", "draft")}
     assert rows[("world_state", "draft")]["bytes"] == 3
-    assert rows[("world_state", "draft")]["path"].endswith("drafts/world_state.draft.md")
+    assert rows[("world_state", "draft")]["path"].endswith("state/drafts/world_state.draft.md")
+    assert rows[("party", "draft")]["path"].endswith("drafts/party.draft.md")
 
 
 def test_drafts_absent_is_404_and_empty_dir_is_empty(campaign):
@@ -313,9 +319,9 @@ def test_tilde_out_root_is_expanded_for_report_and_drafts(campaign, monkeypatch,
     home = tmp_path_factory.mktemp("home")
     monkeypatch.setenv("HOME", str(home))
     rd = home / "sn" / "ch003-009"
-    (rd / "drafts").mkdir(parents=True)
+    (rd / "state" / "drafts").mkdir(parents=True)
     (rd / "validation_report.json").write_text(json.dumps({"blocking_count": 0}))
-    (rd / "drafts" / "world_state.draft.md").write_text("abc")
+    (rd / "state" / "drafts" / "world_state.draft.md").write_text("abc")
     svc.update_config({"summary_native": {"out_root": "~/sn"}})
     assert client.get(f"{BASE}/report", params={"since": 3, "until": 9}).json() == {"blocking_count": 0}
     r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
@@ -325,7 +331,7 @@ def test_tilde_out_root_is_expanded_for_report_and_drafts(campaign, monkeypatch,
 def test_absolute_out_root_outside_campaign_is_200_with_absolute_paths(campaign, tmp_path_factory):
     _, svc, _ = campaign
     out = tmp_path_factory.mktemp("elsewhere")
-    dd = out / "ch003-009" / "drafts"
+    dd = out / "ch003-009" / "state" / "drafts"
     dd.mkdir(parents=True)
     (dd / "world_state.draft.md").write_text("abc")
     svc.update_config({"summary_native": {"out_root": str(out)}})
@@ -352,3 +358,171 @@ def test_party_planning_config_paths_only_when_supplied(campaign):
     assert _run("/run/synth/planning", {**RANGE, "planning_config": " config/p.yaml "}) == 200
     assert _flag(captured["cmd"], "--planning-config") == "config/p.yaml"
     assert captured["cmd"][captured["cmd"].index("synth") + 1] == "planning"
+
+
+# ── spec 033 US1: extract, and the chunked synth documents (T023) ──────────
+
+from pipelines.summary_native import schema as _schema  # noqa: E402
+
+STATE_DOCS = ["world_state", "campaign_state"]
+
+
+def test_extract_argv(campaign):
+    _, _, captured = campaign
+    assert _run("/run/extract", RANGE) == 200
+    cmd = captured["cmd"]
+    assert cmd[0] == console_script("summary_native") and cmd[1] == "extract"
+    assert _flag(cmd, "--summaries-dir") == "docs/summaries"
+    assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("3", "9")
+    # the declared defaults reach the command line through the config, not through a literal in the router
+    assert _flag(cmd, "--chunk-chars") == str(_schema.DEFAULT_CHUNK_CHARS)
+    assert _flag(cmd, "--backend") == _schema.DEFAULT_DRAFT_BACKEND
+    assert _flag(cmd, "--model") == _schema.DEFAULT_DRAFT_MODEL
+    for absent in ("--dump-only", "--force", "--max-tokens", "--endpoints", "--parallel"):
+        assert absent not in cmd
+    for banned in ("--registry", "--canon", "--out-root"):
+        assert banned not in cmd
+
+
+def test_extract_carries_per_run_flags(campaign):
+    _, _, captured = campaign
+    assert _run("/run/extract", {**RANGE, "chunk_chars": 1234, "max_tokens": 9000, "dump_only": True,
+                                 "force": True, "model": "other-model"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--chunk-chars") == "1234" and _flag(cmd, "--max-tokens") == "9000"
+    assert "--dump-only" in cmd and "--force" in cmd
+    assert _flag(cmd, "--model") == "other-model"
+
+
+def test_extract_stored_config_reaches_the_command(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {
+        "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
+        "extract": {"backend": "dgx", "model": "stored-model", "chunk_chars": 4321},
+    }})
+    assert _run("/run/extract") == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--summaries-dir") == "docs/stored"
+    assert _flag(cmd, "--chunk-chars") == "4321" and _flag(cmd, "--model") == "stored-model"
+    assert _run("/run/extract", {"chunk_chars": 99}) == 200
+    assert _flag(captured["cmd"], "--chunk-chars") == "99"  # a request beats the stored value
+
+
+def test_extract_unset_range_or_directory_is_400(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/extract", params={"summaries_dir": "docs/summaries"})
+    assert r.status_code == 400 and "choose a chapter range" in r.json()["detail"]
+    r = client.get(f"{BASE}/run/extract", params={"since": 1, "until": 2})
+    assert r.status_code == 400 and "summaries directory" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
+@pytest.mark.parametrize("doc", STATE_DOCS)
+def test_chunked_synth_takes_the_prose_selection_and_no_parts(campaign, doc):
+    _, _, captured = campaign
+    assert _run(f"/run/synth/{doc}", RANGE) == 200
+    cmd = captured["cmd"]
+    assert cmd[1:3] == ["synth", doc]
+    assert "--parts" not in cmd and "--audit" not in cmd
+    assert _flag(cmd, "--backend") == _schema.DEFAULT_PROSE_BACKEND
+    assert _flag(cmd, "--model") == _schema.DEFAULT_PROSE_MODEL
+    assert _run(f"/run/synth/{doc}", {**RANGE, "model": "claude-opus-5-5"}) == 200
+    assert _flag(captured["cmd"], "--model") == "claude-opus-5-5"
+
+
+def test_chunked_synth_prose_block_in_config_reaches_the_command(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"prose": {"backend": "claude-code", "model": "claude-opus-5-5"}}})
+    assert _run("/run/synth/world_state", RANGE) == 200
+    assert _flag(captured["cmd"], "--model") == "claude-opus-5-5"
+
+
+def test_a_stored_parts_value_is_not_sent_for_the_chunked_documents(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"parts": 3}})
+    assert _run("/run/synth/world_state", RANGE) == 200
+    assert "--parts" not in captured["cmd"]
+    assert _run("/run/synth/party", RANGE) == 200  # the one-shot documents still get it
+    assert _flag(captured["cmd"], "--parts") == "3"
+
+
+@pytest.mark.parametrize("doc", STATE_DOCS)
+def test_parts_is_a_400_for_the_chunked_documents_with_the_cli_message(campaign, doc):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, "parts": 2})
+    assert r.status_code == 400
+    assert r.json()["detail"] == _schema.STATE_PARTS_REFUSAL.format(doc=doc)
+    assert "cmd" not in captured
+
+
+def test_audit_is_a_400_for_campaign_state_naming_the_audit_step(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/synth/campaign_state", params={**RANGE, "audit": ["notes/track.txt"]})
+    assert r.status_code == 400 and "summary_native audit" in r.json()["detail"]
+    r = client.get(f"{BASE}/run/synth/world_state", params={**RANGE, "audit": ["notes/track.txt"]})
+    assert r.status_code == 400 and "campaign_state only" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
+def test_parts_zero_is_not_a_refusal(campaign):
+    _, _, captured = campaign
+    assert _run("/run/synth/world_state", {**RANGE, "parts": 0}) == 200
+
+
+def _notes_manifest(root, **over):
+    nd = root / "docs" / "summary_native" / "ch003-009" / "state" / "notes"
+    nd.mkdir(parents=True)
+    m = {
+        "kind": "state_notes", "complete": True, "backend": "dgx", "model": "m", "chunk_chars": 10,
+        "corpus_manifest_sha256": None, "registry_sha256": None, "players_sha256": None,
+        "chunks": [
+            {"index": 1, "chapters": "003-004", "status": "checked", "kept": 40, "dropped": 1},
+            {"index": 2, "chapters": "005-006", "status": "checked", "kept": 50, "dropped": 2},
+            {"index": 3, "chapters": "007-008", "status": "checked", "kept": 10, "dropped": 60},
+            {"index": 4, "chapters": "009-009", "status": "failed", "kept": 0, "dropped": 0},
+        ],
+        **over,
+    }
+    (nd / "manifest.json").write_text(json.dumps(m))
+    (nd / "drops.md").write_text("# Extraction drops\n")
+    return nd
+
+
+def test_state_reports_the_extract_block_from_files(campaign):
+    root, _, _ = campaign
+    _notes_manifest(root, complete=False)
+    r = client.get(f"{BASE}/state", params={"since": 3, "until": 9})
+    assert r.status_code == 200
+    ex = r.json()["extract"]
+    assert ex["present"] is True and ex["complete"] is False and ex["stale"] is False
+    assert [c["chapters"] for c in ex["chunks"]] == ["003-004", "005-006", "007-008", "009-009"]
+    assert [c["outlier"] for c in ex["chunks"]] == [False, False, True, False]
+    assert ex["outliers"] == ["007-008"]
+    assert ex["totals"] == {"chunks": 4, "checked": 3, "kept": 100, "dropped": 63}
+    assert ex["drops_file"].endswith("state/notes/drops.md")
+
+
+def test_state_marks_stale_notes_with_the_reason(campaign):
+    root, _, _ = campaign
+    _notes_manifest(root, registry_sha256="not-the-current-one")
+    ex = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["extract"]
+    assert ex["stale"] is True and "registry" in ex["stale_reason"] and "summary_native extract" in ex["stale_reason"]
+
+
+def test_state_with_nothing_extracted_is_not_present(campaign):
+    ex = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["extract"]
+    assert ex["present"] is False and ex["chunks"] == [] and ex["drops_file"] is None
+
+
+def test_state_unset_range_is_400(campaign):
+    assert client.get(f"{BASE}/state").status_code == 400
+
+
+def test_drafts_lists_the_drops_and_status_reports(campaign):
+    root, _, _ = campaign
+    rd = root / "docs" / "summary_native" / "ch003-009"
+    _notes_manifest(root)
+    (rd / "state" / "drafts").mkdir()
+    (rd / "state" / "drafts" / "npc_status_report.md").write_text("# NPC table identity report\n")
+    rows = {(x["doc"], x["status"]) for x in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
+    assert rows == {("drops", "report"), ("npc_status_report", "report")}

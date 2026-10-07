@@ -101,24 +101,24 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Tests for User Story 1
 
-- [ ] T012 [P] [US1] `tests/test_summary_native_notes.py`:
+- [X] T012 [P] [US1] `tests/test_summary_native_notes.py`:
   - each drop reason (uncited, invalid-citation, outside-chunk, quoted-span-not-found, missing-thread-tag, missing-world-tag, malformed-row, nested-bullet);
   - `[ch 031 / NPCs]` accepted as `npcs`, and `[ch 031 / Factions]` rejected;
   - the outlier-chunk flag (>3× median and ≥20 drops);
   - cache keys change when any input changes.
-- [ ] T013 [P] [US1] `tests/test_summary_native_state_sections.py`:
+- [X] T013 [P] [US1] `tests/test_summary_native_state_sections.py`:
   - timeline in chapter order, deduplicated;
   - `Ilvara` + `Ilvara Mizzrym` → one row, Dead (latest known);
   - a later `Unknown` shown beside the known status;
   - a PC row dropped;
   - a form claimed by two entities left unresolved and marked ⚠;
   - byte-identical output across two runs.
-- [ ] T014 [P] [US1] `tests/test_summary_native_extract.py`, with a fake client returning canned chunk outputs:
+- [X] T014 [P] [US1] `tests/test_summary_native_extract.py`, with a fake client returning canned chunk outputs:
   - prompts contain no audit list;
   - each chunk is written to `state/notes/`;
   - a failed chunk gives exit 3, and the next run re-extracts only it;
   - a cached run makes zero calls.
-- [ ] T015 [P] [US1] Extend `tests/test_summary_native_synth.py` and `tests/test_summary_native_cli.py`:
+- [X] T015 [P] [US1] Extend `tests/test_summary_native_synth.py` and `tests/test_summary_native_cli.py`:
   - `synth world_state` without notes refuses (exit 2), naming the `extract` command;
   - `--parts` refuses for world_state and campaign_state;
   - `--audit` refuses for campaign_state, naming `summary_native audit`;
@@ -127,27 +127,27 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Implementation for User Story 1
 
-- [ ] T016 [US1] Implement the code check in `pipelines/summary_native/notes.py`:
+- [X] T016 [US1] Implement the code check in `pipelines/summary_native/notes.py`:
   - `check_chunk(raw, chunk) -> CheckedChunk` (kept notes by kind, drops, status rows);
   - `render_drops_md(...)`, with the outlier flag;
   - `cache_key(...)`;
   - routing helpers `stitched(results, kind, tag=None)` and `thread_ledger(results)`.
 
   Shapes are in data-model.md (Note, Drop record).
-- [ ] T017 [US1] Implement `pipelines/summary_native/extract.py` (model step), in single-endpoint form first. It:
+- [X] T017 [US1] Implement `pipelines/summary_native/extract.py` (model step), in single-endpoint form first. It:
   - builds chunks via `npc_chunked.make_chunks`;
   - renders the prompt from `state.extract.system.md`;
   - calls through `client_from_args`/`stream_api` with one retry;
   - writes `chunkNN.{aaa-bbb}.{user,out}.md`, `.checked.json`, `drops.md` and `manifest.json`;
   - writes `state/runs/<stamp>/record.json`;
   - supports `--dump-only` and `--force`.
-- [ ] T018 [US1] Implement in `pipelines/summary_native/state_sections.py`:
+- [X] T018 [US1] Implement in `pipelines/summary_native/state_sections.py`:
   - `timeline_md(results)` and `completed_md(results)`;
   - `npc_status_table(results, forms, pcs) -> (table_md, report_md)`, with registry identity loaded via `campaignlib.registry` (exact casefolded name/alias, ambiguous forms unresolved) and PCs via `campaignlib.players_config`;
   - `npc_status_report.md`.
 
   Port from the prototype's `npc_table` / `load_identity`.
-- [ ] T019 [US1] Add the chunked path to `pipelines/summary_native/synth.py` for world_state and campaign_state:
+- [X] T019 [US1] Add the chunked path to `pipelines/summary_native/synth.py` for world_state and campaign_state:
   - load and freshness-check the notes;
   - build the code-owned sections;
   - route notes to the prose sections (research R8), one prose call per section via `render_part`;
@@ -155,14 +155,14 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
   - assemble the drafts into `state/drafts/`, with `*.incomplete.md` on a missing section.
 
   Party and planning keep the one-shot path.
-- [ ] T020 [US1] Wire the CLI in `pipelines/summary_native/cli.py`:
+- [X] T020 [US1] Wire the CLI in `pipelines/summary_native/cli.py`:
   - add the `extract` subcommand with flags per `contracts/cli.md` (backend family via `add_backend_args`, `--chunk-chars --max-tokens --dump-only --force`);
   - route `synth world_state|campaign_state` to the chunked path;
   - add the `--parts` / `--audit` refusals;
   - print the per-chunk progress lines and the totals.
-- [ ] T021 [US1] Add `GET /run/extract` to `server/routers/summary_native.py`, with params per `contracts/http.md` (range, `chunk_chars`, `max_tokens`, `dump_only`, `force`, model selection). Update `GET /run/synth/{doc}` to reject `parts` / `audit` for these two docs with the CLI's message. Extend `/state` with the `extract` block and `/drafts` with `drops.md` and `npc_status_report.md`.
-- [ ] T022 [US1] Add an "Extract" step to `frontend/src/views/grounding/SummaryNative.vue`: run / dump-only / force, per-chunk kept and dropped counts, outlier chunks highlighted, a link to `drops.md`. Wire the synth steps to the new behaviour.
-- [ ] T023 [P] [US1] Extend `tests/test_summary_native_routes.py`: the `/run/extract` argv, and the 400s for `parts` / `audit` on the two docs.
+- [X] T021 [US1] Add `GET /run/extract` to `server/routers/summary_native.py`, with params per `contracts/http.md` (range, `chunk_chars`, `max_tokens`, `dump_only`, `force`, model selection). Update `GET /run/synth/{doc}` to reject `parts` / `audit` for these two docs with the CLI's message. Extend `/state` with the `extract` block and `/drafts` with `drops.md` and `npc_status_report.md`.
+- [X] T022 [US1] Add an "Extract" step to `frontend/src/views/grounding/SummaryNative.vue`: run / dump-only / force, per-chunk kept and dropped counts, outlier chunks highlighted, a link to `drops.md`. Wire the synth steps to the new behaviour.
+- [X] T023 [P] [US1] Extend `tests/test_summary_native_routes.py`: the `/run/extract` argv, and the 400s for `parts` / `audit` on the two docs.
 
 **Checkpoint**: Both drafts build from checked notes. This is the MVP.
 
