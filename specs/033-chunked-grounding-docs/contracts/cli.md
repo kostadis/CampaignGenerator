@@ -36,7 +36,7 @@ The map step: per-chunk model calls, then the code check. It writes `state/notes
 - `--endpoints` used with a non-dgx backend;
 - `--endpoint` and `--endpoints` together;
 - `--parallel` < 1;
-- `--chunk-chars` < 1.
+- `--chunk-chars` < 1 (`--chunk-chars must be a whole number of at least 1`).
 
 **Exit 3**: one or more chunks failed after one retry. They are listed, and the next run extracts only those.
 
@@ -66,7 +66,8 @@ For these two documents, `synth` now builds from the checked notes. `party` and 
 - **No checked notes:** `no checked notes for ch002-070; run: summary_native extract --since 2 --until 70`.
 - **Stale notes:** the notes are stale against the summaries, registry or `players.yaml`.
 - **Missing dossiers (default, world_state):** one or more selected NPCs lack a published, verified dossier. The message lists each NPC as `<Name>: not drafted`, `<Name>: failed verification (not-found 2)` or `<Name>: drafted, not published`, then the commands to draft, verify and publish them, and the `--fallback-npc-lines` alternative.
-- **Retired flags:** `--parts` on these two docs; `--audit` on campaign_state (`the audit is its own step: summary_native audit`).
+- **Retired flags:** `--parts` on these two docs; `--audit` on campaign_state (`the audit is its own step: summary_native audit`) — on world_state `--audit` is refused earlier, as `--audit applies to campaign_state only`.
+- **Flags that do not apply:** `--name`, `--recent-chapters`, `--recurring-min` on campaign_state (it has no Key NPCs section); `--fallback-npc-lines` and `--npc-root` on every doc except world_state; `--world-state` and `--campaign-state` (upstream drafts) on both. Each is refused (exit 2), never silently ignored.
 
 **Exit 3**: a prose section is missing from its output. The doc is written as `*.incomplete.md`, never as a draft.
 
