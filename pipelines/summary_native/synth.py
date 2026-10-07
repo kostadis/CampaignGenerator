@@ -21,7 +21,7 @@ import yaml
 from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import context, corpus, freshness, notes, npc_check, schema, select, state_sections, validate
+from pipelines.summary_native import context, corpus, freshness, key_npcs, notes, npc_check, schema, select, state_sections, validate
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
@@ -150,6 +150,7 @@ def run_synth(
     summaries_dir: Path | None = None,
     players_path: Path | None = None,
     budgets: dict[str, int] | None = None,
+    npc_root: Path | None = None,
     now=None,
 ) -> int:
     now = now or _utcnow
@@ -165,6 +166,14 @@ def run_synth(
             return _refuse(schema.STATE_PARTS_REFUSAL.format(doc=doc))
         if args.audit:
             return _refuse(schema.STATE_AUDIT_REFUSAL)
+    for flag in ("fallback_npc_lines", "npc_root"):
+        if getattr(args, flag, None) and doc != "world_state":
+            return _refuse(f"--{flag.replace('_', '-')} applies to world_state only, not {doc}")
+    if doc == "campaign_state":
+        # the Key NPCs selection flags choose world_state's Key NPCs; this document has no such section
+        for flag in ("name", "recent_chapters", "recurring_min"):
+            if getattr(args, flag, None) is not None:
+                return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}: it has no Key NPCs section")
     for flag, owners in (("world_state", ("party", "planning")), ("campaign_state", ("party", "planning"))):
         if getattr(args, flag, None) and doc not in owners:
             return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}")
@@ -175,7 +184,8 @@ def run_synth(
         return run_state_synth(
             args, root=root, range_dir=range_dir, report=report, summaries_dir=summaries_dir,
             registry_path=registry_path, players_path=players_path, track_files=audit_default,
-            budgets=budgets, now=now,
+            budgets=budgets, recent_chapters=recent_chapters, recurring_min=recurring_min,
+            npc_root=npc_root, now=now,
         )
 
     if report.blocking_count:
@@ -431,6 +441,9 @@ def run_state_synth(
     players_path: Path | None,
     track_files: list[str],
     budgets: dict[str, int] | None = None,
+    recent_chapters: int = schema.DEFAULT_RECENT_CHAPTERS,
+    recurring_min: int = schema.DEFAULT_RECURRING_MIN,
+    npc_root: Path | None = None,
     now=None,
 ) -> int:
     """Build ``world_state`` or ``campaign_state`` from the checked notes ``extract`` wrote.
@@ -439,7 +452,9 @@ def run_state_synth(
     status table, the audit section and world_state's reading contract; a model writes each
     remaining section from only the notes code routed to it, world_state's within word budgets
     (``budgets``: section name -> words, default ``schema.DEFAULT_WORLD_BUDGETS``). An overrun is
-    reported and the text is kept whole. Output goes to ``state/drafts/``; no live document is touched.
+    reported and the text is kept whole. world_state's Key NPCs are rendered from the published NPC
+    dossiers (``key_npcs``): the build refuses when a selected NPC has none, unless ``--fallback-npc-lines``.
+    Output goes to ``state/drafts/``; no live document is touched.
     """
     now = now or _utcnow
     doc = args.doc
@@ -478,6 +493,23 @@ def run_state_synth(
     except (ValueError, OSError) as e:
         return _refuse(f"cannot read the entity registry or players.yaml: {e}")
 
+    rng_name = f"ch{since:03d}-{until:03d}"
+    key_plan: list[key_npcs.KeyNpc] = []
+    if doc == "world_state":
+        try:
+            chosen = key_npcs.select_key_npcs(
+                select.read_corpus_dossiers(range_dir), key_npcs.registry_npc_scopes(registry_path), pcs,
+                range_until=until, recent_chapters=recent_chapters, recurring_min=recurring_min,
+                named=[forms.get(n.strip().casefold(), n.strip()) for n in args.name or ()],
+            )
+        except select.SelectionError as e:
+            return _refuse(f"{e} (Key NPCs select the global NPCs only)")
+        key_plan = key_npcs.plan_key_npcs(
+            chosen, root, npc_root=npc_root or Path(root) / schema.DEFAULT_NPC_ROOT, rng=rng_name)
+        refusal = key_npcs.refusal_message(key_plan, since, until, getattr(args, "npc_root", None))
+        if refusal and not getattr(args, "fallback_npc_lines", False):
+            return _refuse(refusal)
+
     state_dir = Path(range_dir) / schema.STATE_DIR
     drafts = schema.draft_dir(range_dir, doc)
     draft_path = drafts / f"{doc}.draft.md"
@@ -507,21 +539,32 @@ def run_state_synth(
     for heading, route, attach in state_sections.PROSE_SECTIONS[doc]:
         routed = state_sections.route_notes(route, results)
         extra = ""
-        if heading == "## Key NPCs":
-            extra = "CODE-BUILT NPC STATUS TABLE (latest cited row per name; context, do not copy):\n\n" + table
-        elif heading == "## Active Threats and Open Pressures":
+        if heading == "## Active Threats and Open Pressures":
             extra = "THREAD LEDGER (OPENED / ADVANCED / RESOLVED / ABANDONED):\n\n" + "\n".join(threads)
         budget = budgets[heading[3:]] if doc == "world_state" else None
         user = _prose_prompt(doc, heading, state_sections.BRIEFS[heading], routed, extra,
                              last_chunk if attach else None, budget)
-        jobs.append({"heading": heading, "route": route, "notes": len(routed), "user": user, "budget": budget})
+        jobs.append({"heading": heading, "route": route, "notes": len(routed), "user": user, "budget": budget,
+                     "system": system})
+    key_per = key_published = 0
+    if doc == "world_state":
+        key_published = sum(1 for k in key_plan if k.view is not None)
+        key_per = key_npcs.words_per_line(budgets["Key NPCs"], key_published)
+        jobs.append({
+            "heading": "## Key NPCs", "route": "dossiers", "notes": key_published,
+            "user": key_npcs.lines_prompt(key_plan, key_per) if key_published else "", "budget": budgets["Key NPCs"],
+            "system": (context.PROMPT_DIR / "state.npc_lines.system.md").read_text(encoding="utf-8"),
+        })
+    outline_at = {h: n for n, h in enumerate(load_outline(doc))}
+    jobs.sort(key=lambda j: outline_at.get(j["heading"], len(outline_at)))
 
     started = now()
     run_dir = _new_run_dir(state_dir / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
     run_id = run_dir.name
     atomic_write_text(run_dir / f"{doc}.system.md", system)
     for j in jobs:
-        atomic_write_text(run_dir / f"{doc}.{_slug(j['heading'])}.user.md", j["user"])
+        if j["user"]:  # a Key NPCs call with no published dossier behind it is never made
+            atomic_write_text(run_dir / f"{doc}.{_slug(j['heading'])}.user.md", j["user"])
     backend = resolve_cli_model(args, legacy_default=None).backend
     record = {
         "step": "synth",
@@ -540,6 +583,15 @@ def run_state_synth(
             "track_files": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in track_paths if p.is_file()],
         },
         "calls": [],
+        "key_npcs": {
+            "fallback_requested": bool(getattr(args, "fallback_npc_lines", False)),
+            "selected": [
+                {"name": k.name, "reason": k.reason, "dossier": f"{schema.NPCS_DIR}/{k.slug}.md" if k.view else None,
+                 "sha256": freshness.sha_file(Path(root) / schema.NPCS_DIR / f"{k.slug}.md") if k.view else None,
+                 "missing": k.missing}
+                for k in key_plan
+            ],
+        } if doc == "world_state" else None,
         "check": "not run",
         "started": started.isoformat(timespec="seconds"),
         "finished": None,
@@ -569,10 +621,48 @@ def run_state_synth(
         fail(str(e))
         return _refuse(str(e))
     bodies: dict[str, str | None] = {}
+    budget_text: dict[str, str] = {}  # what a section's word budget counts, where that is not the whole body
+    key_assembled: key_npcs.Assembled | None = None
+    hay = ""
+    if doc == "world_state" and summaries_dir is not None:
+        hay = "\n".join(c.text for c in notes.load_chapters(Path(summaries_dir), since, until))
     for j in jobs:
         t0 = time.monotonic()
+        if j["route"] == "dossiers":
+            # world_state's Key NPCs: one call for the NPCs that have a published dossier (none if none do),
+            # then code checks every line and builds the rest.
+            out = None
+            if j["user"]:
+                try:
+                    out = render_part(client, j["system"], j["user"], args.model, args.max_tokens)
+                except Exception as e:
+                    fail(f"{j['heading']}: {type(e).__name__}: {e}")
+                    print(
+                        f"Error: model call failed in section {j['heading']}: {type(e).__name__}: {e} "
+                        f"(see {schema.display_path(run_dir / 'record.json', root)})",
+                        file=sys.stderr,
+                    )
+                    return EXIT_MODEL_FAILED
+                atomic_write_text(run_dir / f"{doc}.{_slug(j['heading'])}.out.md", out)
+            key_assembled = key_npcs.assemble(key_plan, out, hay, key_per, results, forms)
+            bodies[j["heading"]] = (
+                key_npcs.section_body(key_assembled, key_published, len(key_plan)) if key_plan else key_npcs.NO_NPCS_SELECTED
+            )
+            budget_text[j["heading"]] = "\n".join(key_assembled.lines)
+            record["calls"].append({
+                "heading": j["heading"], "route": j["route"], "notes": j["notes"],
+                "secs": round(time.monotonic() - t0, 1), "prompt_chars": len(j["user"]), "out_chars": len(out or ""),
+            })
+            a = key_assembled
+            print(f"Key NPCs: {len(key_plan)} NPCs ({a.from_model} from the model, {a.substituted} replaced by the "
+                  f"dossier's own sentence, {a.fallbacks} from checked notes)", flush=True)
+            for line in a.report:
+                print(f"  {line}", flush=True)
+            record["key_npcs"].update(from_model=a.from_model, substituted=a.substituted, fallbacks=a.fallbacks,
+                                      report=a.report)
+            continue
         try:
-            out = render_part(client, system, j["user"], args.model, args.max_tokens)
+            out = render_part(client, j["system"], j["user"], args.model, args.max_tokens)
         except Exception as e:
             fail(f"{j['heading']}: {type(e).__name__}: {e}")
             print(
@@ -596,7 +686,7 @@ def run_state_synth(
     for j in jobs:
         body = bodies.get(j["heading"])
         if j["budget"] and body is not None:
-            words = _budget_words(body)
+            words = _budget_words(budget_text.get(j["heading"], body))
             budget_report[j["heading"][3:]] = {"budget": j["budget"], "words": words, "over": words > j["budget"]}
     for name, r in budget_report.items():
         print(f"{name}: {r['words']}/{r['budget']} words" + ("  OVER" if r["over"] else ""), flush=True)
@@ -630,6 +720,10 @@ def run_state_synth(
 
     drafts.mkdir(parents=True, exist_ok=True)
     atomic_write_text(drafts / "npc_status_report.md", status_report)
+    if key_assembled is not None:
+        kb = budget_report.get("Key NPCs", {})
+        atomic_write_text(drafts / "key_npcs_report.md", key_npcs.report_md(
+            key_plan, key_assembled, key_per, kb.get("words", 0), kb.get("budget", 0)))
     # The files the sections point to. Written whether or not the draft is complete: they are
     # built by code from the checked notes and do not depend on the model.
     for kind, md in reference.items():

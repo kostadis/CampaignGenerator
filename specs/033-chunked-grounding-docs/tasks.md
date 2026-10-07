@@ -207,7 +207,7 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Tests for User Story 3
 
-- [ ] T029 [P] [US3] `tests/test_summary_native_key_npcs.py`:
+- [X] T029 [P] [US3] `tests/test_summary_native_key_npcs.py`:
   - selection uses 031 rules, and PCs are never selected;
   - `published_view()` returns only the name, header facts, Identity and Last Observed State;
   - `entry` citations map to `npcs`;
@@ -216,11 +216,11 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
   - each line ends `→ docs/npcs/<slug>.md`;
   - the refusal message names each NPC as `not drafted` / `failed verification (<checks>)` / `drafted, not published`;
   - `--fallback-npc-lines` writes a code-built line ending `(no published dossier — from checked notes)` with only checked-note citations.
-- [ ] T030 [P] [US3] `tests/test_state_docs_no_secrets.py`: `SECRET-CANARY-033` appears in no draft, no reference file and no `state/runs/*/*.md`. A static check asserts `key_npcs.py` never reads past `## Last Observed State` into `## Secrets` (no code path names the Secrets heading).
+- [X] T030 [P] [US3] `tests/test_state_docs_no_secrets.py`: `SECRET-CANARY-033` appears in no draft, no reference file and no `state/runs/*/*.md`. A static check asserts `key_npcs.py` never reads past `## Last Observed State` into `## Secrets` (no code path names the Secrets heading).
 
 ### Implementation for User Story 3
 
-- [ ] T031 [US3] Implement `pipelines/summary_native/key_npcs.py` (deterministic):
+- [X] T031 [US3] Implement `pipelines/summary_native/key_npcs.py` (deterministic):
   - `published_dossiers(campaign, range)`, which reads the provenance header (`source: summary_native`, range, `verify: pass`);
   - `published_view(path)`;
   - `select_key_npcs(...)`, via `select.select_dossiers` over global NPCs;
@@ -228,11 +228,11 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
   - `verify_line(...)`, `fallback_from_dossier(...)` and `fallback_from_notes(...)`.
 
   Port from the prototype's `npcs_from_dossiers.py`.
-- [ ] T032 [US3] In `pipelines/summary_native/synth.py` (world_state):
+- [X] T032 [US3] In `pipelines/summary_native/synth.py` (world_state):
   - refuse (exit 2) with the missing-dossier list, unless `--fallback-npc-lines`;
   - make one Key NPCs model call (`state.npc_lines.system.md`), then check and substitute lines;
   - report substitutions and fallbacks.
-- [ ] T033 [US3] Add `--fallback-npc-lines` (world_state only) to `pipelines/summary_native/cli.py`. Add the `fallback_npc_lines` route param to `/run/synth/{doc}` in `server/routers/summary_native.py` (400 for other docs). In `frontend/src/views/grounding/SummaryNative.vue`, add the unpersisted checkbox (reset on load) and render the refusal's NPC list with a link to the NPC dossiers page.
+- [X] T033 [US3] Add `--fallback-npc-lines` (world_state only) to `pipelines/summary_native/cli.py`. Add the `fallback_npc_lines` route param to `/run/synth/{doc}` in `server/routers/summary_native.py` (400 for other docs). In `frontend/src/views/grounding/SummaryNative.vue`, add the unpersisted checkbox (reset on load) and render the refusal's NPC list with a link to the NPC dossiers page.
 
 **Checkpoint**: Key NPCs is dossier-sourced, with no silent gaps.
 

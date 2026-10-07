@@ -490,6 +490,32 @@ def test_audit_is_a_400_for_campaign_state_naming_the_audit_step(campaign):
     assert "cmd" not in captured
 
 
+def test_fallback_npc_lines_is_per_run_and_world_state_only(campaign):
+    _, svc, captured = campaign
+    assert _run("/run/synth/world_state", RANGE) == 200
+    assert "--fallback-npc-lines" not in captured["cmd"]  # never remembered, never a config default
+    assert _run("/run/synth/world_state", {**RANGE, "fallback_npc_lines": True}) == 200
+    assert "--fallback-npc-lines" in captured["cmd"]
+    captured.clear()
+    for doc in ("campaign_state", "party"):
+        r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, "fallback_npc_lines": True})
+        assert r.status_code == 400 and "world_state only" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
+def test_the_key_npcs_selection_flags_go_to_world_state_but_not_campaign_state(campaign):
+    _, _, captured = campaign
+    assert _run("/run/synth/world_state", {**RANGE, "recent_chapters": 2, "name": ["Kalan"]}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--recent-chapters") == "2" and "--recurring-min" in cmd and "--name" in cmd
+    assert _run("/run/synth/campaign_state", {**RANGE, "recent_chapters": 2}) == 200
+    assert "--recent-chapters" not in captured["cmd"] and "--recurring-min" not in captured["cmd"]
+    captured.clear()
+    r = client.get(f"{BASE}/run/synth/campaign_state", params={**RANGE, "name": ["Kalan"]})
+    assert r.status_code == 400 and "does not apply to campaign_state" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
 def test_parts_zero_is_not_a_refusal(campaign):
     _, _, captured = campaign
     assert _run("/run/synth/world_state", {**RANGE, "parts": 0}) == 200

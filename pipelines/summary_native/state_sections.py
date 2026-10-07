@@ -115,6 +115,9 @@ _CONTRACT = """\
 >   not resolve: read it as a paraphrase, not as words anyone said.
 > - `[ch NNN / target]` cites `{summaries}/NNN-*.md`. The target is a scene id (`NNN.SS`), or that chapter's
 >   `npcs`, `locations`, `items`, `spells`, `moment` (Memorable Moments) or `end` (Session-End State) section.
+> - Each line under `## Key NPCs` ends with `→ docs/npcs/<slug>.md`, the NPC's published dossier (open it for
+>   the full account), or with `{fallback}`: that NPC has no published dossier, and the line is its latest
+>   status and checked notes, verbatim.
 > - Every checked note, by subject: {files}.
 >   Every event, in order: `{timeline}`.
 > - Anything this document does not settle is a decision for the GM, not something to fill in.
@@ -130,7 +133,7 @@ def reading_contract(rng: tuple[int, int], paths: dict[str, str]) -> str:
     return _CONTRACT.format(
         since=rng[0], until=rng[1], later=schema.LATER, since_=schema.SINCE, unverified=schema.UNVERIFIED,
         summaries=str(paths["summaries"]).rstrip("/"), timeline=paths["timeline"],
-        files=", ".join(f"`{ref}/{kind}.md`" for kind in REFERENCE_KINDS),
+        files=", ".join(f"`{ref}/{kind}.md`" for kind in REFERENCE_KINDS), fallback=schema.KEY_NPC_FALLBACK_MARK,
     )
 
 
@@ -252,13 +255,11 @@ def npc_status_table(
 
 #: ``doc -> ((heading, route, attach the last chunk's summaries), ...)`` in outline order. A route is
 #: ``party``, ``threads`` or a World tag. Code routes the notes; the model never chooses its inputs.
+#: world_state's ``## Key NPCs`` is not here: it is rendered from the published dossiers (``key_npcs``).
 PROSE_SECTIONS: dict[str, tuple[tuple[str, str, bool], ...]] = {
     "world_state": (
         ("## Party", "party", True),
         ("## Factions and Powers", "FACTION", False),
-        # TODO(T031/T032): Key NPCs is rendered from the published dossiers (key_npcs.py), not from
-        # these [NPC] notes. Until then it is a prose section like the others; replace, don't extend.
-        ("## Key NPCs", "NPC", False),
         ("## Locations", "LOCATION", False),
         ("## Items and Artifacts", "ITEM", False),
         ("## Active Threats and Open Pressures", "THREAT", False),
@@ -284,7 +285,6 @@ REFERENCE_FOR: dict[str, str] = {
 BRIEFS: dict[str, str] = {
     "## Party": "Who the party is NOW: name, level, rank, each PC's current capabilities, gear and standing, and where they are. Latest note wins where notes conflict.",
     "## Factions and Powers": "Each faction or power as it stands NOW: goals, leaders, relationship to the party, last known move.",
-    "## Key NPCs": "The NPCs who matter NOW: who they are, where they stand with the party, what they want. One sub-entry per NPC; skip walk-ons.",
     "## Locations": "Places as they stand NOW: what each is, who controls it, what the party did there and left unresolved.",
     "## Items and Artifacts": "Significant items NOW: what each does, who holds it, open questions about it.",
     "## Active Threats and Open Pressures": "What is pressing on the party NOW and from whom. Only things the notes do not show resolved.",

@@ -312,6 +312,10 @@ class TestReadingContract:
         md = self._md()
         assert "decision for the GM" in md and "not verbatim" in md
 
+    def test_it_says_key_npcs_lines_point_to_a_dossier_or_carry_the_fallback_mark(self):
+        md = self._md()
+        assert "→ docs/npcs/<slug>.md" in md and schema.KEY_NPC_FALLBACK_MARK in md
+
     def test_it_is_one_blockquote_naming_the_range(self):
         md = self._md()
         assert all(ln.startswith(">") for ln in md.strip().splitlines())

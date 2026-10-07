@@ -226,6 +226,8 @@ STATE_PARTS_REFUSAL = (
     "--parts does not apply to {doc}: it is built with one call per section from the checked notes"
 )
 STATE_AUDIT_REFUSAL = "--audit does not apply to campaign_state: the audit is its own step: summary_native audit"
+#: Ends a Key NPCs line built by code for an NPC with no published dossier (``--fallback-npc-lines``).
+KEY_NPC_FALLBACK_MARK = "(no published dossier — from checked notes)"
 #: Shown in the Audit section until ``summary_native audit`` has run for the range.
 AUDIT_NOT_RUN = "Audit not run for this range."
 

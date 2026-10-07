@@ -66,6 +66,9 @@ const dumpOnly = ref(false)
 const forceBuild = ref(false)
 // Per-run, never persisted: replacing a reviewed draft must be a deliberate act each time.
 const forceSynth = ref(false)
+// Per run, never persisted and unchecked on every load (spec 033 FR-018b): write a code-built Key NPCs line
+// for an NPC with no published dossier instead of refusing. world_state only.
+const fallbackNpcLines = ref(false)
 // Extract (per run, never persisted): a blank chunk size uses grounding.yaml summary_native.extract.chunk_chars.
 const extractChunkChars = ref<Num>('')
 const extractMaxTokens = ref<Num>('')
@@ -146,6 +149,15 @@ const synthParams = computed(() => isChunked.value
       // The prose step takes its backend and model from grounding.yaml summary_native.prose, so the
       // page does not send the app-wide model for these two documents.
       ...baseParams.value,
+      // world_state's Key NPCs selection (campaign_state has no such section and the server refuses these)
+      ...(doc.value === 'world_state'
+        ? {
+            name: lines(namesText.value),
+            recent_chapters: num(recentChapters.value),
+            recurring_min: num(recurringMin.value),
+            fallback_npc_lines: fallbackNpcLines.value,
+          }
+        : {}),
       max_tokens: num(maxTokens.value),
       dump_only: dumpOnly.value,
       force: forceSynth.value,
@@ -234,10 +246,28 @@ async function refreshOutputs() {
   }
 }
 
-function onSynthDone() {
+// The NPCs a refused world_state build named, parsed from the CLI's own message (one `  Name: state` line each).
+interface MissingNpc { name: string; state: string }
+const missingNpcs = ref<MissingNpc[]>([])
+const MISSING_HEADER = /need a published, verified dossier/
+const MISSING_LINE = /^ {2}(?!summary_native )(.+?): (not drafted|drafted, not verified|drafted, not published|failed verification.*|published for .+)$/
+function parseMissingNpcs(output: string): MissingNpc[] {
+  if (!MISSING_HEADER.test(output)) return []
+  const out: MissingNpc[] = []
+  for (const raw of output.split('\n')) {
+    const m = MISSING_LINE.exec(raw.trimEnd())
+    if (m) out.push({ name: m[1], state: m[2] })
+  }
+  return out
+}
+
+function onSynthDone(rc: number, output = '') {
   forceSynth.value = false
+  missingNpcs.value = rc === 2 && doc.value === 'world_state' ? parseMissingNpcs(output) : []
   refreshOutputs()
 }
+
+watch(doc, () => { fallbackNpcLines.value = false; missingNpcs.value = [] })
 
 function onExtractDone() {
   forceExtract.value = false
@@ -396,6 +426,9 @@ onMounted(async () => {
         <span v-if="isChunked" class="field-help">
           Built from the checked notes: run Extract first. Code builds the timeline, completed list and NPC status table;
           the model writes each remaining section from the notes routed to it. The tracking audit is its own step.
+          <template v-if="doc === 'world_state'">
+            Key NPCs are rendered from the published NPC dossiers: the build refuses when a selected NPC has none.
+          </template>
         </span>
         <PathField v-if="!isChunked" v-model="worldStatePath" label="World-state draft (context)" resolve-base="campaign"
           help="A GM-reviewed world_state draft to use as upstream context. Optional." />
@@ -411,18 +444,19 @@ onMounted(async () => {
             placeholder="One path per line. Blank uses the Campaign State page's tracking lists." />
           <span class="field-help">Tracking, planning or module files treated as questions to answer from the summaries.</span>
         </div>
-        <div v-if="!isChunked" class="field">
+        <div v-if="!isChunked || doc === 'world_state'" class="field">
           <label class="field-label">Named subjects</label>
           <textarea class="field-textarea" v-model="namesText" rows="2"
             placeholder="One subject per line &mdash; force-includes these dossiers" />
+          <span v-if="doc === 'world_state'" class="field-help">Force-includes these global NPCs in Key NPCs.</span>
         </div>
         <div class="num-grid">
-          <div v-if="!isChunked" class="field">
+          <div v-if="!isChunked || doc === 'world_state'" class="field">
             <label class="field-label">Recent chapters</label>
             <input type="number" min="0" class="field-input" v-model.number="recentChapters" />
-            <span class="field-help">Counted back from the range end; 0 = all.</span>
+            <span class="field-help">Counted back from the range end; 0 = all.<template v-if="doc === 'world_state'"> Picks the Key NPCs.</template></span>
           </div>
-          <div v-if="!isChunked" class="field">
+          <div v-if="!isChunked || doc === 'world_state'" class="field">
             <label class="field-label">Recurring minimum</label>
             <input type="number" min="0" class="field-input" v-model.number="recurringMin" />
             <span class="field-help">Observations that make an entity recurring.</span>
@@ -444,9 +478,34 @@ onMounted(async () => {
         <label class="checkbox-label">
           <input type="checkbox" v-model="forceSynth" /> Replace existing reviewed draft (--force)
         </label>
+        <label v-if="doc === 'world_state'" class="checkbox-label">
+          <input type="checkbox" v-model="fallbackNpcLines" /> Write fallback lines for NPCs without a published dossier
+        </label>
+        <span v-if="doc === 'world_state' && fallbackNpcLines" class="field-help">
+          This run only. Each such NPC gets a line built by code from its checked notes and marked
+          &ldquo;(no published dossier &mdash; from checked notes)&rdquo;. Not saved.
+        </span>
         <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
           :label="`Synthesize ${doc}`" :selection-service="isChunked ? undefined : 'grounding'"
           selection-doc="summary_native" :selection-can-override="true" @done="onSynthDone" />
+        <div v-if="doc === 'world_state' && missingNpcs.length" class="panel missing-npcs">
+          <div class="counts">
+            <span class="bad">Build refused: {{ missingNpcs.length }} selected NPC(s) have no published, verified dossier</span>
+          </div>
+          <table class="drafts">
+            <thead><tr><th>NPC</th><th>Dossier state</th></tr></thead>
+            <tbody>
+              <tr v-for="n in missingNpcs" :key="n.name">
+                <td>{{ n.name }}</td>
+                <td class="bad">{{ n.state }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <span class="field-help">
+            Draft, verify and publish them on the <RouterLink to="/npcs/dossiers">NPC dossiers page</RouterLink>,
+            then build again &mdash; or tick &ldquo;Write fallback lines&rdquo; above for this run.
+          </span>
+        </div>
         <div v-if="doc === 'world_state' && budgetRows.length" class="panel budgets">
           <div class="counts">
             <span>Word budgets (last world_state build; citations not counted)</span>
@@ -581,6 +640,6 @@ onMounted(async () => {
 .drafts { border-collapse: collapse; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 .drafts th, .drafts td { text-align: left; padding: 3px 14px 3px 0; }
 .drafts th { font-weight: 600; color: var(--text); }
-.extract-state, .budgets { margin-top: 10px; }
+.extract-state, .budgets, .missing-npcs { margin-top: 10px; }
 .chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
 </style>

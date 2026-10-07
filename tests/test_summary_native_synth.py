@@ -692,7 +692,10 @@ def extracted(scamp, fm):
 
 
 def synth_args(root, doc, *extra):
-    return ["synth", doc, *cs.common(root), *extra]
+    """The fixture publishes a dossier for one of its three selectable NPCs, so world_state builds only with
+    ``--fallback-npc-lines``; ``test_summary_native_key_npcs`` covers the default refusal."""
+    fallback = ["--fallback-npc-lines"] if doc == "world_state" and "--no-fallback" not in extra else []
+    return ["synth", doc, *cs.common(root), *fallback, *(e for e in extra if e != "--no-fallback")]
 
 
 def state_dir(root):
@@ -822,15 +825,16 @@ class TestWorldState:
         # every routed note is a verified one: the dropped bullets never reach a prompt
         assert all("the web is a lie" not in u and "A claim about a later chapter" not in u for u in by.values())
 
-    def test_key_npcs_placeholder_gets_the_code_built_status_table(self, extracted, fm):
+    def test_key_npcs_is_not_a_notes_routed_prose_section(self, extracted, fm):
+        """Key NPCs reads the published dossiers (US3), never the [NPC] notes or the status table."""
         assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
         user = next(c["user"] for c in fm.prose_calls if c["heading"] == "## Key NPCs")
-        assert "[NPC] **Ilvara Mizzrym**" in user and "[NPC] **Kalan**" in user
-        assert "| Ilvara Mizzrym | Dead |" in user
+        assert "### Ilvara Mizzrym" in user and "IDENTITY:" in user and "LAST OBSERVED STATE:" in user
+        assert "[NPC] **" not in user and "CODE-BUILT NPC STATUS TABLE" not in user
 
     def test_the_prose_prompt_carries_the_quotation_rule(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
-        assert all("Quotation marks are reserved" in c["system"] for c in fm.prose_calls)
+        assert all("Quotation marks are reserved" in c["system"] for c in fm.prose_calls if c["heading"] != "## Key NPCs")
 
     def test_a_missing_prose_section_writes_incomplete_and_exits_3(self, extracted, fm):
         fm.prose_missing = {"## Locations"}
@@ -958,12 +962,14 @@ class TestWorldStateBudgetsAndReferences:
     def test_the_world_prompt_carries_the_budget_and_the_quotation_rule(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
         by = {c["heading"]: c for c in fm.prose_calls}
-        for heading, words in (("## Party", 700), ("## Factions and Powers", 450), ("## Key NPCs", 900),
+        for heading, words in (("## Party", 700), ("## Factions and Powers", 450),
                                ("## Locations", 450), ("## Items and Artifacts", 450),
                                ("## Active Threats and Open Pressures", 600)):
             assert f"WORD BUDGET: {words} words, hard limit." in by[heading]["user"]
             assert "WORD BUDGET" in by[heading]["system"]
             assert "Quotation marks are reserved" in by[heading]["system"]
+        # Key NPCs is budgeted per line: its 900 words are shared by the NPCs that have a dossier
+        assert "At most 900 words per line" in by["## Key NPCs"]["user"]
 
     def test_campaign_state_has_no_budget(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0

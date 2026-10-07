@@ -40,7 +40,7 @@ def test_guard_covers_the_modules_that_exist():
     assert "npc_draft" not in GUARDED  # the model step, deliberately not guarded
     # Spec 033: `notes` exists as of Phase 2 and is checked; the other four are skipped by name
     # until their phases land (and are asserted checked below once they exist).
-    assert "notes" in names
+    assert {"notes", "state_sections", "key_npcs"} <= names  # key_npcs exists as of spec 033 phase 5
     assert {"notes", "state_sections", "key_npcs", "annotate", "audit_select"} <= set(GUARDED)
     # The model steps are not guarded: they are where the calls are made.
     assert {"extract", "synth", "audit"}.isdisjoint(GUARDED)

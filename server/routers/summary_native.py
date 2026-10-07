@@ -320,10 +320,13 @@ async def run_synth(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    fallback_npc_lines: bool = False,
 ):
     _require_doc(doc)
     run = _run_config(request)
     chunked = doc in schema.STATE_DOCS
+    if fallback_npc_lines and doc != "world_state":
+        raise HTTPException(status_code=400, detail=f"--fallback-npc-lines applies to world_state only, not {doc}")
     if chunked:
         # world_state and campaign_state write one call per section from the checked notes; the CLI
         # refuses these flags and so does the route, with the CLI's words.
@@ -335,6 +338,9 @@ async def run_synth(
                 detail=schema.STATE_AUDIT_REFUSAL if doc == "campaign_state"
                 else f"--audit applies to campaign_state only, not {doc}",
             )
+        if doc == "campaign_state" and any(n.strip() for n in (name or [])):
+            raise HTTPException(
+                status_code=400, detail="--name does not apply to campaign_state: it has no Key NPCs section")
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     cmd = _base_cmd("synth", doc, directory, lo, hi)
@@ -358,8 +364,10 @@ async def run_synth(
     if subjects:
         cmd += ["--name", *subjects]
 
-    cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
-    cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
+    # campaign_state has no Key NPCs section, so the CLI refuses the selection flags for it
+    if doc != "campaign_state":
+        cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
+        cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
     if not chunked:
         cmd += ["--parts", str(_pick_num(parts, run.parts))]
     if max_tokens is not None:
@@ -368,6 +376,8 @@ async def run_synth(
         cmd.append("--dump-only")
     if force:
         cmd.append("--force")
+    if fallback_npc_lines:  # per run, never from config
+        cmd.append("--fallback-npc-lines")
 
     if chunked:
         # The prose step has its own backend/model block (grounding.yaml summary_native.prose).

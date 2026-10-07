@@ -26,7 +26,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  done: [returncode: number]
+  /** The return code and everything the run printed, for a page that reads a refusal's list. */
+  done: [returncode: number, output: string]
 }>()
 
 const output = ref('')
@@ -92,7 +93,7 @@ function run() {
     onDone(rc) {
       status.value = rc === 0 ? 'done' : 'error'
       returnCode.value = rc
-      emit('done', rc)
+      emit('done', rc, output.value)
     },
     onError() {
       status.value = 'error'

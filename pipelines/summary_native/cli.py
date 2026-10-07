@@ -63,10 +63,12 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"else {schema.DEFAULT_DRAFT_MODEL})")
             # no parser default: precedence is flag > grounding.yaml summary_native.extract.backend > schema
             add_backend_args(p, default_backend=None)
-        if name.startswith("npc-"):
+        if name.startswith("npc-") or name == "synth":
             p.add_argument("--npc-root", default=None,
                            help="NPC output root (default: npc_dossiers.yaml npc_root, else "
-                                f"{schema.DEFAULT_NPC_ROOT})")
+                                f"{schema.DEFAULT_NPC_ROOT})"
+                                + ("; world_state only: where draft verifications and the publish log are read, "
+                                   "to explain a missing dossier" if name == "synth" else ""))
         if name == "npc-link":
             p.add_argument("--force", action="store_true",
                            help="rewrite existing evidence/ and link_manifest.json for the range")
@@ -116,10 +118,18 @@ def build_parser() -> argparse.ArgumentParser:
                            help="retired for campaign_state (the audit is `summary_native audit`); "
                                 "refused for every document")
             p.add_argument("--recent-chapters", type=int, default=None,
-                           help=f"chapters counted back from the range end (default {schema.DEFAULT_RECENT_CHAPTERS}; 0 = all)")
+                           help=f"chapters counted back from the range end (default {schema.DEFAULT_RECENT_CHAPTERS}; 0 = all); "
+                                "party, planning and world_state's Key NPCs; refused for campaign_state")
             p.add_argument("--recurring-min", type=int, default=None,
-                           help=f"observations that make an entity recurring (default {schema.DEFAULT_RECURRING_MIN})")
-            p.add_argument("--name", nargs="+", default=None, metavar="SUBJECT", help="force-include dossiers by subject")
+                           help=f"observations that make an entity recurring (default {schema.DEFAULT_RECURRING_MIN}); "
+                                "party, planning and world_state's Key NPCs; refused for campaign_state")
+            p.add_argument("--name", nargs="+", default=None, metavar="SUBJECT",
+                           help="force-include dossiers by subject (party, planning; world_state: force-include "
+                                "these global NPCs in Key NPCs); refused for campaign_state")
+            p.add_argument("--fallback-npc-lines", action="store_true",
+                           help="world_state only: when a selected NPC has no published, verified dossier, write a "
+                                f"code-built line {schema.KEY_NPC_FALLBACK_MARK} instead of refusing "
+                                "(per run; never read from config)")
             p.add_argument("--parts", type=int, default=None,
                            help=f"split the outline into N calls (party and planning; default {schema.DEFAULT_PARTS} = one call; "
                                 "refused for world_state and campaign_state, which write one call per section)")
@@ -561,6 +571,12 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
     except ValueError as e:
         return _err(str(e))
     track = _grounding_group(config_path.expanduser().resolve(), "campaign_state").get("track_files") or []
+    npc_root = None
+    if args.doc == "world_state":
+        try:
+            npc_root = _npc_root(args, root, config_path)
+        except ValueError as e:  # a malformed npc_dossiers.yaml
+            return _err(str(e))
     return synth.run_synth(
         args,
         root=root,
@@ -575,6 +591,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         summaries_dir=summaries_dir,
         players_path=_players_path(config_path),
         budgets=budgets,
+        npc_root=npc_root,
     )
 
 
