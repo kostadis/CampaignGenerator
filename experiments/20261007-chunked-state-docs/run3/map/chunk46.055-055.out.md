@@ -1,0 +1,141 @@
+## Events
+- The party emerges from the Blingdenstone surface exit into the Silver Marches during mid-spring, bidding farewell to Eldeth as they begin their southward journey. `[ch 055 / 055.01]`
+- The party witnesses burned hamlets, a broken standing stone, and a defiled Tempus shrine along the road, with Gyrgum performing a reverent blessing at the shrine. `[ch 055 / 055.02]`
+- The party encounters a refugee family of three generations traveling with one ox and a handcart, heading south. `[ch 055 / 055.02]`
+- A local at a wayhouse explains the Uthgardt raids were triggered by stolen religious artifacts and describes the restored Ordning of giants. `[ch 055 / 055.02]`
+- The local also notes an eerie quiet in the land — fewer bears and no pixie songs — which Gyrgum finds suspicious due to his Underdark experience. `[ch 055 / 055.02]`
+- The party detours to Mirabar, observing smoke and red light from its forges and a massive refugee population sleeping at Smith’s Gate. `[ch 055 / 055.03]`
+- Thorin feels alienated in Mirabar despite his dwarf heritage and considers upgrading his equipment. `[ch 055 / 055.03]`
+- A Stroud School polemicist approaches Gyrgum, asking if he walks the road for Stroud; after Gyrgum’s failed persuasion (roll 6), the preacher gives him the pamphlet *Stroud and the Human Agency Hypothesis: A Critique — Dragons and Gods Do Not Rule*. `[ch 055 / 055.03]`
+- The party visits an Order of the Gauntlet shrine in Mirabar featuring a bronze frontispiece of Milo Goodbarrel’s Account, Volume 1, and a large painting of Malfire, the Vindicator of Nature. `[ch 055 / 055.03]`
+- The party arrives in Triboar, a town one-third in ruins, and sees a cairn of 243 silver fieldstones naming the dead. `[ch 055 / 055.04]`
+- The party hears rumors of the Ardragon — a black-hooded Kenku hovering a foot off the ground, mimicking a hawk, taking nothing, and leaving coins uncollected. `[ch 055 / 055.04]`
+- Kestler, a half-orc with a Bahamut shrine, asks the party to deliver a note to a temple brother who has not been heard from in five years; Gyrgum accepts, calling it an omen. `[ch 055 / 055.04]`
+- Thorin buys a drink for Eldred, a man speaking in two voices — his own and a younger version of himself — and a neighbor explains he returned from a courier run two summers past and has been “both of them” ever since. `[ch 055 / 055.04]`
+- Gyrgum and Zalthir use insight checks (both >14) to recognize Eldred’s dual voices as the same fractured madness they witnessed in the Underdark. `[ch 055 / 055.04]`
+- Glabbagool is gifted a wheel of cheese by the innkeeper, dissolves it entirely, declares “This is very good,” and asks if dairy is bad for people — his first encounter with cheese. `[ch 055 / 055.04]`
+- Gyrgum performs a ten-minute Mass Healing Word ritual for refugees, drawing attention from Bahamutians, Stroudites, and Protanthians. `[ch 055 / 055.04]`
+- Gyrgum responds to their theological question with “Are we not all the playthings of fate?” — winning over the Bahamutian faction, angering Stroudites and Protanthians, and sparking debate. `[ch 055 / 055.04]`
+- The party enters Waterdeep, where Glabbagool is forced to remain hidden in a bag due to the city’s intolerance of oozes. `[ch 055 / 055.05]`
+- The party sees a bronze statue in Castle Ward of Stroud and Protanther in a chess match, with the plaque: *This is the position. The move is yours.* `[ch 055 / 055.05]`
+- Gyrgum muses aloud, “If only Protanther had moved his Rook, all could have gone another way,” drawing a crowd eager to debate. `[ch 055 / 055.05]`
+- Thorin purchases mithral plate armor, raising his AC to 22. `[ch 055 / 055.05]`
+- Gyrgum expresses interest in acquiring a javelin of lightning; the GM confirms it is available. `[ch 055 / 055.05]`
+- Daz visits Rishaal’s Pageturners, where a framed original painting by Milo Goodbarrel depicts Stroud, Milo, Malfire, and Whistler. `[ch 055 / 055.06]`
+- Rishaal explains the painting saved the print run of Volume Three of Milo’s Account, as fans came for the art and left with the book. `[ch 055 / 055.06]`
+- Daz notices a sign on the wall: *Whistler, Kenku of the First Faction, fallen at Glazhael’s lair, the year of the Alliance, redeemed in life and death. May his silence speak.* `[ch 055 / 055.06]`
+- Daz engages with “real-world fiction enthusiasts” debating whether Whistler could have flown from Triboar to a location in two days per the Weber Report. `[ch 055 / 055.06]`
+- Zalthir seeks shadow monk training and is directed to Candlekeep’s Khell-Vire. `[ch 055 / 055.07]`
+- A monastery demands 140 gold for a letter of introduction to Khell-Vire; Zalthir fails persuasion (roll 4). `[ch 055 / 055.07]`
+- Daz repairs the monastery’s leaky roof tear-by-tear using Mending, satisfying the monks and earning the letter. `[ch 055 / 055.07]`
+- In Field Ward, the party encounters a street preacher chanting, “The kraken under the keep! The kraken under the keep! The chant will break, and the kraken will rise!” `[ch 055 / 055.07]`
+- The preacher pauses upon seeing Daz and says, “You came up! You came up, you will go again. You will go down again. Do not—” before returning to his chant. `[ch 055 / 055.07]`
+- Thorin rolls 16 on insight and recognizes the preacher’s speech rhythm matches Eldred’s fractured pattern. `[ch 055 / 055.07]`
+- A city guard in Waterdeep demands to inspect Glabbagool’s bag; Thorin defends ooze rights, and Dawnbringer says, “One day they’re going to ban oozes, the next day they’ll ban sentient swords!” `[ch 055 / 055.08]`
+- Zalthir uses Shadow Step to vanish with the bag, reappearing in another shadowed alley, leaving the guard bewildered and Thorin mid-oration. `[ch 055 / 055.08]`
+- Thorin uses Dawnbringer’s Lesser Restoration to heal orphans and the sick in Waterdeep’s poorer quarters, bonding with the sword. `[ch 055 / 055.08]`
+- The party departs Waterdeep and arrives in Daggerford, with Candlekeep still ahead and unresolved questions lingering: a burning temple, a kraken chant, and rising madness. `[ch 055 / 055.09]`
+
+## Concluded
+- The journey from Blingdenstone’s surface exit to Daggerford is completed. `[ch 055 / 055.09]`
+- The detour to Mirabar is concluded with Gyrgum acquiring the Stroudite pamphlet and Thorin considering armor upgrades. `[ch 055 / 055.03]`
+- The visit to Triboar concludes with Gyrgum accepting Kestler’s note and the party witnessing Eldred’s fractured speech. `[ch 055 / 055.04]`
+- The stay in Waterdeep concludes with Thorin acquiring mithral plate armor, Daz purchasing Volume Three, Zalthir obtaining the letter to Khell-Vire, and the ooze rights confrontation resolved. `[ch 055 / 055.05; ch 055 / 055.06; ch 055 / 055.07; ch 055 / 055.08]`
+- The monastery’s roof repair is completed successfully by Daz using Mending, fulfilling the requirement for the letter of introduction. `[ch 055 / 055.07]`
+- Gyrgum’s Mass Healing Word ritual in Triboar concludes, sparking theological debate but no further action taken. `[ch 055 / 055.04]`
+- The street preacher’s chant in Waterdeep ends without resolution, but the pattern is noted. `[ch 055 / 055.07]`
+- The city guard’s inspection of Glabbagool’s bag ends with Zalthir’s Shadow Step and Thorin walking away. `[ch 055 / 055.08]`
+
+## Threads
+- [OPENED] **The Ardragon** — A black-hooded Kenku hovering a foot off the ground, mimicking a hawk, taking nothing, and leaving coins uncollected on caravan trails north of Yartar is first heard as a rumor in Triboar; the party recognizes a possible link to Whistler. `[ch 055 / 055.04]`
+- [OPENED] **Kestler’s Temple Fire** — A southern temple’s fire still burns, its keeper has not written in five years and has not been seen in three; Kestler gives the party a note to deliver, and Gyrgum calls it an omen. `[ch 055 / 055.04]`
+- [OPENED] **Eldred’s Fractured Voice** — A courier in Triboar speaks in two voices — his own and a younger version of himself — identified by Gyrgum and Zalthir as the same madness from the Underdark; the party realizes this madness is bleeding into the surface. `[ch 055 / 055.04]`
+- [OPENED] **The Kraken Chant** — A street preacher in Waterdeep’s Field Ward chants, “The kraken under the keep!” and directly warns Daz, “You came up! You will go down again.” Thorin notes the speech pattern matches Eldred’s. `[ch 055 / 055.07]`
+- [OPENED] **Whistler’s Fate** — A sign in Rishaal’s Pageturners declares Whistler “fallen at Glazhael’s lair, redeemed in life and death,” contradicting his rumored presence as the Ardragon; fan factions debate whether Milo’s account of his redemption is too generous. `[ch 055 / 055.06]`
+- [OPENED] **Mortal Agency Doctrine** — Gyrgum is handed the pamphlet *Stroud and the Human Agency Hypothesis: A Critique — Dragons and Gods Do Not Rule*, introducing a philosophical factionalism surrounding Stroud and rejecting divine influence. `[ch 055 / 055.03]`
+- [OPENED] **Glabbagool’s Cheese Curiosity** — Glabbagool’s first encounter with cheese leads to him asking if dairy is bad for people, marking a new dimension of his sentience and curiosity. `[ch 055 / 055.04]`
+- [OPENED] **Dawnbringer’s Bonding Mission** — Thorin uses Dawnbringer’s Lesser Restoration to heal orphans, explicitly to bond with the sword, and Dawnbringer is described as “very happy” about this. `[ch 055 / 055.08]`
+- [OPENED] **Shadow Monk Training** — Zalthir obtains a letter of introduction to Khell-Vire at Candlekeep, establishing a clear goal for future training. `[ch 055 / 055.07]`
+- [OPENED] **The Surface-Madness Gradient** — The fractured speech patterns of Eldred and the preacher, combined with Gyrgum’s recognition of their similarity to Underdark madness, establish a growing contamination of the surface world. `[ch 055 / 055.04; ch 055 / 055.07]`
+
+## NPC Status
+- Eldeth | Departed | Blingdenstone surface exit | Farewell, no further contact [ch 055 / 055.01; ch 055 / npcs]
+- Stroud School Polemicist | Alive | Mirabar market | Hostile, attempted conversion; gave pamphlet [ch 055 / 055.03; ch 055 / npcs]
+- Malfire | Unknown | — | Depicted in painting; no direct interaction [ch 055 / 055.03; ch 055 / npcs]
+- Kestler | Alive | Triboar, near Mountain’s Mouth inn | Hopeful, trusts party to deliver note [ch 055 / 055.04; ch 055 / npcs]
+- Eldred | Alive | Triboar, Mountain’s Mouth inn | Fractured, dual-voiced, cared for by locals [ch 055 / 055.04; ch 055 / npcs]
+- Glabbagool | Alive | Hidden in bag in Waterdeep, then with party in Daggerford | Curious, enthusiastic, first encountered cheese [ch 055 / 055.04; ch 055 / 055.05; ch 055 / npcs]
+- Rishaal | Alive | Waterdeep, Rishaal’s Pageturners | Observant, explains painting’s impact on sales [ch 055 / 055.06; ch 055 / npcs]
+- Whistler | Unknown | — | Believed dead by some; rumored as Ardragon; status unresolved [ch 055 / 055.04; ch 055 / 055.06; ch 055 / npcs]
+- Field Ward Street Preacher | Alive | Waterdeep, Field Ward | Obsessive, chants about kraken, recognized Daz [ch 055 / 055.07; ch 055 / npcs]
+- Ardragon | Unknown | Caravan trails north of Yartar | Rumored to be a Kenku; behavior and identity unconfirmed [ch 055 / 055.04; ch 055 / npcs]
+- Milo Goodbarrel | Unknown | — | Author and painter; painting in Mirabar and Waterdeep; no direct contact [ch 055 / 055.03; ch 055 / 055.06; ch 055 / npcs]
+- Khell-Vire | Unknown | Candlekeep | Described as “the best of the best” shadow monk trainer; letter obtained [ch 055 / 055.07; ch 055 / npcs]
+
+## World
+- [LOCATION] **Silver Marches** — Devastated by Uthgardt raids following the War of the Giants; burned hamlets, broken standing stone, defiled Tempus shrine, displaced refugees, and an eerie quiet with fewer bears and no pixie songs. `[ch 055 / locations]`
+- [LOCATION] **Mirabar** — Dwarven mining city with forges painting the horizon red; crowded with refugees sleeping at Smith’s Gate; hammering never stops; Stroud is ubiquitous — bust, tavern, and polemicist; Order of the Gauntlet shrine with Milo Goodbarrel’s frontispiece and Malfire painting. `[ch 055 / locations]`
+- [LOCATION] **Triboar** — Caravan town one-third in ruins; central cairn names 243 dead; crowded with traders, pilgrims, knights, and rebuilders; Mountain’s Mouth inn where Eldred and Glabbagool’s cheese moment occurred. `[ch 055 / locations]`
+- [LOCATION] **Waterdeep** — Massive metropolis intolerant of oozes; Castle Ward features a bronze statue of Stroud and Protanther’s chess match with the plaque *This is the position. The move is yours.*; Rishaal’s Pageturners holds Milo’s painting of Whistler; Field Ward has a kraken-chanting preacher. `[ch 055 / locations]`
+- [LOCATION] **Rishaal's Pageturners** — Bookshop in Castle Ward, Waterdeep; holds original painting of Stroud, Milo, Malfire, and Whistler; sales revived by the painting; frequented by “real-world fiction enthusiasts” debating Milo’s accounts. `[ch 055 / locations]`
+- [LOCATION] **Field Ward** — District in Waterdeep where a street preacher chants about a kraken under the keep; the preacher recognizes Daz as a drow and delivers a cryptic warning. `[ch 055 / locations]`
+- [LOCATION] **Daggerford** — Settlement south of Waterdeep; arrival point of the party’s surface journey; further events pending. `[ch 055 / locations]`
+- [NPC] **Stroud** — Revered as a mortal agent of history; Stroudite school rejects divine influence, insisting mortal will decided the great conflicts; his bust and tavern are common in Mirabar. `[ch 055 / npcs; ch 055 / locations]`
+- [NPC] **Milo Goodbarrel** — Famous chronicler of the War of the Dragons; his painting of Whistler and others saved Volume Three’s sales; his account is debated as unreliable by Gyrgum. `[ch 055 / npcs; ch 055 / locations]`
+- [NPC] **Whistler** — Kenku hero of the War of the Dragons; some believe he died at Glazhael’s lair; others believe he is the Ardragon; his redemption arc is debated in literary circles. `[ch 055 / npcs; ch 055 / locations]`
+- [NPC] **Khell-Vire** — Shadow monk master at Candlekeep; described as “the best of the best”; Zalthir has obtained a letter of introduction. `[ch 055 / npcs]`
+- [ITEM] **Stroud and the Human Agency Hypothesis Pamphlet** — A well-formed pamphlet arguing mortal agency over divine influence; given to Gyrgum in Mirabar; he pockets it for later reading. `[ch 055 / items]`
+- [ITEM] **Kestler’s Note** — A written message from a half-orc in Triboar to a temple brother who has not been heard from in five years; the temple fire still burns; the party carries it. `[ch 055 / items]`
+- [ITEM] **Wheel of Cheese** — Gifted to Glabbagool in Triboar; he dissolves it entirely and asks if dairy is bad for people — his first encounter with it. `[ch 055 / items]`
+- [ITEM] **Milo Goodbarrel's Account, Volume Three** — Purchased by Daz in Waterdeep; print run saved by Milo’s painting; fans debate its accuracy and Whistler’s portrayal. `[ch 055 / items]`
+- [ITEM] **Mithral Plate Armor** — Purchased by Thorin in Waterdeep; raises his AC to 22. `[ch 055 / items]`
+- [ITEM] **Dawnbringer** — Sentient sword; supports ooze rights and offers Lesser Restoration; used to heal orphans, which makes it “very happy.” `[ch 055 / items]`
+- [ITEM] **Javelin of Lightning** — Magical weapon Gyrgum intends to acquire; GM confirms availability. `[ch 055 / items]`
+- [ITEM] **Letter of Introduction to Khell-Vire** — Obtained by Zalthir after Daz repairs the monastery’s roof with Mending. `[ch 055 / items]`
+- [THREAT] **Surface-Madness Gradient** — The fractured, looping speech patterns of Eldred and the Field Ward preacher mirror the madness of the Underdark; the party recognizes this as a spreading contamination. `[ch 055 / 055.04; ch 055 / 055.07]`
+- [THREAT] **Kraken Chant Prophecy** — The street preacher’s chant, “The kraken under the keep,” and his direct address to Daz suggest a looming threat tied to Candlekeep and Daz’s past. `[ch 055 / 055.07]`
+
+## Party
+- The party is in Daggerford, having completed their journey from Blingdenstone’s surface exit through the Silver Marches, Mirabar, Triboar, and Waterdeep. `[ch 055 / 055.09]`
+- Group name: The Ember Grapple. `[ch 055 / header]`
+- Thorin: Wears mithral plate armor (AC 22); bonded with Dawnbringer through healing orphans; considers ooze rights a moral cause. `[ch 055 / 055.05; ch 055 / 055.08]`
+- Zalthir: Obtained a letter of introduction to Khell-Vire at Candlekeep for shadow monk training; used Shadow Step to evade the city guard. `[ch 055 / 055.07]`
+- Daz: Purchased Milo Goodbarrel’s Account, Volume Three; observed and analyzed Eldred’s fractured speech and the preacher’s chant; has heightened somatic field-perception; carries the painting’s context. `[ch 055 / 055.06; ch 055 / 055.07]`
+- Gyrgum: Acquired the Stroudite pamphlet; performed Mass Healing Word in Triboar, winning Bahamutian favor; believes in fate; seeks a javelin of lightning; recognizes surface madness as Underdark contamination. `[ch 055 / 055.03; ch 055 / 055.04; ch 055 / 055.05]`
+- Glabbagool: Carried in a bag in Waterdeep due to city intolerance; first experienced cheese, dissolved it, and asked if dairy is bad for people; pesters Zalthir about shadow monk training. `[ch 055 / 055.04; ch 055 / 055.05]`
+- Next intent: Proceed to Candlekeep to pursue Khell-Vire’s training, investigate the burning temple referenced in Kestler’s note, and uncover the meaning behind the kraken chant and the surface-madness gradient. `[ch 055 / 055.09]`
+
+## Audit
+- [A145] SHOWN — The party emerges from the Underdark and reaches the surface world, beginning their journey through the Silver Marches. `[ch 055 / 055.01]`
+- [A223] SHOWN — The party arrives at Candlekeep’s outer gates, as this chapter concludes with their arrival in Daggerford and Candlekeep as the next destination. `[ch 055 / 055.09]`
+- [A224] SHOWN — The party becomes aware of the surface-madness gradient through Eldred’s fractured speech and the Field Ward preacher’s chant, recognizing it as the same madness from the Underdark. `[ch 055 / 055.04; ch 055 / 055.07]`
+- [A225] SHOWN — Kestler gives the party a note regarding a temple with a burning fire, planting a Gorg’Bahamut breadcrumb. `[ch 055 / 055.04]`
+- [A229] SHOWN — Daz acquires Milo Goodbarrel’s Account, Volume Three at Rishaal’s Pageturners in Waterdeep. `[ch 055 / 055.06]`
+- [A231] BEGUN — Gyrgum expresses interest in acquiring the Hagiography of the Dragon-Born Faithful Vol III, but no purchase is confirmed. `[ch 055 / 055.05]`
+- [A232] BEGUN — Zalthir is directed to Khell-Vire for shadow monk training; the brass shadow-puppet hand is not mentioned as acquired. `[ch 055 / 055.07]`
+- [A236] SHOWN — Kestler gives the party a note regarding the temple fire, fulfilling the Gorg’Bahamut temple lead. `[ch 055 / 055.04]`
+- [A246] SHOWN — The party visits Waterdeep, shopping, debating philosophy, and encountering the preacher and bookshop. `[ch 055 / 055.05; ch 055 / 055.06; ch 055 / 055.07; ch 055 / 055.08]`
+- [A249] BEGUN — The Sleeping Snake fence is mentioned as a location in Waterdeep, but no interaction occurs. `[ch 055 / locations]`
+- [A260] SHOWN — The Stroudite polemicist makes first contact in Mirabar and hands Gyrgum the pamphlet. `[ch 055 / 055.03]`
+- [A264] SHOWN — Eldred is witnessed speaking in two voices at the Mountain’s Mouth Inn. `[ch 055 / 055.04]`
+- [A267] SHOWN — The Field Ward street preacher is witnessed chanting about the kraken and addressing Daz. `[ch 055 / 055.07]`
+- [A268] SHOWN — The city watch patrol confronts the party over Glabbagool’s bag, triggering Thorin’s ooze rights stand. `[ch 055 / 055.08]`
+- [A279] SHOWN — Thorin and Dawnbringer publicly defend ooze rights during the city guard confrontation. `[ch 055 / 055.08]`
+- [A280] SHOWN — Thorin and Dawnbringer heal orphans in Waterdeep’s Dock Ward, bonding over mercy. `[ch 055 / 055.08]`
+- [A282] SHOWN — Daz uses insight to recognize Eldred’s dual voices as the same madness from the Underdark. `[ch 055 / 055.04]`
+- [A283] SHOWN — Daz uses insight on the Field Ward preacher and recognizes the same fractured rhythm. `[ch 055 / 055.07]`
+- [A286] BEGUN — The six-pointed star is first mentioned as appearing in Elin’s drawings at Daggerford, but Elin is not encountered in this chapter. `[ch 055 / 055.09]`
+- [A292] BEGUN — Drow refugee mentioned at Sleeping Snake fence, but no encounter occurs. `[ch 055 / locations]`
+- [A293] SHOWN — The refugee family from Episode 1 is encountered on the Silver Marches road. `[ch 055 / 055.02]`
+- [A314] BEGUN — The party is en route to Candlekeep, but has not yet arrived. `[ch 055 / 055.09]`
+- [A324] BEGUN — Erudite Outfitters is mentioned as a Waterdeep location, but no interaction occurs. `[ch 055 / locations]`
+- [A330] BEGUN — Cursed Tower is mentioned as a location, but not visited. `[ch 055 / locations]`
+- [A344] BEGUN — Janussi is referenced as a character, but not encountered in this chapter. `[ch 055 / locations]`
+- [A346] BEGUN — Bookwyrm is referenced as a character, but not encountered. `[ch 055 / locations]`
+- [A354] BEGUN — Sylvira is referenced as a character, but not encountered. `[ch 055 / locations]`
+- [A394] BEGUN — Manshoon is referenced as a voice-only arrival, but not encountered. `[ch 055 / locations]`
+- [A424] BEGUN — The Gauntlgrym call is implied by Eldeth’s letter and Echo 3, but not yet confirmed as active. `[ch 055 / 055.09]`
+- [A439] BEGUN — Zalthir obtained the letter to Khell-Vire, but Watcher’s Stillness training has not been earned. `[ch 055 / 055.07]`
+- [A441] BEGUN — Polly Pocket is mentioned as a messenger, but not released. `[ch 055 / locations]`
+- [A442] BEGUN — Walking-permit medallions are referenced but not acquired. `[ch 055 / locations]`
+- [A443] BEGUN — Second High Tower key is referenced but not held. `[ch 055 / locations]`

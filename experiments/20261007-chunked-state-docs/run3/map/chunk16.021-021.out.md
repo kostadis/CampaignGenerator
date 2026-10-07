@@ -1,0 +1,339 @@
+## Events
+- The party investigates the corrupted chamber, uncovering incriminating documents linking the Council of Savants to demonic dealings and corruption. `[ch 021 / 021.01]`
+- The party deliberates on which faction to deliver the dragon’s egg and incriminating evidence to, weighing threats from Themberchaud, Errde Blackskull, and the Keepers of the Flame. `[ch 021 / 021.02]`
+- Gyrgum uses Religion to determine the dragon egg will hatch in 44 weeks, and the party decides to return it to Gartokkar without revealing its demonic corruption or the Assassin’s Guild list. `[ch 021 / 021.02]`
+- The party loots the Council lab, finding 170 gold and a heavy, inscribed baby rattle made by Clan Thrazgad, apparently intended for a dragon hatchling. `[ch 021 / 021.03]`
+- The party decides to withhold the Assassin’s Guild list from Errde Blackskull and fabricate a story for Gartokkar: they battled cultists who are now dead, recovered the egg, and found no evidence of its origin. `[ch 021 / 021.03]`
+- The party encounters four Derro guards at the dungeon exit and chooses intimidation over violence. Daz casts Dancing Lights, Gyrgum uses Thaumaturgy to cause tremors, and Daz declares, “You do not know who we are.” `[ch 021 / 021.04]`
+- The Derro guards, convinced Daz is a 20th-level drow archmage, mistake the floating lights for a meteor swarm and believe the party is a marauding army of drow. The party votes to name themselves the Ember Vanguard. `[ch 021 / 021.04]`
+- The party departs the dungeon, choosing to head west through the Underdark to avoid assassin territory, leaving Stool’s plea about his Myconid friend for later. `[ch 021 / 021.05]`
+- The party is ambushed by a Trapper, which wraps around Gyrgum, deals massive acid damage, and reduces him to 1 hit point. `[ch 021 / 021.06]`
+- Zalthir counter-grapples the Trapper, overpowers it with unarmed strikes, and kills it, freeing Gyrgum. The party presses on, leaving behind the battered, acid-covered orc. `[ch 021 / 021.06]`
+
+## Concluded
+- The investigation of the corrupted chamber and its evidence is concluded; the party has gathered all documents and loot. `[ch 021 / 021.01; ch 021 / 021.03]`
+- The decision to return the dragon’s egg to Gartokkar is finalized, with a cover story prepared. `[ch 021 / 021.02; ch 021 / 021.03]`
+- The decision to withhold the Assassin’s Guild list from Errde Blackskull is confirmed. `[ch 021 / 021.02; ch 021 / 021.03]`
+- The party’s name is officially adopted as the Ember Vanguard after intimidating the Derro guards. `[ch 021 / 021.04]`
+- The ambush by the Trapper is resolved with the creature’s death and Gyrgum’s survival. `[ch 021 / 021.06]`
+- The party’s exit from the Council Dungeon and departure westward through the Underdark is completed. `[ch 021 / 021.04; ch 021 / 021.05]`
+
+## Threads
+- [ADVANCED] **Dragon’s egg** — The party has confirmed it will hatch in 44 weeks, decided to return it to Gartokkar without revealing its demonic corruption, and now carry it with them as they leave the city. `[ch 021 / 021.02; ch 021 / 021.03]`
+- [ADVANCED] **Assassin’s Guild list** — The party now possesses irrefutable proof linking the Deepking to the Assassin’s Guild but has chosen to conceal it from Errde Blackskull to avoid chaos. `[ch 021 / 021.02; ch 021 / 021.03]`
+- [OPENED] **Dragon baby rattle** — The party recovered a heavy, Duergar-crafted rattle inscribed with Clan Thrazgad’s name, intended for a dragon hatchling; its origin and purpose are unknown, and it may be used for leverage or a gift. `[ch 021 / 021.03; ch 021 / Memorable Moments]`
+- [ADVANCED] **Ember Vanguard** — The party has officially adopted this name after intimidating Derro guards, who now spread rumors of a 20th-level drow archmage and a marauding drow army. `[ch 021 / 021.04; ch 021 / Memorable Moments]`
+- [ADVANCED] **Pelek’s ghost** — Pelek continues to inhabit the derro spy’s body while the party retains his bones, a routine arrangement now established. `[ch 021 / 021.01; ch 021 / NPCs]`
+- [ADVANCED] **Themberchaud’s ignorance** — The party has confirmed the red dragon remains unaware of the egg and their actions, and they intend to avoid him entirely. `[ch 021 / 021.02]`
+- [ADVANCED] **Errde Blackskull’s suspicion** — The party has chosen to lie to her, withholding the Deepking’s link to the Assassin’s Guild, risking future discovery. `[ch 021 / 021.02; ch 021 / 021.03]`
+- [ADVANCED] **Gartokkar’s trust** — The party plans to return the egg to Gartokkar under false pretenses, banking on his gratitude for safe passage and trade rights. `[ch 021 / 021.02; ch 021 / 021.03]`
+- [ADVANCED] **Stool’s Myconid friend** — The party acknowledges Stool’s plea but explicitly deprioritizes it, leaving it unresolved for future action. `[ch 021 / 021.05]`
+- [OPENED] **Drow enmity** — The Derro guards’ rumors of a drow archmage have likely alerted the drow to the Ember Vanguard’s existence, potentially adding them to the list of hostile factions. `[ch 021 / 021.04; ch 021 / Memorable Moments]`
+
+## NPC Status
+- Pelek | Alive | With party | Neutral toward party, bound by shared arrangement [ch 021 / NPCs; ch 021 / 021.01]
+- Themberchaud | Alive | Unknown | Hostile if informed; unaware of party’s actions [ch 021 / NPCs; ch 021 / 021.02]
+- Errde Blackskull | Alive | Unknown | Hostile if told the full truth; currently deceived [ch 021 / NPCs; ch 021 / 021.02]
+- Gartokkar | Alive | Unknown | Desperate for the egg; party plans to deceive him [ch 021 / NPCs; ch 021 / 021.02]
+- Deepking | Alive | Gracklstugh | Hostile to party; unaware they possess proof of his crimes [ch 021 / NPCs; ch 021 / 021.02]
+- Clan Ironhead | Unknown | Gracklstugh | Pro-gnome; party hopes to strengthen them indirectly [ch 021 / NPCs; ch 021 / 021.02]
+- Clan Thrazgad | Unknown | Gracklstugh | Name inscribed on dragon rattle; unknown involvement [ch 021 / NPCs; ch 021 / 021.03]
+- Derro Guards | Alive | Council Dungeon exit | Intimidated, believe Daz is a 20th-level drow archmage [ch 021 / NPCs; ch 021 / 021.04]
+- Stool | Alive | With party | Anxious about Myconid friend; party deprioritizes his request [ch 021 / NPCs; ch 021 / 021.05]
+- The Trapper | Dead | Western Underdark tunnels | Killed by Zalthir after grappling Gyrgum [ch 021 / NPCs; ch 021 / 021.06]
+
+## World
+- [LOCATION] **The Corrupted Chamber** — A laboratory-like room filled with evidence of the Council of Savants’ corruption and demonic ties; looted by the party, leaving no remaining documents or valuables. `[ch 021 / locations; ch 021 / 021.01]`
+- [LOCATION] **The Council Dungeon** — A subterranean complex where the party defeated the Council’s agents; now abandoned, with its double doors guarded by terrified Derro who will spread false rumors. `[ch 021 / locations; ch 021 / 021.04]`
+- [LOCATION] **Underdark Passages (West)** — The path the party now travels, silent and treacherous, home to predators like the Trapper that lie in wait. `[ch 021 / locations; ch 021 / 021.05; ch 021 / 021.06]`
+- [ITEM] **Dragon’s Egg** — A tough, demonic egg, corrupted by a demon, capable of being hidden in a bag; will hatch in 44 weeks without intervention. `[ch 021 / items; ch 021 / 021.02]`
+- [ITEM] **Incriminating Notes** — Documents linking the Council of Savants to demonic dealings; now in the party’s possession. `[ch 021 / items; ch 021 / 021.01]`
+- [ITEM] **Assassin’s List** — Proof the Deepking supports the Assassin’s Guild; hidden from all factions, kept secret by the party. `[ch 021 / items; ch 021 / 021.02]`
+- [ITEM] **Ghost Bones** — Pelek’s skeletal remains, carried by the party while his spirit inhabits a derro body. `[ch 021 / items; ch 021 / 021.01]`
+- [ITEM] **Dragon Baby Rattle** — A heavy, durable rattle made by Clan Thrazgad, inscribed with its name, designed for a dragon hatchling; no gems or inlays; usable as a 1d4 improvised weapon. `[ch 021 / items; ch 021 / 021.03]`
+- [THREAT] **Drow enmity** — The party’s fabricated reputation as a drow archmage and his army has likely drawn the ire of drow factions, including those who may now hunt them. `[ch 021 / 021.04; ch 021 / Memorable Moments]`
+- [NPC] **Gartokkar** — Leader of the Keepers of the Flame, desperate to recover the dragon egg; vows to pursue the party to the end of time if betrayed. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [NPC] **Errde Blackskull** — Leader of the Stone Guard, seeks proof of the Council’s corruption; if told the Deepking supports the Assassin’s Guild, she will march on the king. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [NPC] **Themberchaud** — A fat, lazy red dragon who desires full knowledge of local events; if informed of the egg, he will likely burn the city to cinders. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [NPC] **Deepking** — Mad ruler of Gracklstugh, secretly funds the Assassin’s Guild and enslaves his people; unaware the party possesses proof. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [FACTION] **Keepers of the Flame** — A zealot faction close to the king, obsessed with reclaiming the dragon egg and willing to commit genocide against derro; they will pursue the party eternally if deceived. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [FACTION] **Stone Guard** — A militant faction led by Errde Blackskull; seeks to expose the Council’s corruption and will act violently if given the full truth. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [FACTION] **Clan Ironhead** — A Duergar weaponsmithing clan that would trade with gnomes if the Deepking were removed; the party hopes to indirectly strengthen them. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [FACTION] **Clan Thrazgad** — A Duergar steelsmithing clan whose name is on the dragon rattle; their involvement with the egg is unknown. `[ch 021 / NPCs; ch 021 / 021.03]`
+- [FACTION] **Ember Vanguard** — The party’s newly adopted name, now a legend among Derro, described as a marauding army of drow led by a 20th-level archmage. `[ch 021 / 021.04; ch 021 / Memorable Moments]`
+
+## Party
+- The party is now known as the Ember Vanguard, having adopted the name after intimidating Derro guards. `[ch 021 / 021.04]`
+- The party is level 4. `[ch 021 / 021.06]`
+- They are currently traveling west through the Underdark passages, having escaped the Council Dungeon. `[ch 021 / 021.05]`
+- Daz: Has cast Dancing Lights and Thaumaturgy; now carries the dragon’s egg, ghost bones, incriminating notes, Assassin’s List, and dragon rattle; his magic display created the Ember Vanguard legend; he is the perceived drow archmage. `[ch 021 / 021.04; ch 021 / items]`
+- Gyrgum: Survived the Trapper’s attack with 1 HP; has rolled Religion to determine the egg’s hatching time; intends to consult Bahamut’s clergy on demonic dragons; carries the dragon’s egg, ghost bones, incriminating notes, Assassin’s List, and dragon rattle. `[ch 021 / 021.02; ch 021 / 021.06; ch 021 / items]`
+- Thorin: Proposed the name Ember Vanguard; wished for a baby dragon, unintentionally offending Zalthir; apologized; carries the dragon’s egg, ghost bones, incriminating notes, Assassin’s List, and dragon rattle; is loyal to Stool. `[ch 021 / 021.02; ch 021 / 021.04; ch 021 / 021.05]`
+- Zalthir: Killed the Trapper with unarmed grapple strikes; is dragonborn and offended by Thorin’s wish; insists on looting corpses; carries the dragon’s egg, ghost bones, incriminating notes, Assassin’s List, and dragon rattle; hopes to strengthen Clan Ironhead. `[ch 021 / 021.03; ch 021 / 021.06; ch 021 / 021.02]`
+- The party’s immediate goal is to reach Gartokkar and return the dragon’s egg to secure safe passage and trade rights for the gnomes. `[ch 021 / 021.02; ch 021 / 021.03]`
+- The party intends to avoid Themberchaud, Errde Blackskull, and the assassins’ territory, and will leave Stool’s Myconid friend for a future expedition. `[ch 021 / 021.02; ch 021 / 021.05]`
+
+## Audit
+- [A9] SHOWN — The party has reached Gracklstugh, the duergar city, having operated within it and exited through its dungeon complex. `[ch 021 / 021.01; ch 021 / 021.05]`
+- [A92] SHOWN — Themberchaud is acknowledged as a potential ally or threat, and the party has chosen to avoid informing him. `[ch 021 / 021.02]`
+- [A93] SHOWN — Gartokkar is identified as the Keeper of the Flame to whom the party plans to return the dragon’s egg. `[ch 021 / 021.02]`
+- [A91] SHOWN — Errde Blackskull is identified as the Stone Guard captain whose knowledge of the Council’s corruption the party is withholding. `[ch 021 / 021.02]`
+- [A160] SHOWN — The party has acquired scavenged possessions from Velkynvelve: 170 gold, the dragon’s egg, incriminating notes, Assassin’s List, ghost bones, and the dragon rattle. `[ch 021 / items]`
+- [A161] SHOWN — The party has escaped Velkynvelve via the dungeon’s western exit, bypassing assassin territory. `[ch 021 / 021.05]`
+- [A47] SHOWN — Gracklstugh is confirmed as the duergar city where the party operated and departed. `[ch 021 / locations]`
+- [A48] BEGUN — Stool’s Myconid friend is mentioned as a concern, but the party has only deprioritized it; no action taken toward Neverlight Grove. `[ch 021 / 021.05]`
+- [A176] SHOWN — The dragon egg has been recovered and is now in the party’s possession; they plan to return it. `[ch 021 / items]`
+- [A209] SHOWN — Velkynvelve’s condition is now known to be abandoned by the party after their raid; no further visits planned. `[ch 021 / 021.05]`
+- [A26] BEGUN — Stool’s request to return to Neverlight Grove is noted but not acted upon; thread initiated but not progressed. `[ch 021 / 021.05]`
+- [A27] BEGUN — Rumpadump is not mentioned in this chunk; no evidence. `[ch 021 / no mention]`
+- [A28] BEGUN — Werz Saltbaron’s gems are not referenced; no evidence. `[ch 021 / no mention]`
+- [A29] BEGUN — Droki delivery interception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A30] BEGUN — Ylsa Henstak’s investigation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A36] BEGUN — Retrieving Pelek’s remains is not concluded; he remains with the party in derro form. `[ch 021 / 021.01]`
+- [A199] BEGUN — Karazikar’s slaves are not mentioned; no evidence. `[ch 021 / no mention]`
+- [A200] BEGUN — Modron prisoner is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A201] BEGUN — Xazax the Eyemonger is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A202] BEGUN — Veldyskar the basilisk is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A203] BEGUN — Galeb duhr Hourm is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A204] BEGUN — Visions at Gravenhollow are not mentioned; no evidence. `[ch 021 / no mention]`
+- [A210] SHOWN — Velkynvelve is confirmed as visited and departed; no return planned. `[ch 021 / 021.05]`
+- [A211] BEGUN — Ooze spies are not mentioned; no evidence. `[ch 021 / no mention]`
+- [A212] BEGUN — Araumycos fungal creatures are not mentioned; no evidence. `[ch 021 / no mention]`
+- [A213] BEGUN — Infected area of Araumycos’s mind is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A214] BEGUN — House Baenre meeting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A215] BEGUN — House Do'Urden meeting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A216] BEGUN — Council of Spiders assistance is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A217] BEGUN — Gromph’s outer sanctum is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A218] BEGUN — Szashune is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A219] BEGUN — Yochlol is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A220] BEGUN — Wand of Orcus is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A221] BEGUN — Heroic sacrifice opportunity is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A222] BEGUN — Demon sortie encounters are not mentioned; no evidence. `[ch 021 / no mention]`
+- [A223] BEGUN — Travelogue prelude is not relevant; party is in Underdark. `[ch 021 / no surface]`
+- [A224] BEGUN — Surface-madness gradient is not relevant; party is underground. `[ch 021 / no surface]`
+- [A225] BEGUN — Gorg'Bahamut breadcrumb is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A226] BEGUN — Mirabar smith commissions are not mentioned; no evidence. `[ch 021 / no mention]`
+- [A227] BEGUN — Daz shopping arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A228] BEGUN — Daz fitted Calishite cloak is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A229] BEGUN — Milo Goodbarrel Volume 3 is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A230] BEGUN — Order of the Gauntlet medallion is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A231] BEGUN — Gyrgum Hagiography is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A232] BEGUN — Zalthir brass shadow-puppet is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A233] BEGUN — Dawnbringer scabbard is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A234] BEGUN — Elin the silent child is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A235] BEGUN — Charcoal rubbing is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A236] BEGUN — Kestler meeting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A237] BEGUN — Triboar carpenter’s journal is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A238] BEGUN — Burned hamlet is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A239] BEGUN — Broken Thunderbeast stone is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A240] BEGUN — Defaced Tempus shrine is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A241] BEGUN — Forge of Mirabar is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A242] BEGUN — Order of the Gauntlet shrine is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A243] BEGUN — Goldenfields is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A244] BEGUN — Mountain's Mouth Inn is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A245] BEGUN — Triboar memorial square is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A246] BEGUN — Waterdeep is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A247] BEGUN — Rishaal the Pageturner's is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A248] BEGUN — Order of the Gauntlet chapter house is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A249] BEGUN — Sleeping Snake fence is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A250] BEGUN — Aurora's Whole Realms Catalog is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A251] BEGUN — Halaster's Prized Findings is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A252] BEGUN — Steelwoods of Mistshore is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A253] BEGUN — River Shining Tavern is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A254] BEGUN — Hand of Tarvis monument is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A255] BEGUN — Burning Wizard inn is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A256] BEGUN — Way of the Lion is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A257] BEGUN — Candlekeep Emerald Door is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A258] BEGUN — Eldeth farewell is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A259] BEGUN — Dwarven outriders is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A260] BEGUN — Stroudite polemicist is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A261] BEGUN — Sister Ellune is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A262] BEGUN — Brindle Wenth story is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A263] BEGUN — Kestler the half-orc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A264] BEGUN — Eldred the courier is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A265] BEGUN — Rishaal the Pageturner is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A266] BEGUN — Stroudite half-orc pilgrims is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A267] BEGUN — Field Ward preacher is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A268] BEGUN — City Watch patrol is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A269] BEGUN — Maerith of the Ford is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A270] BEGUN — Elin the silent child is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A271] BEGUN — Veyloss the bard is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A272] BEGUN — Festrum the gnome is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A273] BEGUN — Pilgrim at corner table is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A274] BEGUN — Triboar carpenter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A275] BEGUN — Stroudite half-orc pilgrims is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A276] BEGUN — Bookwyrm is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A277] BEGUN — Queenie the cat is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A278] BEGUN — First Faction painting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A281] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A282] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A283] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A284] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A285] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A286] BEGUN — Six-pointed star is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A287] BEGUN — Black-Banner Five trial-site marker is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A288] BEGUN — Endless Chant error is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A289] BEGUN — Endless Chant is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A290] BEGUN — Sjurkar priest benediction error is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A291] BEGUN — Stroudite sponsorship is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A292] BEGUN — Drow refugee is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A293] BEGUN — Refugee family is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A294] BEGUN — Candlekeep murder investigation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A295] BEGUN — Cryptogram race is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A296] BEGUN — Vault confrontation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A297] BEGUN — Gauntlgrym call is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A298] BEGUN — Daz / Yvenne scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A299] BEGUN — Zalthir / Khell-Vire scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A300] BEGUN — Thorin / Philemon scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A301] BEGUN — Gyrgum / Vareth scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A302] BEGUN — Glabbagool's question is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A303] BEGUN — Polly Pocket disposition is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A304] BEGUN — Sylvira recruitment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A305] BEGUN — Daral rescue is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A306] BEGUN — Kalan missing is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A307] BEGUN — Alkrist arrest is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A308] BEGUN — Moziqodo binding is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A309] BEGUN — Daz / Yvenne synthesis is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A310] BEGUN — Daz / Yvenne name and deadline is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A311] BEGUN — Thorin / Philemon Layer 2 reveal is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A312] BEGUN — Gyrgum / Vareth unsigned sting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A313] BEGUN — Glabbagool Shadow Apprentice is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A314] BEGUN — Candlekeep gates arrival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A315] BEGUN — Refectory dinner is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A316] BEGUN — Whispering Dome is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A317] BEGUN — Infernal Fortress is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A318] BEGUN — Janussi’s chamber is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A319] BEGUN — Southern Dining Hall is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A320] BEGUN — Bath House is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A321] BEGUN — Founder's Court is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A322] BEGUN — Oak Tree Apothecary is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A323] BEGUN — Kitchens is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A324] BEGUN — Erudite Outfitters is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A325] BEGUN — Drakonoikos is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A326] BEGUN — Reader's Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A327] BEGUN — Immortal Chambers is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A328] BEGUN — Sea Warden's Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A329] BEGUN — Bell Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A330] BEGUN — Cursed Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A331] BEGUN — Pont de Paramours is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A332] BEGUN — Oval Theatre is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A333] BEGUN — House of Alaundo is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A334] BEGUN — Astronomicon Orrery is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A335] BEGUN — Philosopher's Court is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A336] BEGUN — Melodrome / Jook's Box is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A337] BEGUN — Jewel of the Styx is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A338] BEGUN — School of Drama is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A339] BEGUN — High Tower Library is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A340] BEGUN — Lava chamber is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A341] BEGUN — The Vault (B2) is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A342] BEGUN — The Vault (B3) is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A343] BEGUN — Vault tower rocket is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A344] BEGUN — Janussi first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A345] BEGUN — Janussi death is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A346] BEGUN — Bookwyrm first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A347] BEGUN — Bookwyrm Teles sighting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A348] BEGUN — Bookwyrm confrontation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A349] BEGUN — Bookwyrm death is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A350] BEGUN — Kalan first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A351] BEGUN — Kalan second key is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A352] BEGUN — Kalan farewell is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A353] BEGUN — Kalan disappearance is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A354] BEGUN — Sylvira first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A355] BEGUN — Sylvira prime suspect is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A356] BEGUN — Sylvira recruitment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A357] BEGUN — Sylvira dispel is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A358] BEGUN — Sylvira survival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A359] BEGUN — Daral first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A360] BEGUN — Daral poisoning is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A361] BEGUN — Daral death or survival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A362] BEGUN — Daral testimony is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A363] BEGUN — Fheminor first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A364] BEGUN — Fheminor revelation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A365] BEGUN — Fheminor appointment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A366] BEGUN — A'lai first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A367] BEGUN — A'lai interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A368] BEGUN — A'lai sapphire smash is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A369] BEGUN — A'lai fate is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A370] BEGUN — Alkrist first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A371] BEGUN — Alkrist interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A372] BEGUN — Alkrist arrest is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A373] BEGUN — Fembris first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A374] BEGUN — Fembris confession is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A375] BEGUN — Tadric first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A376] BEGUN — Tadric flight assistance is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A377] BEGUN — Tadric appointment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A378] BEGUN — Hollypocket witness is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A379] BEGUN — Sprig Summerfoot witness is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A380] BEGUN — Leuwin witness is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A381] BEGUN — Teles Ahvoste interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A382] BEGUN — Kazryn Nyantani interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A383] BEGUN — Khell-Vire closing letter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A384] BEGUN — Philemon sealed letter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A385] BEGUN — Vareth final stations is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A386] BEGUN — Yvenne third sitting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A387] BEGUN — Yvenne Vaelissa name is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A388] BEGUN — Yvenne Fourth-Seat scene is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A389] BEGUN — Inda emergence is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A390] BEGUN — Spanner handoff is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A391] BEGUN — Moziqodo first encounter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A392] BEGUN — Moziqodo binding break is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A393] BEGUN — Moziqodo fate is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A394] BEGUN — Manshoon arrival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A395] BEGUN — Manshoon confrontation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A396] BEGUN — Manshoon escape is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A397] BEGUN — Glabbagool bad night is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A398] BEGUN — Glabbagool Shadow Apprentice is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A399] BEGUN — Eldeth letter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A400] BEGUN — Brevin recitation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A401] BEGUN — Brevin bedclothes is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A402] BEGUN — Marin quill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A403] BEGUN — Jimjar / Callarduran prophecy is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A404] BEGUN — Five Books, Five Questions is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A405] BEGUN — Endless Chant fragment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A406] BEGUN — Janussi murder is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A407] BEGUN — Two "Sylvira" figures is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A408] BEGUN — Bookwyrm as cover-up is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A409] BEGUN — Alkrist as killer is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A410] BEGUN — Disguise rosetta cracked is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A411] BEGUN — Wards drop is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A412] BEGUN — Cryptogram recovered is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A413] BEGUN — Manshoon arrival announced is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A414] BEGUN — Iron Owlbear found dead is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A415] BEGUN — Echo 1 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A416] BEGUN — Echo 2 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A417] BEGUN — Echo 3 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A418] BEGUN — Echo 4 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A419] BEGUN — Book of Vile Darkness fate is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A420] BEGUN — Vault tower rocket lever is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A421] BEGUN — Candlekeep restructuring is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A422] BEGUN — Party named guest seekers is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A423] BEGUN — Manshoon-pursuit thread is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A424] BEGUN — Gauntlgrym call confirmed is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A425] BEGUN — Daz sinus-pressure is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A426] BEGUN — Yvenne names sensitivity is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A427] BEGUN — Marin quill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A428] BEGUN — Brevin recitation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A429] BEGUN — Brevin bedclothes is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A430] BEGUN — Endless Chant stoppage is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A431] BEGUN — Ward-drop vision is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A432] BEGUN — Glabbagool Juiblex contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A433] BEGUN — Echo 1 prophecy is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A434] BEGUN — Daz and Yvenne expertise confirmed is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A435] BEGUN — Sylvira recruited is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A437] BEGUN — Vareth goodwill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A438] BEGUN — Daral saved is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A439] BEGUN — Khell-Vire earned is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A440] BEGUN — Glabbagool Whispering Dome visit is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A441] BEGUN — Polly Pocket released is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A442] BEGUN — Walking-permit medallions worn is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A443] BEGUN — Second High Tower key held is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A444] BEGUN — Daz / Yvenne field-perception expertise is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A445] BEGUN — Glabbagool Shadow Apprentice sidekick is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A446] BEGUN — Vareth / Drakonoikos goodwill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A447] BEGUN — Daral saved payoff is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A448] BEGUN — Khell-Vire Watcher's Stillness earned is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A449] BEGUN — Glabbagool Echo re-coax is not mentioned; no evidence. `[ch 021 / no mention]`
+- [A450] BEGUN — Polly Pocket messenger is not mentioned; no evidence. `[ch 021 / no mention]`

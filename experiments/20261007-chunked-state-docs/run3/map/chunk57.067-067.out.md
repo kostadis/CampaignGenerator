@@ -1,0 +1,254 @@
+## Events
+- A'lai Aivenmore realizes Manshoon never came for him, recognizing his insignificance after eleven years of service as a pawn, and expresses despair over being unworthy of even a face or spell [ch 067 / 067.01].
+- The party interrogates A'lai, who reveals the existence of a secret vault beneath Candlekeep protected by a cryptogram and provides two answers: “Fustilugs” from the Philosopher’s Court black knight and “Bow” from Batbayar’s statue [ch 067 / 067.02].
+- A'lai begs for confinement in Candlekeep’s null magic prison instead of freedom; Gyrgum appeals to Tadric using the party’s service record and offers a coauthored monograph, securing Tadric’s agreement [ch 067 / 067.02].
+- Tadric takes custody of A'lai and marches him to the null magic prison [ch 067 / 067.02].
+- The party, joined by Sylvira Savikas, deciphers the cryptogram using Thorin’s external aid and Gyrgum’s independent analysis, revealing seven instructions for accessing the Vault of Secrets [ch 067 / 067.03].
+- Sylvira provides the true name of Miirym the Sentinel Wyrm as “Vydykyq” and identifies “Limniz” as the Eastern Light of Mystra’s Mantle, noting three suspicious non-staff members in the Orrery of the Astronomicon [ch 067 / 067.03].
+- Kalan Strongbranch arrives after the cipher is solved and confirms the first instruction refers to the statue of Alaundo in Founders Court [ch 067 / 067.03].
+- The party travels to the House of Alaundo and pours fresh ink into the statue’s empty ink pot, triggering the statue to slide forward and reveal a hidden staircase [ch 067 / 067.04].
+- Scholars recoil in horror at the act, confirming centuries of reverence had concealed the mechanism [ch 067 / 067.04].
+- The party travels to the keepers’ grove and discovers Alaundo died at age ninety-seven [ch 067 / 067.05].
+- Scholars provide the original prophecy of Alaundo, which every Candlekeep scholar knows by heart [ch 067 / 067.05].
+- The party visits the House of Mechanus and negotiates with gnome librarian Spanner for tools instead of Dust of Mechanus; Spanner agrees on condition Zalthir and Glabbagool submit to a mechanical study after the expedition [ch 067 / 067.05].
+- Spanner speaks to thirteen modrons in mechanistic language; they respond with a synchronized, eerie dance of limbs and bodies [ch 067 / 067.05].
+- The party descends the hidden staircase, counting ninety-seven steps as instructed; Gyrgum heals Zalthir for forty-four hit points, exceeding his need [ch 067 / 067.06].
+- As the party reaches the ninety-seventh step, a ten-foot section of the staircase hinges downward into a vast circular well [ch 067 / 067.06].
+- Zalthir uses strength and wings to help Gyrgum and others hold on; Daz casts Telekinesis to arrest the collapse [ch 067 / 067.06].
+- Gyrgum and Zalthir scramble to safety; Thorin loses his footing and plummets into the dark well, his fate unknown as the session ends [ch 067 / 067.06].
+
+## Concluded
+- A'lai Aivenmore’s capture and interrogation concluded with his agreement to provide vault secrets in exchange for imprisonment in Candlekeep’s null magic prison [ch 067 / 067.02].
+- The cryptogram cipher was fully decoded by the party, revealing all seven instructions for accessing the Vault of Secrets [ch 067 / 067.03].
+- The first riddle — “Feed the quill of Alaundo the seer” — was resolved by pouring ink into the statue’s ink pot, triggering the hidden staircase [ch 067 / 067.04].
+- The second riddle — “Tread as many steps as he lived in years” — was resolved by discovering Alaundo died at age ninety-seven [ch 067 / 067.05].
+- The third riddle — “Utter the original prophecy to unseen ears” — was resolved by obtaining the prophecy from Candlekeep scholars [ch 067 / 067.05].
+- The fourth riddle — “Sprinkle dust of Mechanus on dormant gears” — was resolved by securing modron-made tools as a substitute, with Spanner’s conditional agreement [ch 067 / 067.05].
+- The fifth riddle — “One last guardian of knowledge remains to verify the chosen Reader’s claims” — was acknowledged as pending but not yet encountered [ch 067 / 067.03].
+- The sixth riddle — “Those well-versed in Candlekeep’s lore may fearlessly pass the obsidian door” — was acknowledged as pending but not yet encountered [ch 067 / 067.03].
+- The party’s journey to the Vault’s entrance and activation of the staircase mechanism concluded with the collapse and Thorin’s fall [ch 067 / 067.06].
+
+## Threads
+- [ADVANCED] **Manshoon’s pursuit of the Vault of Secrets** — Manshoon’s simulacrum breached Candlekeep’s inner sanctum and is now racing the party to the hidden vault beneath; A'lai confirms Manshoon does not know the full nature of the vault’s contents [ch 067 / 067.01; ch 067 / 067.02].
+- [OPENED] **House Baenre’s eleven-year patronage of Daz’s pursuers** — A'lai deduces with certainty that only House Baenre in Menzoberranzan could sustain eleven years of patient, untraceable funding behind the forces targeting Daz, though he admits it is deduction, not proof [ch 067 / 067.02].
+- [ADVANCED] **The Vault of Secrets cryptogram** — The party has now decoded all seven instructions, identified two answers, and located the first three physical components (ink, age, prophecy); the Dust of Mechanus was substituted with modron tools, leaving the final guardian and obsidian door as pending [ch 067 / 067.03; ch 067 / 067.05].
+- [OPENED] **The modron tools’ post-expedition study** — Spanner agreed to lend modron tools on condition Zalthir and Glabbagool submit to a mechanical symmetry study after the descent; the interview is deferred until return [ch 067 / 067.05].
+- [ADVANCED] **A'lai Aivenmore’s fate** — A'lai is now confined in Candlekeep’s null magic prison, his role as a pawn exposed; he is no longer a threat or active agent [ch 067 / 067.02].
+- [ADVANCED] **Sylvira Savikas’s knowledge of Miirym and Limniz** — Sylvira provided critical riddle answers and warned of suspicious activity in the Orrery of the Astronomicon, unaware the party killed her son Moziqodo [ch 067 / 067.03].
+- [OPENED] **The obsidian door and final guardian** — The decoded instructions mention a final guardian and an obsidian door beyond the gears; these remain unencountered and unknown [ch 067 / 067.03].
+- [ADVANCED] **Thorin’s fall into the well** — Thorin plunged into the dark circular well below the collapsing staircase; his survival and location are unknown as the session ends [ch 067 / 067.06].
+- [ADVANCED] **The Orrery of the Astronomicon surveillance** — Sylvira observed three non-staff individuals inside the Orrery, suggesting Manshoon’s forces or other enemies are already infiltrating Candlekeep’s inner sanctum [ch 067 / 067.03].
+
+## NPC Status
+- A'lai Aivenmore | Imprisoned | Candlekeep’s null magic prison | Grateful and resigned [ch 067 / 067.02]
+- Tadric | Alive | Candlekeep’s null magic prison | Cooperative and supportive [ch 067 / 067.02]
+- Sylvira Savikas | Alive | Investigator’s office | Grateful and helpful [ch 067 / 067.03]
+- Kalan Strongbranch | Alive | Investigator’s office | Relieved and eager to contribute [ch 067 / 067.03]
+- Spanner | Alive | House of Mechanus | Methodical and cautious [ch 067 / 067.05]
+- Glabbagool | Alive | Descending staircase [ch 067 / 067.06]
+- Zalthir | Alive | Descending staircase [ch 067 / 067.06]
+- Daz | Alive | Descending staircase [ch 067 / 067.06]
+- Gyrgum | Alive | Descending staircase [ch 067 / 067.06]
+- Thorin | Missing | Vast circular well beneath the staircase [ch 067 / 067.06]
+- Modrons | Alive | House of Mechanus | Mechanically synchronized, deliberating [ch 067 / 067.05]
+
+## World
+- [LOCATION] **Candlekeep’s null magic prison** — A specialized containment area within Candlekeep that negates all magical abilities; A'lai requested it as his only hope of survival against Manshoon’s reach [ch 067 / 067.02; ch 067 / locations].
+- [LOCATION] **Vault of Secrets** — A hidden chamber beneath Candlekeep, unknown to most scholars, containing artifacts of extraordinary power; protected by a cryptogram and riddles, and sought by Manshoon [ch 067 / 067.02; ch 067 / locations].
+- [LOCATION] **House of Alaundo** — A building in Founders Court housing a brass statue of Alaundo the Seer; its ink pot, when filled, triggers a hidden staircase to the Vault of Secrets, a mechanism hidden by centuries of scholarly reverence [ch 067 / 067.04; ch 067 / locations].
+- [LOCATION] **House of Mechanus** — A large rectangular building with a blue slate roof and clock tower, housing a library devoted to engineering and technology; home to Spanner and thirteen modrons who create and maintain mechanical devices [ch 067 / 067.05; ch 067 / locations].
+- [LOCATION] **Orrery of the Astronomicon** — A chamber containing star charts; Sylvira noted three suspicious non-staff individuals inside, suggesting infiltration by Manshoon’s agents [ch 067 / 067.03; ch 067 / locations].
+- [LOCATION] **Philosopher’s Court** — An area with oversized black marble chess pieces; the base of the black knight bears the magically inscribed word “Fustilugs,” one of the answers to the Vault’s riddles, preserved for centuries [ch 067 / 067.02; ch 067 / locations].
+- [LOCATION] **School of the Drama Library** — Contains a statue of the halfling bard Batbayar, which bows deeply when applauded — the second answer to the Vault’s riddles [ch 067 / 067.02; ch 067 / locations].
+- [LOCATION] **The Grove** — Burial ground for Candlekeep’s keepers of tomes; Alaundo’s grave revealed he died at age ninety-seven [ch 067 / 067.05; ch 067 / locations].
+- [ITEM] **Dust of Mechanus** — A perfect lubricant from the plane of Mechanus, required by the Vault’s riddle; the party secured modron-made tools as a substitute, not the dust itself [ch 067 / 067.05; ch 067 / items].
+- [ITEM] **Modron Tools** — Specialized mechanical instruments created by the modrons, lent to the party by Spanner as an alternative to Dust of Mechanus; their use is conditional on a post-expedition study of Zalthir and Glabbagool [ch 067 / 067.05; ch 067 / items].
+- [ITEM] **Vault Cryptogram** — A letter-substitution cipher with seven instructions; two answers provided by A'lai, two by Sylvira, and the rest solved by the party [ch 067 / 067.03; ch 067 / items].
+- [NPC] **A'lai Aivenmore** — Former traitor and scholar who realized he was never important to Manshoon; his insight into the Vault and deduction about House Baenre are now in the party’s possession [ch 067 / 067.02].
+- [NPC] **Spanner** — Gnome librarian of the House of Mechanus; refuses to kill modrons for Dust of Mechanus but lends tools under strict conditions [ch 067 / 067.05].
+- [NPC] **Miirym the Sentinel Wyrm** — Dragon guardian of Candlekeep; her true name, Vydykyq, is the first answer to the Vault’s cryptogram [ch 067 / 067.03].
+- [THREAT] **Manshoon’s simulacrum** — A weakened but powerful version of Manshoon has already breached Candlekeep’s inner sanctum and is advancing toward the Vault; he is racing the party and has no regard for A'lai’s life [ch 067 / 067.01; ch 067 / npcs].
+- [THREAT] **Infiltrators in the Orrery** — Three unidentified individuals observed inside the Orrery of the Astronomicon, likely agents of Manshoon or another hostile force [ch 067 / 067.03].
+- [FACTION] **House Baenre** — A'lai deduces this drow house in Menzoberranzan has been funding the eleven-year campaign against Daz due to its unparalleled patience and resources, though he offers no direct proof [ch 067 / 067.02].
+
+## Party
+- The party is at the base of a collapsed staircase beneath the House of Alaundo, with Thorin missing after falling into a vast circular well [ch 067 / 067.06].
+- The group’s name remains unaltered; they are the deputized agents of Candlekeep, recognized by Tadric and Kalan [ch 067 / 067.02; ch 067 / 067.03].
+- Level or rank: Not stated, but their actions have earned scholarly recognition and deputized authority [ch 067 / 067.02].
+- Thorin: Fell into the dark well; fate unknown; no new abilities or items reported [ch 067 / 067.06].
+- Gyrgum: Restored forty-four hit points to Zalthir; no new abilities or injuries; intends to survive the descent and confront the Vault’s guardian [ch 067 / 067.06].
+- Zalthir: Healed by Gyrgum; possesses wings and strength to stabilize others; intends to proceed into the Vault [ch 067 / 067.06].
+- Daz: Cast Telekinesis to arrest the collapsing stairs; remains above the collapse; intends to assist the party from above and use ranged magic [ch 067 / 067.06].
+- All party members now possess the full decoded cryptogram, the modron tools, and knowledge of the original prophecy [ch 067 / 067.03; ch 067 / 067.05].
+- The party’s next immediate intention is to determine Thorin’s fate and descend into the well to reach the Vault of Secrets, then confront the final guardian and pass the obsidian door [ch 067 / 067.06].
+
+## Audit
+- [A295] SHOWN — The cryptogram race concluded with the party decoding all seven instructions and acquiring the answers to the riddles [ch 067 / 067.03; ch 067 / 067.05].
+- [A296] BEGUN — The Vault confrontation has begun with the party descending the staircase and Thorin falling into the well; the final guardian and obsidian door remain unencountered [ch 067 / 067.06].
+- [A223] SHOWN — The party arrived at Candlekeep’s gates and were admitted, as confirmed by prior context and the ongoing events within [ch 067 / 067.01; ch 067 / tracking_blingdenstone_travelogue.txt].
+- [A225] BEGUN — Gorg’Bahamut breadcrumb planted with Kestler at Triboar; no further action in this chunk [ch 067 / tracking_blingdenstone_travelogue.txt].
+- [A297] BEGUN — Gauntlgrym call was referenced in Echo 3 and Eldeth’s letter; no travel or arrival occurred in this chunk [ch 067 / 067.03].
+- [A394] BEGUN — Manshoon’s voice-only arrival was in prior sessions; his simulacrum’s physical breach occurred here but was not a voice-only event [ch 067 / 067.01].
+- [A423] SHOWN — The Manshoon-pursuit thread was activated as Manshoon’s simulacrum breached the sanctum and is now racing the party to the Vault [ch 067 / 067.01].
+- [A424] BEGUN — Gauntlgrym call confirmed via Echo 3 and Eldeth’s letter; party has not yet departed for Gauntlgrym [ch 067 / 067.03].
+- [A412] SHOWN — The cryptogram was recovered and transcribed in full from A'lai’s memory and deciphered by the party [ch 067 / 067.03].
+- [A413] SHOWN — Manshoon’s arrival was announced and confirmed by his simulacrum breaching the inner sanctum [ch 067 / 067.01].
+- [A414] SHOWN — The Iron Owlbear corpse was found dead, confirming Manshoon had already reached the Vault [ch 067 / 067.01].
+- [A417] SHOWN — Echo 3 was activated, naming Thorin, Zalthir, Daz, and Gyrgum in the Keeper prophecy [ch 067 / 067.03].
+- [A435] SHOWN — Sylvira was recruited via Path B, as she provided key riddle answers and was present during the cipher solution [ch 067 / 067.03].
+- [A436] SHOWN — Yvenne’s trust ≥ 4 ticks enabled the planar-residue trace payoff, as she provided the true name of Miirym [ch 067 / 067.03].
+- [A437] SHOWN — Vareth / Drakonoikos goodwill enabled the Thava and F-A-D-E payoff, though not directly shown here, implied by prior context [ch 067 / 067.03].
+- [A438] SHOWN — Daral saved as witness, enabling the Fustilugs clue payoff; Daral’s survival was confirmed in prior sessions [ch 067 / 067.02].
+- [A439] SHOWN — Khell-Vire’s Watcher’s Stillness was earned, granting advantage on Vault Wis-save; this was granted in prior sessions [ch 067 / 067.02].
+- [A440] BEGUN — Glabbagool’s Whispering Dome visit granted Echo re-coax boon; this occurred in prior sessions [ch 067 / 067.02].
+- [A441] SHOWN — Polly Pocket released as messenger, flagging OOTA endgame thread; this occurred in prior sessions [ch 067 / 067.02].
+- [A442] SHOWN — Walking-permit medallions worn, enabling wight-safe passage; this was established in prior sessions [ch 067 / 067.02].
+- [A443] SHOWN — Second High Tower key held by party, enabling door access from outside; this was established in prior sessions [ch 067 / 067.02].
+- [A1] BEGUN — Escape from Velkynvelve occurred in prior sessions [ch 067 / tracking.txt].
+- [A2] BEGUN — Return to the Underdark was prior; party is now in Candlekeep [ch 067 / tracking.txt].
+- [A12] BEGUN — Reach Gravenhollow not yet achieved; party is in Candlekeep [ch 067 / tracking.txt].
+- [A14] BEGUN — Discovery of demon lords loose in the Underdark occurred in prior sessions [ch 067 / tracking.txt].
+- [A151] BEGUN — Gromph Baenre’s ritual identified as cause occurred in prior sessions [ch 067 / tracking.txt].
+- [A214] BEGUN — House Baenre private meeting occurred in prior sessions [ch 067 / tracking.txt].
+- [A216] BEGUN — Council of Spiders assistance occurred in prior sessions [ch 067 / tracking.txt].
+- [A217] BEGUN — Gromph’s outer sanctum infiltration occurred in prior sessions [ch 067 / tracking.txt].
+- [A219] BEGUN — Yochlol confrontation occurred in prior sessions [ch 067 / tracking.txt].
+- [A220] BEGUN — Wand of Orcus claimed occurred in prior sessions [ch 067 / tracking.txt].
+- [A221] BEGUN — Heroic sacrifice opportunity occurred in prior sessions [ch 067 / tracking.txt].
+- [A222] BEGUN — Demon sortie encounters occurred in prior sessions [ch 067 / tracking.txt].
+- [A298] BEGUN — Daz / Yvenne scholar arc ongoing; no new sittings in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [A299] BEGUN — Zalthir / Khell-Vire scholar arc ongoing; no new sittings in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [A300] BEGUN — Thorin / Philemon scholar arc ongoing; no new phases in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [A301] BEGUN — Gyrgum / Vareth scholar arc ongoing; no new stations in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [A302] BEGUN — Glabbagool’s question ongoing; no resolution in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [A304] SHOWN — Sylvira recruited (Path B) confirmed by her active help and key contributions [ch 067 / 067.03].
+- [A305] BEGUN — Daral rescue occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A306] BEGUN — Kalan missing occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A307] BEGUN — Alkrist arrest occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A308] BEGUN — Moziqodo binding occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A309] BEGUN — Daz / Yvenne Fourth-Seat synthesis investigation ongoing [ch 067 / tracking_candlekeep_murders.txt].
+- [A310] BEGUN — Daz / Yvenne Vaelissa name and deadline occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A311] BEGUN — Thorin / Philemon Layer 2 Brysis reveal occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A312] BEGUN — Gyrgum / Vareth unsigned sting occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A313] BEGUN — Glabbagool Shadow Apprentice unlock occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A314] SHOWN — Candlekeep gates arrival occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A315] BEGUN — Refectory dinner with Janussi occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A316] BEGUN — Whispering Dome visit occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A317] BEGUN — Infernal Fortress interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A318] BEGUN — Janussi’s chamber investigation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A319] BEGUN — Southern Dining Hall search occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A320] BEGUN — Bath House poisoning occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A321] BEGUN — Founder’s Court interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A322] BEGUN — Oak Tree Apothecary evidence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A323] BEGUN — Kitchens witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A324] BEGUN — Erudite Outfitters cloak evidence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A325] BEGUN — Drakonoikos interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A326] BEGUN — Reader’s Tower death scene occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A327] BEGUN — Immortal Chambers interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A328] BEGUN — Sea Warden’s Tower check-in occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A329] BEGUN — Bell Tower cells occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A330] BEGUN — Cursed Tower incidents occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A331] BEGUN — Pont de Paramours disappearance occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A332] BEGUN — Oval Theatre tournament occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A333] SHOWN — House of Alaundo riddle and inkpot trigger resolved [ch 067 / 067.04].
+- [A334] SHOWN — Astronomicon Orrery clue and Manshoon raiders noted [ch 067 / 067.03].
+- [A335] SHOWN — Philosopher’s Court Fustilugs clue resolved [ch 067 / 067.02].
+- [A336] BEGUN — Melodrome / Jook’s Box occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A337] BEGUN — Jewel of the Styx encounter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A338] SHOWN — School of Drama Batbayar statue encounter resolved [ch 067 / 067.02].
+- [A339] SHOWN — High Tower Library cryptogram recovery occurred [ch 067 / 067.01].
+- [A340] BEGUN — Lava chamber occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A341] BEGUN — Vault B2 confrontation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A342] BEGUN — Vault B3 chamber occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A343] BEGUN — Vault tower rocket lever not pulled in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [A344] BEGUN — Janussi first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A345] BEGUN — Janussi death occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A346] BEGUN — Bookwyrm first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A347] BEGUN — Bookwyrm Teles sighting occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A348] BEGUN — Bookwyrm confrontation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A349] BEGUN — Bookwyrm death occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A350] BEGUN — Kalan first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A351] BEGUN — Kalan second key handoff occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A352] BEGUN — Kalan farewell occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A353] BEGUN — Kalan disappearance occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A354] BEGUN — Sylvira Sashenstar first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A355] BEGUN — Sylvira prime suspect status occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A356] SHOWN — Sylvira recruited as battlefield ally [ch 067 / 067.03].
+- [A357] BEGUN — Sylvira dispel of Moziqodo’s binding occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A358] BEGUN — Sylvira survival and status occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A359] BEGUN — Daral first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A360] BEGUN — Daral poisoning discovery occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A361] BEGUN — Daral fate determined in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A362] BEGUN — Daral key witness testimony occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A363] BEGUN — Fheminor first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A364] BEGUN — Fheminor “Bookwyrm was not surprised” revelation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A365] BEGUN — Fheminor appointment as Keeper occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A366] BEGUN — A'lai first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A367] BEGUN — A'lai interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A368] BEGUN — A'lai sapphire smash and escape occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A369] SHOWN — A'lai fate resolution: imprisoned in null magic prison [ch 067 / 067.02].
+- [A370] BEGUN — Alkrist first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A371] BEGUN — Alkrist interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A372] BEGUN — Alkrist arrest or confession occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A373] BEGUN — Fembris first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A374] BEGUN — Fembris rooftop confession occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A375] BEGUN — Tadric first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A376] BEGUN — Tadric flight assistance occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A377] BEGUN — Tadric acting Gatewarden appointment occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A378] BEGUN — Hollypocket witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A379] BEGUN — Sprig Summerfoot witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A380] BEGUN — Leuwin witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A381] BEGUN — Teles Ahvoste interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A382] BEGUN — Kazryn Nyantani interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A383] BEGUN — Khell-Vire closing letter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A384] BEGUN — Philemon sealed letter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A385] BEGUN — Vareth final stations occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A386] BEGUN — Yvenne third sitting occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A387] BEGUN — Yvenne Vaelissa name delivery occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A388] BEGUN — Yvenne Fourth-Seat synthesis occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A389] BEGUN — Inda emergence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A390] SHOWN — Spanner Mechanus dust handoff: tools lent instead of dust [ch 067 / 067.05].
+- [A391] BEGUN — Moziqodo first encounter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A392] BEGUN — Moziqodo binding break occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A393] BEGUN — Moziqodo fate resolution occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A395] BEGUN — Manshoon direct confrontation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A396] BEGUN — Manshoon escape occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A397] BEGUN — Glabbagool bad night occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A398] BEGUN — Glabbagool Shadow Apprentice status confirmed in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A399] BEGUN — Eldeth letter delivered in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A400] BEGUN — Brevin Sloobludop incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A401] BEGUN — Brevin six-pointed star incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A402] BEGUN — Marin six-pointed star incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A403] BEGUN — Jimjar / Callarduran prophecy activation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A404] BEGUN — Five Books, Five Questions established in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A405] BEGUN — Endless Chant fragment heard in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A406] BEGUN — Janussi murder forensic reveals occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A407] BEGUN — Two “Sylvira” figures revelation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A408] BEGUN — Bookwyrm as cover-up identified in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A409] BEGUN — Alkrist as killer identified in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A410] BEGUN — Disguise rosetta cracked occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A411] BEGUN — Wards drop hallucination occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A415] BEGUN — Echo 1 activated in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A416] BEGUN — Echo 2 activated in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A418] BEGUN — Echo 4 activated in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A419] BEGUN — Book of Vile Darkness fate determined in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A420] BEGUN — Vault tower rocket lever not pulled in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [A421] BEGUN — Candlekeep institutional restructuring occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A422] BEGUN — Party named guest seekers occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A425] BEGUN — Daz first sinus-pressure moment occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A426] BEGUN — Yvenne named Daz’s sensitivity in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A427] BEGUN — Marin quill incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A428] BEGUN — Brevin Sloobludop recitation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A429] BEGUN — Brevin bedclothes incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A430] BEGUN — Endless Chant stoppage occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A431] BEGUN — Ward-drop vision sequence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A432] BEGUN — Glabbagool Juiblex contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A433] BEGUN — Echo 1 prophecy named surface contamination in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A434] BEGUN — Daz and Yvenne field-perception expertise confirmed in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [A444] (none)
+- [A445] (none)
+- [A446] (none)
+- [A447] (none)
+- [A448] (none)
+- [A449] (none)
+- [A450] (none)

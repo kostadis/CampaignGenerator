@@ -1,0 +1,2778 @@
+# Map-check drops
+
+## Chunk 002-002 — 15 dropped
+- [## World] missing-world-tag: - [SPELL] **Rapport Spores** — Stool’s natural ability; creates telepathic “party line” among creatures within 15 feet [ch 002 / spells]
+- [## World] missing-world-tag: - [SPELL] **Shape Water** — Daz’s spell; can freeze moisture to jam or damage the lift mechanism [ch 002 / spells]
+- [## Party] uncited: - The party is imprisoned in the slave pen of Velkynvelve; group name is not stated; no level or rank is given.
+- [## Party] uncited: - Thorin has observed the waterfall as a safe escape route, noted Ilvara’s treasure chest, and sensed drow instability; he believes the party must acquire weapons before escaping.
+- [## Party] uncited: - Gyrgum has impressed the drow with cooking, earned two stolen knives, and is now regarded as a potential threat by guards; he believes he aspires to “godlike affectation.”
+- [## Party] uncited: - Zalthir has studied the lift mechanism, identified fire as the best way to destroy spider-silk components, and discovered the list of names.
+- [## Party] uncited: - Daz has mapped the lower caverns, possesses Shape Water, and is prepared to sabotage the lift with ice.
+- [## Party] uncited: - Prince Derendil has asserted his claimed nobility and been threatened by Ilvara; he remains defiant but cautious.
+- [## Party] uncited: - Stool maintains telepathic rapport among the group; his presence is critical for communication.
+- [## Party] uncited: - Topsy and Turvy have successfully stolen kitchen knives and are the party’s primary thieves.
+- [## Party] uncited: - Jimjar operates a betting ledger on credit; his memory is flawless; he is trusted to track debts post-escape.
+- [## Party] uncited: - Shuushar translates Undercommon and knows the route to Darklake.
+- [## Party] uncited: - Buppido has claimed the party as his disciples and protectors; he believes they are part of his divine plan.
+- [## Party] uncited: - The party possesses two mundane kitchen knives (treated as +0 daggers) and has no other weapons or gear.
+- [## Party] uncited: - The party’s next intended action is to scout the spider-silk spools and execute an escape using Jorlan’s plan: exiting through the unlocked gate, jumping onto webs, and diving into the waterfall pool, while sabotaging pursuit assets with fire and freezing.
+
+## Chunk 004-005 — 19 dropped
+- [## Party] uncited: - The party is traveling at a fast pace through the Underdark, one day ahead of drow scouts at pursuit level four.
+- [## Party] uncited: - Their group name is not stated; they are a mixed group of player characters and former prisoners.
+- [## Party] uncited: - All party members are 2nd level.
+- [## Party] uncited: - Daz has gained Expertise in Arcana, doubling his proficiency bonus for Arcana checks.
+- [## Party] uncited: - Daz retains a sample of the Tongue of Madness fungus for potential future use.
+- [## Party] uncited: - Gyrgum has gained two temporary HP from Adrenaline Rush (still active from the chase).
+- [## Party] uncited: - Gyrgum is now responsible for protecting Stool, the myconid sprout, who rides on Thorin’s back and communicates telepathically with the group via rapport spores.
+- [## Party] uncited: - Thorin carries Stool on his back during travel, adopting a “Yoda style” approach.
+- [## Party] uncited: - Thorin and Gyrgum now wear chain shirts, replacing their previous armor.
+- [## Party] uncited: - Sarith wears studded leather armor.
+- [## Party] uncited: - Gyrgum wields a hand crossbow with three poisoned bolts.
+- [## Party] uncited: - The party has nine rations from the carrion crawler, providing two days of food with the Tongue of Madness fungus.
+- [## Party] uncited: - The party has no coins or other wealth.
+- [## Party] uncited: - The party intends to continue traveling at a fast pace toward Sloobludop, avoiding the Darklake for now, and is trying to outrun the drow hunting party.
+- [## Party] uncited: - Zalthir is the party’s primary scout and spellcaster; Daz is the primary arcane expert; Thorin is the frontline fighter; Gyrgum is the healer and protector of Stool.
+- [## Audit] quoted-span-not-found “mother voice”: - [A432] BEGUN — The party has not yet encountered Juiblex’s “mother voice” [ch 005 / 005.06].
+- [## Audit] quoted-span-not-found "The Auroch's Horn": - [A238] BEGUN — Burned hamlet "The Auroch's Horn" not witnessed [ch 005 / 005.06].
+- [## Audit] quoted-span-not-found "Bookwyrm was not surprised": - [A364] BEGUN — Fheminor "Bookwyrm was not surprised" not revealed [ch 005 / 005.06].
+- [## Audit] quoted-span-not-found "Sylvira": - [A407] BEGUN — Two "Sylvira" figures not revealed [ch 005 / 005.06].
+
+## Chunk 006-006 — 63 dropped
+- [## NPC Status] malformed-row: - Jimjar | Alive | With party | Amused, betting-obsessed; owes Gyrgum five gold and goblins twenty [ch 006 / 006.03; ch 006 / 006.05; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Eldeth | Alive | With party | Respected survivalist; reduced pursuit level to three [ch 006 / 006.02; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Sarith | Alive | With party | Confident navigator; excited to have reached the Silken Paths [ch 006 / 006.04; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Stool | Alive | With party | Eager to help; used rapport spores to communicate with Fargas [ch 006 / 006.07; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Topsy | Alive | With party | Whispering secretly to Turvy; motives unknown [ch 006 / 006.03; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Turvy | Alive | With party | Whispering secretly to Topsy; motives unknown [ch 006 / 006.03; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Yuk Yuk | Alive | With party | Goblin guide; won bet, now guiding party for future gold [ch 006 / 006.05; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Spiderbait | Alive | With party | Goblin guide; negotiated deal, now guiding party for future gold [ch 006 / 006.05; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Fargas Rumblefoot | Alive | With party | Freed from cocoon; promises to lead party to lost tomb [ch 006 / 006.07; ch 006 / npcs].
+- [## NPC Status] malformed-row: - Giant Spiders | Alive | In Silken Paths chasm | Actively pursuing party; rebuild webs faster than fire can destroy them [ch 006 / 006.07; ch 006 / 006.08; ch 006 / npcs].
+- [## World] missing-world-tag: - [SPELL] **Shape Water** — Used by Daz to freeze water into portable blocks; cannot create water; effect lasts one hour and requires refreezing [ch 006 / 006.01; ch 006 / spells].
+- [## World] missing-world-tag: - [SPELL] **Rapport Spores** — Myconid ability used by Stool to establish telepathic communication with Fargas; lasts one hour [ch 006 / 006.07; ch 006 / spells].
+- [## Party] uncited: - Level: Not stated.
+- [## Party] quoted-span-not-found “if spiders attack, deal’s off”: - Thorin: Freed Fargas Rumblefoot with a successful slashing attack; set the terms for the goblin deal (“if spiders attack, deal’s off”); has initiative 17 [ch 006 / 006.07; ch 006 / 006.08].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A88] BEGUN — Demogorgon is not mentioned; no evidence of his rise or presence [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A144] BEGUN — The party is aware of threats in the Underdark but no explicit moment of discovering demon lords is shown in this chunk [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A156] BEGUN — The dark heart talisman has not been mentioned or obtained [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A159] BEGUN — Final battle against Demogorgon not mentioned [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A266] BEGUN — Stroudite half-orc pilgrims not encountered in this chunk [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A274] BEGUN — Triboar carpenter not encountered [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A278] BEGUN — First Faction painting not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A286] BEGUN — Six-pointed star not mentioned in this chunk [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A403] BEGUN — Jimjar / Callarduran Echo 4 prophecy not activated [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A417] BEGUN — Echo 3 activated? No mention of Gauntlgrym or Keeper prophecy [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A424] BEGUN — Gauntlgrym call not confirmed [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A429] BEGUN — Brevin’s bedclothes incident not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A430] BEGUN — Endless Chant not mentioned [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A433] BEGUN — Echo 1 not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A436] BEGUN — Yvenne trust not tracked [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A439] BEGUN — Khell-Vire’s Watcher’s Stillness not earned [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A441] BEGUN — Polly Pocket not released [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A442] BEGUN — Walking-permit medallions not mentioned [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A443] BEGUN — Second High Tower key not held [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A405] BEGUN — Endless Chant fragment not heard [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A406] BEGUN — Janussi murder not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A407] BEGUN — Two "Sylvira" figures not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A408] BEGUN — Bookwyrm disguise not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A409] BEGUN — Alkrist as killer not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A410] BEGUN — Disguise rosetta cracked not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A411] BEGUN — Wards drop not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A412] BEGUN — Cryptogram recovered not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A413] BEGUN — Manshoon arrival not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A414] BEGUN — Iron Owlbear found dead not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A415] BEGUN — Echo 1 activated not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A416] BEGUN — Echo 2 activated not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A418] BEGUN — Echo 4 activated not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A419] BEGUN — Book of Vile Darkness fate not determined [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A420] BEGUN — Vault tower rocket not pulled [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A421] BEGUN — Candlekeep restructuring not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A422] BEGUN — Party named guest seekers not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A423] BEGUN — Manshoon-pursuit thread not activated [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A425] BEGUN — Daz’s first sinus-pressure moment not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A426] BEGUN — Yvenne naming Daz’s sensitivity not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A427] BEGUN — Marin’s quill incident not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A428] BEGUN — Brevin’s Sloobludop recitation not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A431] BEGUN — Ward-drop vision sequence not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A432] BEGUN — Glabbagool’s Juiblex contact not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A434] BEGUN — Daz and Yvenne’s expertise confirmed not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A435] BEGUN — Sylvira recruited not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A437] BEGUN — Vareth goodwill not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A438] BEGUN — Daral saved not referenced [ch 006 / 006.00].
+- [## Audit] outside-chunk [ch 006 / 006.00]: - [A440] BEGUN — Glabbagool’s Echo re-coax not referenced [ch 006 / 006.00].
+- [## Audit] uncited: - (none) — All other audit questions not relevant to this chunk.
+
+## Chunk 007-008 — 3 dropped
+- [## Events] quoted-span-not-found “like the Reservoir Dogs,”: - The party walked confidently toward the northeastern boat “like the Reservoir Dogs,” avoiding direct combat [ch 008 / 008.03].
+- [## Audit] unknown-audit-id-or-tag: - [A68] [ADVANCED] — The Lost Tomb of Khaem was identified as the tomb of Brysis of Khaem, with its decoy sarcophagus and secret passage revealed; its location narrowed to the northeastern Darklake [ch 007 / 007.02; ch 007 / locations].
+- [## Audit] quoted-span-not-found “Sylvira”: - [A407] BEGUN — Two “Sylvira” figures is Candlekeep-related [ch 008 / 008.04].
+
+## Chunk 009-010 — 12 dropped
+- [## Party] uncited: - The party is aboard the captured duergar keelboat, now part of a small armada including their original escape boat, navigating the Darklake toward Gracklstugh.
+- [## Party] uncited: - The party is at 5th level, as implied by the context of Demogorgon’s avatar being beyond their level and no level-up mentioned.
+- [## Party] uncited: - Daz has mastered Shape Water, using it to free the boat from a sandbar and reveal invisible enemies; he has a passive Perception of 14 and is the only one who can use water-shaping effectively.
+- [## Party] uncited: - Thorin has gained a reputation for navigating by “vibes,” succeeded on survival checks, used Second Wind and Tactical Mind in combat, and captured a duergar slaver with a 12-point Feinting Attack.
+- [## Party] uncited: - Zalthir has perfected his Darkness spell, using it to control combat by canceling invisibility penalties; he can see through his own darkness and strike with precision.
+- [## Party] uncited: - Gyrgum has used Tasha’s Caustic Brew effectively underwater and in combat, killing enemies and applying ongoing acid damage.
+- [## Party] uncited: - The party now possesses 1,100 gp, two casks of fungi, and a magical alchemy jug that produces any liquid at dawn—currently set to mayonnaise.
+- [## Party] uncited: - The party has captured a duergar slaver for interrogation, hoping to learn the way to Gracklstugh.
+- [## Party] uncited: - Spiderbait has declared he will leave the party at the next opportunity; Shuushar has departed to lead kuo-toa refugees.
+- [## Party] uncited: - The party intends to interrogate the captured duergar and proceed to Gracklstugh, though their arrival may be as visitors—or as merchandise.
+- [## Audit] unknown-audit-id-or-tag: - [A25] RESOLVED — Shuushar was the guide to Sloobludop; he has now departed the party to lead kuo-toa refugees, ending his role [ch 009 / 009.06; ch 010 / 010.01]
+- [## Audit] quoted-span-not-found “The Auroch's Horn”: - [A238] BEGUN — Burned hamlet “The Auroch's Horn” on Silver Marches before this chunk [ch 010 / 010.01]
+
+## Chunk 011-011 — 9 dropped
+- [## Party] uncited: - The party is aboard their larger boat, approaching the docks of Gracklstugh.
+- [## Party] uncited: - Group name: Not stated; referred to as “the party” or “adventurers.”
+- [## Party] uncited: - Level: Not stated.
+- [## Party] uncited: - Thorin: Successfully retrieved the sunken chest using Shield of Faith, a magical air bubble, and magical darkness; demonstrated tactical leadership and willingness to take risks. No new injuries or items beyond the party’s shared loot. Intends to sell gear and buy equipment at the Blade Bazaar.
+- [## Party] uncited: - Daz: Cast Magic Missile twice, used Shape Water to create an air bubble and spray water, discovered the sunken boats and chest. Paralyzed once by the beholder zombie. Now possesses a driftglobe and four spell scrolls. Intends to study the scrolls and use the driftglobe.
+- [## Party] uncited: - Zalthir: Used Darkness twice to blind enemies and enable stealth; landed a critical hit on the beholder zombie for 17 damage; took 16 damage from its bite, healed by Cure Wounds. No new injuries. Intends to use Darkness strategically in Gracklstugh.
+- [## Party] uncited: - Gyrgum: Cast Command (failed), Shield of Faith, Cure Wounds, Mending, Find Traps, Divine Spark, and Tasha’s Caustic Brew. Poisoned by the beholder zombie. Now carries the driftglobe and scrolls. Concerned about Gracklstugh’s laws. Intends to assist the party in navigating the city.
+- [## Party] uncited: - Buppido, Hemeth, Stool, Jimjar: Companions who aided in combat and navigation; Hemeth knows a guy for slave sales; all are present and active.
+- [## Party] uncited: - Party’s funds: 27 platinum, 1,100 gold.
+
+## Chunk 012-012 — 6 dropped
+- [## NPC Status] malformed-row: - Hemeth | Alive | Gracklstugh, Darklake district | Grateful and offended; offers discounts but resents competition `[ch 012 / 012.02; ch 012 / npcs]`
+- [## NPC Status] malformed-row: - Brannum Redmarch | Alive | Gracklstugh, Darklake district | Cooperative; seeking freedom through magical item procurement `[ch 012 / 012.02; ch 012 / npcs]`
+- [## NPC Status] malformed-row: - Buppido | Alive | Gracklstugh, Darklake district | Hostile but passive; awaiting release after insulting the party `[ch 012 / 012.03; ch 012 / npcs]`
+- [## NPC Status] malformed-row: - Jimjar | Alive | Gracklstugh, Darklake district | Observant and betting-obsessed; dismisses Buppido’s potential to summon Demogorgon `[ch 012 / 012.03; ch 012 / npcs]`
+- [## NPC Status] malformed-row: - Two-Headed Stone Giant | Alive | Gracklstugh, Blade Bazaar plaza | Enraged and blinded; engaged in battle with party and guards `[ch 012 / 012.05; ch 012 / npcs]`
+- [## NPC Status] malformed-row: - Duergar Guard | Alive | Gracklstugh, Blade Bazaar plaza | Arrived to assist in subduing the giant; two guards engaged in combat `[ch 012 / 012.05; ch 012 / npcs]`
+
+## Chunk 013-013 — 19 dropped
+- [## Events] quoted-span-not-found “once again burn at the end of the day.”: - Gyrgum channels divine energy through his holy symbol against the giant, causing it to “once again burn at the end of the day.” `[ch 013 / 013.01]`
+- [## Events] quoted-span-not-found “attacks with no clear motive and anti-social, uncivil behavior,”: - Gyrgum asks the militia about the city’s wave of erratic behavior; after rephrasing it literally as “attacks with no clear motive and anti-social, uncivil behavior,” they confirm a significant increase in such incidents and suggest speaking to a clan leader. `[ch 013 / 013.03]`
+- [## Events] quoted-span-not-found “some kindling available if the order is running short on dragons”: - Gyrgum jokes that they have “some kindling available if the order is running short on dragons”; Gartokkar laughs, then analytically dissects the joke, draining it of humor. `[ch 013 / 013.04; ch 013 / Memorable Moments]`
+- [## Events] quoted-span-not-found “limited get-out-of-jail-free card,”: - Gartokkar invites the party to his quarters by the following day in exchange for city passes and a “limited get-out-of-jail-free card,” with disclaimers. `[ch 013 / 013.04]`
+- [## Events] outside-chunk [ch 013 / end]: - The session ends just before the GM was about to run an encounter. `[ch 013 / end]`
+- [## NPC Status] malformed-row: - Rihuud | Dead | Gracklstugh streets | — `[ch 013 / 013.02; ch 013 / NPCs]`
+- [## NPC Status] malformed-row: - Dorhun | Alive | Gracklstugh streets | Appreciative toward party; invited them to Cairngorm Cavern `[ch 013 / 013.03; ch 013 / NPCs]`
+- [## NPC Status] malformed-row: - Gartokkar Xundorn | Alive | Gracklstugh (location unspecified) | Interested in recruiting party; holds legal authority `[ch 013 / 013.04; ch 013 / NPCs]`
+- [## NPC Status] malformed-row: - Themberchaud | Alive | Flying over Gracklstugh | Pampered red dragon kept by the Keepers of the Flame `[ch 013 / 013.04; ch 013 / NPCs]`
+- [## NPC Status] malformed-row: - Horgar Steelshadow | Unknown | Gracklstugh | Rumored to have descended into paranoid madness `[ch 013 / 013.05; ch 013 / NPCs]`
+- [## NPC Status] malformed-row: - Errde Blackskull | Alive | Overlake Hold | Offering mission to party; knows of drow hunters `[ch 013 / 013.06; ch 013 / NPCs]`
+- [## World] quoted-span-not-found “civilians, not relevant to the city.”: - [LOCATION] **Gracklstugh** — A grim, industrial duergar city plagued by a rising tide of erratic, self-destructive behavior among citizens; its clans maintain separate militias, and factions are in open conflict; non-duergar who remain uninvolved are treated as “civilians, not relevant to the city.” `[ch 013 / Locations; ch 013 / 013.05]`
+- [## Party] outside-chunk [ch 013 / 013.06; ch 013 / items; ch 013 / end]: - The party is in Gracklstugh, at the end of a day marked by two factional offers and one pending invitation. Their group name remains unchanged. They are level 9 (implied by context and prior sessions). Thorin now wears chain mail (AC 16) and carries twenty darts; his Stealth is at disadvantage. The others have not yet claimed their 175 gp worth of equipment from the Stone Guard armory. No injuries are noted. Thorin has a deeper understanding of stone giant culture and the consequences of killing them. The party is now aware of the Keepers of the Flame, the Stone Guard, and the existence of Cairngorm Cavern. They are aware of the Deepking’s madness, the dragon egg replacement cycle, and that drow are hunting them. They intend to visit Cairngorm Cavern as invited by Dorhun, meet with Gartokkar Xundorn the next day, and track the derro Droki for Errde Blackskull. They are wary of being drawn into factional war and suspect both Gartokkar and Errde may be manipulative or unstable. `[ch 013 / 013.06; ch 013 / Items; ch 013 / end]`
+- [## Audit] outside-chunk [ch 013 / locations; ch 013 / end]: - [A47] SHOWN — The party is in Gracklstugh, the duergar city, with all scenes, NPCs, and locations centered on it. `[ch 013 / Locations; ch 013 / end]`
+- [## Audit] unknown-audit-id-or-tag: - [A65] OPENED — Dorhun invites the party to visit Cairngorm Cavern, establishing it as a future destination. `[ch 013 / 013.03]`
+- [## Audit] unknown-audit-id-or-tag: - [A97] OPENED — Dorhun’s mention of Stonespeaker Hgraam as Rihuud’s mentor opens the possibility of seeking an audience with him. `[ch 013 / 013.03; ch 013 / NPCs]`
+- [## Audit] unknown-audit-id-or-tag: - [A208] OPENED — The city of Gracklstugh is now in a state of escalating chaos, with widespread madness among citizens and officials, marking a new condition for the city. `[ch 013 / 013.03; ch 013 / 013.05]`
+- [## Audit] quoted-span-not-found “surface-madness gradient”: - [A224] BEGUN — The party is now aware of a “surface-madness gradient” extending into the Underdark, as the Deepking’s madness and the city’s chaos mirror earlier surface phenomena. `[ch 013 / 013.05]`
+- [## Audit] quoted-span-not-found “a bookshop”: - [A265] BEGUN — The party has encountered Rishaal the Pageturner’s bookshop indirectly through the halfling’s mention of “a bookshop” and their own interest in factions, implying future contact. `[ch 013 / 013.05]`
+
+## Chunk 014-014 — 12 dropped
+- [## Threads] quoted-span-not-found “hole torn through the world”: - [OPENED] **Psionic Disturbance in the Underdark** — Gartokkar described a “hole torn through the world” sensed psionically, which he believes the Gray Ghosts caused; lore checks failed, leaving it a mystery [ch 014 / 014.07].
+- [## NPC Status] malformed-row: - Errde Blackskull | Alive | Gracklstugh | Skeptical but personally motivated, tasking the party with investigating the Empty-Scabbard Killers and tracking Droki [ch 014 / 014.02; ch 014 / npcs].
+- [## NPC Status] malformed-row: - Grimholl Forgebrand | Alive | Gracklstugh | Believes the Empty-Scabbard Killers are real; described the mysterious deaths to the party [ch 014 / 014.02; ch 014 / npcs].
+- [## NPC Status] malformed-row: - Jimjar | Alive | Gracklstugh | Encouraged the party to leave for Blingdenstone; noticed the Topsy-Turvy twins’ disappearance [ch 014 / 014.03; ch 014 / npcs].
+- [## NPC Status] malformed-row: - Werz | Alive | Shattered Spire (expected) | Survived the assassination attempt; invited the party to meet him for a reward; his clan affiliation unknown [ch 014 / 014.04; ch 014 / npcs].
+- [## NPC Status] malformed-row: - Psionic Assassins | Dead | Darklake Docks | Killed by the party; their glowing blades vanished upon death; bodies disposed of in the lake [ch 014 / 014.04; ch 014 / 014.05].
+- [## NPC Status] malformed-row: - Themberchaud | Alive | Themberchaud’s Lair | Declared the party his agents; unaware he is being replaced; paranoid and arrogant [ch 014 / 014.06; ch 014 / npcs].
+- [## NPC Status] malformed-row: - Gartokkar | Alive | Keepers of the Flame HQ | Revealed the plot to replace Themberchaud; tasked the party with tracking Droki and recovering the dragon egg; threatened them with false charges [ch 014 / 014.07; ch 014 / npcs].
+- [## NPC Status] malformed-row: - Droki | Unknown | Unknown | Derro messenger for the Gray Ghosts; the party’s primary target for investigation; sought by both Gartokkar and Errde [ch 014 / 014.07; ch 014 / npcs].
+- [## NPC Status] malformed-row: - Topsy-Turvy Twins | Missing | Gracklstugh Lodgings | Disappeared during the night; their whereabouts and intentions unknown [ch 014 / 014.03].
+- [## Party] uncited: - The party is currently in Gracklstugh, having just concluded their audience with Themberchaud and mission briefing with Gartokkar.
+- [## Party] uncited: - They are level 5 (inferred from Daz using Arcane Recovery for a second-level slot and Zalthir spending focus points).
+
+## Chunk 016-017 — 9 dropped
+- [## NPC Status] malformed-row: - Pelek | Alive (as ghost) | Traveling with party | Neutral, bound to his bones [ch 016 / 016.01; ch 017 / 017.02; ch 017 / 017.05]
+- [## Audit] uncited: - [A299] BEGUN — The party has not yet engaged with Vareth’s Stroud Wake stations; this is outside the scope of this chunk [no evidence].
+- [## Audit] uncited: - [A39] BEGUN — Eldeth Feldrun’s letter was not mentioned in this chunk; no evidence of delivery or reference [no evidence].
+- [## Audit] uncited: - [A108] BEGUN — Chipgrin Goldwhisker was not encountered; no evidence of negotiation [no evidence].
+- [## Audit] uncited: - [A125] BEGUN — Vizeran DeVir was not encountered; no evidence of presence or alliance offer [no evidence].
+- [## Audit] uncited: - [A216] BEGUN — Council of Spiders assistance was not mentioned; no evidence of Sorcere infiltration [no evidence].
+- [## Audit] uncited: - [A276] BEGUN — Bookwyrm was not encountered; no evidence of Candlekeep arrival [no evidence].
+- [## Audit] uncited: - [A314] BEGUN — Candlekeep gates were not reached; party is still in the Underdark [no evidence].
+- [## Audit] uncited: - [A400] BEGUN — Brevin’s role in Sloobludop was not referenced; no evidence of recitation or incidents [no evidence].
+
+## Chunk 018-018 — 12 dropped
+- [## World] quoted-span-not-found “growing up”: - [NPC] **Themberchaud** — Red dragon whose fire powers Gracklstugh’s industry; manipulated by Keepers of the Flame; now “growing up” and noticing deception [ch 018 / npcs].
+- [## Party] uncited: - The party is at Ghohlbrorn’s Lair in Gracklstugh, having just concluded meetings with Errde Blackskull, Werz Saltbaron, and Clan Ironhead.
+- [## Party] uncited: - They are known as an adventuring group operating under no formal name.
+- [## Party] uncited: - Level: Not stated, but equipment and context suggest mid-level (likely 8–9).
+- [## Party] uncited: - Zalthir now possesses two uncommon magical tattoos.
+- [## Party] uncited: - Thorin now wields a +1 longsword (cost: 900 gp, paid from pooled funds); he also adopted “radical candor” as a personal philosophy, with dice rolls determining whether he blurts secrets.
+- [## Party] uncited: - Gyrgum carries the ghost’s bones and the obsidian gem intended for his grave; he drafted the Non-Demonic Agreement.
+- [## Party] uncited: - Daz is recognized by Errde as leadership material; he negotiated the NDA and cover story; his insight checks revealed Werz’s hidden knowledge.
+- [## Party] uncited: - The party now has five empty spell gems from Werz, which Jimjar identifies as valuable to Blingdenstone’s alchemist Kazook Pickshine.
+- [## Party] uncited: - The party has armed allies: Jimjar, Spiderbait, and Eldeth now have medium armor, short swords, shortbows, and shields; Topsy and Turvy are missing; Stool has no weapons.
+- [## Party] uncited: - The party has agreed to investigate Rumpadump’s distress on the way to eliminate the assassins targeting Werz.
+- [## Party] uncited: - The party has secured a secret political alliance with Clan Ironhead via Grinta, contingent on the Deepking’s removal.
+
+## Chunk 019-019 — 12 dropped
+- [## NPC Status] malformed-row: - Errde | Alive | Gracklstugh | Hostile toward the Deepking if shown proof; neutral toward party if they provide derro evidence `[ch 019 / npcs]`
+- [## NPC Status] malformed-row: - Themberchaud | Alive | Unknown | Unaware of the egg’s existence; the Keepers of the Flame fear his reaction if he learns of it `[ch 019 / npcs]`
+- [## NPC Status] malformed-row: - Werz | Alive | Gracklstugh | Disposition toward party: hopeful; his life is now contingent on their success against the cultists `[ch 019 / npcs]`
+- [## NPC Status] malformed-row: - Rust | Alive | Whorlstone Caverns | Disposition toward party: cooperative but cautious; believes they are allies against derro `[ch 019 / npcs]`
+- [## NPC Status] malformed-row: - Grimgrim (“Bob”) | Alive | Whorlstone Caverns | Disposition toward party: silent, observant; no hostility shown `[ch 019 / npcs]`
+- [## NPC Status] malformed-row: - Eldgrim | Alive | Whorlstone Caverns | Disposition toward party: enraged; has banned them from his territory under threat of death `[ch 019 / npcs]`
+- [## NPC Status] malformed-row: - Flumph | Alive | Whorlstone Caverns | Disposition toward party: amused, detached; disappointed no one’s brain was devoured `[ch 019 / npcs]`
+- [## NPC Status] malformed-row: - Plinki | Alive | Obelisk Chamber | Disposition toward party: hostile; severely wounded after being grappled and blasted by necrotic energy `[ch 019 / npcs]`
+- [## Audit] outside-chunk [ch 019 / end]: - [A292] BEGUN — The drow refugee in Waterdeep is mentioned as a banked thread, but no new action or connection to this chunk is shown. `[ch 019 / end]`
+- [## Audit] outside-chunk [ch 019 / end]: - [A419] BEGUN — The fate of the Book of Vile Darkness is not addressed; this chunk is unrelated. `[ch 019 / end]`
+- [## Audit] outside-chunk [ch 019 / end]: - [A424] BEGUN — The Gauntlgrym call is referenced as a future goal, but no action toward it occurs here. `[ch 019 / end]`
+- [## Audit] uncited: - (none) for all other audit questions not mentioned in the evidence.
+
+## Chunk 020-020 — 4 dropped
+- [## Party] uncited: - Group name: Not stated.
+- [## Party] uncited: - Level: Not stated.
+- [## Audit] quoted-span-not-found “Black Obelisk”: - [A176] BEGUN — The red dragon egg has been obtained by the party, previously known as the “Black Obelisk” egg from the Keepers of the Flame [ch 020 / items].
+- [## Audit] quoted-span-not-found “Sloobludop recitation”: - [A400] BEGUN — The egg is now in the party’s possession, continuing the thread of the “Sloobludop recitation” and “six-pointed star” motifs, as the Derro associate it with Demogorgon [ch 020 / Memorable Moments].
+
+## Chunk 021-021 — 250 dropped
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A27] BEGUN — Rumpadump is not mentioned in this chunk; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A28] BEGUN — Werz Saltbaron’s gems are not referenced; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A29] BEGUN — Droki delivery interception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A30] BEGUN — Ylsa Henstak’s investigation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A199] BEGUN — Karazikar’s slaves are not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A200] BEGUN — Modron prisoner is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A201] BEGUN — Xazax the Eyemonger is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A202] BEGUN — Veldyskar the basilisk is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A203] BEGUN — Galeb duhr Hourm is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A204] BEGUN — Visions at Gravenhollow are not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A211] BEGUN — Ooze spies are not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A212] BEGUN — Araumycos fungal creatures are not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A213] BEGUN — Infected area of Araumycos’s mind is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A214] BEGUN — House Baenre meeting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A215] BEGUN — House Do'Urden meeting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A216] BEGUN — Council of Spiders assistance is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A217] BEGUN — Gromph’s outer sanctum is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A218] BEGUN — Szashune is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A219] BEGUN — Yochlol is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A220] BEGUN — Wand of Orcus is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A221] BEGUN — Heroic sacrifice opportunity is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A222] BEGUN — Demon sortie encounters are not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no surface]: - [A223] BEGUN — Travelogue prelude is not relevant; party is in Underdark. `[ch 021 / no surface]`
+- [## Audit] invalid-citation [ch 021 / no surface]: - [A224] BEGUN — Surface-madness gradient is not relevant; party is underground. `[ch 021 / no surface]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A225] BEGUN — Gorg'Bahamut breadcrumb is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A226] BEGUN — Mirabar smith commissions are not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A227] BEGUN — Daz shopping arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A228] BEGUN — Daz fitted Calishite cloak is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A229] BEGUN — Milo Goodbarrel Volume 3 is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A230] BEGUN — Order of the Gauntlet medallion is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A231] BEGUN — Gyrgum Hagiography is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A232] BEGUN — Zalthir brass shadow-puppet is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A233] BEGUN — Dawnbringer scabbard is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A234] BEGUN — Elin the silent child is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A235] BEGUN — Charcoal rubbing is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A236] BEGUN — Kestler meeting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A237] BEGUN — Triboar carpenter’s journal is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A238] BEGUN — Burned hamlet is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A239] BEGUN — Broken Thunderbeast stone is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A240] BEGUN — Defaced Tempus shrine is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A241] BEGUN — Forge of Mirabar is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A242] BEGUN — Order of the Gauntlet shrine is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A243] BEGUN — Goldenfields is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A244] BEGUN — Mountain's Mouth Inn is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A245] BEGUN — Triboar memorial square is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A246] BEGUN — Waterdeep is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A247] BEGUN — Rishaal the Pageturner's is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A248] BEGUN — Order of the Gauntlet chapter house is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A249] BEGUN — Sleeping Snake fence is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A250] BEGUN — Aurora's Whole Realms Catalog is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A251] BEGUN — Halaster's Prized Findings is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A252] BEGUN — Steelwoods of Mistshore is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A253] BEGUN — River Shining Tavern is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A254] BEGUN — Hand of Tarvis monument is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A255] BEGUN — Burning Wizard inn is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A256] BEGUN — Way of the Lion is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A257] BEGUN — Candlekeep Emerald Door is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A258] BEGUN — Eldeth farewell is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A259] BEGUN — Dwarven outriders is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A260] BEGUN — Stroudite polemicist is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A261] BEGUN — Sister Ellune is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A262] BEGUN — Brindle Wenth story is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A263] BEGUN — Kestler the half-orc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A264] BEGUN — Eldred the courier is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A265] BEGUN — Rishaal the Pageturner is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A266] BEGUN — Stroudite half-orc pilgrims is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A267] BEGUN — Field Ward preacher is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A268] BEGUN — City Watch patrol is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A269] BEGUN — Maerith of the Ford is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A270] BEGUN — Elin the silent child is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A271] BEGUN — Veyloss the bard is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A272] BEGUN — Festrum the gnome is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A273] BEGUN — Pilgrim at corner table is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A274] BEGUN — Triboar carpenter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A275] BEGUN — Stroudite half-orc pilgrims is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A276] BEGUN — Bookwyrm is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A277] BEGUN — Queenie the cat is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A278] BEGUN — First Faction painting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A280] BEGUN — Thorin and Dawnbringer orphan-healing run is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A281] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A282] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A283] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A284] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A285] BEGUN — Daz somatic field-perception is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A286] BEGUN — Six-pointed star is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A287] BEGUN — Black-Banner Five trial-site marker is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A288] BEGUN — Endless Chant error is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A289] BEGUN — Endless Chant is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A290] BEGUN — Sjurkar priest benediction error is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A291] BEGUN — Stroudite sponsorship is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A292] BEGUN — Drow refugee is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A293] BEGUN — Refugee family is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A294] BEGUN — Candlekeep murder investigation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A295] BEGUN — Cryptogram race is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A296] BEGUN — Vault confrontation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A297] BEGUN — Gauntlgrym call is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A298] BEGUN — Daz / Yvenne scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A299] BEGUN — Zalthir / Khell-Vire scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A300] BEGUN — Thorin / Philemon scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A301] BEGUN — Gyrgum / Vareth scholar arc is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A302] BEGUN — Glabbagool's question is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A303] BEGUN — Polly Pocket disposition is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A304] BEGUN — Sylvira recruitment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A305] BEGUN — Daral rescue is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A306] BEGUN — Kalan missing is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A307] BEGUN — Alkrist arrest is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A308] BEGUN — Moziqodo binding is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A309] BEGUN — Daz / Yvenne synthesis is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A310] BEGUN — Daz / Yvenne name and deadline is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A311] BEGUN — Thorin / Philemon Layer 2 reveal is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A312] BEGUN — Gyrgum / Vareth unsigned sting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A313] BEGUN — Glabbagool Shadow Apprentice is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A314] BEGUN — Candlekeep gates arrival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A315] BEGUN — Refectory dinner is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A316] BEGUN — Whispering Dome is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A317] BEGUN — Infernal Fortress is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A318] BEGUN — Janussi’s chamber is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A319] BEGUN — Southern Dining Hall is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A320] BEGUN — Bath House is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A321] BEGUN — Founder's Court is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A322] BEGUN — Oak Tree Apothecary is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A323] BEGUN — Kitchens is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A324] BEGUN — Erudite Outfitters is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A325] BEGUN — Drakonoikos is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A326] BEGUN — Reader's Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A327] BEGUN — Immortal Chambers is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A328] BEGUN — Sea Warden's Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A329] BEGUN — Bell Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A330] BEGUN — Cursed Tower is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A331] BEGUN — Pont de Paramours is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A332] BEGUN — Oval Theatre is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A333] BEGUN — House of Alaundo is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A334] BEGUN — Astronomicon Orrery is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A335] BEGUN — Philosopher's Court is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A336] BEGUN — Melodrome / Jook's Box is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A337] BEGUN — Jewel of the Styx is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A338] BEGUN — School of Drama is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A339] BEGUN — High Tower Library is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A340] BEGUN — Lava chamber is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A341] BEGUN — The Vault (B2) is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A342] BEGUN — The Vault (B3) is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A343] BEGUN — Vault tower rocket is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A344] BEGUN — Janussi first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A345] BEGUN — Janussi death is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A346] BEGUN — Bookwyrm first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A347] BEGUN — Bookwyrm Teles sighting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A348] BEGUN — Bookwyrm confrontation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A349] BEGUN — Bookwyrm death is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A350] BEGUN — Kalan first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A351] BEGUN — Kalan second key is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A352] BEGUN — Kalan farewell is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A353] BEGUN — Kalan disappearance is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A354] BEGUN — Sylvira first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A355] BEGUN — Sylvira prime suspect is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A356] BEGUN — Sylvira recruitment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A357] BEGUN — Sylvira dispel is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A358] BEGUN — Sylvira survival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A359] BEGUN — Daral first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A360] BEGUN — Daral poisoning is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A361] BEGUN — Daral death or survival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A362] BEGUN — Daral testimony is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A363] BEGUN — Fheminor first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A364] BEGUN — Fheminor revelation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A365] BEGUN — Fheminor appointment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A366] BEGUN — A'lai first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A367] BEGUN — A'lai interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A368] BEGUN — A'lai sapphire smash is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A369] BEGUN — A'lai fate is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A370] BEGUN — Alkrist first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A371] BEGUN — Alkrist interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A372] BEGUN — Alkrist arrest is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A373] BEGUN — Fembris first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A374] BEGUN — Fembris confession is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A375] BEGUN — Tadric first contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A376] BEGUN — Tadric flight assistance is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A377] BEGUN — Tadric appointment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A378] BEGUN — Hollypocket witness is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A379] BEGUN — Sprig Summerfoot witness is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A380] BEGUN — Leuwin witness is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A381] BEGUN — Teles Ahvoste interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A382] BEGUN — Kazryn Nyantani interview is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A383] BEGUN — Khell-Vire closing letter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A384] BEGUN — Philemon sealed letter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A385] BEGUN — Vareth final stations is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A386] BEGUN — Yvenne third sitting is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A387] BEGUN — Yvenne Vaelissa name is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A388] BEGUN — Yvenne Fourth-Seat scene is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A389] BEGUN — Inda emergence is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A390] BEGUN — Spanner handoff is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A391] BEGUN — Moziqodo first encounter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A392] BEGUN — Moziqodo binding break is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A393] BEGUN — Moziqodo fate is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A394] BEGUN — Manshoon arrival is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A395] BEGUN — Manshoon confrontation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A396] BEGUN — Manshoon escape is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A397] BEGUN — Glabbagool bad night is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A398] BEGUN — Glabbagool Shadow Apprentice is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A399] BEGUN — Eldeth letter is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A400] BEGUN — Brevin recitation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A401] BEGUN — Brevin bedclothes is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A402] BEGUN — Marin quill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A403] BEGUN — Jimjar / Callarduran prophecy is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A404] BEGUN — Five Books, Five Questions is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A405] BEGUN — Endless Chant fragment is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A406] BEGUN — Janussi murder is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A407] BEGUN — Two "Sylvira" figures is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A408] BEGUN — Bookwyrm as cover-up is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A409] BEGUN — Alkrist as killer is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A410] BEGUN — Disguise rosetta cracked is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A411] BEGUN — Wards drop is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A412] BEGUN — Cryptogram recovered is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A413] BEGUN — Manshoon arrival announced is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A414] BEGUN — Iron Owlbear found dead is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A415] BEGUN — Echo 1 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A416] BEGUN — Echo 2 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A417] BEGUN — Echo 3 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A418] BEGUN — Echo 4 activated is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A419] BEGUN — Book of Vile Darkness fate is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A420] BEGUN — Vault tower rocket lever is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A421] BEGUN — Candlekeep restructuring is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A422] BEGUN — Party named guest seekers is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A423] BEGUN — Manshoon-pursuit thread is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A424] BEGUN — Gauntlgrym call confirmed is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A425] BEGUN — Daz sinus-pressure is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A426] BEGUN — Yvenne names sensitivity is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A427] BEGUN — Marin quill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A428] BEGUN — Brevin recitation is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A429] BEGUN — Brevin bedclothes is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A430] BEGUN — Endless Chant stoppage is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A431] BEGUN — Ward-drop vision is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A432] BEGUN — Glabbagool Juiblex contact is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A433] BEGUN — Echo 1 prophecy is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A434] BEGUN — Daz and Yvenne expertise confirmed is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A435] BEGUN — Sylvira recruited is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A436] BEGUN — Yvenne trust ≥ 4 ticks is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A437] BEGUN — Vareth goodwill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A438] BEGUN — Daral saved is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A439] BEGUN — Khell-Vire earned is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A440] BEGUN — Glabbagool Whispering Dome visit is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A441] BEGUN — Polly Pocket released is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A442] BEGUN — Walking-permit medallions worn is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A443] BEGUN — Second High Tower key held is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A444] BEGUN — Daz / Yvenne field-perception expertise is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A445] BEGUN — Glabbagool Shadow Apprentice sidekick is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A446] BEGUN — Vareth / Drakonoikos goodwill is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A447] BEGUN — Daral saved payoff is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A448] BEGUN — Khell-Vire Watcher's Stillness earned is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A449] BEGUN — Glabbagool Echo re-coax is not mentioned; no evidence. `[ch 021 / no mention]`
+- [## Audit] invalid-citation [ch 021 / no mention]: - [A450] BEGUN — Polly Pocket messenger is not mentioned; no evidence. `[ch 021 / no mention]`
+
+## Chunk 022-022 — 11 dropped
+- [## Events] quoted-span-not-found “all we need is parts.”: - Narrak announced he had found “the spell we need” and that “all we need is parts.” `[ch 022 / 022.06]`
+- [## NPC Status] malformed-row: - Eldeth Feldrun | Alive | With the party | Grateful for healing `[ch 022 / 022.01; ch 022 / npcs]`
+- [## NPC Status] malformed-row: - Skiit | Dead | Pit of Decomposed Flesh | Hostile until death `[ch 022 / 022.02; ch 022 / npcs]`
+- [## NPC Status] malformed-row: - Ulnara | Alive | Pit of Decomposed Flesh | Deferential to party, believes them allied with Demogorgon `[ch 022 / 022.02; ch 022 / npcs]`
+- [## NPC Status] malformed-row: - Plinki | Dead | — | Unknown to Ulnara; still referenced as authority `[ch 022 / 022.02; ch 022 / npcs]`
+- [## NPC Status] malformed-row: - Derro Patrol | Dead | Western Tunnels | Hostile until death `[ch 022 / 022.05; ch 022 / npcs]`
+- [## NPC Status] malformed-row: - Death Dog | Alive | Brimstone Cavern | Unaware of party `[ch 022 / 022.06; ch 022 / npcs]`
+- [## NPC Status] malformed-row: - Narrak | Alive | Brimstone Cavern | Zealous, focused on ritual, unaware of party `[ch 022 / 022.06; ch 022 / npcs]`
+- [## NPC Status] malformed-row: - Errde Blackskull | Alive | — | Party now possesses potential evidence she seeks `[ch 022 / 022.06; ch 022 / npcs]`
+- [## World] quoted-span-not-found “all we need is parts,”: - [THREAT] **Narrak’s impending ritual** — Narrak declared he has found “the spell we need” and that “all we need is parts,” implying an imminent, dangerous ritual requiring sacrifices. `[ch 022 / 022.06]`
+- [## Audit] unknown-audit-id-or-tag: - [A91] ADVANCED — The party has obtained potential physical evidence (trillimac cap books) for Errde Blackskull’s investigation into demonic conspiracy, advancing her quest. `[ch 022 / 022.06; ch 022 / npcs]`
+
+## Chunk 023-024 — 23 dropped
+- [## Events] quoted-span-not-found “You cannot stop the inevitable… The curse spreads! By golly”: - Daz casts Maximilian’s Earthen Grasp, seizing Narrak and breaking his concentration, ending the Fear effect; Narrak defiantly proclaims, “You cannot stop the inevitable… The curse spreads! By golly” [ch 023 / 023.04].
+- [## Events] quoted-span-not-found “No, the ritual cannot be undone… sacrificed”: - Thorin delivers the final blow to Narrak, killing him; Narrak’s last words: “No, the ritual cannot be undone… sacrificed” [ch 024 / 024.03].
+- [## Threads] quoted-span-not-found “very much trying really hard to not be noticed,”: - [OPENED] **Unseen figure in the ritual chamber** — After the battle, one figure remains in the background, “very much trying really hard to not be noticed,” introducing a new unknown threat or witness [ch 024 / 024.04].
+- [## Party] uncited: - The party is in the ritual chamber beneath Whorlstone Tunnels, having just slain Narrak, Grula-Munga, and all Derro cultists.
+- [## Party] uncited: - They now possess: *The Rituals of the Two-Headed Beast*, Narrak’s key, five doses of Keoghtom’s Ointment, 45 gold and 15 silver, and evidence implicating the Council of Savants.
+- [## Party] uncited: - Zalthir has activated his Eldritch Claw Tattoo’s Eldritch Maul, gaining 15-foot reach with inky tentacles; he used it to grapple and defeat Grula-Munga.
+- [## Party] uncited: - Daz has used Maximilian’s Earthen Grasp to restrain and crush Narrak, demonstrating mastery of earth-based magic.
+- [## Party] uncited: - Gyrgum has regained all spell slots after a long rest and now has access to Bless, Tasha’s Caustic Brew, Guiding Bolt, and True Strike.
+- [## Party] uncited: - Thorin has slain Narrak with his +1 longsword and used Second Wind to heal; he remains focused on giant-related threats.
+- [## Party] uncited: - Pelek remains bound with silk rope, his possession stable; the party now knows he is not a threat during sleep but keeps him restrained as policy.
+- [## Party] uncited: - Stool has reasserted his demand to rescue Rumpadump, making it the party’s next objective.
+- [## Party] uncited: - The party’s next intended action is to locate and rescue Rumpadump, as urged by Stool, while carrying the evidence and statue toward Gracklstugh.
+- [## Audit] invalid-citation [ch 023 / 024]: - [A187] BEGUN — The Maze Engine has not been encountered or mentioned in this chunk [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A207] BEGUN — Sloobludop has not been visited in this chunk; only referenced indirectly [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A214] BEGUN — House Baenre has not been encountered in this chunk [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A223] BEGUN — The travelogue from Candlekeep is unrelated to this Underdark segment [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A404] BEGUN — The Five Books admission is a Candlekeep arc event, not relevant here [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A424] BEGUN — The Gauntlgrym call is referenced in the audit but not activated in this chunk; no mention of Eldeth’s letter’s delivery [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A435] BEGUN — Sylvira’s recruitment is unrelated to this chunk’s events [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A439] BEGUN — Khell-Vire’s Watcher’s Stillness is a Candlekeep arc achievement [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A441] BEGUN — Polly Pocket’s release is a Candlekeep arc event [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A442] BEGUN — Walking-permit medallions are unrelated to this Underdark chapter [ch 023 / 024].
+- [## Audit] invalid-citation [ch 023 / 024]: - [A443] BEGUN — The second High Tower key is a Candlekeep arc item [ch 023 / 024].
+
+## Chunk 025-025 — 278 dropped
+- [## NPC Status] malformed-row: - Stool | Alive | Whorlstone Caverns | Loyal to the party; seeks to return to Neverlight Grove `[ch 025 / 025.04]`
+- [## NPC Status] malformed-row: - Jimjar | Alive | Whorlstone Caverns | Advises holding evidence; disposition toward party is supportive `[ch 025 / 025.01]`
+- [## NPC Status] malformed-row: - Sarith | Alive | Whorlstone Caverns | Infected by Zuggtmoy; disposition toward party is unstable, drawn to fungal entities `[ch 025 / 025.04]`
+- [## NPC Status] malformed-row: - Rumpadump | Alive | Whorlstone Caverns | Calm, studious; disposition toward party is trusting; seeks help returning to Neverlight Grove `[ch 025 / 025.04]`
+- [## NPC Status] malformed-row: - Voosbur | Unknown | Whorlstone Caverns | Vanished through spore network; disposition unknown `[ch 025 / 025.08]`
+- [## NPC Status] malformed-row: - Zuggtmoy | Unknown | Spore vision (Zuggtmoy's Clearing) | Manifested as a spectral entity; disposition toward Thorin is sorrowful, predatory `[ch 025 / 025.07]`
+- [## NPC Status] malformed-row: - Gorglak | Alive | Gracklstugh Gates | Hostile; demands inspection of party’s possessions; disposition toward party is aggressive and suspicious `[ch 025 / 025.08]`
+- [## NPC Status] malformed-row: - Myconid Sovereign | Unknown | Neverlight Grove | Mentioned as possessor of ancestral knowledge; disposition toward party is unknown `[ch 025 / 025.04]`
+- [## NPC Status] malformed-row: - Gartokkar | Unknown | Gracklstugh | Head of the Keepers of the Flame; intended recipient of the dragon egg; disposition toward party unknown `[ch 025 / 025.01]`
+- [## NPC Status] malformed-row: - Hgraam | Unknown | Gracklstugh | Stone giant leader; potential recipient of the ritual statue; disposition toward party unknown `[ch 025 / npcs]`
+- [## Audit] unknown-audit-id-or-tag: - [A444] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A445] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A446] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A447] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A448] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A449] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A450] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A451] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A452] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A453] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A454] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A455] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A456] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A457] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A458] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A459] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A460] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A461] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A462] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A463] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A464] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A465] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A466] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A467] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A468] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A469] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A470] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A471] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A472] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A473] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A474] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A475] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A476] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A477] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A478] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A479] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A480] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A481] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A482] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A483] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A484] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A485] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A486] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A487] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A488] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A489] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A490] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A491] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A492] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A493] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A494] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A495] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A496] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A497] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A498] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A499] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A500] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A501] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A502] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A503] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A504] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A505] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A506] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A507] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A508] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A509] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A510] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A511] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A512] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A513] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A514] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A515] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A516] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A517] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A518] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A519] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A520] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A521] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A522] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A523] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A524] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A525] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A526] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A527] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A528] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A529] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A530] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A531] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A532] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A533] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A534] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A535] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A536] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A537] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A538] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A539] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A540] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A541] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A542] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A543] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A544] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A545] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A546] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A547] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A548] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A549] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A550] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A551] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A552] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A553] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A554] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A555] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A556] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A557] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A558] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A559] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A560] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A561] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A562] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A563] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A564] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A565] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A566] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A567] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A568] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A569] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A570] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A571] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A572] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A573] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A574] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A575] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A576] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A577] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A578] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A579] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A580] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A581] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A582] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A583] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A584] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A585] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A586] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A587] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A588] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A589] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A590] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A591] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A592] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A593] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A594] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A595] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A596] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A597] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A598] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A599] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A600] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A601] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A602] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A603] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A604] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A605] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A606] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A607] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A608] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A609] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A610] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A611] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A612] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A613] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A614] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A615] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A616] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A617] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A618] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A619] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A620] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A621] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A622] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A623] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A624] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A625] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A626] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A627] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A628] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A629] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A630] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A631] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A632] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A633] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A634] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A635] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A636] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A637] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A638] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A639] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A640] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A641] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A642] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A643] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A644] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A645] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A646] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A647] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A648] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A649] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A650] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A651] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A652] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A653] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A654] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A655] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A656] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A657] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A658] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A659] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A660] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A661] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A662] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A663] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A664] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A665] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A666] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A667] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A668] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A669] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A670] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A671] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A672] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A673] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A674] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A675] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A676] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A677] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A678] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A679] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A680] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A681] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A682] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A683] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A684] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A685] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A686] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A687] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A688] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A689] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A690] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A691] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A692] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A693] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A694] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A695] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A696] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A697] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A698] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A699] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A700] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A701] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A702] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A703] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A704] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A705] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A706] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A707] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A708] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A709] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] unknown-audit-id-or-tag: - [A710] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [## Audit] uncited: - [A711] BE
+
+## Chunk 026-026 — 2 dropped
+- [## Audit] unknown-audit-id-or-tag: - [A444] BEGUN — The party has received the letter from the Council of Savants, revealing a conspiracy to frame Duergar agents [ch 026 / 026.07].
+- [## Audit] unknown-audit-id-or-tag: - [A445] BEGUN — The party has acquired the lucky foot charm, an item of unknown origin [ch 026 / 026.07].
+
+## Chunk 027-027 — 3 dropped
+- [## Party] outside-chunk [ch 027 / end]: - The party’s group name remains unrecorded; no new title or rank is stated. `[ch 027 / end]`
+- [## Audit] uncited: - [A186] BEGUN — Entémoch’s Boon is mentioned as a location in the audit list, but the party has not reached it; it is not referenced in this chunk. `(none)`
+- [## Audit] uncited: - [A198] BEGUN — The Dark Hunters have not yet appeared; Zhora and Hanne are not mentioned in this chunk. `(none)`
+
+## Chunk 028-028 — 202 dropped
+- [## World] missing-world-tag: - [SPELL] **Darkness** — A sphere of magical shadow that blocks all light, including magical light; used by Zalthir to safely smash crystals and gain combat advantage. [ch 028 / spells]
+- [## World] missing-world-tag: - [SPELL] **Magic Missile** — A spell used by Daz against specters and the wraith; effective against undead resistant to fire. [ch 028 / spells]
+- [## World] missing-world-tag: - [SPELL] **Turn Undead** — Gyrgum’s failed attempt against specters; DC 15 Wisdom save, all resisted; linked to Bahamut’s displeasure over the dragon egg. [ch 028 / spells]
+- [## Party] outside-chunk [ch 028 / end]: - Level and rank are not stated; no new titles or ranks gained. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A178] BEGUN — Buppido’s shrine and killings were mentioned in prior sessions; not referenced in this chunk. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A186] BEGUN — Entémoch's Boon was mentioned in prior sessions; not referenced in this chunk. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A188] BEGUN — Slaughtertusk nalfeshnee was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A208] BEGUN — Gracklstugh chaos was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A210] BEGUN — Velkynvelve second visit was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A217] BEGUN — Gromph's outer sanctum was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A220] BEGUN — Wand of Orcus was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A244] BEGUN — Mountain's Mouth Inn was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A245] BEGUN — Triboar memorial square was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A246] BEGUN — Waterdeep was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A250] BEGUN — Aurora's Whole Realms Catalog was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A251] BEGUN — Halaster's Prized Findings was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A252] BEGUN — Steelwoods of Mistshore was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A253] BEGUN — River Shining Tavern was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A254] BEGUN — Hand of Tarvis monument was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A255] BEGUN — Burning Wizard inn was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A256] BEGUN — Way of the Lion was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A257] BEGUN — Candlekeep Emerald Door was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A258] BEGUN — Eldeth farewell was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A259] BEGUN — Dwarven outriders was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A260] BEGUN — Stroudite polemicist was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A261] BEGUN — Sister Ellune was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A262] BEGUN — Brindle Wenth and the Dornal Greyhand cup story was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A263] BEGUN — Kestler the half-orc lay brother was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A264] BEGUN — Eldred the two-voiced courier was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A265] BEGUN — Rishaal the Pageturner was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A266] BEGUN — Stroudite half-orc pilgrims was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A267] BEGUN — Field Ward street-preacher was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A268] BEGUN — City Watch patrol was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A269] BEGUN — Maerith of the Ford was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A270] BEGUN — Elin the silent child was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A271] BEGUN — Veyloss the bard was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A272] BEGUN — Festrum the gnome innkeeper was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A273] BEGUN — Pilgrim at corner table was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A274] BEGUN — Triboar carpenter was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A275] BEGUN — Stroudite half-orc pilgrims was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A276] BEGUN — Bookwyrm was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A277] BEGUN — Queenie the cat was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A278] BEGUN — First Faction painting was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A280] BEGUN — Thorin and Dawnbringer orphan-healing run was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A281] BEGUN — Daz somatic field-perception was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A282] BEGUN — Daz somatic field-perception was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A283] BEGUN — Daz somatic field-perception was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A284] BEGUN — Daz somatic field-perception was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A285] BEGUN — Daz somatic field-perception was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A286] BEGUN — Six-pointed star was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A287] BEGUN — Black-Banner Five trial-site marker was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A288] BEGUN — Endless Chant error was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A289] BEGUN — Endless Chant was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A290] BEGUN — Sjurkar priest benediction error was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A291] BEGUN — Stroud-school sponsorship was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A292] BEGUN — Drow refugee in Waterdeep was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A293] BEGUN — Refugee family from Episode 1 was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A300] BEGUN — Thorin / Philemon scholar arc was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A301] BEGUN — Gyrgum / Vareth scholar arc was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A302] BEGUN — Glabbagool's question was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A303] BEGUN — Polly Pocket disposition was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A304] BEGUN — Sylvira recruitment was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A305] BEGUN — Daral rescue was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A306] BEGUN — Kalan missing was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A307] BEGUN — Alkrist arrest was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A308] BEGUN — Moziqodo binding was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A309] BEGUN — Daz / Yvenne — Fourth-Seat synthesis was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A310] BEGUN — Daz / Yvenne — Vaelissa T'sarran name was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A311] BEGUN — Thorin / Philemon — Layer 2 Brysis reveal was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A312] BEGUN — Gyrgum / Vareth — unsigned sting was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A313] BEGUN — Glabbagool — Shadow Apprentice sidekick unlock was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A314] BEGUN — Candlekeep gates was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A315] BEGUN — Refectory was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A316] BEGUN — Whispering Dome was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A317] BEGUN — Infernal Fortress was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A318] BEGUN — Janussi's chamber was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A319] BEGUN — Southern Dining Hall was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A320] BEGUN — Bath House was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A321] BEGUN — Founder's Court was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A322] BEGUN — Oak Tree Apothecary was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A323] BEGUN — Kitchens was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A324] BEGUN — Erudite Outfitters was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A325] BEGUN — Drakonoikos was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A326] BEGUN — Reader's Tower was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A327] BEGUN — Immortal Chambers was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A328] BEGUN — Sea Warden's Tower was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A329] BEGUN — Bell Tower was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A330] BEGUN — Cursed Tower was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A331] BEGUN — Pont de Paramours was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A332] BEGUN — Oval Theatre was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A333] BEGUN — House of Alaundo was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A334] BEGUN — Astronomicon Orrery was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A335] BEGUN — Philosopher's Court was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A336] BEGUN — Melodrome / Jook's Box was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A337] BEGUN — Jewel of the Styx was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A338] BEGUN — School of Drama was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A339] BEGUN — High Tower Library was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A340] BEGUN — Lava chamber was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A341] BEGUN — The Vault (B2) was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A342] BEGUN — The Vault (B3) was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A343] BEGUN — Vault tower rocket was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A344] BEGUN — Janussi — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A345] BEGUN — Janussi — death was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A346] BEGUN — Bookwyrm — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A347] BEGUN — Bookwyrm — Teles sighting reveal was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A348] BEGUN — Bookwyrm — confrontation and pivot was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A349] BEGUN — Bookwyrm — death was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A350] BEGUN — Kalan Strongbranch — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A351] BEGUN — Kalan — second key handoff was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A352] BEGUN — Kalan — farewell / deterioration was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A353] BEGUN — Kalan — disappearance and presumed death was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A354] BEGUN — Sylvira Sashenstar — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A355] BEGUN — Sylvira — prime suspect status was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A356] BEGUN — Sylvira — recruitment as battlefield ally was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A357] BEGUN — Sylvira — dispel of Moziqodo's binding was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A358] BEGUN — Sylvira — survival and senior Great Reader status was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A359] BEGUN — Daral — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A360] BEGUN — Daral — poisoning discovery was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A361] BEGUN — Daral — death or survival was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A362] BEGUN — Daral — key witness testimony was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A363] BEGUN — Fheminor — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A364] BEGUN — Fheminor — "Bookwyrm was not surprised" revelation was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A365] BEGUN — Fheminor — appointment as Keeper of Tomes was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A366] BEGUN — A'lai Aivenmore — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A367] BEGUN — A'lai — interview was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A368] BEGUN — A'lai — sapphire smash and escape was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A369] BEGUN — A'lai — fate resolution was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A370] BEGUN — Alkrist — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A371] BEGUN — Alkrist — interview was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A372] BEGUN — Alkrist — arrest or confession was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A373] BEGUN — Fembris — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A374] BEGUN — Fembris — rooftop confession was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A375] BEGUN — Tadric — first contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A376] BEGUN — Tadric — flight assistance was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A377] BEGUN — Tadric — acting Gatewarden appointment was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A378] BEGUN — Hollypocket — witness interview was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A379] BEGUN — Sprig Summerfoot — witness interview was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A380] BEGUN — Leuwin — witness interview was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A381] BEGUN — Teles Ahvoste — interview and disguise sighting was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A382] BEGUN — Kazryn Nyantani — interview and A'lai alibi break was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A383] BEGUN — Khell-Vire — closing letter was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A384] BEGUN — Philemon — sealed letter delivery was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A385] BEGUN — Vareth — final stations and unsigned sting was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A386] BEGUN — Yvenne — third sitting and bloodline-pattern observation was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A387] BEGUN — Yvenne — Vaelissa name delivery was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A388] BEGUN — Yvenne — Fourth-Seat synthesis scene was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A389] BEGUN — Inda — emergence from brass statue was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A390] BEGUN — Spanner — Mechanus dust handoff was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A391] BEGUN — Moziqodo — first encounter was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A392] BEGUN — Moziqodo — binding break was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A393] BEGUN — Moziqodo — fate resolution was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A394] BEGUN — Manshoon — voice-only arrival announcement was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A395] BEGUN — Manshoon — direct confrontation was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A396] BEGUN — Manshoon — escape was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A397] BEGUN — Glabbagool — bad night / Juiblex reach was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A398] BEGUN — Glabbagool — Shadow Apprentice sidekick status confirmed was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A399] BEGUN — Eldeth — letter delivered was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A400] BEGUN — Brevin — Sloobludop recitation incident was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A401] BEGUN — Brevin — six-pointed star bedclothes incident was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A402] BEGUN — Marin — six-pointed star quill arrangement incident was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A403] BEGUN — Jimjar / Callarduran — Echo 4 witness prophecy activation was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A404] BEGUN — Five Books, Five Questions — gate admission and scholar pairings established was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A405] BEGUN — Endless Chant — Deadwinter Prophecy fragment heard was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A406] BEGUN — Janussi murder — crime scene forensic reveals was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A407] BEGUN — Two "Sylvira" figures — dual-timeline disguise revelation assembled was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A408] BEGUN — Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A409] BEGUN — Alkrist as killer — party identifies the poisoner was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A410] BEGUN — Disguise rosetta cracked — milestone event, level-up to 9 was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A411] BEGUN — Wards drop — ward-flex hallucination sequence was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A412] BEGUN — Cryptogram recovered — six-clue text transcribed was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A413] BEGUN — Manshoon arrival announced — keep under siege was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A414] BEGUN — Iron Owlbear found dead — Manshoon already in the Vault was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A415] BEGUN — Echo 1 activated — surface contamination prophecy was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A416] BEGUN — Echo 2 activated — wedding / Zuggtmoy prophecy was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A417] BEGUN — Echo 3 activated — Gauntlgrym / Keeper prophecy was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A418] BEGUN — Echo 4 activated — Jimjar / Callarduran witness prophecy was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A419] BEGUN — Book of Vile Darkness — fate determined was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A420] BEGUN — Vault tower rocket — lever pulled or left was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A421] BEGUN — Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A422] BEGUN — Party named guest seekers of the Avowed — Inner Ward access ceremony was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A423] BEGUN — Manshoon-pursuit thread — activated regardless of escape outcome was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A424] BEGUN — Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A425] BEGUN — Daz — first sinus-pressure field-perception moment was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A426] BEGUN — Yvenne — names Daz's field-perception sensitivity was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A427] BEGUN — Marin — quill six-pointed star incident was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A428] BEGUN — Brevin — Sloobludop recitation at cliff base was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A429] BEGUN — Brevin — bedclothes six-pointed star incident was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A430] BEGUN — Endless Chant — first complete stoppage was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A431] BEGUN — Ward-drop vision sequence — per-PC hallucinations was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A432] BEGUN — Glabbagool — Juiblex "mother voice" contact was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A433] BEGUN — Echo 1 — prophecy names surface-contamination field-effect directly was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A434] BEGUN — Daz and Yvenne — field-perception expertise confirmed was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A435] BEGUN — Sylvira recruited (Path B) — dispel payoff and cryptogram shortcut was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A436] BEGUN — Yvenne trust ≥ 4 ticks — planar-residue trace payoff was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A437] BEGUN — Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A438] BEGUN — Daral saved — Alkrist ID witness and Fustilugs clue payoff was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A439] BEGUN — Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A440] BEGUN — Glabbagool Whispering Dome visit — Echo re-coax boon was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A441] BEGUN — Polly Pocket released as messenger — OOTA endgame thread flagged was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A442] BEGUN — Walking-permit medallions worn — wight-safe at Jewel of the Styx was referenced in prior sessions; not encountered here. [ch 028 / end]
+- [## Audit] outside-chunk [ch 028 / end]: - [A443] BEGUN — Second High Tower key held — door opened from outside was referenced in prior sessions; not encountered here. [ch 028 / end]
+
+## Chunk 029-029 — 9 dropped
+- [## Party] uncited: - The party is located in Neverlight Grove, having just accepted Basidia’s quest to investigate the Garden of Welcome.
+- [## Party] uncited: - The group is unnamed but functions as a cohesive adventuring unit.
+- [## Party] uncited: - Thorin now wields Dawnbringer, a +2 sentient sword that deals radiant damage, adds 1d8 against undead, grants lesser restoration, and refuses to be deactivated, causing sleep deprivation.
+- [## Party] uncited: - Gyrgum claimed the Necklace of Fireballs (four beads) and holds the party’s treasure.
+- [## Party] uncited: - Daz moved all treasure into D&D Beyond’s party inventory tab.
+- [## Party] uncited: - The party has 4,000 silver pieces, 1,200 gold pieces, eleven zircons (50 gp each), a philter of love, and a potion of greater healing in their possession.
+- [## Party] uncited: - Zalthir maintains a protective orb of darkness around himself in the grove and has access to the scroll of protection against fiends.
+- [## Party] uncited: - The party’s immediate goal is to hunt the grick alpha in the fungal wilds to retrieve its carcass for reanimation by Basidia, before confronting the Garden of Welcome.
+- [## Party] uncited: - The party is aware of Sarith’s unknown spore infection and Phylo’s disturbing behavior, and plans to investigate the Garden of Welcome tomorrow.
+
+## Chunk 030-030 — 1 dropped
+- [## Audit] quoted-span-not-found “fetid wedding”: - [A154] BEGUN — Zuggtmoy’s “fetid wedding” (Araumycos) was cryptically referenced as a coming event by Gasbide [ch 030 / 030.05; ch 030 / Memorable Moments].
+
+## Chunk 031-031 — 6 dropped
+- [## Events] quoted-span-not-found “embraced by the great cedar”: - Yestabrod, a larval creature with vestigial fungal growths, rises and welcomes the party to a wedding rehearsal, declaring all will be “embraced by the great cedar” and made one with the “great body” [ch 031 / 031.03].
+- [## Events] quoted-span-not-found “there will be no audit, only incorporation”: - The party attempts to use their “audit” ploy, but Yestabrod rejects it, declaring “there will be no audit, only incorporation” [ch 031 / 031.03].
+- [## Party] uncited: - Their group name remains unchanged; they are an adventuring party of five PCs and two companions (Jimjar, Eldeth), though Sarith is dead.
+- [## Audit] quoted-span-not-found “The Auroch’s Horn”: - [A238] BEGUN — Burned hamlet “The Auroch’s Horn” was encountered prior; not referenced here [ch 031 / 031.01].
+- [## Audit] quoted-span-not-found “Bookwyrm was not surprised”: - [A364] BEGUN — Fheminor “Bookwyrm was not surprised” revelation occurred prior; not referenced here [ch 031 / 031.01].
+- [## Audit] quoted-span-not-found "Sylvira": - [A407] BEGUN — Two "Sylvira" figures revelation assembled prior; not referenced here [ch 031 / 031.01].
+
+## Chunk 032-032 — 28 dropped
+- [## NPC Status] malformed-row: - Zuggtmoy | Alive | Majestic Mushroom | Hostile and indifferent to the party `[ch 032 / 032.01; ch 032 / 032.02]`
+- [## NPC Status] malformed-row: - Araumycos | Unknown | Underdark, unspecified | Unknown `[ch 032 / 032.01]`
+- [## NPC Status] malformed-row: - Yestabrod | Dead | Majestic Mushroom | — `[ch 032 / 032.02]`
+- [## NPC Status] malformed-row: - Phylo | Alive | Neverlight Grove | Corrupted, hostile, delusional `[ch 032 / 032.03]`
+- [## NPC Status] malformed-row: - Basidia | Alive | Fleeing toward unknown location | Grateful, heartbroken, allied `[ch 032 / 032.03]`
+- [## NPC Status] malformed-row: - Rasharoo | Alive | Fleeing toward unknown location | Allied, pragmatic, leader of escape `[ch 032 / 032.03; ch 032 / 032.04]`
+- [## NPC Status] malformed-row: - Stool | Alive | Fleeing with Basidia | Allied, departed `[ch 032 / 032.03]`
+- [## NPC Status] malformed-row: - Rumpadump | Alive | Fleeing with Basidia | Allied, departed; delivered feedback to Zalthir `[ch 032 / 032.04]`
+- [## NPC Status] malformed-row: - Jimjar | Alive | In the cave-in maze | Discredited, lost, attempting to regain trust `[ch 032 / 032.06]`
+- [## NPC Status] malformed-row: - Eldeth | Alive | In the cave-in maze | Allied, present `[ch 032 / 032.06]`
+- [## NPC Status] malformed-row: - Ilvara | Unknown | Underdark, unspecified | Pursuing, threat active `[ch 032 / 032.04]`
+- [## NPC Status] malformed-row: - rocktopus | Dead | Gas-filled cavern | — `[ch 032 / 032.05]`
+- [## Party] uncited: - The party is currently trapped in a newly collapsed maze of tunnels in the Underdark, with a passage opening to the north; they are on a journey toward Blingdenstone, approximately two weeks from Neverlight Grove.
+- [## Party] uncited: - The party’s group name remains unchanged; they are unnamed adventurers united by shared survival.
+- [## Party] uncited: - Level or rank: Not stated, but experience from recent encounters suggests progression.
+- [## Party] uncited: - Thorin: Used Dawnbringer to cure Zalthir’s madness and strike the rocktopus; carries four potions of greater healing and 975 gold pieces; now mapping the tunnels with cartographer’s tools; intends to reach Blingdenstone and survive the maze.
+- [## Party] uncited: - Daz: Suffered hallucinations from spores but recovered; now cautious of fungal environments; carries treasure and potions; intends to survive and reach Blingdenstone.
+- [## Party] uncited: - Zalthir: Cured of madness; apologized for hoarding scrolls; now carries the studded leather armor +2 and magical scrolls; received a telepathic feedback list from Rumpadump; intends to reach Blingdenstone and survive.
+- [## Party] uncited: - Gyrgum: Earned the title “rocktopus slayer” after killing the rocktopus; used True Strike and calligrapher’s supplies to label maps; carries treasure and potions; intends to reach Blingdenstone and survive.
+- [## Party] uncited: - Jimjar: Claims to know the way to Blingdenstone but admits he got them lost; now the reluctant guide; intends to regain credibility by finding something special in the northern passage.
+- [## Party] uncited: - Eldeth: Remains with the party; no new developments noted.
+- [## Party] uncited: - The party intends to explore the unexplored northern passage, survive the maze, and continue toward Blingdenstone.
+- [## Audit] uncited: - [A225] BEGUN — Gorg'Bahamut breadcrumb planted with Kestler at Triboar is mentioned in audit list but not referenced in this chunk’s evidence.
+- [## Audit] uncited: - [A406] BEGUN — Janussi murder is referenced in audit list but not mentioned in this chunk’s evidence.
+- [## Audit] uncited: - [A416] BEGUN — Echo 2 activated — wedding / Zuggtmoy prophecy is referenced in audit list but not mentioned in this chunk’s evidence.
+- [## Audit] uncited: - [A422] BEGUN — Party named guest seekers of the Avowed is referenced in audit list but not mentioned in this chunk’s evidence.
+- [## Audit] uncited: - [A424] BEGUN — Gauntlgrym call confirmed is referenced in audit list but not mentioned in this chunk’s evidence.
+- [## Audit] uncited: - (none) — All other audit questions not addressed by this chunk’s evidence.
+
+## Chunk 034-034 — 3 dropped
+- [## Party] uncited: - The party is in a large cavern, having escaped the flooding Oozing Temple; they are en route to Blingdenstone.
+- [## Party] uncited: - The group’s name is not stated, but they are a cohesive adventuring band.
+- [## Party] uncited: - The party has reached level 6.
+
+## Chunk 035-036 — 9 dropped
+- [## Events] quoted-span-not-found “adventurers trying to reach the Overbright”: - Chief Dorbo Diggermattock and Quartermaster Senni Diggermattock introduce themselves and ask the party’s identity; the party initially falters on “Emerald Vanguard” and settles on “adventurers trying to reach the Overbright” [ch 036 / 036.04].
+- [## Audit] quoted-span-not-found “Sylvira”: - [A407] BEGUN — Two “Sylvira” figures revealed before this chunk [ch 035 / 035.01].
+- [## Audit] unknown-audit-id-or-tag: - [A444] BEGUN — Glabbagool’s Whispering Dome visit occurred before this chunk [ch 035 / 035.01].
+- [## Audit] unknown-audit-id-or-tag: - [A445] BEGUN — Glabbagool’s Shadow Apprentice status confirmed before this chunk [ch 035 / 035.01].
+- [## Audit] unknown-audit-id-or-tag: - [A446] BEGUN — Glabbagool’s Juiblex contact occurred before this chunk [ch 035 / 035.01].
+- [## Audit] quoted-span-not-found “mother voice”: - [A447] BEGUN — Glabbagool’s “mother voice” contact occurred before this chunk [ch 035 / 035.01].
+- [## Audit] unknown-audit-id-or-tag: - [A448] BEGUN — Glabbagool’s “I’m the only one” declaration occurred before this chunk [ch 035 / 035.04].
+- [## Audit] unknown-audit-id-or-tag: - [A449] BEGUN — Glabbagool’s pseudopod demonstration occurred before this chunk [ch 036 / 036.04].
+- [## Audit] quoted-span-not-found “I’m better than them”: - [A450] BEGUN — Glabbagool’s “I’m better than them” declaration occurred before this chunk [ch 036 / 036.04].
+
+## Chunk 037-037 — 1 dropped
+- [## NPC Status] malformed-row: - Burrow Warden Jadger | Dead (ghost) | Blingdenstone catacombs | Offers knowledge in exchange for laying ghosts to rest; actively training new Burrow Wardens [ch 037 / 037.04; ch 037 / npcs]
+
+## Chunk 038-038 — 2 dropped
+- [## Events] quoted-span-not-found “We figured it out, and we’re going to be in charge of it. We’re not going to have some stupid bickering amongst the people that think they’re in power trying to—that got us into this situation”: - Daz states: “We figured it out, and we’re going to be in charge of it. We’re not going to have some stupid bickering amongst the people that think they’re in power trying to—that got us into this situation” [ch 038 / 038.06].
+- [## Party] uncited: - Group name remains unaltered; no new rank or title assigned.
+
+## Chunk 039-039 — 29 dropped
+- [## Events] quoted-span-not-found “fighting ghosts to recruit them”: - Glabbagool, Eldeth, and Jimjar were assigned to assist Uth-Jadger and the Burrow Warden ghosts; the party joked this was like “fighting ghosts to recruit them” [ch 039 / 039.10].
+- [## NPC Status] malformed-row: - Chief Dorbo Diggermattock | Alive | Blingdenstone bureaucratic hub | Opportunistic and politically calculating, now deferring to Daz while seeking to use the party for civic goals [ch 039 / 039.01; ch 039 / 039.08; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Senni Diggermattock | Alive | Blingdenstone bureaucratic hub | Supportive of Daz and the unified plan, advocates for common purpose [ch 039 / 039.01; ch 039 / 039.07; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Gnome Chef | Alive | Blingdenstone bureaucratic hub kitchen | Welcoming and practical, delighted by Glabbagool’s cleaning offer [ch 039 / 039.02; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Glabbagool | Alive | Blingdenstone bureaucratic hub | Now nicknamed “Roomba,” assigned to assist Burrow Warden ghosts; eager to be useful [ch 039 / 039.02; ch 039 / 039.10; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Chief Chipgrin | Alive | Goldwhisker Warrens | Agreed to join the campaign, refuses subordination to Dorbo, now preparing to attend the broader clan meeting [ch 039 / 039.05; ch 039 / 039.07; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Goldwhisker Guards | Alive | Goldwhisker Warrens entrance | Delighted by the party’s non-judgmental attitude; engaged in philosophical debate about rats [ch 039 / 039.04; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Pudding King | Unknown | Location unknown, but known to Chipgrin | Former gnome tunnel worker, now a demonic vessel of vengeance and ooze-command; influence spreading [ch 039 / 039.06; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Nomi Pathshutter | Alive | Blingdenstone bureaucratic hub | Aide to Gurnik, participated in rehearsed presentation about Earth Elementals [ch 039 / 039.08; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Gurnik Tapfinger | Alive | Blingdenstone bureaucratic hub | Provided Hallow gem; disappointed when temple-cleansing was not prioritized [ch 039 / 039.08; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Kazook Pickshine | Alive | Blingdenstone bureaucratic hub | Concerned about weapon corrosion; proposed Neverlight Grove ingredients or Gracklstugh trade [ch 039 / 039.09; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Uth-Jadger | Dead (Ghost) | Blingdenstone bureaucratic hub | Praises Daz’s plan, offers ghostly aid if party completes their quest; now awaiting Glabbagool’s team [ch 039 / 039.07; ch 039 / 039.09; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Eldeth | Alive | Blingdenstone bureaucratic hub | Assigned to assist Burrow Warden ghosts with Glabbagool and Jimjar [ch 039 / 039.10; ch 039 / npcs].
+- [## NPC Status] malformed-row: - Jimjar | Alive | Blingdenstone bureaucratic hub | Assigned to assist Burrow Warden ghosts with Glabbagool and Eldeth [ch 039 / 039.10; ch 039 / npcs].
+- [## World] quoted-span-not-found “enslavement”: - [ITEM] **Stone of Controlling Earth Elementals** — A magic stone offered by Dorbo’s committee; can summon a friendly Earth Elemental for one hour, but the party rejects “enslavement” and seeks to befriend one [ch 039 / 039.09; ch 039 / items].
+- [## World] missing-world-tag: - [SPELL] **Hallow** — A powerful sanctification spell contained in the red spell gem; its activation will cleanse the Temple of the Steadfast Stone and allow the Stoneheart Enclave to protect Earth Elementals [ch 039 / 039.08; ch 039 / spells].
+- [## World] missing-world-tag: - [SPELL] **Conjure Elemental** — Mentioned as the closest spell comparison to the Stone of Controlling Earth Elementals; the stone’s effect is temporary and non-permanent [ch 039 / 039.09; ch 039 / spells].
+- [## Party] uncited: - The party is located in Blingdenstone’s bureaucratic hub, preparing for the next expedition to the Rockblight.
+- [## Party] uncited: - Their group name remains undefined, but they are now the de facto leaders of Blingdenstone’s anti-ooze campaign.
+- [## Party] uncited: - They are at level 9, as confirmed by prior session and the completion of the Candlekeep arc.
+- [## Party] uncited: - Daz has assumed the role of operational leader, having broken political deadlock; he refuses to be the sole decision-maker but insists on action over BS.
+- [## Party] uncited: - Thorin is now known for his completionist tendencies and used a d20 to resolve the party’s strategic debate.
+- [## Party] uncited: - Glabbagool is now nicknamed “Roomba” and has a new purpose as a cleaning agent; he is assigned to assist the Burrow Warden ghosts.
+- [## Party] uncited: - The party possesses the Red Spell Gem (Hallow) and the Stone of Controlling Earth Elementals (both obtained as rewards for upcoming tasks).
+- [## Party] uncited: - The party has rejected enslaving Earth Elementals and now intends to befriend or release them, possibly through repeated summoning.
+- [## Party] uncited: - The party has committed to cleansing the Rockblight, retrieving acid-protection ingredients from Neverlight Grove, and assisting the Burrow Warden ghosts.
+- [## Party] uncited: - Glabbagool, Eldeth, and Jimjar are assigned to assist the Burrow Warden ghosts; the main party will handle Rockblight and Neverlight Grove.
+- [## Party] uncited: - The party’s next immediate goal is to cleanse the Temple of the Steadfast Stone in the Rockblight, defend the Hallow gem, awaken the temple guardians, and secure elemental support.
+- [## Audit] quoted-span-not-found "Sylvira": - [A407] BEGUN — Two "Sylvira" figures is referenced as prior [ch 039 / 039.01].
+
+## Chunk 040-040 — 13 dropped
+- [## NPC Status] malformed-row: - Burrow Warden Jadger | Alive | Blingdenstone | Favorable toward party; tasked them with recovering lost spirits [ch 040 / 040.01; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Tappy Foamstrap | Alive | Foaming Mug Tavern | Cooperative with party; agreed to supply spoiled booze in exchange for official recognition [ch 040 / 040.02; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Gracklstugh Merchant | Alive | Foaming Mug Tavern | Informative; described duergar city’s tensions and carried a wanted poster [ch 040 / 040.02; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Deep Gnome Scout | Alive | Foaming Mug Tavern | Reported dancing myconids on their way to a wedding [ch 040 / 040.02; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Stoneheart Enclave Member | Alive | Cultivation Cave | Helpful; provided fresh fungi and accepted Glabbagool’s excavation [ch 040 / 040.03; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Udhask | Dead | Udhask’s Burrow, Rockblight | His skeletal remains were recovered by the party; his ghost fled after being frightened [ch 040 / 040.05; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Gargoyle (first) | Dead | Stream Cavern | Destroyed by Zalthir and Thorin [ch 040 / 040.06; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Gargoyle (second) | Alive | Stream Cavern | Engaged with Gyrgum when the earth elemental erupted; status unknown after session end [ch 040 / 040.06; ch 040 / npcs].
+- [## NPC Status] malformed-row: - Crazed Earth Elemental | Alive | Stream Cavern | Erupted during battle; hostile and active, ending the session in combat [ch 040 / 040.06; ch 040 / npcs].
+- [## Party] uncited: - The party is known as a group of adventurers hired by Blingdenstone to deal with Ogrémoch’s Bane and the ghost problem; no formal group name is stated.
+- [## Party] uncited: - The party’s level is not stated, but their actions imply mid-to-high level capability (e.g., casting Maximilian’s Earthen Grasp, surviving gargoyle attacks).
+- [## Audit] unknown-audit-id-or-tag: - [A35] ADVANCED — The party has recovered the bones of Udhask, one of the ghosts Burrow Warden Jadger tasked them with rescuing; other ghosts remain to be found [ch 040 / 040.05; ch 040 / npcs].
+- [## Audit] quoted-span-not-found “Sylvira”: - [A407] BEGUN — Two “Sylvira” revelation was earlier [ch 040 / 040.02].
+
+## Chunk 041-041 — 8 dropped
+- [## NPC Status] malformed-row: - Earth Elemental | Dead | Chamber of the Elemental | — `[ch 041 / 041.01]`
+- [## NPC Status] malformed-row: - Gargoyle | Dead | Chamber of the Elemental | — `[ch 041 / 041.01]`
+- [## NPC Status] malformed-row: - Dawnbringer | Alive | With Thorin | Cooperative, seeking a better scabbard; displeased by darkness `[ch 041 / 041.01; ch 041 / 041.06]`
+- [## NPC Status] malformed-row: - Glabbagool | Alive | With party | Excited, curious, advised to sit out Medusa fight `[ch 041 / 041.03; ch 041 / 041.07]`
+- [## NPC Status] malformed-row: - Animated Drow Statues | Unknown | Drow Statue Chamber | Animated by entity, reanimate when party enters `[ch 041 / 041.04]`
+- [## NPC Status] malformed-row: - Daz's Bat Familiar | Alive | Unknown | Sent into statue chamber to occupy entity’s six threads `[ch 041 / 041.05]`
+- [## NPC Status] malformed-row: - Medusa | Alive | Medusa’s Chamber | Driven mad, injured, knocked prone, awaiting final blow `[ch 041 / 041.07]`
+- [## Audit] quoted-span-not-found "Sylvira": - [A407] BEGUN — Two "Sylvira" revelation occurred earlier. `[ch 041 / 041.01]`
+
+## Chunk 042-042 — 122 dropped
+- [## World] quoted-span-not-found “doorstops”: - [FACTION] **Galeb Duhr** — Ancient stone guardians lawfully bound to protect specific locations; they cannot be bribed, speak slowly, and are called “doorstops” by drow; they cannot spawn Earth Elementals but are freed when those elementals are slain [ch 042 / 042.04; ch 042 / npcs].
+- [## Audit] quoted-span-not-found "Cleanse the Steadfast Stone — Rockblight": - [A32] SHOWN — The party placed the Ruby spell gem into the menhir of the Steadfast Stone to hallow the area against Ogrémoch's influence, directly completing the "Cleanse the Steadfast Stone — Rockblight" objective [ch 042 / 042.02].
+- [## Audit] quoted-span-not-found “Ogrémoch's Bane — elemental entity banishment”: - [A182] SHOWN — The party engaged and defeated multiple Earth Elementals, fulfilling the “Ogrémoch's Bane — elemental entity banishment” audit item’s requirement for confronting the entity [ch 042 / 042.03; ch 042 / 042.06].
+- [## Audit] quoted-span-not-found “Visions obtained at Gravenhollow,”: - [A204] BEGUN — The party received information about Ogrémoch’s corruption and the Galeb Duhr’s duty from the stone guardians, which may constitute “Visions obtained at Gravenhollow,” but the location is not Gravenhollow; this audit item is not yet SHOWN [ch 042 / 042.04].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — The Endless Chant was not referenced in this chapter; no new fragments or disruptions were noted [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — Xazax the Eyemonger was not encountered; no beholder appeared in this chapter [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — The party did not encounter any disguise-related events, cryptograms, or illusions; no milestone toward level-up occurred [ch 042 / 042.01-042.06].
+- [## Audit] quoted-span-not-found “Cleanse the Steadfast Stone”: - [A32] SHOWN — The party placed the Ruby spell gem into the menhir to hallow the temple against Ogrémoch’s Bane, directly completing the “Cleanse the Steadfast Stone” objective [ch 042 / 042.02].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — Drow pursuers were not mentioned; no pursuit level was tracked or escalated [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — The Endless Chant was not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise or cryptogram milestones occurred [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder was encountered [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — Drow pursuers were not mentioned [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not heard [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [## Audit] invalid-citation [ch 042 / 042.01-042.06]: - [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [## Audit] uncited: - [A405] BEG
+
+## Chunk 043-043 — 16 dropped
+- [## NPC Status] malformed-row: - Burrow Warden Jadger | Dead (Ghost) | Ruby in the Rough temple | Friendly and offering boons; training new wardens [ch 043 / 043.03]
+- [## NPC Status] malformed-row: - Bimble | Alive (Infected) | Kazook’s Chambers | Infected, raving about the Lady of Rot and singing garden; strapped to a table [ch 043 / 043.05; ch 043 / 043.06]
+- [## World] missing-world-tag: - [SPELL] **Mass Healing Word** — A spell imbued into the spell gem by Gyrgum; can be cast from the gem without ritual time, providing area healing. `[ch 043 / 043.02]`
+- [## World] missing-world-tag: - [SPELL] **Find Familiar** — Cast by Daz to summon a bat familiar with echolocation; used to scout the Festering Fissure and passed a Constitution save against spores. `[ch 043 / 043.07]`
+- [## World] missing-world-tag: - [SPELL] **Hypnotic Pattern** — Cast by Daz, incapacitated violet fungi and charmed Zalthir; shambling mound resisted. `[ch 043 / 043.10]`
+- [## World] quoted-span-not-found “hollow/hallowed”: - [NPC] **Galeb Duhr** — Ancient, slow-moving earth elementals who value space, negative space, and puns; they consider Thorin’s “hollow/hallowed” joke a rare and cherished dwarf tradition. `[ch 043 / 043.01]`
+- [## Audit] quoted-span-not-found “mother voice”: - [A432] BEGUN — Juiblex “mother voice” was Candlekeep arc. `[ch 043 / 043.01]`
+- [## Audit] quoted-span-not-found “Sylvira”: - [A407] BEGUN — Two “Sylvira” figures revealed earlier. `[ch 043 / 043.01]`
+- [## Audit] uncited: - [A444] (not in list) — N/A
+- [## Audit] uncited: - [A445] (not in list) — N/A
+- [## Audit] uncited: - [A446] (not in list) — N/A
+- [## Audit] uncited: - [A447] (not in list) — N/A
+- [## Audit] uncited: - [A448] (not in list) — N/A
+- [## Audit] uncited: - [A449] (not in list) — N/A
+- [## Audit] uncited: - [A450] (not in list) — N/A
+- [## Audit] uncited: - [A182] SHOWN — Ogrémoch’s Bane was achieved. `[ch 043 /
+
+## Chunk 044-044 — 17 dropped
+- [## NPC Status] malformed-row: - Shambling Mound | Dead | Festering Fissure | — `[ch 044 / 044.01; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Violet Fungus | Alive | Festering Fissure | Charmed and confused `[ch 044 / 044.01; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Zuggtmoy | Alive | — | Hostile, psychically contacting party `[ch 044 / 044.03; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Pudding King | Alive | — | Target of Zuggtmoy’s psychic message; status unknown `[ch 044 / 044.03; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Galeb Duhr (four) | Alive | Pickshine Mine | Relaxed and opened path after handshake protocol `[ch 044 / 044.04; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Dasco Pickshine | Alive | Pickshine Mine | Grudgingly appreciative, offered ruby gems `[ch 044 / 044.04; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Perigrog Scrapedust | Alive | Whiteshell Mine | Eager for the party’s help, called them “heroes” `[ch 044 / 044.05; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Deep Gnome Miners | Alive | Pickshine and Whiteshell Mines | Grateful, delivered ruby gems, returned to work `[ch 044 / 044.04; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Glabbagool | Alive | Whiteshell Mine entrance | Stayed outside due to salt, observed from a distance `[ch 044 / 044.05; ch 044 / npcs]`
+- [## NPC Status] malformed-row: - Basilisk (two) | Alive | Summoning Circle Cavern | One charmed and incapacitated, one frantic — both still guarding circle `[ch 044 / 044.07; ch 044 / npcs]`
+- [## World] quoted-span-not-found “speaking rock”: - [FACTION] **Deep Gnomes of Blingdenstone** — Mining community under pressure from magical disruptions; actively seeking solutions to the “speaking rock” phenomenon and tunnel blockages. `[ch 044 / 044.03; ch 044 / npcs]`
+- [## Party] outside-chunk [ch 044 / end]: - Group name: Not stated. `[ch 044 / end]`
+- [## Party] outside-chunk [ch 044 / end]: - Level: Not stated. `[ch 044 / end]`
+- [## Audit] invalid-citation [ch 044 / 044.08; ch 044 / tracking_blingdenstone_travelogue.txt]: - [A289] BEGUN — The Endless Chant was not heard in this chunk. `[ch 044 / 044.08; ch 044 / tracking_blingdenstone_travelogue.txt]`
+- [## Audit] invalid-citation [ch 044 / 044.08; ch 044 / tracking_candlekeep_murders.txt]: - [A406] BEGUN — Janussi’s murder was not referenced. `[ch 044 / 044.08; ch 044 / tracking_candlekeep_murders.txt]`
+- [## Audit] invalid-citation [ch 044 / 044.08; ch 044 / tracking_candlekeep_murders.txt]: - [A424] BEGUN — The Gauntlgrym call was not confirmed in this chunk. `[ch 044 / 044.08; ch 044 / tracking_candlekeep_murders.txt]`
+- [## Audit] uncited: - (none) for all other audit questions.
+
+## Chunk 045-045 — 24 dropped
+- [## NPC Status] malformed-row: - Basilisk (charmed) | Alive | In ritual circle | Charmed, immobile, unaware of party `[ch 045 / 045.01]`
+- [## NPC Status] malformed-row: - Basilisk (combat) | Dead | In ritual circle | Killed by Zalthir `[ch 045 / 045.01]`
+- [## NPC Status] malformed-row: - Kazook Pickshine | Alive | Blingdenstone | Preparing lichen weapon coatings for battle `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Dasco Pickshine | Alive | Blingdenstone | Excited about Earth Elementals for mining; sees them as cost-effective `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Chief Dorbo Diggermattock | Alive | Blingdenstone | Anxious during meeting, now blamed for economic crisis; instructs troops to prepare for battle `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Senni Diggermattock | Alive | Blingdenstone | Seized control of meeting; now leads coalition against elemental labor; “toasts of the town” `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Chipgrin Goldwhisker | Alive | Blingdenstone | Initially dismissive of Thorin’s steampunk comparison, swayed by party’s arguments `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Nomi Pathshutter | Alive | Blingdenstone | Preparing Earth Elemental summoning spells for battle `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Captain of the Wall | Alive | Blingdenstone | Instructed to prepare troops for battle against the Pudding King `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - The Pudding King | Unknown | Unknown | Preparing oozes for assault on Blingdenstone `[ch 045 / locations]`
+- [## NPC Status] malformed-row: - Starlace | Alive | Blingdenstone (Traders' Grotto) | Selling magical items, enchanted gear, and buying surplus; offered 10% discount `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Valimor Brightgem | Alive | Blingdenstone (The Gilded Sheath) | Commissioned and sold Vaultmaster scabbard; now inspired by marketing concepts `[ch 045 / npcs]`
+- [## NPC Status] malformed-row: - Dawnbringer | Alive | With Thorin | Sentient sword; pleased with scabbard but wants bling added `[ch 045 / npcs]`
+- [## Party] uncited: - The party is in Blingdenstone, preparing for battle against the Pudding King tomorrow.
+- [## Party] uncited: - Level: Not stated.
+- [## Party] uncited: - Thorin: Wields Dawnbringer (sentient sword), now equipped with Vaultmaster locking scabbard; shield enchanted to +1 (AC 20); has Stonegnarl Warband Token; gained Stone Skin buff; intends to fight the Pudding King tomorrow.
+- [## Party] uncited: - Gyrgum: Mace enchanted to +1; has 1,024 gold; gained Stone Skin buff; now aware of Bahamut’s opposition to elemental enslavement.
+- [## Party] uncited: - Daz: Purchased Dustsight Spectacles (can see through darkness); gained Stone Skin buff; has no new items beyond spectacles; intends to fight the Pudding King tomorrow.
+- [## Party] uncited: - Zalthir: Gained Stone Skin buff; volunteered to remind party of its use; gained no new items; intends to fight the Pudding King tomorrow.
+- [## Party] uncited: - All party members now have the ability to summon Earth Elementals for defense.
+- [## Audit] invalid-citation [ch 045 / entire]: - [A281] BEGUN — Daz’s somatic field-perception is not referenced in this chunk; no pressure-headache or sensory details are mentioned `[ch 045 / entire]`.
+- [## Audit] invalid-citation [ch 045 / entire]: - [A419] BEGUN — The Book of Vile Darkness is not referenced; this chunk occurs after Candlekeep arc `[ch 045 / entire]`.
+- [## Audit] invalid-citation [ch 045 / entire]: - [A439] BEGUN — Khell-Vire’s Watcher’s Stillness is not mentioned; no training or spell reference occurs `[ch 045 / entire]`.
+- [## Audit] uncited: - (none) — All other audit questions are unrelated to this chunk’s events.
+
+## Chunk 046-046 — 11 dropped
+- [## World] quoted-span-not-found “swamp the party with an almost infinite supply”: - [THREAT] **Ooze incursion** — Undistracted oozes could “swamp the party with an almost infinite supply” and overrun Blingdenstone before anyone realizes [ch 046 / 046.01].
+- [## Party] uncited: - The party is at the entrance to the Pudding King’s throne room, having just initiated their assault.
+- [## Party] uncited: - Group name: Not stated, but operates as a cohesive adventuring unit.
+- [## Party] uncited: - Level or rank: Not stated.
+- [## Audit] outside-chunk [ch 046 / end]: - [A288] BEGUN — The Endless Chant’s verse substitution is mentioned in the Audits list but has no mention or connection to this chapter’s evidence [ch 046 / end].
+- [## Audit] outside-chunk [ch 046 / end]: - [A429] BEGUN — Brevin’s bedclothes incident is mentioned in audit items but has no connection to this chapter’s events [ch 046 / end].
+- [## Audit] quoted-span-not-found “mother voice”: - [A432] BEGUN — Glabbagool’s “mother voice” contact is mentioned in audit items, but only the “voice from the big pool of slimes” is referenced here, not confirmed as Juiblex’s [ch 046 / 046.08].
+- [## Audit] outside-chunk [ch 046 / end]: - [A438] BEGUN — Daral saved is mentioned in audit items but Daral has not appeared in this chapter [ch 046 / end].
+- [## Audit] outside-chunk [ch 046 / end]: - [A439] BEGUN — Khell-Vire’s Watcher’s Stillness is mentioned in audit items but has no connection to this chapter [ch 046 / end].
+- [## Audit] outside-chunk [ch 046 / end]: - [A440] BEGUN — Glabbagool’s Whispering Dome visit is mentioned in audit items but the Whispering Dome has not been referenced in this chapter [ch 046 / end].
+- [## Audit] outside-chunk [ch 046 / end]: - [A441] BEGUN — Polly Pocket released is mentioned in audit items but Polly Pocket has not appeared in this chapter [ch 046 / end].
+
+## Chunk 047-047 — 9 dropped
+- [## Events] quoted-span-not-found “We met in a cake,”: - Thorin tests the gelatinous cube near him by asking where they first met; it replies, “We met in a cake,” in a voice not quite Glabbagool’s, confirming the body swap [ch 047 / 047.06].
+- [## Party] uncited: - The party is in the throne room of the defeated Pudding King, having just cleared the area of all enemies.
+- [## Party] uncited: - Zalthir demonstrated mastery of grappling oozes and Shadow Step, and his Eldritch Claw ability was instrumental in defeating the Pudding King.
+- [## Party] uncited: - Thorin used Dawnbringer effectively and confirmed his ability to kill high-HP foes with precise strikes.
+- [## Party] uncited: - Gyrgum successfully used Inflict Wounds to deal massive necrotic damage and remains a key damage dealer.
+- [## Party] uncited: - The party’s immediate goal is to escape the Underdark, which they have now secured; they intend to follow the path out, while being aware of Zuggtmoy’s encroachment and Juiblex’s rebirth prophecy.
+- [## Party] uncited: - Glabbagool’s new form and potential as a companion introduces a new dynamic for travel and logistics.
+- [## Audit] invalid-citation [ch 047 / 047.01–047.09]: - [A34] SHOWN — The party fought and won the battle against the ooze incursion led by the Pudding King in Blingdenstone [ch 047 / 047.01–047.09].
+- [## Audit] quoted-span-not-found “mother voice”: - [A432] BEGUN — Glabbagool’s Juiblex “mother voice” contact occurred earlier; this chapter only shows his new form [ch 047 / 047.10].
+
+## Chunk 048-048 — 1 dropped
+- [## Events] quoted-span-not-found “the world is fine”: - The die triggers a blink effect, connecting Glabbagool to every ooze in the cavern; Glabbagool telepathically calms them, declaring “the world is fine” and “no need to kill anyone,” causing the oozes to slither away peacefully. [ch 048 / 048.05]
+
+## Chunk 049-049 — 4 dropped
+- [## Party] uncited: - Level is not stated, but their spell usage and feats imply 6th–7th level.
+- [## Audit] quoted-span-not-found "fetid wedding": - [A154] BEGUN — Zuggtmoy’s "fetid wedding" influence is active through Ilvara’s madness and fungal corruption, though the ritual itself was completed earlier [ch 049 / 049.03].
+- [## Audit] quoted-span-not-found "fetid wedding": - [A43] BEGUN — The party has encountered Zuggtmoy’s influence again, but the "fetid wedding" was previously completed in Neverlight Grove [ch 049 / 049.03].
+- [## Audit] outside-chunk [ch 049 / end]: - [A423] BEGUN — The Manshoon-pursuit thread was activated in Candlekeep; it is not mentioned in this chunk, so not advanced [ch 049 / end].
+
+## Chunk 050-050 — 412 dropped
+- [## NPC Status] malformed-row: - Asha Vandree | Alive | Fungal Altar | Cautiously allied with the party, sees them as tools against Ilvara; impressed by Daz’s “familiar” [ch 050 / NPCs; ch 050 / 050.04].
+- [## NPC Status] malformed-row: - Ilvara | Alive | Fungal Altar | Severely wounded (31 from Zalthir, 12 from Fireball), escaped grapple, still commands sporewalkers and the Heart Fungus [ch 050 / NPCs; ch 050 / 050.04].
+- [## NPC Status] malformed-row: - Jorlan | Alive | Fungal Altar | Severely wounded (21 from Glyph, 14 from Dawnbringer), sap applied, likely incapacitated or retreating [ch 050 / NPCs; ch 050 / 050.04].
+- [## NPC Status] malformed-row: - Glabbagool | Alive | Fungal Altar | Passes as Daz’s ooze familiar; still struggles to remain silent and still [ch 050 / NPCs; ch 050 / 050.03].
+- [## NPC Status] malformed-row: - Sporewalkers | Alive | Fungal Altar | Two remain active after the glyph explosion; one at 3 HP, others still obey Ilvara’s commands [ch 050 / NPCs; ch 050 / 050.04].
+- [## NPC Status] malformed-row: - Heart Fungus | Alive | Fungal Altar | Damaged by Glyph (21) and Dust of Suleiman (20), still active and releasing spores [ch 050 / Locations; ch 050 / 050.04].
+- [## Party] uncited: - Group name: Not stated; operates as an ad hoc alliance with Asha Vandree.
+- [## Party] uncited: - Level: Not stated.
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A100] BEGUN — Sovereign Phylo, myconid sovereign corrupted by Zuggtmoy, is mentioned in audit list but not referenced in this chunk [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A138] BEGUN — Araumycos is referenced as Zuggtmoy’s domain in audit, but the party has not reached it [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A213] BEGUN — Infected area of Araumycos’s mind destroyed — not applicable; party has not reached Araumycos [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A207] BEGUN — Sloobludop ruins — second visit — not applicable; party is in the Underdark, not Sloobludop [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A14] BEGUN — Reach Menzoberranzan — party is not near Menzoberranzan [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A12] BEGUN — Reach Gravenhollow — party is in the Fungal Altar, not Gravenhollow [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A156] BEGUN — Dark heart talisman placed — not referenced; no talisman mentioned [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A152] BEGUN — Vizeran's plan revealed — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A220] BEGUN — Wand of Orcus claimed — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A222] BEGUN — Demon sortie encounters — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A424] BEGUN — Gauntlgrym call confirmed — not referenced; party is in the Underdark, not en route to Gauntlgrym [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A2] BEGUN — Return to the Underdark — second expedition — party is already in the Underdark, this is not a return [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A1] BEGUN — Escape from Velkynvelve — party left Velkynvelve earlier; this is not a return [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A160] BEGUN — Acquiring scavenged possessions in Velkynvelve — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A161] BEGUN — Escaping Velkynvelve via webs and pool — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A163] BEGUN — Drow pursuers final confrontation — not yet reached [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A155] BEGUN — Juiblex crashes the wedding — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A211] BEGUN — Ooze spies attack Basidia’s group — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A208] BEGUN — Gracklstugh chaos — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A209] BEGUN — Neverlight Grove corruption — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A210] BEGUN — Velkynvelve — second visit — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A159] BEGUN — Final battle against Demogorgon — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A140] BEGUN — Demogorgon — Prince of Demons, final battle — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A139] BEGUN — Orcus — demon lord, presence in final battle — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A21] BEGUN — Obtain goristro heart — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A22] BEGUN — Obtain timmask mushrooms — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A23] BEGUN — Obtain demon lord blood or ichor — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A24] BEGUN — Eldeth Feldrun — return to Gauntlgrym — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A25] BEGUN — Shuushar — guide to Sloobludop — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A26] BEGUN — Stool — return to Neverlight Grove — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A27] BEGUN — Rumpadump — return to Neverlight Grove — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A28] BEGUN — Deliver Werz Saltbaron's gems — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A29] BEGUN — Droki delivery interception — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A30] BEGUN — Ylsa Henstak's investigation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A31] BEGUN — Find Entémoch's Boon — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A32] BEGUN — Cleanse the Steadfast Stone — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A33] BEGUN — Encounter with the Pudding King — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A34] BEGUN — Battle for Blingdenstone — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A35] BEGUN — Burrow Warden Jadger's tasks — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A36] BEGUN — Retrieve Pelek's remains — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A37] BEGUN — Return Sladis Vadir — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A38] BEGUN — Return Rystia Zav — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A39] BEGUN — Locate Khalessa Draga — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A40] BEGUN — Activate or disable the Maze Engine — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A41] BEGUN — Xazax the Eyemonger — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A42] BEGUN — Zuggtmoy's fetid wedding — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A43] BEGUN — Fraz-Urb'luu's gem — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A44] BEGUN — Stonespeaker Hgraam audience — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A45] BEGUN — Velkynvelve — drow outpost, slave pen — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A46] BEGUN — Sloobludop — kuo-toa town — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A47] BEGUN — Gracklstugh — duergar city — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A48] BEGUN — Neverlight Grove — myconid colony — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A49] BEGUN — Blingdenstone — deep gnome settlement — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A50] BEGUN — Whorlstone Tunnels — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A51] BEGUN — Darklake — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A52] BEGUN — Gravenhollow — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A53] BEGUN — Araj — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A54] BEGUN — Mantol-Derith — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A55] BEGUN — Menzoberranzan — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A56] BEGUN — Wormwrithings — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A57] BEGUN — Vast Oblivium — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A58] BEGUN — Labyrinth — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A59] BEGUN — Gallery of Angels — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A60] BEGUN — Araumycos — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A61] BEGUN — Gauntlgrym — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A62] BEGUN — Sorcere — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A63] BEGUN — Yggmorgus — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A64] BEGUN — Overlake Hold — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A65] BEGUN — Cairngorm Cavern — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A66] BEGUN — Silken Paths — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A67] BEGUN — Oozing Temple — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A68] BEGUN — Lost Tomb of Khaem — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A69] BEGUN — Troglodyte Lair — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A70] BEGUN — Worm Nursery — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A71] BEGUN — Hook Horror Lair — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A72] BEGUN — Spiral of the Horned King — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A75] BEGUN — Shoor Vandree — Ilvara's lieutenant — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A77] BEGUN — Buppido — derro prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A78] BEGUN — Prince Derendil — quaggoth prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A79] BEGUN — Eldeth Feldrun — shield dwarf prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A80] BEGUN — Jimjar — deep gnome prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A81] BEGUN — Ront — orc prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A82] BEGUN — Sarith Kzekarit — drow prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A83] BEGUN — Shuushar the Awakened — kuo-toa prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A84] BEGUN — Stool — myconid sprout prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A85] BEGUN — Topsy and Turvy — svirfneblin twins — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A86] BEGUN — Ploopploopeen — kuo-toa archpriest — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A87] BEGUN — Bloppblippodd — kuo-toa archpriest — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A88] BEGUN — Demogorgon — demon lord, rise at Sloobludop — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A89] BEGUN — Shuushar — pacifist kuo-toa — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A90] BEGUN — Gorglak — corrupt duergar gate guard — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A91] BEGUN — Errde Blackskull — Stone Guard captain — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A92] BEGUN — Themberchaud — red dragon Wyrmsmith — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A93] BEGUN — Gartokkar Xundorn — Keeper of the Flame — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A94] BEGUN — Ylsa Henstak — duergar merchant — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A95] BEGUN — Droki — derro courier — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A96] BEGUN — Werz Saltbaron — duergar merchant — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A97] BEGUN — Stonespeaker Hgraam — stone giant elder — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A98] BEGUN — Narrak — derro savant cultist — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A101] BEGUN — Sovereign Basidia — myconid sovereign — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A102] BEGUN — Yestabrod — Circle of Masters leader — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A103] BEGUN — Xinaya — drow scout — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A105] BEGUN — Dorbo Diggermattock — Blingdenstone leader — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A106] BEGUN — Senni Diggermattock — Blingdenstone quartermaster — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A107] BEGUN — Kazook Pickshine — svirfneblin alchemist — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A108] BEGUN — Chipgrin Goldwhisker — wererat leader — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A109] BEGUN — Burrow Warden Jadger — ghost — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A110] BEGUN — The Pudding King — insane deep gnome — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A111] BEGUN — Bruenor Battlehammer — dwarf king — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A112] BEGUN — Lord Zelraun Roaringhorn — Harper representative — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A113] BEGUN — Sir Lanniver Strayl — Order of the Gauntlet representative — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A114] BEGUN — Morista Malkin — Emerald Enclave representative — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A115] BEGUN — Lord Eravien Haund — Lords' Alliance representative — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A116] BEGUN — Davra Jassur — Zhentarim representative — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A117] BEGUN — Ghazrim DuLoc — Zhentarim contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A118] BEGUN — Lorthuun — maimed beholder — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A119] BEGUN — Kinyel Druu'giir — drow assassin — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A120] BEGUN — Yantha Coaxrock — svirfneblin mage — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A121] BEGUN — Peebles — svirfneblin spy — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A122] BEGUN — Zilchyn Q'Leptin — kleptomaniac drow mage — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A123] BEGUN — Sladis Vadir — Emerald Enclave scout — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A124] BEGUN — Rystia Zav — Harper spy — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A125] BEGUN — Vizeran DeVir — drow archmage — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A126] BEGUN — Grin Ousstyl — Vizeran's apprentice — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A127] BEGUN — Karazikar — beholder of Vast Oblivium — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A128] BEGUN — Shedrak of the Eyes — beholder's thrall — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A129] BEGUN — Baphomet — demon lord — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A130] BEGUN — Yeenoghu — demon lord — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A131] BEGUN — Gash — gnoll servant — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A132] BEGUN — Quenthel Baenre — matron mother — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A133] BEGUN — Jarlaxle Baenre — Bregan D'aerthe leader — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A134] BEGUN — Hanne Hallen — young drow mage — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A135] BEGUN — Zhora Hallen — Dark Hunters leader — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A136] BEGUN — Khalessa Draga — Lords' Alliance spy — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A137] BEGUN — Juiblex — Faceless Lord — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A141] BEGUN — Drow prisoners escape Velkynvelve — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A142] BEGUN — Flight of demons distraction — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A143] BEGUN — Demogorgon's rise — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A145] BEGUN — Characters return to the surface world — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A146] BEGUN — Audience with Bruenor — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A147] BEGUN — Faction alliance negotiations — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A148] BEGUN — Arrival at Mantol-Derith — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A149] BEGUN — Fraz-Urb'luu's influence — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A150] BEGUN — Vizeran DeVir encountered — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A151] BEGUN — Gromph's ritual identified — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A153] BEGUN — Grin Ousstyl reveals Vizeran's intent — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A157] BEGUN — Demon lords drawn together — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A158] BEGUN — Demogorgon defeats remaining demon lords — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A164] BEGUN — Society of Brilliance members — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A165] BEGUN — Society of Brilliance with tridrone modrons — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A166] BEGUN — Hook Horror Hunt — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A167] BEGUN — Oozing Temple — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A168] BEGUN — Lost Tomb of Khaem — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A169] BEGUN — Silken Paths traversal — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A170] BEGUN — Yuk Yuk and Spiderbait — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A171] BEGUN — Fargas Rumblefoot — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A172] BEGUN — Kuo-toa day's catch — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A173] BEGUN — Rampaging two-headed stone giant — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A174] BEGUN — Stone giant curse — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A175] BEGUN — Broken statue of Rihuud — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A176] BEGUN — Gray Ghosts dragon egg — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A177] BEGUN — Black obelisk — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A178] BEGUN — Buppido's shrine — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A179] BEGUN — Pelek the deep gnome ghost — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A180] BEGUN — Clan Goldwhisker truce — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A181] BEGUN — Neheedra the medusa — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A182] BEGUN — Ogrémoch's Bane — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A183] BEGUN — Vadimir Coaxrock cube incursion — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A184] BEGUN — Vazuk's ghost — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A185] BEGUN — Entémoch's Boon — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A186] BEGUN — Basilisks and eggs — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A187] BEGUN — Maze Engine activation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A188] BEGUN — Slaughtertusk nalfeshnee — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A189] BEGUN — Modrons encountered — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A190] BEGUN — Tridrone as Labyrinth guide — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A191] BEGUN — Adamantine tower — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A192] BEGUN — Shadow demons — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A193] BEGUN — Gnoll pack led by Kurr — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A194] BEGUN — Filthriddens cult — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A195] BEGUN — Yeenoghu's goristro slaying — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A196] BEGUN — Troglodyte lair standoff — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A197] BEGUN — Voice in the Dark — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A198] BEGUN — Dark Hunters arrival — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A199] BEGUN — Karazikar's slaves — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A200] BEGUN — Modron prisoner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A201] BEGUN — Xazax the Eyemonger — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A202] BEGUN — Veldyskar the basilisk — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A203] BEGUN — Galeb duhr Hourm — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A204] BEGUN — Visions obtained — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A205] BEGUN — Drow patrol confrontation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A206] BEGUN — Aljanor Keenblade — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A221] BEGUN — Heroic sacrifice opportunity — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A223] BEGUN — Travelogue prelude — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A224] BEGUN — Surface-madness gradient — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A225] BEGUN — Gorg'Bahamut breadcrumb — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A226] BEGUN — Mirabar smith commissions — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A227] BEGUN — Daz shopping arc — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A228] BEGUN — Daz fitted Calishite cloak — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A229] BEGUN — Milo Goodbarrel Volume 3 — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A230] BEGUN — Order of the Gauntlet medallion — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A231] BEGUN — Gyrgum Hagiography — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A232] BEGUN — Zalthir brass puppet — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A233] BEGUN — Dawnbringer scabbard — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A234] BEGUN — Elin the silent child — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A235] BEGUN — Charcoal rubbing — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A236] BEGUN — Kestler meeting — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A237] BEGUN — Triboar carpenter's journal — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A238] BEGUN — Burned hamlet — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A239] BEGUN — Broken Thunderbeast — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A240] BEGUN — Defaced Tempus shrine — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A241] BEGUN — Forge of Mirabar — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A242] BEGUN — Order of the Gauntlet shrine — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A243] BEGUN — Goldenfields — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A244] BEGUN — Mountain's Mouth Inn — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A245] BEGUN — Triboar memorial square — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A246] BEGUN — Waterdeep — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A247] BEGUN — Rishaal the Pageturner's — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A248] BEGUN — Order of the Gauntlet chapter house — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A249] BEGUN — Sleeping Snake fence — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A250] BEGUN — Aurora's Whole Realms Catalog — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A251] BEGUN — Halaster's Prized Findings — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A252] BEGUN — Steelwoods of Mistshore — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A253] BEGUN — River Shining Tavern — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A254] BEGUN — Hand of Tarvis monument — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A255] BEGUN — Burning Wizard inn — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A256] BEGUN — Way of the Lion — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A257] BEGUN — Candlekeep Emerald Door — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A258] BEGUN — Eldeth farewell — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A259] BEGUN — Dwarven outriders — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A260] BEGUN — Stroudite polemicist — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A261] BEGUN — Sister Ellune — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A262] BEGUN — Brindle Wenth — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A263] BEGUN — Kestler the half-orc — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A264] BEGUN — Eldred the two-voiced courier — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A265] BEGUN — Rishaal the Pageturner — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A266] BEGUN — Stroudite half-orc pilgrims — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A267] BEGUN — Field Ward street-preacher — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A268] BEGUN — City Watch patrol — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A269] BEGUN — Maerith of the Ford — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A270] BEGUN — Elin the silent child — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A271] BEGUN — Veyloss the bard — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A272] BEGUN — Festrum the gnome — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A273] BEGUN — Pilgrim at corner table — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A274] BEGUN — Triboar carpenter — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A275] BEGUN — Stroudite half-orc pilgrims — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A276] BEGUN — Bookwyrm — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A277] BEGUN — Queenie the cat — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A278] BEGUN — First Faction painting — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A280] BEGUN — Thorin and Dawnbringer orphan-healing run — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A281] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A282] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A283] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A284] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A285] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A286] BEGUN — Six-pointed star — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A287] BEGUN — Black-Banner Five trial-site marker — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A288] BEGUN — Endless Chant error — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A289] BEGUN — Endless Chant — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A290] BEGUN — Sjurkar priest benediction error — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A291] BEGUN — Stroud-school sponsorship — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A292] BEGUN — Drow refugee in Waterdeep — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A293] BEGUN — Refugee family — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A294] BEGUN — Candlekeep murder investigation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A295] BEGUN — Cryptogram race — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A296] BEGUN — Vault confrontation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A297] BEGUN — Gauntlgrym call — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A298] BEGUN — Daz / Yvenne scholar arc — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A299] BEGUN — Zalthir / Khell-Vire scholar arc — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A300] BEGUN — Thorin / Philemon scholar arc — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A301] BEGUN — Gyrgum / Vareth scholar arc — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A302] BEGUN — Glabbagool's question — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A303] BEGUN — Polly Pocket disposition — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A304] BEGUN — Sylvira recruitment — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A305] BEGUN — Daral rescue — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A306] BEGUN — Kalan missing — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A307] BEGUN — Alkrist arrest — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A308] BEGUN — Moziqodo binding — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A309] BEGUN — Daz / Yvenne — Fourth-Seat synthesis — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A310] BEGUN — Daz / Yvenne — Vaelissa name — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A311] BEGUN — Thorin / Philemon — Layer 2 Brysis — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A312] BEGUN — Gyrgum / Vareth — unsigned sting — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A314] BEGUN — Candlekeep gates — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A315] BEGUN — Refectory — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A316] BEGUN — Whispering Dome — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A317] BEGUN — Infernal Fortress — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A318] BEGUN — Janussi's chamber — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A319] BEGUN — Southern Dining Hall — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A320] BEGUN — Bath House — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A321] BEGUN — Founder's Court — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A322] BEGUN — Oak Tree Apothecary — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A323] BEGUN — Kitchens — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A324] BEGUN — Erudite Outfitters — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A325] BEGUN — Drakonoikos — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A326] BEGUN — Reader's Tower — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A327] BEGUN — Immortal Chambers — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A328] BEGUN — Sea Warden's Tower — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A329] BEGUN — Bell Tower — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A330] BEGUN — Cursed Tower — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A331] BEGUN — Pont de Paramours — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A332] BEGUN — Oval Theatre — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A333] BEGUN — House of Alaundo — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A334] BEGUN — Astronomicon Orrery — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A335] BEGUN — Philosopher's Court — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A336] BEGUN — Melodrome / Jook's Box — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A337] BEGUN — Jewel of the Styx — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A338] BEGUN — School of Drama — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A339] BEGUN — High Tower Library — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A340] BEGUN — Lava chamber — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A341] BEGUN — The Vault (B2) — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A342] BEGUN — The Vault (B3) — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A343] BEGUN — Vault tower rocket — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A344] BEGUN — Janussi — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A345] BEGUN — Janussi — death — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A346] BEGUN — Bookwyrm — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A347] BEGUN — Bookwyrm — Teles sighting — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A348] BEGUN — Bookwyrm — confrontation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A349] BEGUN — Bookwyrm — death — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A350] BEGUN — Kalan Strongbranch — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A351] BEGUN — Kalan — second key handoff — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A352] BEGUN — Kalan — farewell — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A353] BEGUN — Kalan — disappearance — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A354] BEGUN — Sylvira Sashenstar — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A355] BEGUN — Sylvira — prime suspect — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A356] BEGUN — Sylvira — recruitment — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A357] BEGUN — Sylvira — dispel — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A358] BEGUN — Sylvira — survival — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A359] BEGUN — Daral — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A360] BEGUN — Daral — poisoning — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A361] BEGUN — Daral — death or survival — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A362] BEGUN — Daral — key witness — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A363] BEGUN — Fheminor — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A364] BEGUN — Fheminor — “Bookwyrm was not surprised” — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A365] BEGUN — Fheminor — appointment — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A366] BEGUN — A'lai Aivenmore — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A367] BEGUN — A'lai — interview — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A368] BEGUN — A'lai — sapphire smash — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A369] BEGUN — A'lai — fate — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A370] BEGUN — Alkrist — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A371] BEGUN — Alkrist — interview — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A372] BEGUN — Alkrist — arrest — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A373] BEGUN — Fembris — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A374] BEGUN — Fembris — rooftop confession — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A375] BEGUN — Tadric — first contact — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A376] BEGUN — Tadric — flight assistance — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A377] BEGUN — Tadric — acting Gatewarden — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A378] BEGUN — Hollypocket — witness — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A379] BEGUN — Sprig Summerfoot — witness — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A380] BEGUN — Leuwin — witness — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A381] BEGUN — Teles Ahvoste — interview — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A382] BEGUN — Kazryn Nyantani — interview — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A383] BEGUN — Khell-Vire — closing letter — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A384] BEGUN — Philemon — sealed letter — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A385] BEGUN — Vareth — final stations — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A386] BEGUN — Yvenne — third sitting — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A387] BEGUN — Yvenne — Vaelissa name — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A388] BEGUN — Yvenne — Fourth-Seat synthesis — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A389] BEGUN — Inda — emergence — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A390] BEGUN — Spanner — Mechanus dust — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A391] BEGUN — Moziqodo — first encounter — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A392] BEGUN — Moziqodo — binding break — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A393] BEGUN — Moziqodo — fate — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A394] BEGUN — Manshoon — voice-only — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A395] BEGUN — Manshoon — direct confrontation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A396] BEGUN — Manshoon — escape — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A397] BEGUN — Glabbagool — bad night — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A399] BEGUN — Eldeth — letter delivered — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A400] BEGUN — Brevin — Sloobludop recitation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A401] BEGUN — Brevin — six-pointed star bedclothes — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A402] BEGUN — Marin — six-pointed star quill — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A403] BEGUN — Jimjar / Callarduran — Echo 4 — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A404] BEGUN — Five Books, Five Questions — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A405] BEGUN — Endless Chant — Deadwinter Prophecy — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A406] BEGUN — Janussi murder — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A407] BEGUN — Two "Sylvira" figures — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A408] BEGUN — Bookwyrm as cover-up — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A409] BEGUN — Alkrist as killer — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A410] BEGUN — Disguise rosetta cracked — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A411] BEGUN — Wards drop — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A412] BEGUN — Cryptogram recovered — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A413] BEGUN — Manshoon arrival announced — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A414] BEGUN — Iron Owlbear found dead — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A415] BEGUN — Echo 1 activated — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A416] BEGUN — Echo 2 activated — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A417] BEGUN — Echo 3 activated — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A418] BEGUN — Echo 4 activated — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A419] BEGUN — Book of Vile Darkness — fate — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A420] BEGUN — Vault tower rocket — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A421] BEGUN — Candlekeep restructuring — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A422] BEGUN — Party named guest seekers — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A423] BEGUN — Manshoon-pursuit thread — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A424] BEGUN — Gauntlgrym call confirmed — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A425] BEGUN — Daz — first sinus-pressure — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A426] BEGUN — Yvenne — names Daz’s sensitivity — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A427] BEGUN — Marin — quill six-pointed star — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A428] BEGUN — Brevin — Sloobludop recitation — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A429] BEGUN — Brevin — bedclothes six-pointed star — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A430] BEGUN — Endless Chant — first complete stoppage — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A431] BEGUN — Ward-drop vision — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A432] BEGUN — Glabbagool — Juiblex "mother voice" — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A433] BEGUN — Echo 1 — names surface contamination — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A434] BEGUN — Daz and Yvenne — field-perception expertise — not referenced [ch 050 / evidence].
+- [## Audit] invalid-citation [ch 050 / evidence]: - [A435] BEGUN — Sylvira recruited — not referenced [ch 050 / evidence].
+- [## Audit] uncited: - [A436] BEGUN — Yvenne trust ≥ 4 ticks — not referenced [ch 050
+
+## Chunk 051-052 — 414 dropped
+- [## Party] uncited: - The Ember Vanguard, now known jokingly as the “Ember Grapple,” is at level eight, located in the Underdark near the Fungal Altar.
+- [## Party] uncited: - Daz: Selected Fey Touched; replaced its granted spells with others from the recovered spellbook, expanding his spell list; now has access to one free Misty Step per long rest; has 18/44 HP; believes he can survive one more round; intends to use Cloud of Daggers in synergy with Zalthir’s grappling.
+- [## Party] uncited: - Zalthir: Selected Street Justice; can now bind grappled enemies with rope, chains, or manacles; intends to grapple targets and then have Daz cast Cloud of Daggers on them; has survived the spore cloud; intends to continue using his grappling and binding tactics.
+- [## Party] uncited: - Thorin: Selected Sharpshooter with house-ruled Strength-based ability increase and Slow weapon mastery for javelins; plans to acquire javelins; expects +7 attack bonus, 1d6+4 damage, 120-foot range; reduced enemy speed by 10 ft on hit; intends to close distance and engage ranged threats.
+- [## Party] uncited: - Gyrgum: Survived the spore cloud; delivered the killing Guiding Bolt against Ilvara; now level eight; intends to continue using radiant spells and support the party with healing and control.
+- [## Party] uncited: - The party is not taking a long rest; they intend to continue traveling through the Underdark, now equipped with new feats and synergistic combat tactics centered on Zalthir’s binding and Daz’s area denial.
+- [## Audit] uncited: - [A166] BEGUN — Hook Horror Hunt is not mentioned; no evidence of gnoll or hook horror encounter in this chunk.
+- [## Audit] uncited: - [A170] BEGUN — Yuk Yuk and Spiderbait are not mentioned; no evidence of goblin guides.
+- [## Audit] uncited: - [A172] BEGUN — Kuo-toa day’s catch is not mentioned; no evidence of capture near Sloobludop.
+- [## Audit] uncited: - [A176] BEGUN — Gray Ghosts dragon egg is not mentioned.
+- [## Audit] uncited: - [A177] BEGUN — Black obelisk is not mentioned.
+- [## Audit] uncited: - [A178] BEGUN — Buppido’s shrine is not mentioned.
+- [## Audit] uncited: - [A179] BEGUN — Pelek’s ghost is not mentioned.
+- [## Audit] uncited: - [A180] BEGUN — Clan Goldwhisker truce is not mentioned.
+- [## Audit] uncited: - [A181] BEGUN — Neheedra the medusa is not mentioned.
+- [## Audit] uncited: - [A182] BEGUN — Ogrémoch's Bane is not mentioned.
+- [## Audit] uncited: - [A183] BEGUN — Vadimir Coaxrock cube is not mentioned.
+- [## Audit] uncited: - [A184] BEGUN — Vazuk’s ghost is not mentioned.
+- [## Audit] uncited: - [A185] BEGUN — Entémoch’s Boon is not mentioned.
+- [## Audit] uncited: - [A186] BEGUN — Basilisks and eggs are not mentioned.
+- [## Audit] uncited: - [A187] BEGUN — Maze Engine activation is not mentioned.
+- [## Audit] uncited: - [A188] BEGUN — Slaughtertusk nalfeshnee is not mentioned.
+- [## Audit] uncited: - [A189] BEGUN — Modrons are not mentioned.
+- [## Audit] uncited: - [A190] BEGUN — Tridrone as guide is not mentioned.
+- [## Audit] uncited: - [A191] BEGUN — Adamantine tower is not mentioned.
+- [## Audit] uncited: - [A192] BEGUN — Shadow demons are not mentioned.
+- [## Audit] uncited: - [A193] BEGUN — Gnoll pack led by Kurr is not mentioned.
+- [## Audit] uncited: - [A194] BEGUN — Filthriddens cult is not mentioned.
+- [## Audit] uncited: - [A195] BEGUN — Yeenoghu’s goristro slaying is not mentioned.
+- [## Audit] uncited: - [A196] BEGUN — Troglodyte lair standoff is not mentioned.
+- [## Audit] uncited: - [A197] BEGUN — Voice in the Dark is not mentioned.
+- [## Audit] uncited: - [A198] BEGUN — Dark Hunters arrival is not mentioned.
+- [## Audit] uncited: - [A199] BEGUN — Karazikar’s slaves are not mentioned.
+- [## Audit] uncited: - [A200] BEGUN — Modron prisoner is not mentioned.
+- [## Audit] uncited: - [A201] BEGUN — Xazax the Eyemonger is not mentioned.
+- [## Audit] uncited: - [A202] BEGUN — Veldyskar the basilisk is not mentioned.
+- [## Audit] uncited: - [A203] BEGUN — Galeb duhr Hourm is not mentioned.
+- [## Audit] uncited: - [A204] BEGUN — Visions at Gravenhollow are not mentioned.
+- [## Audit] uncited: - [A205] BEGUN — Drow patrol near Menzoberranzan is not mentioned.
+- [## Audit] uncited: - [A206] BEGUN — Aljanor Keenblade is not mentioned.
+- [## Audit] uncited: - [A207] BEGUN — Sloobludop ruins second visit is not mentioned.
+- [## Audit] uncited: - [A208] BEGUN — Gracklstugh chaos is not mentioned.
+- [## Audit] uncited: - [A209] BEGUN — Neverlight Grove corruption is not mentioned.
+- [## Audit] uncited: - [A210] BEGUN — Velkynvelve second visit is not mentioned.
+- [## Audit] uncited: - [A211] BEGUN — Ooze spies attack Basidia is not mentioned.
+- [## Audit] uncited: - [A212] BEGUN — Araumycos fungal creatures awakening is not mentioned.
+- [## Audit] uncited: - [A213] BEGUN — Infected area of Araumycos’s mind is not mentioned.
+- [## Audit] uncited: - [A214] BEGUN — House Baenre meeting is not mentioned.
+- [## Audit] uncited: - [A215] BEGUN — House Do'Urden meeting is not mentioned.
+- [## Audit] uncited: - [A216] BEGUN — Council of Spiders assistance is not mentioned.
+- [## Audit] uncited: - [A217] BEGUN — Gromph's outer sanctum is not mentioned.
+- [## Audit] uncited: - [A218] BEGUN — Szashune golem is not mentioned.
+- [## Audit] uncited: - [A219] BEGUN — Yochlol confrontation is not mentioned.
+- [## Audit] uncited: - [A220] BEGUN — Wand of Orcus is not mentioned.
+- [## Audit] uncited: - [A221] BEGUN — Heroic sacrifice is not mentioned.
+- [## Audit] uncited: - [A222] BEGUN — Demon sortie is not mentioned.
+- [## Audit] uncited: - [A223] BEGUN — Travelogue prelude is not mentioned.
+- [## Audit] uncited: - [A224] BEGUN — Surface-madness gradient is not mentioned.
+- [## Audit] uncited: - [A225] BEGUN — Gorg'Bahamut breadcrumb is not mentioned.
+- [## Audit] uncited: - [A226] BEGUN — Mirabar smith commissions are not mentioned.
+- [## Audit] uncited: - [A227] BEGUN — Daz shopping arc is not mentioned.
+- [## Audit] uncited: - [A228] BEGUN — Daz fitted Calishite cloak is not mentioned.
+- [## Audit] uncited: - [A229] BEGUN — Milo Goodbarrel Volume 3 is not mentioned.
+- [## Audit] uncited: - [A230] BEGUN — Order of the Gauntlet medallion is not mentioned.
+- [## Audit] uncited: - [A231] BEGUN — Gyrgum Hagiography is not mentioned.
+- [## Audit] uncited: - [A232] BEGUN — Zalthir brass shadow-puppet is not mentioned.
+- [## Audit] uncited: - [A233] BEGUN — Dawnbringer scabbard work is not mentioned.
+- [## Audit] uncited: - [A234] BEGUN — Elin healing is not mentioned.
+- [## Audit] uncited: - [A235] BEGUN — Charcoal rubbing is not mentioned.
+- [## Audit] uncited: - [A236] BEGUN — Kestler meeting is not mentioned.
+- [## Audit] uncited: - [A237] BEGUN — Triboar carpenter’s journal is not mentioned.
+- [## Audit] uncited: - [A238] BEGUN — Burned hamlet is not mentioned.
+- [## Audit] uncited: - [A239] BEGUN — Broken Thunderbeast stone is not mentioned.
+- [## Audit] uncited: - [A240] BEGUN — Defaced Tempus shrine is not mentioned.
+- [## Audit] uncited: - [A241] BEGUN — Forge of Mirabar is not mentioned.
+- [## Audit] uncited: - [A242] BEGUN — Order of the Gauntlet shrine is not mentioned.
+- [## Audit] uncited: - [A243] BEGUN — Goldenfields is not mentioned.
+- [## Audit] uncited: - [A244] BEGUN — Mountain’s Mouth Inn is not mentioned.
+- [## Audit] uncited: - [A245] BEGUN — Triboar memorial square is not mentioned.
+- [## Audit] uncited: - [A246] BEGUN — Waterdeep is not mentioned.
+- [## Audit] uncited: - [A247] BEGUN — Rishaal’s bookshop is not mentioned.
+- [## Audit] uncited: - [A248] BEGUN — Order of the Gauntlet chapter house is not mentioned.
+- [## Audit] uncited: - [A249] BEGUN — Sleeping Snake fence is not mentioned.
+- [## Audit] uncited: - [A250] BEGUN — Aurora’s Catalog is not mentioned.
+- [## Audit] uncited: - [A251] BEGUN — Halaster’s Prized Findings is not mentioned.
+- [## Audit] uncited: - [A252] BEGUN — Steelwoods of Mistshore is not mentioned.
+- [## Audit] uncited: - [A253] BEGUN — River Shining Tavern is not mentioned.
+- [## Audit] uncited: - [A254] BEGUN — Hand of Tarvis monument is not mentioned.
+- [## Audit] uncited: - [A255] BEGUN — Burning Wizard inn is not mentioned.
+- [## Audit] uncited: - [A256] BEGUN — Way of the Lion is not mentioned.
+- [## Audit] uncited: - [A257] BEGUN — Candlekeep Emerald Door is not mentioned.
+- [## Audit] uncited: - [A258] BEGUN — Eldeth farewell is not mentioned.
+- [## Audit] uncited: - [A259] BEGUN — Dwarven outriders is not mentioned.
+- [## Audit] uncited: - [A260] BEGUN — Stroudite polemicist is not mentioned.
+- [## Audit] uncited: - [A261] BEGUN — Sister Ellune is not mentioned.
+- [## Audit] uncited: - [A262] BEGUN — Brindle Wenth story is not mentioned.
+- [## Audit] uncited: - [A263] BEGUN — Kestler first contact is not mentioned.
+- [## Audit] uncited: - [A264] BEGUN — Eldred courier is not mentioned.
+- [## Audit] uncited: - [A265] BEGUN — Rishaal first contact is not mentioned.
+- [## Audit] uncited: - [A266] BEGUN — Stroudite pilgrims is not mentioned.
+- [## Audit] uncited: - [A267] BEGUN — Field Ward preacher is not mentioned.
+- [## Audit] uncited: - [A268] BEGUN — City Watch patrol is not mentioned.
+- [## Audit] uncited: - [A269] BEGUN — Maerith of the Ford is not mentioned.
+- [## Audit] uncited: - [A270] BEGUN — Elin first encounter is not mentioned.
+- [## Audit] uncited: - [A271] BEGUN — Veyloss bard is not mentioned.
+- [## Audit] uncited: - [A272] BEGUN — Festrum innkeeper is not mentioned.
+- [## Audit] uncited: - [A273] BEGUN — Pilgrim verse error is not mentioned.
+- [## Audit] uncited: - [A274] BEGUN — Triboar carpenter procession is not mentioned.
+- [## Audit] uncited: - [A275] BEGUN — Stroudite pilgrims procession is not mentioned.
+- [## Audit] uncited: - [A276] BEGUN — Bookwyrm is not mentioned.
+- [## Audit] uncited: - [A277] BEGUN — Queenie the cat is not mentioned.
+- [## Audit] uncited: - [A278] BEGUN — First Faction painting is not mentioned.
+- [## Audit] uncited: - [A279] BEGUN — Thorin ooze-rights stand is not mentioned.
+- [## Audit] uncited: - [A280] BEGUN — Thorin orphan-healing run is not mentioned.
+- [## Audit] uncited: - [A281] BEGUN — Daz somatic field-perception at Goldenfields is not mentioned.
+- [## Audit] uncited: - [A282] BEGUN — Daz somatic field-perception at Triboar is not mentioned.
+- [## Audit] uncited: - [A283] BEGUN — Daz somatic field-perception at Field Ward is not mentioned.
+- [## Audit] uncited: - [A284] BEGUN — Daz pressure-headache begins is not mentioned.
+- [## Audit] uncited: - [A285] BEGUN — Daz pressure-headache sharpens is not mentioned.
+- [## Audit] uncited: - [A286] BEGUN — Six-pointed star first appearance is not mentioned.
+- [## Audit] uncited: - [A287] BEGUN — Black-Banner Five marker is not mentioned.
+- [## Audit] uncited: - [A288] BEGUN — Endless Chant error is not mentioned.
+- [## Audit] uncited: - [A289] BEGUN — Endless Chant first heard is not mentioned.
+- [## Audit] uncited: - [A290] BEGUN — Sjurkar benediction error is not mentioned.
+- [## Audit] uncited: - [A291] BEGUN — Stroudite sponsorship is not mentioned.
+- [## Audit] uncited: - [A292] BEGUN — Drow refugee in Waterdeep is not mentioned.
+- [## Audit] uncited: - [A293] BEGUN — Refugee family interaction is not mentioned.
+- [## Audit] uncited: - [A294] BEGUN — Candlekeep murder investigation is not mentioned.
+- [## Audit] uncited: - [A295] BEGUN — Cryptogram race is not mentioned.
+- [## Audit] uncited: - [A296] BEGUN — Vault confrontation is not mentioned.
+- [## Audit] uncited: - [A297] BEGUN — Gauntlgrym call is not mentioned.
+- [## Audit] uncited: - [A298] BEGUN — Daz/Yvenne research is not mentioned.
+- [## Audit] uncited: - [A299] BEGUN — Zalthir/Khell-Vire arc is not mentioned.
+- [## Audit] uncited: - [A300] BEGUN — Thorin/Philemon arc is not mentioned.
+- [## Audit] uncited: - [A301] BEGUN — Gyrgum/Vareth arc is not mentioned.
+- [## Audit] uncited: - [A302] BEGUN — Glabbagool’s question is not mentioned.
+- [## Audit] uncited: - [A303] BEGUN — Polly Pocket disposition is not mentioned.
+- [## Audit] uncited: - [A304] BEGUN — Sylvira recruitment is not mentioned.
+- [## Audit] uncited: - [A305] BEGUN — Daral rescue is not mentioned.
+- [## Audit] uncited: - [A306] BEGUN — Kalan missing is not mentioned.
+- [## Audit] uncited: - [A307] BEGUN — Alkrist arrest is not mentioned.
+- [## Audit] uncited: - [A308] BEGUN — Moziqodo binding is not mentioned.
+- [## Audit] uncited: - [A309] BEGUN — Daz/Yvenne Fourth-Seat synthesis is not mentioned.
+- [## Audit] uncited: - [A310] BEGUN — Daz/Yvenne Vaelissa name is not mentioned.
+- [## Audit] uncited: - [A311] BEGUN — Thorin/Philemon Layer 2 reveal is not mentioned.
+- [## Audit] uncited: - [A312] BEGUN — Gyrgum/Vareth unsigned sting is not mentioned.
+- [## Audit] uncited: - [A313] BEGUN — Glabbagool Shadow Apprentice unlock is not mentioned.
+- [## Audit] uncited: - [A314] BEGUN — Candlekeep gates arrival is not mentioned.
+- [## Audit] uncited: - [A315] BEGUN — Refectory dinner is not mentioned.
+- [## Audit] uncited: - [A316] BEGUN — Whispering Dome is not mentioned.
+- [## Audit] uncited: - [A317] BEGUN — Infernal Fortress is not mentioned.
+- [## Audit] uncited: - [A318] BEGUN — Janussi’s chamber is not mentioned.
+- [## Audit] uncited: - [A319] BEGUN — Southern Dining Hall is not mentioned.
+- [## Audit] uncited: - [A320] BEGUN — Bath House is not mentioned.
+- [## Audit] uncited: - [A321] BEGUN — Founder’s Court is not mentioned.
+- [## Audit] uncited: - [A322] BEGUN — Oak Tree Apothecary is not mentioned.
+- [## Audit] uncited: - [A323] BEGUN — Kitchens is not mentioned.
+- [## Audit] uncited: - [A324] BEGUN — Erudite Outfitters is not mentioned.
+- [## Audit] uncited: - [A325] BEGUN — Drakonoikos is not mentioned.
+- [## Audit] uncited: - [A326] BEGUN — Reader’s Tower is not mentioned.
+- [## Audit] uncited: - [A327] BEGUN — Immortal Chambers is not mentioned.
+- [## Audit] uncited: - [A328] BEGUN — Sea Warden’s Tower is not mentioned.
+- [## Audit] uncited: - [A329] BEGUN — Bell Tower is not mentioned.
+- [## Audit] uncited: - [A330] BEGUN — Cursed Tower is not mentioned.
+- [## Audit] uncited: - [A331] BEGUN — Pont de Paramours is not mentioned.
+- [## Audit] uncited: - [A332] BEGUN — Oval Theatre is not mentioned.
+- [## Audit] uncited: - [A333] BEGUN — House of Alaundo is not mentioned.
+- [## Audit] uncited: - [A334] BEGUN — Astronomicon Orrery is not mentioned.
+- [## Audit] uncited: - [A335] BEGUN — Philosopher’s Court is not mentioned.
+- [## Audit] uncited: - [A336] BEGUN — Melodrome/Jook’s Box is not mentioned.
+- [## Audit] uncited: - [A337] BEGUN — Jewel of the Styx is not mentioned.
+- [## Audit] uncited: - [A338] BEGUN — School of Drama is not mentioned.
+- [## Audit] uncited: - [A339] BEGUN — High Tower Library is not mentioned.
+- [## Audit] uncited: - [A340] BEGUN — Lava chamber is not mentioned.
+- [## Audit] uncited: - [A341] BEGUN — The Vault B2 is not mentioned.
+- [## Audit] uncited: - [A342] BEGUN — The Vault B3 is not mentioned.
+- [## Audit] uncited: - [A343] BEGUN — Vault tower rocket is not mentioned.
+- [## Audit] uncited: - [A344] BEGUN — Janussi first contact is not mentioned.
+- [## Audit] uncited: - [A345] BEGUN — Janussi death is not mentioned.
+- [## Audit] uncited: - [A346] BEGUN — Bookwyrm first contact is not mentioned.
+- [## Audit] uncited: - [A347] BEGUN — Bookwyrm Teles sighting is not mentioned.
+- [## Audit] uncited: - [A348] BEGUN — Bookwyrm confrontation is not mentioned.
+- [## Audit] uncited: - [A349] BEGUN — Bookwyrm death is not mentioned.
+- [## Audit] uncited: - [A350] BEGUN — Kalan first contact is not mentioned.
+- [## Audit] uncited: - [A351] BEGUN — Kalan second key is not mentioned.
+- [## Audit] uncited: - [A352] BEGUN — Kalan farewell is not mentioned.
+- [## Audit] uncited: - [A353] BEGUN — Kalan disappearance is not mentioned.
+- [## Audit] uncited: - [A354] BEGUN — Sylvira first contact is not mentioned.
+- [## Audit] uncited: - [A355] BEGUN — Sylvira prime suspect is not mentioned.
+- [## Audit] uncited: - [A356] BEGUN — Sylvira recruitment is not mentioned.
+- [## Audit] uncited: - [A357] BEGUN — Sylvira dispel is not mentioned.
+- [## Audit] uncited: - [A358] BEGUN — Sylvira survival is not mentioned.
+- [## Audit] uncited: - [A359] BEGUN — Daral first contact is not mentioned.
+- [## Audit] uncited: - [A360] BEGUN — Daral poisoning is not mentioned.
+- [## Audit] uncited: - [A361] BEGUN — Daral death or survival is not mentioned.
+- [## Audit] uncited: - [A362] BEGUN — Daral testimony is not mentioned.
+- [## Audit] uncited: - [A363] BEGUN — Fheminor first contact is not mentioned.
+- [## Audit] uncited: - [A364] BEGUN — Fheminor revelation is not mentioned.
+- [## Audit] uncited: - [A365] BEGUN — Fheminor appointment is not mentioned.
+- [## Audit] uncited: - [A366] BEGUN — A'lai first contact is not mentioned.
+- [## Audit] uncited: - [A367] BEGUN — A'lai interview is not mentioned.
+- [## Audit] uncited: - [A368] BEGUN — A'lai escape is not mentioned.
+- [## Audit] uncited: - [A369] BEGUN — A'lai fate is not mentioned.
+- [## Audit] uncited: - [A370] BEGUN — Alkrist first contact is not mentioned.
+- [## Audit] uncited: - [A371] BEGUN — Alkrist interview is not mentioned.
+- [## Audit] uncited: - [A372] BEGUN — Alkrist arrest is not mentioned.
+- [## Audit] uncited: - [A373] BEGUN — Fembris first contact is not mentioned.
+- [## Audit] uncited: - [A374] BEGUN — Fembris confession is not mentioned.
+- [## Audit] uncited: - [A375] BEGUN — Tadric first contact is not mentioned.
+- [## Audit] uncited: - [A376] BEGUN — Tadric flight assistance is not mentioned.
+- [## Audit] uncited: - [A377] BEGUN — Tadric appointment is not mentioned.
+- [## Audit] uncited: - [A378] BEGUN — Hollypocket interview is not mentioned.
+- [## Audit] uncited: - [A379] BEGUN — Sprig Summerfoot interview is not mentioned.
+- [## Audit] uncited: - [A380] BEGUN — Leuwin interview is not mentioned.
+- [## Audit] uncited: - [A381] BEGUN — Teles Ahvoste interview is not mentioned.
+- [## Audit] uncited: - [A382] BEGUN — Kazryn Nyantani interview is not mentioned.
+- [## Audit] uncited: - [A383] BEGUN — Khell-Vire closing letter is not mentioned.
+- [## Audit] uncited: - [A384] BEGUN — Philemon letter is not mentioned.
+- [## Audit] uncited: - [A385] BEGUN — Vareth final stations is not mentioned.
+- [## Audit] uncited: - [A386] BEGUN — Yvenne third sitting is not mentioned.
+- [## Audit] uncited: - [A387] BEGUN — Yvenne Vaelissa delivery is not mentioned.
+- [## Audit] uncited: - [A388] BEGUN — Yvenne Fourth-Seat scene is not mentioned.
+- [## Audit] uncited: - [A389] BEGUN — Inda emergence is not mentioned.
+- [## Audit] uncited: - [A390] BEGUN — Spanner handoff is not mentioned.
+- [## Audit] uncited: - [A391] BEGUN — Moziqodo first encounter is not mentioned.
+- [## Audit] uncited: - [A392] BEGUN — Moziqodo binding break is not mentioned.
+- [## Audit] uncited: - [A393] BEGUN — Moziqodo fate is not mentioned.
+- [## Audit] uncited: - [A394] BEGUN — Manshoon voice-only is not mentioned.
+- [## Audit] uncited: - [A395] BEGUN — Manshoon confrontation is not mentioned.
+- [## Audit] uncited: - [A396] BEGUN — Manshoon escape is not mentioned.
+- [## Audit] uncited: - [A397] BEGUN — Glabbagool bad night is not mentioned.
+- [## Audit] uncited: - [A398] BEGUN — Glabbagool Shadow Apprentice confirmed is not mentioned.
+- [## Audit] uncited: - [A399] BEGUN — Eldeth letter delivered is not mentioned.
+- [## Audit] uncited: - [A400] BEGUN — Brevin Sloobludop recitation is not mentioned.
+- [## Audit] uncited: - [A401] BEGUN — Brevin bedclothes incident is not mentioned.
+- [## Audit] uncited: - [A402] BEGUN — Marin quill incident is not mentioned.
+- [## Audit] uncited: - [A403] BEGUN — Jimjar/Callarduran prophecy is not mentioned.
+- [## Audit] uncited: - [A404] BEGUN — Five Books admission is not mentioned.
+- [## Audit] uncited: - [A405] BEGUN — Endless Chant fragment heard is not mentioned.
+- [## Audit] uncited: - [A406] BEGUN — Janussi murder forensic is not mentioned.
+- [## Audit] uncited: - [A407] BEGUN — Two “Sylvira” figures is not mentioned.
+- [## Audit] uncited: - [A408] BEGUN — Bookwyrm as cover-up is not mentioned.
+- [## Audit] uncited: - [A409] BEGUN — Alkrist as killer is not mentioned.
+- [## Audit] uncited: - [A410] BEGUN — Disguise rosetta cracked is not mentioned.
+- [## Audit] uncited: - [A411] BEGUN — Wards drop is not mentioned.
+- [## Audit] uncited: - [A412] BEGUN — Cryptogram recovered is not mentioned.
+- [## Audit] uncited: - [A413] BEGUN — Manshoon arrival announced is not mentioned.
+- [## Audit] uncited: - [A414] BEGUN — Iron Owlbear found dead is not mentioned.
+- [## Audit] uncited: - [A415] BEGUN — Echo 1 activated is not mentioned.
+- [## Audit] uncited: - [A416] BEGUN — Echo 2 activated is not mentioned.
+- [## Audit] uncited: - [A417] BEGUN — Echo 3 activated is not mentioned.
+- [## Audit] uncited: - [A418] BEGUN — Echo 4 activated is not mentioned.
+- [## Audit] uncited: - [A419] BEGUN — Book of Vile Darkness fate is not mentioned.
+- [## Audit] uncited: - [A420] BEGUN — Vault tower rocket lever is not mentioned.
+- [## Audit] uncited: - [A421] BEGUN — Candlekeep restructuring is not mentioned.
+- [## Audit] uncited: - [A422] BEGUN — Party named guest seekers is not mentioned.
+- [## Audit] uncited: - [A423] BEGUN — Manshoon-pursuit thread is not mentioned.
+- [## Audit] uncited: - [A424] BEGUN — Gauntlgrym call confirmed is not mentioned.
+- [## Audit] uncited: - [A425] BEGUN — Daz first sinus-pressure is not mentioned.
+- [## Audit] uncited: - [A426] BEGUN — Yvenne names sensitivity is not mentioned.
+- [## Audit] uncited: - [A427] BEGUN — Marin quill incident is not mentioned.
+- [## Audit] uncited: - [A428] BEGUN — Brevin Sloobludop recitation is not mentioned.
+- [## Audit] uncited: - [A429] BEGUN — Brevin bedclothes incident is not mentioned.
+- [## Audit] uncited: - [A430] BEGUN — Endless Chant stoppage is not mentioned.
+- [## Audit] uncited: - [A431] BEGUN — Ward-drop vision sequence is not mentioned.
+- [## Audit] uncited: - [A432] BEGUN — Glabbagool Juiblex contact is not mentioned.
+- [## Audit] uncited: - [A433] BEGUN — Echo 1 prophecy named is not mentioned.
+- [## Audit] uncited: - [A434] BEGUN — Daz and Yvenne expertise confirmed is not mentioned.
+- [## Audit] uncited: - [A435] BEGUN — Sylvira recruited is not mentioned.
+- [## Audit] uncited: - [A436] BEGUN — Yvenne trust ≥ 4 ticks is not mentioned.
+- [## Audit] uncited: - [A437] BEGUN — Vareth goodwill payoff is not mentioned.
+- [## Audit] uncited: - [A438] BEGUN — Daral saved payoff is not mentioned.
+- [## Audit] uncited: - [A439] BEGUN — Khell-Vire earned is not mentioned.
+- [## Audit] uncited: - [A440] BEGUN — Glabbagool Whispering Dome visit is not mentioned.
+- [## Audit] uncited: - [A441] BEGUN — Polly Pocket released is not mentioned.
+- [## Audit] uncited: - [A442] BEGUN — Walking-permit medallions worn is not mentioned.
+- [## Audit] uncited: - [A443] BEGUN — Second High Tower key held is not mentioned.
+- [## Audit] unknown-audit-id-or-tag: - [A444] BEGUN — Daz’s Fey Touched spellbook expansion is SHOWN — Daz replaced Fey Touched’s granted spells with others from the recovered spellbook, expanding his options [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A445] BEGUN — Zalthir’s Street Justice is SHOWN — Zalthir selected Street Justice to bind grappled enemies with rope, chains, or manacles [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A446] BEGUN — Thorin’s Sharpshooter with Strength is SHOWN — Thorin selected Sharpshooter with house-ruled Strength-based ability increase and Slow mastery for javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A447] BEGUN — Ember Grapple name adopted is SHOWN — The party jokingly proposed renaming themselves the “Ember Grapple” [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A448] BEGUN — Zuggtmoy’s bride invocation is SHOWN — Ilvara declared “the bride — Zuggtmoy — would come to spread chaos and mayhem” [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A449] BEGUN — Ilvara’s radiant vulnerability is SHOWN — Her death from Guiding Bolt was due to her special vulnerability to radiant damage [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A450] BEGUN — House T'sarran threat is SHOWN — The elite warrior said, “We will meet again” [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A451] BEGUN — Daz’s Misty Step access is SHOWN — Fey Touched grants one free casting per long rest [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A452] BEGUN — Jorlan Duskryn’s injury is SHOWN — He took fourteen damage from Lightning Bolt and survived [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A453] BEGUN — Asha Vandree’s prayers to Lolth are SHOWN — She dropped to her knees and chanted beatitudes to Lolth [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A454] BEGUN — Kaelira’s rescue of Daz is SHOWN — She pulled him through the Insect Plague, taking thirteen damage [ch 051 / 051.03].
+- [## Audit] unknown-audit-id-or-tag: - [A455] BEGUN — Nym Duskryn’s permission to kill Jorlan is SHOWN — He said Jorlan was the dumber one and gave permission [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A456] BEGUN — Gyrgum’s Guiding Bolt hit is SHOWN — It struck Ilvara and caused her to explode [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A457] BEGUN — Thorin’s Dawnbringer destroyed the heart fungus is SHOWN — He struck it with radiant damage and it wilted instantly [ch 051 / 051.02].
+- [## Audit] unknown-audit-id-or-tag: - [A458] BEGUN — Zalthir’s fear from Ilvara is SHOWN — He failed the Wisdom save and became frightened [ch 051 / 051.01].
+- [## Audit] unknown-audit-id-or-tag: - [A459] BEGUN — The bridge collapse is SHOWN — Thorin destroyed it, causing Ilvara and Jorlan to leap clear [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A460] BEGUN — The party reached level eight is SHOWN — The GM announced it and they spent the session choosing feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A461] BEGUN — Daz’s spellbook expansion is SHOWN — He replaced Fey Touched’s spells with others from the recovered spellbook [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A462] BEGUN — Zalthir’s Street Justice feat is SHOWN — He selected it to bind grappled enemies [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A463] BEGUN — Thorin’s javelin plan is SHOWN — He plans to acquire javelins with Sharpshooter and Slow mastery [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A464] BEGUN — The Ember Grapple name is SHOWN — The party adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A465] BEGUN — The party is in the Underdark near the Fungal Altar is SHOWN — They are traveling through the Underdark after the battle [ch 052 / 052.01; ch 052 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A466] BEGUN — The icon linked to Zuggtmoy remains is SHOWN — It was present in the cavern and warned against [ch 051 / items].
+- [## Audit] unknown-audit-id-or-tag: - [A467] BEGUN — The poisonous spores linger is SHOWN — Zalthir and Thorin were caught in them after Ilvara’s explosion [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A468] BEGUN — The Insect Plague was dropped is SHOWN — Ilvara ended concentration to cast Flamestrike [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A469] BEGUN — The Fungal Altar is now a battlefield ruin is SHOWN — Bridge collapsed, fungus dead, spores in air [ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A470] BEGUN — House Duskryn’s protection of Daz is SHOWN — Kaelira rescued him and Nym permitted her to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A471] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A472] BEGUN — The party intends to continue adventuring is SHOWN — The GM declared them ready to resume next week [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A473] BEGUN — Zalthir’s grappling strategy is SHOWN — He can grapple with bonus action and bind with action [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A474] BEGUN — Daz’s Cloud of Daggers synergy is SHOWN — The party confirmed the tactic of placing it on grappled enemies [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A475] BEGUN — The GM prohibits infinite damage is SHOWN — He ruled Cloud of Daggers damage only once per turn [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A476] BEGUN — The party is level eight is SHOWN — All members reached level eight and selected feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A477] BEGUN — Thorin’s Strength increase is SHOWN — He applied Sharpshooter’s ability increase to Strength [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A478] BEGUN — Javelins are classified as melee weapons is SHOWN — Thorin noted the rules ambiguity [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A479] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A480] BEGUN — Ilvara’s death caused a spore cloud is SHOWN — She exploded into a twenty-foot cloud of poisonous spores [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A481] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A482] BEGUN — The Fungal Altar is now a site of defeat is SHOWN — Ilvara died there, the fungus is dead, the bridge collapsed [ch 051 / 051.06; ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A483] BEGUN — Daz’s Fey Touched expanded his spellbook is SHOWN — He replaced the granted spells with others [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A484] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A485] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A486] BEGUN — The party is ready to resume adventuring is SHOWN — The GM declared them ready for next week [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A487] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A488] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A489] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A490] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A491] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A492] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A493] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [## Audit] unknown-audit-id-or-tag: - [A494] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A495] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A496] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A497] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A498] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A499] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A500] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A501] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A502] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A503] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A504] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A505] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A506] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A507] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A508] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [## Audit] unknown-audit-id-or-tag: - [A509] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A510] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A511] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A512] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A513] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A514] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A515] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A516] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A517] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A518] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A519] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A520] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A521] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A522] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A523] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [## Audit] unknown-audit-id-or-tag: - [A524] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A525] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A526] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A527] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A528] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A529] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A530] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A531] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A532] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A533] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A534] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A535] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A536] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A537] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A538] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [## Audit] unknown-audit-id-or-tag: - [A539] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A540] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A541] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A542] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A543] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A544] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A545] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A546] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A547] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A548] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A549] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A550] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A551] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A552] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A553] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [## Audit] unknown-audit-id-or-tag: - [A554] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A555] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A556] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A557] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A558] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A559] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A560] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A561] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A562] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A563] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A564] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A565] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A566] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A567] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A568] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [## Audit] unknown-audit-id-or-tag: - [A569] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A570] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A571] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [## Audit] unknown-audit-id-or-tag: - [A572] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [## Audit] unknown-audit-id-or-tag: - [A573] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A574] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A575] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [## Audit] unknown-audit-id-or-tag: - [A576] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [## Audit] unknown-audit-id-or-tag: - [A577] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [## Audit] unknown-audit-id-or-tag: - [A578] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [## Audit] unknown-audit-id-or-tag: - [A579] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [## Audit] uncited: - [A580]
+
+## Chunk 053-053 — 16 dropped
+- [## NPC Status] malformed-row: - Nym Duskryn | Departed | — | Neutral toward party; professional disdain for their methods [ch 053 / 053.01; ch 053 / npcs].
+- [## NPC Status] malformed-row: - Kaelira Duskryn | Departed | — | Neutral toward party; professional approval of Zalthir’s efficiency [ch 053 / 053.01; ch 053 / npcs].
+- [## NPC Status] malformed-row: - Asha Vandree | Dead | Fungal Altar | — [ch 053 / 053.02; ch 053 / npcs].
+- [## NPC Status] malformed-row: - Ilvara | Dead | Fungal Altar | — [ch 053 / 053.03; ch 053 / npcs].
+- [## NPC Status] malformed-row: - Dawnbringer | Alive | With party | Dislikes darkness but refuses therapy; approves offensive upgrades [ch 053 / 053.05; ch 053 / npcs].
+- [## NPC Status] malformed-row: - Glabbagool | Alive | With party, in bag of holding | Delighted by surface world; never knew Overbright existed [ch 053 / 053.05; ch 053 / npcs].
+- [## Party] uncited: - The party is in the Overbright, having just emerged from the Underdark after months of travel; they are resting and planning a months-long downtime.
+- [## Party] uncited: - Group name: Unnamed adventuring party.
+- [## Party] uncited: - Level: Not stated, but implied to be near 9th level due to advanced magic and equipment.
+- [## Party] uncited: - Daz: Acquired the Drow cloak of elvenkind; now aware his survival has drawn elite attention; intends to investigate why factions want him protected or extracted; plans to audit faction books; has developed somatic field-perception sensitivity (pressure headaches).
+- [## Party] uncited: - Thorin: Recovered his tooth; intends to acquire javelins, improve Dawnbringer’s offensive power, and find a “Sword Whisperer” at Candlekeep; has a strong bond with Dawnbringer; is curious about the mystery behind Daz.
+- [## Party] uncited: - Zalthir: Killed Asha Vandree; demonstrated potent offensive magic; no new items or abilities noted beyond existing capabilities.
+- [## Party] uncited: - Gyrgum: Recovered the jailer’s ring of keys as a symbol of progress; intends to study Bahamut at Candlekeep; has shown insight into Drow politics and lore.
+- [## Party] uncited: - Dawnbringer: Purified the serpent-headed scourge; insists she is a weapon, not a ritual tool; dislikes darkness but does not fear it; has a Vaultmaster Locking Scabbard; may undergo therapy.
+- [## Party] uncited: - Glabbagool: Now aware of the surface world; remains with the party in a bag of holding; delighted by sunlight and new sights.
+- [## Party] uncited: - Next steps: Travel to Candlekeep to research House T'sarran, Jimjar, Daz’s origins, Bahamut, and sentient weapon trauma; invest wealth in adventuring gear.
+
+## Chunk 055-055 — 3 dropped
+- [## Threads] quoted-span-not-found “You came up! You will go down again.”: - [OPENED] **The Kraken Chant** — A street preacher in Waterdeep’s Field Ward chants, “The kraken under the keep!” and directly warns Daz, “You came up! You will go down again.” Thorin notes the speech pattern matches Eldred’s. `[ch 055 / 055.07]`
+- [## Threads] quoted-span-not-found “fallen at Glazhael’s lair, redeemed in life and death,”: - [OPENED] **Whistler’s Fate** — A sign in Rishaal’s Pageturners declares Whistler “fallen at Glazhael’s lair, redeemed in life and death,” contradicting his rumored presence as the Ardragon; fan factions debate whether Milo’s account of his redemption is too generous. `[ch 055 / 055.06]`
+- [## Party] invalid-citation [ch 055 / header]: - Group name: The Ember Grapple. `[ch 055 / header]`
+
+## Chunk 056-056 — 5 dropped
+- [## Events] quoted-span-not-found "Life takes you in weird directions... you just gotta go with it.": - Thorin sits by the sea for the first time, reflecting with Dawnbringer that "Life takes you in weird directions... you just gotta go with it." `[ch 056 / 056.03]`
+- [## Party] uncited: - The party is currently located inside Candlekeep, having just arrived after traveling the Way of the Lion.
+- [## Party] uncited: - The group has no official name stated.
+- [## Party] uncited: - Level or rank is not stated, but the party has completed a major arc and is now in a scholarly phase.
+- [## Audit] quoted-span-not-found "mother voice": - [A432] BEGUN — Glabbagool — Juiblex "mother voice" contact (Session 5) [ch 056 / 056.04]
+
+## Chunk 057-057 — 3 dropped
+- [## Audit] quoted-span-not-found “Gauntlgrym / Keeper prophecy”: - [A417] BEGUN — Echo 3 (“Gauntlgrym / Keeper prophecy”) is activated by the murder and the party’s involvement, naming Thorin, Zalthir, Daz, and Gyrgum [ch 057 / 057.02; ch 057 / 057.05].
+- [## Audit] quoted-span-not-found “bad night”: - [A397] BEGUN — Glabbagool’s “bad night” or Juiblex reach has not occurred [ch 057 / 057.03].
+- [## Audit] quoted-span-not-found “many-faced man / metal hand”: - [A405] BEGUN — The Endless Chant fragment “many-faced man / metal hand” has not been heard in this chapter [ch 057 / 057.02].
+
+## Chunk 058-058 — 15 dropped
+- [## World] missing-world-tag: - [SPELL] **Raise Dead** — The killer removed Janussi’s heart to prevent this spell from working, indicating knowledge of resurrection magic [ch 058 / spells].
+- [## World] missing-world-tag: - [SPELL] **Magic Missile** — Cast by Sylvira Savikas during a quarrel with Janussi; caused two holes through the armchair [ch 058 / spells].
+- [## World] missing-world-tag: - [SPELL] **Speak with Animals** — Used via the Stonespeaker Crystal to interrogate Queenie [ch 058 / spells].
+- [## Party] uncited: - The party is located in Janussi’s chambers and Hollypocket’s apartment within Candlekeep, concluding their investigation into the Keeper’s murder.
+- [## Party] uncited: - They are now fully engaged in a murder mystery within Candlekeep’s scholarly hierarchy, having identified multiple suspects and key clues.
+- [## Party] uncited: - The party’s group name remains unchanged; no new titles or ranks are granted.
+- [## Party] uncited: - Daz has gained inspiration for his Sherlock Holmes-style deduction and used the Stonespeaker Crystal to communicate with Queenie, spending one charge.
+- [## Party] uncited: - The party now possesses the broken lead-chain links from Janussi’s locket, the gift tag, and has learned of the missing *Golden Ass*, the black residue poison, and the stolen sapphire and parchment.
+- [## Party] uncited: - No injuries or new abilities are noted.
+- [## Party] uncited: - Relationships: The party now distrusts Daral Yashenti as the prime suspect, views Sylvira Savikas as volatile and possibly impersonated, and is wary of the unknown shapeshifter.
+- [## Party] uncited: - Next intention: To determine who stole the locket and the book, identify the shapeshifter, and find Kalan Strongbranch to recover the second key to the High Tower Library — likely to determine if access to the library was the motive.
+- [## Audit] invalid-citation [ch 058 / 058.01; ch 058 / tracking_candlekeep_murders.txt]: - [A294] SHOWN — The party was conscripted by Bookwyrm to investigate Janussi’s murder, initiating the Candlekeep murder investigation [ch 058 / 058.01; ch 058 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 058 / tracking_candlekeep_murders.txt; ch 058 / 058.06]: - [A412] SHOWN — The party recovered the cryptogram from the High Tower Library, transcribing the six-clue text [ch 058 / tracking_candlekeep_murders.txt; ch 058 / 058.06].
+- [## Audit] invalid-citation [ch 058 / 058.06; ch 058 / tracking_candlekeep_murders.txt]: - [A424] BEGUN — The party has confirmed Echo 3 (“Gauntlgrym / Keeper prophecy”) and received Eldeth’s letter, converging the Gauntlgrym call [ch 058 / 058.06; ch 058 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 058 / 058.06; ch 058 / tracking_candlekeep_murders.txt]: - [A443] SHOWN — The party now holds the second High Tower key’s location (Kalan Strongbranch) and the first key’s location (stolen locket), enabling them to open the door from outside [ch 058 / 058.06; ch 058 / tracking_candlekeep_murders.txt].
+
+## Chunk 060-060 — 9 dropped
+- [## Party] uncited: - The party is in Candlekeep, in the Southern Dining Hall and surrounding areas, following the murder investigation.
+- [## Party] uncited: - The party’s group name remains unspecified; they are referred to as investigators under Bookwyrm’s conscription.
+- [## Party] uncited: - Level or rank: Not stated, but their actions suggest mid-to-high level capability (ritual casting, *Speak with Animals*, stealth, interrogation).
+- [## Party] uncited: - Daz: Cast *Identify* and *Speak with Animals*; now possesses Kalan’s key and has successfully interrogated a squirrel; continues to investigate the sapphire theory.
+- [## Party] uncited: - Thorin: Led the investigation of the dining hall; discovered the heart and cleaver; considers letting Daral die for evidence; maintains close contact with Daral.
+- [## Party] uncited: - Zalthir: Led the stealth search of suspects’ chambers; found Alkrist’s incriminating book and A’lai’s dove cage; remains shadow-footed.
+- [## Party] uncited: - Glabbagool: Learned “silence”; assisted in chamber searches; failed to detect poison in Bookwyrm’s room; cannot enter Alkrist’s safe.
+- [## Party] uncited: - Daral: Alive and clinging to Thorin and Daz; fears for his life; believes A’lai framed him; now a key witness.
+- [## Party] uncited: - The party’s next steps: Investigate Alkrist further, locate the stolen sapphire, determine the identity of the Dragonborn accomplice, recover the three missing messenger doves, and consider using *Speak with Dead* on Janussi’s heart.
+
+## Chunk 061-061 — 26 dropped
+- [## Audit] invalid-citation [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt]: - [A294] SHOWN — Candlekeep murder investigation was conscripted by Bookwyrm [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt]: - [A344] SHOWN — Janussi was first contacted at the refectory dinner [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A345] SHOWN — Janussi died just after midnight [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt]: - [A346] SHOWN — Bookwyrm was first contacted at the Chapter House during conscription [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.02; ch 061 / tracking_candlekeep_murders.txt]: - [A350] SHOWN — Kalan Strongbranch was first contacted in the private corridor after Chapter House [ch 061 / 061.02; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.05; ch 061 / tracking_candlekeep_murders.txt]: - [A354] SHOWN — Sylvira was first contacted on Day One and handed demon-lord evidence [ch 061 / 061.05; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt]: - [A359] SHOWN — Daral was first contacted at the Chapter House [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A366] SHOWN — A'lai was first contacted at the Chapter House [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A370] SHOWN — Alkrist was first contacted at the Chapter House [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt]: - [A373] SHOWN — Fembris was first contacted at the door cliffhanger [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A406] SHOWN — Janussi murder crime scene revealed poisoning, heart removal, no defensive wounds [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.02; ch 061 / 061.05; ch 061 / tracking_candlekeep_murders.txt]: - [A407] SHOWN — Two "Sylvira" figures were identified across timeline sightings [ch 061 / 061.02; ch 061 / 061.05; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A409] SHOWN — Alkrist was identified as the poisoner through confession [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt]: - [A423] SHOWN — Manshoon-pursuit thread was activated [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt]: - [A424] SHOWN — Gauntlgrym call confirmed via Echo 3 and Eldeth’s letter [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A439] SHOWN — Khell-Vire’s Watcher’s Stillness was earned [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt]: - [A441] SHOWN — Polly Pocket released as messenger [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A307] BEGUN — Alkrist arrest is underway but not yet formalized; he confessed under Zone of Truth but party has not yet turned him in [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.05; ch 061 / tracking_candlekeep_murders.txt]: - [A356] BEGUN — Sylvira recruitment as battlefield ally is possible but not yet chosen; she remains an interviewee [ch 061 / 061.05; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt]: - [A361] BEGUN — Daral’s death or survival is pending; Gyrgum delays Lesser Restoration [ch 061 / 061.01; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A369] BEGUN — A'lai’s fate (dead/escaped) is unresolved [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt]: - [A393] BEGUN — Moziqodo’s fate is unresolved [ch 061 / 061.07; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt]: - [A419] BEGUN — Book of Vile Darkness fate is unresolved [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt]: - [A420] BEGUN — Vault tower rocket lever is unpulled [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt]: - [A421] BEGUN — Institutional restructuring is pending decision [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt]: - [A422] BEGUN — Party named guest seekers of the Avowed ceremony not yet held [ch 061 / 061.08; ch 061 / tracking_candlekeep_murders.txt].
+
+## Chunk 062-062 — 9 dropped
+- [## Events] quoted-span-not-found “hack and slash”: - Daz and Thorin support handing the case to Kalan, with Daz noting they can always “hack and slash” if things go sideways [ch 062 / 062.01].
+- [## Audit] unknown-audit-id-or-tag: - [A353] RESOLVED — Kalan was presumed dead after Pont de Paramours but has now been reinstated and is alive and active [ch 062 / 062.03].
+- [## Audit] unknown-audit-id-or-tag: - [A444] BEGUN — The party’s next destination (Gauntlgrym) is now confirmed via Echo 3 and Eldeth’s letter, but the journey has not yet begun [ch 062 / 062.02].
+- [## Audit] unknown-audit-id-or-tag: - [A445] BEGUN — The party must now determine the origin of the helmed horrors and the nature of the inert key; this is a new thread [ch 062 / 062.06].
+- [## Audit] unknown-audit-id-or-tag: - [A446] BEGUN — The party must now investigate whether Bookwyrm orchestrated the ambush in Deneir’s Sanctum [ch 062 / 062.05].
+- [## Audit] unknown-audit-id-or-tag: - [A447] BEGUN — The party must now decide whether to pursue A'lai or focus on Bookwyrm next [ch 062 / 062.03].
+- [## Audit] unknown-audit-id-or-tag: - [A448] BEGUN — The party must now determine the location and status of the missing sapphire [ch 062 / 062.04].
+- [## Audit] unknown-audit-id-or-tag: - [A449] BEGUN — The party must now determine if the potion of flying will be used to escape or investigate [ch 062 / 062.04].
+- [## Audit] unknown-audit-id-or-tag: - [A450] BEGUN — The party must now decide whether to confront Bookwyrm before or after the naming ceremony [ch 062 / 062.02].
+
+## Chunk 063-063 — 228 dropped
+- [## NPC Status] malformed-row: - Kalan Strongbranch | Alive | Sea Warden's Tower | Grateful but exasperated toward party; deputized them as Watchers [ch 063 / 063.03; ch 063 / 063.04].
+- [## NPC Status] malformed-row: - Bookwyrm | Dead | Bookwyrm's Office | Hostile (murdered); her death triggered the current crisis [ch 063 / 063.01; ch 063 / 063.02].
+- [## NPC Status] malformed-row: - Fembris Lancer | Alive | Deneir's Sanctum | Fearful and coerced; revealed A'lai’s involvement under pressure [ch 063 / 063.03].
+- [## NPC Status] malformed-row: - Tadric | Alive | North Galleries | Shocked and grateful; now holds the real high tower key [ch 063 / 063.05].
+- [## NPC Status] malformed-row: - Moziqodo | Dead | North Galleries | Slain by the party after attacking Tadric [ch 063 / 063.05].
+- [## NPC Status] malformed-row: - A'lai Aivenmore | Unknown | Unknown | Suspected to be in the High Tower with the key stolen from Bookwyrm; primary antagonist [ch 063 / 063.06].
+- [## NPC Status] malformed-row: - Alkrist | Unknown | Alkrist's Room | Suspected of Janussi’s murder but not involved in key theft; whereabouts unknown [ch 063 / 063.01].
+- [## NPC Status] malformed-row: - Janussi | Dead | Janussi's Chamber | Murdered prior to this chapter; his key was stolen by Bookwyrm [ch 063 / 063.01].
+- [## NPC Status] malformed-row: - Daral | Alive | Deneir's Sanctum | Aligned with party; used Detect Magic to expose the decoy key [ch 063 / 063.01].
+- [## NPC Status] malformed-row: - Gyrgum | Alive | North Galleries | Secured the real key; healed Tadric; deeply involved in unraveling the mystery [ch 063 / 063.05].
+- [## NPC Status] malformed-row: - Daz | Alive | North Galleries | Was targeted for the decoy key; used Magic Missile to help kill Moziqodo [ch 063 / 063.05].
+- [## NPC Status] malformed-row: - Thorin | Alive | North Galleries | Killed Moziqodo with Dawnbringer; deputized as Watcher [ch 063 / 063.05].
+- [## Party] uncited: - The party is located in the North Galleries of Candlekeep, having just secured the real high tower key from Tadric and slain Moziqodo.
+- [## Party] uncited: - They are now deputized as Watchers of Candlekeep, with a small badge and honorarium, though they are focused on the mission, not the title.
+- [## Party] uncited: - The party’s group name remains unchanged; they are still referred to as “the party” or “adventurers.”
+- [## Party] uncited: - Level: 9.
+- [## Party] uncited: - Daz: Used Magic Missile to help kill Moziqodo; no new items or injuries noted; intends to confront A'lai in the High Tower.
+- [## Party] uncited: - Gyrgum: Cast Cure Wounds on Tadric; secured the real key; intends to use deception with the fake key; no new injuries.
+- [## Party] uncited: - Thorin: Killed Moziqodo with a critical blow from Dawnbringer; no new injuries; intends to lead the assault on the High Tower.
+- [## Party] uncited: - Daral: Used Detect Magic to expose the decoy key; remains close to Thorin and Dawnbringer; no new injuries.
+- [## Party] uncited: - Tadric: Alive, healed, and holding the real key; now a key witness and ally; not a party member.
+- [## Party] uncited: - The party intends to proceed to the High Tower to recover the second key from A'lai Aivenmore and prevent the ward from being disabled.
+- [## Audit] outside-chunk [ch 063 / end]: - [A225] BEGUN — Gorg'Bahamut breadcrumb planted with Kestler at Triboar — mentioned in audit list, but no evidence in this chunk [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A226] BEGUN — Mirabar smith commissions — no evidence of new commissions in this chunk [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A227] BEGUN — Daz shopping arc — no new purchases noted in this chapter [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A228] BEGUN — Daz fitted Calishite cloak — no new mention [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A229] BEGUN — Milo Goodbarrel Volume 3 — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A230] BEGUN — Order of the Gauntlet medallion — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A231] BEGUN — Gyrgum Hagiography — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A232] BEGUN — Zalthir brass shadow-puppet — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A233] BEGUN — Dawnbringer scabbard work — completed previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A234] BEGUN — Elin the silent child — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A235] BEGUN — Charcoal rubbing of six-pointed star — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A236] BEGUN — Kestler meeting — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A237] BEGUN — Triboar carpenter’s journal — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A238] BEGUN — Burned hamlet "The Auroch's Horn" — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A239] BEGUN — Broken Thunderbeast standing stone — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A240] BEGUN — Defaced Tempus shrine — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A241] BEGUN — Forge of Mirabar — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A242] BEGUN — Order of the Gauntlet shrine — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A243] BEGUN — Goldenfields — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A244] BEGUN — Mountain's Mouth Inn — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A245] BEGUN — Triboar memorial square — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A246] BEGUN — Waterdeep — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A247] BEGUN — Rishaal the Pageturner's — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A248] BEGUN — Order of the Gauntlet chapter house — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A249] BEGUN — Sleeping Snake fence — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A250] BEGUN — Aurora's Whole Realms Catalog — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A251] BEGUN — Halaster's Prized Findings — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A252] BEGUN — Steelwoods of Mistshore — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A253] BEGUN — River Shining Tavern — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A254] BEGUN — Hand of Tarvis monument — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A255] BEGUN — Burning Wizard inn — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A256] BEGUN — Way of the Lion — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A257] BEGUN — Candlekeep Emerald Door — party arrived here prior; not re-encountered [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A258] BEGUN — Eldeth farewell — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A259] BEGUN — Dwarven outriders — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A260] BEGUN — Stroudite polemicist — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A261] BEGUN — Sister Ellune — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A262] BEGUN — Brindle Wenth story — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A263] BEGUN — Kestler the half-orc — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A264] BEGUN — Eldred the two-voiced courier — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A265] BEGUN — Rishaal the Pageturner — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A266] BEGUN — Stroudite half-orc pilgrims — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A267] BEGUN — Field Ward street-preacher — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A268] BEGUN — City Watch patrol — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A269] BEGUN — Maerith of the Ford — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A270] BEGUN — Elin the silent child — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A271] BEGUN — Veyloss the bard — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A272] BEGUN — Festrum the gnome — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A273] BEGUN — Pilgrim at corner table — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A274] BEGUN — Triboar carpenter — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A275] BEGUN — Stroudite half-orc pilgrims — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A276] BEGUN — Bookwyrm — first contact — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A277] BEGUN — Queenie the cat — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A278] BEGUN — First Faction painting — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A280] BEGUN — Thorin and Dawnbringer orphan-healing run — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A281] BEGUN — Daz somatic field-perception — first tell — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A282] BEGUN — Daz somatic field-perception — Eldred two-voice — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A283] BEGUN — Daz somatic field-perception — Field Ward preacher — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A284] BEGUN — Daz somatic field-perception — pressure-headache begins — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A285] BEGUN — Daz somatic field-perception — sharpens on Way of the Lion — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A286] BEGUN — Six-pointed star — first appearance — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A287] BEGUN — Black-Banner Five trial-site marker — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A288] BEGUN — Endless Chant error — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A289] BEGUN — Endless Chant — first heard — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A290] BEGUN — Sjurkar priest benediction error — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A291] BEGUN — Stroud-school sponsorship — occurred previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A292] BEGUN — Drow refugee in Waterdeep — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A293] BEGUN — Refugee family from Episode 1 — not mentioned [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A295] BEGUN — Cryptogram race — completed previously [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A296] BEGUN — Vault confrontation — completed previously [ch 063 / end].
+- [## Audit] quoted-span-not-found "Bookwyrm was not surprised": - [A364] BEGUN — Fheminor — "Bookwyrm was not surprised" — occurred previously [ch 063 / 063.01].
+- [## Audit] quoted-span-not-found "mother voice": - [A432] BEGUN — Glabbagool — Juiblex "mother voice" — occurred previously [ch 063 / 063.05].
+- [## Audit] outside-chunk [ch 063 / end]: - [A1] BEGUN — Escape from Velkynvelve — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A2] BEGUN — Return to the Underdark — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A3] BEGUN — Gather components for Vizeran's ritual — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A4] BEGUN — Place the dark heart talisman — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A5] BEGUN — Perform Vizeran's ritual — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A6] BEGUN — Final battle against demon lords — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A7] BEGUN — Jorlan's Gambit — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A8] BEGUN — Reach Sloobludop — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A9] BEGUN — Reach Gracklstugh — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A10] BEGUN — Reach Neverlight Grove — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A11] BEGUN — Reach Blingdenstone — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A12] BEGUN — Reach Gravenhollow — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A13] BEGUN — Reach Mantol-Derith — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A14] BEGUN — Reach Menzoberranzan — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A15] BEGUN — Reach the Wormwrithings — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A16] BEGUN — Reach the Labyrinth — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A17] BEGUN — Retrieve Gromph Baenre's grimoire — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A18] BEGUN — Obtain purple worm egg — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A19] BEGUN — Obtain beholder central eye — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A20] BEGUN — Obtain six angel feathers — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A21] BEGUN — Obtain goristro heart — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A22] BEGUN — Obtain timmask mushrooms — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A23] BEGUN — Obtain demon lord blood or ichor — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A25] BEGUN — Shuushar — guide to Sloobludop — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A26] BEGUN — Stool — return to Neverlight Grove — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A27] BEGUN — Rumpadump — return to Neverlight Grove — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A28] BEGUN — Deliver Werz Saltbaron's gems — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A29] BEGUN — Droki delivery interception — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A30] BEGUN — Ylsa Henstak's investigation — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A31] BEGUN — Find Entémoch's Boon — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A32] BEGUN — Cleanse the Steadfast Stone — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A33] BEGUN — Encounter with the Pudding King — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A34] BEGUN — Battle for Blingdenstone — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A35] BEGUN — Burrow Warden Jadger's tasks — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A36] BEGUN — Retrieve Pelek's remains — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A37] BEGUN — Return Sladis Vadir — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A38] BEGUN — Return Rystia Zav — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A39] BEGUN — Locate Khalessa Draga — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A40] BEGUN — Activate or disable the Maze Engine — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A41] BEGUN — Xazax the Eyemonger — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A42] BEGUN — Zuggtmoy's fetid wedding — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A43] BEGUN — Fraz-Urb'luu's gem — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A44] BEGUN — Stonespeaker Hgraam audience — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A45] BEGUN — Velkynvelve — drow outpost, slave pen — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A46] BEGUN — Sloobludop — kuo-toa town on the Darklake — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A47] BEGUN — Gracklstugh — duergar city, City of Blades — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A48] BEGUN — Neverlight Grove — myconid colony — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A49] BEGUN — Blingdenstone — deep gnome settlement — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A50] BEGUN — Whorlstone Tunnels — beneath Gracklstugh — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A51] BEGUN — Darklake — Underdark waterway — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A52] BEGUN — Gravenhollow — stone giant library — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A53] BEGUN — Araj — Vizeran's tower — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A54] BEGUN — Mantol-Derith — Underdark trade outpost — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A55] BEGUN — Menzoberranzan — drow city, City of Spiders — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A56] BEGUN — Wormwrithings — purple worm tunnel network — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A57] BEGUN — Vast Oblivium — beholder lair chasm — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A58] BEGUN — Labyrinth — maze tunnels, Baphomet's domain — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A59] BEGUN — Gallery of Angels — petrified angel cavern — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A60] BEGUN — Araumycos — vast fungal entity cavern — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A62] BEGUN — Sorcere — drow arcane academy in Menzoberranzan — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A63] BEGUN — Yggmorgus — Zuggtmoy's mushroom tower — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A64] BEGUN — Overlake Hold — Dunglorrin Torune, Gracklstugh fortress — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A65] BEGUN — Cairngorm Cavern — stone giant home in Gracklstugh — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A66] BEGUN — Silken Paths — spider web chasm — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A67] BEGUN — Oozing Temple — flooded dungeon — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A68] BEGUN — Lost Tomb of Khaem — Netherese tomb — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A69] BEGUN — Troglodyte Lair — Wormwrithings encounter — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A70] BEGUN — Worm Nursery — purple worm egg chamber — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A71] BEGUN — Hook Horror Lair — gnoll hunt encounter — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A72] BEGUN — Spiral of the Horned King — Labyrinth entrance maze — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A73] BEGUN — Ilvara Mizzrym — drow commander — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A74] BEGUN — Jorlan Duskryn — drow elite warrior — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A75] BEGUN — Shoor Vandree — Ilvara's lieutenant — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A76] BEGUN — Asha Vandree — junior priestess — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A77] BEGUN — Buppido — derro prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A78] BEGUN — Prince Derendil — quaggoth prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A79] BEGUN — Eldeth Feldrun — shield dwarf prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A80] BEGUN — Jimjar — deep gnome prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A81] BEGUN — Ront — orc prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A82] BEGUN — Sarith Kzekarit — drow prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A83] BEGUN — Shuushar the Awakened — kuo-toa prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A84] BEGUN — Stool — myconid sprout prisoner — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A85] BEGUN — Topsy and Turvy — svirfneblin twins — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A86] BEGUN — Ploopploopeen — kuo-toa archpriest — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A87] BEGUN — Bloppblippodd — kuo-toa archpriest of Deep Father — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A88] BEGUN — Demogorgon — demon lord, rise at Sloobludop — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A89] BEGUN — Shuushar — pacifist kuo-toa — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A90] BEGUN — Gorglak — corrupt duergar gate guard — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A91] BEGUN — Errde Blackskull — Stone Guard captain — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A92] BEGUN — Themberchaud — red dragon Wyrmsmith — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A93] BEGUN — Gartokkar Xundorn — Keeper of the Flame — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A94] BEGUN — Ylsa Henstak — duergar merchant — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A95] BEGUN — Droki — derro courier — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A96] BEGUN — Werz Saltbaron — duergar merchant — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A97] BEGUN — Stonespeaker Hgraam — stone giant elder — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A98] BEGUN — Narrak — derro savant cultist — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A99] BEGUN — Glabbagool — sentient gelatinous cube — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A100] BEGUN — Sovereign Phylo — myconid sovereign — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A101] BEGUN — Sovereign Basidia — myconid sovereign — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A102] BEGUN — Yestabrod — Circle of Masters leader — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A103] BEGUN — Xinaya — drow scout — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A104] BEGUN — Zuggtmoy — Demon Queen of Fungi — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A105] BEGUN — Dorbo Diggermattock — Blingdenstone leader — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A106] BEGUN — Senni Diggermattock — Blingdenstone quartermaster — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A107] BEGUN — Kazook Pickshine — svirfneblin alchemist — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A108] BEGUN — Chipgrin Goldwhisker — wererat leader — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A109] BEGUN — Burrow Warden Jadger — ghost — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A110] BEGUN — The Pudding King — insane deep gnome — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A112] BEGUN — Lord Zelraun Roaringhorn — Harper representative — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A113] BEGUN — Sir Lanniver Strayl — Order of the Gauntlet representative — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A114] BEGUN — Morista Malkin — Emerald Enclave representative — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A115] BEGUN — Lord Eravien Haund — Lords' Alliance representative — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A116] BEGUN — Davra Jassur — Zhentarim representative — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A117] BEGUN — Ghazrim DuLoc — Zhentarim contact — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A118] BEGUN — Lorthuun — maimed beholder — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A119] BEGUN — Kinyel Druu'giir — drow assassin — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A120] BEGUN — Yantha Coaxrock — svirfneblin mage — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A121] BEGUN — Peebles — svirfneblin spy — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A122] BEGUN — Zilchyn Q'Leptin — kleptomaniac drow mage — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A123] BEGUN — Sladis Vadir — Emerald Enclave scout — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A124] BEGUN — Rystia Zav — Harper spy — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A125] BEGUN — Vizeran DeVir — drow archmage — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A126] BEGUN — Grin Ousstyl — Vizeran's apprentice — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A127] BEGUN — Karazikar — beholder of Vast Oblivium — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A128] BEGUN — Shedrak of the Eyes — beholder's thrall — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A129] BEGUN — Baphomet — demon lord — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A130] BEGUN — Yeenoghu — demon lord — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A131] BEGUN — Gash — gnoll servant — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A132] BEGUN — Quenthel Baenre — matron mother — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A133] BEGUN — Jarlaxle Baenre — Bregan D'aerthe leader — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A134] BEGUN — Hanne Hallen — young drow mage — not in this chapter’s scope [ch 063 / end].
+- [## Audit] outside-chunk [ch 063 / end]: - [A135] BEGUN — Zhora Hallen — Dark Hunters leader — not in this chapter’s scope [ch 063 / end].
+- [## Audit] uncited: - [A136] BEGUN — Khalessa Draga
+
+## Chunk 064-064 — 22 dropped
+- [## Events] outside-chunk [ch 064 / end]: - The session ends with one acid-coated Zhentarim raider still standing, Zalthir unconscious under Glabbagool, A'lai deprived of the sapphire but still dangerous, and the sealed inner door unopened. [ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.01; ch 064 / end]: - Tadric | Alive | High Tower lobby | Allied, emboldened, and determined to prove himself [ch 064 / 064.01; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - A'lai Aivenmore | Alive | High Tower lobby | Hostile, diminished in resources, furious at being outmaneuvered [ch 064 / 064.04; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - Glabbagool | Alive | High Tower lobby | Allied, guarding Zalthir [ch 064 / 064.04; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - Zhentarim Raider 1 | Dead | High Tower lobby | Killed by Tasha's Caustic Brew [ch 064 / 064.04; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - Zhentarim Raider 2 | Alive | High Tower lobby | Coated in acid, still standing, suffering ongoing damage [ch 064 / 064.04; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - Gyrgum | Alive | High Tower lobby | Allied, holding key #2 and sapphire, ended Bless to cast Tasha's Caustic Brew [ch 064 / 064.04; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - Daz | Alive | High Tower lobby | Allied, used Telekinesis to steal sapphire, performed sleight-of-hand, feels responsible for Zalthir’s fall [ch 064 / 064.04; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - Thorin | Alive | High Tower lobby | Allied, engaged raiders with Dawnbringer, used Menacing Attack [ch 064 / 064.04; ch 064 / end]
+- [## NPC Status] outside-chunk [ch 064 / 064.04; ch 064 / end]: - Zalthir | Unconscious | High Tower lobby | Knocked out by A'lai’s Arcane Bursts; guarded by Glabbagool [ch 064 / 064.04; ch 064 / end]
+- [## Party] uncited: - The party is in the High Tower lobby of Candlekeep, engaged in an unresolved battle with A'lai Aivenmore and a surviving Zhentarim raider.
+- [## Party] uncited: - Zalthir is unconscious, guarded by Glabbagool; his survival is uncertain and requires stabilization.
+- [## Party] uncited: - Daz is emotionally shaken, blaming himself for Zalthir’s condition after stealing the sapphire and retreating.
+- [## Party] uncited: - Gyrgum holds the genuine High Tower key #2, the sapphire artifact, and Kalan’s fake decoy key; he has expended Bless and is now concentrating on Tasha's Caustic Brew.
+- [## Party] uncited: - Thorin used Dawnbringer against the raiders, dealing significant damage; his sword’s pommel was considered for smashing the sapphire but not used.
+- [## Party] uncited: - Tadric accompanies the party, now fully committed to the mission, having surrendered the key and insisted on joining despite danger.
+- [## Party] uncited: - The party intends to defeat A'lai Aivenmore, secure the inner door, and determine the sapphire’s effect; they must also decide how to proceed with the surviving acid-coated raider and the unconscious Zalthir.
+- [## Party] uncited: - Daz’s field-perception pressure headache continues to sharpen, though no new insight is recorded in this session.
+- [## Audit] quoted-span-not-found “mother voice”: - [A432] BEGUN — Glabbagool Juiblex “mother voice” contact: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [## Audit] quoted-span-not-found "The Kenku Could Not Fly": - [A271] BEGUN — Veyloss the bard — "The Kenku Could Not Fly" performance: not referenced here [ch 064 / 064.01].
+- [## Audit] quoted-span-not-found "Bookwyrm was not surprised": - [A364] BEGUN — Fheminor — "Bookwyrm was not surprised": not referenced here [ch 064 / 064.01].
+- [## Audit] quoted-span-not-found “mother voice”: - [A432] BEGUN — Glabbagool Juiblex “mother voice”: occurred in prior session [ch 064 / 064.01].
+
+## Chunk 065-065 — 2 dropped
+- [## Party] uncited: - The party is inside Candlekeep’s High Tower, having just repelled a Zhentarim incursion and witnessed Manshoon’s simulacrum breach the inner sanctum.
+- [## Audit] uncited: - (none) — All other audit questions are unrelated to this chapter’s events.
+
+## Chunk 067-067 — 147 dropped
+- [## Concluded] quoted-span-not-found “Those well-versed in Candlekeep’s lore may fearlessly pass the obsidian door”: - The sixth riddle — “Those well-versed in Candlekeep’s lore may fearlessly pass the obsidian door” — was acknowledged as pending but not yet encountered [ch 067 / 067.03].
+- [## NPC Status] malformed-row: - Glabbagool | Alive | Descending staircase [ch 067 / 067.06]
+- [## NPC Status] malformed-row: - Zalthir | Alive | Descending staircase [ch 067 / 067.06]
+- [## NPC Status] malformed-row: - Daz | Alive | Descending staircase [ch 067 / 067.06]
+- [## NPC Status] malformed-row: - Gyrgum | Alive | Descending staircase [ch 067 / 067.06]
+- [## NPC Status] malformed-row: - Thorin | Missing | Vast circular well beneath the staircase [ch 067 / 067.06]
+- [## Audit] invalid-citation [ch 067 / 067.01; ch 067 / tracking_blingdenstone_travelogue.txt]: - [A223] SHOWN — The party arrived at Candlekeep’s gates and were admitted, as confirmed by prior context and the ongoing events within [ch 067 / 067.01; ch 067 / tracking_blingdenstone_travelogue.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_blingdenstone_travelogue.txt]: - [A225] BEGUN — Gorg’Bahamut breadcrumb planted with Kestler at Triboar; no further action in this chunk [ch 067 / tracking_blingdenstone_travelogue.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A1] BEGUN — Escape from Velkynvelve occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A2] BEGUN — Return to the Underdark was prior; party is now in Candlekeep [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A12] BEGUN — Reach Gravenhollow not yet achieved; party is in Candlekeep [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A14] BEGUN — Discovery of demon lords loose in the Underdark occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A151] BEGUN — Gromph Baenre’s ritual identified as cause occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A214] BEGUN — House Baenre private meeting occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A216] BEGUN — Council of Spiders assistance occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A217] BEGUN — Gromph’s outer sanctum infiltration occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A219] BEGUN — Yochlol confrontation occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A220] BEGUN — Wand of Orcus claimed occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A221] BEGUN — Heroic sacrifice opportunity occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking.txt]: - [A222] BEGUN — Demon sortie encounters occurred in prior sessions [ch 067 / tracking.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A298] BEGUN — Daz / Yvenne scholar arc ongoing; no new sittings in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A299] BEGUN — Zalthir / Khell-Vire scholar arc ongoing; no new sittings in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A300] BEGUN — Thorin / Philemon scholar arc ongoing; no new phases in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A301] BEGUN — Gyrgum / Vareth scholar arc ongoing; no new stations in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A302] BEGUN — Glabbagool’s question ongoing; no resolution in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A305] BEGUN — Daral rescue occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A306] BEGUN — Kalan missing occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A307] BEGUN — Alkrist arrest occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A308] BEGUN — Moziqodo binding occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A309] BEGUN — Daz / Yvenne Fourth-Seat synthesis investigation ongoing [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A310] BEGUN — Daz / Yvenne Vaelissa name and deadline occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A311] BEGUN — Thorin / Philemon Layer 2 Brysis reveal occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A312] BEGUN — Gyrgum / Vareth unsigned sting occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A313] BEGUN — Glabbagool Shadow Apprentice unlock occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A314] SHOWN — Candlekeep gates arrival occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A315] BEGUN — Refectory dinner with Janussi occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A316] BEGUN — Whispering Dome visit occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A317] BEGUN — Infernal Fortress interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A318] BEGUN — Janussi’s chamber investigation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A319] BEGUN — Southern Dining Hall search occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A320] BEGUN — Bath House poisoning occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A321] BEGUN — Founder’s Court interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A322] BEGUN — Oak Tree Apothecary evidence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A323] BEGUN — Kitchens witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A324] BEGUN — Erudite Outfitters cloak evidence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A325] BEGUN — Drakonoikos interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A326] BEGUN — Reader’s Tower death scene occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A327] BEGUN — Immortal Chambers interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A328] BEGUN — Sea Warden’s Tower check-in occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A329] BEGUN — Bell Tower cells occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A330] BEGUN — Cursed Tower incidents occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A331] BEGUN — Pont de Paramours disappearance occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A332] BEGUN — Oval Theatre tournament occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A336] BEGUN — Melodrome / Jook’s Box occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A337] BEGUN — Jewel of the Styx encounter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A340] BEGUN — Lava chamber occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A341] BEGUN — Vault B2 confrontation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A342] BEGUN — Vault B3 chamber occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A343] BEGUN — Vault tower rocket lever not pulled in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A344] BEGUN — Janussi first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A345] BEGUN — Janussi death occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A346] BEGUN — Bookwyrm first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A347] BEGUN — Bookwyrm Teles sighting occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A348] BEGUN — Bookwyrm confrontation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A349] BEGUN — Bookwyrm death occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A350] BEGUN — Kalan first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A351] BEGUN — Kalan second key handoff occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A352] BEGUN — Kalan farewell occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A353] BEGUN — Kalan disappearance occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A354] BEGUN — Sylvira Sashenstar first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A355] BEGUN — Sylvira prime suspect status occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A357] BEGUN — Sylvira dispel of Moziqodo’s binding occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A358] BEGUN — Sylvira survival and status occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A359] BEGUN — Daral first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A360] BEGUN — Daral poisoning discovery occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A361] BEGUN — Daral fate determined in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A362] BEGUN — Daral key witness testimony occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A363] BEGUN — Fheminor first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A364] BEGUN — Fheminor “Bookwyrm was not surprised” revelation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A365] BEGUN — Fheminor appointment as Keeper occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A366] BEGUN — A'lai first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A367] BEGUN — A'lai interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A368] BEGUN — A'lai sapphire smash and escape occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A370] BEGUN — Alkrist first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A371] BEGUN — Alkrist interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A372] BEGUN — Alkrist arrest or confession occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A373] BEGUN — Fembris first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A374] BEGUN — Fembris rooftop confession occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A375] BEGUN — Tadric first contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A376] BEGUN — Tadric flight assistance occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A377] BEGUN — Tadric acting Gatewarden appointment occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A378] BEGUN — Hollypocket witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A379] BEGUN — Sprig Summerfoot witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A380] BEGUN — Leuwin witness occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A381] BEGUN — Teles Ahvoste interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A382] BEGUN — Kazryn Nyantani interview occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A383] BEGUN — Khell-Vire closing letter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A384] BEGUN — Philemon sealed letter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A385] BEGUN — Vareth final stations occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A386] BEGUN — Yvenne third sitting occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A387] BEGUN — Yvenne Vaelissa name delivery occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A388] BEGUN — Yvenne Fourth-Seat synthesis occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A389] BEGUN — Inda emergence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A391] BEGUN — Moziqodo first encounter occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A392] BEGUN — Moziqodo binding break occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A393] BEGUN — Moziqodo fate resolution occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A395] BEGUN — Manshoon direct confrontation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A396] BEGUN — Manshoon escape occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A397] BEGUN — Glabbagool bad night occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A398] BEGUN — Glabbagool Shadow Apprentice status confirmed in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A399] BEGUN — Eldeth letter delivered in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A400] BEGUN — Brevin Sloobludop incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A401] BEGUN — Brevin six-pointed star incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A402] BEGUN — Marin six-pointed star incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A403] BEGUN — Jimjar / Callarduran prophecy activation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A404] BEGUN — Five Books, Five Questions established in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A405] BEGUN — Endless Chant fragment heard in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A406] BEGUN — Janussi murder forensic reveals occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A407] BEGUN — Two “Sylvira” figures revelation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A408] BEGUN — Bookwyrm as cover-up identified in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A409] BEGUN — Alkrist as killer identified in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A410] BEGUN — Disguise rosetta cracked occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A411] BEGUN — Wards drop hallucination occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A415] BEGUN — Echo 1 activated in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A416] BEGUN — Echo 2 activated in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A418] BEGUN — Echo 4 activated in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A419] BEGUN — Book of Vile Darkness fate determined in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A420] BEGUN — Vault tower rocket lever not pulled in this chunk [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A421] BEGUN — Candlekeep institutional restructuring occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A422] BEGUN — Party named guest seekers occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A425] BEGUN — Daz first sinus-pressure moment occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A426] BEGUN — Yvenne named Daz’s sensitivity in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A427] BEGUN — Marin quill incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A428] BEGUN — Brevin Sloobludop recitation occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A429] BEGUN — Brevin bedclothes incident occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A430] BEGUN — Endless Chant stoppage occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A431] BEGUN — Ward-drop vision sequence occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A432] BEGUN — Glabbagool Juiblex contact occurred in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A433] BEGUN — Echo 1 prophecy named surface contamination in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] invalid-citation [ch 067 / tracking_candlekeep_murders.txt]: - [A434] BEGUN — Daz and Yvenne field-perception expertise confirmed in prior sessions [ch 067 / tracking_candlekeep_murders.txt].
+- [## Audit] uncited: - [A444] (none)
+- [## Audit] uncited: - [A445] (none)
+- [## Audit] uncited: - [A446] (none)
+- [## Audit] uncited: - [A447] (none)
+- [## Audit] uncited: - [A448] (none)
+- [## Audit] uncited: - [A449] (none)
+- [## Audit] uncited: - [A450] (none)
+
+## Chunk 068-068 — 22 dropped
+- [## Events] quoted-span-not-found “The Hearth”: - Daz answers the first riddle correctly: “The Hearth” is the only refuge for flame in Candlekeep `[ch 068 / 068.03]`.
+- [## Threads] quoted-span-not-found “dust of Mechanus”: - [OPENED] **The Mechanist Tools and riddle line 4** — The tools from the House of Mechanus were used to activate the bridge, but whether they satisfy the cryptogram’s requirement for “dust of Mechanus” remains unresolved `[ch 068 / items; ch 068 / npcs]`.
+- [## NPC Status] malformed-row: - Glabbagool | Alive | With party | Amused and philosophical, accompanies fall with delight `[ch 068 / npcs]`
+- [## NPC Status] malformed-row: - Edvaldo Sedanur | Alive | With party | Calm, academic, unexposed doppelgänger; claims High Tower height is “over 500 feet” `[ch 068 / npcs]`
+- [## NPC Status] malformed-row: - Iron Owlbear Guardian | Alive | In Obsidian Tower, first chamber | Completed its trial, neutral, ready to comment on combat `[ch 068 / npcs]`
+- [## NPC Status] malformed-row: - Miirym, the Sentinel Wyrm | Alive | In lava cavern | Grouchy, spectral, bound as witness; widened anti-magic field boon banked `[ch 068 / npcs]`
+- [## NPC Status] malformed-row: - Manshoon (Simulacrum) | Alive | In Obsidian Tower, lower chamber | Calm, civilized, cast *Mirror Image*, took 13 psychic damage, has unspent *Counterspell* `[ch 068 / npcs]`
+- [## World] quoted-span-not-found “tear petitioners to shreds”: - [NPC] **Iron Owlbear Guardian** — Sentient iron statue that tests visitors with three riddles; has been waiting to “tear petitioners to shreds”; replaced a previous one destroyed by Manshoon `[ch 068 / npcs]`
+- [## Party] uncited: - The party is located in the lower chamber of the Obsidian Tower, on the bridge over the lava lake, directly facing Manshoon, who is surrounded by *Mirror Image* duplicates.
+- [## Party] uncited: - Party level: 9.
+- [## Party] uncited: - The party’s group name is not stated; they are referred to as “seekers” by the guardian and “Reader and witnesses” by Miirym.
+- [## Party] uncited: - Thorin: Carries Dawnbringer, which reacted to the fall with “Not this again!”; preparing to act in the next round of combat.
+- [## Party] uncited: - Zalthir: Used his dragonborn flight ability to catch Thorin mid-fall; carries a potion of flying as backup; remains with the party.
+- [## Party] uncited: - Gyrgum: Verified as the Reader by Miirym; his devotion to Bahamut impressed the dragon; chose the anti-magic field boon; has not cast spells since entering the anti-magic zone.
+- [## Party] uncited: - Daz: Moved into the ten-foot anti-magic field, rendering him unable to cast; launched *Phantasmal Killer* at Manshoon, dealing 13 damage; strategy is to lure Manshoon into the field.
+- [## Party] uncited: - Glabbagool: Remains with the party; philosophical throughout the descent; unharmed.
+- [## Party] uncited: - Edvaldo Sedanur: Still with the party; unexposed doppelgänger; contributed the “over 500 feet” answer to the riddle.
+- [## Party] uncited: - The party’s next action is to engage Manshoon in combat, using ranged attacks and the anti-magic field to neutralize his spellcasting; Thorin is about to take his turn.
+- [## Audit] quoted-span-not-found "Bookwyrm was not surprised": - [A364] BEGUN — Fheminor — "Bookwyrm was not surprised" revelation — Resolved prior `[ch 068 / 068.05]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A405] BEGUN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") — Heard prior `[ch 068 / 068.05]`
+- [## Audit] quoted-span-not-found "mother voice": - [A432] BEGUN — Glabbagool — Juiblex "mother voice" contact (Session 5) — Contact occurred prior `[ch 068 / 068.05]`
+- [## Audit] uncited: - [A122] BEGUN — Zilchyn Q'Leptin — kleptomaniac drow mage, first contact — Not
+
+## Chunk 069-069 — 1 dropped
+- [## Party] outside-chunk [ch 069 / end]: - The group’s name remains unspoken but functions as a cohesive adventuring unit. [ch 069 / end]
+
+## Chunk 070-070 — 53 dropped
+- [## NPC Status] malformed-row: - Manshoon (simulacrum) | Dead | Lava pit | — `[ch 070 / 070.02; ch 070 / npcs]`
+- [## NPC Status] malformed-row: - Edvaldo | Missing | Toward anti-magic barrier | Hostile `[ch 070 / 070.03; ch 070 / npcs]`
+- [## NPC Status] malformed-row: - Alaundo | Unknown | — | — `[ch 070 / npcs]`
+- [## NPC Status] malformed-row: - Vecna | Unknown | — | — `[ch 070 / npcs]`
+- [## Party] uncited: - The party is in the Inner Book Chamber beneath Candlekeep, directly after opening the final door and acquiring the Book of Vile Darkness.
+- [## Party] quoted-span-not-found “Guest Seekers of the Avowed,”: - They are known as the “Guest Seekers of the Avowed,” having earned Inner Ward access `[ch 070 / 070.04]`.
+- [## Party] uncited: - Daz has the Robe of the Archmagi in his possession and will attune to it at the next long rest; he is currently using Mage Hand to manipulate the Book of Vile Darkness and has resisted its corruption.
+- [## Party] uncited: - Daz has received cryptic information about the Underdark from the Book of Vile Darkness, though its source is untrustworthy.
+- [## Party] uncited: - Gyrgum secured the four remaining prophecy crystals and is now their custodian.
+- [## Party] uncited: - Zalthir killed the Manshoon simulacrum and carried him into the lava, accepting the risk of triggering the glyphs; he now has the reputation of a reckless, decisive warrior.
+- [## Party] uncited: - Thorin used Dawnbringer to frighten Edvaldo and blocked his path to the crystals; the sword remains displeased with the chaos.
+- [## Party] uncited: - The party intends to flee Candlekeep before the surviving Avowed Readers arrive, but they are now burdened with the Book of Vile Darkness and the knowledge that Manshoon will hunt them.
+- [## Party] uncited: - They are aware that their next move must be rapid and secretive, and that the Book’s influence on Daz is an ongoing danger.
+- [## Audit] quoted-span-not-found "Sylvira": - [A12] SHOWN — Two "Sylvira" figures — dual-timeline disguise revelation assembled `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "mother voice": - [A12] SHOWN — Glabbagool — Juiblex "mother voice" contact (Session 5) `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] quoted-span-not-found "many-faced man / metal hand": - [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [## Audit] uncited: - [A12] SHOWN — Endless Chant — first complete stoppage (
+

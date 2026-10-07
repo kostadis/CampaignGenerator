@@ -1,0 +1,144 @@
+## Events
+- The party arrives in Daggerford, noting an unsettling quiet among the townsfolk, and settles at the River Shining Tavern for the night. `[ch 056 / 056.01]`
+- In the village square, the party examines a bronze monument to Travis Houlin, a paladin of Bahamut who died fighting the Cult of the Dragon, and reads its Dwarven inscription "The move is yours" and the Common note about Milo Goodbarrel. `[ch 056 / 056.01]`
+- The local village priest sells pewter reproductions of Travis’s hand, identifies as a "pure Bahamutian," and justifies the Stroudite inscription as a gift, prompting Gyrgum to donate a gold piece and receive a medallion. `[ch 056 / 056.01]`
+- Maerith of the Ford approaches the party at the River Shining Tavern, pleading for help with her seven-year-old daughter Elin, who has been silent for six days and draws the same shape while speaking only in sleep. `[ch 056 / 056.02]`
+- Daz and Gyrgum fail medicine checks to diagnose Elin; Dawnbringer casts lesser restoration through Thorin, causing Elin to speak briefly: "The wells are not wells anymore," before falling silent again. `[ch 056 / 056.02]`
+- The party concludes Elin’s affliction is interior madness, not a disease, and connects it to Underdark corruption spreading to the surface. `[ch 056 / 056.02]`
+- Daz notices a tenuous connection between Elin’s condition and his own growing pressure headache; Gyrgum’s medicine check (23) confirms the link, though he cannot name it. `[ch 056 / 056.02]`
+- The party travels to Beregost and stays at the Burning Wizard Inn, where the gnome innkeeper Festrum recounts the story of a wizard burned alive during a dragon cult uprising and points to the permanent soot mark on the wall: "The wall remembers." `[ch 056 / 056.03]`
+- A traveling bard performs a four-verse song about a Kenku thief who "learned to steal no more," with the inn singing the chorus "Black Hood." `[ch 056 / 056.03]`
+- Gyrgum gives the bard a silver piece and requests a song about Stroud; she sings a love song about the chess game, which Gyrgum dismisses as "the usual claptrap." `[ch 056 / 056.03]`
+- Daz observes a young human scholar chanting with a syncopated cadence identical to that of Eldred and the Field Ward preacher; he rolls Investigation (23) and records the chant for Candlekeep. `[ch 056 / 056.03]`
+- Thorin sits by the sea for the first time, reflecting with Dawnbringer that "Life takes you in weird directions... you just gotta go with it." `[ch 056 / 056.03]`
+- Zalthir meditates on the inn’s roof and finds unexpected peace, reflecting on monk lessons he had forgotten. `[ch 056 / 056.03]`
+- The party arrives at Candlekeep the next morning along the Way of the Lion; Daz’s pressure headache intensifies visibly as they approach. `[ch 056 / 056.04]`
+- Bookwyrm, the dragonborn First Reader, assigns each party member a mentor: Daz to Sister Yvenne, Zalthir to Brother Khell-Vire, Thorin to Master Archivist Philemon, and Gyrgum to Vareth. `[ch 056 / 056.04]`
+- The Gatewarden Kalan Strongbranch is summoned regarding the shrunken House T’sarran spy in the bag of holding; he explains Candlekeep’s policy of holding but not keeping prisoners, and leaves the decision to the party. `[ch 056 / 056.04]`
+- Glabbagool describes his daily routine with the spy: she attacks, he expands to trap her, he tries to teach her meditation, and they talk — "We've become great friends!" `[ch 056 / 056.04]`
+- Zalthir confirms Glabbagool’s prisoner-watch is pre-monk training; Glabbagool commits to the task with all six pseudo-eyes fixed on the spy. `[ch 056 / 056.04]`
+- The party decides to leave the spy under Glabbagool’s care. `[ch 056 / 056.04]`
+- Zalthir meets Brother Khell-Vire in the Echoing Hall, who presents a note reading "Zalthir, the Underdark, until the Bone King sings" and sends him to the Trial of the Broken Mirror, saying, "I will not be there. This is your work, not mine." `[ch 056 / 056.05]`
+- Zalthir undergoes a martial trial with a blind half-elf monk, failing acrobatics (3), athletics (1), and stealth (11), but lands a powerful strike (30 to hit) on the monk as he walks away. `[ch 056 / 056.05]`
+- The monk challenges Zalthir to shadow step and smash a thrown brick mid-air; Zalthir succeeds with a 29, shattering it completely. `[ch 056 / 056.05]`
+- The monk acknowledges Zalthir’s forms are wrong but his combination of shadow step and strike is "something special that redeemed everything else." `[ch 056 / 056.05]`
+- Zalthir demonstrates his shadow tentacles and eldritch tattoo; the monk is unimpressed but agrees the fusion of those elements is the next frontier. `[ch 056 / 056.05]`
+- A xenobiology sage asks if a "mindless digestive system" can achieve enlightenment; Zalthir defends Glabbagool’s intelligence and progress, earning a vial of Resonant Slime. `[ch 056 / 056.05]`
+- Master Kenshi teaches Zalthir one specialized shadow technique; Zalthir selects option C. `[ch 056 / 056.05]`
+- Thorin is brought to Master Archivist Philemon, who initially treats Dawnbringer as a "specimen" until Thorin corrects him: "This is my friend Dawnbringer." `[ch 056 / 056.06]`
+- Philemon identifies Dawnbringer as a late Netherese sun-worship artifact that suffered millennia of arcane stress from darkness exposure. `[ch 056 / 056.06]`
+- Philemon asks Dawnbringer if the corpse she was found with was her wielder; she falters and goes silent. `[ch 056 / 056.06]`
+- Philemon reframes her need: "She needs to remember what daylight feels like without needing to fight, and then when she's ready and you are willing, she needs to grieve. The first work is light. The second work is mourning." `[ch 056 / 056.06]`
+- Thorin and Dawnbringer are effectively enrolled in a two-phase therapeutic process. `[ch 056 / 056.06]`
+- Daz meets Sister Yvenne in the Hall of Divination and tells her everything: his amnesia, Underdark escape, mercenaries, and worsening headache. `[ch 056 / 056.07]`
+- Yvenne explains drow noble house politics: betrayal is rewarded if it strengthens Lolth’s web, and failure to exterminate a rival house results in the attacker’s destruction. `[ch 056 / 056.07]`
+- She recounts a story of a house that left a "blithering idiot child" alive, leading to the attacker’s entire house being torn to the ground, leaving a black puddle. `[ch 056 / 056.07]`
+- Yvenne reads a list of extinct houses: second, fourth (marked "struck"), eleventh, and twenty-third seats. `[ch 056 / 056.07]`
+- Daz rolls Investigation (20) and notices "struck" implies censorship, not elimination. `[ch 056 / 056.07]`
+- Yvenne admits she cannot speak of one house in that room because "the public record is sealed and I am today the public record." `[ch 056 / 056.07]`
+- Daz requests the full list of houses; Yvenne provides a document where "struck" appears again, and notes the fourth seat held ritual archive privileges, making its erasure "very political and expensive." `[ch 056 / 056.07]`
+- Daz examines a 200-year-old heraldry book and finds a mechanically razored appendix — cut with a razor, not worn — referencing "Daz'issin (lit. 'small shadow')." `[ch 056 / 056.07]`
+- Yvenne explains "Daz'issin" is a softening name mothers used for boys they wanted to live, and houses that used it rarely survived. `[ch 056 / 056.07]`
+- Daz asks if his name might be connected; Yvenne says it’s unlikely, as the houses are gone, but he pushes: "But what if they weren't successfully all gone?" `[ch 056 / 056.07]`
+
+## Concluded
+- The party’s journey from the Silver Marches to Candlekeep concludes with their arrival at the fortress-library. `[ch 056 / 056.04]`
+- The investigation into Elin’s affliction concludes with the party recognizing it as interior madness linked to Underdark corruption, not a conventional illness. `[ch 056 / 056.02]`
+- The party’s decision regarding the shrunken House T’sarran spy concludes with them leaving her in Glabbagool’s care. `[ch 056 / 056.04]`
+- Zalthir’s Trial of the Broken Mirror concludes with his successful brick-smash and selection of specialized shadow technique option C. `[ch 056 / 056.05]`
+- Thorin and Dawnbringer’s artifact assessment concludes with their enrollment in a two-phase therapeutic process: light, then mourning. `[ch 056 / 056.06]`
+- Daz’s inquiry into his past concludes with the discovery of the razored appendix and the name "Daz'issin," and his realization that records were deliberately erased. `[ch 056 / 056.07]`
+
+## Threads
+- [OPENED] **The "struck" fourth seat of Menzoberranzan** — Daz discovers the term "struck" used to describe the extinction of a drow house, implying political censorship rather than destruction; the fourth seat’s ritual archive privileges make its erasure significant [ch 056 / 056.07]  
+- [OPENED] **Daz'issin — the softening name** — A footnote in a razored heraldry book references "Daz'issin," a name mothers used for sons they hoped would survive; Daz suspects it may be his true name and that his lineage was deliberately erased [ch 056 / 056.07]  
+- [OPENED] **The spreading surface madness** — Elin’s condition and Daz’s headache are linked to a creeping madness from the Underdark; the phrase "The wells are not wells anymore" and the syncopated chant observed in Beregost suggest it is spreading beyond the Underdark [ch 056 / 056.02; ch 056 / 056.03]  
+- [OPENED] **The Endless Chant** — Daz identifies the same syncopated chant pattern in the Beregost scholar, Eldred, and the Field Ward preacher; the chant is later heard on the wind approaching Candlekeep, suggesting it is a widespread, possibly ritualistic corruption [ch 056 / 056.03; ch 056 / 056.07]  
+- [OPENED] **Glabbagool’s pre-monk training** — Glabbagool’s role as jailer to the drow spy is confirmed by Zalthir as pre-monk training; his cheerful devotion and the spy’s resistance create an unexpected dynamic that may evolve [ch 056 / 056.04; ch 056 / 056.05]  
+- [OPENED] **Dawnbringer’s therapeutic journey** — Philemon outlines a two-phase recovery for Dawnbringer: remembering daylight without fighting, then grieving; the sword’s silence after being asked about her wielder indicates unresolved trauma [ch 056 / 056.06]  
+- [OPENED] **The Bone King’s song** — A cryptic note on Khell-Vire’s desk reads "Zalthir, the Underdark, until the Bone King sings"; neither Zalthir nor Khell-Vire understand its meaning, but it is tied to Zalthir’s trial and unresolved past [ch 056 / 056.05]  
+- [OPENED] **The six-pointed star** — Elin draws the same shape repeatedly; the same symbol is noted on charcoal rubbings from Daggerford and referenced in the Underdark as the Black-Banner Five marker; its meaning and origin are unknown [ch 056 / 056.02; ch 056 / 056.07]  
+- [OPENED] **The sealed records of Candlekeep** — Sister Yvenne states she cannot speak of one house because the public record is sealed; Daz realizes Candlekeep itself is complicit in erasing knowledge [ch 056 / 056.07]  
+
+## NPC Status
+- Maerith of the Ford | Alive | Daggerford | Desperate, seeking help for her daughter [ch 056 / 056.02]  
+- Elin | Alive | Daggerford | Silent, mentally twisted by an interior force [ch 056 / 056.02]  
+- The Village Priest | Alive | Daggerford | Proudly "pure Bahamutian," pragmatic about Stroudite inscriptions [ch 056 / 056.01]  
+- Festrum | Alive | Beregost | Gnome innkeeper who believes "the wall remembers" [ch 056 / 056.03]  
+- The Bard | Alive | Beregost | Traveling performer who sings of Kenku and Stroud [ch 056 / 056.03]  
+- The Human Scholar | Alive | Beregost | Chanting with syncopated wrongness; Daz records his pattern [ch 056 / 056.03]  
+- Bookwyrm | Alive | Candlekeep | Dragonborn First Reader, unbothered by jokes, assigns mentors [ch 056 / 056.04]  
+- Kalan Strongbranch | Alive | Candlekeep | Gatewarden who explains Candlekeep’s prisoner policy and leaves the spy’s fate to the party [ch 056 / 056.04]  
+- House T'sarran Spy | Alive | Candlekeep | Miniature drow, furious, imprisoned in Glabbagool’s care; constantly tries to kill him [ch 056 / 056.04]  
+- Glabbagool | Alive | Candlekeep | Sentient grey ooze, now jailer of the drow spy; claims they are "great friends" [ch 056 / 056.04; ch 056 / 056.05]  
+- Brother Khell-Vire | Alive | Candlekeep | 200-year-old half-elf ex-shadow monk, wears faded under-robe, gives Zalthir cryptic note and trial [ch 056 / 056.05]  
+- Master Kenshi | Alive | Candlekeep | Blind half-elf monk who tests Zalthir, acknowledges his unique combat style [ch 056 / 056.05]  
+- Master Archivist Philemon | Alive | Candlekeep | Clinical specialist in sentient artifacts; begins therapy with Dawnbringer [ch 056 / 056.06]  
+- Sister Yvenne | Alive | Candlekeep | Keeper of public record; reveals sealed drow house records and the name "Daz'issin" [ch 056 / 056.07]  
+
+## World
+- [LOCATION] **Daggerford** — A quiet town where townsfolk move cautiously; features a bronze monument to Travis Houlin funded by the Metalworkers Guild, possibly with Stroud-school sponsorship [ch 056 / 056.01]  
+- [LOCATION] **River Shining Tavern** — The inn in Daggerford where the party stays and encounters Maerith and Elin; the priest sells pewter hand medallions here [ch 056 / 056.01; ch 056 / 056.02]  
+- [LOCATION] **Beregost** — The last meaningful stop before Candlekeep; home to the Burning Wizard Inn, where Thorin first sees the sea [ch 056 / 056.03]  
+- [LOCATION] **The Burning Wizard Inn** — Named for a wizard burned alive during a dragon cult uprising; the soot mark on the south wall is preserved as a memorial [ch 056 / 056.03]  
+- [LOCATION] **Way of the Lion** — The cliffside road to Candlekeep; the pressure in Daz’s head intensifies along this path [ch 056 / 056.04]  
+- [LOCATION] **Candlekeep** — A massive fortress-library that holds prisoners in antimagic cells but does not keep them; instead, it exiles offenders with a warning [ch 056 / 056.04]  
+- [LOCATION] **The Atheneum (Echoing Hall)** — Houses Khell-Vire’s office and the Shadow Discipline Lineage Records; Zalthir is assigned here [ch 056 / 056.05]  
+- [LOCATION] **Sea Warden's Tower** — Site of Zalthir’s Trial of the Broken Mirror; hosts the blind monk’s martial tests [ch 056 / 056.05]  
+- [LOCATION] **Hall of Divination** — Part of the Arcanium; where spectral mage hands fetch tomes and Sister Yvenne consults with Daz [ch 056 / 056.07]  
+- [ITEM] **Travis's Hand Medallion** — A pewter reproduction of the monument in Daggerford, sold to raise donations for the Order of the Gauntlet; Gyrgum owns one [ch 056 / 056.01]  
+- [ITEM] **Dawnbringer** — A sentient sun-sword of late Netherese origin; cannot be polished; requires therapeutic recovery: remembering daylight, then grieving [ch 056 / 056.06]  
+- [ITEM] **Vial of Resonant Slime** — A biological sample given to Zalthir by a xenobiology sage after he defends Glabbagool’s intelligence; Glabbagool is pleased [ch 056 / 056.05]  
+- [ITEM] **Geography and Cities, Menzoberranzan, Pillars of Woe** — A 200-year-old heraldry book with a mechanically razored appendix; contains the footnote "Daz'issin" [ch 056 / 056.07]  
+- [ITEM] **Note of the Bone King** — A cryptic note on Khell-Vire’s desk: "Zalthir, the Underdark, until the Bone King sings"; origin unknown [ch 056 / 056.05]  
+- [THREAT] **The spreading surface madness** — A psychological corruption linked to the Underdark is manifesting in surface dwellers; Elin, the scholar, Eldred, and the Field Ward preacher all show the same symptoms [ch 056 / 056.02; ch 056 / 056.03]  
+- [FACTION] **Candlekeep** — Maintains a policy of exile over imprisonment; its public records are curated and sometimes deliberately sealed by authority [ch 056 / 056.04; ch 056 / 056.07]  
+- [NPC] **Sister Yvenne** — Serves as the public record of Candlekeep; her silences and precise body language indicate she knows more than she can say about drow history [ch 056 / 056.07]  
+- [NPC] **Glabbagool** — A sentient grey ooze who underwent transformation from a gelatinous cube; now acts as a jailer and student of shadow monk philosophy [ch 056 / 056.04; ch 056 / 056.05]  
+- [NPC] **Bookwyrm** — The First Reader of Candlekeep; dragonborn sage who has heard all jokes about her name and is entirely unbothered [ch 056 / 056.04]  
+
+## Party
+- The party is currently located inside Candlekeep, having just arrived after traveling the Way of the Lion.  
+- The group has no official name stated.  
+- Level or rank is not stated, but the party has completed a major arc and is now in a scholarly phase.  
+- Daz has a Ring of Protection (AC and saving throw bonus), a Cloak of Elvenkind (drow version), and has learned his headache is linked to Underdark corruption; he now suspects his true name is Daz'issin and that his lineage was erased by drow politics; he intends to uncover the sealed records. `[ch 056 / 056.07]`  
+- Zalthir has received a vial of Resonant Slime, has been taught one specialized shadow technique (option C), and has confirmed Glabbagool’s pre-monk training is valid; he intends to refine his unique shadow-step-and-strike combination. `[ch 056 / 056.05]`  
+- Thorin has begun a two-phase therapeutic process with Dawnbringer: remembering daylight without fighting, then grieving; he is emotionally invested in her healing. `[ch 056 / 056.06]`  
+- Gyrgum has acquired a Travis’s Hand Medallion, and his faith is contrasted with Stroudite sympathies; he is now aware of the connection between the monument and the Underdark madness. `[ch 056 / 056.01]`  
+- The party intends to pursue their assigned mentorship paths: Daz with Yvenne, Zalthir with Khell-Vire, Thorin with Philemon, and Gyrgum with Vareth; they are preparing to investigate the sealed records and the spreading madness. `[ch 056 / 056.04]`  
+
+## Audit
+- [A230] SHOWN — Party acquired Order of the Gauntlet pewter Tarvis-hand medallion at Daggerford [ch 056 / 056.01]  
+- [A234] SHOWN — Elin the silent child — Gyrgum healing attempt (Daggerford) [ch 056 / 056.02]  
+- [A273] SHOWN — Pilgrim at corner table — Endless Chant verse error witnessed (Beregost) [ch 056 / 056.03]  
+- [A288] SHOWN — Endless Chant error — verse substitution witnessed (Beregost) [ch 056 / 056.03]  
+- [A289] SHOWN — Endless Chant — first heard on wind approaching Candlekeep (Way of the Lion) [ch 056 / 056.04]  
+- [A291] SHOWN — Stroud-school sponsorship of Tarvis monument — discovered (Daggerford) [ch 056 / 056.01]  
+- [A292] BEGUN — Drow refugee in Waterdeep — Sleeping Snake fence mention (banked thread) [ch 056 / 056.07]  
+- [A300] BEGUN — Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C) [ch 056 / 056.06]  
+- [A301] BEGUN — Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10) [ch 056 / 056.01]  
+- [A309] BEGUN — Daz / Yvenne — Fourth-Seat synthesis investigation (DC 20 roll) [ch 056 / 056.07]  
+- [A310] BEGUN — Daz / Yvenne — Vaelissa T'sarran name and Bell Tower deadline [ch 056 / 056.07]  
+- [A386] BEGUN — Yvenne — third sitting and bloodline-pattern observation [ch 056 / 056.07]  
+- [A388] BEGUN — Yvenne — Fourth-Seat synthesis scene [ch 056 / 056.07]  
+- [A425] BEGUN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) [ch 056 / 056.04]  
+- [A426] BEGUN — Yvenne — names Daz's field-perception sensitivity [ch 056 / 056.07]  
+- [A434] BEGUN — Daz and Yvenne — field-perception expertise confirmed (post-arc) [ch 056 / 056.07]  
+- [A441] BEGUN — Polly Pocket released as messenger — OOTA endgame thread flagged [ch 056 / 056.04]  
+- [A442] BEGUN — Walking-permit medallions worn — wight-safe at Jewel of the Styx [ch 056 / 056.04]  
+- [A443] BEGUN — Second High Tower key held — door opened from outside (Session 6) [ch 056 / 056.04]  
+- [A223] BEGUN — Travelogue prelude — party arrival at Candlekeep gates [ch 056 / 056.04]  
+- [A224] SHOWN — Surface-madness gradient — party awareness established before Candlekeep [ch 056 / 056.02; ch 056 / 056.04]  
+- [A257] SHOWN — Candlekeep Emerald Door — outer ward arrival [ch 056 / 056.04]  
+- [A276] SHOWN — Bookwyrm — receives party at Candlekeep Emerald Door [ch 056 / 056.04]  
+- [A404] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established [ch 056 / 056.04]  
+- [A430] BEGUN — Endless Chant — first complete stoppage (Session 5 opening) [ch 056 / 056.03]  
+- [A432] BEGUN — Glabbagool — Juiblex "mother voice" contact (Session 5) [ch 056 / 056.04]  
+- [A433] BEGUN — Echo 1 — prophecy names surface-contamination field-effect directly [ch 056 / 056.02]  
+- [A435] BEGUN — Sylvira recruited (Path B) — dispel payoff and cryptogram shortcut [ch 056 / 056.04]  
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7) [ch 056 / 056.07]  
+- [A437] BEGUN — Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7) [ch 056 / 056.01]  
+- [A438] BEGUN — Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7) [ch 056 / 056.02]  
+- [A439] BEGUN — Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage [ch 056 / 056.05]  
+- [A440] BEGUN — Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8) [ch 056 / 056.04]  
+- (none)

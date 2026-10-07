@@ -1,0 +1,492 @@
+## Events
+- Daz used his spider familiar and Dancing Lights to create an illusion of Lolth’s essence being absorbed into himself, attempting to convince Asha Vandree of his divine connection [ch 050 / 050.01].
+- Glabbagool attempted to disguise himself as an invisible rock but failed due to blinking eyes and verbal slips, requiring constant reminders not to talk [ch 050 / 050.01; ch 050 / Memorable Moments].
+- Asha Vandree, though suspicious, interpreted Daz’s failed divinity claim as a test of her loyalty and began to view him as a potentially useful ally [ch 050 / 050.01; ch 050 / 050.02].
+- Daz abandoned the claim of being Lolth and instead presented himself as a powerful, spore-touched mage who had communed with the Spider Queen, successfully gaining Asha’s tentative trust [ch 050 / 050.02].
+- The party passed Glabbagool off as Daz’s ooze familiar, which impressed Asha Vandree [ch 050 / 050.01; ch 050 / 050.03].
+- Asha Vandree revealed that Ilvara, a former high priestess of Lolth, had been corrupted by Zuggtmoy’s influence through a magical mushroom artifact and was turning followers into sporewalkers [ch 050 / 050.02].
+- Asha explained her immunity to fungal spores: avoiding dust, staying beyond 20 feet of Ilvara, and eating only her own food [ch 050 / 050.02].
+- Asha requested the party kill Ilvara and destroy the Heart Fungus, offering Ilvara’s treasures as reward, though they technically belonged to her house [ch 050 / 050.02].
+- The party debated the risks of fungal infection and agreed to proceed with the assassination, with Daz noting they could betray Asha later [ch 050 / 050.02].
+- Gyrgum inscribed a Glyph of Warding (3rd level) on a bridge leading to the cavern, keyed to trigger on anyone approaching from Jorlan’s side [ch 050 / 050.03].
+- The party planned to use Dust of Suleiman on the Heart Fungus while Zalthir grappled Ilvara into the area of effect; Thorin prepared to engage Jorlan with Dawnbringer [ch 050 / 050.03].
+- Asha agreed to wait and rush in to defend the party from summoned sporewalkers once the assault began [ch 050 / 050.03].
+- Zalthir used Shadow Step to teleport to Ilvara, dealing 31 damage and grappling her [ch 050 / 050.04].
+- Ilvara used a legendary action to dissolve into a fungal patch and reappear elsewhere, escaping the grapple and screaming in fury [ch 050 / 050.04].
+- The Heart Fungus released a poisonous spore cloud (DC 15 Con), poisoning Zalthir [ch 050 / 050.04].
+- Thorin taunted Jorlan into charging directly into Gyrgum’s Glyph of Warding, triggering a massive explosion that dealt 21 damage to Jorlan and two sporewalkers, destroying one outright [ch 050 / 050.04; ch 050 / Memorable Moments].
+- Thorin engaged Jorlan in melee, striking him with Dawnbringer on a natural 20 for 14 damage, applying sap to give him disadvantage on his next attack [ch 050 / 050.04].
+- A sporewalker attacked Thorin, landing a hit for 5 damage [ch 050 / 050.04].
+- Gyrgum cast Dust of Suleiman centered on the Heart Fungus, dealing 20 damage [ch 050 / 050.04].
+- Daz cast a shaped 4th-level Fireball targeting Ilvara and her mushroom artifact, dealing 24 damage; Ilvara saved for half (12), and the mushroom also took 12 damage [ch 050 / 050.04].
+- The session ended mid-combat with Ilvara wounded, the Heart Fungus damaged, Jorlan severely hurt, and sporewalkers still active [ch 050 / 050.04].
+
+## Concluded
+- Daz’s deception of Asha Vandree concluded successfully when she accepted him as a powerful, delusional ally who had communed with Lolth [ch 050 / 050.02].
+- The party’s agreement with Asha Vandree to kill Ilvara and destroy the Heart Fungus concluded with a plan finalized and tactical positions set [ch 050 / 050.03].
+- The Glyph of Warding was successfully inscribed and placed on the bridge to ambush Jorlan [ch 050 / 050.03].
+- The ambush of Jorlan via the Glyph of Warding concluded with a successful detonation, killing one sporewalker and severely damaging Jorlan and the Heart Fungus [ch 050 / 050.04].
+
+## Threads
+- [OPENED] **Ilvara’s fungal corruption** — Ilvara, once a Lolth priestess, is now a corrupted servant of Zuggtmoy, wielding a magical mushroom conduit and commanding sporewalkers; the party has committed to killing her and destroying the artifact [ch 050 / 050.02].
+- [OPENED] **Heart Fungus as weapon** — A massive, sentient fungal entity in the cavern can lash out with tendrils and release poisonous spores; it is Ilvara’s anchor and must be destroyed to weaken her control [ch 050 / 050.02; ch 050 / 050.03].
+- [OPENED] **Ilvara’s mushroom artifact** — A small, corrupted mushroom serves as Zuggtmoy’s conduit; if not destroyed, another could claim it and restore Zuggtmoy’s influence [ch 050 / 050.02; ch 050 / items].
+- [OPENED] **Asha Vandree’s alliance** — Asha, a paranoid Lolth loyalist, has allied with the party to eliminate Ilvara; her trust is fragile and she may betray them later [ch 050 / 050.02; ch 050 / NPCs].
+- [OPENED] **Jorlan’s bitterness** — Jorlan, Ilvara’s ex-lover, remains uninfected but bitter; he was lured into Gyrgum’s trap and now lies wounded, potentially a future threat or pawn [ch 050 / 050.04; ch 050 / NPCs].
+- [OPENED] **Glabbagool as “familiar”** — The party successfully passed Glabbagool off as Daz’s ooze familiar to Asha, who is impressed; this ruse may continue to protect him [ch 050 / 050.01; ch 050 / 050.03].
+- [OPENED] **Zuggtmoy’s spore infection threat** — Asha claims the Heart Fungus’s spores cause only poisoning, not the “bride” infection, but her uncertainty (“I believe”) leaves doubt about the true danger [ch 050 / 050.03].
+- [ADVANCED] **Daz’s claimed communion with Lolth** — Daz initially claimed to be Lolth’s vessel, failed, then pivoted to claiming communion; Asha now believes he believes he’s connected, making him a useful but unstable ally [ch 050 / 050.01; ch 050 / 050.02].
+- [ADVANCED] **Party’s plan to destroy Ilvara** — The party’s initial plan to fireball the area was refined into a coordinated strike using Glyph, Dust of Suleiman, and Fireball; Zalthir’s grapple and Thorin’s taunt were successfully integrated [ch 050 / 050.03; ch 050 / 050.04].
+- [ADVANCED] **Zalthir’s grapple attempt** — Zalthir successfully grappled Ilvara and attempted to move her into the area of effect; she escaped via legendary action, but the attempt established a tactical pattern [ch 050 / 050.04].
+- [ADVANCED] **Daz’s Fireball shaping** — Daz used Sculpt Spells to shape the Fireball to spare allies and strike Ilvara and the mushroom; the partial success (12 damage each) confirms the tactic works under pressure [ch 050 / 050.04].
+
+## NPC Status
+- Asha Vandree | Alive | Fungal Altar | Cautiously allied with the party, sees them as tools against Ilvara; impressed by Daz’s “familiar” [ch 050 / NPCs; ch 050 / 050.04].
+- Ilvara | Alive | Fungal Altar | Severely wounded (31 from Zalthir, 12 from Fireball), escaped grapple, still commands sporewalkers and the Heart Fungus [ch 050 / NPCs; ch 050 / 050.04].
+- Jorlan | Alive | Fungal Altar | Severely wounded (21 from Glyph, 14 from Dawnbringer), sap applied, likely incapacitated or retreating [ch 050 / NPCs; ch 050 / 050.04].
+- Glabbagool | Alive | Fungal Altar | Passes as Daz’s ooze familiar; still struggles to remain silent and still [ch 050 / NPCs; ch 050 / 050.03].
+- Sporewalkers | Alive | Fungal Altar | Two remain active after the glyph explosion; one at 3 HP, others still obey Ilvara’s commands [ch 050 / NPCs; ch 050 / 050.04].
+- Heart Fungus | Alive | Fungal Altar | Damaged by Glyph (21) and Dust of Suleiman (20), still active and releasing spores [ch 050 / Locations; ch 050 / 050.04].
+
+## World
+- [LOCATION] **Fungal Altar** — A cavern dominated by the massive Heart Fungus, with shallow 3–4 foot pools, bridges, and randomly erupting blinding vents; Ilvara’s base of operations and the site of the current battle [ch 050 / Locations].
+- [LOCATION] **Underdark** — The party is deep in the Underdark, where unknown pursuers may follow them, and drow politics are treacherous; Asha warns of double-crosses [ch 050 / Locations; ch 050 / 050.03].
+- [NPC] **Asha Vandree** — A drow priestess loyal to Lolth, paranoid and unstable, avoids fungal spores by strict isolation; distrusts mages but respects apparent power [ch 050 / NPCs].
+- [NPC] **Ilvara** — Former high priestess of Lolth, corrupted by Zuggtmoy after visiting Neverlight Grove; now fungal, uses a mushroom artifact as a conduit, and can melt into fungal patches [ch 050 / NPCs].
+- [NPC] **Jorlan** — A drow warrior, Ilvara’s former lover, bitter and uninfected; one of only two drow in the cavern not turned into a sporewalker [ch 050 / NPCs].
+- [ITEM] **Ilvara’s Mushroom** — A small, corrupted mushroom serving as Zuggtmoy’s conduit; must be destroyed to break her influence; contaminated but potentially cleansable [ch 050 / items].
+- [ITEM] **Dawnbringer** — Thorin’s sentient sun-blade; used to strike Jorlan, applying sap to reduce his next attack’s accuracy [ch 050 / items].
+- [ITEM] **Glyph of Warding (explosive)** — A 3rd-level trap inscribed on a bridge, triggered by movement from Jorlan’s side, dealing 21 damage on failed DEX save [ch 050 / spells].
+- [ITEM] **Dust of Suleiman** — A 4th-level spell creating a 20-foot sphere of force damage (20 per turn, no save); used against the Heart Fungus [ch 050 / spells].
+- [ITEM] **Spider Familiar** — Daz’s familiar, used as part of the Lolth illusion; dismissed during the ruse to vanish into his body [ch 050 / items].
+- [THREAT] **Fungal infection** — The Heart Fungus releases spores causing poisoning (DC 15 Con); Asha claims it does not cause the “bride” infection, but her uncertainty leaves doubt [ch 050 / 050.03].
+- [THREAT] **Zuggtmoy’s influence** — Ilvara’s corruption and the mushroom’s survival mean Zuggtmoy’s power remains a threat; if the mushroom survives, another could claim it [ch 050 / 050.02].
+- [FACTION] **Lolth’s priesthood** — Drow clerics distrust mages who claim divine communion; Asha’s suspicion reflects this institutional tension [ch 050 / 050.01].
+- [FACTION] **Zuggtmoy’s “bride” heresy** — Ilvara follows this heretical cult, turning followers into fungal servants; Asha sees this as a betrayal of Lolth [ch 050 / 050.02].
+
+## Party
+- The party is in the Fungal Altar in the Underdark, mid-combat against Ilvara and the Heart Fungus [ch 050 / 050.04].
+- Group name: Not stated; operates as an ad hoc alliance with Asha Vandree.
+- Level: Not stated.
+- Daz — Successfully used illusion and deception to gain Asha’s trust; now claims communion with Lolth; cast a shaped 4th-level Fireball; retains spider familiar; no injuries noted; intends to finish Ilvara and secure the mushroom [ch 050 / 050.01; ch 050 / 050.04].
+- Zalthir — Used Shadow Step to grapple Ilvara; dealt 31 damage; poisoned by spores; flying 10 feet up; intends to re-engage Ilvara or assist allies [ch 050 / 050.04].
+- Thorin — Used Dawnbringer to strike Jorlan for 14 damage, applying sap; engaged in melee; has a light crossbow; intends to hold Jorlan off [ch 050 / 050.04].
+- Gyrgum — Cast Glyph of Warding (3rd level) and Dust of Suleiman; dealt 20 damage to the Heart Fungus; has one 4th-level slot remaining; intends to maintain concentration on Dust of Suleiman [ch 050 / 050.03; ch 050 / 050.04].
+- Glabbagool — Successfully passed off as Daz’s familiar; still struggles to stay silent and still; no injuries; intends to remain hidden [ch 050 / 050.03].
+- Next intent: Finish off Ilvara and the Heart Fungus; secure the mushroom artifact; assess whether to betray Asha Vandree; survive the spore-infested cavern [ch 050 / 050.02; ch 050 / 050.04].
+
+## Audit
+- [A76] SHOWN — Asha Vandree, junior priestess, was encountered and allied with the party to eliminate Ilvara [ch 050 / NPCs; ch 050 / 050.02].
+- [A73] SHOWN — Ilvara Mizzrym, drow commander, was confronted and attacked in the Fungal Altar [ch 050 / NPCs; ch 050 / 050.04].
+- [A99] SHOWN — Glabbagool, sentient gelatinous cube, was present and passed off as Daz’s familiar [ch 050 / NPCs; ch 050 / 050.03].
+- [A104] SHOWN — Zuggtmoy’s presence was confirmed through Ilvara’s corruption and the Heart Fungus [ch 050 / 050.02].
+- [A162] BEGUN — Drow pursuers level tracked: Asha and Jorlan are uninfected drow; unknown others may be following [ch 050 / Locations; ch 050 / 050.03].
+- [A154] BEGUN — Zuggtmoy’s fetid wedding attempt at Araumycos is referenced indirectly through Ilvara’s “bride” heresy, but not directly connected to Araumycos [ch 050 / 050.02].
+- [A100] BEGUN — Sovereign Phylo, myconid sovereign corrupted by Zuggtmoy, is mentioned in audit list but not referenced in this chunk [ch 050 / evidence].
+- [A138] BEGUN — Araumycos is referenced as Zuggtmoy’s domain in audit, but the party has not reached it [ch 050 / evidence].
+- [A144] BEGUN — Party awareness of demon lords loose in the Underdark is established through Zuggtmoy’s influence, but no other demon lords are mentioned [ch 050 / 050.02].
+- [A213] BEGUN — Infected area of Araumycos’s mind destroyed — not applicable; party has not reached Araumycos [ch 050 / evidence].
+- [A207] BEGUN — Sloobludop ruins — second visit — not applicable; party is in the Underdark, not Sloobludop [ch 050 / evidence].
+- [A14] BEGUN — Reach Menzoberranzan — party is not near Menzoberranzan [ch 050 / evidence].
+- [A12] BEGUN — Reach Gravenhollow — party is in the Fungal Altar, not Gravenhollow [ch 050 / evidence].
+- [A156] BEGUN — Dark heart talisman placed — not referenced; no talisman mentioned [ch 050 / evidence].
+- [A152] BEGUN — Vizeran's plan revealed — not referenced [ch 050 / evidence].
+- [A220] BEGUN — Wand of Orcus claimed — not referenced [ch 050 / evidence].
+- [A222] BEGUN — Demon sortie encounters — not referenced [ch 050 / evidence].
+- [A424] BEGUN — Gauntlgrym call confirmed — not referenced; party is in the Underdark, not en route to Gauntlgrym [ch 050 / evidence].
+- [A2] BEGUN — Return to the Underdark — second expedition — party is already in the Underdark, this is not a return [ch 050 / evidence].
+- [A1] BEGUN — Escape from Velkynvelve — party left Velkynvelve earlier; this is not a return [ch 050 / evidence].
+- [A160] BEGUN — Acquiring scavenged possessions in Velkynvelve — not referenced [ch 050 / evidence].
+- [A161] BEGUN — Escaping Velkynvelve via webs and pool — not referenced [ch 050 / evidence].
+- [A163] BEGUN — Drow pursuers final confrontation — not yet reached [ch 050 / evidence].
+- [A155] BEGUN — Juiblex crashes the wedding — not referenced [ch 050 / evidence].
+- [A211] BEGUN — Ooze spies attack Basidia’s group — not referenced [ch 050 / evidence].
+- [A208] BEGUN — Gracklstugh chaos — not referenced [ch 050 / evidence].
+- [A209] BEGUN — Neverlight Grove corruption — not referenced [ch 050 / evidence].
+- [A210] BEGUN — Velkynvelve — second visit — not referenced [ch 050 / evidence].
+- [A159] BEGUN — Final battle against Demogorgon — not referenced [ch 050 / evidence].
+- [A140] BEGUN — Demogorgon — Prince of Demons, final battle — not referenced [ch 050 / evidence].
+- [A139] BEGUN — Orcus — demon lord, presence in final battle — not referenced [ch 050 / evidence].
+- [A21] BEGUN — Obtain goristro heart — not referenced [ch 050 / evidence].
+- [A22] BEGUN — Obtain timmask mushrooms — not referenced [ch 050 / evidence].
+- [A23] BEGUN — Obtain demon lord blood or ichor — not referenced [ch 050 / evidence].
+- [A24] BEGUN — Eldeth Feldrun — return to Gauntlgrym — not referenced [ch 050 / evidence].
+- [A25] BEGUN — Shuushar — guide to Sloobludop — not referenced [ch 050 / evidence].
+- [A26] BEGUN — Stool — return to Neverlight Grove — not referenced [ch 050 / evidence].
+- [A27] BEGUN — Rumpadump — return to Neverlight Grove — not referenced [ch 050 / evidence].
+- [A28] BEGUN — Deliver Werz Saltbaron's gems — not referenced [ch 050 / evidence].
+- [A29] BEGUN — Droki delivery interception — not referenced [ch 050 / evidence].
+- [A30] BEGUN — Ylsa Henstak's investigation — not referenced [ch 050 / evidence].
+- [A31] BEGUN — Find Entémoch's Boon — not referenced [ch 050 / evidence].
+- [A32] BEGUN — Cleanse the Steadfast Stone — not referenced [ch 050 / evidence].
+- [A33] BEGUN — Encounter with the Pudding King — not referenced [ch 050 / evidence].
+- [A34] BEGUN — Battle for Blingdenstone — not referenced [ch 050 / evidence].
+- [A35] BEGUN — Burrow Warden Jadger's tasks — not referenced [ch 050 / evidence].
+- [A36] BEGUN — Retrieve Pelek's remains — not referenced [ch 050 / evidence].
+- [A37] BEGUN — Return Sladis Vadir — not referenced [ch 050 / evidence].
+- [A38] BEGUN — Return Rystia Zav — not referenced [ch 050 / evidence].
+- [A39] BEGUN — Locate Khalessa Draga — not referenced [ch 050 / evidence].
+- [A40] BEGUN — Activate or disable the Maze Engine — not referenced [ch 050 / evidence].
+- [A41] BEGUN — Xazax the Eyemonger — not referenced [ch 050 / evidence].
+- [A42] BEGUN — Zuggtmoy's fetid wedding — not referenced [ch 050 / evidence].
+- [A43] BEGUN — Fraz-Urb'luu's gem — not referenced [ch 050 / evidence].
+- [A44] BEGUN — Stonespeaker Hgraam audience — not referenced [ch 050 / evidence].
+- [A45] BEGUN — Velkynvelve — drow outpost, slave pen — not referenced [ch 050 / evidence].
+- [A46] BEGUN — Sloobludop — kuo-toa town — not referenced [ch 050 / evidence].
+- [A47] BEGUN — Gracklstugh — duergar city — not referenced [ch 050 / evidence].
+- [A48] BEGUN — Neverlight Grove — myconid colony — not referenced [ch 050 / evidence].
+- [A49] BEGUN — Blingdenstone — deep gnome settlement — not referenced [ch 050 / evidence].
+- [A50] BEGUN — Whorlstone Tunnels — not referenced [ch 050 / evidence].
+- [A51] BEGUN — Darklake — not referenced [ch 050 / evidence].
+- [A52] BEGUN — Gravenhollow — not referenced [ch 050 / evidence].
+- [A53] BEGUN — Araj — not referenced [ch 050 / evidence].
+- [A54] BEGUN — Mantol-Derith — not referenced [ch 050 / evidence].
+- [A55] BEGUN — Menzoberranzan — not referenced [ch 050 / evidence].
+- [A56] BEGUN — Wormwrithings — not referenced [ch 050 / evidence].
+- [A57] BEGUN — Vast Oblivium — not referenced [ch 050 / evidence].
+- [A58] BEGUN — Labyrinth — not referenced [ch 050 / evidence].
+- [A59] BEGUN — Gallery of Angels — not referenced [ch 050 / evidence].
+- [A60] BEGUN — Araumycos — not referenced [ch 050 / evidence].
+- [A61] BEGUN — Gauntlgrym — not referenced [ch 050 / evidence].
+- [A62] BEGUN — Sorcere — not referenced [ch 050 / evidence].
+- [A63] BEGUN — Yggmorgus — not referenced [ch 050 / evidence].
+- [A64] BEGUN — Overlake Hold — not referenced [ch 050 / evidence].
+- [A65] BEGUN — Cairngorm Cavern — not referenced [ch 050 / evidence].
+- [A66] BEGUN — Silken Paths — not referenced [ch 050 / evidence].
+- [A67] BEGUN — Oozing Temple — not referenced [ch 050 / evidence].
+- [A68] BEGUN — Lost Tomb of Khaem — not referenced [ch 050 / evidence].
+- [A69] BEGUN — Troglodyte Lair — not referenced [ch 050 / evidence].
+- [A70] BEGUN — Worm Nursery — not referenced [ch 050 / evidence].
+- [A71] BEGUN — Hook Horror Lair — not referenced [ch 050 / evidence].
+- [A72] BEGUN — Spiral of the Horned King — not referenced [ch 050 / evidence].
+- [A74] BEGUN — Jorlan Duskryn — drow elite warrior — shown as encountered [ch 050 / NPCs].
+- [A75] BEGUN — Shoor Vandree — Ilvara's lieutenant — not referenced [ch 050 / evidence].
+- [A77] BEGUN — Buppido — derro prisoner — not referenced [ch 050 / evidence].
+- [A78] BEGUN — Prince Derendil — quaggoth prisoner — not referenced [ch 050 / evidence].
+- [A79] BEGUN — Eldeth Feldrun — shield dwarf prisoner — not referenced [ch 050 / evidence].
+- [A80] BEGUN — Jimjar — deep gnome prisoner — not referenced [ch 050 / evidence].
+- [A81] BEGUN — Ront — orc prisoner — not referenced [ch 050 / evidence].
+- [A82] BEGUN — Sarith Kzekarit — drow prisoner — not referenced [ch 050 / evidence].
+- [A83] BEGUN — Shuushar the Awakened — kuo-toa prisoner — not referenced [ch 050 / evidence].
+- [A84] BEGUN — Stool — myconid sprout prisoner — not referenced [ch 050 / evidence].
+- [A85] BEGUN — Topsy and Turvy — svirfneblin twins — not referenced [ch 050 / evidence].
+- [A86] BEGUN — Ploopploopeen — kuo-toa archpriest — not referenced [ch 050 / evidence].
+- [A87] BEGUN — Bloppblippodd — kuo-toa archpriest — not referenced [ch 050 / evidence].
+- [A88] BEGUN — Demogorgon — demon lord, rise at Sloobludop — not referenced [ch 050 / evidence].
+- [A89] BEGUN — Shuushar — pacifist kuo-toa — not referenced [ch 050 / evidence].
+- [A90] BEGUN — Gorglak — corrupt duergar gate guard — not referenced [ch 050 / evidence].
+- [A91] BEGUN — Errde Blackskull — Stone Guard captain — not referenced [ch 050 / evidence].
+- [A92] BEGUN — Themberchaud — red dragon Wyrmsmith — not referenced [ch 050 / evidence].
+- [A93] BEGUN — Gartokkar Xundorn — Keeper of the Flame — not referenced [ch 050 / evidence].
+- [A94] BEGUN — Ylsa Henstak — duergar merchant — not referenced [ch 050 / evidence].
+- [A95] BEGUN — Droki — derro courier — not referenced [ch 050 / evidence].
+- [A96] BEGUN — Werz Saltbaron — duergar merchant — not referenced [ch 050 / evidence].
+- [A97] BEGUN — Stonespeaker Hgraam — stone giant elder — not referenced [ch 050 / evidence].
+- [A98] BEGUN — Narrak — derro savant cultist — not referenced [ch 050 / evidence].
+- [A101] BEGUN — Sovereign Basidia — myconid sovereign — not referenced [ch 050 / evidence].
+- [A102] BEGUN — Yestabrod — Circle of Masters leader — not referenced [ch 050 / evidence].
+- [A103] BEGUN — Xinaya — drow scout — not referenced [ch 050 / evidence].
+- [A105] BEGUN — Dorbo Diggermattock — Blingdenstone leader — not referenced [ch 050 / evidence].
+- [A106] BEGUN — Senni Diggermattock — Blingdenstone quartermaster — not referenced [ch 050 / evidence].
+- [A107] BEGUN — Kazook Pickshine — svirfneblin alchemist — not referenced [ch 050 / evidence].
+- [A108] BEGUN — Chipgrin Goldwhisker — wererat leader — not referenced [ch 050 / evidence].
+- [A109] BEGUN — Burrow Warden Jadger — ghost — not referenced [ch 050 / evidence].
+- [A110] BEGUN — The Pudding King — insane deep gnome — not referenced [ch 050 / evidence].
+- [A111] BEGUN — Bruenor Battlehammer — dwarf king — not referenced [ch 050 / evidence].
+- [A112] BEGUN — Lord Zelraun Roaringhorn — Harper representative — not referenced [ch 050 / evidence].
+- [A113] BEGUN — Sir Lanniver Strayl — Order of the Gauntlet representative — not referenced [ch 050 / evidence].
+- [A114] BEGUN — Morista Malkin — Emerald Enclave representative — not referenced [ch 050 / evidence].
+- [A115] BEGUN — Lord Eravien Haund — Lords' Alliance representative — not referenced [ch 050 / evidence].
+- [A116] BEGUN — Davra Jassur — Zhentarim representative — not referenced [ch 050 / evidence].
+- [A117] BEGUN — Ghazrim DuLoc — Zhentarim contact — not referenced [ch 050 / evidence].
+- [A118] BEGUN — Lorthuun — maimed beholder — not referenced [ch 050 / evidence].
+- [A119] BEGUN — Kinyel Druu'giir — drow assassin — not referenced [ch 050 / evidence].
+- [A120] BEGUN — Yantha Coaxrock — svirfneblin mage — not referenced [ch 050 / evidence].
+- [A121] BEGUN — Peebles — svirfneblin spy — not referenced [ch 050 / evidence].
+- [A122] BEGUN — Zilchyn Q'Leptin — kleptomaniac drow mage — not referenced [ch 050 / evidence].
+- [A123] BEGUN — Sladis Vadir — Emerald Enclave scout — not referenced [ch 050 / evidence].
+- [A124] BEGUN — Rystia Zav — Harper spy — not referenced [ch 050 / evidence].
+- [A125] BEGUN — Vizeran DeVir — drow archmage — not referenced [ch 050 / evidence].
+- [A126] BEGUN — Grin Ousstyl — Vizeran's apprentice — not referenced [ch 050 / evidence].
+- [A127] BEGUN — Karazikar — beholder of Vast Oblivium — not referenced [ch 050 / evidence].
+- [A128] BEGUN — Shedrak of the Eyes — beholder's thrall — not referenced [ch 050 / evidence].
+- [A129] BEGUN — Baphomet — demon lord — not referenced [ch 050 / evidence].
+- [A130] BEGUN — Yeenoghu — demon lord — not referenced [ch 050 / evidence].
+- [A131] BEGUN — Gash — gnoll servant — not referenced [ch 050 / evidence].
+- [A132] BEGUN — Quenthel Baenre — matron mother — not referenced [ch 050 / evidence].
+- [A133] BEGUN — Jarlaxle Baenre — Bregan D'aerthe leader — not referenced [ch 050 / evidence].
+- [A134] BEGUN — Hanne Hallen — young drow mage — not referenced [ch 050 / evidence].
+- [A135] BEGUN — Zhora Hallen — Dark Hunters leader — not referenced [ch 050 / evidence].
+- [A136] BEGUN — Khalessa Draga — Lords' Alliance spy — not referenced [ch 050 / evidence].
+- [A137] BEGUN — Juiblex — Faceless Lord — not referenced [ch 050 / evidence].
+- [A141] BEGUN — Drow prisoners escape Velkynvelve — not referenced [ch 050 / evidence].
+- [A142] BEGUN — Flight of demons distraction — not referenced [ch 050 / evidence].
+- [A143] BEGUN — Demogorgon's rise — not referenced [ch 050 / evidence].
+- [A145] BEGUN — Characters return to the surface world — not referenced [ch 050 / evidence].
+- [A146] BEGUN — Audience with Bruenor — not referenced [ch 050 / evidence].
+- [A147] BEGUN — Faction alliance negotiations — not referenced [ch 050 / evidence].
+- [A148] BEGUN — Arrival at Mantol-Derith — not referenced [ch 050 / evidence].
+- [A149] BEGUN — Fraz-Urb'luu's influence — not referenced [ch 050 / evidence].
+- [A150] BEGUN — Vizeran DeVir encountered — not referenced [ch 050 / evidence].
+- [A151] BEGUN — Gromph's ritual identified — not referenced [ch 050 / evidence].
+- [A153] BEGUN — Grin Ousstyl reveals Vizeran's intent — not referenced [ch 050 / evidence].
+- [A157] BEGUN — Demon lords drawn together — not referenced [ch 050 / evidence].
+- [A158] BEGUN — Demogorgon defeats remaining demon lords — not referenced [ch 050 / evidence].
+- [A164] BEGUN — Society of Brilliance members — not referenced [ch 050 / evidence].
+- [A165] BEGUN — Society of Brilliance with tridrone modrons — not referenced [ch 050 / evidence].
+- [A166] BEGUN — Hook Horror Hunt — not referenced [ch 050 / evidence].
+- [A167] BEGUN — Oozing Temple — not referenced [ch 050 / evidence].
+- [A168] BEGUN — Lost Tomb of Khaem — not referenced [ch 050 / evidence].
+- [A169] BEGUN — Silken Paths traversal — not referenced [ch 050 / evidence].
+- [A170] BEGUN — Yuk Yuk and Spiderbait — not referenced [ch 050 / evidence].
+- [A171] BEGUN — Fargas Rumblefoot — not referenced [ch 050 / evidence].
+- [A172] BEGUN — Kuo-toa day's catch — not referenced [ch 050 / evidence].
+- [A173] BEGUN — Rampaging two-headed stone giant — not referenced [ch 050 / evidence].
+- [A174] BEGUN — Stone giant curse — not referenced [ch 050 / evidence].
+- [A175] BEGUN — Broken statue of Rihuud — not referenced [ch 050 / evidence].
+- [A176] BEGUN — Gray Ghosts dragon egg — not referenced [ch 050 / evidence].
+- [A177] BEGUN — Black obelisk — not referenced [ch 050 / evidence].
+- [A178] BEGUN — Buppido's shrine — not referenced [ch 050 / evidence].
+- [A179] BEGUN — Pelek the deep gnome ghost — not referenced [ch 050 / evidence].
+- [A180] BEGUN — Clan Goldwhisker truce — not referenced [ch 050 / evidence].
+- [A181] BEGUN — Neheedra the medusa — not referenced [ch 050 / evidence].
+- [A182] BEGUN — Ogrémoch's Bane — not referenced [ch 050 / evidence].
+- [A183] BEGUN — Vadimir Coaxrock cube incursion — not referenced [ch 050 / evidence].
+- [A184] BEGUN — Vazuk's ghost — not referenced [ch 050 / evidence].
+- [A185] BEGUN — Entémoch's Boon — not referenced [ch 050 / evidence].
+- [A186] BEGUN — Basilisks and eggs — not referenced [ch 050 / evidence].
+- [A187] BEGUN — Maze Engine activation — not referenced [ch 050 / evidence].
+- [A188] BEGUN — Slaughtertusk nalfeshnee — not referenced [ch 050 / evidence].
+- [A189] BEGUN — Modrons encountered — not referenced [ch 050 / evidence].
+- [A190] BEGUN — Tridrone as Labyrinth guide — not referenced [ch 050 / evidence].
+- [A191] BEGUN — Adamantine tower — not referenced [ch 050 / evidence].
+- [A192] BEGUN — Shadow demons — not referenced [ch 050 / evidence].
+- [A193] BEGUN — Gnoll pack led by Kurr — not referenced [ch 050 / evidence].
+- [A194] BEGUN — Filthriddens cult — not referenced [ch 050 / evidence].
+- [A195] BEGUN — Yeenoghu's goristro slaying — not referenced [ch 050 / evidence].
+- [A196] BEGUN — Troglodyte lair standoff — not referenced [ch 050 / evidence].
+- [A197] BEGUN — Voice in the Dark — not referenced [ch 050 / evidence].
+- [A198] BEGUN — Dark Hunters arrival — not referenced [ch 050 / evidence].
+- [A199] BEGUN — Karazikar's slaves — not referenced [ch 050 / evidence].
+- [A200] BEGUN — Modron prisoner — not referenced [ch 050 / evidence].
+- [A201] BEGUN — Xazax the Eyemonger — not referenced [ch 050 / evidence].
+- [A202] BEGUN — Veldyskar the basilisk — not referenced [ch 050 / evidence].
+- [A203] BEGUN — Galeb duhr Hourm — not referenced [ch 050 / evidence].
+- [A204] BEGUN — Visions obtained — not referenced [ch 050 / evidence].
+- [A205] BEGUN — Drow patrol confrontation — not referenced [ch 050 / evidence].
+- [A206] BEGUN — Aljanor Keenblade — not referenced [ch 050 / evidence].
+- [A221] BEGUN — Heroic sacrifice opportunity — not referenced [ch 050 / evidence].
+- [A223] BEGUN — Travelogue prelude — not referenced [ch 050 / evidence].
+- [A224] BEGUN — Surface-madness gradient — not referenced [ch 050 / evidence].
+- [A225] BEGUN — Gorg'Bahamut breadcrumb — not referenced [ch 050 / evidence].
+- [A226] BEGUN — Mirabar smith commissions — not referenced [ch 050 / evidence].
+- [A227] BEGUN — Daz shopping arc — not referenced [ch 050 / evidence].
+- [A228] BEGUN — Daz fitted Calishite cloak — not referenced [ch 050 / evidence].
+- [A229] BEGUN — Milo Goodbarrel Volume 3 — not referenced [ch 050 / evidence].
+- [A230] BEGUN — Order of the Gauntlet medallion — not referenced [ch 050 / evidence].
+- [A231] BEGUN — Gyrgum Hagiography — not referenced [ch 050 / evidence].
+- [A232] BEGUN — Zalthir brass puppet — not referenced [ch 050 / evidence].
+- [A233] BEGUN — Dawnbringer scabbard — not referenced [ch 050 / evidence].
+- [A234] BEGUN — Elin the silent child — not referenced [ch 050 / evidence].
+- [A235] BEGUN — Charcoal rubbing — not referenced [ch 050 / evidence].
+- [A236] BEGUN — Kestler meeting — not referenced [ch 050 / evidence].
+- [A237] BEGUN — Triboar carpenter's journal — not referenced [ch 050 / evidence].
+- [A238] BEGUN — Burned hamlet — not referenced [ch 050 / evidence].
+- [A239] BEGUN — Broken Thunderbeast — not referenced [ch 050 / evidence].
+- [A240] BEGUN — Defaced Tempus shrine — not referenced [ch 050 / evidence].
+- [A241] BEGUN — Forge of Mirabar — not referenced [ch 050 / evidence].
+- [A242] BEGUN — Order of the Gauntlet shrine — not referenced [ch 050 / evidence].
+- [A243] BEGUN — Goldenfields — not referenced [ch 050 / evidence].
+- [A244] BEGUN — Mountain's Mouth Inn — not referenced [ch 050 / evidence].
+- [A245] BEGUN — Triboar memorial square — not referenced [ch 050 / evidence].
+- [A246] BEGUN — Waterdeep — not referenced [ch 050 / evidence].
+- [A247] BEGUN — Rishaal the Pageturner's — not referenced [ch 050 / evidence].
+- [A248] BEGUN — Order of the Gauntlet chapter house — not referenced [ch 050 / evidence].
+- [A249] BEGUN — Sleeping Snake fence — not referenced [ch 050 / evidence].
+- [A250] BEGUN — Aurora's Whole Realms Catalog — not referenced [ch 050 / evidence].
+- [A251] BEGUN — Halaster's Prized Findings — not referenced [ch 050 / evidence].
+- [A252] BEGUN — Steelwoods of Mistshore — not referenced [ch 050 / evidence].
+- [A253] BEGUN — River Shining Tavern — not referenced [ch 050 / evidence].
+- [A254] BEGUN — Hand of Tarvis monument — not referenced [ch 050 / evidence].
+- [A255] BEGUN — Burning Wizard inn — not referenced [ch 050 / evidence].
+- [A256] BEGUN — Way of the Lion — not referenced [ch 050 / evidence].
+- [A257] BEGUN — Candlekeep Emerald Door — not referenced [ch 050 / evidence].
+- [A258] BEGUN — Eldeth farewell — not referenced [ch 050 / evidence].
+- [A259] BEGUN — Dwarven outriders — not referenced [ch 050 / evidence].
+- [A260] BEGUN — Stroudite polemicist — not referenced [ch 050 / evidence].
+- [A261] BEGUN — Sister Ellune — not referenced [ch 050 / evidence].
+- [A262] BEGUN — Brindle Wenth — not referenced [ch 050 / evidence].
+- [A263] BEGUN — Kestler the half-orc — not referenced [ch 050 / evidence].
+- [A264] BEGUN — Eldred the two-voiced courier — not referenced [ch 050 / evidence].
+- [A265] BEGUN — Rishaal the Pageturner — not referenced [ch 050 / evidence].
+- [A266] BEGUN — Stroudite half-orc pilgrims — not referenced [ch 050 / evidence].
+- [A267] BEGUN — Field Ward street-preacher — not referenced [ch 050 / evidence].
+- [A268] BEGUN — City Watch patrol — not referenced [ch 050 / evidence].
+- [A269] BEGUN — Maerith of the Ford — not referenced [ch 050 / evidence].
+- [A270] BEGUN — Elin the silent child — not referenced [ch 050 / evidence].
+- [A271] BEGUN — Veyloss the bard — not referenced [ch 050 / evidence].
+- [A272] BEGUN — Festrum the gnome — not referenced [ch 050 / evidence].
+- [A273] BEGUN — Pilgrim at corner table — not referenced [ch 050 / evidence].
+- [A274] BEGUN — Triboar carpenter — not referenced [ch 050 / evidence].
+- [A275] BEGUN — Stroudite half-orc pilgrims — not referenced [ch 050 / evidence].
+- [A276] BEGUN — Bookwyrm — not referenced [ch 050 / evidence].
+- [A277] BEGUN — Queenie the cat — not referenced [ch 050 / evidence].
+- [A278] BEGUN — First Faction painting — not referenced [ch 050 / evidence].
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand — not referenced [ch 050 / evidence].
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run — not referenced [ch 050 / evidence].
+- [A281] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [A282] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [A283] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [A284] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [A285] BEGUN — Daz somatic field-perception — not referenced [ch 050 / evidence].
+- [A286] BEGUN — Six-pointed star — not referenced [ch 050 / evidence].
+- [A287] BEGUN — Black-Banner Five trial-site marker — not referenced [ch 050 / evidence].
+- [A288] BEGUN — Endless Chant error — not referenced [ch 050 / evidence].
+- [A289] BEGUN — Endless Chant — not referenced [ch 050 / evidence].
+- [A290] BEGUN — Sjurkar priest benediction error — not referenced [ch 050 / evidence].
+- [A291] BEGUN — Stroud-school sponsorship — not referenced [ch 050 / evidence].
+- [A292] BEGUN — Drow refugee in Waterdeep — not referenced [ch 050 / evidence].
+- [A293] BEGUN — Refugee family — not referenced [ch 050 / evidence].
+- [A294] BEGUN — Candlekeep murder investigation — not referenced [ch 050 / evidence].
+- [A295] BEGUN — Cryptogram race — not referenced [ch 050 / evidence].
+- [A296] BEGUN — Vault confrontation — not referenced [ch 050 / evidence].
+- [A297] BEGUN — Gauntlgrym call — not referenced [ch 050 / evidence].
+- [A298] BEGUN — Daz / Yvenne scholar arc — not referenced [ch 050 / evidence].
+- [A299] BEGUN — Zalthir / Khell-Vire scholar arc — not referenced [ch 050 / evidence].
+- [A300] BEGUN — Thorin / Philemon scholar arc — not referenced [ch 050 / evidence].
+- [A301] BEGUN — Gyrgum / Vareth scholar arc — not referenced [ch 050 / evidence].
+- [A302] BEGUN — Glabbagool's question — not referenced [ch 050 / evidence].
+- [A303] BEGUN — Polly Pocket disposition — not referenced [ch 050 / evidence].
+- [A304] BEGUN — Sylvira recruitment — not referenced [ch 050 / evidence].
+- [A305] BEGUN — Daral rescue — not referenced [ch 050 / evidence].
+- [A306] BEGUN — Kalan missing — not referenced [ch 050 / evidence].
+- [A307] BEGUN — Alkrist arrest — not referenced [ch 050 / evidence].
+- [A308] BEGUN — Moziqodo binding — not referenced [ch 050 / evidence].
+- [A309] BEGUN — Daz / Yvenne — Fourth-Seat synthesis — not referenced [ch 050 / evidence].
+- [A310] BEGUN — Daz / Yvenne — Vaelissa name — not referenced [ch 050 / evidence].
+- [A311] BEGUN — Thorin / Philemon — Layer 2 Brysis — not referenced [ch 050 / evidence].
+- [A312] BEGUN — Gyrgum / Vareth — unsigned sting — not referenced [ch 050 / evidence].
+- [A313] BEGUN — Glabbagool — Shadow Apprentice — shown as unlocked [ch 050 / 050.03].
+- [A314] BEGUN — Candlekeep gates — not referenced [ch 050 / evidence].
+- [A315] BEGUN — Refectory — not referenced [ch 050 / evidence].
+- [A316] BEGUN — Whispering Dome — not referenced [ch 050 / evidence].
+- [A317] BEGUN — Infernal Fortress — not referenced [ch 050 / evidence].
+- [A318] BEGUN — Janussi's chamber — not referenced [ch 050 / evidence].
+- [A319] BEGUN — Southern Dining Hall — not referenced [ch 050 / evidence].
+- [A320] BEGUN — Bath House — not referenced [ch 050 / evidence].
+- [A321] BEGUN — Founder's Court — not referenced [ch 050 / evidence].
+- [A322] BEGUN — Oak Tree Apothecary — not referenced [ch 050 / evidence].
+- [A323] BEGUN — Kitchens — not referenced [ch 050 / evidence].
+- [A324] BEGUN — Erudite Outfitters — not referenced [ch 050 / evidence].
+- [A325] BEGUN — Drakonoikos — not referenced [ch 050 / evidence].
+- [A326] BEGUN — Reader's Tower — not referenced [ch 050 / evidence].
+- [A327] BEGUN — Immortal Chambers — not referenced [ch 050 / evidence].
+- [A328] BEGUN — Sea Warden's Tower — not referenced [ch 050 / evidence].
+- [A329] BEGUN — Bell Tower — not referenced [ch 050 / evidence].
+- [A330] BEGUN — Cursed Tower — not referenced [ch 050 / evidence].
+- [A331] BEGUN — Pont de Paramours — not referenced [ch 050 / evidence].
+- [A332] BEGUN — Oval Theatre — not referenced [ch 050 / evidence].
+- [A333] BEGUN — House of Alaundo — not referenced [ch 050 / evidence].
+- [A334] BEGUN — Astronomicon Orrery — not referenced [ch 050 / evidence].
+- [A335] BEGUN — Philosopher's Court — not referenced [ch 050 / evidence].
+- [A336] BEGUN — Melodrome / Jook's Box — not referenced [ch 050 / evidence].
+- [A337] BEGUN — Jewel of the Styx — not referenced [ch 050 / evidence].
+- [A338] BEGUN — School of Drama — not referenced [ch 050 / evidence].
+- [A339] BEGUN — High Tower Library — not referenced [ch 050 / evidence].
+- [A340] BEGUN — Lava chamber — not referenced [ch 050 / evidence].
+- [A341] BEGUN — The Vault (B2) — not referenced [ch 050 / evidence].
+- [A342] BEGUN — The Vault (B3) — not referenced [ch 050 / evidence].
+- [A343] BEGUN — Vault tower rocket — not referenced [ch 050 / evidence].
+- [A344] BEGUN — Janussi — first contact — not referenced [ch 050 / evidence].
+- [A345] BEGUN — Janussi — death — not referenced [ch 050 / evidence].
+- [A346] BEGUN — Bookwyrm — first contact — not referenced [ch 050 / evidence].
+- [A347] BEGUN — Bookwyrm — Teles sighting — not referenced [ch 050 / evidence].
+- [A348] BEGUN — Bookwyrm — confrontation — not referenced [ch 050 / evidence].
+- [A349] BEGUN — Bookwyrm — death — not referenced [ch 050 / evidence].
+- [A350] BEGUN — Kalan Strongbranch — first contact — not referenced [ch 050 / evidence].
+- [A351] BEGUN — Kalan — second key handoff — not referenced [ch 050 / evidence].
+- [A352] BEGUN — Kalan — farewell — not referenced [ch 050 / evidence].
+- [A353] BEGUN — Kalan — disappearance — not referenced [ch 050 / evidence].
+- [A354] BEGUN — Sylvira Sashenstar — first contact — not referenced [ch 050 / evidence].
+- [A355] BEGUN — Sylvira — prime suspect — not referenced [ch 050 / evidence].
+- [A356] BEGUN — Sylvira — recruitment — not referenced [ch 050 / evidence].
+- [A357] BEGUN — Sylvira — dispel — not referenced [ch 050 / evidence].
+- [A358] BEGUN — Sylvira — survival — not referenced [ch 050 / evidence].
+- [A359] BEGUN — Daral — first contact — not referenced [ch 050 / evidence].
+- [A360] BEGUN — Daral — poisoning — not referenced [ch 050 / evidence].
+- [A361] BEGUN — Daral — death or survival — not referenced [ch 050 / evidence].
+- [A362] BEGUN — Daral — key witness — not referenced [ch 050 / evidence].
+- [A363] BEGUN — Fheminor — first contact — not referenced [ch 050 / evidence].
+- [A364] BEGUN — Fheminor — “Bookwyrm was not surprised” — not referenced [ch 050 / evidence].
+- [A365] BEGUN — Fheminor — appointment — not referenced [ch 050 / evidence].
+- [A366] BEGUN — A'lai Aivenmore — first contact — not referenced [ch 050 / evidence].
+- [A367] BEGUN — A'lai — interview — not referenced [ch 050 / evidence].
+- [A368] BEGUN — A'lai — sapphire smash — not referenced [ch 050 / evidence].
+- [A369] BEGUN — A'lai — fate — not referenced [ch 050 / evidence].
+- [A370] BEGUN — Alkrist — first contact — not referenced [ch 050 / evidence].
+- [A371] BEGUN — Alkrist — interview — not referenced [ch 050 / evidence].
+- [A372] BEGUN — Alkrist — arrest — not referenced [ch 050 / evidence].
+- [A373] BEGUN — Fembris — first contact — not referenced [ch 050 / evidence].
+- [A374] BEGUN — Fembris — rooftop confession — not referenced [ch 050 / evidence].
+- [A375] BEGUN — Tadric — first contact — not referenced [ch 050 / evidence].
+- [A376] BEGUN — Tadric — flight assistance — not referenced [ch 050 / evidence].
+- [A377] BEGUN — Tadric — acting Gatewarden — not referenced [ch 050 / evidence].
+- [A378] BEGUN — Hollypocket — witness — not referenced [ch 050 / evidence].
+- [A379] BEGUN — Sprig Summerfoot — witness — not referenced [ch 050 / evidence].
+- [A380] BEGUN — Leuwin — witness — not referenced [ch 050 / evidence].
+- [A381] BEGUN — Teles Ahvoste — interview — not referenced [ch 050 / evidence].
+- [A382] BEGUN — Kazryn Nyantani — interview — not referenced [ch 050 / evidence].
+- [A383] BEGUN — Khell-Vire — closing letter — not referenced [ch 050 / evidence].
+- [A384] BEGUN — Philemon — sealed letter — not referenced [ch 050 / evidence].
+- [A385] BEGUN — Vareth — final stations — not referenced [ch 050 / evidence].
+- [A386] BEGUN — Yvenne — third sitting — not referenced [ch 050 / evidence].
+- [A387] BEGUN — Yvenne — Vaelissa name — not referenced [ch 050 / evidence].
+- [A388] BEGUN — Yvenne — Fourth-Seat synthesis — not referenced [ch 050 / evidence].
+- [A389] BEGUN — Inda — emergence — not referenced [ch 050 / evidence].
+- [A390] BEGUN — Spanner — Mechanus dust — not referenced [ch 050 / evidence].
+- [A391] BEGUN — Moziqodo — first encounter — not referenced [ch 050 / evidence].
+- [A392] BEGUN — Moziqodo — binding break — not referenced [ch 050 / evidence].
+- [A393] BEGUN — Moziqodo — fate — not referenced [ch 050 / evidence].
+- [A394] BEGUN — Manshoon — voice-only — not referenced [ch 050 / evidence].
+- [A395] BEGUN — Manshoon — direct confrontation — not referenced [ch 050 / evidence].
+- [A396] BEGUN — Manshoon — escape — not referenced [ch 050 / evidence].
+- [A397] BEGUN — Glabbagool — bad night — not referenced [ch 050 / evidence].
+- [A398] BEGUN — Glabbagool — Shadow Apprentice status — shown as confirmed [ch 050 / 050.03].
+- [A399] BEGUN — Eldeth — letter delivered — not referenced [ch 050 / evidence].
+- [A400] BEGUN — Brevin — Sloobludop recitation — not referenced [ch 050 / evidence].
+- [A401] BEGUN — Brevin — six-pointed star bedclothes — not referenced [ch 050 / evidence].
+- [A402] BEGUN — Marin — six-pointed star quill — not referenced [ch 050 / evidence].
+- [A403] BEGUN — Jimjar / Callarduran — Echo 4 — not referenced [ch 050 / evidence].
+- [A404] BEGUN — Five Books, Five Questions — not referenced [ch 050 / evidence].
+- [A405] BEGUN — Endless Chant — Deadwinter Prophecy — not referenced [ch 050 / evidence].
+- [A406] BEGUN — Janussi murder — not referenced [ch 050 / evidence].
+- [A407] BEGUN — Two "Sylvira" figures — not referenced [ch 050 / evidence].
+- [A408] BEGUN — Bookwyrm as cover-up — not referenced [ch 050 / evidence].
+- [A409] BEGUN — Alkrist as killer — not referenced [ch 050 / evidence].
+- [A410] BEGUN — Disguise rosetta cracked — not referenced [ch 050 / evidence].
+- [A411] BEGUN — Wards drop — not referenced [ch 050 / evidence].
+- [A412] BEGUN — Cryptogram recovered — not referenced [ch 050 / evidence].
+- [A413] BEGUN — Manshoon arrival announced — not referenced [ch 050 / evidence].
+- [A414] BEGUN — Iron Owlbear found dead — not referenced [ch 050 / evidence].
+- [A415] BEGUN — Echo 1 activated — not referenced [ch 050 / evidence].
+- [A416] BEGUN — Echo 2 activated — not referenced [ch 050 / evidence].
+- [A417] BEGUN — Echo 3 activated — not referenced [ch 050 / evidence].
+- [A418] BEGUN — Echo 4 activated — not referenced [ch 050 / evidence].
+- [A419] BEGUN — Book of Vile Darkness — fate — not referenced [ch 050 / evidence].
+- [A420] BEGUN — Vault tower rocket — not referenced [ch 050 / evidence].
+- [A421] BEGUN — Candlekeep restructuring — not referenced [ch 050 / evidence].
+- [A422] BEGUN — Party named guest seekers — not referenced [ch 050 / evidence].
+- [A423] BEGUN — Manshoon-pursuit thread — not referenced [ch 050 / evidence].
+- [A424] BEGUN — Gauntlgrym call confirmed — not referenced [ch 050 / evidence].
+- [A425] BEGUN — Daz — first sinus-pressure — not referenced [ch 050 / evidence].
+- [A426] BEGUN — Yvenne — names Daz’s sensitivity — not referenced [ch 050 / evidence].
+- [A427] BEGUN — Marin — quill six-pointed star — not referenced [ch 050 / evidence].
+- [A428] BEGUN — Brevin — Sloobludop recitation — not referenced [ch 050 / evidence].
+- [A429] BEGUN — Brevin — bedclothes six-pointed star — not referenced [ch 050 / evidence].
+- [A430] BEGUN — Endless Chant — first complete stoppage — not referenced [ch 050 / evidence].
+- [A431] BEGUN — Ward-drop vision — not referenced [ch 050 / evidence].
+- [A432] BEGUN — Glabbagool — Juiblex "mother voice" — not referenced [ch 050 / evidence].
+- [A433] BEGUN — Echo 1 — names surface contamination — not referenced [ch 050 / evidence].
+- [A434] BEGUN — Daz and Yvenne — field-perception expertise — not referenced [ch 050 / evidence].
+- [A435] BEGUN — Sylvira recruited — not referenced [ch 050 / evidence].
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks — not referenced [ch 050

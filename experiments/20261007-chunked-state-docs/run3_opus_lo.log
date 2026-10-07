@@ -1,0 +1,13 @@
+67 chapters, 60 chunks, 443 audit items, 1 endpoint(s) x 3 workers: claude-code
+map kept: {'## Events': 1569, '## Concluded': 371, '## Threads': 560, '## NPC Status': 426, '## World': 974, '## Party': 349, '## Audit': 3918} dropped: 2664
+claude-code run: model=claude-opus-5-5 effort=low (explicit) thinking=off
+reduce world_state.party @claude-code 31s (89262 prompt chars -> 6843 chars)
+reduce world_state.key_npcs @claude-code 33s (58013 prompt chars -> 8047 chars)
+reduce world_state.factions_and_powers @claude-code 37s (18498 prompt chars -> 10691 chars)
+reduce world_state.locations @claude-code 35s (68591 prompt chars -> 8974 chars)
+reduce world_state.active_threats_and_open_pressures @claude-code 35s (155322 prompt chars -> 7592 chars)
+reduce world_state.items_and_artifacts @claude-code 42s (52505 prompt chars -> 10895 chars)
+reduce campaign_state.party_current_situation @claude-code 22s (89253 prompt chars -> 4957 chars)
+reduce campaign_state.active_quests_and_open_threads @claude-code 46s (162507 prompt chars -> 11354 chars)
+reduce campaign_state.resolved_plot_threads @claude-code 84s (130949 prompt chars -> 7174 chars)
+wrote world_state.chunked.md, campaign_state.chunked.md (184 NPC rows, audit {'SUPPORTED': 199, 'NOT FOUND IN SUMMARIES': 244, 'of which begun': 244})

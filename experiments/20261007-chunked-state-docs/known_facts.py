@@ -8,6 +8,7 @@ docs = {
     "opus": (B / "world_state.draft.md", B / "campaign_state.draft.md"),
     "qwen": (Path("run1/world_state.chunked.md"), Path("run1/campaign_state.chunked.md")),
     "dsk": (Path("run2/world_state.chunked.md"), Path("run2/campaign_state.chunked.md")),
+    "q3next": (Path("run3/world_state.chunked.md"), Path("run3/campaign_state.chunked.md")),
 }
 
 # Audit items, with the truth established by reading the summaries (chapter / scene in the note).

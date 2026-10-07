@@ -1,0 +1,156 @@
+## Party
+
+### Group identity and standing
+- **Name (conflicting; GM to confirm):** The latest formal adoption is **Ember Grapple** [ch 064 / 064.01], but the following session's note says the name is not stated and calls the party guest seekers of the Avowed [ch 065 / end]. Earlier names, all superseded:
+  - Firefly Tactics [ch 014 / Memorable Moments]
+  - Plausible deniability, considered unofficially [ch 019 / 019.03]
+  - Ember Vanguard [ch 021 / 021.04], and "Ember Vanguard and Groupies" in Roll20 [ch 022 / 022.01]
+  - Ash Enclave, provisional [ch 037 / 037.01]
+- **Ember Vanguard legend:** It is widely rumored in Gracklstugh [ch 026 / 026.01]. Drow know it as a false legend created by the Derro High Council [ch 049 / 049.03]. The party believes letting it spread may help future negotiations [ch 048 / 048.07]. In Blingdenstone they avoided the tainted name "Emerald Vanguard" [ch 036 / 036.04].
+- **Level (conflicting; GM to confirm):** 9th level [ch 065 / spells; ch 047 / 047.10]. One later note says seventh level [ch 048 / 048.07], which conflicts with both of these.
+- **Standing in Candlekeep:**
+  - Guest seekers of the Avowed with Inner Ward access [ch 054 / 054.06; ch 062 / 062.03].
+  - Independent investigators appointed by Bookwyrm, with authority to access any book in the library [ch 057 / 057.05].
+  - Deputized agents of Candlekeep, recognized by Tadric and Kalan [ch 067 / 067.02; ch 067 / 067.03].
+  - Promised reward on success: each member gets a copy of any book in the library from the House of the Binder [ch 057 / 057.05].
+- **Enemies:**
+  - The party has destroyed two Manshoon simulacra. The second one, before Zalthir threw him into the lava, promised the real Manshoon's vengeance forever [ch 070 / 070.02].
+  - Zalthir's view: "We already killed one of you. I figure it's a good given at this point." [ch 070 / 070.02]
+
+### Current location and situation (end of ch 070)
+- **Where they are:** The inner book chamber at the summit of the obsidian tower, in a volcanic cavern beneath Candlekeep [ch 070 / 070.03; ch 070 / 070.04].
+- **Anti-magic field:** The dragon's ten-minute field had already run six minutes when the session began [ch 070 / 070.02].
+- **How the door opened:** Gyrgum, as a verified Reader, spoke the riddle's answer, a candle, and the last door opened [ch 070 / 070.03].
+- **Book of Vile Darkness:** Daz is secretly reading it behind an illusion that shows it collapsing into ash [ch 070 / 070.03; ch 070 / 070.04].
+- **Prophecy crystals:**
+  - Edvaldo smashed two of the prophecy crystals [ch 070 / 070.03].
+  - Gyrgum holds the four survivors [ch 070 / 070.03].
+- **Edvaldo, a doppelganger serving Manshoon:**
+  - He shapeshifted into a halfling and fled toward the anti-magic barrier [ch 070 / 070.03].
+  - Gyrgum has a Guiding Bolt readied in case he moves toward the gems [ch 070 / 070.03].
+- **Imminent pressure:**
+  - The surviving Avowed Readers are expected within minutes.
+  - The party will not be able to carry off artifacts of this power, especially the Book of Vile Darkness, without Candlekeep's remaining authorities noticing [ch 070 / 070.04].
+
+### Daz
+- **Core ability and casting:**
+  - Intelligence 19 [ch 016 / 016.01].
+  - Arcana 27 [ch 028 / 028.05].
+  - Has Sculpt Spells, which protects allies from his Fireball [ch 034 / 034.08; ch 041 / 041.01].
+- **Spells used or known:**
+  - Fireball [ch 025 / 025.08]
+  - Telekinesis [ch 065 / end; ch 067 / 067.06]
+  - Phantasmal Killer [ch 069 / 069.01]
+  - Misty Step and Shield [ch 027 / 027.03]
+  - Hypnotic Pattern, Toll the Dead and Scorching Ray [ch 042 / 042.01]
+  - Magic Missile [ch 042 / 042.01]
+  - Shape Water [ch 016 / 016.03]
+  - Dancing Lights and Thaumaturgy [ch 021 / 021.04]
+  - Minor Illusion and Mage Hand [ch 070 / 070.03; ch 070 / 070.04]
+  - Find Familiar: first a bat, later a spider familiar [ch 043 / 043.06; ch 049 / 049.05]
+- **Spellbook:**
+  - Expanded with spells recovered from Princess Ebonmire's stomach [ch 047 / 047.10].
+  - Added color spray, comprehend languages, find familiar and grease, up to fourth level [ch 048 / 048.01].
+- **Gear:**
+  - **Robe of the Archmagi:** Legendary, black, recovered from the first simulacrum. Daz wears it for style now; its powers need attunement at the next long rest and may require dropping an attuned item, such as his Ring of Protection or spectacles [ch 070 / 070.01].
+  - Ring of Protection and Cloak of Elvenkind (drow version) [ch 056 / 056.07].
+  - Short Sword +1 [ch 038 / 038.01].
+  - Milo Goodbarrel's Account, Volume Three [ch 055 / 055.06].
+- **Condition:** Restored to 40 hit points after being knocked unconscious [ch 065 / 065.02].
+- **Ongoing headache and sensitivity:**
+  - His sinus-pressure sensitivity is ongoing and unaddressed [ch 069 / 069.01].
+  - He has learned the headache is linked to Underdark corruption [ch 056 / 056.07].
+- **Personal thread:**
+  - Suspects his true name is Daz'issin and that drow politics erased his lineage.
+  - Intends to uncover the sealed records [ch 056 / 056.07].
+  - His mentor path is with Yvenne [ch 056 / 056.04].
+- **Outlook:** Describes himself as chaotic neutral and values balance [ch 070 / 070.04].
+- **Book of Vile Darkness:**
+  - He identified the book, avoided touching it, and resisted its corruption through willpower [ch 070 / 070.04].
+  - Offered a choice between knowledge of himself and knowledge of how to defeat the demons, he chose the demons.
+  - The book is revealing Underdark-related information that seems useful, but its narrator cannot be trusted.
+  - Exactly what he learned is left for the next session [ch 070 / 070.04].
+
+### Gyrgum
+- **Role and limits:**
+  - Cleric of Bahamut [ch 014 / 014.01].
+  - Proficient only in simple weapons [ch 003 / 003.04].
+  - Has Divine Strike: an extra 1d4 necrotic or radiant damage once per turn [ch 048 / 048.01].
+- **Weapons:** Mace, hand axe and light crossbow [ch 012 / 012.02].
+- **Spells used or known:**
+  - Spirit Guardians, with designated exceptions [ch 041 / 041.01]
+  - Spiritual Weapon, cast at fifth level [ch 069 / 069.01]
+  - Locate Creature [ch 069 / 069.01]
+  - Guiding Bolt and True Strike [ch 042 / 042.01]
+  - Healing Word [ch 065 / 065.03]
+  - Mass Healing Word, Lesser Restoration and Mending [ch 048 / 048.01]
+  - Prayer of Healing [ch 017 / 017.02]
+  - Bless and Inflict Wounds [ch 019 / 019.05]
+  - Tasha's Caustic Brew, using a toothbrush as his self-invented material component [ch 030 / 030.04]
+  - Glyph of Warding and Dust of Suleiman [ch 050 / 050.03]
+- **Items and holdings:**
+  - Fourth-level spell gem, attuned [ch 043 / 043.02].
+  - Travis's Hand Medallion [ch 056 / 056.01].
+  - Stroudite pamphlet [ch 055 / 055.03].
+  - Stroudite School Notes and *On the Necessary Absence of the Gods Who Are Present* [ch 057 / 057.01].
+  - The real High Tower key, the fake key and the stolen sapphire [ch 065 / end].
+  - The four surviving prophecy crystals [ch 070 / 070.03].
+- **Standing:**
+  - Verified Reader for the Obsidian Door [ch 069 / 069.04].
+  - Opened the last door [ch 070 / 070.03].
+  - Proposed and named the Gyrgumite School [ch 057 / 057.01].
+  - Claimed by Vareth for research on orc Bahamut converts, and has a scheduled meeting with Khell-Vire [ch 054 / 054.06].
+
+### Thorin
+- **Armor:** Mithral plate armor, AC 22 [ch 055 / 055.05].
+- **Dawnbringer:**
+  - Sentient +2 radiant weapon with an anxiety disorder; Thorin treats the bond as a permanent "marriage" [ch 031 / 031.01].
+  - Glows with radiant light in darkness [ch 030 / 030.02].
+  - Can cast Lesser Restoration once per long rest [ch 049 / 049.03].
+  - In therapy with Philemon [ch 054 / 054.06; ch 056 / 056.06].
+  - Was displeased by the events of ch 070 [ch 070 / 070.03].
+- **Other weapons:** Darts [ch 012 / 012.02] and a light crossbow [ch 050 / 050.04].
+- **Combat abilities:**
+  - Sentinel feat [ch 017 / 017.01]
+  - Extra attack and Tactical Shift [ch 026 / 026.01]
+  - Action Surge, Menacing Attack and Hill Strike [ch 065 / 065.02]
+  - Precision Attack and luck points [ch 041 / 041.01; ch 041 / 041.07]
+- **Recent action:** His Menacing Attack with Dawnbringer frightened Edvaldo. Thorin now stands between Edvaldo and the remaining crystals [ch 070 / 070.03].
+- **Other ties:**
+  - Honorary Diggermattock Miners member, with the patch sewn onto his gear [ch 048 / 048.03].
+  - Linked to Zuggtmoy's dreamscape; he declined entry to the fungal network [ch 025 / 025.07].
+  - Named in an Alaundo prophecy alongside Eldeth and Zalthir [ch 069 / 069.05].
+- **Unresolved:** His giant's-tooth pendant was last noted as unrecovered [ch 003 / 003.04]. Later notes are silent on it.
+
+### Zalthir
+- **Background:** Dragonborn [ch 021 / 021.06] monk [ch 043 / 043.10].
+- **Abilities:**
+  - Wings, gained at level five [ch 027 / 027.03]
+  - Breath weapon and Darkness [ch 020 / 020.01]
+  - Shadow Step [ch 038 / 038.05]
+  - Stunning Strike [ch 030 / 030.02]
+  - Deflect Attacks [ch 044 / 044.06]
+  - Street Justice [ch 065 / 065.01]
+  - Minor Illusion [ch 014 / 014.04]
+  - One specialized shadow technique (option C), taught by Khell-Vire [ch 056 / 056.05]
+- **Items:**
+  - Empowered Eldritch Claw Tattoo, which manifests tentacles and grapples at range [ch 046 / 046.09; ch 069 / 069.01].
+  - Vial of Resonant Slime [ch 056 / 056.05].
+  - Ice mirror [ch 041 / 041.07].
+  - Diggermattock Miners patch [ch 048 / 048.03].
+- **Recent actions:**
+  - Grappled the second Manshoon simulacrum, carried it out of the warded chamber into the anti-magic field, and threw it into the lava. He accepted the risk that this might destroy the prophecy gems [ch 070 / 070.02].
+  - Then grappled Edvaldo, who escaped by becoming a halfling [ch 070 / 070.03].
+- **Outlook:** Disillusioned by Jimjar's lack of boon and wary of divine interference [ch 049 / 049.01].
+- **Prophecy:** Named in an Alaundo prophecy [ch 069 / 069.05].
+
+### Companions and shared holdings
+- **Glabbagool:**
+  - Eighth-level sidekick to Zalthir, with Shadow Step, flurry of blows, acidic shadow-ki and Corrosive Embrace [ch 059 / 059.06].
+  - Occupies the Pudding King's former ooze body [ch 047 / 047.10].
+  - Holds one real High Tower key inside his body [ch 065 / 065.03].
+  - Was set to watch Edvaldo in the anti-magic zone [ch 069 / 069.04]; Edvaldo has since escaped his bonds [ch 070 / 070.02].
+- **Bag of holding:** Holds the shrunken drow spy (Polly Pocket) and prayer beads of Bahamut. Glabbagool is its designated guard [ch 054 / 054.05; ch 054 / 054.06].
+- **Shared knowledge and tools:** All members hold the full decoded cryptogram, the modron tools, and knowledge of the original prophecy [ch 067 / 067.03; ch 067 / 067.05].
+- **Spiderbait:** Traveling with the party and seeking innocuous work at Candlekeep [ch 054 / 054.01].
+- **Jimjar:** The party believes he is likely a celestial being [ch 048 / 048.07].

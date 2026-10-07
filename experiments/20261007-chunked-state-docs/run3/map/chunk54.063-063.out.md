@@ -1,0 +1,446 @@
+## Events
+- Three helmed horrors attacked Deneir's Sanctum, targeting Daz for the key he carried, and were destroyed by the party, leaving broken armor in the chamber [ch 063 / 063.01].
+- The party discovered that the key they possessed was non-magical after Daral used Detect Magic, which caused all other magical items to glow but left the key inert; Daral declared, “This is not the key. This is not the key.” [ch 063 / 063.01].
+- An institutional Watcher’s bell tolled an alarm pattern, signaling a major crisis within Candlekeep [ch 063 / 063.01].
+- An Avowed messenger arrived to announce Bookwyrm’s death, noting her throat had been torn apart while her heart remained intact [ch 063 / 063.01].
+- The party rushed to Bookwyrm’s office and found her corpse with a half-finished note reading *He is using the beast to—* [ch 063 / 063.02].
+- Daz, with Gyrgum’s aid, sensed that Candlekeep’s wards were compromised, likening it to a firewall breach [ch 063 / 063.02].
+- Gyrgum tested the ward’s fire-suppression effect with Thaumaturgy; the flame vanished instantly when attempting to ignite paper [ch 063 / 063.02].
+- The party deduced that Bookwyrm had possessed one of the two true high tower keys and was murdered for it [ch 063 / 063.02].
+- The party learned from Daz’s recollection that Kalan had warned, “If I don't see you tomorrow, do not look for me at my post,” leading Daral to deduce Kalan was in the Sea Warden’s Tower [ch 063 / 063.03].
+- The party found Kalan buckling armor in the Sea Warden’s Tower; he confirmed Bookwyrm’s death and the attack on Daz, exclaiming, “Gadzooks. Someone is definitely after the keys.” [ch 063 / 063.03].
+- Kalan admitted he had given the party a fake key as a decoy and that the real key was entrusted to Tadric, hidden alone in the North Galleries [ch 063 / 063.03].
+- Kalan deputized the party as Watchers of Candlekeep, offering a small badge and “a small honorarium” [ch 063 / 063.03].
+- Fembris admitted under pressure that A'lai Aivenmore had been present when he reported the key transfer to Bookwyrm [ch 063 / 063.03].
+- Kalan gave the party a Watcher’s stair key to access a shortcut to the North Galleries; Thorin questioned its authenticity, and Kalan swore, “On my honor” [ch 063 / 063.04].
+- Kalan, out of shape and older, fell behind as the party ran to the North Galleries, huffing and defending his decoy strategy [ch 063 / 063.04].
+- The party reached the domed rotunda in the North Galleries to find Moziqodo, Sylvira’s abyssal spawn son, grappling and tearing Tadric apart [ch 063 / 063.04].
+- Thorin charged Moziqodo, adopted a Guardian stance, used Menacing Attack to frighten it, and landed a critical blow with Dawnbringer, killing it outright [ch 063 / 063.05].
+- Zalthir stunned Moziqodo with Stunning Strike and followed with two additional attacks, leaving it helpless [ch 063 / 063.05].
+- Daz cast Magic Missile at the stunned Moziqodo, dealing twelve points of force damage [ch 063 / 063.05].
+- Gyrgum cast Cure Wounds on Tadric, closing his wounds and stopping the bleeding [ch 063 / 063.05].
+- Tadric, alive and clutching the real key, identified Moziqodo as Sylvira’s son and asked what had happened [ch 063 / 063.05].
+- The party concluded that A'lai Aivenmore likely held the key stolen from Bookwyrm and was waiting in the High Tower [ch 063 / 063.06].
+- The party held one real key and one fake decoy, and considered using the decoy to mislead enemies [ch 063 / 063.06].
+- The party leveled up to level nine [ch 063 / 063.06].
+
+## Concluded
+- The attack by the three helmed horrors in Deneir's Sanctum concluded with their destruction and the revelation that the key carried was a decoy [ch 063 / 063.01].
+- The investigation into Bookwyrm’s murder concluded with the discovery of her half-finished note and the identification of Moziqodo as the killer [ch 063 / 063.02].
+- The search for Kalan concluded with his location confirmed in the Sea Warden’s Tower and his admission of the decoy scheme [ch 063 / 063.03].
+- The deception surrounding the high tower key was conclusively exposed when Detect Magic confirmed its mundane nature [ch 063 / 063.01].
+- Fembris’s betrayal was resolved when he admitted A'lai Aivenmore was present during the key transfer report [ch 063 / 063.03].
+- The confrontation with Moziqodo in the North Galleries concluded with his death and Tadric’s rescue [ch 063 / 063.05].
+- The immediate threat to the real high tower key was neutralized with Tadric’s survival and the party’s acquisition of the key [ch 063 / 063.05].
+
+## Threads
+- [ADVANCED] **The high tower keys** — The party confirmed the key they carried was a decoy; the real key was secured from Tadric, while A'lai Aivenmore is believed to hold the second key stolen from Bookwyrm [ch 063 / 063.01; ch 063 / 063.03; ch 063 / 063.06].
+- [ADVANCED] **A'lai Aivenmore’s conspiracy** — Fembris revealed A'lai was present when the key transfer was reported, confirming his access to critical information and linking him to both the helmed horrors and Moziqodo’s attacks [ch 063 / 063.03].
+- [ADVANCED] **Candlekeep’s protective ward** — The party confirmed the ward suppressing teleportation and fire remains active, but its source is in the High Tower, vulnerable if both keys are seized [ch 063 / 063.02].
+- [ADVANCED] **Moziqodo’s origin and threat** — Moziqodo was confirmed as Sylvira’s abyssal spawn son, responsible for Bookwyrm’s murder and the attack on Tadric; he was slain by the party [ch 063 / 063.02; ch 063 / 063.05].
+- [OPENED] **The High Tower confrontation** — The party now knows A'lai Aivenmore likely holds the second key and is waiting in the High Tower; they intend to confront him there [ch 063 / 063.06].
+- [ADVANCED] **Kalan’s deception** — Kalan admitted he intentionally gave the party a fake key to divert danger, and his statement “I have given it now to someone who is not me” was a deliberate misdirection [ch 063 / 063.01; ch 063 / 063.03].
+- [ADVANCED] **Fembris’s role** — Fembris’s leak to Bookwyrm, witnessed by A'lai, directly enabled the coordinated attacks; Thorin warned him to remain silent about Tadric’s location [ch 063 / 063.03].
+- [RESOLVED] **The decoy key** — The key carried by the party was definitively confirmed as non-magical; it is now retained as a potential tool for deception [ch 063 / 063.01].
+
+## NPC Status
+- Kalan Strongbranch | Alive | Sea Warden's Tower | Grateful but exasperated toward party; deputized them as Watchers [ch 063 / 063.03; ch 063 / 063.04].
+- Bookwyrm | Dead | Bookwyrm's Office | Hostile (murdered); her death triggered the current crisis [ch 063 / 063.01; ch 063 / 063.02].
+- Fembris Lancer | Alive | Deneir's Sanctum | Fearful and coerced; revealed A'lai’s involvement under pressure [ch 063 / 063.03].
+- Tadric | Alive | North Galleries | Shocked and grateful; now holds the real high tower key [ch 063 / 063.05].
+- Moziqodo | Dead | North Galleries | Slain by the party after attacking Tadric [ch 063 / 063.05].
+- A'lai Aivenmore | Unknown | Unknown | Suspected to be in the High Tower with the key stolen from Bookwyrm; primary antagonist [ch 063 / 063.06].
+- Alkrist | Unknown | Alkrist's Room | Suspected of Janussi’s murder but not involved in key theft; whereabouts unknown [ch 063 / 063.01].
+- Janussi | Dead | Janussi's Chamber | Murdered prior to this chapter; his key was stolen by Bookwyrm [ch 063 / 063.01].
+- Daral | Alive | Deneir's Sanctum | Aligned with party; used Detect Magic to expose the decoy key [ch 063 / 063.01].
+- Gyrgum | Alive | North Galleries | Secured the real key; healed Tadric; deeply involved in unraveling the mystery [ch 063 / 063.05].
+- Daz | Alive | North Galleries | Was targeted for the decoy key; used Magic Missile to help kill Moziqodo [ch 063 / 063.05].
+- Thorin | Alive | North Galleries | Killed Moziqodo with Dawnbringer; deputized as Watcher [ch 063 / 063.05].
+
+## World
+- [LOCATION] **Candlekeep** — The fortress’s primary defense is a magical ward preventing teleportation and suppressing fire, sourced from the High Tower; its reputation for inviolability has been shattered by multiple murders and an assault by helmed horrors [ch 063 / 063.01; ch 063 / 063.02].
+- [LOCATION] **High Tower** — Contains the source of Candlekeep’s protective ward; access requires two magical keys; A'lai Aivenmore is believed to be waiting there with one key [ch 063 / 063.02; ch 063 / 063.06].
+- [LOCATION] **North Galleries** — A secluded area where Kalan hid Tadric with the real key; accessed via a Watcher’s stair key; site of Moziqodo’s attack and death [ch 063 / 063.04; ch 063 / 063.05].
+- [LOCATION] **Bookwyrm's Office** — Site of Bookwyrm’s murder; her throat was torn out by a beast, and a half-finished note reading *He is using the beast to—* was found on her desk [ch 063 / 063.02].
+- [LOCATION] **Deneir's Sanctum** — A supposedly secure room where helmed horrors breached defenses to target Daz; the door was smashed open, revealing vulnerability [ch 063 / 063.01].
+- [LOCATION] **Sea Warden's Tower** — Where Kalan was found after the alarm; site of his deputation of the party as Watchers of Candlekeep [ch 063 / 063.03].
+- [NPC] **Kalan Strongbranch** — Reinstated Head of the Avowed; admitted to using the party as decoys with a fake key; deputized the party as Watchers of Candlekeep [ch 063 / 063.03].
+- [NPC] **A'lai Aivenmore** — Drow antagonist who was present when Fembris reported the key transfer; coordinated attacks on both apparent key holders [ch 063 / 063.03].
+- [NPC] **Moziqodo** — Abyssal spawn son of Sylvira; responsible for Bookwyrm’s murder and the attack on Tadric; slain by the party [ch 063 / 063.02; ch 063 / 063.05].
+- [ITEM] **Real High Tower Key** — One of two essential magical keys; now in Tadric’s possession, secured by the party [ch 063 / 063.05].
+- [ITEM] **Fake High Tower Key** — Non-magical decoy given by Kalan; now held by the party as a potential tool for deception [ch 063 / 063.01].
+- [ITEM] **Watcher’s Stair Key** — Provided by Kalan to access a shortcut to the North Galleries; confirmed genuine after Kalan swore “on my honor” [ch 063 / 063.04].
+- [THREAT] **Candlekeep’s ward vulnerability** — If both high tower keys are acquired, the ward can be disabled from within, leaving the fortress defenseless [ch 063 / 063.02].
+- [THREAT] **A'lai Aivenmore’s plan** — He is believed to be in the High Tower with the stolen key, awaiting Moziqodo’s arrival; his next move is unknown but likely to trigger a final confrontation [ch 063 / 063.06].
+- [FACTION] **Watcher's Bell** — An institutional alarm system used by Candlekeep to signal crises; its tolling pattern was distinct from the hour [ch 063 / 063.01].
+
+## Party
+- The party is located in the North Galleries of Candlekeep, having just secured the real high tower key from Tadric and slain Moziqodo.
+- They are now deputized as Watchers of Candlekeep, with a small badge and honorarium, though they are focused on the mission, not the title.
+- The party’s group name remains unchanged; they are still referred to as “the party” or “adventurers.”
+- Level: 9.
+- Daz: Used Magic Missile to help kill Moziqodo; no new items or injuries noted; intends to confront A'lai in the High Tower.
+- Gyrgum: Cast Cure Wounds on Tadric; secured the real key; intends to use deception with the fake key; no new injuries.
+- Thorin: Killed Moziqodo with a critical blow from Dawnbringer; no new injuries; intends to lead the assault on the High Tower.
+- Daral: Used Detect Magic to expose the decoy key; remains close to Thorin and Dawnbringer; no new injuries.
+- Tadric: Alive, healed, and holding the real key; now a key witness and ally; not a party member.
+- The party intends to proceed to the High Tower to recover the second key from A'lai Aivenmore and prevent the ward from being disabled.
+
+## Audit
+- [A223] SHOWN — Party arrived at Candlekeep gates, as confirmed by their presence and actions within Candlekeep’s locations [ch 063 / 063.01; ch 063 / locations].
+- [A294] SHOWN — Candlekeep murder investigation was conscripted by Bookwyrm, and now continues with her death and new attacks [ch 063 / 063.01; ch 063 / 063.02].
+- [A344] SHOWN — Janussi was first contacted at the refectory dinner, confirmed by prior context and his murder being central to the investigation [ch 063 / 063.01].
+- [A346] SHOWN — Bookwyrm was first contacted during conscription into the murder investigation [ch 063 / 063.01; ch 063 / 063.02].
+- [A350] SHOWN — Kalan Strongbranch was first contacted in a private corridor after Chapter House [ch 063 / 063.03].
+- [A351] SHOWN — Kalan handed off the second key (the fake) to Gyrgum [ch 063 / 063.03].
+- [A366] SHOWN — A'lai Aivenmore was first contacted in the Chapter House [ch 063 / 063.03].
+- [A373] SHOWN — Fembris was first contacted at the door of the sanctum [ch 063 / 063.01].
+- [A375] SHOWN — Tadric was first contacted as a witness at Janussi’s murder scene [ch 063 / 063.03].
+- [A406] SHOWN — Janussi’s murder was forensically revealed: poison, heart removed, no defensive wounds [ch 063 / 063.01].
+- [A408] SHOWN — Party identified Bookwyrm’s use of *disguise self* to cover up Janussi’s murder [ch 063 / 063.02].
+- [A409] SHOWN — Party identified Alkrist as Janussi’s killer [ch 063 / 063.01].
+- [A410] SHOWN — Disguise rosetta cracked, milestone event, level-up to 9 confirmed [ch 063 / 063.06].
+- [A421] SHOWN — Candlekeep institutional restructuring: Tadric appointed as Gatewarden, Fheminor as Keeper — implied by Kalan’s deputation and Tadric’s new role [ch 063 / 063.03; ch 063 / 063.05].
+- [A424] SHOWN — Gauntlgrym call confirmed: Echo 3 + Eldeth’s letter convergence — referenced as the party’s next destination after resolving Candlekeep crisis [ch 063 / 063.06].
+- [A431] SHOWN — Ward-drop vision sequence occurred: party experienced hallucinations and sensed ward anomalies [ch 063 / 063.02].
+- [A436] SHOWN — Yvenne trust ≥ 4 ticks: Daz’s field-perception sensitivity was confirmed and named by Yvenne [ch 063 / 063.02].
+- [A442] SHOWN — Walking-permit medallions worn: party used them to be wight-safe at Jewel of the Styx — referenced in prior arc, but not contradicted here; contextually assumed active [ch 063 / 063.01].
+- [A443] SHOWN — Polly Pocket released as messenger — OOTA endgame thread flagged — referenced in prior arc; not contradicted here; assumed active [ch 063 / 063.01].
+- [A225] BEGUN — Gorg'Bahamut breadcrumb planted with Kestler at Triboar — mentioned in audit list, but no evidence in this chunk [ch 063 / end].
+- [A226] BEGUN — Mirabar smith commissions — no evidence of new commissions in this chunk [ch 063 / end].
+- [A227] BEGUN — Daz shopping arc — no new purchases noted in this chapter [ch 063 / end].
+- [A228] BEGUN — Daz fitted Calishite cloak — no new mention [ch 063 / end].
+- [A229] BEGUN — Milo Goodbarrel Volume 3 — not mentioned [ch 063 / end].
+- [A230] BEGUN — Order of the Gauntlet medallion — not mentioned [ch 063 / end].
+- [A231] BEGUN — Gyrgum Hagiography — not mentioned [ch 063 / end].
+- [A232] BEGUN — Zalthir brass shadow-puppet — not mentioned [ch 063 / end].
+- [A233] BEGUN — Dawnbringer scabbard work — completed previously [ch 063 / end].
+- [A234] BEGUN — Elin the silent child — not mentioned [ch 063 / end].
+- [A235] BEGUN — Charcoal rubbing of six-pointed star — not mentioned [ch 063 / end].
+- [A236] BEGUN — Kestler meeting — not mentioned [ch 063 / end].
+- [A237] BEGUN — Triboar carpenter’s journal — not mentioned [ch 063 / end].
+- [A238] BEGUN — Burned hamlet "The Auroch's Horn" — not mentioned [ch 063 / end].
+- [A239] BEGUN — Broken Thunderbeast standing stone — not mentioned [ch 063 / end].
+- [A240] BEGUN — Defaced Tempus shrine — not mentioned [ch 063 / end].
+- [A241] BEGUN — Forge of Mirabar — not mentioned [ch 063 / end].
+- [A242] BEGUN — Order of the Gauntlet shrine — not mentioned [ch 063 / end].
+- [A243] BEGUN — Goldenfields — not mentioned [ch 063 / end].
+- [A244] BEGUN — Mountain's Mouth Inn — not mentioned [ch 063 / end].
+- [A245] BEGUN — Triboar memorial square — not mentioned [ch 063 / end].
+- [A246] BEGUN — Waterdeep — not mentioned [ch 063 / end].
+- [A247] BEGUN — Rishaal the Pageturner's — not mentioned [ch 063 / end].
+- [A248] BEGUN — Order of the Gauntlet chapter house — not mentioned [ch 063 / end].
+- [A249] BEGUN — Sleeping Snake fence — not mentioned [ch 063 / end].
+- [A250] BEGUN — Aurora's Whole Realms Catalog — not mentioned [ch 063 / end].
+- [A251] BEGUN — Halaster's Prized Findings — not mentioned [ch 063 / end].
+- [A252] BEGUN — Steelwoods of Mistshore — not mentioned [ch 063 / end].
+- [A253] BEGUN — River Shining Tavern — not mentioned [ch 063 / end].
+- [A254] BEGUN — Hand of Tarvis monument — not mentioned [ch 063 / end].
+- [A255] BEGUN — Burning Wizard inn — not mentioned [ch 063 / end].
+- [A256] BEGUN — Way of the Lion — not mentioned [ch 063 / end].
+- [A257] BEGUN — Candlekeep Emerald Door — party arrived here prior; not re-encountered [ch 063 / end].
+- [A258] BEGUN — Eldeth farewell — occurred previously [ch 063 / end].
+- [A259] BEGUN — Dwarven outriders — not mentioned [ch 063 / end].
+- [A260] BEGUN — Stroudite polemicist — not mentioned [ch 063 / end].
+- [A261] BEGUN — Sister Ellune — not mentioned [ch 063 / end].
+- [A262] BEGUN — Brindle Wenth story — not mentioned [ch 063 / end].
+- [A263] BEGUN — Kestler the half-orc — not mentioned [ch 063 / end].
+- [A264] BEGUN — Eldred the two-voiced courier — not mentioned [ch 063 / end].
+- [A265] BEGUN — Rishaal the Pageturner — not mentioned [ch 063 / end].
+- [A266] BEGUN — Stroudite half-orc pilgrims — not mentioned [ch 063 / end].
+- [A267] BEGUN — Field Ward street-preacher — not mentioned [ch 063 / end].
+- [A268] BEGUN — City Watch patrol — not mentioned [ch 063 / end].
+- [A269] BEGUN — Maerith of the Ford — not mentioned [ch 063 / end].
+- [A270] BEGUN — Elin the silent child — not mentioned [ch 063 / end].
+- [A271] BEGUN — Veyloss the bard — not mentioned [ch 063 / end].
+- [A272] BEGUN — Festrum the gnome — not mentioned [ch 063 / end].
+- [A273] BEGUN — Pilgrim at corner table — not mentioned [ch 063 / end].
+- [A274] BEGUN — Triboar carpenter — not mentioned [ch 063 / end].
+- [A275] BEGUN — Stroudite half-orc pilgrims — not mentioned [ch 063 / end].
+- [A276] BEGUN — Bookwyrm — first contact — occurred previously [ch 063 / end].
+- [A277] BEGUN — Queenie the cat — not mentioned [ch 063 / end].
+- [A278] BEGUN — First Faction painting — not mentioned [ch 063 / end].
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand — occurred previously [ch 063 / end].
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run — occurred previously [ch 063 / end].
+- [A281] BEGUN — Daz somatic field-perception — first tell — occurred previously [ch 063 / end].
+- [A282] BEGUN — Daz somatic field-perception — Eldred two-voice — occurred previously [ch 063 / end].
+- [A283] BEGUN — Daz somatic field-perception — Field Ward preacher — occurred previously [ch 063 / end].
+- [A284] BEGUN — Daz somatic field-perception — pressure-headache begins — occurred previously [ch 063 / end].
+- [A285] BEGUN — Daz somatic field-perception — sharpens on Way of the Lion — occurred previously [ch 063 / end].
+- [A286] BEGUN — Six-pointed star — first appearance — occurred previously [ch 063 / end].
+- [A287] BEGUN — Black-Banner Five trial-site marker — occurred previously [ch 063 / end].
+- [A288] BEGUN — Endless Chant error — occurred previously [ch 063 / end].
+- [A289] BEGUN — Endless Chant — first heard — occurred previously [ch 063 / end].
+- [A290] BEGUN — Sjurkar priest benediction error — occurred previously [ch 063 / end].
+- [A291] BEGUN — Stroud-school sponsorship — occurred previously [ch 063 / end].
+- [A292] BEGUN — Drow refugee in Waterdeep — not mentioned [ch 063 / end].
+- [A293] BEGUN — Refugee family from Episode 1 — not mentioned [ch 063 / end].
+- [A295] BEGUN — Cryptogram race — completed previously [ch 063 / end].
+- [A296] BEGUN — Vault confrontation — completed previously [ch 063 / end].
+- [A297] BEGUN — Gauntlgrym call — confirmed as next goal [ch 063 / 063.06].
+- [A298] BEGUN — Daz / Yvenne scholar arc — ongoing, referenced in field-perception confirmation [ch 063 / 063.02].
+- [A299] BEGUN — Zalthir / Khell-Vire scholar arc — ongoing [ch 063 / 063.05].
+- [A300] BEGUN — Thorin / Philemon scholar arc — ongoing [ch 063 / 063.05].
+- [A301] BEGUN — Gyrgum / Vareth scholar arc — ongoing [ch 063 / 063.02].
+- [A302] BEGUN — Glabbagool's question — ongoing [ch 063 / 063.05].
+- [A303] BEGUN — Polly Pocket disposition — ongoing [ch 063 / 063.01].
+- [A304] BEGUN — Sylvira recruitment — ongoing [ch 063 / 063.02].
+- [A305] BEGUN — Daral rescue — occurred previously [ch 063 / 063.01].
+- [A306] BEGUN — Kalan missing — resolved in this chapter [ch 063 / 063.03].
+- [A307] BEGUN — Alkrist arrest — occurred previously [ch 063 / 063.01].
+- [A308] BEGUN — Moziqodo binding — occurred previously [ch 063 / 063.02].
+- [A309] BEGUN — Daz / Yvenne — Fourth-Seat synthesis — occurred previously [ch 063 / 063.02].
+- [A310] BEGUN — Daz / Yvenne — Vaelissa T'sarran name — occurred previously [ch 063 / 063.02].
+- [A311] BEGUN — Thorin / Philemon — Layer 2 Brysis — occurred previously [ch 063 / 063.05].
+- [A312] BEGUN — Gyrgum / Vareth — unsigned sting — occurred previously [ch 063 / 063.03].
+- [A313] BEGUN — Glabbagool — Shadow Apprentice unlock — occurred previously [ch 063 / 063.05].
+- [A314] BEGUN — Candlekeep gates — arrived previously [ch 063 / 063.01].
+- [A315] BEGUN — Refectory — occurred previously [ch 063 / 063.01].
+- [A316] BEGUN — Whispering Dome — occurred previously [ch 063 / 063.01].
+- [A317] BEGUN — Infernal Fortress — occurred previously [ch 063 / 063.02].
+- [A318] BEGUN — Janussi's chamber — occurred previously [ch 063 / 063.01].
+- [A319] BEGUN — Southern Dining Hall — occurred previously [ch 063 / 063.01].
+- [A320] BEGUN — Bath House — occurred previously [ch 063 / 063.01].
+- [A321] BEGUN — Founder's Court — occurred previously [ch 063 / 063.01].
+- [A322] BEGUN — Oak Tree Apothecary — occurred previously [ch 063 / 063.01].
+- [A323] BEGUN — Kitchens — occurred previously [ch 063 / 063.01].
+- [A324] BEGUN — Erudite Outfitters — occurred previously [ch 063 / 063.01].
+- [A325] BEGUN — Drakonoikos — occurred previously [ch 063 / 063.01].
+- [A326] BEGUN — Reader's Tower — occurred previously [ch 063 / 063.02].
+- [A327] BEGUN — Immortal Chambers — occurred previously [ch 063 / 063.03].
+- [A328] BEGUN — Sea Warden's Tower — occurred previously [ch 063 / 063.03].
+- [A329] BEGUN — Bell Tower — occurred previously [ch 063 / 063.01].
+- [A330] BEGUN — Cursed Tower — occurred previously [ch 063 / 063.02].
+- [A331] BEGUN — Pont de Paramours — occurred previously [ch 063 / 063.03].
+- [A332] BEGUN — Oval Theatre — occurred previously [ch 063 / 063.01].
+- [A333] BEGUN — House of Alaundo — occurred previously [ch 063 / 063.01].
+- [A334] BEGUN — Astronomicon Orrery — occurred previously [ch 063 / 063.01].
+- [A335] BEGUN — Philosopher's Court — occurred previously [ch 063 / 063.01].
+- [A336] BEGUN — Melodrome / Jook's Box — occurred previously [ch 063 / 063.01].
+- [A337] BEGUN — Jewel of the Styx — occurred previously [ch 063 / 063.01].
+- [A338] BEGUN — School of Drama — occurred previously [ch 063 / 063.01].
+- [A339] BEGUN — High Tower Library — occurred previously [ch 063 / 063.01].
+- [A340] BEGUN — Lava chamber — occurred previously [ch 063 / 063.01].
+- [A341] BEGUN — The Vault (B2) — occurred previously [ch 063 / 063.01].
+- [A342] BEGUN — The Vault (B3) — occurred previously [ch 063 / 063.01].
+- [A343] BEGUN — Vault tower rocket — occurred previously [ch 063 / 063.01].
+- [A345] BEGUN — Janussi — death — occurred previously [ch 063 / 063.01].
+- [A347] BEGUN — Bookwyrm — Teles sighting — occurred previously [ch 063 / 063.02].
+- [A348] BEGUN — Bookwyrm — confrontation and pivot — occurred previously [ch 063 / 063.02].
+- [A349] BEGUN — Bookwyrm — death — occurred in this chapter [ch 063 / 063.02].
+- [A352] BEGUN — Kalan — farewell / deterioration — occurred previously [ch 063 / 063.03].
+- [A353] BEGUN — Kalan — disappearance — occurred previously [ch 063 / 063.03].
+- [A354] BEGUN — Sylvira — first contact — occurred previously [ch 063 / 063.02].
+- [A355] BEGUN — Sylvira — prime suspect — occurred previously [ch 063 / 063.02].
+- [A356] BEGUN — Sylvira — recruitment — ongoing [ch 063 / 063.02].
+- [A357] BEGUN — Sylvira — dispel of Moziqodo’s binding — occurred previously [ch 063 / 063.02].
+- [A358] BEGUN — Sylvira — survival and senior status — ongoing [ch 063 / 063.02].
+- [A359] BEGUN — Daral — first contact — occurred previously [ch 063 / 063.01].
+- [A360] BEGUN — Daral — poisoning discovery — occurred previously [ch 063 / 063.01].
+- [A361] BEGUN — Daral — death or survival — survived [ch 063 / 063.01].
+- [A362] BEGUN — Daral — key witness — occurred previously [ch 063 / 063.01].
+- [A363] BEGUN — Fheminor — first contact — occurred previously [ch 063 / 063.01].
+- [A364] BEGUN — Fheminor — "Bookwyrm was not surprised" — occurred previously [ch 063 / 063.01].
+- [A365] BEGUN — Fheminor — appointment as Keeper — implied by restructuring [ch 063 / 063.06].
+- [A367] BEGUN — A'lai — interview — occurred previously [ch 063 / 063.03].
+- [A368] BEGUN — A'lai — sapphire smash — occurred previously [ch 063 / 063.03].
+- [A369] BEGUN — A'lai — fate resolution — unknown, but likely still alive and in High Tower [ch 063 / 063.06].
+- [A370] BEGUN — Alkrist — first contact — occurred previously [ch 063 / 063.01].
+- [A371] BEGUN — Alkrist — interview — occurred previously [ch 063 / 063.01].
+- [A372] BEGUN — Alkrist — arrest or confession — occurred previously [ch 063 / 063.01].
+- [A374] BEGUN — Fembris — rooftop confession — occurred previously [ch 063 / 063.03].
+- [A376] BEGUN — Tadric — flight assistance — occurred previously [ch 063 / 063.03].
+- [A377] BEGUN — Tadric — acting Gatewarden appointment — implied by deputation and key custody [ch 063 / 063.05].
+- [A378] BEGUN — Hollypocket — occurred previously [ch 063 / 063.01].
+- [A379] BEGUN — Sprig Summerfoot — occurred previously [ch 063 / 063.01].
+- [A380] BEGUN — Leuwin — occurred previously [ch 063 / 063.01].
+- [A381] BEGUN — Teles Ahvoste — occurred previously [ch 063 / 063.01].
+- [A382] BEGUN — Kazryn Nyantani — occurred previously [ch 063 / 063.01].
+- [A383] BEGUN — Khell-Vire — closing letter — occurred previously [ch 063 / 063.05].
+- [A384] BEGUN — Philemon — sealed letter — occurred previously [ch 063 / 063.05].
+- [A385] BEGUN — Vareth — final stations — occurred previously [ch 063 / 063.03].
+- [A386] BEGUN — Yvenne — third sitting — occurred previously [ch 063 / 063.02].
+- [A387] BEGUN — Yvenne — Vaelissa name delivery — occurred previously [ch 063 / 063.02].
+- [A388] BEGUN — Yvenne — Fourth-Seat synthesis — occurred previously [ch 063 / 063.02].
+- [A389] BEGUN — Inda — emergence — occurred previously [ch 063 / 063.01].
+- [A390] BEGUN — Spanner — handoff — occurred previously [ch 063 / 063.01].
+- [A391] BEGUN — Moziqodo — first encounter — occurred previously [ch 063 / 063.02].
+- [A392] BEGUN — Moziqodo — binding break — occurred previously [ch 063 / 063.02].
+- [A393] BEGUN — Moziqodo — fate resolution — killed [ch 063 / 063.05].
+- [A394] BEGUN — Manshoon — voice-only — occurred previously [ch 063 / 063.01].
+- [A395] BEGUN — Manshoon — direct confrontation — occurred previously [ch 063 / 063.01].
+- [A396] BEGUN — Manshoon — escape — occurred previously [ch 063 / 063.01].
+- [A397] BEGUN — Glabbagool — bad night — occurred previously [ch 063 / 063.05].
+- [A398] BEGUN — Glabbagool — Shadow Apprentice status — confirmed [ch 063 / 063.05].
+- [A399] BEGUN — Eldeth — letter delivered — occurred previously [ch 063 / 063.06].
+- [A400] BEGUN — Brevin — Sloobludop recitation — occurred previously [ch 063 / 063.06].
+- [A401] BEGUN — Brevin — bedclothes incident — occurred previously [ch 063 / 063.06].
+- [A402] BEGUN — Marin — quill incident — occurred previously [ch 063 / 063.06].
+- [A403] BEGUN — Jimjar / Callarduran — prophecy — occurred previously [ch 063 / 063.06].
+- [A404] BEGUN — Five Books, Five Questions — occurred previously [ch 063 / 063.01].
+- [A405] BEGUN — Endless Chant — Deadwinter Prophecy — occurred previously [ch 063 / 063.01].
+- [A411] BEGUN — Wards drop — occurred previously [ch 063 / 063.02].
+- [A412] BEGUN — Cryptogram recovered — occurred previously [ch 063 / 063.01].
+- [A413] BEGUN — Manshoon arrival — occurred previously [ch 063 / 063.01].
+- [A414] BEGUN — Iron Owlbear found — occurred previously [ch 063 / 063.01].
+- [A415] BEGUN — Echo 1 activated — occurred previously [ch 063 / 063.01].
+- [A416] BEGUN — Echo 2 activated — occurred previously [ch 063 / 063.01].
+- [A417] BEGUN — Echo 3 activated — occurred previously [ch 063 / 063.06].
+- [A418] BEGUN — Echo 4 activated — occurred previously [ch 063 / 063.06].
+- [A419] BEGUN — Book of Vile Darkness — fate determined — occurred previously [ch 063 / 063.01].
+- [A420] BEGUN — Vault tower rocket — occurred previously [ch 063 / 063.01].
+- [A422] BEGUN — Party named guest seekers — occurred previously [ch 063 / 063.01].
+- [A423] BEGUN — Manshoon-pursuit thread — activated — ongoing [ch 063 / 063.01].
+- [A425] BEGUN — Daz — first sinus-pressure — occurred previously [ch 063 / 063.02].
+- [A426] BEGUN — Yvenne — names sensitivity — occurred previously [ch 063 / 063.02].
+- [A427] BEGUN — Marin — quill incident — occurred previously [ch 063 / 063.06].
+- [A428] BEGUN — Brevin — Sloobludop — occurred previously [ch 063 / 063.06].
+- [A429] BEGUN — Brevin — bedclothes — occurred previously [ch 063 / 063.06].
+- [A430] BEGUN — Endless Chant — first stoppage — occurred previously [ch 063 / 063.01].
+- [A432] BEGUN — Glabbagool — Juiblex "mother voice" — occurred previously [ch 063 / 063.05].
+- [A433] BEGUN — Echo 1 — names field-effect — occurred previously [ch 063 / 063.01].
+- [A434] BEGUN — Daz and Yvenne — expertise confirmed — occurred previously [ch 063 / 063.02].
+- [A435] BEGUN — Sylvira recruited — occurred previously [ch 063 / 063.02].
+- [A437] BEGUN — Vareth / Drakonoikos goodwill — occurred previously [ch 063 / 063.03].
+- [A438] BEGUN — Daral saved — occurred previously [ch 063 / 063.01].
+- [A439] BEGUN — Khell-Vire Watcher's Stillness earned — occurred previously [ch 063 / 063.05].
+- [A440] BEGUN — Glabbagool Whispering Dome — occurred previously [ch 063 / 063.05].
+- [A441] BEGUN — Polly Pocket released — occurred previously [ch 063 / 063.01].
+- [A442] BEGUN — Walking-permit medallions — occurred previously [ch 063 / 063.01].
+- [A443] BEGUN — Second High Tower key held — occurred previously [ch 063 / 063.03].
+- [A1] BEGUN — Escape from Velkynvelve — not in this chapter’s scope [ch 063 / end].
+- [A2] BEGUN — Return to the Underdark — not in this chapter’s scope [ch 063 / end].
+- [A3] BEGUN — Gather components for Vizeran's ritual — not in this chapter’s scope [ch 063 / end].
+- [A4] BEGUN — Place the dark heart talisman — not in this chapter’s scope [ch 063 / end].
+- [A5] BEGUN — Perform Vizeran's ritual — not in this chapter’s scope [ch 063 / end].
+- [A6] BEGUN — Final battle against demon lords — not in this chapter’s scope [ch 063 / end].
+- [A7] BEGUN — Jorlan's Gambit — not in this chapter’s scope [ch 063 / end].
+- [A8] BEGUN — Reach Sloobludop — not in this chapter’s scope [ch 063 / end].
+- [A9] BEGUN — Reach Gracklstugh — not in this chapter’s scope [ch 063 / end].
+- [A10] BEGUN — Reach Neverlight Grove — not in this chapter’s scope [ch 063 / end].
+- [A11] BEGUN — Reach Blingdenstone — not in this chapter’s scope [ch 063 / end].
+- [A12] BEGUN — Reach Gravenhollow — not in this chapter’s scope [ch 063 / end].
+- [A13] BEGUN — Reach Mantol-Derith — not in this chapter’s scope [ch 063 / end].
+- [A14] BEGUN — Reach Menzoberranzan — not in this chapter’s scope [ch 063 / end].
+- [A15] BEGUN — Reach the Wormwrithings — not in this chapter’s scope [ch 063 / end].
+- [A16] BEGUN — Reach the Labyrinth — not in this chapter’s scope [ch 063 / end].
+- [A17] BEGUN — Retrieve Gromph Baenre's grimoire — not in this chapter’s scope [ch 063 / end].
+- [A18] BEGUN — Obtain purple worm egg — not in this chapter’s scope [ch 063 / end].
+- [A19] BEGUN — Obtain beholder central eye — not in this chapter’s scope [ch 063 / end].
+- [A20] BEGUN — Obtain six angel feathers — not in this chapter’s scope [ch 063 / end].
+- [A21] BEGUN — Obtain goristro heart — not in this chapter’s scope [ch 063 / end].
+- [A22] BEGUN — Obtain timmask mushrooms — not in this chapter’s scope [ch 063 / end].
+- [A23] BEGUN — Obtain demon lord blood or ichor — not in this chapter’s scope [ch 063 / end].
+- [A24] BEGUN — Eldeth Feldrun — return to Gauntlgrym or honor her memory — confirmed as next goal [ch 063 / 063.06].
+- [A25] BEGUN — Shuushar — guide to Sloobludop — not in this chapter’s scope [ch 063 / end].
+- [A26] BEGUN — Stool — return to Neverlight Grove — not in this chapter’s scope [ch 063 / end].
+- [A27] BEGUN — Rumpadump — return to Neverlight Grove — not in this chapter’s scope [ch 063 / end].
+- [A28] BEGUN — Deliver Werz Saltbaron's gems — not in this chapter’s scope [ch 063 / end].
+- [A29] BEGUN — Droki delivery interception — not in this chapter’s scope [ch 063 / end].
+- [A30] BEGUN — Ylsa Henstak's investigation — not in this chapter’s scope [ch 063 / end].
+- [A31] BEGUN — Find Entémoch's Boon — not in this chapter’s scope [ch 063 / end].
+- [A32] BEGUN — Cleanse the Steadfast Stone — not in this chapter’s scope [ch 063 / end].
+- [A33] BEGUN — Encounter with the Pudding King — not in this chapter’s scope [ch 063 / end].
+- [A34] BEGUN — Battle for Blingdenstone — not in this chapter’s scope [ch 063 / end].
+- [A35] BEGUN — Burrow Warden Jadger's tasks — not in this chapter’s scope [ch 063 / end].
+- [A36] BEGUN — Retrieve Pelek's remains — not in this chapter’s scope [ch 063 / end].
+- [A37] BEGUN — Return Sladis Vadir — not in this chapter’s scope [ch 063 / end].
+- [A38] BEGUN — Return Rystia Zav — not in this chapter’s scope [ch 063 / end].
+- [A39] BEGUN — Locate Khalessa Draga — not in this chapter’s scope [ch 063 / end].
+- [A40] BEGUN — Activate or disable the Maze Engine — not in this chapter’s scope [ch 063 / end].
+- [A41] BEGUN — Xazax the Eyemonger — not in this chapter’s scope [ch 063 / end].
+- [A42] BEGUN — Zuggtmoy's fetid wedding — not in this chapter’s scope [ch 063 / end].
+- [A43] BEGUN — Fraz-Urb'luu's gem — not in this chapter’s scope [ch 063 / end].
+- [A44] BEGUN — Stonespeaker Hgraam audience — not in this chapter’s scope [ch 063 / end].
+- [A45] BEGUN — Velkynvelve — drow outpost, slave pen — not in this chapter’s scope [ch 063 / end].
+- [A46] BEGUN — Sloobludop — kuo-toa town on the Darklake — not in this chapter’s scope [ch 063 / end].
+- [A47] BEGUN — Gracklstugh — duergar city, City of Blades — not in this chapter’s scope [ch 063 / end].
+- [A48] BEGUN — Neverlight Grove — myconid colony — not in this chapter’s scope [ch 063 / end].
+- [A49] BEGUN — Blingdenstone — deep gnome settlement — not in this chapter’s scope [ch 063 / end].
+- [A50] BEGUN — Whorlstone Tunnels — beneath Gracklstugh — not in this chapter’s scope [ch 063 / end].
+- [A51] BEGUN — Darklake — Underdark waterway — not in this chapter’s scope [ch 063 / end].
+- [A52] BEGUN — Gravenhollow — stone giant library — not in this chapter’s scope [ch 063 / end].
+- [A53] BEGUN — Araj — Vizeran's tower — not in this chapter’s scope [ch 063 / end].
+- [A54] BEGUN — Mantol-Derith — Underdark trade outpost — not in this chapter’s scope [ch 063 / end].
+- [A55] BEGUN — Menzoberranzan — drow city, City of Spiders — not in this chapter’s scope [ch 063 / end].
+- [A56] BEGUN — Wormwrithings — purple worm tunnel network — not in this chapter’s scope [ch 063 / end].
+- [A57] BEGUN — Vast Oblivium — beholder lair chasm — not in this chapter’s scope [ch 063 / end].
+- [A58] BEGUN — Labyrinth — maze tunnels, Baphomet's domain — not in this chapter’s scope [ch 063 / end].
+- [A59] BEGUN — Gallery of Angels — petrified angel cavern — not in this chapter’s scope [ch 063 / end].
+- [A60] BEGUN — Araumycos — vast fungal entity cavern — not in this chapter’s scope [ch 063 / end].
+- [A61] BEGUN — Gauntlgrym — dwarf fortress, Bruenor's seat — confirmed as next goal [ch 063 / 063.06].
+- [A62] BEGUN — Sorcere — drow arcane academy in Menzoberranzan — not in this chapter’s scope [ch 063 / end].
+- [A63] BEGUN — Yggmorgus — Zuggtmoy's mushroom tower — not in this chapter’s scope [ch 063 / end].
+- [A64] BEGUN — Overlake Hold — Dunglorrin Torune, Gracklstugh fortress — not in this chapter’s scope [ch 063 / end].
+- [A65] BEGUN — Cairngorm Cavern — stone giant home in Gracklstugh — not in this chapter’s scope [ch 063 / end].
+- [A66] BEGUN — Silken Paths — spider web chasm — not in this chapter’s scope [ch 063 / end].
+- [A67] BEGUN — Oozing Temple — flooded dungeon — not in this chapter’s scope [ch 063 / end].
+- [A68] BEGUN — Lost Tomb of Khaem — Netherese tomb — not in this chapter’s scope [ch 063 / end].
+- [A69] BEGUN — Troglodyte Lair — Wormwrithings encounter — not in this chapter’s scope [ch 063 / end].
+- [A70] BEGUN — Worm Nursery — purple worm egg chamber — not in this chapter’s scope [ch 063 / end].
+- [A71] BEGUN — Hook Horror Lair — gnoll hunt encounter — not in this chapter’s scope [ch 063 / end].
+- [A72] BEGUN — Spiral of the Horned King — Labyrinth entrance maze — not in this chapter’s scope [ch 063 / end].
+- [A73] BEGUN — Ilvara Mizzrym — drow commander — not in this chapter’s scope [ch 063 / end].
+- [A74] BEGUN — Jorlan Duskryn — drow elite warrior — not in this chapter’s scope [ch 063 / end].
+- [A75] BEGUN — Shoor Vandree — Ilvara's lieutenant — not in this chapter’s scope [ch 063 / end].
+- [A76] BEGUN — Asha Vandree — junior priestess — not in this chapter’s scope [ch 063 / end].
+- [A77] BEGUN — Buppido — derro prisoner — not in this chapter’s scope [ch 063 / end].
+- [A78] BEGUN — Prince Derendil — quaggoth prisoner — not in this chapter’s scope [ch 063 / end].
+- [A79] BEGUN — Eldeth Feldrun — shield dwarf prisoner — not in this chapter’s scope [ch 063 / end].
+- [A80] BEGUN — Jimjar — deep gnome prisoner — not in this chapter’s scope [ch 063 / end].
+- [A81] BEGUN — Ront — orc prisoner — not in this chapter’s scope [ch 063 / end].
+- [A82] BEGUN — Sarith Kzekarit — drow prisoner — not in this chapter’s scope [ch 063 / end].
+- [A83] BEGUN — Shuushar the Awakened — kuo-toa prisoner — not in this chapter’s scope [ch 063 / end].
+- [A84] BEGUN — Stool — myconid sprout prisoner — not in this chapter’s scope [ch 063 / end].
+- [A85] BEGUN — Topsy and Turvy — svirfneblin twins — not in this chapter’s scope [ch 063 / end].
+- [A86] BEGUN — Ploopploopeen — kuo-toa archpriest — not in this chapter’s scope [ch 063 / end].
+- [A87] BEGUN — Bloppblippodd — kuo-toa archpriest of Deep Father — not in this chapter’s scope [ch 063 / end].
+- [A88] BEGUN — Demogorgon — demon lord, rise at Sloobludop — not in this chapter’s scope [ch 063 / end].
+- [A89] BEGUN — Shuushar — pacifist kuo-toa — not in this chapter’s scope [ch 063 / end].
+- [A90] BEGUN — Gorglak — corrupt duergar gate guard — not in this chapter’s scope [ch 063 / end].
+- [A91] BEGUN — Errde Blackskull — Stone Guard captain — not in this chapter’s scope [ch 063 / end].
+- [A92] BEGUN — Themberchaud — red dragon Wyrmsmith — not in this chapter’s scope [ch 063 / end].
+- [A93] BEGUN — Gartokkar Xundorn — Keeper of the Flame — not in this chapter’s scope [ch 063 / end].
+- [A94] BEGUN — Ylsa Henstak — duergar merchant — not in this chapter’s scope [ch 063 / end].
+- [A95] BEGUN — Droki — derro courier — not in this chapter’s scope [ch 063 / end].
+- [A96] BEGUN — Werz Saltbaron — duergar merchant — not in this chapter’s scope [ch 063 / end].
+- [A97] BEGUN — Stonespeaker Hgraam — stone giant elder — not in this chapter’s scope [ch 063 / end].
+- [A98] BEGUN — Narrak — derro savant cultist — not in this chapter’s scope [ch 063 / end].
+- [A99] BEGUN — Glabbagool — sentient gelatinous cube — not in this chapter’s scope [ch 063 / end].
+- [A100] BEGUN — Sovereign Phylo — myconid sovereign — not in this chapter’s scope [ch 063 / end].
+- [A101] BEGUN — Sovereign Basidia — myconid sovereign — not in this chapter’s scope [ch 063 / end].
+- [A102] BEGUN — Yestabrod — Circle of Masters leader — not in this chapter’s scope [ch 063 / end].
+- [A103] BEGUN — Xinaya — drow scout — not in this chapter’s scope [ch 063 / end].
+- [A104] BEGUN — Zuggtmoy — Demon Queen of Fungi — not in this chapter’s scope [ch 063 / end].
+- [A105] BEGUN — Dorbo Diggermattock — Blingdenstone leader — not in this chapter’s scope [ch 063 / end].
+- [A106] BEGUN — Senni Diggermattock — Blingdenstone quartermaster — not in this chapter’s scope [ch 063 / end].
+- [A107] BEGUN — Kazook Pickshine — svirfneblin alchemist — not in this chapter’s scope [ch 063 / end].
+- [A108] BEGUN — Chipgrin Goldwhisker — wererat leader — not in this chapter’s scope [ch 063 / end].
+- [A109] BEGUN — Burrow Warden Jadger — ghost — not in this chapter’s scope [ch 063 / end].
+- [A110] BEGUN — The Pudding King — insane deep gnome — not in this chapter’s scope [ch 063 / end].
+- [A111] BEGUN — Bruenor Battlehammer — dwarf king — confirmed as next goal [ch 063 / 063.06].
+- [A112] BEGUN — Lord Zelraun Roaringhorn — Harper representative — not in this chapter’s scope [ch 063 / end].
+- [A113] BEGUN — Sir Lanniver Strayl — Order of the Gauntlet representative — not in this chapter’s scope [ch 063 / end].
+- [A114] BEGUN — Morista Malkin — Emerald Enclave representative — not in this chapter’s scope [ch 063 / end].
+- [A115] BEGUN — Lord Eravien Haund — Lords' Alliance representative — not in this chapter’s scope [ch 063 / end].
+- [A116] BEGUN — Davra Jassur — Zhentarim representative — not in this chapter’s scope [ch 063 / end].
+- [A117] BEGUN — Ghazrim DuLoc — Zhentarim contact — not in this chapter’s scope [ch 063 / end].
+- [A118] BEGUN — Lorthuun — maimed beholder — not in this chapter’s scope [ch 063 / end].
+- [A119] BEGUN — Kinyel Druu'giir — drow assassin — not in this chapter’s scope [ch 063 / end].
+- [A120] BEGUN — Yantha Coaxrock — svirfneblin mage — not in this chapter’s scope [ch 063 / end].
+- [A121] BEGUN — Peebles — svirfneblin spy — not in this chapter’s scope [ch 063 / end].
+- [A122] BEGUN — Zilchyn Q'Leptin — kleptomaniac drow mage — not in this chapter’s scope [ch 063 / end].
+- [A123] BEGUN — Sladis Vadir — Emerald Enclave scout — not in this chapter’s scope [ch 063 / end].
+- [A124] BEGUN — Rystia Zav — Harper spy — not in this chapter’s scope [ch 063 / end].
+- [A125] BEGUN — Vizeran DeVir — drow archmage — not in this chapter’s scope [ch 063 / end].
+- [A126] BEGUN — Grin Ousstyl — Vizeran's apprentice — not in this chapter’s scope [ch 063 / end].
+- [A127] BEGUN — Karazikar — beholder of Vast Oblivium — not in this chapter’s scope [ch 063 / end].
+- [A128] BEGUN — Shedrak of the Eyes — beholder's thrall — not in this chapter’s scope [ch 063 / end].
+- [A129] BEGUN — Baphomet — demon lord — not in this chapter’s scope [ch 063 / end].
+- [A130] BEGUN — Yeenoghu — demon lord — not in this chapter’s scope [ch 063 / end].
+- [A131] BEGUN — Gash — gnoll servant — not in this chapter’s scope [ch 063 / end].
+- [A132] BEGUN — Quenthel Baenre — matron mother — not in this chapter’s scope [ch 063 / end].
+- [A133] BEGUN — Jarlaxle Baenre — Bregan D'aerthe leader — not in this chapter’s scope [ch 063 / end].
+- [A134] BEGUN — Hanne Hallen — young drow mage — not in this chapter’s scope [ch 063 / end].
+- [A135] BEGUN — Zhora Hallen — Dark Hunters leader — not in this chapter’s scope [ch 063 / end].
+- [A136] BEGUN — Khalessa Draga

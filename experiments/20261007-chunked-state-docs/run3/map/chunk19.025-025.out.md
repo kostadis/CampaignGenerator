@@ -1,0 +1,389 @@
+## Events
+- The party reviews the evidence gathered from the Whorlstone Caverns, including a two-headed dragon egg, proof of derro-demonic alliances, knowledge of the Deepking’s alliance with assassins, confirmation that Themberchaud is the 28th, and a ritual statue linked to the stone giant second-head affliction. `[ch 025 / 025.01]`
+- The party debates whether to hand the dragon egg to Gartokkar or retain the evidence for future leverage, with Zalthir proposing a dead man’s switch and Jimjar urging them to hold onto everything. `[ch 025 / 025.01]`
+- Stool throws a tantrum, insisting the party accompany him to find his friend Rumpadump, threatening to go alone; the party relents after his emotional appeal and Thorin’s loyalty declaration. `[ch 025 / 025.02]`
+- Gyrgum casts Aid on three party members, granting each five temporary hit points for eight hours before departing to meet Rumpadump. `[ch 025 / 025.02]`
+- The party arrives at a natural cave to find several Myconids dancing unnaturally, two large ape-like creatures covered in yellow mold, and Sarith becoming agitated upon seeing them. `[ch 025 / 025.03]`
+- Zalthir grapples Sarith to prevent him from approaching the dancing Myconids; Gyrgum notices Sarith’s agitation began the moment he saw them. `[ch 025 / 025.03]`
+- Rumpadump appears, calm amid the chaos, and confirms Voosbur released spores in the Neverlight Grove that caused the Myconids to teleport and go mad. `[ch 025 / 025.04]`
+- Rumpadump reveals he avoided infection by not eating the “growy-shrinky mushrooms” the party collected, and fears the infection spread back to the Neverlight Grove. `[ch 025 / 025.04]`
+- Sarith begins speaking of a “Dark Lady” calling to him; Gyrgum’s religion check (23) identifies her as Zuggtmoy, Demon Queen of Fungi, Lady of Rot and Decay. `[ch 025 / 025.04]`
+- The party concludes Sarith was infected before meeting them in prison and that Zuggtmoy’s presence may extend to the Neverlight Grove. `[ch 025 / 025.04]`
+- The party approaches Voosbur, who invites them to “drop in, tune out, and dance with the spores” as part of Zuggtmoy’s “dreamscape.” `[ch 025 / 025.05]`
+- Thorin, compelled by an impulsive die roll, takes Voosbur’s hand and enters the hallucinatory vision; Gyrgum follows to act as “designated driver.” `[ch 025 / 025.05]`
+- Daz and Zalthir remain outside, while Thorin and Gyrgum enter the Spore Glade and Vine Wood within Zuggtmoy’s dreamscape. `[ch 025 / 025.06]`
+- Thorin and Gyrgum narrowly escape the sentient Vine Wood as vines collapse behind them after a failed stealth check. `[ch 025 / 025.06]`
+- In Zuggtmoy’s clearing, the Demon Queen appears as a spectral figure and offers Thorin and Gyrgum the gift of becoming part of her endless mycelium. `[ch 025 / 025.07]`
+- Thorin, after a close roll, refuses the offer, citing his responsibilities in the waking world; Zuggtmoy laments his choice before the vision dissolves. `[ch 025 / 025.07]`
+- Thorin and Gyrgum awaken back in the Whorlstone Caverns, blinking in the dim light as their companions stare at them. `[ch 025 / 025.07]`
+- Voosbur and the infected Myconids vanish through a spore cloud, traveling via a fungal network beneath the Underdark. `[ch 025 / 025.08]`
+- The party takes a long rest, recovering hit points and spell slots, and gains a level. `[ch 025 / 025.08]`
+- Daz reaches fifth level and gains Fireball as his new third-level spell; Thorin’s longsword becomes +8 to hit and gains an extra attack. `[ch 025 / 025.08]`
+- The party emerges from the caverns after three days to find the gates of Gracklstugh sealed shut, guarded by grim-faced Duergar and agitated Drow. `[ch 025 / 025.08]`
+- Guard Gorglak blocks their path, demands to inspect all possessions for contraband, and declares, “You, none of you are allowed. You should not be in here.” `[ch 025 / 025.08]`
+
+## Concluded
+- The party’s exploration and combat within the Whorlstone Caverns concluded with all derro dead and all treasure secured. `[ch 025 / 025.01]`
+- The party’s attempt to decide how to use their political leverage concluded with no decision made, but plans to hold the evidence and consider a dead man’s switch. `[ch 025 / 025.01]`
+- The party’s journey to locate Rumpadump concluded with their arrival at his cave and his revelation of Voosbur’s role in the madness. `[ch 025 / 025.04]`
+- The party’s encounter with the infected Myconids concluded with Rumpadump’s account and the identification of Zuggtmoy’s influence. `[ch 025 / 025.04]`
+- Thorin and Gyrgum’s journey through Zuggtmoy’s dreamscape concluded with their escape from the Vine Wood and refusal of the Demon Queen’s offer. `[ch 025 / 025.07]`
+- The Myconids’ departure via the spore network concluded with their vanishing from the cave. `[ch 025 / 025.08]`
+- The party’s long rest concluded with their level-up and recovery of all resources. `[ch 025 / 025.08]`
+
+## Threads
+- [ADVANCED] **Political leverage over Gracklstugh factions** — The party now possesses irrefutable evidence implicating the Deepking, derro, and Keepers of the Flame in demonic alliances, with enough material to incite a holy war; they debate whether to use it immediately or hold it as leverage. `[ch 025 / 025.01]`
+- [ADVANCED] **The two-headed dragon egg** — The egg remains in the party’s possession as proof of Demogorgon’s cult activity; their original plan to deliver it to Gartokkar remains unexecuted. `[ch 025 / 025.01]`
+- [ADVANCED] **The ritual statue for the stone giant affliction** — The party now holds one completed ritual statue; they consider delivering it to Hgraam to reverse the curse. `[ch 025 / 025.01]`
+- [ADVANCED] **The growy-shrinky mushrooms** — The party confirmed these mushrooms are the same ones that triggered the Myconids’ teleportation and madness; they now know the mushrooms are dangerous and possibly linked to Zuggtmoy. `[ch 025 / 025.04]`
+- [OPENED] **Zuggtmoy’s influence in the Underdark** — Zuggtmoy has been identified as the source of the Myconid madness and Sarith’s corruption; the party now suspects she may be active in the Neverlight Grove. `[ch 025 / 025.04]`
+- [OPENED] **Sarith’s demonic infection** — Sarith has been confirmed as infected by Zuggtmoy long before the party met him; his instability and behavior are now understood as demonic influence. `[ch 025 / 025.04]`
+- [OPENED] **The Myconid Sovereign and the way out of the Underdark** — Rumpadump revealed the Sovereign in the Neverlight Grove may know a path to the surface; the party now considers this a potential next destination. `[ch 025 / 025.04]`
+- [OPENED] **The fungal spore network** — The Myconids vanished through a spore network connecting hidden Underdark locations; Thorin was offered access to it by Zuggtmoy, and the party now knows it exists as a means of travel. `[ch 025 / 025.08]`
+- [OPENED] **The sealed gates of Gracklstugh** — The city gates are now sealed and guarded by hostile Duergar; the party is trapped outside with incriminating evidence, facing immediate inspection by Gorglak. `[ch 025 / 025.08]`
+- [RESOLVED] **Stool’s plea to find Rumpadump** — The party fulfilled Stool’s request by traveling to Rumpadump’s location and speaking with him; his immediate need is addressed. `[ch 025 / 025.04]`
+- [RESOLVED] **Thorin’s decision to enter the dreamscape** — Thorin’s impulsive choice was made, the vision was experienced, and the offer was refused; the thread is closed. `[ch 025 / 025.07]`
+
+## NPC Status
+- Stool | Alive | Whorlstone Caverns | Loyal to the party; seeks to return to Neverlight Grove `[ch 025 / 025.04]`
+- Jimjar | Alive | Whorlstone Caverns | Advises holding evidence; disposition toward party is supportive `[ch 025 / 025.01]`
+- Sarith | Alive | Whorlstone Caverns | Infected by Zuggtmoy; disposition toward party is unstable, drawn to fungal entities `[ch 025 / 025.04]`
+- Rumpadump | Alive | Whorlstone Caverns | Calm, studious; disposition toward party is trusting; seeks help returning to Neverlight Grove `[ch 025 / 025.04]`
+- Voosbur | Unknown | Whorlstone Caverns | Vanished through spore network; disposition unknown `[ch 025 / 025.08]`
+- Zuggtmoy | Unknown | Spore vision (Zuggtmoy's Clearing) | Manifested as a spectral entity; disposition toward Thorin is sorrowful, predatory `[ch 025 / 025.07]`
+- Gorglak | Alive | Gracklstugh Gates | Hostile; demands inspection of party’s possessions; disposition toward party is aggressive and suspicious `[ch 025 / 025.08]`
+- Myconid Sovereign | Unknown | Neverlight Grove | Mentioned as possessor of ancestral knowledge; disposition toward party is unknown `[ch 025 / 025.04]`
+- Gartokkar | Unknown | Gracklstugh | Head of the Keepers of the Flame; intended recipient of the dragon egg; disposition toward party unknown `[ch 025 / 025.01]`
+- Hgraam | Unknown | Gracklstugh | Stone giant leader; potential recipient of the ritual statue; disposition toward party unknown `[ch 025 / npcs]`
+
+## World
+- [LOCATION] **Whorlstone Caverns** — The caverns are now devoid of derro, with all treasure secured and the Myconids departed through a fungal network; the party spent three days here and emerged to find the city gates sealed. `[ch 025 / 025.01; ch 025 / 025.08]`
+- [LOCATION] **Rumpadump's Cave** — A natural cave within the Whorlstone Caverns where infected Myconids danced unnaturally; the site of Rumpadump’s revelation and Voosbur’s departure. `[ch 025 / 025.03; ch 025 / locations]`
+- [LOCATION] **Neverlight Grove** — The original home of Stool and Rumpadump; now suspected of being corrupted by Zuggtmoy’s influence; the Myconid Sovereign resides there and may hold a path out of the Underdark. `[ch 025 / 025.04; ch 025 / locations]`
+- [LOCATION] **Gracklstugh Gates** — The entrance to the duergar city is now sealed and guarded by heavily armored Duergar and agitated Drow; tension is at a breaking point. `[ch 025 / 025.08; ch 025 / locations]`
+- [LOCATION] **The Spore Glade** — A hallucinatory dreamscape within Zuggtmoy’s influence, filled with glowing mushrooms, pulsing ground, and sentient spores that react to touch. `[ch 025 / 025.06; ch 025 / locations]`
+- [LOCATION] **The Vine Wood** — A labyrinth of sentient, slime-covered vines that attack intruders; part of Zuggtmoy’s dreamscape where Thorin and Gyrgum barely escaped. `[ch 025 / 025.06; ch 025 / locations]`
+- [LOCATION] **Zuggtmoy's Clearing** — The heart of the demonic vision, dominated by a fungal throne and twisted sentinels; where Zuggtmoy offered her corruptive gift. `[ch 025 / 025.07; ch 025 / locations]`
+- [ITEM] **Two-headed Dragon Egg** — A corrupted egg tied to Demogorgon’s cult; held by the party as proof of demonic alignment; political leverage of “Epstein level” magnitude. `[ch 025 / 025.01; ch 025 / items]`
+- [ITEM] **Ritual Statue** — One completed statue linked to the stone giant second-head affliction; the party holds it and may bring it to Hgraam. `[ch 025 / 025.01; ch 025 / items]`
+- [ITEM] **Growy Shrinky Mushrooms** — Fungi that alter size; confirmed as the same mushrooms that triggered the Myconids’ teleportation and madness; now known to be dangerous. `[ch 025 / 025.04; ch 025 / items]`
+- [ITEM] **Diplomatic Pouch** — A container the party claims holds sensitive materials to avoid inspection by Gorglak; its legitimacy is unverified. `[ch 025 / 025.08; ch 025 / items]`
+- [ITEM] **Thorin’s Longsword +1** — Now enchanted to +8 to hit; Thorin gains an extra attack due to reaching fifth level. `[ch 025 / 025.08; ch 025 / items]`
+- [THREAT] **Zuggtmoy’s spreading infection** — The Demon Queen of Fungi has infected Sarith and caused the Myconid madness; her presence may extend to the Neverlight Grove, threatening all fungal life and possibly the party. `[ch 025 / 025.04; ch 025 / 025.07]`
+- [THREAT] **City-wide duergar-drow conflict** — Gracklstugh is on the brink of open war; the sealed gates and hostile guard Gorglak indicate imminent violence. `[ch 025 / 025.08]`
+- [THREAT] **Immediate inspection by Gorglak** — The party is blocked at the gates with demonic artifacts and blackmail material; refusal to be searched may trigger violence. `[ch 025 / 025.08]`
+- [NPC] **Zuggtmoy** — The Demon Queen of Fungi, Lady of Rot and Decay; her sole desire is to infect the living and transform them into fungal hosts; she appeared in vision to Thorin and Gyrgum. `[ch 025 / 025.04; ch 025 / npcs]`
+- [NPC] **Myconid Sovereign** — The ruler of the Neverlight Grove who holds the accumulated knowledge of all Myconids; may know a way out of the Underdark. `[ch 025 / 025.04; ch 025 / npcs]`
+- [NPC] **Gorglak** — A mean-looking Duergar guard at the sealed gates of Gracklstugh; he demands inspection of the party’s possessions and refuses them entry. `[ch 025 / 025.08; ch 025 / npcs]`
+- [NPC] **Rumpadump** — A calm Myconid who avoided infection by not eating the growy-shrinky mushrooms; he believes the Myconid Sovereign can help them return to the Neverlight Grove. `[ch 025 / 025.04; ch 025 / npcs]`
+- [FACTION] **Keepers of the Flame** — Led by Gartokkar; the party’s original plan was to deliver the dragon egg to them; their current stance toward the party is unknown. `[ch 025 / 025.01; ch 025 / npcs]`
+- [FACTION] **Deepking’s regime** — Confirmed to be allied with assassins trying to wipe out opposition; the party holds proof of this. `[ch 025 / 025.01]`
+- [FACTION] **Derro** — Fully confirmed as aligned with demonic powers; all in the Whorlstone Caverns are dead. `[ch 025 / 025.01]`
+- [FACTION] **Myconids** — Generally peaceable but dangerous in large numbers; now confirmed to be susceptible to Zuggtmoy’s corruption and fungal teleportation. `[ch 025 / 025.02; ch 025 / 025.04]`
+
+## Party
+- The party is at the sealed gates of Gracklstugh, holding the two-headed dragon egg, the ritual statue, growy-shrinky mushrooms, and other incriminating evidence. `[ch 025 / 025.08]`
+- The party’s group name is not stated; they are referred to as “the party” or “adventurers.” `[ch 025 / 025.08]`
+- The party is now fifth level; Daz gained Fireball; Thorin’s longsword is now +8 to hit and he gains an extra attack. `[ch 025 / 025.08]`
+- Daz’s spellbook now contains ten spells; he can prepare nine and needs a larger spellbook. `[ch 025 / 025.08]`
+- Gyrgum’s Aid spell’s temporary hit points expired during the long rest. `[ch 025 / 025.08]`
+- Zalthir proposed a dead man’s switch to release their evidence if captured or killed; the party has not implemented it but is considering it. `[ch 025 / 025.01]`
+- Jimjar and Gyrgum advocate holding onto all evidence for future leverage. `[ch 025 / 025.01]`
+- Thorin is now linked to Zuggtmoy’s dreamscape; he was offered entry to the fungal network and declined. `[ch 025 / 025.07]`
+- The party intends to negotiate with Gorglak to enter Gracklstugh; Thorin suggests claiming diplomatic immunity for their pouch, while Daz offers mushrooms as possible contraband. `[ch 025 / 025.08]`
+- The party’s next goal is to enter Gracklstugh without surrendering their evidence; they are also considering returning to the Neverlight Grove to confront Zuggtmoy’s influence. `[ch 025 / 025.04; ch 025 / 025.08]`
+
+## Audit
+- [A9] SHOWN — The party reached Gracklstugh, emerging from the Whorlstone Caverns and confronting the sealed city gates. `[ch 025 / 025.08]`
+- [A10] BEGUN — The party learned of the Neverlight Grove as a destination from Rumpadump and now intend to return there to confront Zuggtmoy’s influence. `[ch 025 / 025.04]`
+- [A12] BEGUN — The party has not yet reached Gravenhollow; they only know of it as a potential location for the stone giant leader Hgraam. `[ch 025 / 025.01; ch 025 / npcs]`
+- [A26] BEGUN — The party now intends to return to Neverlight Grove with Stool to help Rumpadump, fulfilling his request. `[ch 025 / 025.04]`
+- [A27] BEGUN — The party intends to return to Neverlight Grove to help Rumpadump, who fears the infection has spread to his kin. `[ch 025 / 025.04]`
+- [A47] SHOWN — The party is at Gracklstugh, specifically at its sealed gates, after emerging from the Whorlstone Caverns. `[ch 025 / 025.08]`
+- [A50] SHOWN — The party completed their time in the Whorlstone Tunnels, securing all evidence and departing after three days. `[ch 025 / 025.08]`
+- [A104] SHOWN — Zuggtmoy’s presence was confirmed through Gyrgum’s religion check and her spectral manifestation in the dreamscape. `[ch 025 / 025.04; ch 025 / 025.07]`
+- [A122] SHOWN — Sarith’s demonic infection was revealed as Zuggtmoy’s influence, confirmed by his behavior and Gyrgum’s lore check. `[ch 025 / 025.04; ch 025 / npcs]`
+- [A144] SHOWN — The party now has awareness of multiple demon lords (Demogorgon and Zuggtmoy) active in the Underdark. `[ch 025 / 025.01; ch 025 / 025.04]`
+- [A174] SHOWN — The party disrupted the stone giant curse ritual at Whorlstone Tunnels, leaving one statue completed and one interrupted. `[ch 025 / 025.01]`
+- [A187] BEGUN — The Maze Engine was not encountered; this audit item is unrelated to this chunk. `[ch 025 / 025.08]`
+- [A229] BEGUN — Daz acquired items in Waterdeep prior to this chunk; this is not relevant to current events. `[ch 025 / 025.08]`
+- [A266] BEGUN — Stroudite half-orc pilgrims were encountered in prior chapters; not relevant here. `[ch 025 / 025.08]`
+- [A286] BEGUN — The six-pointed star was seen earlier; this is not referenced in this chunk. `[ch 025 / 025.08]`
+- [A404] BEGUN — Five Books admission occurred in Candlekeep prior to this chunk; not relevant. `[ch 025 / 025.08]`
+- [A417] BEGUN — Echo 3 was activated in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A424] BEGUN — Gauntlgrym call was confirmed in prior chapters; not referenced here. `[ch 025 / 025.08]`
+- [A425] BEGUN — Daz’s sinus-pressure perception began in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A435] BEGUN — Sylvira recruitment occurred in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A438] BEGUN — Daral’s survival occurred in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A439] BEGUN — Khell-Vire’s Watcher’s Stillness was earned in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A441] BEGUN — Polly Pocket release occurred in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A442] BEGUN — Walking-permit medallions were acquired in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A443] BEGUN — Second High Tower key was acquired in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+- [A444] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A445] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A446] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A447] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A448] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A449] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A450] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A451] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A452] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A453] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A454] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A455] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A456] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A457] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A458] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A459] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A460] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A461] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A462] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A463] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A464] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A465] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A466] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A467] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A468] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A469] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A470] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A471] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A472] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A473] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A474] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A475] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A476] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A477] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A478] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A479] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A480] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A481] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A482] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A483] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A484] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A485] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A486] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A487] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A488] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A489] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A490] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A491] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A492] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A493] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A494] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A495] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A496] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A497] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A498] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A499] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A500] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A501] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A502] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A503] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A504] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A505] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A506] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A507] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A508] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A509] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A510] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A511] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A512] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A513] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A514] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A515] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A516] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A517] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A518] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A519] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A520] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A521] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A522] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A523] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A524] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A525] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A526] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A527] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A528] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A529] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A530] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A531] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A532] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A533] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A534] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A535] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A536] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A537] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A538] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A539] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A540] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A541] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A542] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A543] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A544] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A545] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A546] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A547] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A548] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A549] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A550] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A551] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A552] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A553] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A554] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A555] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A556] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A557] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A558] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A559] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A560] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A561] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A562] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A563] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A564] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A565] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A566] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A567] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A568] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A569] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A570] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A571] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A572] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A573] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A574] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A575] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A576] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A577] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A578] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A579] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A580] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A581] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A582] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A583] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A584] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A585] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A586] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A587] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A588] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A589] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A590] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A591] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A592] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A593] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A594] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A595] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A596] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A597] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A598] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A599] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A600] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A601] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A602] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A603] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A604] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A605] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A606] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A607] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A608] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A609] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A610] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A611] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A612] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A613] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A614] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A615] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A616] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A617] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A618] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A619] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A620] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A621] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A622] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A623] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A624] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A625] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A626] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A627] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A628] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A629] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A630] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A631] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A632] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A633] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A634] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A635] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A636] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A637] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A638] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A639] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A640] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A641] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A642] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A643] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A644] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A645] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A646] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A647] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A648] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A649] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A650] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A651] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A652] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A653] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A654] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A655] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A656] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A657] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A658] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A659] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A660] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A661] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A662] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A663] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A664] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A665] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A666] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A667] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A668] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A669] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A670] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A671] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A672] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A673] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A674] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A675] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A676] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A677] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A678] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A679] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A680] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A681] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A682] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A683] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A684] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A685] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A686] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A687] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A688] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A689] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A690] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A691] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A692] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A693] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A694] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A695] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A696] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A697] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A698] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A699] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A700] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A701] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A702] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A703] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A704] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A705] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A706] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A707] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A708] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A709] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A710] BEGUN — This audit item does not exist in the provided list. `[ch 025 / 025.08]`
+- [A711] BE

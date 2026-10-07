@@ -1,0 +1,138 @@
+## Events
+- The party enters a narrow tunnel lined with Ormu moss, which emits a soft green glow; Jimjar identifies it as harmless and harvestable into pigment [ch 006 / 006.01].
+- The party realizes their food and water are critically low; they forage successfully, gathering ten gallons of water and seventeen pounds of food [ch 006 / 006.01; ch 006 / 006.02].
+- Daz uses Shape Water to freeze the collected water into one-gallon ice blocks, allowing the party to carry and consume it by chiseling; he refreezes them hourly [ch 006 / 006.01].
+- Eldeth leads the party in covering their tracks, reducing the pursuit level from four to three with a Stealth check result of 21 [ch 006 / 006.02].
+- Jimjar is tasked with disguising the tunnel blockage; he refuses unless a bet is made, and Gyrgum accepts the wager on his behalf [ch 006 / 006.03].
+- Jimjar successfully disguises the blockage, losing the bet and owing Gyrgum five gold pieces; the party realizes he bets for the thrill, not to win [ch 006 / 006.03; ch 006 / moment].
+- Daz notices the deep gnome twins Topsy and Turvy whispering secretly in camp; his Insight check reveals nothing about their intentions [ch 006 / 006.03].
+- After two more days of travel, the party gathers ten gallons of water and twenty pounds of food; Sarith identifies the Silken Paths ahead [ch 006 / 006.04].
+- Two goblin guides, Yuk Yuk and Spiderbait, appear and offer to guide the party across the Silken Paths for two gold pieces per day [ch 006 / 006.04].
+- Jimjar wagers that the goblins cannot navigate the Silken Paths; Yuk Yuk counters with a 20-gold bet that he can, and Gyrgum offers Jimjar’s five-gold IOU as collateral [ch 006 / 006.05].
+- Yuk Yuk and Spiderbait demonstrate their skill by sliding across the webs using strange footwear, winning the bet; Jimjar admits he has no money to pay [ch 006 / 006.05].
+- Spiderbait proposes a new deal: the goblins will guide the party in exchange for a share of future gold to cover their fee and Jimjar’s 20-gold debt; the party agrees [ch 006 / 006.05].
+- The party spots a moving cocoon in the webs; Stool uses rapport spores to communicate with the trapped halfling, Fargas Rumblefoot [ch 006 / 006.07].
+- Fargas claims he was captured by spiders after escaping mad gnolls and promises to lead the party to a lost tomb filled with treasure if rescued [ch 006 / 006.07; ch 006 / moment].
+- Yuk Yuk warns that giant spiders are approaching; the party debates leaving Fargas behind but ultimately decides to free him [ch 006 / 006.07].
+- Thorin slashes through the cocoon’s webbing (AC 10, 5 slashing damage) in one successful strike, freeing Fargas [ch 006 / 006.07; ch 006 / moment].
+- Initiative is rolled as giant spiders close in; Thorin has initiative 17, Zalthir 5 [ch 006 / 006.07].
+- Zalthir cuts one web strand to force spiders to rebuild, then strikes a second strand that holds by one hit point; Daz suggests an Indiana Jones-style swing plan, and Thorin proposes severing all other bridges [ch 006 / 006.08].
+- The GM realizes the scenario has become a graph theory problem; the session ends mid-combat with Zalthir’s bonus action pending and the far edge of the chasm still distant [ch 006 / 006.08].
+
+## Concluded
+- The party’s foraging for water and food in the narrow tunnel concludes with ten gallons of water and seventeen pounds of food gathered [ch 006 / 006.01; ch 006 / 006.02].
+- The effort to cover the party’s tracks concludes with the pursuit level reduced from four to three [ch 006 / 006.02].
+- Jimjar’s deception to disguise the tunnel blockage concludes with him losing the bet and owing Gyrgum five gold pieces [ch 006 / 006.03].
+- The goblin guides’ demonstration across the Silken Paths concludes with Yuk Yuk and Spiderbait winning the bet against Jimjar [ch 006 / 006.05].
+- The goblin guide negotiation concludes with Yuk Yuk and Spiderbait agreeing to guide the party in exchange for a share of future gold [ch 006 / 006.05].
+- The rescue of Fargas Rumblefoot from the cocoon concludes with Thorin successfully cutting it open and freeing him [ch 006 / 006.07].
+
+## Threads
+- [ADVANCED] **Pursuit level** — Reduced from four to three by Eldeth’s successful track-covering effort [ch 006 / 006.02].
+- [ADVANCED] **Jimjar’s gambling obsession** — Revealed to be motivated by the thrill of betting, not winning; he bet against himself and now owes Gyrgum five gold and the goblins twenty [ch 006 / 006.03; ch 006 / moment].
+- [OPENED] **Silken Paths crossing** — The party has reached the chasm and engaged goblin guides; the route ahead is unstable and spider-infested [ch 006 / 006.04; ch 006 / 006.05].
+- [OPENED] **Fargas Rumblefoot’s promise** — The halfling has been freed and now pledges to lead the party to a lost tomb filled with treasure [ch 006 / 006.07; ch 006 / moment].
+- [OPENED] **Goblin guide debt** — Yuk Yuk and Spiderbait now expect a share of future gold to cover their fee and Jimjar’s 20-gold debt [ch 006 / 006.05].
+- [OPENED] **Topsy and Turvy’s whispers** — The twins are observed communicating secretly at camp; their intentions remain unknown [ch 006 / 006.03].
+- [ADVANCED] **Giant spiders of the Silken Paths** — Now actively pursuing the party after Fargas’s rescue; their webs rebuild faster than fire can destroy them [ch 006 / 006.07; ch 006 / 006.08].
+- [OPENED] **Lost Tomb of Khaem** — Fargas claims knowledge of its location and its treasure, introducing a new objective [ch 006 / 006.07; ch 006 / moment].
+
+## NPC Status
+- Jimjar | Alive | With party | Amused, betting-obsessed; owes Gyrgum five gold and goblins twenty [ch 006 / 006.03; ch 006 / 006.05; ch 006 / npcs].
+- Eldeth | Alive | With party | Respected survivalist; reduced pursuit level to three [ch 006 / 006.02; ch 006 / npcs].
+- Sarith | Alive | With party | Confident navigator; excited to have reached the Silken Paths [ch 006 / 006.04; ch 006 / npcs].
+- Stool | Alive | With party | Eager to help; used rapport spores to communicate with Fargas [ch 006 / 006.07; ch 006 / npcs].
+- Topsy | Alive | With party | Whispering secretly to Turvy; motives unknown [ch 006 / 006.03; ch 006 / npcs].
+- Turvy | Alive | With party | Whispering secretly to Topsy; motives unknown [ch 006 / 006.03; ch 006 / npcs].
+- Yuk Yuk | Alive | With party | Goblin guide; won bet, now guiding party for future gold [ch 006 / 006.05; ch 006 / npcs].
+- Spiderbait | Alive | With party | Goblin guide; negotiated deal, now guiding party for future gold [ch 006 / 006.05; ch 006 / npcs].
+- Fargas Rumblefoot | Alive | With party | Freed from cocoon; promises to lead party to lost tomb [ch 006 / 006.07; ch 006 / npcs].
+- Giant Spiders | Alive | In Silken Paths chasm | Actively pursuing party; rebuild webs faster than fire can destroy them [ch 006 / 006.07; ch 006 / 006.08; ch 006 / npcs].
+
+## World
+- [LOCATION] **The Narrow Tunnel** — A constricting Underdark passage lined with Ormu moss that emits dim green light in a five-foot radius; the party passed through it and blocked it behind them [ch 006 / 006.01; ch 006 / locations].
+- [LOCATION] **The Silken Paths** — A 500-foot-deep, 2,000-foot-wide chasm filled with ever-changing spider webs; strands are five feet wide, difficult terrain for non-climbers, and collapse if cut; fire breaks strands within a 30-foot radius; spiders rebuild webs faster than fire can destroy them [ch 006 / 006.04; ch 006 / 006.08; ch 006 / locations].
+- [ITEM] **Ormu Moss** — A phosphorescent green moss found in warm, damp Underdark tunnels; emits dim light in a five-foot radius; can be harvested and dried into glowing pigment [ch 006 / 006.01; ch 006 / 006.02; ch 006 / items].
+- [ITEM] **Frozen Water Blocks** — One-gallon blocks of water frozen by Daz’s Shape Water cantrip; carried by each of the ten travelers; melt overnight and must be refrozen hourly [ch 006 / 006.01; ch 006 / items].
+- [ITEM] **Rope** — Eight lengths carried by Gyrgum; used to tether the party together while crossing the Silken Paths; grants advantage on Dexterity saves against falling [ch 006 / 006.08; ch 006 / items].
+- [ITEM] **Spider Web Cocoon** — Thick silk wrapping used by spiders to preserve prey; AC 10, vulnerable only to slashing damage (5 points to break); held Fargas Rumblefoot [ch 006 / 006.07; ch 006 / items].
+- [SPELL] **Shape Water** — Used by Daz to freeze water into portable blocks; cannot create water; effect lasts one hour and requires refreezing [ch 006 / 006.01; ch 006 / spells].
+- [SPELL] **Rapport Spores** — Myconid ability used by Stool to establish telepathic communication with Fargas; lasts one hour [ch 006 / 006.07; ch 006 / spells].
+- [THREAT] **Giant Spiders** — Predatory arachnids inhabiting the Silken Paths; rebuild webs rapidly; attack when prey is disturbed; now pursuing the party [ch 006 / 006.07; ch 006 / 006.08; ch 006 / npcs].
+- [NPC] **Jimjar** — Deep gnome with an obsessive gambling habit; bets for the thrill, not the prize; keeps a ledger of debts and victories; now owes five gold to Gyrgum and twenty to the goblins [ch 006 / 006.03; ch 006 / moment; ch 006 / npcs].
+- [NPC] **Yuk Yuk and Spiderbait** — Goblin guides who navigate the Silken Paths by sliding on webs; speak in surfer-dude vernacular; motivated by future payment and the entertainment of the bet [ch 006 / 006.05; ch 006 / moment; ch 006 / npcs].
+- [NPC] **Fargas Rumblefoot** — Halfling adventurer captured by spiders after escaping mad gnolls; claims to know the location of a lost tomb and its treasure [ch 006 / 006.07; ch 006 / moment; ch 006 / npcs].
+- [FACTION] **Mad Gnolls** — Demon-possessed creatures that implant spawn inside living bodies, where it later erupts; Fargas claims his adventuring band was attacked by them [ch 006 / 006.07].
+
+## Party
+- The party is currently traversing the Silken Paths, a massive spider-web chasm, with goblin guides Yuk Yuk and Spiderbait; they are tied together with rope to prevent falls [ch 006 / 006.08].
+- Group name: Not stated; still referred to as “the party” [ch 006 / 006.01].
+- Level: Not stated.
+- Daz: Uses Shape Water to freeze and refreeze water; carries no new items; has no new abilities; continues to experience pressure headaches [ch 006 / 006.01; ch 006 / 006.08].
+- Zalthir: Has +0 Deception and +0 Persuasion; used tactical thinking to cut web strands; has a bonus action pending; noted the graph theory of the web network [ch 006 / 006.08].
+- Gyrgum: Took Jimjar’s bet on the tunnel blockage; now holds Jimjar’s five-gold IOU; offered it as collateral for the goblins; carries eight ropes [ch 006 / 006.03; ch 006 / 006.05; ch 006 / 006.08].
+- Thorin: Freed Fargas Rumblefoot with a successful slashing attack; set the terms for the goblin deal (“if spiders attack, deal’s off”); has initiative 17 [ch 006 / 006.07; ch 006 / 006.08].
+- Allies: Six allies with the party; have no new items or abilities noted; their survival checks contributed to food and water gathering [ch 006 / 006.01; ch 006 / 006.02].
+- Fargas Rumblefoot: Now with the party; promised to lead them to a lost tomb filled with treasure [ch 006 / 006.07].
+- Yuk Yuk and Spiderbait: Now official guides; expect a share of future gold to cover their fee and Jimjar’s debt [ch 006 / 006.05].
+- Intention: Survive the Silken Paths crossing, evade the pursuing giant spiders, and determine whether Fargas’s promise of a treasure-filled tomb is trustworthy [ch 006 / 006.07; ch 006 / 006.08].
+
+## Audit
+- [A169] SHOWN — The party has reached and begun traversing the Silken Paths spider web chasm, engaging goblin guides and facing giant spiders [ch 006 / 006.04; ch 006 / 006.05; ch 006 / 006.07; ch 006 / 006.08].
+- [A170] SHOWN — Yuk Yuk and Spiderbait have been encountered and hired as guides through the Silken Paths [ch 006 / 006.04; ch 006 / 006.05].
+- [A171] SHOWN — Fargas Rumblefoot has been rescued from his spider cocoon and now travels with the party [ch 006 / 006.07].
+- [A162] SHOWN — The pursuit level has been tracked and reduced from four to three by Eldeth’s Stealth check [ch 006 / 006.02].
+- [A66] SHOWN — The party has arrived at the Silken Paths, a spider web chasm [ch 006 / 006.04; ch 006 / locations].
+- [A80] SHOWN — Jimjar, the deep gnome with a gambling habit, is actively betting and owes debts [ch 006 / 006.03; ch 006 / 006.05; ch 006 / npcs].
+- [A85] SHOWN — Topsy and Turvy, the deep gnome twins, were observed whispering secretly, their motives unknown [ch 006 / 006.03].
+- [A86] SHOWN — Yuk Yuk and Spiderbait have been encountered and negotiated with as goblin guides [ch 006 / 006.04; ch 006 / 006.05].
+- [A88] BEGUN — Demogorgon is not mentioned; no evidence of his rise or presence [ch 006 / 006.00].
+- [A168] BEGUN — The Lost Tomb of Khaem has been mentioned by Fargas as a future objective but not yet reached or explored [ch 006 / 006.07].
+- [A144] BEGUN — The party is aware of threats in the Underdark but no explicit moment of discovering demon lords is shown in this chunk [ch 006 / 006.00].
+- [A156] BEGUN — The dark heart talisman has not been mentioned or obtained [ch 006 / 006.00].
+- [A159] BEGUN — Final battle against Demogorgon not mentioned [ch 006 / 006.00].
+- [A266] BEGUN — Stroudite half-orc pilgrims not encountered in this chunk [ch 006 / 006.00].
+- [A274] BEGUN — Triboar carpenter not encountered [ch 006 / 006.00].
+- [A278] BEGUN — First Faction painting not referenced [ch 006 / 006.00].
+- [A286] BEGUN — Six-pointed star not mentioned in this chunk [ch 006 / 006.00].
+- [A403] BEGUN — Jimjar / Callarduran Echo 4 prophecy not activated [ch 006 / 006.00].
+- [A417] BEGUN — Echo 3 activated? No mention of Gauntlgrym or Keeper prophecy [ch 006 / 006.00].
+- [A424] BEGUN — Gauntlgrym call not confirmed [ch 006 / 006.00].
+- [A429] BEGUN — Brevin’s bedclothes incident not referenced [ch 006 / 006.00].
+- [A430] BEGUN — Endless Chant not mentioned [ch 006 / 006.00].
+- [A433] BEGUN — Echo 1 not referenced [ch 006 / 006.00].
+- [A436] BEGUN — Yvenne trust not tracked [ch 006 / 006.00].
+- [A439] BEGUN — Khell-Vire’s Watcher’s Stillness not earned [ch 006 / 006.00].
+- [A441] BEGUN — Polly Pocket not released [ch 006 / 006.00].
+- [A442] BEGUN — Walking-permit medallions not mentioned [ch 006 / 006.00].
+- [A443] BEGUN — Second High Tower key not held [ch 006 / 006.00].
+- [A405] BEGUN — Endless Chant fragment not heard [ch 006 / 006.00].
+- [A406] BEGUN — Janussi murder not referenced [ch 006 / 006.00].
+- [A407] BEGUN — Two "Sylvira" figures not referenced [ch 006 / 006.00].
+- [A408] BEGUN — Bookwyrm disguise not referenced [ch 006 / 006.00].
+- [A409] BEGUN — Alkrist as killer not referenced [ch 006 / 006.00].
+- [A410] BEGUN — Disguise rosetta cracked not referenced [ch 006 / 006.00].
+- [A411] BEGUN — Wards drop not referenced [ch 006 / 006.00].
+- [A412] BEGUN — Cryptogram recovered not referenced [ch 006 / 006.00].
+- [A413] BEGUN — Manshoon arrival not referenced [ch 006 / 006.00].
+- [A414] BEGUN — Iron Owlbear found dead not referenced [ch 006 / 006.00].
+- [A415] BEGUN — Echo 1 activated not referenced [ch 006 / 006.00].
+- [A416] BEGUN — Echo 2 activated not referenced [ch 006 / 006.00].
+- [A418] BEGUN — Echo 4 activated not referenced [ch 006 / 006.00].
+- [A419] BEGUN — Book of Vile Darkness fate not determined [ch 006 / 006.00].
+- [A420] BEGUN — Vault tower rocket not pulled [ch 006 / 006.00].
+- [A421] BEGUN — Candlekeep restructuring not referenced [ch 006 / 006.00].
+- [A422] BEGUN — Party named guest seekers not referenced [ch 006 / 006.00].
+- [A423] BEGUN — Manshoon-pursuit thread not activated [ch 006 / 006.00].
+- [A425] BEGUN — Daz’s first sinus-pressure moment not referenced [ch 006 / 006.00].
+- [A426] BEGUN — Yvenne naming Daz’s sensitivity not referenced [ch 006 / 006.00].
+- [A427] BEGUN — Marin’s quill incident not referenced [ch 006 / 006.00].
+- [A428] BEGUN — Brevin’s Sloobludop recitation not referenced [ch 006 / 006.00].
+- [A431] BEGUN — Ward-drop vision sequence not referenced [ch 006 / 006.00].
+- [A432] BEGUN — Glabbagool’s Juiblex contact not referenced [ch 006 / 006.00].
+- [A434] BEGUN — Daz and Yvenne’s expertise confirmed not referenced [ch 006 / 006.00].
+- [A435] BEGUN — Sylvira recruited not referenced [ch 006 / 006.00].
+- [A437] BEGUN — Vareth goodwill not referenced [ch 006 / 006.00].
+- [A438] BEGUN — Daral saved not referenced [ch 006 / 006.00].
+- [A440] BEGUN — Glabbagool’s Echo re-coax not referenced [ch 006 / 006.00].
+- (none) — All other audit questions not relevant to this chunk.

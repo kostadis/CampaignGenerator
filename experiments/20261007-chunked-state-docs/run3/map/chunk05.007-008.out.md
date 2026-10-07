@@ -1,0 +1,286 @@
+## Events
+- The party fled through the Silken Paths while being pursued by giant spiders, with Thorin severing a critical web strand for nine damage, causing one spider to fall into the chasm and delaying its attack [ch 007 / 007.01].
+- Daz used magic missile to blast a web intersection, severing two strands and cutting off the spiders’ pursuit, enabling the party’s escape [ch 007 / 007.01].
+- Gyrgum disengaged and retreated multiple times under spider threat, narrowly avoiding attacks [ch 007 / 007.01].
+- The party confronted Fargas about his claim to know the location of Brysis of Khaem’s tomb; he admitted he did not know its precise location but placed it on the northeastern edge of the Darklake [ch 007 / 007.02].
+- Sarith drew an improvised map using a stick and green mushroom-moss paint, marking the Darklake, Velkynvelve, Sloobludop, Gracklstugh, and the estimated tomb location [ch 007 / 007.02].
+- The party encountered a fractured, telepathic spectator that accused them of being a demon pack; Jimjar failed a Persuasion check (roll of 2), triggering its attack [ch 007 / 007.03].
+- The spectator attacked with confusion, paralysis, and fear rays; Thorin struck it for nine damage and applied Vex, Zalthir was paralyzed but resisted fear, and Daz killed it with a final magic missile volley [ch 007 / 007.03].
+- The spectator’s dying words were a telepathic warning: “The demons are coming” [ch 007 / 007.03].
+- The party discovered a suspicious chest tangled in webs near the Silken Paths’ exit; Zalthir attempted telepathic communication via myconid spores, which failed; they chose to bypass it [ch 007 / 007.04].
+- The party rested at the end of the Silken Paths; Yuk Yuk and Spiderbait demanded their twenty gold pieces from Jimjar, who negotiated their continued service until payment [ch 007 / 007.05].
+- Gyrgum agreed to defer Jimjar’s five-gold debt so the goblin guides could be paid first [ch 007 / 007.05].
+- Buppido, the derro, cryptically invited the party to join his “divine plan,” prompting Zalthir to suspect he might be the demon [ch 007 / 007.05].
+- The party was escorted to the Altar of the Deep Father in Sloobludop, where Ploopploopeen presented them as offerings to Bloppblippodd [ch 008 / 008.01].
+- Hemeth, a Duergar arms dealer, begged the party for help and whispered to Gyrgum to tell him when to act and to find him in Gracklstugh if they survived [ch 008 / 008.01].
+- Bloppblippodd accepted the offerings in the name of the Deep Father, inciting a cheer from her Kuo-toa followers [ch 008 / 008.01].
+- Gyrgum’s religion check (20) revealed the ritual was a conventional throat-slitting and that Ploopploopeen could end the adventure if he turned on them [ch 008 / 008.01].
+- Ploopploopeen struck Bloppblippodd with his scepters, triggering a violent civil war between Kuo-toa loyal to the Sea Mother and the Deep Father [ch 008 / 008.01].
+- The party disengaged from the center of the chaos as guards were stunned and unable to act [ch 008 / 008.01].
+- Gyrgum dashed behind Ploopploopeen’s lines intending to heal allies; Thorin moved to cover Daz and Zalthir; Zalthir cast darkness to obscure their retreat [ch 008 / 008.02].
+- Topsy and Turvy transformed into rats and scurried toward Bloppblippodd’s lair to loot treasure [ch 008 / 008.02].
+- Gyrgum entered Ploopploopeen’s hut and looted 500 cp, 2,000 sp, 150 gp, 27 pp, a strand of matched pearls (1,000 gp), two potions of healing, a potion of water breathing, and a scroll of light, justifying it as owed payment [ch 008 / 008.03].
+- The party walked confidently toward the northeastern boat “like the Reservoir Dogs,” avoiding direct combat [ch 008 / 008.03].
+- Thorin observed pools of blood and churning water in the Darklake as Kuo-toa were dragged beneath the surface by an unseen predator [ch 008 / 008.03].
+- Gyrgum concluded the water was unsafe and dashed 60 feet toward the boat, reaching it unharmed [ch 008 / 008.03].
+- Bloppblippodd cried “Leemooggoogoon!” as Ploopploopeen struck her fatal blow; she collapsed before the altar [ch 008 / 008.04].
+- Thick oily tentacles erupted from the Darklake; a 30-foot-tall two-headed demon lord with baboon-like heads and tusks rose, identified as Demogorgon [ch 008 / 008.04].
+- Demogorgon roared and charged the gathered Kuo-toa as the session ended on a cliffhanger [ch 008 / 008.04].
+
+## Concluded
+- The escape from the giant spiders in the Silken Paths concluded with the party reaching safety and bypassing the web-bound chest [ch 007 / 007.01; ch 007 / 007.04].
+- The interrogation of Fargas regarding the Lost Tomb of Khaem concluded with his admission of ignorance about the tomb’s precise location and the creation of Sarith’s map [ch 007 / 007.02].
+- The battle with the spectator concluded with its death after Daz’s final magic missile volley; its warning was delivered [ch 007 / 007.03].
+- The attempt to communicate with the web-bound chest via myconid spores concluded in failure; the party chose to leave it undisturbed [ch 007 / 007.04].
+- The negotiation with Yuk Yuk and Spiderbait over payment concluded with their agreement to remain with the party until Jimjar could pay them [ch 007 / 007.05].
+- The ritual sacrifice at the Altar of the Deep Father concluded with Ploopploopeen’s betrayal and the eruption of civil war [ch 008 / 008.01].
+- The party’s evasion of the Kuo-toan melee concluded with their successful retreat toward the northeastern boat, avoiding engagement [ch 008 / 008.02].
+- The looting of Ploopploopeen’s hut concluded with the party acquiring a significant hoard of coins, pearls, potions, and a scroll [ch 008 / 008.03].
+- The escape to the northeastern boat concluded with the party reaching it unharmed, just as Demogorgon emerged [ch 008 / 008.03].
+- The civil war among the Kuo-toa concluded with Bloppblippodd’s death at her father’s hands [ch 008 / 008.04].
+
+## Threads
+- [ADVANCED] **Lost Tomb of Khaem** — Fargas confirmed the tomb belongs to Brysis of Khaem, a half-elf sorcerer from Netheril; its decoy sarcophagus is atop a black marble tier; the true treasure lies behind a secret passage; its location is narrowed to the northeastern edge of the Darklake, with Sarith estimating three or four possible sites [ch 007 / 007.02; ch 007 / locations].
+- [OPENED] **Demogorgon’s rise** — Demogorgon erupted from the Darklake after Bloppblippodd’s death, roaring and attacking the Kuo-toa; the party is now directly threatened by a demon lord and must flee or confront it [ch 008 / 008.04; ch 008 / NPCs].
+- [OPENED] **Buppido’s divine plan** — Buppido cryptically invited the party to join his “divine plan,” and Zalthir suspected he might be the demon; his intentions and nature remain unknown [ch 007 / 007.05; ch 007 / NPCs].
+- [OPENED] **The demon warning** — The spectator’s dying words, “The demons are coming,” and Demogorgon’s emergence confirm a larger demonic threat is active in the Underdark; the party now knows demons are rising [ch 007 / 007.03; ch 008 / 008.04].
+- [OPENED] **The predator beneath the Darklake** — Pools of blood and churning water revealed an unseen creature dragging Kuo-toa under the surface; its identity and relation to Demogorgon are unknown [ch 008 / 008.03].
+- [ADVANCED] **Drow pursuit level** — The party’s pursuit level by drow remains at three, indicating ongoing threat from Velkynvelve [ch 007 / 007.02].
+- [OPENED] **Hemeth’s survival promise** — Hemeth, the Duergar arms dealer, asked the party to find him in Gracklstugh if they survived the sacrifice; his fate and potential as an ally or informant remain open [ch 008 / 008.01].
+- [OPENED] **Topsy and Turvy’s looting** — The twins transformed into rats and fled toward Bloppblippodd’s lair to search for treasure; their survival and what they retrieved are unknown [ch 008 / 008.02; ch 008 / NPCs].
+- [OPENED] **Ploopploopeen’s fate** — After killing his daughter, Ploopploopeen’s fate is unresolved as Demogorgon rose; he may be dead, fleeing, or transformed [ch 008 / 008.04; ch 008 / NPCs].
+- [OPENED] **The web-bound chest** — The chest near the Silken Paths’ exit was bypassed but not destroyed; its nature (mimic or trap) and contents remain unknown [ch 007 / 007.04; ch 007 / items].
+- [OPENED] **The goblin guides’ debt** — Yuk Yuk and Spiderbait are now traveling with the party until Jimjar pays them twenty gold; their loyalty and future actions are tied to this debt [ch 007 / 007.05; ch 007 / NPCs].
+
+## NPC Status
+- Fargas Rumblefoot | Alive | Unknown | Cautious toward party; desperate to survive [ch 007 / NPCs]
+- Yuk Yuk | Alive | With party | Grateful but demanding; now a traveling guide [ch 007 / NPCs; ch 007 / 007.05]
+- Spiderbait | Alive | With party | Grateful but demanding; now a traveling guide [ch 007 / NPCs; ch 007 / 007.05]
+- Spectator | Dead | Silken Paths | Hostile; slain by the party [ch 007 / NPCs]
+- Jimjar | Alive | With party | Owing 20 gp to goblins, 5 gp to Gyrgum; negotiating repayment [ch 007 / NPCs; ch 007 / 007.05; ch 008 / NPCs]
+- Sarith | Alive | With party | Provided map of Darklake region; continues as guide [ch 007 / NPCs]
+- Buppido | Alive | With party | Ominous; invited party to join his divine plan; suspected of being a demon [ch 007 / NPCs; ch 007 / 007.05]
+- Ploopploopeen | Unknown | Altar of the Deep Father | Killed his daughter; last seen before Demogorgon’s emergence [ch 008 / NPCs]
+- Bloppblippodd | Dead | Altar of the Deep Father | Killed by her father; her death summoned Demogorgon [ch 008 / NPCs]
+- Hemeth | Alive | Altar of the Deep Father | Survived the ritual chaos; instructed party to find him in Gracklstugh [ch 008 / NPCs]
+- Topsy and Turvy | Alive | Bloppblippodd’s lair | Transformed into rats and fled toward treasure; fate unknown [ch 008 / NPCs]
+- Eldeth | Alive | With party | Fled with party; claimed to be a dwarf [ch 008 / NPCs]
+
+## World
+- [LOCATION] **Silken Paths** — A treacherous network of giant spider webs over chasms; spiders have 26 HP and AC 14; web strands have 5 HP; the party escaped it after a coordinated retreat and bypassed a suspicious chest [ch 007 / locations; ch 007 / 007.01; ch 007 / 007.04].
+- [LOCATION] **Lost Tomb of Khaem** — The floating tomb of the half-elf sorcerer Brysis of Khaem; it fell into the Underdark after Netheril’s collapse; its decoy sarcophagus is on a black marble tier; the true treasure lies behind a secret passage from the servant’s tomb [ch 007 / locations].
+- [LOCATION] **Darklake** — A vast, waveless underground water system; Kuo-toa use its shallows for rituals; something monstrous beneath the surface dragged victims down during the civil war [ch 008 / locations; ch 008 / 008.03].
+- [LOCATION] **Altar of the Deep Father** — A ritual site near Sloobludop’s docks; stained with blood; features a grate over the Darklake; site of the failed sacrifice and Kuo-toan civil war [ch 008 / locations].
+- [LOCATION] **Ploopploopeen’s Hut** — A simple dwelling near the docks; contained 500 cp, 2,000 sp, 150 gp, 27 pp, a strand of matched pearls (1,000 gp), two potions of healing, a potion of water breathing, and a scroll of light; looted by Gyrgum [ch 008 / locations; ch 008 / items].
+- [LOCATION] **Sloobludop Docks** — A series of jetties with rafts and boats; guarded by Kuo-toan monitors who forbade touching the boats; the northeastern boat was the least guarded [ch 008 / locations].
+- [NPC] **Brysis of Khaem** — A half-elf sorcerer from the height of Netheril’s empire; interred in a floating tomb that now lies in the Underdark; her name was misheard as “Brys” by Thorin [ch 007 / 007.02].
+- [NPC] **Demogorgon** — A 30-foot-tall demon lord with two baboon-like heads, tusks, oily tentacles, and red eyes; rose from the Darklake after Bloppblippodd’s death; his emergence confirms a major demonic threat [ch 008 / NPCs; ch 008 / 008.04].
+- [NPC] **Ploopploopeen** — Archpriest of the Sea Mother; betrayed his daughter Bloppblippodd to stop the sacrifice; looted his own hut’s stash; fate unknown after Demogorgon’s rise [ch 008 / NPCs].
+- [NPC] **Bloppblippodd** — Archpriest of the Deep Father; daughter of Ploopploopeen; called for the sacrifice and the knife; her dying cry “Leemooggoogoon!” summoned Demogorgon [ch 008 / NPCs].
+- [ITEM] **Strand of Matched Pearls** — Worth 1,000 gp; taken from Ploopploopeen’s hut [ch 008 / items].
+- [ITEM] **Potions of Healing** — Two obtained from Ploopploopeen’s hut; usable by the party [ch 008 / items].
+- [ITEM] **Potion of Water Breathing** — Obtained from Ploopploopeen’s hut; enables underwater survival [ch 008 / items].
+- [ITEM] **Scroll of Light** — Obtained from Ploopploopeen’s hut; contains the light spell [ch 008 / items].
+- [ITEM] **Coin Hoard** — 500 cp, 2,000 sp, 150 gp, 27 pp; looted from Ploopploopeen’s hut [ch 008 / items].
+- [THREAT] **Drow pursuit level** — The party’s pursuit level by drow remains at three, indicating active tracking from Velkynvelve [ch 007 / 007.02].
+- [THREAT] **Demons rising** — The spectator’s dying warning and Demogorgon’s emergence confirm a growing demonic incursion in the Underdark [ch 007 / 007.03; ch 008 / 008.04].
+- [THREAT] **Unseen predator in the Darklake** — A creature beneath the surface dragged Kuo-toa under, suggesting a greater, unknown horror may be active [ch 008 / 008.03].
+
+## Party
+- The party is at the northeastern dock of Sloobludop, having just reached a boat as Demogorgon rose from the Darklake [ch 008 / 008.04].
+- The party’s group name is not stated; they are a level-two party [ch 007 / 007.01].
+- Thorin has no ranged weapon; he used his short sword to sever a web strand for nine damage; he is motivated to fight but avoids ranged combat [ch 007 / items; ch 007 / 007.01; ch 008 / 008.02].
+- Daz has expended all magic missile spell slots; he used them to sever webs and kill the spectator; he now seeks a long rest [ch 007 / spells; ch 007 / 007.01; ch 007 / 007.03].
+- Zalthir cast darkness to obscure retreat; he was paralyzed by the spectator but recovered; he is being run by the GM this session [ch 007 / spells; ch 007 / 007.03; ch 008 / 008.02].
+- Gyrgum has a religion check of 20; he looted Ploopploopeen’s hut and claims the items as owed payment; he deferred Jimjar’s five-gold debt to pay the goblins first [ch 007 / 007.02; ch 008 / 008.03; ch 007 / 007.05].
+- Jimjar owes 20 gp to Yuk Yuk and Spiderbait and 5 gp to Gyrgum; he negotiated their continued service; he is a gambler who bet on survival [ch 007 / NPCs; ch 007 / 007.05; ch 008 / 008.01].
+- The party now possesses: 500 cp, 2,000 sp, 150 gp, 27 pp, a strand of matched pearls (1,000 gp), two potions of healing, a potion of water breathing, and a scroll of light [ch 008 / items].
+- The party intends to escape on the northeastern boat while avoiding the water and Demogorgon’s wrath [ch 008 / 008.03; ch 008 / 008.04].
+- The party is aware of the rising demonic threat and the existence of Demogorgon; they are fleeing for survival [ch 007 / 007.03; ch 008 / 008.04].
+
+## Audit
+- [A8] SHOWN — The party reached Sloobludop, the kuo-toa settlement, as evidenced by their arrival at the Altar of the Deep Father and docks [ch 008 / 008.01; ch 008 / locations].
+- [A46] SHOWN — The party reached Sloobludop, the kuo-toa town on the Darklake, confirmed by their presence at the altar, docks, and Ploopploopeen’s hut [ch 008 / locations].
+- [A51] SHOWN — The party is in the Darklake, the Underdark waterway, as they are at its docks, witness its churning waters, and the creature beneath it [ch 008 / locations; ch 008 / 008.03].
+- [A66] SHOWN — The party traversed the Silken Paths, as confirmed by their escape from giant spiders and passage through the web network [ch 007 / 007.01; ch 007 / locations].
+- [A68] [ADVANCED] — The Lost Tomb of Khaem was identified as the tomb of Brysis of Khaem, with its decoy sarcophagus and secret passage revealed; its location narrowed to the northeastern Darklake [ch 007 / 007.02; ch 007 / locations].
+- [A70] BEGUN — The party became aware of the purple worm egg chamber’s existence indirectly through the Darklake’s predatory threat, but no egg was sought or found [ch 008 / 008.03].
+- [A86] SHOWN — Ploopploopeen, the kuo-toa archpriest, was encountered and presented the party as offerings [ch 008 / 008.01; ch 008 / NPCs].
+- [A87] SHOWN — Bloppblippodd, the kuo-toa archpriest of the Deep Father, was encountered, accepted the offerings, and was killed by her father [ch 008 / 008.01; ch 008 / NPCs].
+- [A88] SHOWN — Demogorgon, the demon lord, rose from the Darklake at Sloobludop, ending the session on a cliffhanger [ch 008 / 008.04; ch 008 / NPCs].
+- [A143] SHOWN — Demogorgon’s rise from the Darklake at Sloobludop occurred, confirmed by his eruption and attack [ch 008 / 008.04].
+- [A162] SHOWN — The drow pursuit level remains tracked and active at three [ch 007 / 007.02].
+- [A169] SHOWN — The Silken Paths traversal was completed, with the party escaping and reaching its end [ch 007 / 007.01; ch 007 / 007.04].
+- [A170] SHOWN — Yuk Yuk and Spiderbait were encountered as goblin guides and now travel with the party [ch 007 / NPCs; ch 007 / 007.05].
+- [A171] SHOWN — Fargas Rumblefoot was rescued from a spider cocoon and interrogated about the tomb [ch 007 / NPCs; ch 007 / 007.02].
+- [A172] BEGUN — The Kuo-toa day’s catch was observed as Hemeth was prepared for sacrifice, but no capture event occurred in this chunk [ch 008 / 008.01].
+- [A188] BEGUN — The Maze Engine’s activation is not mentioned; this chunk concerns Sloobludop and the Darklake, not the Labyrinth [ch 008 / 008.01].
+- [A207] BEGUN — Sloobludop ruins are mentioned as a future visit; the settlement is currently active, not ruined [ch 008 / 008.01].
+- [A213] BEGUN — The infected area of Araumycos’s mind is not referenced; this chunk concerns Demogorgon, not Zuggtmoy [ch 008 / 008.04].
+- [A223] BEGUN — The party has not returned to the surface world; they remain in the Underdark [ch 008 / 008.04].
+- [A265] BEGUN — Rishaal the Pageturner was not encountered in this chunk; the party is in the Underdark [ch 008 / 008.04].
+- [A400] BEGUN — Brevin’s Sloobludop recitation incident is referenced in tracking but not mentioned in this chunk’s evidence [ch 008 / 008.01].
+- [A428] BEGUN — Brevin’s Sloobludop recitation is not mentioned in this chunk’s evidence [ch 008 / 008.01].
+- [A442] BEGUN — Walking-permit medallions are not mentioned; the party has not encountered the Jewel of the Styx [ch 008 / 008.04].
+- [A443] BEGUN — The second High Tower key is not referenced; this is a Candlekeep event [ch 008 / 008.04].
+- [A144] SHOWN — The party now has awareness that demon lords are loose in the Underdark, confirmed by the spectator’s warning and Demogorgon’s emergence [ch 007 / 007.03; ch 008 / 008.04].
+- [A140] SHOWN — Demogorgon, Prince of Demons, was encountered and rose from the Darklake [ch 008 / 008.04].
+- [A164] BEGUN — The Society of Brilliance is not mentioned in this chunk [ch 008 / 008.04].
+- [A166] BEGUN — The Hook Horror Hunt is not referenced [ch 008 / 008.04].
+- [A168] BEGUN — The Lost Tomb of Khaem exploration has not begun; only its location is known [ch 007 / 007.02].
+- [A178] BEGUN — Buppido’s shrine and killings were revealed in Whorlstone Tunnels, not this chunk [ch 008 / 008.04].
+- [A201] BEGUN — Xazax the Eyemonger is not mentioned [ch 008 / 008.04].
+- [A205] BEGUN — Drow patrol confrontation near Menzoberranzan is not referenced [ch 008 / 008.04].
+- [A208] BEGUN — Gracklstugh chaos is mentioned as a future destination, not yet reached [ch 008 / 008.01].
+- [A210] BEGUN — Velkynvelve is referenced as a past location, not revisited [ch 007 / 007.02].
+- [A219] BEGUN — Yochlol in Gromph’s inner sanctum is not referenced [ch 008 / 008.04].
+- [A220] BEGUN — Wand of Orcus is not mentioned [ch 008 / 008.04].
+- [A221] BEGUN — Heroic sacrifice opportunity is not yet presented [ch 008 / 008.04].
+- [A222] BEGUN — Demon sortie encounters are not yet occurring [ch 008 / 008.04].
+- [A223] BEGUN — Return to the surface world has not occurred [ch 008 / 008.04].
+- [A246] BEGUN — Waterdeep is a surface city; party is in the Underdark [ch 008 / 008.04].
+- [A256] BEGUN — Way of the Lion is a surface path [ch 008 / 008.04].
+- [A257] BEGUN — Candlekeep is a surface location; party is not there [ch 008 / 008.04].
+- [A294] BEGUN — Candlekeep murder investigation is unrelated to this Underdark chapter [ch 008 / 008.04].
+- [A297] BEGUN — Gauntlgrym call is referenced but not yet reached [ch 008 / 008.04].
+- [A301] BEGUN — Gyrgum’s Vareth arc is Candlekeep-related [ch 008 / 008.04].
+- [A302] BEGUN — Glabbagool’s question is Candlekeep-related [ch 008 / 008.04].
+- [A303] BEGUN — Polly Pocket disposition is Candlekeep-related [ch 008 / 008.04].
+- [A304] BEGUN — Sylvira recruitment is Candlekeep-related [ch 008 / 008.04].
+- [A305] BEGUN — Daral rescue is Candlekeep-related [ch 008 / 008.04].
+- [A306] BEGUN — Kalan missing is Candlekeep-related [ch 008 / 008.04].
+- [A307] BEGUN — Alkrist arrest is Candlekeep-related [ch 008 / 008.04].
+- [A308] BEGUN — Moziqodo binding is Candlekeep-related [ch 008 / 008.04].
+- [A309] BEGUN — Daz/Yvenne synthesis is Candlekeep-related [ch 008 / 008.04].
+- [A310] BEGUN — Vaelissa T'sarran name is Candlekeep-related [ch 008 / 008.04].
+- [A311] BEGUN — Layer 2 Brysis reveal is Candlekeep-related [ch 008 / 008.04].
+- [A312] BEGUN — Unsigned sting is Candlekeep-related [ch 008 / 008.04].
+- [A313] BEGUN — Glabbagool’s Shadow Apprentice unlock is Candlekeep-related [ch 008 / 008.04].
+- [A314] BEGUN — Candlekeep gates arrival is surface-related [ch 008 / 008.04].
+- [A315] BEGUN — Refectory dinner is Candlekeep-related [ch 008 / 008.04].
+- [A316] BEGUN — Whispering Dome is Candlekeep-related [ch 008 / 008.04].
+- [A317] BEGUN — Infernal Fortress is Candlekeep-related [ch 008 / 008.04].
+- [A318] BEGUN — Janussi’s chamber is Candlekeep-related [ch 008 / 008.04].
+- [A319] BEGUN — Southern Dining Hall is Candlekeep-related [ch 008 / 008.04].
+- [A320] BEGUN — Bath House is Candlekeep-related [ch 008 / 008.04].
+- [A321] BEGUN — Founder’s Court is Candlekeep-related [ch 008 / 008.04].
+- [A322] BEGUN — Oak Tree Apothecary is Candlekeep-related [ch 008 / 008.04].
+- [A323] BEGUN — Kitchens is Candlekeep-related [ch 008 / 008.04].
+- [A324] BEGUN — Erudite Outfitters is Candlekeep-related [ch 008 / 008.04].
+- [A325] BEGUN — Drakonoikos is Candlekeep-related [ch 008 / 008.04].
+- [A326] BEGUN — Reader’s Tower is Candlekeep-related [ch 008 / 008.04].
+- [A327] BEGUN — Immortal Chambers is Candlekeep-related [ch 008 / 008.04].
+- [A328] BEGUN — Sea Warden’s Tower is Candlekeep-related [ch 008 / 008.04].
+- [A329] BEGUN — Bell Tower is Candlekeep-related [ch 008 / 008.04].
+- [A330] BEGUN — Cursed Tower is Candlekeep-related [ch 008 / 008.04].
+- [A331] BEGUN — Pont de Paramours is Candlekeep-related [ch 008 / 008.04].
+- [A332] BEGUN — Oval Theatre is Candlekeep-related [ch 008 / 008.04].
+- [A333] BEGUN — House of Alaundo is Candlekeep-related [ch 008 / 008.04].
+- [A334] BEGUN — Astronomicon Orrery is Candlekeep-related [ch 008 / 008.04].
+- [A335] BEGUN — Philosopher’s Court is Candlekeep-related [ch 008 / 008.04].
+- [A336] BEGUN — Melodrome is Candlekeep-related [ch 008 / 008.04].
+- [A337] BEGUN — Jewel of the Styx is Candlekeep-related [ch 008 / 008.04].
+- [A338] BEGUN — School of Drama is Candlekeep-related [ch 008 / 008.04].
+- [A339] BEGUN — High Tower Library is Candlekeep-related [ch 008 / 008.04].
+- [A340] BEGUN — Lava chamber is Candlekeep-related [ch 008 / 008.04].
+- [A341] BEGUN — The Vault (B2) is Candlekeep-related [ch 008 / 008.04].
+- [A342] BEGUN — The Vault (B3) is Candlekeep-related [ch 008 / 008.04].
+- [A343] BEGUN — Vault tower rocket is Candlekeep-related [ch 008 / 008.04].
+- [A344] BEGUN — Janussi first contact is Candlekeep-related [ch 008 / 008.04].
+- [A345] BEGUN — Janussi death is Candlekeep-related [ch 008 / 008.04].
+- [A346] BEGUN — Bookwyrm first contact is Candlekeep-related [ch 008 / 008.04].
+- [A347] BEGUN — Bookwyrm Teles sighting is Candlekeep-related [ch 008 / 008.04].
+- [A348] BEGUN — Bookwyrm confrontation is Candlekeep-related [ch 008 / 008.04].
+- [A349] BEGUN — Bookwyrm death is Candlekeep-related [ch 008 / 008.04].
+- [A350] BEGUN — Kalan first contact is Candlekeep-related [ch 008 / 008.04].
+- [A351] BEGUN — Kalan second key is Candlekeep-related [ch 008 / 008.04].
+- [A352] BEGUN — Kalan farewell is Candlekeep-related [ch 008 / 008.04].
+- [A353] BEGUN — Kalan disappearance is Candlekeep-related [ch 008 / 008.04].
+- [A354] BEGUN — Sylvira first contact is Candlekeep-related [ch 008 / 008.04].
+- [A355] BEGUN — Sylvira suspect status is Candlekeep-related [ch 008 / 008.04].
+- [A356] BEGUN — Sylvira recruitment is Candlekeep-related [ch 008 / 008.04].
+- [A357] BEGUN — Sylvira dispel is Candlekeep-related [ch 008 / 008.04].
+- [A358] BEGUN — Sylvira survival is Candlekeep-related [ch 008 / 008.04].
+- [A359] BEGUN — Daral first contact is Candlekeep-related [ch 008 / 008.04].
+- [A360] BEGUN — Daral poisoning is Candlekeep-related [ch 008 / 008.04].
+- [A361] BEGUN — Daral survival is Candlekeep-related [ch 008 / 008.04].
+- [A362] BEGUN — Daral testimony is Candlekeep-related [ch 008 / 008.04].
+- [A363] BEGUN — Fheminor first contact is Candlekeep-related [ch 008 / 008.04].
+- [A364] BEGUN — Fheminor revelation is Candlekeep-related [ch 008 / 008.04].
+- [A365] BEGUN — Fheminor appointment is Candlekeep-related [ch 008 / 008.04].
+- [A366] BEGUN — A'lai first contact is Candlekeep-related [ch 008 / 008.04].
+- [A367] BEGUN — A'lai interview is Candlekeep-related [ch 008 / 008.04].
+- [A368] BEGUN — A'lai smash is Candlekeep-related [ch 008 / 008.04].
+- [A369] BEGUN — A'lai fate is Candlekeep-related [ch 008 / 008.04].
+- [A370] BEGUN — Alkrist first contact is Candlekeep-related [ch 008 / 008.04].
+- [A371] BEGUN — Alkrist interview is Candlekeep-related [ch 008 / 008.04].
+- [A372] BEGUN — Alkrist arrest is Candlekeep-related [ch 008 / 008.04].
+- [A373] BEGUN — Fembris first contact is Candlekeep-related [ch 008 / 008.04].
+- [A374] BEGUN — Fembris confession is Candlekeep-related [ch 008 / 008.04].
+- [A375] BEGUN — Tadric first contact is Candlekeep-related [ch 008 / 008.04].
+- [A376] BEGUN — Tadric assistance is Candlekeep-related [ch 008 / 008.04].
+- [A377] BEGUN — Tadric appointment is Candlekeep-related [ch 008 / 008.04].
+- [A378] BEGUN — Hollypocket witness is Candlekeep-related [ch 008 / 008.04].
+- [A379] BEGUN — Sprig witness is Candlekeep-related [ch 008 / 008.04].
+- [A380] BEGUN — Leuwin witness is Candlekeep-related [ch 008 / 008.04].
+- [A381] BEGUN — Teles interview is Candlekeep-related [ch 008 / 008.04].
+- [A382] BEGUN — Kazryn interview is Candlekeep-related [ch 008 / 008.04].
+- [A383] BEGUN — Khell-Vire letter is Candlekeep-related [ch 008 / 008.04].
+- [A384] BEGUN — Philemon letter is Candlekeep-related [ch 008 / 008.04].
+- [A385] BEGUN — Vareth final stations is Candlekeep-related [ch 008 / 008.04].
+- [A386] BEGUN — Yvenne third sitting is Candlekeep-related [ch 008 / 008.04].
+- [A387] BEGUN — Yvenne name delivery is Candlekeep-related [ch 008 / 008.04].
+- [A388] BEGUN — Yvenne synthesis is Candlekeep-related [ch 008 / 008.04].
+- [A389] BEGUN — Inda emergence is Candlekeep-related [ch 008 / 008.04].
+- [A390] BEGUN — Spanner handoff is Candlekeep-related [ch 008 / 008.04].
+- [A391] BEGUN — Moziqodo first encounter is Candlekeep-related [ch 008 / 008.04].
+- [A392] BEGUN — Moziqodo binding break is Candlekeep-related [ch 008 / 008.04].
+- [A393] BEGUN — Moziqodo fate is Candlekeep-related [ch 008 / 008.04].
+- [A394] BEGUN — Manshoon announcement is Candlekeep-related [ch 008 / 008.04].
+- [A395] BEGUN — Manshoon confrontation is Candlekeep-related [ch 008 / 008.04].
+- [A396] BEGUN — Manshoon escape is Candlekeep-related [ch 008 / 008.04].
+- [A397] BEGUN — Glabbagool bad night is Candlekeep-related [ch 008 / 008.04].
+- [A398] BEGUN — Glabbagool sidekick is Candlekeep-related [ch 008 / 008.04].
+- [A399] BEGUN — Eldeth letter is Candlekeep-related [ch 008 / 008.04].
+- [A401] BEGUN — Brevin bedclothes incident is Candlekeep-related [ch 008 / 008.04].
+- [A402] BEGUN — Marin quill incident is Candlekeep-related [ch 008 / 008.04].
+- [A403] BEGUN — Jimjar/Callarduran prophecy is Candlekeep-related [ch 008 / 008.04].
+- [A404] BEGUN — Five Books admission is Candlekeep-related [ch 008 / 008.04].
+- [A405] BEGUN — Endless Chant fragment is Candlekeep-related [ch 008 / 008.04].
+- [A406] BEGUN — Janussi murder is Candlekeep-related [ch 008 / 008.04].
+- [A407] BEGUN — Two “Sylvira” figures is Candlekeep-related [ch 008 / 008.04].
+- [A408] BEGUN — Bookwyrm disguise is Candlekeep-related [ch 008 / 008.04].
+- [A409] BEGUN — Alkrist as killer is Candlekeep-related [ch 008 / 008.04].
+- [A410] BEGUN — Disguise rosetta cracked is Candlekeep-related [ch 008 / 008.04].
+- [A411] BEGUN — Wards drop is Candlekeep-related [ch 008 / 008.04].
+- [A412] BEGUN — Cryptogram recovered is Candlekeep-related [ch 008 / 008.04].
+- [A413] BEGUN — Manshoon arrival is Candlekeep-related [ch 008 / 008.04].
+- [A414] BEGUN — Iron Owlbear found is Candlekeep-related [ch 008 / 008.04].
+- [A415] BEGUN — Echo 1 activated is Candlekeep-related [ch 008 / 008.04].
+- [A416] BEGUN — Echo 2 activated is Candlekeep-related [ch 008 / 008.04].
+- [A417] BEGUN — Echo 3 activated is Candlekeep-related [ch 008 / 008.04].
+- [A418] BEGUN — Echo 4 activated is Candlekeep-related [ch 008 / 008.04].
+- [A419] BEGUN — Book of Vile Darkness fate is Candlekeep-related [ch 008 / 008.04].
+- [A420] BEGUN — Vault tower rocket is Candlekeep-related [ch 008 / 008.04].
+- [A421] BEGUN — Candlekeep restructuring is Candlekeep-related [ch 008 / 008.04].
+- [A422] BEGUN — Guest seekers ceremony is Candlekeep-related [ch 008 / 008.04].
+- [A423] BEGUN — Manshoon-pursuit thread is Candlekeep-related [ch 008 / 008.04].
+- [A424] BEGUN — Gauntlgrym call confirmed is Candlekeep-related [ch 008 / 008.04].
+- [A425] BEGUN — Daz’s first pressure moment is Candlekeep-related [ch 008 / 008.04].
+- [A426] BEGUN — Yvenne names sensitivity is Candlekeep-related [ch 008 / 008.04].
+- [A427] BEGUN — Marin quill incident is Candlekeep-related [ch 008 / 008.04].
+- [A429] BEGUN — Brevin bedclothes incident is Candlekeep-related [ch 008 / 008.04].
+- [A430] BEGUN — Endless Chant stoppage is Candlekeep-related [ch 008 / 008.04].
+- [A431] BEGUN — Ward-drop vision is Candlekeep-related [ch 008 / 008.04].
+- [A432] BEGUN — Glabbagool Juiblex contact is Candlekeep-related [ch 008 / 008.04].
+- [A433] BEGUN — Echo 1 prophecy is Candlekeep-related [ch 008 / 008.04].
+- [A434] BEGUN — Daz/Yvenne expertise confirmed is Candlekeep-related [ch 008 / 008.04].
+- [A435] BEGUN — Sylvira recruited is Candlekeep-related [ch 008 / 008.04].
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks is Candlekeep-related [ch 008 / 008.04].
+- [A437] BEGUN — Vareth goodwill is Candlekeep-related [ch 008 / 008.04].
+- [A438] BEGUN — Daral saved is Candlekeep-related [ch 008 / 008.04].
+- [A439] BEGUN — Khell-Vire earned is Candlekeep-related [ch 008 / 008.04].
+- [A440] BEGUN — Glabbagool Whispering Dome is Candlekeep-related [ch 008 / 008.04].
+- [A441] BEGUN — Polly Pocket released is Candlekeep-related [ch 008 / 008.04].
+- [A442] BEGUN — Walking-permit medallions is Candlekeep-related [ch 008 / 008.04].
+- [A443] BEGUN — Second High Tower key is Candlekeep-related [ch 008 / 008.04].

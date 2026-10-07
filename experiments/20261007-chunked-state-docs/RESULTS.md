@@ -189,6 +189,56 @@ of gm-session-prep on the OOTA copy. Pointer variant = `skills_variant/gm-sessio
   summaries` — the summary has "information about events in the Underdark", so the span is a paraphrase, as
   flagged, but "not in the summaries" overstates it; it should read "not verbatim".
 
+## Round 6 — Qwen3-Next-80B-A3B (MTP-2, 8 seqs/box, both boxes) for throughput
+
+`run3/`, same prompts and chunks; spun up with `MAX_SEQS=8 SPEC_TOKENS=2 GPU_UTIL=0.80`, prefix caching OFF
+(the v0.22.0 image predates the Mamba block-size fix; APC is immaterial for decode-bound work anyway).
+
+| | qwen3.8 (run1) | DeepSeek (run2) | **Qwen3-Next (run3)** |
+|---|---|---|---|
+| map output | 468K | 1,149K | **1,413K** |
+| of which Audit section | 11% | 10% | **42%** |
+| map wall, 60 chunks | ~32 min (half 1 box) | 72 min | **30.5 min** |
+| useful (non-audit) tok/s | ~55 (~90 if 2 boxes throughout) | ~60 | **~112** |
+| map drops | 113 | 157 | **2,664** (≈2,150 Audit) |
+| hand-verified facts (16) | 10 | 12 | 11 |
+| world_state invalid citations | 5 | 2 | **0** |
+| world_state quotes verbatim | 44/44 | 268/270 | **184/300** |
+
+- **Throughput: ~2× DeepSeek's useful output in under half the time.** Comparable content volume (Events
+  1,569 vs 2,006; World 974 vs 987; Threads 560 vs 432).
+- **The Audit list runs away in nearly every chunk**: invented ids past A443, and "BEGUN — not yet reached X"
+  for items the chunk never touches, despite "leave out every audit question the chunk does not bear on".
+  42% of output tokens. Code kept the verdicts clean, but the cost is real — moving the audit out of the map
+  (#505) would make this model ~40% faster still.
+- **Its reduce paraphrases inside quotation marks** (116 non-verbatim quotes in world_state); map notes are
+  span-checked so these come from the reduce. For a Claude reader that treats quotes as canon, that matters.
+- Suggests a **split**: Qwen3-Next for the map (bulk, code-checked), a faithful model for the 9 small reduce calls
+  (DeepSeek, or Claude) — or span-check the reduce output and annotate (`⚠ unverified:`) as `annotate.py` does.
+
+## Round 7 — Claude for the reduce step only (Qwen3-Next map notes, cached)
+
+`--backend claude-code` (subscription, `claude -p`, thinking off), 3 calls at a time; the map is run3's, so only
+the 9 reduce calls differ. The `run3_{sonnet,sonnet_hi,opus,opus_lo}/` folders are committed without their `map/`
+copies (byte-identical to `run3/map/`); to re-run one, copy `run3/map` into it first. Code-built sections (timeline, completed, NPC table, audit) are identical across rows.
+
+| reduce model | slowest call | sum of calls | world_state chars | quotes verbatim | invalid cites | scene cov. | entities |
+|---|---|---|---|---|---|---|---|
+| Qwen3-Next (Spark) | 661 s | 3,260 s | 208K | 184/300 (61%) | 0 | 61% | 252 |
+| **Sonnet 5.5 medium** | **49 s** | **308 s** | 64K | **44/47 (94%)** | 2 | 51% | 206 |
+| Sonnet 5.5 high | 107 s | 537 s | 80K | 50/54 (93%) | 0 | 52% | 210 |
+| Opus 5.5 low | 84 s | 365 s | 53K | 39/49 (80%) | 0 | 43% | 158 |
+| Opus 5.5 medium | 126 s | 639 s | 86K | 52/66 (79%) | 0 | 55% | 210 |
+
+- All Claude reduces condense (53–86K vs 208K) and are 5–20× faster per call than the Spark reduce.
+- **Sonnet medium is the pick**: best quote fidelity, fastest, cheapest (~$1–1.50 per rebuild at API rates;
+  $0 marginal on the subscription). Sonnet high adds ~25% content at ~1.7× the time, same fidelity.
+- Opus's lower quote score is mostly quotation marks around *note* text (NPC-table dispositions such as
+  "Grateful and resigned") and light paraphrase — the reduce prompt permits quoting notes, so this is partly the
+  prompt's fault. For a Claude reader that treats quotes as speech, the prompt should restrict quotation marks to
+  words spoken or written in the summaries. Opus low is the thinnest (43% scene coverage, 158 entities).
+- campaign_state's quote counts are dominated by the code-written audit item titles and are not a model signal.
+
 ## Verdict
 
 - **Coverage/detail: yes, clearly.** Near-total scene coverage, 3× the entities, and it reads details the
