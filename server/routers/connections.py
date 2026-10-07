@@ -7,14 +7,15 @@ import sys
 import tempfile
 from pathlib import Path
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
 from server.platform_config_service import resolve_selection
 
+from campaignlib.npc import DossierLayoutError
+from campaignlib.registry import find_registry_above
 from campaignlib import (  # noqa: E402
-    find_registry,
     build_alias_normalizer,
     client_from_args,
     format_npc_roster,
@@ -410,15 +411,17 @@ def extract_connections(req: ExtractRequest, request: Request):
     """Call Claude to extract entities/relationships, canonicalize IDs, merge into cache."""
     CHAR_LIMIT = 600_000
 
-    # Server has no campaign CWD, so derive the registry (if any) from the
-    # request's dossier dir campaign root: <campaign>/docs/npcs -> <campaign>.
-    # find_registry returns None for non-standard layouts, so this only ever
-    # opts into a registry when one actually sits beside the dossiers.
-    alias_map = (
-        load_alias_map(req.dossier_dir,
-                       registry_path=find_registry(Path(req.dossier_dir).parent.parent))
-        if req.dossier_dir else {}
-    )
+    # Server has no campaign CWD, so find the registry (if any) by looking up
+    # the tree from the request's dossier dir; it never depends on how deep that
+    # directory is. An unmigrated docs/npcs/ is refused (spec 032 FR-022c).
+    try:
+        alias_map = (
+            load_alias_map(req.dossier_dir,
+                           registry_path=find_registry_above(req.dossier_dir))
+            if req.dossier_dir else {}
+        )
+    except DossierLayoutError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     normalize, _ = build_alias_normalizer(alias_map)
     roster = format_npc_roster(alias_map)
 
@@ -588,8 +591,11 @@ def get_context(
     # Build search terms: canonical label plus any aliases from the dossier map.
     terms = [entity["label"]]
     if dossier_dir:
-        alias_map = load_alias_map(
-            dossier_dir, registry_path=find_registry(Path(dossier_dir).parent.parent))
+        try:
+            alias_map = load_alias_map(
+                dossier_dir, registry_path=find_registry_above(dossier_dir))
+        except DossierLayoutError as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
         for canonical, aliases in alias_map.items():
             if canonical.lower() == entity["label"].lower():
                 terms.extend(aliases)

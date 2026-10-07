@@ -202,8 +202,8 @@ def test_resolve_name_tool_returns_json_and_never_errors_on_nonzero(tmp_path, mo
     (tmp_path / "config").mkdir(parents=True)
     (tmp_path / "config" / "party.yaml").write_text(
         "characters:\n- name: Sequoia\n", encoding="utf-8")
-    (tmp_path / "docs" / "npcs").mkdir(parents=True)
-    (tmp_path / "docs" / "npcs" / "s.md").write_text(
+    (tmp_path / "docs" / "npcs" / "distilled").mkdir(parents=True)
+    (tmp_path / "docs" / "npcs" / "distilled" / "s.md").write_text(
         "---\nname: Sequioa\n---\n\nbody\n", encoding="utf-8")
 
     amb = json.loads(rm.registry_resolve_name(tmp_path, "Sequioa"))
@@ -224,3 +224,28 @@ def test_resolve_name_tool_is_registered_and_documented():
     server = rm.build_server(Path("/tmp/does-not-matter"))
     assert "registry_resolve_name" in server.instructions
     assert "ambiguous" in server.instructions
+
+
+def test_resolve_name_tool_carries_the_migration_command_on_a_layout_refusal(tmp_path):
+    """An unmigrated docs/npcs/ must reach the MCP client as a message naming the command,
+    not as a bare exit code (spec 032 FR-022c)."""
+    (tmp_path / "docs" / "npcs").mkdir(parents=True)
+    (tmp_path / "docs" / "npcs" / "loose.md").write_text("not published\n", encoding="utf-8")
+    out = rm.registry_resolve_name(tmp_path, "Anyone")
+    assert "server.migrate_npc_dossiers" in out and "--propose" in out
+
+
+def test_check_and_import_frontmatter_tools_carry_the_migration_command(tmp_path):
+    from entity_registry import registry
+
+    assert registry.main(["init", str(tmp_path)]) == 0
+    npcs = tmp_path / "docs" / "npcs"
+    npcs.mkdir(parents=True)
+    (npcs / "loose.md").write_text("not published\n", encoding="utf-8")
+    assert "server.migrate_npc_dossiers" in rm.registry_import_frontmatter(tmp_path, str(npcs / "distilled"))
+    assert "server.migrate_npc_dossiers" in _check_via_mcp(tmp_path)
+
+
+def _check_via_mcp(campaign_dir):
+    out, err, code = rm._run_main(["check", str(campaign_dir)])
+    return rm._format(out, err, code)

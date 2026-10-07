@@ -238,11 +238,11 @@ def test_build_dossiers_reads_its_nested_group(campaign):
     svc, captured = campaign
     svc.update_config({
         "summaries": "docs/s.md",
-        "planning": {"dossiers": {"dossier_dir": "docs/npcs/", "since": 4}},
+        "planning": {"dossiers": {"dossier_dir": "docs/npcs/distilled/", "since": 4}},
     })
     assert _run("/api/grounding/run/build-dossiers") == 200
     cmd = captured["cmd"]
     assert "--build-dossiers" in cmd
-    assert _flag(cmd, "--dossier-dir") == "docs/npcs/"
+    assert _flag(cmd, "--dossier-dir") == "docs/npcs/distilled/"
     assert _flag(cmd, "--since") == "4"
     assert _flag(cmd, "--summaries") == "docs/s.md"  # inherits the root pointer

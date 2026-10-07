@@ -21,6 +21,7 @@ from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import context, corpus, schema, select, validate
+from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
 EXIT_INCOMPLETE = 3
@@ -133,24 +134,6 @@ def _rel(path: Path, root: Path) -> str:
         return Path(path).as_posix()
 
 
-def _check_fresh(report, range_dir: Path, root: Path, manifest: dict, registry_path: Path | None) -> str | None:
-    """FR-005b: refuse when any in-range file, or the entity registry, differs from the build.
-
-    The registry is hashed because it decides how headings group into dossiers, so a
-    changed registry means the built corpus no longer matches what ``build`` would
-    produce now. canon.yaml is deliberately NOT compared: it holds not-a-duplicate
-    rulings that affect validation findings only, never the corpus content.
-    """
-    state = corpus.describe_existing(range_dir, report, root)
-    if state is None or state.get("state") != "matches":
-        return "summaries changed since build — run `summary_native build --force`"
-    built = (manifest.get("canon") or {}).get("registry_sha256")
-    now_sha = corpus.sha256_file(registry_path) if registry_path is not None and registry_path.is_file() else None
-    if built != now_sha:
-        return "entity registry changed since build — run `summary_native build --force`"
-    return None
-
-
 def run_synth(
     args,
     *,
@@ -188,7 +171,7 @@ def run_synth(
         manifest = corpus.load_manifest(range_dir, require_complete=True)
     except corpus.CorpusError as e:
         return _refuse(str(e))
-    stale = _check_fresh(report, range_dir, root, manifest, registry_path)
+    stale = check_fresh(report, range_dir, root, manifest, registry_path)
     if stale:
         return _refuse(stale)
 

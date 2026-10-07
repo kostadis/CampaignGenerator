@@ -493,7 +493,7 @@ class TestDiscoverCampaignPaths:
         session.mkdir(parents=True)
         (campaign / "config").mkdir(parents=True)
         (campaign / "config" / "party.yaml").write_text("x", encoding="utf-8")
-        npcs = campaign / "docs" / "npcs"
+        npcs = campaign / "docs" / "npcs" / "distilled"
         npcs.mkdir(parents=True)
         (npcs / "npc_a.md").write_text("x", encoding="utf-8")
         (npcs / "npc_b.md").write_text("x", encoding="utf-8")

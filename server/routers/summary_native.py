@@ -111,15 +111,13 @@ def _range_dir(run: SummaryNativeRun, since: int, until: int) -> Path:
 
 # ── Read-only ───────────────────────────────────────────────────────────────
 
-@router.get("/chapters")
-def get_chapters(request: Request, summaries_dir: str = ""):
-    """The chapter numbers present, from filename prefixes only.
+def chapter_listing(directory: Path) -> dict:
+    """The chapter numbers present in ``directory``, from filename prefixes only.
 
     Mirrors the CLI's own listing (top-level ``*.md``, ``PREFIX_RE``) so the
     range picker offers exactly the values ``--since``/``--until`` accept. The
-    content of a file is never opened here.
+    content of a file is never opened here. Shared with the NPC dossiers router.
     """
-    directory = schema.resolve_under(Path.cwd(), _require_dir(_run_config(request), summaries_dir))
     if not directory.is_dir():
         raise HTTPException(status_code=404, detail=f"{directory}: not a directory")
     by_chapter: dict[int, list[str]] = {}
@@ -138,6 +136,14 @@ def get_chapters(request: Request, summaries_dir: str = ""):
         ],
         "duplicate_chapters": [ch for ch in sorted(by_chapter) if len(by_chapter[ch]) > 1],
     }
+
+
+@router.get("/chapters")
+def get_chapters(request: Request, summaries_dir: str = ""):
+    """The chapter numbers present (see :func:`chapter_listing`)."""
+    return chapter_listing(
+        schema.resolve_under(Path.cwd(), _require_dir(_run_config(request), summaries_dir))
+    )
 
 
 @router.get("/report")

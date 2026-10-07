@@ -99,7 +99,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 from . import spell_canon
-from campaignlib.npc import load_alias_map
+from campaignlib.npc import DossierLayoutError, load_alias_map, refuse_unmigrated_dossier_dir
 from campaignlib.party import load_pc_names
 from campaignlib.registry import (
     Entity,
@@ -803,10 +803,14 @@ def cmd_import_frontmatter(args: argparse.Namespace) -> int:
         return 1
 
     reg = load_registry(path)
-    # importer: read docs/npcs/ dossiers to BUILD the registry — never pass
+    # importer: read docs/npcs/distilled/ dossiers to BUILD the registry — never pass
     # registry_path here (it would return the registry's own aliases and make
     # this import a no-op).
-    amap = load_alias_map(args.dossier_dir)
+    try:
+        amap = load_alias_map(args.dossier_dir)
+    except DossierLayoutError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
     added = updated = 0
     all_conflicts: list[str] = []
@@ -1000,8 +1004,13 @@ def collect_check_findings(campaign_dir: Path, reg: Registry) -> dict:
     fuzzy_findings: list[str] = []
     legacy_display_names: list[str] = []  # for presence drift
 
+    # Distilled-dossier state lives under docs/npcs/distilled/ (spec 032 FR-022b).
+    # Refuse, naming the migration, while docs/npcs/ still holds unclassified files.
+    distilled_dir = campaign_dir / "docs" / "npcs" / "distilled"
+    refuse_unmigrated_dossier_dir(distilled_dir)
+
     # (a1) dedup grouping drift ------------------------------------------------
-    dedup_path = campaign_dir / "docs" / "npcs" / ".dedup_state.json"
+    dedup_path = distilled_dir / ".dedup_state.json"
     if dedup_path.is_file():
         try:
             dedup_data = json.loads(dedup_path.read_text(encoding="utf-8"))
@@ -1068,7 +1077,7 @@ def collect_check_findings(campaign_dir: Path, reg: Registry) -> dict:
                 )
 
     # (a4) dossier frontmatter grouping drift -----------------------------------
-    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir = distilled_dir
     if dossier_dir.is_dir():
         # check: compare dossier frontmatter AGAINST the registry — read dossiers
         # only, never pass registry_path (that would compare the registry to
@@ -1178,7 +1187,11 @@ def cmd_check(args: argparse.Namespace) -> int:
         print(f"Error: registry at {path} failed to load: {exc}", file=sys.stderr)
         return 1
 
-    findings = collect_check_findings(campaign_dir, reg)
+    try:
+        findings = collect_check_findings(campaign_dir, reg)
+    except DossierLayoutError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
     grouping_findings = findings["grouping"]
     fuzzy_findings = findings["fuzzy"]
     missing_from_registry = findings["missing_from_registry"]
@@ -1675,7 +1688,11 @@ def cmd_resolve(args: argparse.Namespace) -> int:
     """
     from . import resolve as resolve_mod  # lazy: resolve imports this module
 
-    r = resolve_mod.resolve_name(Path(args.campaign_dir), args.name)
+    try:
+        r = resolve_mod.resolve_name(Path(args.campaign_dir), args.name)
+    except DossierLayoutError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
     if args.json:
         print(json.dumps(r, indent=2, ensure_ascii=False))
     else:

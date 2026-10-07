@@ -82,6 +82,8 @@ from campaignlib import (
     stream_api,
 )
 from campaignlib.api.client import resolve_cli_model
+from campaignlib.npc import DossierLayoutError, refuse_unmigrated_dossier_dir
+from pipelines.summary_native.schema import DISTILLED_DIR, PLANNING_EXTRACTIONS_DIR
 
 from campaignlib.planning_config import (
     ResolvedEntry as PlanningEntry,
@@ -382,7 +384,10 @@ def run_build_dossiers(
     # that are already in the canonical dossier — prevents sidecar accumulation on
     # deterministic re-runs and after sidecar merges.
     canonical_source_extracts: dict[str, set[int]] = {}
-    for dossier_file in dossier_dir.glob("*.md"):
+    for dossier_file in sorted(dossier_dir.glob("*.md")):
+        # Sidecars are not canonical dossiers (same skip as load_alias_map).
+        if ".new_notes." in dossier_file.name:
+            continue
         name, aliases, source_extracts, _ = parse_dossier(dossier_file)
         existing_dossiers[_normalize_npc_key(name)] = dossier_file
         alias_to_canonical[_normalize_npc_key(name)] = name
@@ -807,7 +812,7 @@ def main() -> None:
                              "the normal synthesize pass with --npc)")
     parser.add_argument("--dossier-dir", metavar="DIR", default=None,
                         help="Where to save per-NPC dossier files when using --build-dossiers "
-                             "(default: ./npcs/ relative to CWD)")
+                             "(default: docs/npcs/distilled/ relative to CWD)")
     parser.add_argument("--since", type=int, metavar="N", default=None,
                         help="In --build-dossiers mode, aggregate and synthesize only from "
                              "extracts with number >= N. Use after a new session "
@@ -912,12 +917,17 @@ def main() -> None:
         dossier_dir = (
             Path(args.dossier_dir).expanduser().resolve()
             if args.dossier_dir
-            else Path.cwd() / "npcs"
+            else (Path.cwd() / DISTILLED_DIR).resolve()
         )
+        try:
+            refuse_unmigrated_dossier_dir(dossier_dir)
+        except DossierLayoutError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(2)
         extract_dir = (
             Path(args.extract_dir).expanduser().resolve()
             if args.extract_dir
-            else dossier_dir.parent / "planning_extractions"
+            else (Path.cwd() / PLANNING_EXTRACTIONS_DIR).resolve()
         )
         print(f"\n[Build dossiers | {len(summaries_text):,} chars | model: {args.model}]")
         print("=" * 60)

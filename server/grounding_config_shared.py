@@ -48,6 +48,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native.schema import (
     DEFAULT_DUP_THRESHOLD,
+    DISTILLED_DIR,
     DEFAULT_OUT_ROOT,
     DEFAULT_PARTS,
     DEFAULT_RECENT_CHAPTERS,
@@ -132,7 +133,7 @@ class DossierBuild(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     summaries: OptStr = None
-    dossier_dir: str = "docs/npcs/"
+    dossier_dir: str = f"{DISTILLED_DIR}/"
     extract_dir: OptStr = None
     split_chapters: str = DEFAULT_SPLIT_CHAPTERS
     since: int = 0

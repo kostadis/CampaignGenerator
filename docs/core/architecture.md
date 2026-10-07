@@ -118,7 +118,7 @@ flowchart LR
     CHARS --> PT["party"] --> PD[("docs/party.md")]
     SUMS --> PT
     SUMS --> PLAN["planning<br/>(--build-dossiers,<br/>then synthesize)"] --> PLDOC[("docs/planning.md")]
-    PLAN --> DOSS[("docs/npcs/*.md<br/>canonical dossiers")]
+    PLAN --> DOSS[("docs/npcs/distilled/*.md<br/>distilled dossiers")]
 
     DOSS -. alias normalization .-> CS
     DOSS -. alias normalization .-> DI
@@ -285,6 +285,51 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 | [`arc_triggers.py`](../../pipelines/grounding/arc_triggers.py) | candidate trigger events from chronicle | mempalace |
 | [`summary_native`](../../pipelines/summary_native/cli.py) | the fourth rendering path: drafts of all four grounding docs under `docs/summary_native/ch<since>-<until>/drafts/` (never the live files) | reviewed structured summaries, parsed with no model; one render call per doc. See [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md) |
 
+### NPC dossiers (summary-native, spec 032)
+
+Per-NPC dossiers built from the same reviewed summaries as the table above. Five `summary_native`
+subcommands; exactly one calls a model.
+
+| Subcommand | Model? | Output (under `docs/npcs/summary_native/ch<since>-<until>/`) | Reads |
+|---|---|---|---|
+| `npc-link` | no | `evidence/<stem>.md`, `link_manifest.json`, `link_report.{md,json}` | the 031 corpus, the entity registry, `players.yaml`, `canon.yaml link_rulings`, a packaged word list |
+| `npc-draft` | **yes** | `draft/<stem>.md`, `draft/<stem>.verify.md`, `gm/<stem>.md`, `runs/<stamp>/` | evidence + the numbered `manual` list of the authored file (never `secrets`) |
+| `npc-verify` | no | `draft/<stem>.verify.md` | a draft + its evidence |
+| `npc-compose` | no | `gm/<stem>.md` (draft + Secrets) | a draft + `docs/npcs/authored/<slug>.authored.yaml` |
+| `npc-publish` | no | `docs/npcs/<slug>.md`, `docs/npcs/summary_native/publish_log.json` | a GM dossier (or a hand-built dossier in `authored/`) |
+
+```
+ summaries ──build──▶ corpus ──npc-link──▶ evidence/<stem>.md      (code: every scene + moment naming the NPC)
+                                              │
+                                              ▼
+                       npc-draft:  chunk(code) → map call → map check(code) → stitch(code) → reduce call → assemble(code)
+                                              │  (one-shot mode: a single call)         │
+                                              ▼                                          ▼
+                                       draft/<stem>.md ──npc-verify──▶ draft/<stem>.verify.md   (exit 5 on any failure)
+                                              │
+                          authored/<slug>.authored.yaml  (manual → prompt;  secrets → compose only)
+                                              ▼
+                                   npc-compose ──▶ gm/<stem>.md ──npc-publish (explicit, GM-gated)──▶ docs/npcs/<slug>.md
+```
+
+- **Linking is a scope decision, so it is code.** Name forms are exact strings (headings, registry
+  `name`/`aliases`); an ambiguous form (it names two `(type, canonical)`) or a generic one (a single word
+  in the word list) is withheld and reported, never guessed. Only registry NPCs with `type: npc` and
+  `scope: persistent` that are not in `players.yaml` `plays` are *global*, and only global NPCs are drafted.
+- **Drafting is the only prose step.** Chunked mode (the default; whole chapters, 60000 characters) puts a
+  code check between every model call and the next, so no model output feeds another unchecked. Defaults:
+  `dgx` / `qwen3.8-flash-next` (local Spark); Claude by flag. The dgx endpoint resolves `--endpoint` >
+  `DGX_ENDPOINT` > wiring `dgx_endpoint`.
+- **Verification is mechanical trust.** Citations point at this NPC's own evidence, quotes are verbatim,
+  History bullets are cited, every manual edit is cited at least once ("used", not "meaning survived").
+- **Config:** `<config>/npc_dossiers.yaml` (strict; `npc_root`, selection thresholds, `draft.*`), served by
+  `server/npc_dossiers_config.py`. The server and the CLI read it through the same loader.
+- Drift-prevention guards: `tests/test_summary_native_no_llm.py` (every `npc_*` module but `npc_draft`
+  is no-LLM), `tests/test_no_writes_to_authored.py`, `tests/test_no_loose_dossier_reads.py`.
+
+Operator's manual: [`docs/cli/npc_dossiers_howto.md`](../cli/npc_dossiers_howto.md); layout migration:
+[`docs/cli/npc_dossiers_migration.md`](../cli/npc_dossiers_migration.md).
+
 ### RLM / retrieval
 
 | Script | Role |
@@ -334,7 +379,11 @@ The campaign workspace is the database. All long-lived state is markdown.
     party.md                  ← party                 → prep, session_doc, mcp
     mechanics.md              ← (manual)              → optional grounding
     dossier_proposal.md       ← dossier_proposer      → render pipelines (human-approved)
-    npcs/*.md                 ← planning --build-dossiers
+    npcs/                     # published dossiers + three subdirectories (spec 032)
+      <slug>.md               ← summary_native npc-publish (the only writer)  → gm-assistant skills
+      authored/               ← the GM only: <slug>.authored.yaml (manual, secrets) + hand-built dossiers
+      distilled/              ← planning --build-dossiers (the retired distilled pipeline; moved here by migration)
+      summary_native/         ← npc-link / npc-draft / npc-verify / npc-compose; ch<since>-<until>/ + publish_log.json
     projections/              ← grounding_sections (state-projection service) → GM diff+promote
   voice/                      # Per-character narrator personality notes
   examples/                   # Handcrafted style examples for sd_narrate
@@ -382,7 +431,7 @@ Per-script tests live alongside (`test_prep.py`, `test_sd_split.py` / `test_sess
 
 - **Scene-anchored extraction.** Stage 2 caches the full VTT in the system prompt and asks for one scene's quotes per call. Live (`run_scene_extraction`) and batch (`scene_extract.py:_submit_pending`) paths share the cache breakpoint so the prompt cache stays warm.
 
-- **Alias normalization.** A single source of truth — frontmatter in `docs/npcs/*.md` — feeds an `{canonical: [aliases]}` map into every extractor that crosses pipelines. Variants get rewritten *before the LLM sees them*; a "Known NPCs" roster is appended to the system prompt. Empty map = identity / no-op.
+- **Alias normalization.** A single source of truth — frontmatter in `docs/npcs/distilled/*.md` (or the entity registry, when present) — feeds an `{canonical: [aliases]}` map into every extractor that crosses pipelines. Variants get rewritten *before the LLM sees them*; a "Known NPCs" roster is appended to the system prompt. Empty map = identity / no-op.
 
 - **Batch mode (`--batch`).** `enhance_summary` and `scene_extract` submit via Anthropic Message Batches API for 50% off, prompt caching honoured. Three sub-modes: block-and-poll (default), `--submit-only` (sidecar, exit), `--collect` (read sidecar, retrieve). Sidecars live next to the output: `<output>.batch.json` or `<output-dir>/.batch.json`.
 
@@ -416,6 +465,7 @@ A fast-orientation table for "I need to change X, where does it live?"
 | Render a 5etools entity to prose | [`fivetools_render.py`](../../pipelines/content_ingest/fivetools_render.py) (`render_<type>` family); resolve `_copy` first via [`fivetools_copy.py`](../../pipelines/content_ingest/fivetools_copy.py) |
 | Convert a new RPG PDF | [`convert_book.py`](../../pipelines/content_ingest/convert_book.py) (wraps pdf-translators); then [`fivetools_ingest.py`](../../pipelines/content_ingest/fivetools_ingest.py) — keep the steps explicit |
 | Build grounding docs straight from reviewed session summaries | [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md); code in [`pipelines/summary_native/`](../../pipelines/summary_native/cli.py) |
+| Build, verify and publish NPC dossiers from reviewed summaries | [`docs/cli/npc_dossiers_howto.md`](../cli/npc_dossiers_howto.md); code in [`pipelines/summary_native/`](../../pipelines/summary_native/cli.py) (`npc_link`, `npc_draft`, `npc_verify`, `npc_compose`, `npc_publish`) |
 
 ## Detailed docs
 
@@ -427,6 +477,7 @@ When you need depth on one area, read the matching file:
 | Post-session narration pipeline (sd_consistency / sd_plan / sd_narrate) | [`docs/cli/session_doc_pipeline.md`](../cli/session_doc_pipeline.md) |
 | End-to-end session prep | [`docs/cli/session_prep_workflow.md`](../cli/session_prep_workflow.md) |
 | Web UI screens, ui_config.yaml | [`docs/web/web_ui.md`](../web/web_ui.md), [`docs/web/web_ui_config_persistence.md`](../web/web_ui_config_persistence.md) |
+| NPC dossiers from summaries (link → draft → verify → compose → publish) | [`docs/cli/npc_dossiers_howto.md`](../cli/npc_dossiers_howto.md), [`docs/cli/npc_dossiers_migration.md`](../cli/npc_dossiers_migration.md) |
 | Dossier merge + cross-pipeline aliases | [`docs/rlm/dossier_aliases.md`](../rlm/dossier_aliases.md) |
 | RLM retrieval/render separation, MCP | [`docs/rlm/rlm_pipeline.md`](../rlm/rlm_pipeline.md), [`docs/rlm/rlm_architecture.md`](../rlm/rlm_architecture.md) |
 | Retrieval architecture | [`docs/rlm/retrieval_architecture.md`](../rlm/retrieval_architecture.md) |

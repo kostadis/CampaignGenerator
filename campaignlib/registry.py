@@ -368,6 +368,21 @@ def find_registry(campaign_dir) -> "Path | None":
     return p if p.is_file() else None
 
 
+def find_registry_above(path) -> "Path | None":
+    """The nearest ``docs/entity_registry.yaml`` at or above ``path``.
+
+    For callers handed only a dossier directory (the connections routes): the
+    campaign root is found by looking up the tree, so the answer does not depend
+    on how deep the dossier directory sits (``docs/npcs`` or ``docs/npcs/distilled``).
+    """
+    p = Path(path).expanduser().resolve()
+    for d in (p, *p.parents):
+        found = find_registry(d)
+        if found is not None:
+            return found
+    return None
+
+
 def resolve_registry_arg(registry_arg, legacy_present, parser):
     """Decide which entity_registry.yaml (if any) governs a CLI run.
 

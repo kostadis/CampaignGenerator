@@ -437,7 +437,7 @@ def _write_dossier(dossier_dir: Path, filename: str, name: str, aliases: "list[s
 
 def test_import_frontmatter_adds_entities_and_aliases(tmp_path):
     campaign_dir = _init(tmp_path)
-    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir = campaign_dir / "docs" / "npcs" / "distilled"
     dossier_dir.mkdir(parents=True)
     _write_dossier(dossier_dir, "asha.md", "Asha Vandree", ["Asha"])
     _write_dossier(dossier_dir, "byrtyn.md", "Byrtyn Fey", [])
@@ -456,7 +456,7 @@ def test_import_frontmatter_singleton_dossier_not_in_dedup_cluster_is_added(tmp_
     """A singleton dossier no dedup cluster ever grouped still gets registered —
     import-frontmatter fills the gap dedup import leaves behind."""
     campaign_dir = _init(tmp_path)
-    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir = campaign_dir / "docs" / "npcs" / "distilled"
     dossier_dir.mkdir(parents=True)
     _write_dossier(dossier_dir, "hollow_singleton.md", "Hollow Singleton", ["Hollow"])
 
@@ -653,7 +653,7 @@ def test_check_dedup_grouping_drift_detected(tmp_path, capsys):
     assert registry.main(["add", str(campaign_dir), "--name", "Shoor", "--type", "npc", "--yes"]) == 0
 
     # ...but the dedup state file says they were confirmed as ONE cluster.
-    npcs_dir = campaign_dir / "docs" / "npcs"
+    npcs_dir = campaign_dir / "docs" / "npcs" / "distilled"
     npcs_dir.mkdir(parents=True)
     dedup_data = {
         "clusters_confirmed": [
@@ -675,7 +675,7 @@ def test_check_dedup_grouping_drift_when_entirely_unimported(tmp_path, capsys):
     registry (not just split across different entities) is still grouping
     drift, per spec: 'or some are missing'."""
     campaign_dir = _init(tmp_path)  # empty registry — nothing imported yet
-    npcs_dir = campaign_dir / "docs" / "npcs"
+    npcs_dir = campaign_dir / "docs" / "npcs" / "distilled"
     npcs_dir.mkdir(parents=True)
     dedup_data = {
         "clusters_confirmed": [
@@ -762,7 +762,7 @@ def test_check_frontmatter_grouping_drift_detected(tmp_path, capsys):
     assert registry.main(["add", str(campaign_dir), "--name", "Asha", "--type", "npc", "--yes"]) == 0
 
     # ...but a dossier's frontmatter declares them as one entity (canonical + alias).
-    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir = campaign_dir / "docs" / "npcs" / "distilled"
     dossier_dir.mkdir(parents=True)
     _write_dossier(dossier_dir, "asha.md", "Asha Vandree", ["Asha"])
     _write_dossier(dossier_dir, "byrtyn.md", "Byrtyn Fey", [])  # unrelated, singleton — no drift of its own
@@ -783,7 +783,7 @@ def test_check_frontmatter_grouping_no_drift_when_registry_agrees(tmp_path, caps
         "--aliases", "Asha", "--yes",
     ]) == 0
 
-    dossier_dir = campaign_dir / "docs" / "npcs"
+    dossier_dir = campaign_dir / "docs" / "npcs" / "distilled"
     dossier_dir.mkdir(parents=True)
     _write_dossier(dossier_dir, "asha.md", "Asha Vandree", ["Asha"])
 

@@ -27,6 +27,9 @@ const INVENTORY = [
   '/settings',
 ]
 
+// Spec 032: NPC dossiers are their own top-level path, not a grounding doc.
+const NPC_ADDRESS = '/npcs/dossiers'
+
 // data-model.md "Addresses that must keep resolving" (FR-007, contract C2.3).
 const RESOLVES: [string, string][] = [
   ['/', '/workflow/config'],
@@ -40,6 +43,8 @@ const RESOLVES: [string, string][] = [
   ['/ensemble/synthesize', '/ensemble/synthesize'],
   ['/prep', '/prep/session-prep'],
   ['/setup', '/setup/players'],
+  ['/npcs', NPC_ADDRESS],
+  [NPC_ADDRESS, NPC_ADDRESS],
   ...INVENTORY.map((a): [string, string] => [a, a]),
 ]
 
@@ -119,7 +124,7 @@ function group(page: Page, title: string) {
 
 test('grounding paths form one hierarchy', async ({ page }) => {
   const titles = (await page.locator('.nav-group-title').allInnerTexts()).map(t => t.trim())
-  expect(titles).toEqual(['SESSION WORKFLOW', 'GROUNDING DOCS', 'PREP', 'SETUP', 'INTEGRATIONS'])
+  expect(titles).toEqual(['SESSION WORKFLOW', 'GROUNDING DOCS', 'NPCS', 'PREP', 'SETUP', 'INTEGRATIONS'])
   expect(titles).not.toContain('ENSEMBLE WORKFLOW')
 
   const grounding = group(page, 'GROUNDING DOCS')
@@ -152,6 +157,7 @@ const ACTIVE: [string, string, string | null][] = [
   ['/ensemble/synthesize', 'Ensemble', 'Dossier synthesis'],
   ['/grounding/threads', 'Threads', 'State projection'],
   ['/grounding/summary-native', 'Summary-native', 'Summary-native'],
+  [NPC_ADDRESS, 'NPC Dossiers', 'NPC dossiers'],
   ['/prep/query', 'Query Summaries', null],
 ]
 
@@ -183,4 +189,31 @@ test('descriptions state the shared extraction truthfully', async ({ page }) => 
   await expect(grounding.locator('[data-path-id="dossier-synthesis"]')).toHaveAttribute('data-uses-shared-extraction', 'true')
   await expect(grounding.locator('[data-path-id="state-projection"]')).toHaveAttribute('data-uses-shared-extraction', 'true')
   await expect(grounding.locator('[data-path-id="summary-native"]')).toHaveAttribute('data-uses-shared-extraction', 'false')
+})
+
+// ── Spec 032 US5: NPC dossiers are a separate top-level path (T052) ─────────
+
+test('NPCs is its own top-level path, outside Grounding', async ({ page }) => {
+  const npcs = group(page, 'NPCS')
+  await expect(npcs.getByRole('heading', { level: 3 })).toHaveText(['NPC dossiers'])
+  const section = npcs.locator('[data-path-id="npcs"]')
+  await expect(section.locator('.nav-item')).toHaveText(['NPC Dossiers'])
+  await expect(section).toHaveAttribute('data-uses-shared-extraction', 'false')
+  // Not a fifth path under GROUNDING DOCS, and not listed there at all.
+  const grounding = group(page, 'GROUNDING DOCS')
+  await expect(grounding.locator('[data-path-id="npcs"]')).toHaveCount(0)
+  await expect(grounding.locator(`[data-nav-path="${NPC_ADDRESS}"]`)).toHaveCount(0)
+  await section.locator('.nav-item').click()
+  await expect(page).toHaveURL(new RegExp(`${escape(NPC_ADDRESS)}$`))
+  await expect(page.locator('.page-header h2')).toHaveText('NPC dossiers')
+})
+
+test('Grounding → Summary-native has no NPC stages', async ({ page }) => {
+  await page.goto('/grounding/summary-native')
+  await expect(page.locator('.page-header h2')).toHaveText('Summary-native')
+  const text = (await page.locator('.page').innerText()).toLowerCase()
+  for (const stage of ['npc-link', 'npc-draft', 'npc-verify', 'npc-compose', 'npc-publish', 'npc dossier']) {
+    expect(text, `Summary-native must not offer ${stage}`).not.toContain(stage)
+  }
+  await expect(page.locator('.page').getByRole('button', { name: /^(Link|Draft|Verify|Compose|Publish)$/ })).toHaveCount(0)
 })

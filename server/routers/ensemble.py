@@ -19,6 +19,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from campaignlib.registry import find_registry, load_registry
+from campaignlib.npc import DossierLayoutError
 from entity_registry.registry import collect_check_findings
 from server.backend_forwarding import backend_cli_args
 from server.ensemble_config_service import EnsembleConfigService
@@ -591,7 +592,12 @@ def ensemble_registry_status():
 
     alias_count = sum(len(e.aliases) for e in reg.entities)
     types = Counter(e.type for e in reg.entities)
-    findings = collect_check_findings(cwd, reg)
+    try:
+        findings = collect_check_findings(cwd, reg)
+    except DossierLayoutError as exc:
+        # An unmigrated docs/npcs/ (spec 032 FR-022c): surfaced with the migration
+        # command, and no counts computed off a check that never ran.
+        return {"found": True, "path": rel_path, "error": str(exc)}
     clean = not findings["grouping"] and not findings["fuzzy"]
     return {
         "found": True,

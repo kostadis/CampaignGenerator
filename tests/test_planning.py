@@ -950,3 +950,93 @@ def test_default_no_batch_path_unaffected_by_batch_wiring(monkeypatch, fake_stre
 
     assert len(fake_stream_api.calls) == 1
     assert output.exists()
+
+
+# ── spec 032 FR-022b/c: the distilled-dossier directory ──────────────────────
+
+def test_build_dossiers_default_dir_is_docs_npcs_distilled(monkeypatch, fake_stream_api, tmp_path):
+    """With no --dossier-dir the default is the declared distilled dir under CWD
+    (it used to be ./npcs, a path no campaign has)."""
+    monkeypatch.chdir(tmp_path)
+    summaries = _write(tmp_path / "summaries.md", "session content")
+    extract_dir = tmp_path / "extractions"
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py", "--build-dossiers", "--summaries", str(summaries),
+        "--extract-dir", str(extract_dir), "--extract-only",
+    ])
+    seen = {}
+    real = planning.run_build_dossiers
+
+    def spy(client, summaries_text, chunk, model, ex, dossier_dir, **kw):
+        seen["dir"] = dossier_dir
+        return real(client, summaries_text, chunk, model, ex, dossier_dir, **kw)
+
+    monkeypatch.setattr(planning, "run_build_dossiers", spy)
+    planning.main()
+    assert seen["dir"] == (tmp_path / "docs" / "npcs" / "distilled").resolve()
+
+
+def test_build_dossiers_refuses_unmigrated_docs_npcs(monkeypatch, fake_stream_api, tmp_path, capsys):
+    npcs = tmp_path / "docs" / "npcs"
+    npcs.mkdir(parents=True)
+    (npcs / "loose.md").write_text("not published\n", encoding="utf-8")
+    summaries = _write(tmp_path / "summaries.md", "stub")
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py", "--build-dossiers", "--summaries", str(summaries),
+        "--dossier-dir", str(npcs / "distilled"), "--extract-dir", str(tmp_path / "ex"),
+    ])
+    with pytest.raises(SystemExit) as exc:
+        planning.main()
+    assert exc.value.code == 2
+    assert "server.migrate_npc_dossiers" in capsys.readouterr().err
+    assert len(fake_stream_api.calls) == 0
+
+
+def test_build_dossiers_refuses_docs_npcs_itself(monkeypatch, fake_stream_api, tmp_path, capsys):
+    npcs = tmp_path / "docs" / "npcs"
+    npcs.mkdir(parents=True)
+    summaries = _write(tmp_path / "summaries.md", "stub")
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py", "--build-dossiers", "--summaries", str(summaries),
+        "--dossier-dir", str(npcs), "--extract-dir", str(tmp_path / "ex"),
+    ])
+    with pytest.raises(SystemExit) as exc:
+        planning.main()
+    assert exc.value.code == 2
+    assert "published NPC dossiers" in capsys.readouterr().err
+
+
+def test_build_dossiers_existing_scan_skips_sidecar_files(monkeypatch, fake_stream_api, tmp_path):
+    """The flat glob skips .new_notes. sidecars, as load_alias_map does: a sidecar is
+    not a canonical dossier and must not become one in the alias/source_extracts map."""
+    summaries = _write(tmp_path / "summaries.md", "stub")
+    dossier_dir = tmp_path / "npcs"
+    dossier_dir.mkdir()
+    planning.write_dossier(dossier_dir / "grundar.md", "Grundar", [], [1], "# Grundar\n\nbody\n")
+    planning.write_dossier(dossier_dir / "grundar.new_notes.002.md", "Grundar", [], [2], "# Grundar\n\nnotes\n")
+    extract_dir = tmp_path / "extractions"
+    _prewrite_extract(extract_dir, 1, {"Grundar": "Extract 1 facts."})
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py", "--build-dossiers", "--summaries", str(summaries),
+        "--dossier-dir", str(dossier_dir), "--extract-dir", str(extract_dir),
+    ])
+    planning.main()
+    # The sidecar's source_extracts=[2] must not have overwritten the canonical's [1].
+    from campaignlib import parse_dossier
+    assert parse_dossier(dossier_dir / "grundar.md")[2] == [1]
+
+
+def test_build_dossiers_default_extract_dir_is_docs_planning_extractions(monkeypatch, fake_stream_api, tmp_path):
+    """docs/npcs/ may hold only published dossiers and its subdirectories, so the extracts
+    do not follow the dossier dir's parent into it (they stay in docs/planning_extractions)."""
+    from pipelines.summary_native.schema import PLANNING_EXTRACTIONS_DIR
+
+    assert PLANNING_EXTRACTIONS_DIR == "docs/planning_extractions"
+    monkeypatch.chdir(tmp_path)
+    summaries = _write(tmp_path / "summaries.md", "session content")
+    monkeypatch.setattr(sys, "argv", [
+        "planning.py", "--build-dossiers", "--summaries", str(summaries), "--extract-only",
+    ])
+    planning.main()
+    assert any((tmp_path / "docs" / "planning_extractions").glob("dossier_extract_*.md"))
+    assert not (tmp_path / "docs" / "npcs" / "planning_extractions").exists()

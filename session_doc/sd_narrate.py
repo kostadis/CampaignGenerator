@@ -37,6 +37,7 @@ from campaignlib import (
     find_alias_registry,
     find_registry,
     load_alias_map,
+    DossierLayoutError,
     run_single_batch,
     stream_api,
 )
@@ -894,6 +895,9 @@ def main() -> None:
     except (OSError, UnicodeError, ValueError) as exc:
         if args.batch_scenes:
             refuse_bundle("ALIASES_UNREADABLE", f"cannot load narrator aliases: {exc}")
+        if isinstance(exc, DossierLayoutError):
+            print(f"Error: {exc}", file=sys.stderr)
+            sys.exit(1)
         raise
     npc_roster = format_npc_roster(alias_map)
 

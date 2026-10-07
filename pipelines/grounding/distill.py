@@ -39,6 +39,7 @@ from campaignlib import (
     load_agent_prompt,
     find_alias_registry,
     load_alias_map,
+    load_alias_map_or_exit,
     resolve_extract_output,
     run_extract_pipeline,
     run_synthesize_pipeline,
@@ -108,7 +109,7 @@ def main() -> None:
         else output.parent / "distill_extractions"
     )
 
-    alias_map = load_alias_map(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
+    alias_map = load_alias_map_or_exit(args.dossier_dir, registry_path=find_alias_registry(Path.cwd()))
     normalize, _ = build_alias_normalizer(alias_map)
     roster = format_npc_roster(alias_map)
     if alias_map:
