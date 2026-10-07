@@ -74,6 +74,14 @@ const extractChunkChars = ref<Num>('')
 const extractMaxTokens = ref<Num>('')
 const extractDumpOnly = ref(false)
 const forceExtract = ref(false)
+// Per run, never persisted (endpoints are machine wiring, not campaign state): one URL per line, all serving the
+// same model; blank uses the single endpoint the backend resolves. Workers = in-flight calls per endpoint.
+const extractEndpointsText = ref('')
+const extractParallel = ref<Num>('')
+// Prose step (world_state / campaign_state): blank uses grounding.yaml summary_native.prose.
+const proseModel = ref('')
+const proseEffort = ref('')
+const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'] as const
 
 const lines = (t: string) => t.split('\n').map(l => l.trim()).filter(Boolean)
 const num = (n: Num) => (typeof n === 'number' ? n : undefined)
@@ -143,6 +151,8 @@ const extractParams = computed(() => ({
   max_tokens: num(extractMaxTokens.value),
   dump_only: extractDumpOnly.value,
   force: forceExtract.value,
+  endpoints: lines(extractEndpointsText.value),
+  parallel: num(extractParallel.value),
 }))
 const synthParams = computed(() => isChunked.value
   ? {
@@ -161,6 +171,8 @@ const synthParams = computed(() => isChunked.value
       max_tokens: num(maxTokens.value),
       dump_only: dumpOnly.value,
       force: forceSynth.value,
+      model: proseModel.value.trim() || undefined,
+      claude_code_effort: proseEffort.value || undefined,
     }
   : {
       ...baseParams.value,
@@ -384,6 +396,20 @@ onMounted(async () => {
             <input type="number" min="1" class="field-input" v-model.number="extractMaxTokens" />
             <span class="field-help">Per call. Blank uses the CLI default.</span>
           </div>
+          <div class="field">
+            <label class="field-label">Workers per endpoint</label>
+            <input type="number" min="1" class="field-input" v-model.number="extractParallel" />
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 1.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Endpoints</label>
+          <textarea class="field-textarea" v-model="extractEndpointsText" rows="2"
+            placeholder="One URL per line, e.g. http://spark:8001/v1 &mdash; blank uses the single configured endpoint" />
+          <span class="field-help">
+            Several endpoints share one queue of chunks, so a slower box takes fewer (<code>--endpoints</code>, dgx backend only).
+            Each is checked before any call: it must answer and serve the model. Not saved.
+          </span>
         </div>
         <label class="checkbox-label">
           <input type="checkbox" v-model="extractDumpOnly" /> Dump only &mdash; write the prompts and the manifest, make no model call
@@ -485,6 +511,21 @@ onMounted(async () => {
             <label class="field-label">Max tokens</label>
             <input type="number" min="1" class="field-input" v-model.number="maxTokens" />
             <span class="field-help">Per call. Blank uses the CLI default.</span>
+          </div>
+        </div>
+        <div v-if="isChunked" class="num-grid">
+          <div class="field">
+            <label class="field-label">Prose model</label>
+            <input type="text" class="field-input" v-model="proseModel" />
+            <span class="field-help">Blank uses <code>summary_native.prose.model</code> from grounding.yaml.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Effort (claude-code)</label>
+            <select class="field-input narrow" v-model="proseEffort" aria-label="Prose effort">
+              <option value="">stored default</option>
+              <option v-for="e in EFFORTS" :key="e" :value="e">{{ e }}</option>
+            </select>
+            <span class="field-help">Applies only when the prose backend is claude-code.</span>
           </div>
         </div>
         <label class="checkbox-label">

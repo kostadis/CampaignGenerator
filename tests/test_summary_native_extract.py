@@ -10,7 +10,7 @@ import json
 
 import pytest
 
-from pipelines.summary_native import notes, schema
+from pipelines.summary_native import extract, notes, schema
 from tests.conftest_state import (
     CANNED, fake_models, extract_args, notes_dir, range_dir, run_cli, state_campaign,
 )
@@ -269,3 +269,137 @@ def test_load_checked_refuses_an_incomplete_extraction(camp, fm):
     with pytest.raises(notes.NotesIncomplete) as e:
         notes.load_checked(range_dir(camp))
     assert "004-004" in str(e.value)
+
+
+# ── spec 033 US5: several endpoints on one queue (T039) ─────────────────────
+
+import re
+import threading
+import time
+
+EP_A, EP_B = "http://spark:8001/v1", "http://spark2:8001/v1"
+
+
+def two_endpoint_args(camp, *extra):
+    base = [a for a in extract_args(camp) if a not in ("--endpoint", EP_A)]
+    return [*base, "--endpoints", EP_A, EP_B, *extra]
+
+
+def _canned_for(user):
+    return CANNED[int(re.search(r"CHAPTERS IN THIS CHUNK: (\d{3})", user).group(1))]
+
+
+def test_every_chunk_runs_once_across_two_endpoints_and_the_record_names_the_endpoint(camp, fm):
+    rc, out, err = run_cli(two_endpoint_args(camp))
+    assert rc == 0, err
+    assert sorted(c["range"] for c in fm.extract_calls) == RANGES
+    assert {a["endpoint"] for a in fm.client_args} == {EP_A, EP_B}
+    (run,) = [p for p in (range_dir(camp) / schema.STATE_DIR / "runs").iterdir() if p.is_dir()]
+    rec = json.loads((run / "record.json").read_text())
+    assert rec["endpoints"] == ["spark:8001", "spark2:8001"] and rec["parallel"] == 1
+    assert [c["chapters"] for c in rec["chunks"]] == RANGES
+    assert all(c["endpoint"] in ("spark:8001", "spark2:8001") for c in rec["chunks"])
+    assert "@spark" in out
+
+
+def test_a_slow_endpoint_takes_fewer_chunks(camp, fm, monkeypatch):
+    seen: list[str] = []
+    lock = threading.Lock()
+
+    def render(client, system, user, model, max_tokens):
+        if client == EP_B:
+            time.sleep(0.4)
+        with lock:
+            seen.append(client)
+        return _canned_for(user)
+
+    monkeypatch.setattr(extract, "render_part", render)
+    rc, _, err = run_cli(two_endpoint_args(camp))
+    assert rc == 0, err
+    assert len(seen) == 4 and seen.count(EP_B) < seen.count(EP_A)
+
+
+def test_parallel_runs_that_many_calls_per_endpoint_at_once(camp, fm, monkeypatch):
+    state = {"live": 0, "peak": 0}
+    lock = threading.Lock()
+
+    def render(client, system, user, model, max_tokens):
+        with lock:
+            state["live"] += 1
+            state["peak"] = max(state["peak"], state["live"])
+        time.sleep(0.15)
+        with lock:
+            state["live"] -= 1
+        return _canned_for(user)
+
+    monkeypatch.setattr(extract, "render_part", render)
+    rc, _, err = run_cli(extract_args(camp, "--parallel", "3"))
+    assert rc == 0, err
+    assert state["peak"] == 3
+    (run,) = [p for p in (range_dir(camp) / schema.STATE_DIR / "runs").iterdir() if p.is_dir()]
+    assert json.loads((run / "record.json").read_text())["parallel"] == 3
+
+
+def test_parallel_below_one_is_refused_by_the_parser(camp, fm):
+    with pytest.raises(SystemExit):
+        run_cli(extract_args(camp, "--parallel", "0"))
+
+
+def test_preflight_refuses_an_unreachable_endpoint_before_any_call(camp, fm):
+    fm.unreachable.add(EP_B)
+    rc, _, err = run_cli(two_endpoint_args(camp))
+    assert rc == 2
+    assert "spark2:8001" in err and "not answering" in err
+    assert fm.extract_calls == [] and fm.client_args == []
+    assert not list(notes_dir(camp).glob("*.out.md"))
+
+
+def test_preflight_refuses_an_endpoint_serving_another_model_before_any_call(camp, fm):
+    fm.served[EP_B] = ["some-other-model"]
+    rc, _, err = run_cli(two_endpoint_args(camp))
+    assert rc == 2
+    assert "spark2:8001" in err and "some-other-model" in err and "fake-model" in err
+    assert fm.extract_calls == []
+
+
+def test_a_single_endpoint_is_preflighted_too(camp, fm):
+    fm.served[EP_A] = ["nope"]
+    rc, _, err = run_cli(extract_args(camp))
+    assert rc == 2 and "spark:8001" in err and fm.extract_calls == []
+
+
+def test_a_fully_cached_run_makes_no_preflight(camp, fm):
+    assert run_cli(two_endpoint_args(camp))[0] == 0
+    fm.preflighted.clear()
+    fm.unreachable.update({EP_A, EP_B})
+    rc, _, err = run_cli(two_endpoint_args(camp))
+    assert rc == 0, err
+    assert fm.preflighted == []
+
+
+def test_dump_only_makes_no_preflight(camp, fm):
+    fm.unreachable.add(EP_A)
+    rc, _, err = run_cli(two_endpoint_args(camp, "--dump-only"))
+    assert rc == 0, err
+    assert fm.preflighted == [] and fm.extract_calls == []
+
+
+def test_endpoints_with_a_non_dgx_backend_refuses(camp, fm):
+    args = two_endpoint_args(camp)
+    args[args.index("dgx")] = "openrouter"
+    rc, _, err = run_cli(args)
+    assert rc == 2 and "--endpoints" in err and "dgx" in err
+    assert fm.extract_calls == [] and fm.preflighted == []
+
+
+def test_endpoint_and_endpoints_together_refuse(camp, fm):
+    rc, _, err = run_cli([*extract_args(camp), "--endpoints", EP_B])
+    assert rc == 2 and "--endpoint" in err and "not both" in err
+
+
+def test_a_failed_chunk_on_two_endpoints_still_finishes_the_others(camp, fm):
+    fm.fail_chunks["004-004"] = 2
+    rc, _, err = run_cli(two_endpoint_args(camp))
+    assert rc == 3 and "004-004" in err
+    m = json.loads((notes_dir(camp) / "manifest.json").read_text())
+    assert [c["status"] for c in m["chunks"]] == ["checked", "checked", "failed", "checked"]

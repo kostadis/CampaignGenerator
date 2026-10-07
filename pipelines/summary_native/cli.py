@@ -67,6 +67,14 @@ def build_parser() -> argparse.ArgumentParser:
                                 f"else {schema.DEFAULT_DRAFT_MODEL})")
             # no parser default: precedence is flag > grounding.yaml summary_native.extract.backend > schema
             add_backend_args(p, default_backend=None)
+            # Same spelling and meaning as facts_to_state --endpoints and extract_facts --parallel.
+            # Endpoints are machine wiring: never read from grounding.yaml.
+            p.add_argument("--endpoints", nargs="+", default=None, metavar="URL",
+                           help="Multiple OpenAI-compatible endpoints sharing one queue of chunks "
+                                "(one worker per endpoint, work-stealing). --backend dgx only; "
+                                "all must serve --model, checked before any call.")
+            p.add_argument("--parallel", type=_positive_int, default=1, metavar="N",
+                           help="Concurrent in-flight chunk requests per endpoint (default 1 = sequential).")
         if name.startswith("npc-") or name == "synth":
             p.add_argument("--npc-root", default=None,
                            help="NPC output root (default: npc_dossiers.yaml npc_root, else "
@@ -294,6 +302,13 @@ def _npc_config(config_path: Path):
 def _npc_root(args, root: Path, config_path: Path) -> Path:
     """``--npc-root`` > ``npc_dossiers.yaml npc_root`` > the schema default (the model's default)."""
     return _under(root, args.npc_root or _npc_config(config_path).npc_root)
+
+
+def _positive_int(value: str) -> int:
+    n = int(value)
+    if n < 1:
+        raise argparse.ArgumentTypeError(f"must be at least 1, got {value}")
+    return n
 
 
 def _resolve_draft_args(args, config_path: Path) -> None:

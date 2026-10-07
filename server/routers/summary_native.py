@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from fastapi import APIRouter, HTTPException, Query, Request
 
@@ -36,6 +37,8 @@ from server.routers.grounding import (
     _sse_response,
 )
 from server.subprocess_runner import console_script
+
+_ENDPOINT_BACKENDS = frozenset({"dgx"})  # the only backend that takes --endpoints
 
 router = APIRouter()
 
@@ -331,6 +334,7 @@ async def run_synth(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    claude_code_effort: str | None = None,
     fallback_npc_lines: bool = False,
 ):
     _require_doc(doc)
@@ -397,6 +401,7 @@ async def run_synth(
         service, service_name = _selection_for(request, _SERVICE_NAME), _SERVICE_NAME
     cmd += selection_cli_args(resolve_selection(
         request, request_model=model, service=service, service_name=service_name,
+        request_claude_code_effort=(claude_code_effort or "").strip() or None,
     ))
     return _sse_response(cmd)
 
@@ -412,10 +417,15 @@ async def run_extract(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    endpoints: list[str] | None = Query(default=None),
+    parallel: int | None = None,
 ):
     run = _run_config(request)
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
+    urls = [e.strip() for e in (endpoints or []) if e.strip()]
+    if parallel is not None and parallel < 1:
+        raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
     cmd = _base_cmd("extract", None, directory, lo, hi)
     cmd += ["--chunk-chars", str(_pick_num(chunk_chars, run.extract.chunk_chars))]
     if max_tokens is not None:
@@ -424,9 +434,19 @@ async def run_extract(
         cmd.append("--dump-only")
     if force:
         cmd.append("--force")
-    cmd += selection_cli_args(resolve_selection(
-        request, request_model=model, service=run.extract, service_name=f"{_SERVICE_NAME}.extract",
-    ))
+    # Endpoints are machine wiring, never stored in grounding.yaml: a request value rides on top of
+    # the stored backend/model and reaches the command as `--endpoints A B` (the CLI's own spelling).
+    service = run.extract
+    if urls:
+        service = SimpleNamespace(backend=run.extract.backend, model=run.extract.model, endpoints=tuple(urls))
+    resolved = resolve_selection(
+        request, request_model=model, service=service, service_name=f"{_SERVICE_NAME}.extract",
+    )
+    if urls and resolved.backend not in _ENDPOINT_BACKENDS:
+        raise HTTPException(status_code=400, detail=f"--endpoints applies to --backend dgx only, not {resolved.backend}")
+    cmd += selection_cli_args(resolved)
+    if parallel is not None:
+        cmd += ["--parallel", str(parallel)]
     return _sse_response(cmd)
 
 

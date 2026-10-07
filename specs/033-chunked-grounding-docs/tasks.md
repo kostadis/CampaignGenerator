@@ -276,23 +276,23 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Tests for User Story 5
 
-- [ ] T039 [P] [US5] Extend `tests/test_summary_native_extract.py`:
+- [X] T039 [P] [US5] Extend `tests/test_summary_native_extract.py`:
   - shared queue across two fake endpoints: every chunk runs exactly once, and a slow endpoint takes fewer chunks;
   - preflight refuses an unreachable endpoint and one serving another model, before any call;
   - `--endpoints` with a non-dgx backend refuses;
   - the record names each chunk's endpoint.
-- [ ] T040 [P] [US5] Extend `tests/test_summary_native_synth.py`:
+- [X] T040 [P] [US5] Extend `tests/test_summary_native_synth.py`:
   - the prose backend, model and effort resolve flag > `grounding.yaml summary_native.prose` > schema;
   - `--claude-code-effort` is passed through;
   - a prose-only rebuild makes no extraction call.
-- [ ] T041 [P] [US5] Confirm `tests/test_no_credential_gate.py` still passes, and add `extract`, `synth` and `audit` to whatever module list it scans.
+- [X] T041 [P] [US5] Confirm `tests/test_no_credential_gate.py` still passes, and add `extract`, `synth` and `audit` to whatever module list it scans.
 
 ### Implementation for User Story 5
 
-- [ ] T042 [US5] Add the multi-endpoint shared queue to `pipelines/summary_native/extract.py`: per-endpoint worker threads pulling from one queue, `preflight(endpoints, model)` against `/v1/models`, and endpoint recording. Add `--endpoints` (same spelling as `facts_to_state`) and `--parallel` to `extract` in `pipelines/summary_native/cli.py`. Port from the prototype's `run_pool` / `preflight`.
-- [ ] T043 [US5] Resolve the extraction and prose backends from the config blocks in `pipelines/summary_native/resolve.py`, and use them in `extract.py` and `synth.py`. The prose step uses the backend family (`--backend --model --claude-code-effort`).
-- [ ] T044 [US5] Add `endpoints: list[str]` and `parallel` to `/run/extract`, and prose model and effort selection to `/run/synth/{doc}`, in `server/routers/summary_native.py`. In `frontend/src/views/grounding/SummaryNative.vue`, add a multi-entry endpoints field and workers to the Extract step, and model and effort to the synth steps.
-- [ ] T045 [P] [US5] Extend `tests/test_summary_native_routes.py`: the `endpoints` argv as `--endpoints A B`, `parallel`, and the prose selection argv.
+- [X] T042 [US5] Add the multi-endpoint shared queue to `pipelines/summary_native/extract.py`: per-endpoint worker threads pulling from one queue, `preflight(endpoints, model)` against `/v1/models`, and endpoint recording. Add `--endpoints` (same spelling as `facts_to_state`) and `--parallel` to `extract` in `pipelines/summary_native/cli.py`. Port from the prototype's `run_pool` / `preflight`.
+- [X] T043 [US5] Resolve the extraction and prose backends from the config blocks in `pipelines/summary_native/resolve.py`, and use them in `extract.py` and `synth.py`. The prose step uses the backend family (`--backend --model --claude-code-effort`).
+- [X] T044 [US5] Add `endpoints: list[str]` and `parallel` to `/run/extract`, and prose model and effort selection to `/run/synth/{doc}`, in `server/routers/summary_native.py`. In `frontend/src/views/grounding/SummaryNative.vue`, add a multi-entry endpoints field and workers to the Extract step, and model and effort to the synth steps.
+- [X] T045 [P] [US5] Extend `tests/test_summary_native_routes.py`: the `endpoints` argv as `--endpoints A B`, `parallel`, and the prose selection argv.
 
 **Checkpoint**: The experiment's split (Spark extraction, hosted prose) is the configured default.
 

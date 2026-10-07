@@ -159,6 +159,13 @@ def extract_args(root: Path, *extra: str) -> list[str]:
     ]
 
 
+class _Anything(list):
+    """A /models listing that serves whatever model is asked for."""
+
+    def __contains__(self, item):
+        return True
+
+
 class FakeModels:
     """Records every extraction and prose call and answers from canned text."""
 
@@ -168,6 +175,23 @@ class FakeModels:
         self.fail_chunks: dict[str, int] = {}  # chapter range -> number of calls that raise
         self.prose_override: dict[str, str] = {}  # heading -> full output text
         self.prose_missing: set[str] = set()  # headings the model "forgets"
+        self.served: dict[str, list[str]] = {}  # endpoint -> model ids its /models lists (default: any asked)
+        self.unreachable: set[str] = set()  # endpoints whose /models raises
+        self.preflighted: list[str] = []  # every endpoint asked, in order
+        self.client_args: list[dict] = []  # (backend, model, effort, endpoint) each client was built with
+
+    def served_models(self, endpoint):
+        self.preflighted.append(endpoint)
+        if endpoint in self.unreachable:
+            raise OSError("connection refused")
+        return self.served.get(endpoint) or _Anything()
+
+    def make_client(self, args, **kw):
+        self.client_args.append({
+            "backend": getattr(args, "backend", None), "model": getattr(args, "model", None),
+            "effort": getattr(args, "claude_code_effort", None), "endpoint": kw.get("endpoint"),
+        })
+        return kw.get("endpoint") or object()
 
     def extract_render(self, client, system, user, model, max_tokens):
         rng = re.search(r"CHAPTERS IN THIS CHUNK: (\d{3}-\d{3})", user).group(1)
@@ -191,7 +215,8 @@ class FakeModels:
 def fake_models(monkeypatch) -> FakeModels:
     fm = FakeModels()
     monkeypatch.setattr(extract, "render_part", fm.extract_render)
-    monkeypatch.setattr(extract, "client_from_args", lambda a, **k: object())
+    monkeypatch.setattr(extract, "client_from_args", fm.make_client)
+    monkeypatch.setattr(extract, "_served_models", fm.served_models)
     monkeypatch.setattr(synth, "render_part", fm.prose_render)
-    monkeypatch.setattr(synth, "client_from_args", lambda a, **k: object())
+    monkeypatch.setattr(synth, "client_from_args", fm.make_client)
     return fm

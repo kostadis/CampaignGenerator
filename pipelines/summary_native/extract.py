@@ -17,17 +17,21 @@ Layout, under ``<range_dir>/state/notes/``::
 and one ``state/runs/<stamp>/record.json`` per run. The manifest holds nothing that varies between
 runs (no timing, no endpoint), so a fully cached run rewrites it byte-for-byte.
 
-Chunks are dispatched by :func:`_run_pool`. It takes ``{endpoint label: client}`` and a worker
-count per endpoint so a shared queue over several endpoints (T042) replaces its body and nothing
-else.
+Chunks are dispatched by :func:`_run_pool`: one shared queue, ``--parallel`` worker threads per
+endpoint, so a slow box takes fewer chunks instead of stalling the tail. Every endpoint is
+preflighted against ``/v1/models`` before any call (FR-023), and each chunk's record names the
+endpoint that served it.
 """
 
 from __future__ import annotations
 
 import json
+import queue
 import re
 import sys
+import threading
 import time
+import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -160,12 +164,58 @@ def _run_pool(todo: list[_Plan], work, clients: dict[str, object], per_endpoint:
     """Yield ``(endpoint label, plan, outcome)`` as each chunk finishes.
 
     ``clients`` maps an endpoint label to its client; ``per_endpoint`` is the number of concurrent
-    calls each may carry. Today there is one client and the chunks run in order. The multi-endpoint
-    shared queue (T042) replaces this body; ``work(client, plan, endpoint)`` and the callers stay.
+    calls each may carry. One shared queue feeds ``per_endpoint`` worker threads per endpoint; a
+    worker pulls the next chunk when it is free, so a slow endpoint simply takes fewer
+    (``work(client, plan, endpoint)`` never raises for a failed call: it returns a failed outcome).
     """
-    (label, client), = clients.items()
+    pending: queue.Queue = queue.Queue()
     for plan in todo:
-        yield label, plan, work(client, plan, label)
+        pending.put(plan)
+    done: queue.Queue = queue.Queue()
+
+    def worker(label: str, client) -> None:
+        while True:
+            try:
+                plan = pending.get_nowait()
+            except queue.Empty:
+                return
+            try:
+                done.put((label, plan, work(client, plan, label), None))
+            except BaseException as e:  # noqa: BLE001 - re-raised in the caller's thread below
+                done.put((label, plan, None, e))
+
+    threads = [
+        threading.Thread(target=worker, args=(label, client), daemon=True)
+        for label, client in clients.items()
+        for _ in range(per_endpoint)
+    ]
+    for t in threads:
+        t.start()
+    for _ in range(len(todo)):
+        label, plan, outcome, err = done.get()
+        if err is not None:
+            raise err
+        yield label, plan, outcome
+
+
+def _served_models(endpoint: str) -> list[str]:
+    """The model ids an OpenAI-compatible endpoint serves (its ``/models``). The test seam."""
+    with urllib.request.urlopen(endpoint.rstrip("/") + "/models", timeout=5) as r:
+        return [m.get("id") for m in json.load(r).get("data", [])]
+
+
+def preflight(endpoints: list[str], model: str | None) -> str | None:
+    """A refusal message unless every endpoint answers ``/models`` and serves ``model``; checked
+    for all of them before the first chunk is sent (FR-023)."""
+    for ep in endpoints:
+        try:
+            ids = _served_models(ep)
+        except Exception as e:  # noqa: BLE001 - unreachable, timeout, malformed answer
+            return f"endpoint {short(ep)} is not answering ({type(e).__name__}: {e}); no chunk was sent"
+        if model and model not in ids:
+            return (f"endpoint {short(ep)} serves {ids}, not {model}; every endpoint must serve the same "
+                    f"model; no chunk was sent")
+    return None
 
 
 # ── The run ─────────────────────────────────────────────────────────────────
@@ -210,6 +260,14 @@ def run_extract(
 
     system = load_system()
     backend = resolve_cli_model(args, legacy_default=None).backend
+    endpoints = list(dict.fromkeys(getattr(args, "endpoints", None) or []))
+    parallel = getattr(args, "parallel", None) or 1
+    if endpoints and backend != "dgx":
+        return _refuse(f"--endpoints applies to --backend dgx only, not {backend}")
+    if endpoints and getattr(args, "endpoint", None):
+        return _refuse("give --endpoint or --endpoints, not both")
+    if parallel < 1:
+        return _refuse(f"--parallel must be at least 1, got {parallel}")
     chunk_chars, max_tokens = settings.chunk_chars, args.max_tokens
     plans: list[_Plan] = []
     for k, chunk in enumerate(npc_chunked.make_chunks(chapters, chunk_chars), 1):
@@ -227,7 +285,13 @@ def run_extract(
 
     started = now()
     run_dir = synth._new_run_dir(Path(range_dir) / schema.STATE_DIR / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
-    endpoint_label = short(args.endpoint) if getattr(args, "endpoint", None) and backend == "dgx" else backend
+    if endpoints:
+        targets = endpoints
+    elif getattr(args, "endpoint", None) and backend == "dgx":
+        targets = [args.endpoint]
+    else:
+        targets = []  # the backend's own resolution (environment, wiring) names the box
+    labels = [short(t) for t in targets] or [backend]
     facts = freshness.notes_manifest_facts(range_dir, registry_path, players_path)
     record = {
         "step": "extract",
@@ -239,8 +303,8 @@ def run_extract(
         "effort": getattr(args, "claude_code_effort", None),
         "max_tokens": max_tokens,
         "chunk_chars": chunk_chars,
-        "endpoints": [endpoint_label],
-        "parallel": 1,
+        "endpoints": labels,
+        "parallel": parallel,
         "dump_only": bool(args.dump_only),
         "force": bool(args.force),
         "inputs": {
@@ -286,21 +350,27 @@ def run_extract(
         return 0
 
     if todo:
-        try:
-            client = client_from_args(args)
-        except SystemExit as e:  # client_from_args fails fast with SystemExit(message)
-            msg = str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})"
+        def stop(msg: str) -> int:
             record["error"] = msg
             _finish(nd, plans, outcomes, args, backend, settings, absent, facts, since, until, record)
             save_record(EXIT_REFUSED)
             return _refuse(msg)
+
+        if targets:
+            problem = preflight(targets, args.model)
+            if problem:
+                return stop(problem)
+        try:
+            if targets:
+                clients = {short(t): client_from_args(args, endpoint=t) for t in targets}
+            else:
+                clients = {labels[0]: client_from_args(args)}
+        except SystemExit as e:  # client_from_args fails fast with SystemExit(message)
+            return stop(str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})")
         except (ValueError, RuntimeError, ImportError) as e:
-            record["error"] = str(e)
-            _finish(nd, plans, outcomes, args, backend, settings, absent, facts, since, until, record)
-            save_record(EXIT_REFUSED)
-            return _refuse(str(e))
+            return stop(str(e))
         for label, p, o in _run_pool(
-            todo, lambda c, plan, ep: _extract_one(c, plan, nd, args, ep), {endpoint_label: client}, 1
+            todo, lambda c, plan, ep: _extract_one(c, plan, nd, args, ep), clients, parallel
         ):
             outcomes[p.index] = o
             if o.status == "failed":

@@ -1084,3 +1084,60 @@ class TestDeterminism:
         assert rc == 0 and not fm.extract_calls
         assert cs.run_cli(synth_args(extracted, "campaign_state", "--force"))[0] == 0
         assert first == section(draft_of(extracted, "campaign_state"), "## NPC Current States")
+
+
+# ── spec 033 US5: extraction and prose are chosen separately (T040) ─────────
+
+
+class TestSeparateBackends:
+    def _prose_clients(self, fm):
+        return fm.client_args
+
+    def test_with_no_flag_and_no_config_the_schema_defaults_apply(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        assert {(a["backend"], a["model"], a["effort"]) for a in fm.client_args[-1:]} == {
+            (schema.DEFAULT_PROSE_BACKEND, schema.DEFAULT_PROSE_MODEL, schema.DEFAULT_PROSE_EFFORT)}
+
+    def test_grounding_yaml_prose_beats_the_schema_and_a_flag_beats_both(self, extracted, fm):
+        (extracted / "config" / "grounding.yaml").write_text(
+            "summary_native:\n  prose:\n    backend: claude-code\n    model: yaml-model\n    effort: high\n")
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        assert (fm.client_args[-1]["backend"], fm.client_args[-1]["model"], fm.client_args[-1]["effort"]) == (
+            "claude-code", "yaml-model", "high")
+        assert cs.run_cli(synth_args(extracted, "campaign_state", "--model", "flag-model",
+                                     "--claude-code-effort", "low"))[0] == 0
+        assert (fm.client_args[-1]["model"], fm.client_args[-1]["effort"]) == ("flag-model", "low")
+
+    def test_the_effort_flag_is_passed_through_to_the_backend_and_recorded(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state", "--claude-code-effort", "max"))[0] == 0
+        assert fm.client_args[-1]["effort"] == "max"
+        recs = [json.loads(p.read_text()) for p in (state_dir(extracted) / "runs").glob("*/record.json")]
+        (rec,) = [r for r in recs if r.get("step") == "synth"]
+        assert rec["effort"] == "max"
+
+    def test_extraction_config_never_reaches_the_prose_step(self, extracted, fm):
+        (extracted / "config" / "grounding.yaml").write_text(
+            "summary_native:\n  extract:\n    backend: dgx\n    model: extract-model\n"
+            "  prose:\n    backend: openrouter\n    model: vendor/prose\n")
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        assert (fm.client_args[-1]["backend"], fm.client_args[-1]["model"]) == ("openrouter", "vendor/prose")
+        assert {c["model"] for c in fm.prose_calls} == {"vendor/prose"}
+
+    def test_prose_config_never_reaches_extraction(self, scamp, fm):
+        (scamp / "config" / "grounding.yaml").write_text(
+            "summary_native:\n  extract:\n    backend: dgx\n    model: extract-model\n"
+            "  prose:\n    backend: openrouter\n    model: vendor/prose\n")
+        args = ["extract", *cs.common(scamp), "--chunk-chars", "1", "--endpoint", "http://spark:8001/v1"]
+        assert cs.run_cli(args)[0] == 0
+        assert {a["backend"] for a in fm.client_args} == {"dgx"}
+        assert {c["model"] for c in fm.extract_calls} == {"extract-model"}
+
+    def test_a_prose_only_rebuild_makes_no_extraction_call(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        fm.prose_calls.clear()
+        fm.client_args.clear()
+        fm.preflighted.clear()
+        rc, _, err = cs.run_cli(synth_args(extracted, "world_state", "--force", "--model", "another-model"))
+        assert rc == 0, err
+        assert fm.extract_calls == [] and fm.prose_calls
+        assert fm.preflighted == [] and {a["backend"] for a in fm.client_args} == {"claude-code"}

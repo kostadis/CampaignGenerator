@@ -643,3 +643,63 @@ def test_drafts_lists_the_annotations_and_key_npcs_reports(campaign):
     assert set(rows) == {"annotations", "key_npcs_report"}
     assert rows["annotations"]["status"] == "report" and rows["annotations"]["path"].endswith("state/drafts/annotations.md")
     assert rows["key_npcs_report"]["path"].endswith("state/drafts/key_npcs_report.md")
+
+
+# ── spec 033 US5: endpoints, parallel and the prose selection (T045) ───────
+
+
+def test_extract_endpoints_are_one_multi_value_flag(campaign):
+    _, _, captured = campaign
+    eps = ["http://spark:8001/v1", "http://spark2:8001/v1"]
+    assert _run("/run/extract", {**RANGE, "endpoints": eps, "parallel": 4}) == 200
+    cmd = captured["cmd"]
+    i = cmd.index("--endpoints")
+    assert cmd[i + 1:i + 3] == eps
+    assert _flag(cmd, "--parallel") == "4"
+    assert "--endpoint" not in cmd  # one spelling: the singular never rides along
+    assert _flag(cmd, "--backend") == "dgx"
+
+
+def test_extract_blank_endpoints_are_ignored_and_parallel_alone_is_carried(campaign):
+    _, _, captured = campaign
+    assert _run("/run/extract", {**RANGE, "endpoints": ["  ", ""], "parallel": 2}) == 200
+    cmd = captured["cmd"]
+    assert "--endpoints" not in cmd and _flag(cmd, "--parallel") == "2"
+
+
+def test_extract_endpoints_with_a_non_dgx_backend_is_400_before_spawning(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"extract": {"backend": "openrouter", "model": "vendor/model"}}})
+    r = client.get(f"{BASE}/run/extract", params={**RANGE, "endpoints": ["http://spark:8001/v1"]})
+    assert r.status_code == 400 and "--endpoints" in r.json()["detail"] and "dgx" in r.json()["detail"]
+    assert "cmd" not in captured
+
+
+def test_extract_parallel_below_one_is_400(campaign):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/extract", params={**RANGE, "parallel": 0})
+    assert r.status_code == 400 and "cmd" not in captured
+
+
+def test_endpoints_never_come_from_stored_config(campaign):
+    _, svc, captured = campaign
+    with pytest.raises(Exception):
+        svc.update_config({"summary_native": {"extract": {"endpoints": ["http://x/v1"]}}})
+    assert _run("/run/extract", RANGE) == 200
+    assert "--endpoints" not in captured["cmd"]
+
+
+@pytest.mark.parametrize("doc", STATE_DOCS)
+def test_chunked_synth_carries_the_prose_effort(campaign, doc):
+    _, _, captured = campaign
+    assert _run(f"/run/synth/{doc}", {**RANGE, "model": "claude-opus-5-5", "claude_code_effort": "high"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--backend") == "claude-code" and _flag(cmd, "--model") == "claude-opus-5-5"
+    assert _flag(cmd, "--claude-code-effort") == "high"
+    assert "--endpoints" not in cmd and "--parallel" not in cmd
+
+
+def test_synth_without_an_effort_request_sends_none(campaign):
+    _, _, captured = campaign
+    assert _run("/run/synth/world_state", RANGE) == 200
+    assert "--claude-code-effort" not in captured["cmd"]
