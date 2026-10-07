@@ -179,10 +179,15 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
                     "bytes": p.stat().st_size,
                 })
     # Reports the chunked build writes beside its notes and drafts (spec 033).
-    for name, p in (
+    state_drafts = schema.draft_dir(range_dir, "world_state")
+    reports = [
         ("drops", freshness.notes_dir(range_dir) / "drops.md"),
-        ("npc_status_report", range_dir / schema.STATE_DIR / "drafts" / "npc_status_report.md"),
-    ):
+        ("npc_status_report", state_drafts / "npc_status_report.md"),
+        ("canon_events_timeline", state_drafts / schema.TIMELINE_FILE),
+        ("budget_report", state_drafts / "budget_report.json"),
+    ]
+    reports += [(f"reference/{p.stem}", p) for p in sorted((state_drafts / "reference").glob("*.md"))]
+    for name, p in reports:
         if p.is_file():
             out.append({"doc": name, "path": schema.display_path(p, Path.cwd()), "status": "report", "bytes": p.stat().st_size})
     return out
@@ -249,7 +254,13 @@ def get_state(request: Request, since: int | None = None, until: int | None = No
     """What is on disk for the range, per step (read-only; files only)."""
     run = _run_config(request)
     lo, hi = _require_range(run, since, until)
-    return {"range": f"{lo}-{hi}", "extract": _extract_block(request, run, lo, hi)}
+    budgets = _read_json(schema.draft_dir(_range_dir(run, lo, hi), "world_state") / "budget_report.json")
+    return {
+        "range": f"{lo}-{hi}",
+        "extract": _extract_block(request, run, lo, hi),
+        # {section: {budget, words, over}} from the last world_state build, or null
+        "world_budgets": budgets if isinstance(budgets, dict) else None,
+    }
 
 
 # ── Runs (SSE) ──────────────────────────────────────────────────────────────

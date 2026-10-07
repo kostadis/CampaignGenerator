@@ -176,24 +176,24 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Tests for User Story 2
 
-- [ ] T024 [P] [US2] Extend `tests/test_summary_native_state_sections.py`:
+- [X] T024 [P] [US2] Extend `tests/test_summary_native_state_sections.py`:
   - reference files hold every kept note verbatim, grouped by subject, sorted;
   - the timeline is a separate file and world_state's section points to it;
   - the reading contract is the first block and names the markers and paths.
-- [ ] T025 [P] [US2] Extend `tests/test_summary_native_synth.py`:
+- [X] T025 [P] [US2] Extend `tests/test_summary_native_synth.py`:
   - a budget overrun is reported in the run record and the text is not truncated;
   - budgets are read from config, then schema;
   - the world_state prose prompt carries `WORD BUDGET` and the quotation rule.
 
 ### Implementation for User Story 2
 
-- [ ] T026 [US2] Add `reference_files(results) -> {kind: md}` and `reading_contract(range, paths) -> md` to `pipelines/summary_native/state_sections.py`, and write `drafts/reference/{factions,npcs,locations,items,threats,threads}.md` and `drafts/canon_events_timeline.md` (FR-013, including the thread ledger). The reading contract lists all six files. campaign_state's two thread sections point to `reference/threads.md`. Port the contract text from the prototype's `annotate.py`, with "not verbatim" wording (research R10).
-- [ ] T027 [US2] In `pipelines/summary_native/synth.py`:
+- [X] T026 [US2] Add `reference_files(results) -> {kind: md}` and `reading_contract(range, paths) -> md` to `pipelines/summary_native/state_sections.py`, and write `drafts/reference/{factions,npcs,locations,items,threats,threads}.md` and `drafts/canon_events_timeline.md` (FR-013, including the thread ledger). The reading contract lists all six files. campaign_state's two thread sections point to `reference/threads.md`. Port the contract text from the prototype's `annotate.py`, with "not verbatim" wording (research R10).
+- [X] T027 [US2] In `pipelines/summary_native/synth.py`:
   - use `state.prose_world.system.md` with per-section budgets for world_state;
   - count words excluding citations, and record overruns;
   - append each section's `_Full notes: reference/<kind>.md_` pointer;
   - put the contract at the top of world_state.
-- [ ] T028 [US2] Extend the `/drafts` listing in `server/routers/summary_native.py` with the timeline and `reference/*.md`. Add links to them in `frontend/src/views/grounding/SummaryNative.vue`, and show the budget report after a world_state synth.
+- [X] T028 [US2] Extend the `/drafts` listing in `server/routers/summary_native.py` with the timeline and `reference/*.md`. Add links to them in `frontend/src/views/grounding/SummaryNative.vue`, and show the budget report after a world_state synth.
 
 **Checkpoint**: world_state is loadable for session prep.
 

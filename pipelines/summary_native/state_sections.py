@@ -12,6 +12,7 @@ Guarded by ``tests/test_summary_native_no_llm.py``.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -34,6 +35,103 @@ def timeline_md(results: Sequence[notes.CheckedChunk]) -> str:
 def completed_md(results: Sequence[notes.CheckedChunk]) -> str:
     """Every kept concluded note, in chapter order with exact duplicates removed."""
     return _bullets(notes.stitched(results, "concluded"))
+
+
+def timeline_file_md(results: Sequence[notes.CheckedChunk]) -> str:
+    """``canon_events_timeline.md``: the whole timeline, a file of its own (FR-013)."""
+    return "# Canon Events Timeline\n\n" + timeline_md(results) + "\n"
+
+
+def timeline_pointer(results: Sequence[notes.CheckedChunk], since: int, until: int) -> str:
+    """world_state's ``## Canon Events Timeline`` body: the count and where the events are."""
+    n = len(notes.stitched(results, "event"))
+    return (
+        f"The full timeline ({n} events, ch {since:03d}-{until:03d}, every one cited) is a separate file: "
+        f"`{schema.TIMELINE_FILE}`. It is built by code from the checked notes, in chapter order, "
+        "and is not loaded with this document."
+    )
+
+
+# ── Reference files (FR-013) ────────────────────────────────────────────────
+
+#: ``kind -> the World tag it holds`` (``None``: the thread ledger). The file is
+#: ``reference/<kind>.md``; the reading contract lists all six.
+REFERENCE_KINDS: dict[str, str | None] = {
+    "factions": "FACTION", "npcs": "NPC", "locations": "LOCATION",
+    "items": "ITEM", "threats": "THREAT", "threads": None,
+}
+_NO_SUBJECT = "(no subject)"
+_COUNTS_RE = re.compile(r"^(\d+) checked notes, (\d+) subjects", re.M)
+
+
+def _reference_md(kind: str, results: Sequence[notes.CheckedChunk]) -> str:
+    tag = REFERENCE_KINDS[kind]
+    seen: set[str] = set()
+    found: list[notes.Note] = []
+    for r in results:
+        for n in r.notes:
+            if n.text in seen or (n.kind != "thread" if tag is None else (n.kind != "world" or n.tag != tag)):
+                continue
+            seen.add(n.text)
+            found.append(n)
+    groups: dict[str, list[notes.Note]] = {}
+    for n in sorted(found, key=lambda n: n.first_chapter):  # stable: extraction order within a chapter
+        groups.setdefault(n.subject or _NO_SUBJECT, []).append(n)
+    lines = [
+        f"# Reference: {kind.title()}", "",
+        f"{len(found)} checked notes, {len(groups)} subjects, chapter order within each. "
+        "Built by code from the checked notes; nothing is reworded.", "",
+    ]
+    if not found:
+        lines += [schema.NONE_VERIFIED, ""]
+    for subject in sorted(groups, key=lambda s: (s.casefold(), s)):
+        lines += [f"## {subject}", *(n.text for n in groups[subject]), ""]
+    return "\n".join(lines)
+
+
+def reference_files(results: Sequence[notes.CheckedChunk]) -> dict[str, str]:
+    """``{kind: markdown}`` for the six reference files: every kept note of the kind, verbatim,
+    under one ``## Subject`` heading per subject (sorted case-insensitively), chapter order within."""
+    return {kind: _reference_md(kind, results) for kind in REFERENCE_KINDS}
+
+
+def reference_pointer(kind: str, md: str) -> str:
+    """The line a section ends with, pointing to its reference file."""
+    m = _COUNTS_RE.search(md)
+    notes_n, subjects_n = (m.group(1), m.group(2)) if m else ("0", "0")
+    return f"_Full notes: reference/{kind}.md ({subjects_n} subjects, {notes_n} checked notes)._"
+
+
+# ── The reading contract (FR-015, research R10) ─────────────────────────────
+
+_CONTRACT = """\
+> **How to read this document.** It is the long-range memory of the campaign (ch {since:03d}-{until:03d}), generated
+> from the session summaries and checked by code. The last two session summaries outrank it for recent events.
+> - `{later}` under a line is newer information about the **same subject**: where the two conflict, the
+>   later one wins; where they don't, both hold.
+> - `{since_}` under a line is the later status of someone the line **mentions**: context, not a correction
+>   of the line.
+> - `{unverified}` marks a quotation that is not verbatim in the chapter it cites, or a citation that does
+>   not resolve: read it as a paraphrase, not as words anyone said.
+> - `[ch NNN / target]` cites `{summaries}/NNN-*.md`. The target is a scene id (`NNN.SS`), or that chapter's
+>   `npcs`, `locations`, `items`, `spells`, `moment` (Memorable Moments) or `end` (Session-End State) section.
+> - Every checked note, by subject: {files}.
+>   Every event, in order: `{timeline}`.
+> - Anything this document does not settle is a decision for the GM, not something to fill in.
+"""
+
+
+def reading_contract(rng: tuple[int, int], paths: dict[str, str]) -> str:
+    """The blockquote world_state opens with: the markers, what a citation points to, where the
+    reference files and the timeline are. ``rng`` is ``(since, until)``; ``paths`` holds the
+    ``summaries`` and ``reference`` directories and the ``timeline`` file as the reader will find
+    them once promoted (the layout in data-model.md)."""
+    ref = str(paths["reference"]).rstrip("/")
+    return _CONTRACT.format(
+        since=rng[0], until=rng[1], later=schema.LATER, since_=schema.SINCE, unverified=schema.UNVERIFIED,
+        summaries=str(paths["summaries"]).rstrip("/"), timeline=paths["timeline"],
+        files=", ".join(f"`{ref}/{kind}.md`" for kind in REFERENCE_KINDS),
+    )
 
 
 # ── Identity ────────────────────────────────────────────────────────────────
@@ -170,6 +268,17 @@ PROSE_SECTIONS: dict[str, tuple[tuple[str, str, bool], ...]] = {
         ("## Active Quests & Open Threads", "threads", True),
         ("## Party Current Situation", "party", True),
     ),
+}
+
+#: ``heading -> the reference file it points to`` (Party and the code-owned sections have none).
+REFERENCE_FOR: dict[str, str] = {
+    "## Factions and Powers": "factions",
+    "## Key NPCs": "npcs",
+    "## Locations": "locations",
+    "## Items and Artifacts": "items",
+    "## Active Threats and Open Pressures": "threats",
+    "## Resolved Plot Threads": "threads",
+    "## Active Quests & Open Threads": "threads",
 }
 
 BRIEFS: dict[str, str] = {

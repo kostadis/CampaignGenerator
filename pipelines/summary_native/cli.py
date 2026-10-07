@@ -549,12 +549,14 @@ def _extract(args, root: Path, config_path: Path, cfg: dict, report, range_dir: 
 
 def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, registry_path,
            summaries_dir: Path) -> int:
+    budgets = None
     try:
         if args.doc in schema.STATE_DOCS:
             # world_state and campaign_state: flag > grounding.yaml summary_native.prose > schema.
             prose = resolve.resolve_prose(
                 cfg, backend=args.backend, model=args.model, effort=getattr(args, "claude_code_effort", None))
             args.backend, args.model, args.claude_code_effort = prose.backend, prose.model, prose.effort
+            budgets = prose.budgets
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
     except ValueError as e:
         return _err(str(e))
@@ -572,6 +574,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         parts=_pick(args.parts, cfg, "parts", schema.DEFAULT_PARTS),
         summaries_dir=summaries_dir,
         players_path=_players_path(config_path),
+        budgets=budgets,
     )
 
 

@@ -149,6 +149,7 @@ def run_synth(
     registry_path: Path | None = None,
     summaries_dir: Path | None = None,
     players_path: Path | None = None,
+    budgets: dict[str, int] | None = None,
     now=None,
 ) -> int:
     now = now or _utcnow
@@ -173,7 +174,8 @@ def run_synth(
     if doc in schema.STATE_DOCS:
         return run_state_synth(
             args, root=root, range_dir=range_dir, report=report, summaries_dir=summaries_dir,
-            registry_path=registry_path, players_path=players_path, track_files=audit_default, now=now,
+            registry_path=registry_path, players_path=players_path, track_files=audit_default,
+            budgets=budgets, now=now,
         )
 
     if report.blocking_count:
@@ -376,19 +378,28 @@ def run_synth(
 
 # ── world_state and campaign_state from checked notes (spec 033 T019) ───────
 
-STATE_SYSTEM = "state.prose.system.md"  # TODO(T027): world_state moves to state.prose_world.system.md with budgets
+#: world_state's sections are written within word budgets; campaign_state's are not.
+STATE_SYSTEM = {"world_state": "state.prose_world.system.md", "campaign_state": "state.prose.system.md"}
 _TIMELINE_HEADING = "## Canon Events Timeline"
+_PROMOTED_SUMMARIES = "docs/summaries"  # the reading contract's fallback when the summaries sit outside the campaign
 
 
 def _slug(heading: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", heading[3:].lower()).strip("_")
 
 
-def _prose_prompt(doc: str, heading: str, brief: str, routed: list[str], extra: str, last_chunk) -> str:
+def _budget_words(body: str) -> int:
+    """Words in a section body, citations excluded (they are evidence, not prose)."""
+    return len(schema.STATE_CITE_RE.sub("", body).split())
+
+
+def _prose_prompt(doc: str, heading: str, brief: str, routed: list[str], extra: str, last_chunk,
+                  budget: int | None = None) -> str:
     """The user prompt of one prose call: its routed notes, any code-built context, and (for the
-    current state) the last chunk's summaries."""
+    current state) the last chunk's summaries. ``budget`` is the section's word limit, if it has one."""
+    limit = f"WORD BUDGET: {budget} words, hard limit.\n" if budget else ""
     return (
-        f"DOCUMENT: {doc}\nSECTION: {heading}\nBRIEF: {brief}\n\n"
+        f"DOCUMENT: {doc}\nSECTION: {heading}\nBRIEF: {brief}\n{limit}\n"
         f"VERIFIED NOTES ({len(routed)} bullets, chapter order, every one already checked by code):\n\n"
         + ("\n".join(routed) if routed else "(none)")
         + ("\n\n" + extra if extra else "")
@@ -419,16 +430,20 @@ def run_state_synth(
     registry_path: Path | None,
     players_path: Path | None,
     track_files: list[str],
+    budgets: dict[str, int] | None = None,
     now=None,
 ) -> int:
     """Build ``world_state`` or ``campaign_state`` from the checked notes ``extract`` wrote.
 
-    Code builds the timeline, the completed list, the NPC status table and the audit section; a
-    model writes each remaining section from only the notes code routed to it. Output goes to
-    ``state/drafts/``; no live document is touched.
+    Code builds the timeline (its own file), the reference files, the completed list, the NPC
+    status table, the audit section and world_state's reading contract; a model writes each
+    remaining section from only the notes code routed to it, world_state's within word budgets
+    (``budgets``: section name -> words, default ``schema.DEFAULT_WORLD_BUDGETS``). An overrun is
+    reported and the text is kept whole. Output goes to ``state/drafts/``; no live document is touched.
     """
     now = now or _utcnow
     doc = args.doc
+    budgets = {**schema.DEFAULT_WORLD_BUDGETS, **(budgets or {})}
     if report.blocking_count:
         print(report.to_markdown(), end="")
         print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
@@ -473,16 +488,16 @@ def run_state_synth(
     table, status_report = state_sections.npc_status_table(results, forms, pcs, ambiguous)
     threads = notes.thread_ledger(results)
     code_body: dict[str, str] = {}
+    reference = state_sections.reference_files(results)
     if doc == "world_state":
-        # TODO(T026): the timeline moves to canon_events_timeline.md and this section points at it.
-        code_body[_TIMELINE_HEADING] = state_sections.timeline_md(results)
+        code_body[_TIMELINE_HEADING] = state_sections.timeline_pointer(results, since, until)
     else:
         code_body["## Completed Encounters & Quests"] = state_sections.completed_md(results)
         code_body["## NPC Current States"] = table
         code_body["## Audit: Tracking Claims"] = state_sections.audit_md(range_dir)
 
     # ── prose prompts ──
-    system = (context.PROMPT_DIR / STATE_SYSTEM).read_text(encoding="utf-8")
+    system = (context.PROMPT_DIR / STATE_SYSTEM[doc]).read_text(encoding="utf-8")
     last_numbers = set(notes_manifest["chunks"][-1]["numbers"]) if notes_manifest.get("chunks") else set()
     last_chunk = []
     if last_numbers and summaries_dir is not None:
@@ -496,8 +511,10 @@ def run_state_synth(
             extra = "CODE-BUILT NPC STATUS TABLE (latest cited row per name; context, do not copy):\n\n" + table
         elif heading == "## Active Threats and Open Pressures":
             extra = "THREAD LEDGER (OPENED / ADVANCED / RESOLVED / ABANDONED):\n\n" + "\n".join(threads)
-        user = _prose_prompt(doc, heading, state_sections.BRIEFS[heading], routed, extra, last_chunk if attach else None)
-        jobs.append({"heading": heading, "route": route, "notes": len(routed), "user": user})
+        budget = budgets[heading[3:]] if doc == "world_state" else None
+        user = _prose_prompt(doc, heading, state_sections.BRIEFS[heading], routed, extra,
+                             last_chunk if attach else None, budget)
+        jobs.append({"heading": heading, "route": route, "notes": len(routed), "user": user, "budget": budget})
 
     started = now()
     run_dir = _new_run_dir(state_dir / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
@@ -573,10 +590,26 @@ def run_state_synth(
         })
         print(f"{j['heading'][3:]}: {j['notes']} notes, {secs:.0f}s", flush=True)
 
+    # Budgets count the model's words only, before the pointer is appended. An overrun is reported,
+    # never trimmed: cutting prose mid-sentence would be a worse defect than a long section (FR-012).
+    budget_report: dict[str, dict] = {}
+    for j in jobs:
+        body = bodies.get(j["heading"])
+        if j["budget"] and body is not None:
+            words = _budget_words(body)
+            budget_report[j["heading"][3:]] = {"budget": j["budget"], "words": words, "over": words > j["budget"]}
+    for name, r in budget_report.items():
+        print(f"{name}: {r['words']}/{r['budget']} words" + ("  OVER" if r["over"] else ""), flush=True)
+    if budget_report:
+        record["budgets"] = budget_report
+
     headings = load_outline(doc)
     parts: list[str] = []
     for h in headings:
         body = code_body[h] if h in code_body else bodies.get(h)
+        if body is not None and h in state_sections.REFERENCE_FOR and h not in code_body:
+            kind = state_sections.REFERENCE_FOR[h]
+            body = body.rstrip() + "\n\n" + state_sections.reference_pointer(kind, reference[kind])
         if body is not None:
             parts.append(f"{h}\n{body}\n")
     joined = "\n".join(parts)
@@ -585,8 +618,25 @@ def run_state_synth(
     record["finished"] = now().isoformat(timespec="seconds")
     save_record()
 
+    if doc == "world_state":
+        # The reading contract is the document's first block. It sits outside `joined` because the
+        # outline check allows no text before the first heading; the check ran on the sections alone.
+        shown = _rel(Path(summaries_dir), root) if summaries_dir is not None else _PROMOTED_SUMMARIES
+        contract = state_sections.reading_contract((since, until), {
+            "summaries": _PROMOTED_SUMMARIES if shown.startswith("/") else shown,
+            "reference": "docs/reference", "timeline": f"docs/{schema.TIMELINE_FILE}",
+        })
+        joined = contract + "\n" + joined
+
     drafts.mkdir(parents=True, exist_ok=True)
     atomic_write_text(drafts / "npc_status_report.md", status_report)
+    # The files the sections point to. Written whether or not the draft is complete: they are
+    # built by code from the checked notes and do not depend on the model.
+    for kind, md in reference.items():
+        atomic_write_text(drafts / "reference" / f"{kind}.md", md)
+    atomic_write_text(drafts / schema.TIMELINE_FILE, state_sections.timeline_file_md(results))
+    if budget_report:
+        atomic_write_text(drafts / "budget_report.json", json.dumps(budget_report, indent=2, ensure_ascii=False) + "\n")
     record_ref = f"runs/{run_id}/record.json"
     if problems:
         target = drafts / f"{doc}.incomplete.md"

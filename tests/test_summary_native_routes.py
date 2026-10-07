@@ -304,6 +304,32 @@ def test_drafts_lists_draft_and_incomplete_files(campaign):
     assert rows[("party", "draft")]["path"].endswith("drafts/party.draft.md")
 
 
+def test_drafts_lists_the_timeline_reference_files_and_budget_report(campaign):
+    root, _, _ = campaign
+    dd = root / "docs" / "summary_native" / "ch003-009" / "state" / "drafts"
+    (dd / "reference").mkdir(parents=True)
+    (dd / "canon_events_timeline.md").write_text("t")
+    (dd / "budget_report.json").write_text("{}")
+    for kind in ("factions", "threads"):
+        (dd / "reference" / f"{kind}.md").write_text("r")
+    r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
+    assert r.status_code == 200
+    rows = {x["doc"]: x for x in r.json()}
+    assert set(rows) == {"canon_events_timeline", "budget_report", "reference/factions", "reference/threads"}
+    assert all(x["status"] == "report" for x in rows.values())
+    assert rows["reference/factions"]["path"].endswith("state/drafts/reference/factions.md")
+
+
+def test_state_carries_the_last_world_state_budget_report(campaign):
+    root, _, _ = campaign
+    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["world_budgets"] is None
+    dd = root / "docs" / "summary_native" / "ch003-009" / "state" / "drafts"
+    dd.mkdir(parents=True)
+    rep = {"Locations": {"budget": 450, "words": 500, "over": True}}
+    (dd / "budget_report.json").write_text(json.dumps(rep))
+    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["world_budgets"] == rep
+
+
 def test_drafts_absent_is_404_and_empty_dir_is_empty(campaign):
     root, _, _ = campaign
     assert client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).status_code == 404

@@ -13,7 +13,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from pipelines.summary_native import notes, state_sections
+from pipelines.summary_native import notes, schema, state_sections
 
 FIXTURE = Path(__file__).parent / "fixtures" / "summary_native" / "state"
 CHAPTERS = notes.load_chapters(FIXTURE / "docs" / "summaries", 2, 5)
@@ -183,3 +183,139 @@ class TestDeterminism:
         results = self._results()
         again = [notes.CheckedChunk.from_dict(json.loads(json.dumps(r.to_dict()))) for r in results]
         assert self._build(results) == self._build(again)
+
+
+# ── spec 033 US2: reference files, the timeline file and the reading contract (T024) ─────────
+
+
+WORLD_RAW = """\
+## Events
+- The party wakes. [ch 002 / 002.01]
+- The party leaves. [ch 003 / 003.01]
+
+## Threads
+- [OPENED] **The signet ring** — Ilvara leaves a signet ring. [ch 002 / 002.02]
+- [RESOLVED] **The signet ring** — Nobody could say what became of it. [ch 004 / 004.02]
+- [ADVANCED] **Kalan's intentions** — The party wonders about Kalan. [ch 005 / 005.01]
+
+## World
+- [LOCATION] **Velkynvelve** — A drow outpost. [ch 002 / locations]
+- [LOCATION] **The Long Stair** — A spiral stair. [ch 003 / Locations]
+- [LOCATION] **Velkynvelve** — The party rests at its gate. [ch 005 / end]
+- [FACTION] **House Mizzrym** — Its sigil is on the ring. [ch 002 / items]
+- [NPC] **Kalan** — A drow who holds the gate. [ch 004 / npcs]
+- [NPC] **Ilvara Mizzrym** — A drow priestess. [ch 002 / npcs]
+- [ITEM] **Signet Ring** — A ring bearing a sigil. [ch 002 / items]
+- [THREAT] **The gate guards** — Sarith watches the party. [ch 002 / 002.01]
+"""
+
+
+def _world_results():
+    return [_check(WORLD_RAW)]
+
+
+class TestReferenceFiles:
+    def test_one_file_per_kind_including_the_thread_ledger(self):
+        files = state_sections.reference_files(_world_results())
+        assert sorted(files) == ["factions", "items", "locations", "npcs", "threads", "threats"]
+
+    def test_every_kept_note_is_there_verbatim(self):
+        results = _world_results()
+        files = state_sections.reference_files(results)
+        for kind, tag in (("factions", "FACTION"), ("npcs", "NPC"), ("locations", "LOCATION"),
+                          ("items", "ITEM"), ("threats", "THREAT")):
+            texts = notes.stitched(results, "world", tag)
+            assert texts
+            for text in texts:
+                assert text in files[kind].splitlines()
+        for text in notes.thread_ledger(results):
+            assert text in files["threads"].splitlines()
+
+    def test_notes_are_grouped_under_one_heading_per_subject_in_chapter_order(self):
+        md = state_sections.reference_files(_world_results())["locations"]
+        lines = md.splitlines()
+        assert lines.count("## Velkynvelve") == 1
+        at = lines.index("## Velkynvelve")
+        assert lines[at + 1:at + 3] == [
+            "- [LOCATION] **Velkynvelve** — A drow outpost. [ch 002 / locations]",
+            "- [LOCATION] **Velkynvelve** — The party rests at its gate. [ch 005 / end]"]
+
+    def test_subjects_are_sorted_case_insensitively(self):
+        raw = ("## World\n- [NPC] **zed** — z. [ch 002 / npcs]\n- [NPC] **Alpha** — a. [ch 003 / npcs]\n"
+               "- [NPC] **beta** — b. [ch 004 / npcs]\n")
+        md = state_sections.reference_files([_check(raw)])["npcs"]
+        assert [ln for ln in md.splitlines() if ln.startswith("## ")] == ["## Alpha", "## beta", "## zed"]
+
+    def test_a_thread_keeps_its_whole_history_under_one_subject(self):
+        lines = state_sections.reference_files(_world_results())["threads"].splitlines()
+        at = lines.index("## The signet ring")
+        assert lines[at + 1].startswith("- [OPENED]") and lines[at + 2].startswith("- [RESOLVED]")
+
+    def test_an_empty_kind_says_so(self):
+        md = state_sections.reference_files([_check("## Events\n- e [ch 002 / 002.01]\n")])["items"]
+        assert schema.NONE_VERIFIED in md
+
+    def test_the_header_counts_notes_and_subjects(self):
+        md = state_sections.reference_files(_world_results())["locations"]
+        assert "3 checked notes, 2 subjects" in md
+
+    def test_byte_identical_across_builds_and_a_json_round_trip(self):
+        results = _world_results()
+        again = [notes.CheckedChunk.from_dict(json.loads(json.dumps(r.to_dict()))) for r in results]
+        assert state_sections.reference_files(results) == state_sections.reference_files(again)
+
+
+class TestTimelineFile:
+    def test_the_timeline_is_its_own_file_holding_every_event(self):
+        results = _world_results()
+        md = state_sections.timeline_file_md(results)
+        assert md.startswith("# Canon Events Timeline\n")
+        for e in notes.stitched(results, "event"):
+            assert e in md.splitlines()
+
+    def test_worlds_section_points_to_the_file_and_states_the_count(self):
+        body = state_sections.timeline_pointer(_world_results(), 2, 5)
+        assert schema.TIMELINE_FILE in body and "2 events" in body and "ch 002-005" in body
+        assert "- The party wakes." not in body  # the events themselves are not in world_state
+
+    def test_a_reference_pointer_names_its_file_and_counts(self):
+        files = state_sections.reference_files(_world_results())
+        ptr = state_sections.reference_pointer("locations", files["locations"])
+        assert ptr == "_Full notes: reference/locations.md (2 subjects, 3 checked notes)._"
+
+
+class TestReadingContract:
+    PATHS = {"summaries": "docs/summaries", "reference": "docs/reference", "timeline": "docs/canon_events_timeline.md"}
+
+    def _md(self):
+        return state_sections.reading_contract((2, 70), self.PATHS)
+
+    def test_it_names_every_marker(self):
+        md = self._md()
+        for marker in (schema.LATER, schema.SINCE, schema.UNVERIFIED):
+            assert marker in md
+
+    def test_it_lists_all_six_reference_files_and_the_timeline(self):
+        md = self._md()
+        assert len(state_sections.REFERENCE_KINDS) == 6
+        for kind in state_sections.REFERENCE_KINDS:
+            assert f"docs/reference/{kind}.md" in md
+        assert "docs/canon_events_timeline.md" in md
+
+    def test_it_says_where_a_citation_points(self):
+        md = self._md()
+        assert "[ch NNN / target]" in md and "docs/summaries/NNN-*.md" in md
+        for target in ("npcs", "locations", "items", "spells", "moment", "end"):
+            assert target in md
+
+    def test_it_says_the_unsettled_is_the_gms_decision_and_a_quotation_is_not_verbatim(self):
+        md = self._md()
+        assert "decision for the GM" in md and "not verbatim" in md
+
+    def test_it_is_one_blockquote_naming_the_range(self):
+        md = self._md()
+        assert all(ln.startswith(">") for ln in md.strip().splitlines())
+        assert "ch 002-070" in md
+
+    def test_it_is_deterministic(self):
+        assert self._md() == self._md()

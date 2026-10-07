@@ -194,6 +194,11 @@ const reportNote = ref('')
 const drafts = ref<DraftRow[]>([])
 const draftsNote = ref('')
 const extractState = ref<ExtractState | null>(null)
+// world_state's last build: words written against each prose section's budget.
+interface BudgetRow { budget: number; words: number; over: boolean }
+const worldBudgets = ref<Record<string, BudgetRow> | null>(null)
+const budgetRows = computed(() => Object.entries(worldBudgets.value ?? {}))
+const overBudget = computed(() => budgetRows.value.filter(([, r]) => r.over).length)
 
 const duplicates = computed(() => report.value?.findings.filter(f => f.code === 'possible-duplicate') ?? [])
 const otherFindings = computed(() => report.value?.findings.filter(f => f.code !== 'possible-duplicate') ?? [])
@@ -202,10 +207,13 @@ async function refreshOutputs() {
   report.value = null; reportNote.value = ''
   drafts.value = []; draftsNote.value = ''
   extractState.value = null
+  worldBudgets.value = null
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
   try {
-    extractState.value = (await apiFetch<{ extract: ExtractState }>(`${BASE}/state?${q}`)).extract
+    const state = await apiFetch<{ extract: ExtractState; world_budgets: Record<string, BudgetRow> | null }>(`${BASE}/state?${q}`)
+    extractState.value = state.extract
+    worldBudgets.value = state.world_budgets
   } catch {
     extractState.value = null // the Extract panel simply stays empty; the other outputs still load
   }
@@ -439,6 +447,25 @@ onMounted(async () => {
         <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
           :label="`Synthesize ${doc}`" :selection-service="isChunked ? undefined : 'grounding'"
           selection-doc="summary_native" :selection-can-override="true" @done="onSynthDone" />
+        <div v-if="doc === 'world_state' && budgetRows.length" class="panel budgets">
+          <div class="counts">
+            <span>Word budgets (last world_state build; citations not counted)</span>
+            <span :class="overBudget ? 'bad' : 'ok'">
+              {{ overBudget ? `${overBudget} over budget` : 'all within budget' }}
+            </span>
+          </div>
+          <table class="drafts">
+            <thead><tr><th>Section</th><th>Words</th><th>Budget</th><th></th></tr></thead>
+            <tbody>
+              <tr v-for="[name, r] in budgetRows" :key="name">
+                <td>{{ name }}</td>
+                <td>{{ r.words }}</td>
+                <td>{{ r.budget }}</td>
+                <td :class="r.over ? 'bad' : 'ok'">{{ r.over ? 'OVER (kept whole, not truncated)' : 'ok' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- 4. Compare -->
@@ -501,7 +528,9 @@ onMounted(async () => {
         </table>
         <span v-if="drafts.length" class="field-help">
           An incomplete draft failed its outline check and is not promotable. A report is read-only evidence
-          (drops.md lists every dropped note; npc_status_report.md the merged, unresolved and player-character names).
+          (drops.md lists every dropped note; npc_status_report.md the merged, unresolved and player-character names;
+          canon_events_timeline.md every event in order; reference/*.md every checked note by subject, which each
+          world_state section and campaign_state's thread sections point to).
           Review a draft in your editor; promotion is manual.
         </span>
       </div>
@@ -552,6 +581,6 @@ onMounted(async () => {
 .drafts { border-collapse: collapse; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 .drafts th, .drafts td { text-align: left; padding: 3px 14px 3px 0; }
 .drafts th { font-weight: 600; color: var(--text); }
-.extract-state { margin-top: 10px; }
+.extract-state, .budgets { margin-top: 10px; }
 .chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
 </style>

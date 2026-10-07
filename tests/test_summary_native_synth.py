@@ -703,6 +703,11 @@ def draft_of(root, doc):
     return (state_dir(root) / "drafts" / f"{doc}.draft.md").read_text()
 
 
+def without_contract(text):
+    """world_state opens with the reading contract, a blockquote the outline check does not allow."""
+    return "\n".join(ln for ln in text.splitlines() if not ln.startswith(">")) + "\n"
+
+
 def section(text, heading):
     secs = notes_mod.npc_check.parse_sections(text)
     return notes_mod.npc_check.section_text(secs, heading)
@@ -783,7 +788,7 @@ class TestWorldState:
         assert rc == 0, err
         assert [c["heading"] for c in fm.prose_calls] == WORLD_PROSE
         text = draft_of(extracted, "world_state")
-        assert synth.check_outline(text, synth.load_outline("world_state")) == []
+        assert synth.check_outline(without_contract(text), synth.load_outline("world_state")) == []
         assert "Prose for Locations" in section(text, "## Locations")
         first = text.splitlines()[0]
         assert first.startswith("<!-- summary_native draft | doc: world_state | range: ch002-005 | record: runs/")
@@ -791,7 +796,10 @@ class TestWorldState:
 
     def test_the_timeline_is_code_built_in_chapter_order(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
-        body = section(draft_of(extracted, "world_state"), "## Canon Events Timeline")
+        # the events are their own file (US2); world_state's section only points at it
+        assert not [ln for ln in section(draft_of(extracted, "world_state"), "## Canon Events Timeline").splitlines()
+                    if ln.startswith("- ")]
+        body = (state_dir(extracted) / "drafts" / schema.TIMELINE_FILE).read_text()
         events = [ln for ln in body.splitlines() if ln.startswith("- ")]
         assert events[0] == "- The party wakes in the pens of Velkynvelve. [ch 002 / 002.01]"
         assert events[-1] == "- The party rests and speaks of Ilvara Mizzrym's death. [ch 005 / 005.01]"
@@ -933,6 +941,121 @@ class TestCampaignState:
     def test_the_audit_section_says_it_was_not_run(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
         assert "Audit not run for this range." in draft_of(extracted, "campaign_state")
+
+
+def _words(n: int, cite: str = "") -> str:
+    return " ".join(["word"] * n) + (f" {cite}" if cite else "")
+
+
+class TestWorldStateBudgetsAndReferences:
+    """Spec 033 US2 (T025): budgets, the reading contract, reference files and the timeline file."""
+
+    def _record(self, root):
+        recs = [json.loads(p.read_text()) for p in (state_dir(root) / "runs").glob("*/record.json")]
+        (rec,) = [r for r in recs if r.get("step") == "synth"]
+        return rec
+
+    def test_the_world_prompt_carries_the_budget_and_the_quotation_rule(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        by = {c["heading"]: c for c in fm.prose_calls}
+        for heading, words in (("## Party", 700), ("## Factions and Powers", 450), ("## Key NPCs", 900),
+                               ("## Locations", 450), ("## Items and Artifacts", 450),
+                               ("## Active Threats and Open Pressures", 600)):
+            assert f"WORD BUDGET: {words} words, hard limit." in by[heading]["user"]
+            assert "WORD BUDGET" in by[heading]["system"]
+            assert "Quotation marks are reserved" in by[heading]["system"]
+
+    def test_campaign_state_has_no_budget(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        assert all("WORD BUDGET" not in c["user"] and "WORD BUDGET" not in c["system"] for c in fm.prose_calls)
+
+    def test_budgets_come_from_config_then_from_the_schema(self, extracted, fm):
+        (extracted / "config" / "grounding.yaml").write_text(
+            "summary_native:\n  prose:\n    budgets:\n      Locations: 120\n")
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        by = {c["heading"]: c["user"] for c in fm.prose_calls}
+        assert "WORD BUDGET: 120 words, hard limit." in by["## Locations"]
+        assert "WORD BUDGET: 700 words, hard limit." in by["## Party"]  # the schema default
+        assert self._record(extracted)["budgets"]["Locations"]["budget"] == 120
+
+    def test_an_overrun_is_reported_and_the_text_is_not_truncated(self, extracted, fm):
+        fm.prose_override["## Locations"] = "## Locations\n\n" + _words(600, "[ch 004 / 004.01]") + "\n"
+        rc, out, err = cs.run_cli(synth_args(extracted, "world_state"))
+        assert rc == 0, err  # an overrun is a report for the GM, never a failure
+        assert "Locations: 600/450 words" in out and "OVER" in out
+        assert _words(600, "[ch 004 / 004.01]") in draft_of(extracted, "world_state")
+        rec = self._record(extracted)
+        assert rec["budgets"]["Locations"] == {"budget": 450, "words": 600, "over": True}
+        assert rec["budgets"]["Party"]["over"] is False
+        assert rec["check"] == {"complete": True, "problems": []}
+
+    def test_citations_do_not_count_toward_the_budget(self, extracted, fm):
+        fm.prose_override["## Locations"] = "## Locations\n\n" + (_words(10, "[ch 004 / 004.01]") + "\n") * 45
+        rc, out, err = cs.run_cli(synth_args(extracted, "world_state"))
+        assert rc == 0, err
+        assert self._record(extracted)["budgets"]["Locations"] == {"budget": 450, "words": 450, "over": False}
+
+    def test_the_budget_report_is_written_beside_the_drafts(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        rep = json.loads((state_dir(extracted) / "drafts" / "budget_report.json").read_text())
+        assert set(rep) == {"Party", "Factions and Powers", "Key NPCs", "Locations", "Items and Artifacts",
+                            "Active Threats and Open Pressures"}
+
+    def test_the_reading_contract_is_the_first_block_after_the_header(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        lines = draft_of(extracted, "world_state").splitlines()
+        assert lines[0].startswith("<!-- summary_native draft")
+        assert lines[1].startswith("> **How to read this document.**")
+        first_h2 = next(i for i, ln in enumerate(lines) if ln.startswith("## "))
+        assert lines[1].startswith(">") and all(ln.startswith(">") or not ln for ln in lines[1:first_h2])
+        contract = "\n".join(lines[1:first_h2])
+        assert "reference/factions.md" in contract and "canon_events_timeline.md" in contract
+        assert "not verbatim" in contract
+
+    def test_the_outline_check_runs_on_the_sections_and_the_contract_adds_nothing_else(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        text = draft_of(extracted, "world_state")
+        assert synth.check_outline(without_contract(text), synth.load_outline("world_state")) == []
+        assert [ln for ln in text.splitlines() if ln.startswith("## ")] == synth.load_outline("world_state")
+
+    def test_each_reference_section_points_to_its_file(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        text = draft_of(extracted, "world_state")
+        for heading, kind in (("## Factions and Powers", "factions"), ("## Key NPCs", "npcs"),
+                              ("## Locations", "locations"), ("## Items and Artifacts", "items"),
+                              ("## Active Threats and Open Pressures", "threats")):
+            assert f"_Full notes: reference/{kind}.md (" in section(text, heading)
+        assert "_Full notes:" not in section(text, "## Party")
+
+    def test_the_reference_files_and_timeline_are_written_by_code(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        drafts = state_dir(extracted) / "drafts"
+        assert sorted(p.name for p in (drafts / "reference").iterdir()) == [
+            "factions.md", "items.md", "locations.md", "npcs.md", "threads.md", "threats.md"]
+        locations = (drafts / "reference" / "locations.md").read_text()
+        assert "- [LOCATION] **Velkynvelve** — A drow outpost built into the cavern wall. [ch 002 / locations]" in locations
+        assert "the web is a lie" not in "".join(p.read_text() for p in (drafts / "reference").iterdir())  # dropped notes stay out
+        assert (drafts / schema.TIMELINE_FILE).read_text().startswith("# Canon Events Timeline\n")
+
+    def test_the_files_are_identical_across_rebuilds(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
+        drafts = state_dir(extracted) / "drafts"
+        snap = {p.name: p.read_bytes() for p in list(drafts.glob("reference/*.md")) + [drafts / schema.TIMELINE_FILE]}
+        assert cs.run_cli(synth_args(extracted, "world_state", "--force"))[0] == 0
+        assert snap == {p.name: p.read_bytes() for p in list(drafts.glob("reference/*.md")) + [drafts / schema.TIMELINE_FILE]}
+
+    def test_campaign_states_two_thread_sections_point_to_the_ledger_file(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
+        text = draft_of(extracted, "campaign_state")
+        for h in ("## Resolved Plot Threads", "## Active Quests & Open Threads"):
+            assert "_Full notes: reference/threads.md (" in section(text, h)
+        assert "_Full notes:" not in section(text, "## Party Current Situation")
+        assert not text.splitlines()[1].startswith(">")  # the contract opens world_state only
+        assert (state_dir(extracted) / "drafts" / "reference" / "threads.md").is_file()
+
+    def test_dump_only_writes_no_reference_files(self, extracted, fm):
+        assert cs.run_cli(synth_args(extracted, "world_state", "--dump-only"))[0] == 0
+        assert not (state_dir(extracted) / "drafts").exists()
 
 
 class TestDeterminism:
