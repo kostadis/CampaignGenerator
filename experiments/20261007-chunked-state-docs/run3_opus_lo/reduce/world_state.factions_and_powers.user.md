@@ -1,0 +1,102 @@
+DOCUMENT: world_state
+SECTION: ## Factions and Powers
+BRIEF: Each faction or power as it stands NOW: goals, leaders, relationship to the party, last known move.
+
+VERIFIED NOTES (92 bullets, chapter order, every one already checked by code):
+
+- [FACTION] **Lolth** — Worshiped at Velkynvelve; shrine features a 10-foot idol with jet eyes; drow hierarchy and rituals centered on her [ch 002 / locations; ch 002 / items]
+- [FACTION] **Drow** — Ruthless slave-owners; value hierarchy, treasure hoarding by highest-ranking, and public humiliation as political weapons [ch 002 / 002.05; ch 002 / 002.06]
+- [FACTION] **Drow Outpost (Velkynvelve)** — A drow-run facility holding prisoners; its guard tower has been overrun and its commander slain [ch 003 / locations].
+- [FACTION] **Drow** — The drow of Velkynvelve are actively hunting the escaped prisoners; they have sent scouts with darkvision and tracking skills; a full hunting party is following behind [ch 005 / 005.04; ch 005 / npcs].
+- [FACTION] **Mad Gnolls** — Demon-possessed creatures that implant spawn inside living bodies, where it later erupts; Fargas claims his adventuring band was attacked by them [ch 006 / 006.07].
+- [FACTION] **Duergar Slavers** — Gray dwarves who kidnap travelers to sell as slaves in Gracklstugh; use invisibility and enlargement magic; operate on the Darklake [ch 010 / 010.03; ch 010 / NPCs]
+- [FACTION] **Duergar** — A subterranean race with strict laws against foreigners and a deep hatred of Drow; Gracklstugh is their city and offers safety from Drow pursuit [ch 011 / 011.07].
+- [FACTION] **Duergar city guard** — Enforce the city’s laws with invisible patrols and lethal efficiency; they responded to the stone giant’s rampage. `[ch 012 / 012.01; ch 012 / 012.05]`
+- [FACTION] **Keepers of the Flame** — A high-ranking duergar order that tends the red dragon Themberchaud to keep the city’s forges burning; they claim the Deepking treats them as his most prized advisors and wield legal authority. `[ch 013 / 013.04; ch 013 / NPCs]`
+- [FACTION] **Stone Guard** — The military arm of the Stone Clan in Gracklstugh; led by Captain Errde Blackskull, they are pragmatic, suspicious of other factions, and maintain order despite internal corruption. `[ch 013 / 013.06; ch 013 / NPCs]`
+- [FACTION] **Gray Ghosts** — A faction mentioned by the halfling as being in conflict with the Keepers of the Flame and the Crown, though their nature is unknown. `[ch 013 / 013.05]`
+- [FACTION] **Keepers of the Flame** — A powerful Duergar faction that controls Themberchaud through psionic means; they are secretly waging war against the Gray Ghosts for the stolen dragon egg [ch 014 / 014.07].
+- [FACTION] **Gray Ghosts** — A shadowy organization that stole the red dragon egg and is suspected of causing the psionic disturbance in the Underdark [ch 014 / 014.07].
+- [FACTION] **Stone Guard** — The official law enforcement of Gracklstugh, led by Errde Blackskull; investigating the Empty-Scabbard Killers and seeking Droki [ch 014 / 014.02; ch 014 / npcs].
+- [FACTION] **Council of Savants** — Derro governing body; Buppido claims they promise freedom but always fail; likely corrupt and oppressive [ch 015 / 015.04]
+- [FACTION] **Stone Guard** — Once known for absolute integrity; now suspected of accepting bribes; led by Errde Blackskull, who seeks to justify a purge against the Derro [ch 018 / 018.04].
+- [FACTION] **Keepers of the Flame** — Manipulate Themberchaud to maintain power; threatened the party with permanent hostility if betrayed; frantic over the dragon egg [ch 018 / 018.02].
+- [FACTION] **Clan Ironhead** — Opposed to the Deepking’s monopoly; barred from direct weapons contracts; Grinta offers the party future trade advantages if the Deepking is removed [ch 018 / 018.07].
+- [FACTION] **Clan Steelshadow** — The Deepking’s clan; granted exclusive weapons contracts, breeding resentment across Gracklstugh [ch 018 / 018.02].
+- [FACTION] **Clan Xardelvar** — Chafes under new regulations; fears the Deepking will take over their work; mentioned by Errde as part of the cover story [ch 018 / 018.03].
+- [FACTION] **Empty-Scabbard Killers** — A group of duergar assassins who wield psionic blades and maintain no physical talismans; they are at war with Demogorgon-aligned derro and now have a stolen royal contract missing from their leader’s desk. `[ch 019 / npcs; ch 019 / items]`
+- [FACTION] **Derro** — Once slaves to Mind Flayers, they are predisposed to madness and cooperate only under charismatic leadership; they revere the egg as a source of absolute authority [ch 020 / 020.01; ch 020 / locations].
+- [FACTION] **Keepers of the Flame** — A zealot faction close to the king, obsessed with reclaiming the dragon egg and willing to commit genocide against derro; they will pursue the party eternally if deceived. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [FACTION] **Stone Guard** — A militant faction led by Errde Blackskull; seeks to expose the Council’s corruption and will act violently if given the full truth. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [FACTION] **Clan Ironhead** — A Duergar weaponsmithing clan that would trade with gnomes if the Deepking were removed; the party hopes to indirectly strengthen them. `[ch 021 / NPCs; ch 021 / 021.02]`
+- [FACTION] **Clan Thrazgad** — A Duergar steelsmithing clan whose name is on the dragon rattle; their involvement with the egg is unknown. `[ch 021 / NPCs; ch 021 / 021.03]`
+- [FACTION] **Ember Vanguard** — The party’s newly adopted name, now a legend among Derro, described as a marauding army of drow led by a 20th-level archmage. `[ch 021 / 021.04; ch 021 / Memorable Moments]`
+- [FACTION] **Council of Savants** — The party has now killed two of its members (Narrak and one other Derro); evidence of their involvement in demonic rituals is now in the party’s possession [ch 024 / 024.04].
+- [FACTION] **Keepers of the Flame** — Led by Gartokkar; the party’s original plan was to deliver the dragon egg to them; their current stance toward the party is unknown. `[ch 025 / 025.01; ch 025 / npcs]`
+- [FACTION] **Deepking’s regime** — Confirmed to be allied with assassins trying to wipe out opposition; the party holds proof of this. `[ch 025 / 025.01]`
+- [FACTION] **Derro** — Fully confirmed as aligned with demonic powers; all in the Whorlstone Caverns are dead. `[ch 025 / 025.01]`
+- [FACTION] **Myconids** — Generally peaceable but dangerous in large numbers; now confirmed to be susceptible to Zuggtmoy’s corruption and fungal teleportation. `[ch 025 / 025.02; ch 025 / 025.04]`
+- [FACTION] **Ember Vanguard** — A fabricated identity of the party, now a feared rumor in Gracklstugh; described as a red dragonborn and wizened drow assassins; blamed for derro High Council murders [ch 026 / 026.01; ch 026 / 026.03].
+- [FACTION] **Stone Guard** — Duergar police force; now paranoid and doubling patrols due to fears of the Ember Vanguard; issued passes to the party [ch 026 / 026.01; ch 026 / 026.06].
+- [FACTION] **Council of Savants** — Derro ruling faction that ordered the Gray Ghosts to kill the Duergar who brought the Ember Vanguard into the city; revealed through a recovered letter [ch 026 / 026.07].
+- [FACTION] **Keepers of the Flame** — Faction that commissioned the dragon egg retrieval; Gartokkar is a high-ranking member; they fear Themberchaud’s awakening [ch 026 / 026.06].
+- [FACTION] **Ember Vanguard** — A legendary and feared agent group of the Drow Empire; the party is mistaken for them, and their reputation is now inflated in rumor (Daz is thought to be an 18th-level mage) [ch 027 / 027.03; ch 027 / Memorable Moments]
+- [FACTION] **Netherese** — An ancient, fallen empire known for floating cities and advanced magic; their artifacts are highly valued and heavily plundered; their concepts of good and evil are alien. [ch 028 / locations]
+- [FACTION] **Circle of Builders** — One of the Myconid Circles within Neverlight Grove; focused on architecture and construction, led by Gasbide [ch 030 / 030.05].
+- [FACTION] **Circle of Hunters** — The Myconid Circle that tasked the party with hunting the Grick Alpha; Loobamub warned them about the Shambling Mound [ch 030 / 030.01].
+- [FACTION] **Myconid colony** — Once communal, now divided; Circle leaders are infected, while explorers like Rumpadump resist; the sovereign’s authority is being used to facilitate demonic worship [ch 031 / 031.02; ch 031 / npcs].
+- [FACTION] **The Circle of Welcome** — A corrupted ritual of Neverlight Grove where visitors are transformed into rooted heads; Phylo laments the party’s refusal of it, confirming its deadly nature `[ch 032 / 032.03]`.
+- [FACTION] **Clan Diggermattock** — The ruling deep gnome clan of this sector of Blingdenstone; they took the territory from the drow and treat all Drow escapees as valuable intelligence sources; they are focused on defense and resource management [ch 036 / 036.01; ch 036 / 036.04].
+- [FACTION] **Goldwhisker Clan** — Rumored wererat gnomes who previously occupied territory later taken by Dorbo’s faction; excluded from Blingdenstone’s power structure; subject of political tension [ch 037 / 037.01]
+- [FACTION] **Blingdenstone’s divided leadership** — Mining coalition led by Dorbo vs. civilian community led by Senni; their conflict over oozes and the Goldwhiskers reflects deeper societal fracture [ch 037 / 037.01]
+- [FACTION] **Chamber of Commerce** — Offered party 10% discount coupon; represents merchant interests in Blingdenstone [ch 038 / 038.02].
+- [FACTION] **Clan Goldwhisker** — Wererat gnomes occupying contested territory; dismissed as “squatters” by Dorbo; recognized as valuable allies by Senni and party due to immunity to non-silver weapons [ch 038 / 038.02; ch 038 / 038.06].
+- [FACTION] **Blingdenstone Authorities** — Attempt to claim credit for party’s victory; suppress “revolutionary tactics”; internal division between Dorbo and Senni is evident [ch 038 / 038.01; ch 038 / 038.06].
+- [FACTION] **Clan Goldwhisker** — A community of wererat gnomes, led by Chipgrin; they refuse to be subordinated to Dorbo but agree to fight the oozes [ch 039 / 039.05].
+- [FACTION] **Stoneheart Enclave** — A gnome faction that can protect Earth Elementals from Ogrémoch’s Bane if the Temple of the Steadfast Stone is cleansed [ch 039 / 039.08].
+- [FACTION] **Miners’ Guild** — Represented by Kazook Pickshine; concerned about acid corrosion to weapons and armor, seeking protective treatments [ch 039 / 039.09].
+- [FACTION] **Burrow Wardens** — Ghostly spirits, led by Uth-Jadger; they will aid in the coming battle if the party completes a task on their behalf [ch 039 / 039.09].
+- [FACTION] **Ogrémoch** — A powerful entity from the elemental plane of earth who chose to linger in the Steadfast Stone among drow statues; his spirit is the source of the temple’s corruption [ch 042 / 042.02; ch 042 / npcs].
+- [FACTION] **Blingdenstone Community** — Deep gnomes are united in defending their allies; Nomi’s racism was shut down by collective outrage, showing strong internal cohesion. `[ch 043 / 043.04]`
+- [FACTION] **Galeb Duhr** — Ancient stone sentinels; programmed to “Trust no one” and wait for divine authority; respond to sonic resonance and ritual alignment. `[ch 044 / 044.04; ch 044 / npcs]`
+- [FACTION] **Diggermattock Clan** — Split between laborers (led by Senni) and mining corporations (led by Chief Dorbo); the party’s intervention has shifted power to the labor faction `[ch 045 / 045.02]`.
+- [FACTION] **Pickshine Mines** — Led by Dasco Pickshine; their branding extends to tea packaging, patches, and clothing; miners are more interested in “gross margins” than combat [ch 046 / 046.02; ch 046 / npcs].
+- [FACTION] **Blingdenstone militia** — Reactions to the plan are mixed: officers and ghosts want a big battle, many others are relieved by the minimal distraction [ch 046 / 046.01].
+- [FACTION] **Juiblex** — The Faceless Lord, demon lord of oozes, is not destroyed; a voice declares he will be reborn and consume Zuggtmoy’s “banquet” to grow stronger [ch 047 / 047.10; ch 047 / npcs].
+- [FACTION] **Zuggtmoy** — The Demon Queen of Fungi is actively moving to claim the power vacuum left by the Pudding King’s defeat, as evidenced by the twisted fungi [ch 047 / 047.10; ch 047 / npcs].
+- [FACTION] **Blingdenstone** — Now officially open for trade; miners, wererats, ghosts, and spiritual leaders have brokered a fragile alliance under Dorbo’s leadership. [ch 048 / 048.06]
+- [FACTION] **Goldwhisker Wererats** — Now granted territorial control of the upper boroughs as a self-funded defense force. [ch 048 / 048.06]
+- [FACTION] **Burrow Wardens** — Ghosts retain sacred rights to the North Tunnels as a graveyard. [ch 048 / 048.06]
+- [FACTION] **House T'sarran** — A minor drow house loyal to Ilvara; Valen is a scout from this house, and his infection reflects its current weakness [ch 049 / 049.02].
+- [FACTION] **Lolth’s priesthood** — Drow clerics distrust mages who claim divine communion; Asha’s suspicion reflects this institutional tension [ch 050 / 050.01].
+- [FACTION] **Zuggtmoy’s “bride” heresy** — Ilvara follows this heretical cult, turning followers into fungal servants; Asha sees this as a betrayal of Lolth [ch 050 / 050.02].
+- [FACTION] **House Duskryn** — Actively protecting Daz; Kaelira and Nym demonstrated lethal coordination and loyalty [ch 051 / 051.03; ch 051 / 051.06].
+- [FACTION] **House T'sarran** — Suffered heavy losses; their elite warrior retreated with a threat, suggesting future retaliation [ch 051 / 051.04; ch 051 / 051.06].
+- [FACTION] **House Mizzrym** — Ilvara was a loyal agent who received orders from House Mizzrym until her disappearance; their frantic messages suggest they lost contact and are now seeking her [ch 053 / 053.03].
+- [FACTION] **House T'sarran** — Sent a force to extract Daz alive, confirmed by the signet ring and burned orders; their involvement is now known to the party [ch 053 / 053.04].
+- [FACTION] **House T’sarran** — A powerful drow house ruled for 200 years by its Matron Mother; it has deployed agents to the surface to track Daz and identify his mysterious benefactor, not to kill him [ch 054 / 054.04; ch 054 / npcs]
+- [FACTION] **Candlekeep** — Maintains a policy of exile over imprisonment; its public records are curated and sometimes deliberately sealed by authority [ch 056 / 056.04; ch 056 / 056.07]
+- [FACTION] **The Stroudite School** — One of the three dominant theological schools; holds mortal choice is sovereign; now challenged by Gyrgum’s “fixed points” theory [ch 057 / 057.01].
+- [FACTION] **The Bahamutian School** — Argues divine providence arranges all things; Vareth aligns with this, and Gyrgum’s theory is seen as a compromise toward it [ch 057 / 057.01].
+- [FACTION] **The Draconic School** — Claims ancient agency sets the frame for mortal action; presented as one of the three schools by Vareth [ch 057 / 057.01].
+- [FACTION] **The Avowed** — Candlekeep’s administrative and security order; a hooded member was seen hurrying past with something hidden during dinner [ch 057 / 057.02].
+- [FACTION] **The Council of Twelve** — Governing body of Candlekeep; includes the Keeper, First Reader, eight Great Readers, Gatewarden, and Lorekeeper; currently in uproar over leadership and murder [ch 057 / 057.05].
+- [FACTION] **Temple of Oghma** — Spiritual authority in Candlekeep; Kei Tigersteel serves as priest; oversees purification rites [ch 059 / 059.01; ch 059 / npcs]
+- [FACTION] **Candlekeep Council of Great Readers** — Governing body; members include A'lai, Fheminor, Daral, Teles, and Bookwyrm; tensions over succession and murder investigation [ch 059 / 059.02; ch 059 / npcs]
+- [FACTION] **Candlekeep Avowed** — Alkrist states that obtaining powerful transformation scrolls requires “the right goblin and the right Avowed,” indicating the Avowed have access to such magic [ch 061 / 061.07].
+- [FACTION] **Candlekeep Investigative Methodology** — Kalan’s paper argues against relying on single magical results; this framework now underpins the party’s investigation and is being considered for scholarly publication [ch 061 / 061.02].
+- [FACTION] **Candlekeep Avowed** — The governing body of Candlekeep; Bookwyrm is acting head, but the naming ceremony for the new Keeper of Tomes occurs tomorrow; Teles Ahvoste and Fheminor are likely candidates [ch 062 / npcs; ch 062 / 062.02]
+- [FACTION] **The Threefold Proof** — Kalan’s unapproved academic methodology for criminal investigation, now publicly endorsed by Bookwyrm despite her prior suppression of it [ch 062 / items; ch 062 / 062.02]
+- [FACTION] **Watcher's Bell** — An institutional alarm system used by Candlekeep to signal crises; its tolling pattern was distinct from the hour [ch 063 / 063.01].
+- [FACTION] **Zhentarim** — Two raiders confirmed as Zhentarim operatives, looting books on a written manifest; one carries the bow that killed the Watcher, proving direct involvement in the murder and theft [ch 064 / 064.03; ch 064 / npcs].
+- [FACTION] **Ember Grapple** — The party formally adopts this name as their group identity for future missions, including informing Sylvira of her son’s death [ch 064 / 064.01].
+- [FACTION] **Avowed** — Candlekeep’s scholarly guardians; now documenting the ward failure as an unprecedented phenomenon and preparing experiments [ch 065 / 065.01; ch 065 / Memorable Moments].
+- [FACTION] **Zhentarim** — Their agents in the High Tower are all dead; their direct incursion has failed, but Manshoon’s breach indicates deeper involvement [ch 065 / 065.01; ch 065 / 065.02; ch 065 / NPCs].
+- [FACTION] **House Baenre** — A'lai deduces this drow house in Menzoberranzan has been funding the eleven-year campaign against Daz due to its unparalleled patience and resources, though he offers no direct proof [ch 067 / 067.02].
+- [FACTION] **House of Mechanus** — Provided the Mechanist Tools used to activate the bridge; the party owes them collateral (Glabbagool and Zalthir) for their use `[ch 068 / items; ch 068 / npcs]`
+- [FACTION] **Candlekeep Avowed** — Historical scholars who once memorized the height of the High Tower of Exaltation; Edvaldo references this practice `[ch 068 / 068.03]`
+- [FACTION] **Candlekeep** — A scholarly fortress housing dangerous tomes; lore of the Endless Chant and Word Lattice is known to its scholars; the Obsidian Door is part of its ancient protections. [ch 069 / npcs; ch 069 / locations]
+
+OUTLINE: write exactly this one `##` heading and its body, nothing else at that level:
+
+## Factions and Powers

@@ -684,6 +684,9 @@ def main() -> int:
     ap.add_argument("--chunk-chars", type=int, default=60000)
     ap.add_argument("--max-tokens", type=int, default=16000)
     ap.add_argument("--model", default=MODEL, help=f"served model id on every endpoint (default {MODEL})")
+    ap.add_argument("--backend", choices=("dgx", "claude-code"), default="dgx",
+                    help="dgx: the Spark endpoints; claude-code: the Claude subscription via `claude -p`")
+    ap.add_argument("--claude-code-effort", default=None, help="claude-code only: low|medium|high|...")
     ap.add_argument("--endpoint", action="append", default=None, metavar="URL",
                     help=f"OpenAI-compatible endpoint serving {MODEL}; repeat for several boxes "
                          f"(default {ENDPOINT}). Every endpoint must serve the same model.")
@@ -712,6 +715,13 @@ def main() -> int:
             return 2
         MODEL = json.loads((args.out / "run_model.json").read_text())["model"] if (args.out / "run_model.json").is_file() else MODEL
         endpoints, clients = ["cache-only"], {"cache-only": None}
+    elif args.backend == "claude-code":
+        # One subscription client; --workers bounds concurrent `claude -p` calls. No endpoint preflight.
+        endpoints = ["claude-code"]
+        clients = {"claude-code": client_from_args(argparse.Namespace(
+            backend="claude-code", model=MODEL, claude_code_effort=args.claude_code_effort))}
+        dump(args.out / "run_model.json", json.dumps(
+            {"model": MODEL, "backend": "claude-code", "effort": args.claude_code_effort}))
     else:
         endpoints = list(dict.fromkeys(args.endpoint or [ENDPOINT]))
         problem = preflight(endpoints)

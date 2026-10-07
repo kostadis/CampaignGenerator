@@ -1,0 +1,47 @@
+{
+  "campaign_state.party_current_situation": {
+    "secs": 23.3,
+    "prompt_chars": 89253,
+    "endpoint": "http://192.168.1.121:8001/v1"
+  },
+  "campaign_state.resolved_plot_threads": {
+    "secs": 141.4,
+    "prompt_chars": 130949,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  },
+  "world_state.party": {
+    "secs": 149.9,
+    "prompt_chars": 89262,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  },
+  "campaign_state.active_quests_and_open_threads": {
+    "secs": 218.9,
+    "prompt_chars": 162507,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  },
+  "world_state.factions_and_powers": {
+    "secs": 238.9,
+    "prompt_chars": 18498,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  },
+  "world_state.locations": {
+    "secs": 513.2,
+    "prompt_chars": 68591,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  },
+  "world_state.key_npcs": {
+    "secs": 656.9,
+    "prompt_chars": 58013,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  },
+  "world_state.items_and_artifacts": {
+    "secs": 657.3,
+    "prompt_chars": 52505,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  },
+  "world_state.active_threats_and_open_pressures": {
+    "secs": 660.6,
+    "prompt_chars": 155322,
+    "endpoint": "http://192.168.1.147:8001/v1"
+  }
+}

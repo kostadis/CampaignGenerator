@@ -1,0 +1,343 @@
+## Events
+- Daz recognized that Chief Dorbo had positioned him as a fall guy for the Pudding King operation, accepting blame if it failed while claiming credit if it succeeded [ch 039 / 039.01].
+- Daz reframed Senni’s appeal for unity into “a common outcome and a common drive to that outcome,” which gnome bureaucrats began recording as leadership aphorisms [ch 039 / 039.01].
+- Thorin explored an unopened door in Dorbo’s bureaucratic hub and discovered a kitchen, where he claimed the party’s agreement included “unlimited access to the snack room” [ch 039 / 039.02].
+- The gnome chef mistook the party for newly hired heroes and agreed to provide a snack, but Chief Dorbo ordered them to leave and eat at the Foaming Mug instead [ch 039 / 039.02].
+- Glabbagool was asked by the chef to clean the kitchen floor and enthusiastically accepted, earning the nickname “Roomba” from Thorin [ch 039 / 039.02].
+- The party discussed the legendary origin of gelatinous cubes as dungeon-cleaning creatures created to remove corpses and abandoned treasure [ch 039 / 039.02].
+- The party approached the Goldwhisker Warrens’ monumental fifty-foot double doors and, after considering scouting underneath, chose to knock directly [ch 039 / 039.03].
+- Daz announced to the guards that they intended to rid the Warrens and grotto of the slime problem and needed the Goldwhiskers’ help, prompting a guard to rush to inform Chief Chipgrin [ch 039 / 039.03].
+- Four wererat guards escorted the party through the Warrens, and their rat-like features prompted the party to openly express curiosity without judgment, delighting the guards [ch 039 / 039.04].
+- One guard exclaimed “See, I told you” after the party noted rats’ ecological niche, sparking a loud philosophical debate among the four guards about wererats and rats [ch 039 / 039.04].
+- Chief Chipgrin assumed the party was sent by the Diggermattocks to drive out his clan, but Daz clarified they sought to escape the Underdark and needed help eliminating the ooze threat [ch 039 / 039.05].
+- Daz offered to arrange a meeting between Chipgrin and Dorbo, but only if it was for cooperation, not political maneuvering; Chipgrin remarked Daz took negotiation to “the next level” [ch 039 / 039.05].
+- Daz declared the interaction was not a negotiation but a request for help, accepted personal responsibility for any Goldwhisker deaths, and even acknowledged Chipgrin could kill him afterward—leading Chipgrin to agree to the deal [ch 039 / 039.05].
+- Chipgrin revealed he knew the Pudding King from his time as a tunnel worker, knew his current location and actions, and described his transformation as fueled by vengeance, pride, madness, and demonic amplification of preexisting malice [ch 039 / 039.06].
+- The party realized demonic influence from Juiblex was spreading greed and aggression throughout Blingdenstone, with Dorbo’s obsession with profit being an example [ch 039 / 039.06].
+- A moot convened with Dorbo, Senni, Chipgrin, Nomi Pathshutter, Gurnik Tapfinger, Kazook Pickshine, and Uth-Jadger; Senni asked Daz to call the meeting to order [ch 039 / 039.07].
+- Daz summarized the crisis: an amphitheater of oozes under Blingdenstone, commanded by a Pudding King influenced by a demon lord, with corruption spreading through the settlement [ch 039 / 039.07].
+- Daz proposed a plan: a full-scale gnome assault as a distraction while the party covertly seized the Pudding King; Uth-Jadger praised it as “technical brilliance” of the Burrow Wardens [ch 039 / 039.07].
+- Dorbo proposed using the Temple of the Steadfast Stone as a staging point to draw oozes away from populated areas, requiring it to be cleansed first [ch 039 / 039.08].
+- Gurnik produced a red spell gem containing Hallow, explaining it must be placed in the temple’s menhir and defended until three guardians awakened [ch 039 / 039.08].
+- Gurnik and Nomi delivered a rehearsed exchange about Earth Elementals being ideal against oozes but needing the temple cleansed to avoid madness from Ogrémoch’s Bane [ch 039 / 039.08].
+- The party realized the gnome leaders were trying to use them to solve unrelated civic problems, prompting them to question why the army couldn’t attack from the north [ch 039 / 039.08].
+- Kazook Pickshine proposed a protective treatment against ooze acid using ingredients from Neverlight Grove, or salt trade with Gracklstugh [ch 039 / 039.09].
+- Uth-Jadger offered aid from other Burrow Warden spirits if the party completed a task for them [ch 039 / 039.09].
+- Dorbo’s committee offered the party a Stone of Controlling Earth Elementals as a reward for cleansing the Rockblight; the party objected to “enslaving” elementals and proposed befriending them instead [ch 039 / 039.09].
+- Thorin rolled a d20 to decide between direct assault (“YOLO”) and cautious preparation; he rolled 17, choosing caution [ch 039 / 039.10].
+- The party decided to cleanse the Rockblight (to gain elemental support and the Stone of Controlling Earth Elementals) and retrieve acid-protection ingredients from Neverlight Grove, rejecting the Gracklstugh option [ch 039 / 039.10].
+- Glabbagool, Eldeth, and Jimjar were assigned to assist Uth-Jadger and the Burrow Warden ghosts; the party joked this was like “fighting ghosts to recruit them” [ch 039 / 039.10].
+- The session ended with the party preparing to cleanse the Rockblight as their next expedition; Daz stated he was not the decision-maker, just tired of political BS [ch 039 / 039.11].
+
+## Concluded
+- The political stalemate over the Pudding King response was concluded when Daz forced a decision and the gnome factions agreed to convene a moot [ch 039 / 039.07].
+- The recruitment of Clan Goldwhisker was concluded when Chief Chipgrin agreed to join the campaign after Daz’s blunt offer of personal accountability [ch 039 / 039.05].
+- Glabbagool’s role as a kitchen cleaner was concluded when he accepted the task and earned the nickname “Roomba” [ch 039 / 039.02].
+- The party’s decision on which side quests to pursue was concluded when Thorin’s d20 roll of 17 selected the cautious path: cleansing the Rockblight and retrieving ingredients from Neverlight Grove [ch 039 / 039.10].
+- The assignment of Glabbagool, Eldeth, and Jimjar to assist the Burrow Warden ghosts was concluded as part of the party’s operational division [ch 039 / 039.10].
+
+## Threads
+- [ADVANCED] **Daz’s leadership role** — Daz’s takeover from political exhaustion was confirmed; he now leads the operation but defers final decisions to the group, with gnomes treating his remarks as aphorisms [ch 039 / 039.01; ch 039 / 039.11].
+- [ADVANCED] **Pudding King’s demonic influence** — Chipgrin confirmed the Pudding King was not replaced but amplified by Juiblex’s power; his corruption is bleeding into Blingdenstone’s leaders, notably Dorbo’s irrational greed [ch 039 / 039.06].
+- [OPENED] **Rockblight cleansing mission** — The party committed to cleansing the Temple of the Steadfast Stone to gain Earth Elemental support and the Stone of Controlling Earth Elementals [ch 039 / 039.10].
+- [OPENED] **Neverlight Grove ingredient retrieval** — The party committed to returning to Neverlight Grove to obtain acid-resistant treatment ingredients [ch 039 / 039.10].
+- [OPENED] **Burrow Warden ghost quest** — Uth-Jadger offered aid from other Burrow Warden spirits if Glabbagool, Eldeth, and Jimjar complete a task on their behalf [ch 039 / 039.09; ch 039 / 039.10].
+- [ADVANCED] **Stone of Controlling Earth Elementals** — The stone was offered by Dorbo’s committee as a reward; the party rejected enslavement and now seeks to befriend or release the elemental [ch 039 / 039.09].
+- [ADVANCED] **Gnome faction alliance** — The moot successfully united Dorbo, Senni, Chipgrin, Gurnik, Kazook, and Uth-Jadger under Daz’s leadership for the Pudding King operation [ch 039 / 039.07].
+- [OPENED] **Gracklstugh trade option** — Though rejected, the possibility of trading salt for weapons with Gracklstugh was raised and explicitly dismissed due to uncertain conditions [ch 039 / 039.09].
+- [ADVANCED] **Glabbagool’s identity and purpose** — Glabbagool was accepted as “Roomba” and is now assigned to assist ghosts, with the party imagining future companionship with an Earth Elemental [ch 039 / 039.02; ch 039 / 039.10].
+- [ADVANCED] **Dorbo’s political maneuvering** — Daz’s insight confirmed Dorbo’s strategy of plausible deniability; Dorbo now appears more unhinged due to demonic influence [ch 039 / 039.01; ch 039 / 039.06].
+- [ADVANCED] **Gnome army’s vulnerability** — The party recognized the gnome army’s weapons and armor are at risk of acid corrosion, making protective measures a priority [ch 039 / 039.09].
+
+## NPC Status
+- Chief Dorbo Diggermattock | Alive | Blingdenstone bureaucratic hub | Opportunistic and politically calculating, now deferring to Daz while seeking to use the party for civic goals [ch 039 / 039.01; ch 039 / 039.08; ch 039 / npcs].
+- Senni Diggermattock | Alive | Blingdenstone bureaucratic hub | Supportive of Daz and the unified plan, advocates for common purpose [ch 039 / 039.01; ch 039 / 039.07; ch 039 / npcs].
+- Gnome Chef | Alive | Blingdenstone bureaucratic hub kitchen | Welcoming and practical, delighted by Glabbagool’s cleaning offer [ch 039 / 039.02; ch 039 / npcs].
+- Glabbagool | Alive | Blingdenstone bureaucratic hub | Now nicknamed “Roomba,” assigned to assist Burrow Warden ghosts; eager to be useful [ch 039 / 039.02; ch 039 / 039.10; ch 039 / npcs].
+- Chief Chipgrin | Alive | Goldwhisker Warrens | Agreed to join the campaign, refuses subordination to Dorbo, now preparing to attend the broader clan meeting [ch 039 / 039.05; ch 039 / 039.07; ch 039 / npcs].
+- Goldwhisker Guards | Alive | Goldwhisker Warrens entrance | Delighted by the party’s non-judgmental attitude; engaged in philosophical debate about rats [ch 039 / 039.04; ch 039 / npcs].
+- Pudding King | Unknown | Location unknown, but known to Chipgrin | Former gnome tunnel worker, now a demonic vessel of vengeance and ooze-command; influence spreading [ch 039 / 039.06; ch 039 / npcs].
+- Nomi Pathshutter | Alive | Blingdenstone bureaucratic hub | Aide to Gurnik, participated in rehearsed presentation about Earth Elementals [ch 039 / 039.08; ch 039 / npcs].
+- Gurnik Tapfinger | Alive | Blingdenstone bureaucratic hub | Provided Hallow gem; disappointed when temple-cleansing was not prioritized [ch 039 / 039.08; ch 039 / npcs].
+- Kazook Pickshine | Alive | Blingdenstone bureaucratic hub | Concerned about weapon corrosion; proposed Neverlight Grove ingredients or Gracklstugh trade [ch 039 / 039.09; ch 039 / npcs].
+- Uth-Jadger | Dead (Ghost) | Blingdenstone bureaucratic hub | Praises Daz’s plan, offers ghostly aid if party completes their quest; now awaiting Glabbagool’s team [ch 039 / 039.07; ch 039 / 039.09; ch 039 / npcs].
+- Eldeth | Alive | Blingdenstone bureaucratic hub | Assigned to assist Burrow Warden ghosts with Glabbagool and Jimjar [ch 039 / 039.10; ch 039 / npcs].
+- Jimjar | Alive | Blingdenstone bureaucratic hub | Assigned to assist Burrow Warden ghosts with Glabbagool and Eldeth [ch 039 / 039.10; ch 039 / npcs].
+
+## World
+- [LOCATION] **Blingdenstone** — The settlement is under threat from an amphitheater of oozes commanded by the Pudding King; demonic influence from Juiblex is spreading greed and aggression among its leaders and citizens [ch 039 / 039.06; ch 039 / locations].
+- [LOCATION] **Goldwhisker Warrens** — Accessed by monumental fifty-foot double doors; home to wererat gnomes led by Chief Chipgrin, with a moss-carpeted audience area and two giant rats [ch 039 / 039.03; ch 039 / locations].
+- [LOCATION] **Chief Dorbo’s Kitchen** — A break room in the bureaucratic hub; contains a gnome chef and was briefly used by the party for snacks before being dismissed [ch 039 / 039.02; ch 039 / locations].
+- [LOCATION] **The Foaming Mug** — An inn where Chief Dorbo directed the party to eat, suitable for larger visitors like Thorin and his companions [ch 039 / 039.02; ch 039 / locations].
+- [LOCATION] **Temple of the Steadfast Stone** — Located in the Rockblight; a temple under hostile influence that must be cleansed with a Hallow gem placed in its menhir to awaken three guardians [ch 039 / 039.08; ch 039 / locations].
+- [LOCATION] **Rockblight** — A corrupted district surrounding the Temple of the Steadfast Stone, under the influence of Ogrémoch’s Bane; must be cleansed before Earth Elementals can safely operate [ch 039 / 039.08; ch 039 / locations].
+- [LOCATION] **Neverlight Grove** — A previously visited location where ingredients for ooze-acid protection can be gathered; the party plans to return [ch 039 / 039.09; ch 039 / locations].
+- [LOCATION] **Gracklstugh** — A duergar city whose current state is uncertain; trade for weapons was proposed but rejected due to poor prior relations [ch 039 / 039.09; ch 039 / locations].
+- [ITEM] **Red Spell Gem** — A red gem containing the Hallow spell, provided by Gurnik Tapfinger; must be placed in the Steadfast Stone’s menhir and defended until guardians awaken [ch 039 / 039.08; ch 039 / items].
+- [ITEM] **Stone of Controlling Earth Elementals** — A magic stone offered by Dorbo’s committee; can summon a friendly Earth Elemental for one hour, but the party rejects “enslavement” and seeks to befriend one [ch 039 / 039.09; ch 039 / items].
+- [SPELL] **Hallow** — A powerful sanctification spell contained in the red spell gem; its activation will cleanse the Temple of the Steadfast Stone and allow the Stoneheart Enclave to protect Earth Elementals [ch 039 / 039.08; ch 039 / spells].
+- [SPELL] **Conjure Elemental** — Mentioned as the closest spell comparison to the Stone of Controlling Earth Elementals; the stone’s effect is temporary and non-permanent [ch 039 / 039.09; ch 039 / spells].
+- [THREAT] **Demonic corruption of Blingdenstone** — Juiblex’s influence is amplifying greed, aggression, and irrationality in Blingdenstone’s leadership and populace, centered on the Pudding King [ch 039 / 039.06].
+- [THREAT] **Ooze army beneath Blingdenstone** — An amphitheater filled with oozes and slimes, commanded by the Pudding King, threatens the entire settlement [ch 039 / 039.07].
+- [FACTION] **Clan Goldwhisker** — A community of wererat gnomes, led by Chipgrin; they refuse to be subordinated to Dorbo but agree to fight the oozes [ch 039 / 039.05].
+- [FACTION] **Stoneheart Enclave** — A gnome faction that can protect Earth Elementals from Ogrémoch’s Bane if the Temple of the Steadfast Stone is cleansed [ch 039 / 039.08].
+- [FACTION] **Miners’ Guild** — Represented by Kazook Pickshine; concerned about acid corrosion to weapons and armor, seeking protective treatments [ch 039 / 039.09].
+- [FACTION] **Burrow Wardens** — Ghostly spirits, led by Uth-Jadger; they will aid in the coming battle if the party completes a task on their behalf [ch 039 / 039.09].
+- [NPC] **Chief Chipgrin** — Knew the Pudding King before his transformation; knows his current location, motives, and actions [ch 039 / 039.06].
+- [NPC] **Gurnik Tapfinger** — Cleric associated with Pelek’s burial temple; seeks to cleanse the Rockblight and believes Earth Elementals are vital [ch 039 / 039.08].
+- [NPC] **Dorbo Diggermattock** — His obsession with profit has become unhinged, likely due to demonic amplification of his greed [ch 039 / 039.06].
+
+## Party
+- The party is located in Blingdenstone’s bureaucratic hub, preparing for the next expedition to the Rockblight.
+- Their group name remains undefined, but they are now the de facto leaders of Blingdenstone’s anti-ooze campaign.
+- They are at level 9, as confirmed by prior session and the completion of the Candlekeep arc.
+- Daz has assumed the role of operational leader, having broken political deadlock; he refuses to be the sole decision-maker but insists on action over BS.
+- Thorin is now known for his completionist tendencies and used a d20 to resolve the party’s strategic debate.
+- Glabbagool is now nicknamed “Roomba” and has a new purpose as a cleaning agent; he is assigned to assist the Burrow Warden ghosts.
+- The party possesses the Red Spell Gem (Hallow) and the Stone of Controlling Earth Elementals (both obtained as rewards for upcoming tasks).
+- The party has rejected enslaving Earth Elementals and now intends to befriend or release them, possibly through repeated summoning.
+- The party has committed to cleansing the Rockblight, retrieving acid-protection ingredients from Neverlight Grove, and assisting the Burrow Warden ghosts.
+- Glabbagool, Eldeth, and Jimjar are assigned to assist the Burrow Warden ghosts; the main party will handle Rockblight and Neverlight Grove.
+- The party’s next immediate goal is to cleanse the Temple of the Steadfast Stone in the Rockblight, defend the Hallow gem, awaken the temple guardians, and secure elemental support.
+
+## Audit
+- [A11] SHOWN — The party has reached Blingdenstone, as confirmed by their presence in its bureaucratic hub, negotiations with Dorbo and Chipgrin, and planning for the Pudding King operation [ch 039 / 039.01; ch 039 / 039.05; ch 039 / npcs].
+- [A32] BEGUN — The cleansing of the Steadfast Stone has been initiated as a planned mission; the party has acquired the Hallow gem and intends to place it in the menhir [ch 039 / 039.08; ch 039 / 039.10].
+- [A33] BEGUN — The encounter with the Pudding King has been planned and discussed, but not yet executed; the party intends to seize him during the distraction [ch 039 / 039.07].
+- [A34] BEGUN — The battle for Blingdenstone is planned as a coordinated assault with the party’s “snatch and grab” strategy and gnome army distraction [ch 039 / 039.07].
+- [A35] BEGUN — Burrow Warden Jadger’s tasks have been offered; Glabbagool, Eldeth, and Jimjar are assigned to assist the ghosts, but the specific quest is not yet undertaken [ch 039 / 039.09; ch 039 / 039.10].
+- [A48] SHOWN — Neverlight Grove has been reached previously and is being revisited; the party plans to retrieve ingredients there [ch 039 / 039.09; ch 039 / locations].
+- [A105] SHOWN — Dorbo Diggermattock has been encountered and interacted with extensively in this chapter [ch 039 / 039.01; ch 039 / 039.02; ch 039 / npcs].
+- [A106] SHOWN — Senni Diggermattock has been encountered and is actively supporting Daz’s leadership [ch 039 / 039.01; ch 039 / 039.07].
+- [A108] SHOWN — Chipgrin Goldwhisker has been encountered and negotiated with; he agreed to join the campaign [ch 039 / 039.03; ch 039 / 039.05].
+- [A109] SHOWN — Burrow Warden Jadger has been encountered and offered assistance in exchange for a task [ch 039 / 039.07; ch 039 / 039.09].
+- [A110] BEGUN — The Pudding King has been identified and his location known, but the confrontation has not occurred [ch 039 / 039.06].
+- [A182] BEGUN — Ogrémoch’s Bane has been identified as the entity whose servants will attack the Hallow gem; the banishment has not yet occurred [ch 039 / 039.08].
+- [A185] BEGUN — Entémoch’s Boon has been mentioned as the location of the summoning circle for Earth Elementals, but not yet reached [ch 039 / 039.08].
+- [A186] BEGUN — Basilisks and eggs at Entémoch’s Boon have been referenced as potential encounters, but not yet encountered [ch 039 / 039.08].
+- [A209] BEGUN — Neverlight Grove corruption has been confirmed as ongoing and is the reason for the return trip [ch 039 / 039.09].
+- [A212] BEGUN — Araumycos fungal creatures are referenced as part of the broader demonic threat, but not encountered in this chapter [ch 039 / 039.06].
+- [A218] BEGUN — Szashune, Gromph’s golem, is mentioned as part of prior lore, but not encountered [ch 039 / 039.06].
+- [A220] BEGUN — Wand of Orcus is referenced as a potential final battle item, but not obtained [ch 039 / 039.06].
+- [A223] BEGUN — Travelogue prelude is referenced as prior, but not relevant to this chapter’s events [ch 039 / 039.01].
+- [A224] BEGUN — Surface-madness gradient is referenced as prior awareness [ch 039 / 039.01].
+- [A225] BEGUN — Gorg’Bahamut breadcrumb is referenced as prior planting [ch 039 / 039.01].
+- [A226] BEGUN — Mirabar smith commissions are referenced as prior [ch 039 / 039.01].
+- [A227] BEGUN — Daz shopping arc is referenced as prior [ch 039 / 039.01].
+- [A228] BEGUN — Daz fitted Calishite cloak is referenced as prior [ch 039 / 039.01].
+- [A229] BEGUN — Milo Goodbarrel Volume 3 is referenced as prior [ch 039 / 039.01].
+- [A230] BEGUN — Order of the Gauntlet medallion is referenced as prior [ch 039 / 039.01].
+- [A231] BEGUN — Gyrgum Hagiography is referenced as prior [ch 039 / 039.01].
+- [A232] BEGUN — Zalthir brass shadow-puppet hand is referenced as prior [ch 039 / 039.01].
+- [A233] BEGUN — Dawnbringer scabbard finishing is referenced as prior [ch 039 / 039.01].
+- [A234] BEGUN — Elin the silent child is referenced as prior [ch 039 / 039.01].
+- [A235] BEGUN — Charcoal rubbing is referenced as prior [ch 039 / 039.01].
+- [A236] BEGUN — Kestler meeting is referenced as prior [ch 039 / 039.01].
+- [A237] BEGUN — Triboar carpenter’s journal is referenced as prior [ch 039 / 039.01].
+- [A238] BEGUN — Burned hamlet is referenced as prior [ch 039 / 039.01].
+- [A239] BEGUN — Broken Thunderbeast stone is referenced as prior [ch 039 / 039.01].
+- [A240] BEGUN — Defaced Tempus shrine is referenced as prior [ch 039 / 039.01].
+- [A241] BEGUN — Forge of Mirabar is referenced as prior [ch 039 / 039.01].
+- [A242] BEGUN — Order of the Gauntlet shrine is referenced as prior [ch 039 / 039.01].
+- [A243] BEGUN — Goldenfields is referenced as prior [ch 039 / 039.01].
+- [A244] BEGUN — Mountain’s Mouth Inn is referenced as prior [ch 039 / 039.01].
+- [A245] BEGUN — Triboar memorial square is referenced as prior [ch 039 / 039.01].
+- [A246] BEGUN — Waterdeep is referenced as prior [ch 039 / 039.01].
+- [A247] BEGUN — Rishaal the Pageturner's is referenced as prior [ch 039 / 039.01].
+- [A248] BEGUN — Order of the Gauntlet chapter house is referenced as prior [ch 039 / 039.01].
+- [A249] BEGUN — Sleeping Snake fence is referenced as prior [ch 039 / 039.01].
+- [A250] BEGUN — Aurora's Whole Realms Catalog is referenced as prior [ch 039 / 039.01].
+- [A251] BEGUN — Halaster's Prized Findings is referenced as prior [ch 039 / 039.01].
+- [A252] BEGUN — Steelwoods of Mistshore is referenced as prior [ch 039 / 039.01].
+- [A253] BEGUN — River Shining Tavern is referenced as prior [ch 039 / 039.01].
+- [A254] BEGUN — Hand of Tarvis monument is referenced as prior [ch 039 / 039.01].
+- [A255] BEGUN — Burning Wizard inn is referenced as prior [ch 039 / 039.01].
+- [A256] BEGUN — Way of the Lion is referenced as prior [ch 039 / 039.01].
+- [A257] BEGUN — Candlekeep Emerald Door is referenced as prior [ch 039 / 039.01].
+- [A258] BEGUN — Eldeth farewell is referenced as prior [ch 039 / 039.01].
+- [A259] BEGUN — Dwarven outriders is referenced as prior [ch 039 / 039.01].
+- [A260] BEGUN — Stroudite polemicist is referenced as prior [ch 039 / 039.01].
+- [A261] BEGUN — Sister Ellune is referenced as prior [ch 039 / 039.01].
+- [A262] BEGUN — Brindle Wenth story is referenced as prior [ch 039 / 039.01].
+- [A263] BEGUN — Kestler the half-orc is referenced as prior [ch 039 / 039.01].
+- [A264] BEGUN — Eldred the two-voiced courier is referenced as prior [ch 039 / 039.01].
+- [A265] BEGUN — Rishaal the Pageturner is referenced as prior [ch 039 / 039.01].
+- [A266] BEGUN — Stroudite half-orc pilgrims is referenced as prior [ch 039 / 039.01].
+- [A267] BEGUN — Field Ward street-preacher is referenced as prior [ch 039 / 039.01].
+- [A268] BEGUN — City Watch patrol is referenced as prior [ch 039 / 039.01].
+- [A269] BEGUN — Maerith of the Ford is referenced as prior [ch 039 / 039.01].
+- [A270] BEGUN — Elin the silent child is referenced as prior [ch 039 / 039.01].
+- [A271] BEGUN — Veyloss the bard is referenced as prior [ch 039 / 039.01].
+- [A272] BEGUN — Festrum the gnome innkeeper is referenced as prior [ch 039 / 039.01].
+- [A273] BEGUN — Pilgrim at corner table is referenced as prior [ch 039 / 039.01].
+- [A274] BEGUN — Triboar carpenter is referenced as prior [ch 039 / 039.01].
+- [A275] BEGUN — Stroudite half-orc pilgrims is referenced as prior [ch 039 / 039.01].
+- [A276] BEGUN — Bookwyrm is referenced as prior [ch 039 / 039.01].
+- [A277] BEGUN — Queenie the cat is referenced as prior [ch 039 / 039.01].
+- [A278] BEGUN — First Faction painting is referenced as prior [ch 039 / 039.01].
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand is referenced as prior [ch 039 / 039.01].
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run is referenced as prior [ch 039 / 039.01].
+- [A281] BEGUN — Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+- [A282] BEGUN — Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+- [A283] BEGUN — Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+- [A284] BEGUN — Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+- [A285] BEGUN — Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+- [A286] BEGUN — Six-pointed star is referenced as prior [ch 039 / 039.01].
+- [A287] BEGUN — Black-Banner Five trial-site marker is referenced as prior [ch 039 / 039.01].
+- [A288] BEGUN — Endless Chant error is referenced as prior [ch 039 / 039.01].
+- [A289] BEGUN — Endless Chant is referenced as prior [ch 039 / 039.01].
+- [A290] BEGUN — Sjurkar priest benediction error is referenced as prior [ch 039 / 039.01].
+- [A291] BEGUN — Stroudite sponsorship is referenced as prior [ch 039 / 039.01].
+- [A292] BEGUN — Drow refugee in Waterdeep is referenced as prior [ch 039 / 039.01].
+- [A293] BEGUN — Refugee family from Episode 1 is referenced as prior [ch 039 / 039.01].
+- [A294] BEGUN — Candlekeep murder investigation is referenced as prior [ch 039 / 039.01].
+- [A295] BEGUN — Cryptogram race is referenced as prior [ch 039 / 039.01].
+- [A296] BEGUN — Vault confrontation is referenced as prior [ch 039 / 039.01].
+- [A297] BEGUN — Gauntlgrym call is referenced as prior [ch 039 / 039.01].
+- [A298] BEGUN — Daz / Yvenne scholar arc is referenced as prior [ch 039 / 039.01].
+- [A299] BEGUN — Zalthir / Khell-Vire scholar arc is referenced as prior [ch 039 / 039.01].
+- [A300] BEGUN — Thorin / Philemon scholar arc is referenced as prior [ch 039 / 039.01].
+- [A301] BEGUN — Gyrgum / Vareth scholar arc is referenced as prior [ch 039 / 039.01].
+- [A302] BEGUN — Glabbagool's question is referenced as prior [ch 039 / 039.01].
+- [A303] BEGUN — Polly Pocket disposition is referenced as prior [ch 039 / 039.01].
+- [A304] BEGUN — Sylvira recruitment is referenced as prior [ch 039 / 039.01].
+- [A305] BEGUN — Daral rescue is referenced as prior [ch 039 / 039.01].
+- [A306] BEGUN — Kalan missing is referenced as prior [ch 039 / 039.01].
+- [A307] BEGUN — Alkrist arrest is referenced as prior [ch 039 / 039.01].
+- [A308] BEGUN — Moziqodo binding is referenced as prior [ch 039 / 039.01].
+- [A309] BEGUN — Daz / Yvenne synthesis is referenced as prior [ch 039 / 039.01].
+- [A310] BEGUN — Daz / Yvenne Vaelissa name is referenced as prior [ch 039 / 039.01].
+- [A311] BEGUN — Thorin / Philemon Layer 2 reveal is referenced as prior [ch 039 / 039.01].
+- [A312] BEGUN — Gyrgum / Vareth unsigned sting is referenced as prior [ch 039 / 039.01].
+- [A313] BEGUN — Glabbagool Shadow Apprentice unlock is referenced as prior [ch 039 / 039.01].
+- [A314] BEGUN — Candlekeep gates is referenced as prior [ch 039 / 039.01].
+- [A315] BEGUN — Refectory is referenced as prior [ch 039 / 039.01].
+- [A316] BEGUN — Whispering Dome is referenced as prior [ch 039 / 039.01].
+- [A317] BEGUN — Infernal Fortress is referenced as prior [ch 039 / 039.01].
+- [A318] BEGUN — Janussi's chamber is referenced as prior [ch 039 / 039.01].
+- [A319] BEGUN — Southern Dining Hall is referenced as prior [ch 039 / 039.01].
+- [A320] BEGUN — Bath House is referenced as prior [ch 039 / 039.01].
+- [A321] BEGUN — Founder's Court is referenced as prior [ch 039 / 039.01].
+- [A322] BEGUN — Oak Tree Apothecary is referenced as prior [ch 039 / 039.01].
+- [A323] BEGUN — Kitchens is referenced as prior [ch 039 / 039.01].
+- [A324] BEGUN — Erudite Outfitters is referenced as prior [ch 039 / 039.01].
+- [A325] BEGUN — Drakonoikos is referenced as prior [ch 039 / 039.01].
+- [A326] BEGUN — Reader's Tower is referenced as prior [ch 039 / 039.01].
+- [A327] BEGUN — Immortal Chambers is referenced as prior [ch 039 / 039.01].
+- [A328] BEGUN — Sea Warden's Tower is referenced as prior [ch 039 / 039.01].
+- [A329] BEGUN — Bell Tower is referenced as prior [ch 039 / 039.01].
+- [A330] BEGUN — Cursed Tower is referenced as prior [ch 039 / 039.01].
+- [A331] BEGUN — Pont de Paramours is referenced as prior [ch 039 / 039.01].
+- [A332] BEGUN — Oval Theatre is referenced as prior [ch 039 / 039.01].
+- [A333] BEGUN — House of Alaundo is referenced as prior [ch 039 / 039.01].
+- [A334] BEGUN — Astronomicon Orrery is referenced as prior [ch 039 / 039.01].
+- [A335] BEGUN — Philosopher's Court is referenced as prior [ch 039 / 039.01].
+- [A336] BEGUN — Melodrome / Jook's Box is referenced as prior [ch 039 / 039.01].
+- [A337] BEGUN — Jewel of the Styx is referenced as prior [ch 039 / 039.01].
+- [A338] BEGUN — School of Drama is referenced as prior [ch 039 / 039.01].
+- [A339] BEGUN — High Tower Library is referenced as prior [ch 039 / 039.01].
+- [A340] BEGUN — Lava chamber is referenced as prior [ch 039 / 039.01].
+- [A341] BEGUN — The Vault (B2) is referenced as prior [ch 039 / 039.01].
+- [A342] BEGUN — The Vault (B3) is referenced as prior [ch 039 / 039.01].
+- [A343] BEGUN — Vault tower rocket is referenced as prior [ch 039 / 039.01].
+- [A344] BEGUN — Janussi is referenced as prior [ch 039 / 039.01].
+- [A345] BEGUN — Janussi death is referenced as prior [ch 039 / 039.01].
+- [A346] BEGUN — Bookwyrm is referenced as prior [ch 039 / 039.01].
+- [A347] BEGUN — Bookwyrm Teles sighting is referenced as prior [ch 039 / 039.01].
+- [A348] BEGUN — Bookwyrm confrontation is referenced as prior [ch 039 / 039.01].
+- [A349] BEGUN — Bookwyrm death is referenced as prior [ch 039 / 039.01].
+- [A350] BEGUN — Kalan is referenced as prior [ch 039 / 039.01].
+- [A351] BEGUN — Kalan second key handoff is referenced as prior [ch 039 / 039.01].
+- [A352] BEGUN — Kalan farewell is referenced as prior [ch 039 / 039.01].
+- [A353] BEGUN — Kalan disappearance is referenced as prior [ch 039 / 039.01].
+- [A354] BEGUN — Sylvira is referenced as prior [ch 039 / 039.01].
+- [A355] BEGUN — Sylvira prime suspect is referenced as prior [ch 039 / 039.01].
+- [A356] BEGUN — Sylvira recruitment is referenced as prior [ch 039 / 039.01].
+- [A357] BEGUN — Sylvira dispel is referenced as prior [ch 039 / 039.01].
+- [A358] BEGUN — Sylvira survival is referenced as prior [ch 039 / 039.01].
+- [A359] BEGUN — Daral is referenced as prior [ch 039 / 039.01].
+- [A360] BEGUN — Daral poisoning is referenced as prior [ch 039 / 039.01].
+- [A361] BEGUN — Daral fate is referenced as prior [ch 039 / 039.01].
+- [A362] BEGUN — Daral testimony is referenced as prior [ch 039 / 039.01].
+- [A363] BEGUN — Fheminor is referenced as prior [ch 039 / 039.01].
+- [A364] BEGUN — Fheminor revelation is referenced as prior [ch 039 / 039.01].
+- [A365] BEGUN — Fheminor appointment is referenced as prior [ch 039 / 039.01].
+- [A366] BEGUN — A'lai is referenced as prior [ch 039 / 039.01].
+- [A367] BEGUN — A'lai interview is referenced as prior [ch 039 / 039.01].
+- [A368] BEGUN — A'lai sapphire smash is referenced as prior [ch 039 / 039.01].
+- [A369] BEGUN — A'lai fate is referenced as prior [ch 039 / 039.01].
+- [A370] BEGUN — Alkrist is referenced as prior [ch 039 / 039.01].
+- [A371] BEGUN — Alkrist interview is referenced as prior [ch 039 / 039.01].
+- [A372] BEGUN — Alkrist arrest is referenced as prior [ch 039 / 039.01].
+- [A373] BEGUN — Fembris is referenced as prior [ch 039 / 039.01].
+- [A374] BEGUN — Fembris confession is referenced as prior [ch 039 / 039.01].
+- [A375] BEGUN — Tadric is referenced as prior [ch 039 / 039.01].
+- [A376] BEGUN — Tadric flight is referenced as prior [ch 039 / 039.01].
+- [A377] BEGUN — Tadric appointment is referenced as prior [ch 039 / 039.01].
+- [A378] BEGUN — Hollypocket is referenced as prior [ch 039 / 039.01].
+- [A379] BEGUN — Sprig Summerfoot is referenced as prior [ch 039 / 039.01].
+- [A380] BEGUN — Leuwin is referenced as prior [ch 039 / 039.01].
+- [A381] BEGUN — Teles Ahvoste is referenced as prior [ch 039 / 039.01].
+- [A382] BEGUN — Kazryn Nyantani is referenced as prior [ch 039 / 039.01].
+- [A383] BEGUN — Khell-Vire is referenced as prior [ch 039 / 039.01].
+- [A384] BEGUN — Philemon is referenced as prior [ch 039 / 039.01].
+- [A385] BEGUN — Vareth is referenced as prior [ch 039 / 039.01].
+- [A386] BEGUN — Yvenne is referenced as prior [ch 039 / 039.01].
+- [A387] BEGUN — Yvenne Vaelissa delivery is referenced as prior [ch 039 / 039.01].
+- [A388] BEGUN — Yvenne synthesis is referenced as prior [ch 039 / 039.01].
+- [A389] BEGUN — Inda emergence is referenced as prior [ch 039 / 039.01].
+- [A390] BEGUN — Spanner handoff is referenced as prior [ch 039 / 039.01].
+- [A391] BEGUN — Moziqodo first encounter is referenced as prior [ch 039 / 039.01].
+- [A392] BEGUN — Moziqodo binding break is referenced as prior [ch 039 / 039.01].
+- [A393] BEGUN — Moziqodo fate is referenced as prior [ch 039 / 039.01].
+- [A394] BEGUN — Manshoon arrival is referenced as prior [ch 039 / 039.01].
+- [A395] BEGUN — Manshoon confrontation is referenced as prior [ch 039 / 039.01].
+- [A396] BEGUN — Manshoon escape is referenced as prior [ch 039 / 039.01].
+- [A397] BEGUN — Glabbagool bad night is referenced as prior [ch 039 / 039.01].
+- [A398] BEGUN — Glabbagool Shadow Apprentice status is referenced as prior [ch 039 / 039.01].
+- [A399] BEGUN — Eldeth letter delivered is referenced as prior [ch 039 / 039.01].
+- [A400] BEGUN — Brevin Sloobludop recitation is referenced as prior [ch 039 / 039.01].
+- [A401] BEGUN — Brevin bedclothes incident is referenced as prior [ch 039 / 039.01].
+- [A402] BEGUN — Marin quill incident is referenced as prior [ch 039 / 039.01].
+- [A403] BEGUN — Jimjar / Callarduran prophecy is referenced as prior [ch 039 / 039.01].
+- [A404] BEGUN — Five Books, Five Questions is referenced as prior [ch 039 / 039.01].
+- [A405] BEGUN — Endless Chant fragment is referenced as prior [ch 039 / 039.01].
+- [A406] BEGUN — Janussi murder forensic is referenced as prior [ch 039 / 039.01].
+- [A407] BEGUN — Two "Sylvira" figures is referenced as prior [ch 039 / 039.01].
+- [A408] BEGUN — Bookwyrm as cover-up is referenced as prior [ch 039 / 039.01].
+- [A409] BEGUN — Alkrist as killer is referenced as prior [ch 039 / 039.01].
+- [A410] BEGUN — Disguise rosetta cracked is referenced as prior [ch 039 / 039.01].
+- [A411] BEGUN — Wards drop is referenced as prior [ch 039 / 039.01].
+- [A412] BEGUN — Cryptogram recovered is referenced as prior [ch 039 / 039.01].
+- [A413] BEGUN — Manshoon arrival announced is referenced as prior [ch 039 / 039.01].
+- [A414] BEGUN — Iron Owlbear found dead is referenced as prior [ch 039 / 039.01].
+- [A415] BEGUN — Echo 1 activated is referenced as prior [ch 039 / 039.01].
+- [A416] BEGUN — Echo 2 activated is referenced as prior [ch 039 / 039.01].
+- [A417] BEGUN — Echo 3 activated is referenced as prior [ch 039 / 039.01].
+- [A418] BEGUN — Echo 4 activated is referenced as prior [ch 039 / 039.01].
+- [A419] BEGUN — Book of Vile Darkness fate is referenced as prior [ch 039 / 039.01].
+- [A420] BEGUN — Vault tower rocket lever is referenced as prior [ch 039 / 039.01].
+- [A421] BEGUN — Candlekeep restructuring is referenced as prior [ch 039 / 039.01].
+- [A422] BEGUN — Party named guest seekers is referenced as prior [ch 039 / 039.01].
+- [A423] BEGUN — Manshoon-pursuit thread is referenced as prior [ch 039 / 039.01].
+- [A424] BEGUN — Gauntlgrym call confirmed is referenced as prior [ch 039 / 039.01].
+- [A425] BEGUN — Daz sinus-pressure is referenced as prior [ch 039 / 039.01].
+- [A426] BEGUN — Yvenne names field-perception is referenced as prior [ch 039 / 039.01].
+- [A427] BEGUN — Marin quill incident is referenced as prior [ch 039 / 039.01].
+- [A428] BEGUN — Brevin Sloobludop recitation is referenced as prior [ch 039 / 039.01].
+- [A429] BEGUN — Brevin bedclothes incident is referenced as prior [ch 039 / 039.01].
+- [A430] BEGUN — Endless Chant stoppage is referenced as prior [ch 039 / 039.01].
+- [A431] BEGUN — Ward-drop vision sequence is referenced as prior [ch 039 / 039.01].
+- [A432] BEGUN — Glabbagool Juiblex contact is referenced as prior [ch 039 / 039.01].
+- [A433] BEGUN — Echo 1 prophecy names field-effect is referenced as prior [ch 039 / 039.01].
+- [A434] BEGUN — Daz and Yvenne field-perception confirmed is referenced as prior [ch 039 / 039.01].
+- [A435] BEGUN — Sylvira recruited is referenced as prior [ch 039 / 039.01].
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks is referenced as prior [ch 039 / 039.01].
+- [A437] BEGUN — Vareth / Drakonoikos goodwill is referenced as prior [ch 039 / 039.01].
+- [A438] BEGUN — Daral saved is referenced as prior [ch 039 / 039.01].
+- [A439] BEGUN — Khell-Vire Watcher's Stillness earned is referenced as prior [ch 039 / 039.01].
+- [A440] BEGUN — Glabbagool Whispering Dome visit is referenced as prior [ch 039 / 039.01].
+- [A441] BEGUN — Polly Pocket released is referenced as prior [ch 039 / 039.01].
+- [A442] BEGUN — Walking-permit medallions worn is referenced as prior [ch 039 / 039.01].
+- [A443] BEGUN — Second High Tower key held is referenced as prior [ch 039 / 039.01].
+- (none)

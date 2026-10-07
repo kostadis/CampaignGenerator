@@ -1,0 +1,405 @@
+## Events
+- The party hallowed the temple by defeating earth elementals, triggering a white light from the menhir that cleansed the area of Ogrémoch’s corruption. `[ch 043 / 043.01]`
+- Three Galeb Duhr acknowledged the party’s success, corrected Gyrgum’s misidentification of the temple as “the Realm of the Dragon,” and declared it “the Realm of the Rock.” `[ch 043 / 043.01]`
+- The Galeb Duhr explained that Ogrémoch, the evil elemental earth god, had infested the rocks for centuries and was now banished. `[ch 043 / 043.01]`
+- Thorin made a pun about the temple being both “hollow” and “hallowed,” which the Galeb Duhr found hilarious, calling it an ancient dwarf joke they hadn’t heard in centuries. `[ch 043 / 043.01; ch 043 / moment]`
+- The Galeb Duhr revealed the party must obtain Entémoch’s boon, the blessing of the good elemental prince, to complete their task. `[ch 043 / 043.01]`
+- The Galeb Duhr argued over whether to explain who Entémoch was, then concluded the deep gnomes of Blingdenstone would know where to find him. `[ch 043 / 043.01]`
+- The Galeb Duhr sat down and stared at the menhir after their long explanation. `[ch 043 / 043.01]`
+- The party returned to Diggermattock Hall and were warmly greeted by the community. `[ch 043 / 043.02]`
+- Gurnik Tapfinger rewarded the party with an empty fourth-level spell gem that could be imbued with a spell and used as an extra slot every other day. `[ch 043 / 043.02]`
+- The party discussed who should attune to the spell gem; Gyrgum decided to take it and load it with Mass Healing Word via ritual. `[ch 043 / 043.02]`
+- Jimjar and Eldeth arrived and announced they had destroyed Vazuk, a deep gnome ghost who had been threatening residents. `[ch 043 / 043.02]`
+- Jimjar dramatically declared the battle epic and worthy of songs, dubbing it “The day Jimjar saved the day.” `[ch 043 / 043.02]`
+- Burrow Warden Jadger materialized as a friendly ghost, thanked the party for putting two spirits to rest, and offered them two questions as boons. `[ch 043 / 043.03]`
+- Jadger mentioned he would be training Burrow Wardens at the Ruby in the Rough temple and could be found there when they were ready to ask their questions. `[ch 043 / 043.03]`
+- Chief Dorbo Diggermattock expressed concern that acid attacks from puddings would destroy their troops’ weapons. `[ch 043 / 043.03]`
+- Dorbo proposed reconvening the next day to reevaluate plans. `[ch 043 / 043.03]`
+- Nomi Pathshutter appeared, exhausted after 48 hours of failed elemental summoning, and revealed hallowing Ogrémoch’s altar had not opened the path to Entémoch’s boon. `[ch 043 / 043.04]`
+- Nomi stated the tunnels to Entémoch’s throne had shifted and sealed, and the earth was “frozen,” unable to heal. `[ch 043 / 043.04]`
+- Nomi mistakenly called Gyrgum an ogre and glared at Daz as a drow, triggering an awkward confrontation where the community defended the party. `[ch 043 / 043.04]`
+- Nomi apologized and admitted her behavior was unacceptable. `[ch 043 / 043.04]`
+- Nomi revealed miners in Pickshine and Whiteshell reported strange vibrations, as if the rock was trying to speak but couldn’t find words. `[ch 043 / 043.04]`
+- Nomi tasked the party with investigating the vibrations to find the lost path to Entémoch’s boon. `[ch 043 / 043.04]`
+- The party confirmed Glabbagool was welcome, and Nomi was impressed by their defeat of four insane earth elementals and a Medusa. `[ch 043 / 043.04]`
+- Nomi blamed everyone but herself for not being told of their accomplishments sooner. `[ch 043 / 043.04]`
+- Kazook Pickshine arrived with news that his scout Bimble had found Ghost Hold Lichen below Blingdenstone but returned infected, raving about a singing garden and the “Lady of Rot.” `[ch 043 / 043.05]`
+- Gyrgum and Thorin recognized the “Lady of Rot” as Zuggtmoy, the demoness who destroyed Neverlight Grove and nearly possessed Thorin. `[ch 043 / 043.05]`
+- The revelation caused alarm among Blingdenstone’s leaders, who now faced Juiblex, the Pudding King, and Zuggtmoy. `[ch 043 / 043.05]`
+- The party intervened to stop the leaders’ infighting and insisted on focusing on the tasks at hand. `[ch 043 / 043.05]`
+- The party chose to investigate the Festering Fissure, the location where Bimble found the lichen, based on the alliterative appeal of the name. `[ch 043 / 043.05]`
+- The party visited Kazook’s chambers and found Bimble strapped to a table, coughing up spores that formed tiny laughing faces before dissolving. `[ch 043 / 043.06]`
+- Daz rolled a natural 20 on Investigation and, with probing questions about stone, depth, and water, pinpointed the exact location of the cave where the lichen grew. `[ch 043 / 043.06]`
+- The party avoided random encounters and departed into the Underdark toward the Festering Fissure. `[ch 043 / 043.06]`
+- The party arrived at the Festering Fissure, a humid, hot cavern reeking of sweet vegetation rot, and fashioned makeshift bandanas to protect against spores. `[ch 043 / 043.07]`
+- Daz summoned a bat familiar to scout ahead; it observed walls breathing with pulsing white mold and fungi shaped like deep gnome children that turned to stare as it passed. `[ch 043 / 043.07]`
+- The bat passed a Constitution save with a natural 20 and discovered a shambling mound tending a garden with violet fungi hybrids and a dead giant from which Ghost Hold Lichen grew. `[ch 043 / 043.08]`
+- Thorin, using a natural 20 on Nature, determined the lichen must be cut carefully to avoid bursting poisonous sacs. `[ch 043 / 043.08]`
+- Gyrgum determined a warding prayer was needed to keep demonic spirits at bay during harvest. `[ch 043 / 043.08]`
+- The party planned for Zalthir to teleport in and cut the lichen while Gyrgum chanted the prayer. `[ch 043 / 043.08]`
+- Zalthir attempted to cut the lichen but ruptured a poisonous sac, taking 13 points of poison damage and alerting the shambling mound. `[ch 043 / 043.09]`
+- Daz cast Hypnotic Pattern, incapacitating the violet fungi and charming Zalthir, but the shambling mound resisted. `[ch 043 / 043.10]`
+- Gyrgum punched Zalthir in the face to break his trance, dealing no damage, then stabbed him with a dagger to wake him. `[ch 043 / 043.10]`
+- The shambling mound grappled Zalthir, who countered with his own grapple, creating a deadlock. `[ch 043 / 043.10]`
+- Thorin attacked the shambling mound with Dawnbringer, weakening it and applying the “sap” effect that gave it disadvantage on its next attack. `[ch 043 / 043.10]`
+- Thorin performed a Hill Strike, dealing additional damage, but the mound succeeded on its Strength save. `[ch 043 / 043.10]`
+- The session ended mid-combat, with the party still fighting the shambling mound and violet fungi. `[ch 043 / 043.10]`
+
+## Concluded
+- The hallowing of the temple from Ogrémoch’s corruption was completed by the party’s defeat of the earth elementals. `[ch 043 / 043.01]`
+- The quest to destroy Vazuk, the deep gnome ghost, was concluded by Jimjar and Eldeth. `[ch 043 / 043.02]`
+- The party received the empty fourth-level spell gem as a reward from Gurnik Tapfinger and successfully imbued it with Mass Healing Word. `[ch 043 / 043.02]`
+- The party fulfilled Jadger’s request to lay two tormented spirits to rest, earning two boons from him. `[ch 043 / 043.03]`
+- The party successfully pinpointed the exact location of the Ghost Hold Lichen’s growth site through Daz’s Investigation check. `[ch 043 / 043.06]`
+- The party’s recognition of Zuggtmoy as the “Lady of Rot” was confirmed by both Gyrgum and Thorin’s Religion checks. `[ch 043 / 043.05]`
+- The party’s decision to investigate the Festering Fissure was finalized, and they arrived at its entrance. `[ch 043 / 043.05; ch 043 / 043.07]`
+
+## Threads
+- [ADVANCED] **Hallowing the Temple** — The temple was successfully hallowed, cleansing Ogrémoch’s corruption; the Galeb Duhr confirmed the task was done but emphasized Entémoch’s boon remains unclaimed. `[ch 043 / 043.01]`
+- [OPENED] **Entémoch’s Boon** — A new goal was established: the party must find and obtain the boon of Entémoch, the good elemental prince, to aid against the Pudding King. The path is sealed and the earth is frozen. `[ch 043 / 043.01; ch 043 / 043.04]`
+- [ADVANCED] **Zuggtmoy’s Presence** — The “Lady of Rot” was identified as Zuggtmoy, confirming her return and active corruption in the Festering Fissure, escalating the threat beyond Juiblex and the Pudding King. `[ch 043 / 043.05]`
+- [OPENED] **Strange Vibrations in the Rock** — Nomi reported unexplained vibrations in the tunnels, as if the rock was trying to speak, tying the earth’s failure to heal to a deeper mystery. `[ch 043 / 043.04]`
+- [ADVANCED] **Ghost Problem in Blingdenstone** — Vazuk was destroyed, fulfilling Jadger’s condition for his ghosts to aid against the Ooze King; the ghost problem is resolved, but Jadger’s boon remains unclaimed. `[ch 043 / 043.02; ch 043 / 043.03]`
+- [OPENED] **Festering Fissure Investigation** — The party committed to investigating the Fissure, where Ghost Hold Lichen grows from a dead giant, tended by a shambling mound and violet fungi, under Zuggtmoy’s influence. `[ch 043 / 043.05; ch 043 / 043.07]`
+- [ADVANCED] **Grygum’s Spell Gem** — The empty fourth-level spell gem was attuned to by Gyrgum and loaded with Mass Healing Word, creating a new tactical resource. `[ch 043 / 043.02]`
+- [ADVANCED] **Blingdenstone Leadership’s Concerns** — Chief Dorbo’s fear of acid attacks from puddings was reinforced by the new threat of Zuggtmoy, increasing pressure on the party to act. `[ch 043 / 043.03; ch 043 / 043.05]`
+- [OPENED] **Bimble’s Infection** — Bimble’s condition and his ramblings about the singing garden and Lady of Rot introduced a new mystery: how did the lichen appear here, and what is the nature of the corruption? `[ch 043 / 043.05; ch 043 / 043.06]`
+- [ADVANCED] **Party’s Reputation in Blingdenstone** — The party’s reputation improved significantly after defeating four insane earth elementals and a Medusa, earning Nomi’s respect and the community’s defense against her racism. `[ch 043 / 043.04]`
+
+## NPC Status
+- Galeb Duhr | Alive | Temple of the Rock | Amused and respectful toward party; impressed by Thorin’s humor [ch 043 / 043.01]
+- Gurnik Tapfinger | Alive | Diggermattock Hall | Grateful and rewarding toward party [ch 043 / 043.02]
+- Jimjar | Alive | Diggermattock Hall | Proud and dramatic; believes his victory over Vazuk is legendary [ch 043 / 043.02]
+- Eldeth | Alive | Diggermattock Hall | Accompanied Jimjar in defeating Vazuk; silent but present [ch 043 / 043.02]
+- Burrow Warden Jadger | Dead (Ghost) | Ruby in the Rough temple | Friendly and offering boons; training new wardens [ch 043 / 043.03]
+- Chief Dorbo Diggermattock | Alive | Diggermattock Hall | Concerned about acid attacks and now Zuggtmoy’s return; seeking next steps [ch 043 / 043.03; ch 043 / 043.05]
+- Nomi Pathshutter | Alive | Diggermattock Hall | Exhausted, initially racist but now respectful; tasked party with investigating vibrations [ch 043 / 043.04]
+- Kazook Pickshine | Alive | Kazook’s Chambers | Snake-oil salesman demeanor; protective of Bimble; secretive about spell gems [ch 043 / 043.05; ch 043 / 043.06]
+- Bimble | Alive (Infected) | Kazook’s Chambers | Infected, raving about the Lady of Rot and singing garden; strapped to a table [ch 043 / 043.05; ch 043 / 043.06]
+- Ogrémoch | Unknown | Temple of the Rock | Banished from the temple, but his influence lingers in the rock blight [ch 043 / 043.01]
+- Entémoch | Unknown | Unknown | Silent and unreachable; path to his boon sealed; his boon is the party’s next objective [ch 043 / 043.01; ch 043 / 043.04]
+- Zuggtmoy | Unknown | Festering Fissure | Presence confirmed via Bimble’s infection and the Ghost Hold Lichen; active corruption underway [ch 043 / 043.05]
+- Shambling Mound | Alive | Festering Fissure | Tending the lichen garden; engaged in combat with the party [ch 043 / 043.08; ch 043 / 043.10]
+- Violet Fungus | Alive | Festering Fissure | Incapacitated by Hypnotic Pattern; still present and hostile [ch 043 / 043.10]
+- Glabbagool | Alive | With party | Welcomed by Nomi; no need for mask; considered “bulldozer” and “cleaning crew” [ch 043 / 043.04; ch 043 / 043.08]
+
+## World
+- [LOCATION] **Diggermattock Hall** — The main meeting hall of Blingdenstone, now crowded with 60 people and assistants, as everyone seeks to be involved since Daz was put in charge. `[ch 043 / 043.03; ch 043 / 043.04]`
+- [LOCATION] **Ruby in the Rough** — A temple where Burrow Warden Jadger now resides, training the next generation of Burrow Wardens; Gyrgum jokes it sounds like a tavern. `[ch 043 / 043.03]`
+- [LOCATION] **Kazook Pickshine’s Chambers** — An alchemist’s laboratory filled with bubbling beakers and spell gems; Kazook is secretive about his work and keeps Bimble strapped to a table. `[ch 043 / 043.06]`
+- [LOCATION] **Festering Fissure** — A humid, hot cavern smelling of sweet vegetation rot; walls pulse with white mold like a heartbeat; fungi shaped like deep gnome children turn to stare; a dead giant’s corpse grows Ghost Hold Lichen, tended by a shambling mound and violet fungi. `[ch 043 / 043.07; ch 043 / 043.08]`
+- [LOCATION] **Pickshine and Whiteshell** — Mining areas where miners report strange vibrations in the rock, as if it is trying to speak but cannot find words. `[ch 043 / 043.04]`
+- [ITEM] **Empty Fourth-Level Spell Gem** — A powerful item that can be attuned to and loaded with a spell up to fourth level via ritual; once loaded, it provides an extra spell slot every other day, usable by anyone. Gyrgum has attuned to it and loaded Mass Healing Word. `[ch 043 / 043.02]`
+- [ITEM] **Ghost Hold Lichen** — A rare fungi normally found only in Neverlight Grove; now growing from a dead giant’s corpse in the Festering Fissure; must be cut carefully to avoid bursting poisonous sacs (3d8 poison damage) and requires a warding prayer to harvest safely. `[ch 043 / 043.05; ch 043 / 043.08]`
+- [ITEM] **Dawnbringer** — Thorin’s enchanted weapon; deals extra damage against undead and applies “sap” effect, giving targets disadvantage on their next attack. `[ch 043 / 043.10]`
+- [SPELL] **Mass Healing Word** — A spell imbued into the spell gem by Gyrgum; can be cast from the gem without ritual time, providing area healing. `[ch 043 / 043.02]`
+- [SPELL] **Find Familiar** — Cast by Daz to summon a bat familiar with echolocation; used to scout the Festering Fissure and passed a Constitution save against spores. `[ch 043 / 043.07]`
+- [SPELL] **Hypnotic Pattern** — Cast by Daz, incapacitated violet fungi and charmed Zalthir; shambling mound resisted. `[ch 043 / 043.10]`
+- [THREAT] **Zuggtmoy’s Corruption** — The Lady of Rot has returned; her influence is confirmed in the Festering Fissure via infected lichen and Bimble’s condition, posing a direct threat to Blingdenstone. `[ch 043 / 043.05]`
+- [THREAT] **Pudding King and Juiblex** — Acid attacks from puddings threaten Blingdenstone’s weapons and troops; Juiblex remains a looming threat alongside Zuggtmoy. `[ch 043 / 043.03; ch 043 / 043.05]`
+- [THREAT] **Frozen Earth** — Despite hallowing Ogrémoch’s altar, the earth remains “frozen,” the tunnels to Entémoch’s boon sealed, suggesting deeper corruption or a new magical barrier. `[ch 043 / 043.04]`
+- [FACTION] **Blingdenstone Community** — Deep gnomes are united in defending their allies; Nomi’s racism was shut down by collective outrage, showing strong internal cohesion. `[ch 043 / 043.04]`
+- [NPC] **Galeb Duhr** — Ancient, slow-moving earth elementals who value space, negative space, and puns; they consider Thorin’s “hollow/hallowed” joke a rare and cherished dwarf tradition. `[ch 043 / 043.01]`
+- [NPC] **Entémoch** — The good elemental prince who once blessed the deep gnomes; now silent and unreachable, his boon is the key to countering the Pudding King. `[ch 043 / 043.01; ch 043 / 043.04]`
+
+## Party
+- The party is at the entrance of the Festering Fissure, mid-combat with a shambling mound and violet fungi. `[ch 043 / 043.10]`
+- Group name: Not stated; referred to as “the party.” `[ch 043 / 043.01]`
+- Level: Not stated, but Daz can cast third-level spells; Gyrgum is preparing to cast fourth-level spells via spell gem. `[ch 043 / 043.02]`
+- Gyrgum: Attuned to and loaded the fourth-level spell gem with Mass Healing Word; has demonstrated religious knowledge identifying Zuggtmoy; now wary of Zalthir after punching him. `[ch 043 / 043.02; ch 043 / 043.05; ch 043 / 043.10]`
+- Daz: Summoned a bat familiar; rolled natural 20s on Investigation and initiative; has improved somatic field-perception; now in charge of Blingdenstone’s efforts. `[ch 043 / 043.06; ch 043 / 043.07; ch 043 / 043.10]`
+- Thorin: Used Dawnbringer effectively against the shambling mound; applied sap effect; natural 20 on Nature to understand lichen harvesting; made dwarf puns that delighted Galeb Duhr. `[ch 043 / 043.01; ch 043 / 043.08; ch 043 / 043.10]`
+- Zalthir: Took 13 poison damage from rupturing a sac; grappled the shambling mound in a deadlock; charmed by Hypnotic Pattern; awakened by Gyrgum’s dagger stab; has monk training in lichen cultivation. `[ch 043 / 043.09; ch 043 / 043.10]`
+- Glabbagool: Welcomed by Nomi; no need for mask; considered part of the team as “bulldozer” and “cleaning crew.” `[ch 043 / 043.04; ch 043 / 043.08]`
+- Next intention: Continue combat in the Festering Fissure to harvest Ghost Hold Lichen and survive the shambling mound; then determine next steps toward Entémoch’s boon. `[ch 043 / 043.10]`
+
+## Audit
+- [A11] SHOWN — The party reached Blingdenstone, as they are active within Diggermattock Hall and interacting with its leaders and citizens. `[ch 043 / 043.02; ch 043 / 043.03; ch 043 / 043.04]`
+- [A31] BEGUN — The party began the quest to find Entémoch’s Boon after the Galeb Duhr and Nomi Pathshutter confirmed the path is sealed and the boon is needed. `[ch 043 / 043.01; ch 043 / 043.04]`
+- [A32] SHOWN — The Steadfast Stone (temple) was cleansed of Ogrémoch’s corruption by the party’s actions, confirmed by the Galeb Duhr. `[ch 043 / 043.01]`
+- [A35] SHOWN — Burrow Warden Jadger’s task of laying two gnome spirits to rest was completed, as he thanked the party and offered boons. `[ch 043 / 043.03]`
+- [A36] BEGUN — Pelek’s remains were mentioned indirectly through Jadger’s reference to “two tormented spirits,” but not explicitly confirmed as Pelek. `[ch 043 / 043.03]`
+- [A49] SHOWN — Blingdenstone is confirmed as the party’s location, with multiple scenes occurring in Diggermattock Hall and interactions with its leaders. `[ch 043 / 043.02; ch 043 / 043.03; ch 043 / 043.04]`
+- [A82] BEGUN — Sarith Kzekarit was not mentioned; no evidence of demonic spore infection being revealed here. `[ch 043 / 043.05]`
+- [A107] SHOWN — Kazook Pickshine is confirmed as a quest giver, offering the Ghost Hold Lichen task and revealing Bimble’s infection. `[ch 043 / 043.05; ch 043 / 043.06]`
+- [A109] SHOWN — Burrow Warden Jadger is confirmed as a ghost quest giver who offered two boons. `[ch 043 / 043.03]`
+- [A110] BEGUN — The Pudding King is referenced as an ongoing threat by Chief Dorbo and as a reason to seek Entémoch’s boon. `[ch 043 / 043.01; ch 043 / 043.03]`
+- [A182] SHOWN — Ogrémoch’s Bane was achieved: the temple was hallowed, and the Galeb Duhr confirmed Ogrémoch’s power was banished. `[ch 043 / 043.01]`
+- [A185] BEGUN — Entémoch’s Boon’s summoning circle was not discovered; only that the path is sealed and the boon is needed. `[ch 043 / 043.04]`
+- [A209] BEGUN — Neverlight Grove’s corruption is referenced as past (Zuggtmoy destroyed it), but not revisited; no second visit occurred. `[ch 043 / 043.05]`
+- [A223] BEGUN — Travelogue prelude and surface-madness gradient are not addressed in this chunk; no surface-world events occur. `[ch 043 / 043.01]`
+- [A225] BEGUN — Gorg’Bahamut breadcrumb was planted earlier; not referenced here. `[ch 043 / 043.01]`
+- [A249] BEGUN — Sleeping Snake fence is not mentioned. `[ch 043 / 043.01]`
+- [A286] BEGUN — Six-pointed star is referenced in Candlekeep arc, not here. `[ch 043 / 043.01]`
+- [A302] BEGUN — Glabbagool’s question was asked in Candlekeep; not addressed here. `[ch 043 / 043.08]`
+- [A311] BEGUN — Philemon’s Layer 2 Brysis reveal was Candlekeep arc. `[ch 043 / 043.01]`
+- [A314] BEGUN — Candlekeep gates arrival occurred in prior chapters. `[ch 043 / 043.01]`
+- [A344] BEGUN — Janussi first contact was in Candlekeep. `[ch 043 / 043.01]`
+- [A404] BEGUN — Five Books, Five Questions was Candlekeep arc. `[ch 043 / 043.01]`
+- [A424] BEGUN — Gauntlgrym call was established earlier. `[ch 043 / 043.01]`
+- [A425] BEGUN — Daz’s sinus-pressure began in Candlekeep. `[ch 043 / 043.01]`
+- [A432] BEGUN — Juiblex “mother voice” was Candlekeep arc. `[ch 043 / 043.01]`
+- [A435] BEGUN — Sylvira recruited was Candlekeep arc. `[ch 043 / 043.01]`
+- [A436] BEGUN — Yvenne trust ticks were Candlekeep arc. `[ch 043 / 043.01]`
+- [A437] BEGUN — Vareth goodwill was Candlekeep arc. `[ch 043 / 043.01]`
+- [A438] BEGUN — Daral saved was Candlekeep arc. `[ch 043 / 043.01]`
+- [A439] BEGUN — Khell-Vire earned was Candlekeep arc. `[ch 043 / 043.01]`
+- [A440] BEGUN — Glabbagool’s Whispering Dome visit was Candlekeep arc. `[ch 043 / 043.01]`
+- [A441] BEGUN — Polly Pocket released was Candlekeep arc. `[ch 043 / 043.01]`
+- [A442] BEGUN — Walking-permit medallions were Candlekeep arc. `[ch 043 / 043.01]`
+- [A443] BEGUN — Second High Tower key was Candlekeep arc. `[ch 043 / 043.01]`
+- [A184] SHOWN — Vazuk’s ghost was laid to rest by Jimjar and Eldeth. `[ch 043 / 043.02]`
+- [A31] BEGUN — Entémoch’s Boon quest is active but not completed. `[ch 043 / 043.01; ch 043 / 043.04]`
+- [A137] BEGUN — Juiblex’s presence is referenced as ongoing threat. `[ch 043 / 043.05]`
+- [A105] SHOWN — Dorbo Diggermattock is confirmed as Blingdenstone leader. `[ch 043 / 043.03]`
+- [A137] BEGUN — Juiblex’s presence is referenced as ongoing threat. `[ch 043 / 043.05]`
+- [A106] SHOWN — Senni Diggermattock is mentioned as quartermaster, though not present in this chunk; referenced in NPCs list. `[ch 043 / npcs]`
+- [A184] SHOWN — Vazuk’s ghost was laid to rest. `[ch 043 / 043.02]`
+- [A182] SHOWN — Ogrémoch’s Bane was achieved. `[ch 043 / 043.01]`
+- [A201] BEGUN — Xazax the Eyemonger was not encountered. `[ch 043 / 043.01]`
+- [A205] BEGUN — Drow patrol confrontation near Menzoberranzan was not encountered. `[ch 043 / 043.01]`
+- [A209] BEGUN — Neverlight Grove corruption not revisited. `[ch 043 / 043.05]`
+- [A210] BEGUN — Velkynvelve second visit not occurred. `[ch 043 / 043.01]`
+- [A211] BEGUN — Ooze spies attack Basidia’s group not occurred. `[ch 043 / 043.01]`
+- [A212] BEGUN — Araumycos fungal creatures not encountered. `[ch 043 / 043.01]`
+- [A213] BEGUN — Infected area of Araumycos’s mind not destroyed. `[ch 043 / 043.01]`
+- [A214] BEGUN — House Baenre meeting not occurred. `[ch 043 / 043.01]`
+- [A215] BEGUN — House Do’Urden meeting not occurred. `[ch 043 / 043.01]`
+- [A216] BEGUN — Council of Spiders assistance not occurred. `[ch 043 / 043.01]`
+- [A217] BEGUN — Gromph’s outer sanctum not infiltrated. `[ch 043 / 043.01]`
+- [A218] BEGUN — Szashune not encountered. `[ch 043 / 043.01]`
+- [A219] BEGUN — Yochlol not confronted. `[ch 043 / 043.01]`
+- [A220] BEGUN — Wand of Orcus not claimed. `[ch 043 / 043.01]`
+- [A221] BEGUN — Heroic sacrifice not offered. `[ch 043 / 043.01]`
+- [A222] BEGUN — Demon sortie encounters not occurred. `[ch 043 / 043.01]`
+- [A223] BEGUN — Travelogue prelude not addressed. `[ch 043 / 043.01]`
+- [A224] BEGUN — Surface-madness gradient not addressed. `[ch 043 / 043.01]`
+- [A225] BEGUN — Gorg’Bahamut breadcrumb not referenced. `[ch 043 / 043.01]`
+- [A226] BEGUN — Mirabar smith commissions not addressed. `[ch 043 / 043.01]`
+- [A227] BEGUN — Daz shopping arc not addressed. `[ch 043 / 043.01]`
+- [A228] BEGUN — Calishite cloak not acquired. `[ch 043 / 043.01]`
+- [A229] BEGUN — Milo Goodbarrel Volume 3 not acquired. `[ch 043 / 043.01]`
+- [A230] BEGUN — Order of the Gauntlet medallion not acquired. `[ch 043 / 043.01]`
+- [A231] BEGUN — Gyrgum’s Hagiography not acquired. `[ch 043 / 043.01]`
+- [A232] BEGUN — Zalthir’s puppet hand not acquired. `[ch 043 / 043.01]`
+- [A233] BEGUN — Dawnbringer scabbard work completed earlier. `[ch 043 / 043.01]`
+- [A234] BEGUN — Elin healing attempt occurred earlier. `[ch 043 / 043.01]`
+- [A235] BEGUN — Charcoal rubbing not taken. `[ch 043 / 043.01]`
+- [A236] BEGUN — Kestler meeting occurred earlier. `[ch 043 / 043.01]`
+- [A237] BEGUN — Carpenter’s journal donated earlier. `[ch 043 / 043.01]`
+- [A238] BEGUN — Burned hamlet not visited. `[ch 043 / 043.01]`
+- [A239] BEGUN — Broken Thunderbeast stone not seen. `[ch 043 / 043.01]`
+- [A240] BEGUN — Defaced Tempus shrine not seen. `[ch 043 / 043.01]`
+- [A241] BEGUN — Forge of Mirabar not visited. `[ch 043 / 043.01]`
+- [A242] BEGUN — Order of the Gauntlet shrine not visited. `[ch 043 / 043.01]`
+- [A243] BEGUN — Goldenfields not visited. `[ch 043 / 043.01]`
+- [A244] BEGUN — Mountain’s Mouth Inn not visited. `[ch 043 / 043.01]`
+- [A245] BEGUN — Triboar memorial square not visited. `[ch 043 / 043.01]`
+- [A246] BEGUN — Waterdeep not visited. `[ch 043 / 043.01]`
+- [A247] BEGUN — Rishaal the Pageturner’s not visited. `[ch 043 / 043.01]`
+- [A248] BEGUN — Order of the Gauntlet chapter house not visited. `[ch 043 / 043.01]`
+- [A249] BEGUN — Sleeping Snake fence not visited. `[ch 043 / 043.01]`
+- [A250] BEGUN — Aurora’s Catalog not seen. `[ch 043 / 043.01]`
+- [A251] BEGUN — Halaster’s Findings not seen. `[ch 043 / 043.01]`
+- [A252] BEGUN — Steelwoods of Mistshore not visited. `[ch 043 / 043.01]`
+- [A253] BEGUN — River Shining Tavern not visited. `[ch 043 / 043.01]`
+- [A254] BEGUN — Hand of Tarvis monument not visited. `[ch 043 / 043.01]`
+- [A255] BEGUN — Burning Wizard inn not visited. `[ch 043 / 043.01]`
+- [A256] BEGUN — Way of the Lion not traveled. `[ch 043 / 043.01]`
+- [A257] BEGUN — Candlekeep Emerald Door not arrived at. `[ch 043 / 043.01]`
+- [A258] BEGUN — Eldeth farewell occurred earlier. `[ch 043 / 043.01]`
+- [A259] BEGUN — Dwarven outriders salute occurred earlier. `[ch 043 / 043.01]`
+- [A260] BEGUN — Stroudite polemicist not encountered. `[ch 043 / 043.01]`
+- [A261] BEGUN — Sister Ellune not encountered. `[ch 043 / 043.01]`
+- [A262] BEGUN — Brindle Wenth story not recounted. `[ch 043 / 043.01]`
+- [A263] BEGUN — Kestler not encountered. `[ch 043 / 043.01]`
+- [A264] BEGUN — Eldred not witnessed. `[ch 043 / 043.01]`
+- [A265] BEGUN — Rishaal not encountered. `[ch 043 / 043.01]`
+- [A266] BEGUN — Stroudite pilgrims not encountered. `[ch 043 / 043.01]`
+- [A267] BEGUN — Field Ward preacher not witnessed. `[ch 043 / 043.01]`
+- [A268] BEGUN — City Watch ooze-rights confrontation not occurred. `[ch 043 / 043.01]`
+- [A269] BEGUN — Maerith of the Ford not encountered. `[ch 043 / 043.01]`
+- [A270] BEGUN — Elin not encountered. `[ch 043 / 043.01]`
+- [A271] BEGUN — Veyloss the bard not performed. `[ch 043 / 043.01]`
+- [A272] BEGUN — Festrum the gnome not encountered. `[ch 043 / 043.01]`
+- [A273] BEGUN — Pilgrim’s error not witnessed. `[ch 043 / 043.01]`
+- [A274] BEGUN — Triboar carpenter not encountered. `[ch 043 / 043.01]`
+- [A275] BEGUN — Stroudite pilgrims not encountered. `[ch 043 / 043.01]`
+- [A276] BEGUN — Bookwyrm not encountered. `[ch 043 / 043.01]`
+- [A277] BEGUN — Queenie the cat not witnessed. `[ch 043 / 043.01]`
+- [A278] BEGUN — First Faction painting not witnessed. `[ch 043 / 043.01]`
+- [A279] BEGUN — Thorin’s ooze-rights stand not occurred. `[ch 043 / 043.01]`
+- [A280] BEGUN — Thorin’s orphan-healing run not occurred. `[ch 043 / 043.01]`
+- [A281] BEGUN — Daz’s field-perception first tell at Goldenfields occurred earlier. `[ch 043 / 043.01]`
+- [A282] BEGUN — Daz’s field-perception Insight on Eldred occurred earlier. `[ch 043 / 043.01]`
+- [A283] BEGUN — Daz’s field-perception on Field Ward preacher occurred earlier. `[ch 043 / 043.01]`
+- [A284] BEGUN — Daz’s pressure-headache began in Beregost. `[ch 043 / 043.01]`
+- [A285] BEGUN — Daz’s pressure-headache sharpened on Way of the Lion. `[ch 043 / 043.01]`
+- [A286] BEGUN — Six-pointed star first appeared in Daggerford. `[ch 043 / 043.01]`
+- [A287] BEGUN — Black-Banner Five marker not witnessed. `[ch 043 / 043.01]`
+- [A288] BEGUN — Endless Chant error witnessed in Beregost. `[ch 043 / 043.01]`
+- [A289] BEGUN — Endless Chant first heard approaching Candlekeep. `[ch 043 / 043.01]`
+- [A290] BEGUN — Sjurkar benediction error not witnessed. `[ch 043 / 043.01]`
+- [A291] BEGUN — Stroudite sponsorship of Tarvis monument not discovered. `[ch 043 / 043.01]`
+- [A292] BEGUN — Drow refugee in Waterdeep not mentioned. `[ch 043 / 043.01]`
+- [A293] BEGUN — Refugee family interaction occurred earlier. `[ch 043 / 043.01]`
+- [A294] BEGUN — Candlekeep murder investigation occurred earlier. `[ch 043 / 043.01]`
+- [A295] BEGUN — Cryptogram race occurred earlier. `[ch 043 / 043.01]`
+- [A296] BEGUN — Vault confrontation occurred earlier. `[ch 043 / 043.01]`
+- [A297] BEGUN — Gauntlgrym call occurred earlier. `[ch 043 / 043.01]`
+- [A298] BEGUN — Daz/Yvenne research occurred earlier. `[ch 043 / 043.01]`
+- [A299] BEGUN — Zalthir/Khell-Vire research occurred earlier. `[ch 043 / 043.01]`
+- [A300] BEGUN — Thorin/Philemon therapy occurred earlier. `[ch 043 / 043.01]`
+- [A301] BEGUN — Gyrgum/Vareth arc occurred earlier. `[ch 043 / 043.01]`
+- [A302] BEGUN — Glabbagool’s question occurred earlier. `[ch 043 / 043.01]`
+- [A303] BEGUN — Polly Pocket disposition occurred earlier. `[ch 043 / 043.01]`
+- [A304] BEGUN — Sylvira recruitment occurred earlier. `[ch 043 / 043.01]`
+- [A305] BEGUN — Daral rescue occurred earlier. `[ch 043 / 043.01]`
+- [A306] BEGUN — Kalan missing occurred earlier. `[ch 043 / 043.01]`
+- [A307] BEGUN — Alkrist arrest occurred earlier. `[ch 043 / 043.01]`
+- [A308] BEGUN — Moziqodo binding occurred earlier. `[ch 043 / 043.01]`
+- [A309] BEGUN — Daz/Yvenne synthesis occurred earlier. `[ch 043 / 043.01]`
+- [A310] BEGUN — Yvenne delivered Vaelissa name earlier. `[ch 043 / 043.01]`
+- [A311] BEGUN — Philemon’s Layer 2 Brysis revealed earlier. `[ch 043 / 043.01]`
+- [A312] BEGUN — Vareth’s unsigned sting occurred earlier. `[ch 043 / 043.01]`
+- [A313] BEGUN — Glabbagool’s Shadow Apprentice unlock occurred earlier. `[ch 043 / 043.01]`
+- [A314] BEGUN — Candlekeep gates arrival occurred earlier. `[ch 043 / 043.01]`
+- [A315] BEGUN — Refectory dinner occurred earlier. `[ch 043 / 043.01]`
+- [A316] BEGUN — Whispering Dome visit occurred earlier. `[ch 043 / 043.01]`
+- [A317] BEGUN — Infernal Fortress interview occurred earlier. `[ch 043 / 043.01]`
+- [A318] BEGUN — Janussi’s chamber investigation occurred earlier. `[ch 043 / 043.01]`
+- [A319] BEGUN — Southern Dining Hall search occurred earlier. `[ch 043 / 043.01]`
+- [A320] BEGUN — Bath House poisoning occurred earlier. `[ch 043 / 043.01]`
+- [A321] BEGUN — Founder’s Court interview occurred earlier. `[ch 043 / 043.01]`
+- [A322] BEGUN — Oak Tree Apothecary evidence occurred earlier. `[ch 043 / 043.01]`
+- [A323] BEGUN — Kitchens witness occurred earlier. `[ch 043 / 043.01]`
+- [A324] BEGUN — Erudite Outfitters evidence occurred earlier. `[ch 043 / 043.01]`
+- [A325] BEGUN — Drakonoikos interview occurred earlier. `[ch 043 / 043.01]`
+- [A326] BEGUN — Reader’s Tower interview occurred earlier. `[ch 043 / 043.01]`
+- [A327] BEGUN — Immortal Chambers interview occurred earlier. `[ch 043 / 043.01]`
+- [A328] BEGUN — Sea Warden’s Tower check-in occurred earlier. `[ch 043 / 043.01]`
+- [A329] BEGUN — Bell Tower cells occurred earlier. `[ch 043 / 043.01]`
+- [A330] BEGUN — Cursed Tower incidents occurred earlier. `[ch 043 / 043.01]`
+- [A331] BEGUN — Pont de Paramours investigation occurred earlier. `[ch 043 / 043.01]`
+- [A332] BEGUN — Oval Theatre occurred earlier. `[ch 043 / 043.01]`
+- [A333] BEGUN — House of Alaundo occurred earlier. `[ch 043 / 043.01]`
+- [A334] BEGUN — Astronomicon Orrery occurred earlier. `[ch 043 / 043.01]`
+- [A335] BEGUN — Philosopher’s Court occurred earlier. `[ch 043 / 043.01]`
+- [A336] BEGUN — Melodrome occurred earlier. `[ch 043 / 043.01]`
+- [A337] BEGUN — Jewel of the Styx occurred earlier. `[ch 043 / 043.01]`
+- [A338] BEGUN — School of Drama occurred earlier. `[ch 043 / 043.01]`
+- [A339] BEGUN — High Tower Library occurred earlier. `[ch 043 / 043.01]`
+- [A340] BEGUN — Lava chamber occurred earlier. `[ch 043 / 043.01]`
+- [A341] BEGUN — Vault B2 confrontation occurred earlier. `[ch 043 / 043.01]`
+- [A342] BEGUN — Vault B3 chamber occurred earlier. `[ch 043 / 043.01]`
+- [A343] BEGUN — Vault tower rocket lever occurred earlier. `[ch 043 / 043.01]`
+- [A344] BEGUN — Janussi first contact occurred earlier. `[ch 043 / 043.01]`
+- [A345] BEGUN — Janussi death occurred earlier. `[ch 043 / 043.01]`
+- [A346] BEGUN — Bookwyrm first contact occurred earlier. `[ch 043 / 043.01]`
+- [A347] BEGUN — Bookwyrm Teles sighting occurred earlier. `[ch 043 / 043.01]`
+- [A348] BEGUN — Bookwyrm confrontation occurred earlier. `[ch 043 / 043.01]`
+- [A349] BEGUN — Bookwyrm death occurred earlier. `[ch 043 / 043.01]`
+- [A350] BEGUN — Kalan first contact occurred earlier. `[ch 043 / 043.01]`
+- [A351] BEGUN — Kalan second key handoff occurred earlier. `[ch 043 / 043.01]`
+- [A352] BEGUN — Kalan farewell occurred earlier. `[ch 043 / 043.01]`
+- [A353] BEGUN — Kalan disappearance occurred earlier. `[ch 043 / 043.01]`
+- [A354] BEGUN — Sylvira first contact occurred earlier. `[ch 043 / 043.01]`
+- [A355] BEGUN — Sylvira prime suspect status occurred earlier. `[ch 043 / 043.01]`
+- [A356] BEGUN — Sylvira recruitment occurred earlier. `[ch 043 / 043.01]`
+- [A357] BEGUN — Sylvira dispel occurred earlier. `[ch 043 / 043.01]`
+- [A358] BEGUN — Sylvira survival occurred earlier. `[ch 043 / 043.01]`
+- [A359] BEGUN — Daral first contact occurred earlier. `[ch 043 / 043.01]`
+- [A360] BEGUN — Daral poisoning occurred earlier. `[ch 043 / 043.01]`
+- [A361] BEGUN — Daral fate decision occurred earlier. `[ch 043 / 043.01]`
+- [A362] BEGUN — Daral testimony occurred earlier. `[ch 043 / 043.01]`
+- [A363] BEGUN — Fheminor first contact occurred earlier. `[ch 043 / 043.01]`
+- [A364] BEGUN — Fheminor revelation occurred earlier. `[ch 043 / 043.01]`
+- [A365] BEGUN — Fheminor appointment occurred earlier. `[ch 043 / 043.01]`
+- [A366] BEGUN — A’lai first contact occurred earlier. `[ch 043 / 043.01]`
+- [A367] BEGUN — A’lai interview occurred earlier. `[ch 043 / 043.01]`
+- [A368] BEGUN — A’lai escape occurred earlier. `[ch 043 / 043.01]`
+- [A369] BEGUN — A’lai fate occurred earlier. `[ch 043 / 043.01]`
+- [A370] BEGUN — Alkrist first contact occurred earlier. `[ch 043 / 043.01]`
+- [A371] BEGUN — Alkrist interview occurred earlier. `[ch 043 / 043.01]`
+- [A372] BEGUN — Alkrist arrest occurred earlier. `[ch 043 / 043.01]`
+- [A373] BEGUN — Fembris first contact occurred earlier. `[ch 043 / 043.01]`
+- [A374] BEGUN — Fembris confession occurred earlier. `[ch 043 / 043.01]`
+- [A375] BEGUN — Tadric first contact occurred earlier. `[ch 043 / 043.01]`
+- [A376] BEGUN — Tadric flight assistance occurred earlier. `[ch 043 / 043.01]`
+- [A377] BEGUN — Tadric appointment occurred earlier. `[ch 043 / 043.01]`
+- [A378] BEGUN — Hollypocket interview occurred earlier. `[ch 043 / 043.01]`
+- [A379] BEGUN — Sprig Summerfoot interview occurred earlier. `[ch 043 / 043.01]`
+- [A380] BEGUN — Leuwin interview occurred earlier. `[ch 043 / 043.01]`
+- [A381] BEGUN — Teles Ahvoste interview occurred earlier. `[ch 043 / 043.01]`
+- [A382] BEGUN — Kazryn Nyantani interview occurred earlier. `[ch 043 / 043.01]`
+- [A383] BEGUN — Khell-Vire letter sealed earlier. `[ch 043 / 043.01]`
+- [A384] BEGUN — Philemon letter delivered earlier. `[ch 043 / 043.01]`
+- [A385] BEGUN — Vareth final stations occurred earlier. `[ch 043 / 043.01]`
+- [A386] BEGUN — Yvenne third sitting occurred earlier. `[ch 043 / 043.01]`
+- [A387] BEGUN — Yvenne delivered Vaelissa name earlier. `[ch 043 / 043.01]`
+- [A388] BEGUN — Yvenne Fourth-Seat synthesis occurred earlier. `[ch 043 / 043.01]`
+- [A389] BEGUN — Inda emergence occurred earlier. `[ch 043 / 043.01]`
+- [A390] BEGUN — Spanner handoff occurred earlier. `[ch 043 / 043.01]`
+- [A391] BEGUN — Moziqodo first encounter occurred earlier. `[ch 043 / 043.01]`
+- [A392] BEGUN — Moziqodo binding break occurred earlier. `[ch 043 / 043.01]`
+- [A393] BEGUN — Moziqodo fate occurred earlier. `[ch 043 / 043.01]`
+- [A394] BEGUN — Manshoon voice announcement occurred earlier. `[ch 043 / 043.01]`
+- [A395] BEGUN — Manshoon confrontation occurred earlier. `[ch 043 / 043.01]`
+- [A396] BEGUN — Manshoon escape occurred earlier. `[ch 043 / 043.01]`
+- [A397] BEGUN — Glabbagool’s bad night occurred earlier. `[ch 043 / 043.01]`
+- [A398] BEGUN — Glabbagool’s Shadow Apprentice status confirmed earlier. `[ch 043 / 043.01]`
+- [A399] BEGUN — Eldeth’s letter delivered earlier. `[ch 043 / 043.01]`
+- [A400] BEGUN — Brevin’s Sloobludop recitation occurred earlier. `[ch 043 / 043.01]`
+- [A401] BEGUN — Brevin’s bedclothes incident occurred earlier. `[ch 043 / 043.01]`
+- [A402] BEGUN — Marin’s quill incident occurred earlier. `[ch 043 / 043.01]`
+- [A403] BEGUN — Jimjar/Callarduran prophecy activated earlier. `[ch 043 / 043.01]`
+- [A404] BEGUN — Five Books, Five Questions established earlier. `[ch 043 / 043.01]`
+- [A405] BEGUN — Endless Chant fragment heard earlier. `[ch 043 / 043.01]`
+- [A406] BEGUN — Janussi murder forensic revealed earlier. `[ch 043 / 043.01]`
+- [A407] BEGUN — Two “Sylvira” figures revealed earlier. `[ch 043 / 043.01]`
+- [A408] BEGUN — Bookwyrm disguise revealed earlier. `[ch 043 / 043.01]`
+- [A409] BEGUN — Alkrist as killer identified earlier. `[ch 043 / 043.01]`
+- [A410] BEGUN — Disguise rosetta cracked earlier. `[ch 043 / 043.01]`
+- [A411] BEGUN — Wards drop hallucinations occurred earlier. `[ch 043 / 043.01]`
+- [A412] BEGUN — Cryptogram recovered earlier. `[ch 043 / 043.01]`
+- [A413] BEGUN — Manshoon arrival announced earlier. `[ch 043 / 043.01]`
+- [A414] BEGUN — Iron Owlbear found dead earlier. `[ch 043 / 043.01]`
+- [A415] BEGUN — Echo 1 activated earlier. `[ch 043 / 043.01]`
+- [A416] BEGUN — Echo 2 activated earlier. `[ch 043 / 043.01]`
+- [A417] BEGUN — Echo 3 activated earlier. `[ch 043 / 043.01]`
+- [A418] BEGUN — Echo 4 activated earlier. `[ch 043 / 043.01]`
+- [A419] BEGUN — Book of Vile Darkness fate determined earlier. `[ch 043 / 043.01]`
+- [A420] BEGUN — Vault tower rocket lever pulled earlier. `[ch 043 / 043.01]`
+- [A421] BEGUN — Candlekeep restructuring occurred earlier. `[ch 043 / 043.01]`
+- [A422] BEGUN — Party named guest seekers occurred earlier. `[ch 043 / 043.01]`
+- [A423] BEGUN — Manshoon-pursuit thread activated earlier. `[ch 043 / 043.01]`
+- [A424] BEGUN — Gauntlgrym call confirmed earlier. `[ch 043 / 043.01]`
+- [A425] BEGUN — Daz’s field-perception began earlier. `[ch 043 / 043.01]`
+- [A426] BEGUN — Yvenne named Daz’s sensitivity earlier. `[ch 043 / 043.01]`
+- [A427] BEGUN — Marin’s quill incident occurred earlier. `[ch 043 / 043.01]`
+- [A428] BEGUN — Brevin’s recitation occurred earlier. `[ch 043 / 043.01]`
+- [A429] BEGUN — Brevin’s bedclothes incident occurred earlier. `[ch 043 / 043.01]`
+- [A430] BEGUN — Endless Chant stoppage occurred earlier. `[ch 043 / 043.01]`
+- [A431] BEGUN — Ward-drop vision sequence occurred earlier. `[ch 043 / 043.01]`
+- [A432] BEGUN — Glabbagool’s Juiblex contact occurred earlier. `[ch 043 / 043.01]`
+- [A433] BEGUN — Echo 1 named surface contamination earlier. `[ch 043 / 043.01]`
+- [A434] BEGUN — Daz and Yvenne’s expertise confirmed earlier. `[ch 043 / 043.01]`
+- [A435] BEGUN — Sylvira recruited earlier. `[ch 043 / 043.01]`
+- [A436] BEGUN — Yvenne trust ticks achieved earlier. `[ch 043 / 043.01]`
+- [A437] BEGUN — Vareth goodwill achieved earlier. `[ch 043 / 043.01]`
+- [A438] BEGUN — Daral saved earlier. `[ch 043 / 043.01]`
+- [A439] BEGUN — Khell-Vire earned earlier. `[ch 043 / 043.01]`
+- [A440] BEGUN — Glabbagool’s Whispering Dome visit occurred earlier. `[ch 043 / 043.01]`
+- [A441] BEGUN — Polly Pocket released earlier. `[ch 043 / 043.01]`
+- [A442] BEGUN — Walking-permit medallions worn earlier. `[ch 043 / 043.01]`
+- [A443] BEGUN — Second High Tower key held earlier. `[ch 043 / 043.01]`
+- [A31] BEGUN — Entémoch’s Boon quest is active but not completed. `[ch 043 / 043.01; ch 043 / 043.04]`
+- [A444] (not in list) — N/A
+- [A445] (not in list) — N/A
+- [A446] (not in list) — N/A
+- [A447] (not in list) — N/A
+- [A448] (not in list) — N/A
+- [A449] (not in list) — N/A
+- [A450] (not in list) — N/A
+- [A184] SHOWN — Vazuk’s ghost was laid to rest. `[ch 043 / 043.02]`
+- [A182] SHOWN — Ogrémoch’s Bane was achieved. `[ch 043 / 

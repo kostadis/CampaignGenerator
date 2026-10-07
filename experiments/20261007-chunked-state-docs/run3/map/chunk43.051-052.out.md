@@ -1,0 +1,502 @@
+## Events
+- Zalthir grappled Ilvara mid-air, delivered two critical strikes with Flurry of Blows, and dropped her forty feet to the ground, burning her legendary action and inflicting severe damage [ch 051 / 051.01].
+- Ilvara frightened Zalthir with a supernatural terror effect, preventing him from approaching her, and used a legendary action to command a drone to attack Daz [ch 051 / 051.01].
+- Ilvara conjured an Insect Plague at the cave entrance, killing her own minions, injuring Glabbagool, and creating difficult, obscured terrain [ch 051 / 051.02].
+- Jorlan Duskryn, driven by vengeance, disengaged from the party and charged toward Ilvara, shouting “Ilvara!” [ch 051 / 051.02].
+- Thorin attacked the heart fungus with Dawnbringer, exploiting its vulnerability to radiant damage and causing it to wilt and die instantly [ch 051 / 051.02].
+- Gyrgum dropped concentration on his thirty-foot-radius protective sphere after the heart fungus was destroyed [ch 051 / 051.02].
+- Five drow warriors of House T'sarran emerged from the shadows but hesitated to enter the Insect Plague due to its lethal hazards [ch 051 / 051.03].
+- Kaelira Duskryn entered the Insect Plague, suffered thirteen damage, and pulled Daz northeast to safety, declaring, “Come with me if you want to live, you idiot” [ch 051 / 051.03].
+- Daz persuaded Asha Vandree that Kaelira and her companions were allies of Lolth, preserving the fragile alliance [ch 051 / 051.03].
+- A House T'sarran drow mage cast a blind Lightning Bolt that missed all targets [ch 051 / 051.04].
+- Daz cast a fourth-level Fireball into the darkness, incinerating three drow guards, severely wounding the mage, and leaving the elite warrior injured [ch 051 / 051.04].
+- Zalthir teleported away from Ilvara due to fear, then killed the wounded House T'sarran mage with a single punch and missed the surviving elite warrior [ch 051 / 051.04].
+- Ilvara used a legendary action to create a fungal bloom in Jorlan Duskryn’s path, turning it into difficult terrain and blocking his advance [ch 051 / 051.05].
+- Ilvara dropped concentration on Insect Plague and invoked Zuggtmoy, declaring “the bride — Zuggtmoy — would come to spread chaos and mayhem” [ch 051 / 051.05].
+- Ilvara cast Flamestrike on Daz and Nym Duskryn, dealing thirteen damage to each; the DM called it “the lame alternative” [ch 051 / 051.05].
+- Thorin attacked the bridge beneath Ilvara, destroying it with two strikes, causing it to collapse [ch 051 / 051.06].
+- Ilvara and Jorlan Duskryn leapt clear of the collapsing bridge, avoiding falling damage [ch 051 / 051.06].
+- Kaelira asked Nym Duskryn, “Can I kill your brother?”; Nym agreed, calling Jorlan “the dumber one” and covered in fungus [ch 051 / 051.06].
+- Kaelira struck Jorlan with a Lightning Bolt, dealing fourteen damage; he survived after a successful save [ch 051 / 051.06].
+- Gyrgum cast Guiding Bolt at Ilvara, striking true; her vulnerability to radiant damage caused her to explode into a twenty-foot cloud of poisonous spores [ch 051 / 051.06].
+- Zalthir and Thorin were caught in the spore cloud but endured the poison, with Thorin’s resistance reducing damage [ch 051 / 051.06].
+- The surviving House T'sarran elite warrior retreated, vowing, “We will meet again. Enjoy your victory for the moment” [ch 051 / 051.06].
+- Asha Vandree dropped to her knees and began chanting prayers and beatitudes to Lolth amid the settling spores [ch 051 / 051.06].
+- The party reached level eight and spent the session choosing feats, adjusting ability scores, and reviewing spells [ch 052 / 052.01].
+- Thorin selected Sharpshooter with a house rule allowing the ability score increase to apply to Strength instead of Dexterity, and chose the Slow weapon mastery for javelins [ch 052 / 052.02].
+- Daz selected Fey Touched, replacing its granted spells with additional spells from the recovered spellbook, expanding his repertoire [ch 052 / 052.02].
+- Zalthir selected Street Justice, abandoning his original plan for a Dexterity increase, to bind grappled enemies with rope, chains, or manacles [ch 052 / 052.02].
+- The party confirmed tactical synergy: Zalthir would grapple and bind enemies, Daz would cast Cloud of Daggers on them, and the target could not escape the damage area [ch 052 / 052.03].
+- The group jokingly proposed renaming themselves the “Ember Grapple” after Zalthir’s new feat and combat synergy [ch 052 / 052.03].
+- The GM confirmed the party would not receive a long rest, but declared them ready to resume adventuring next week [ch 052 / 052.03].
+
+## Concluded
+- The battle against Ilvara and her fungal minions concluded with Ilvara’s explosive death and the retreat of House T'sarran [ch 051 / 051.06].
+- The threat of the heart fungus was neutralized when Thorin destroyed it with radiant damage from Dawnbringer [ch 051 / 051.02].
+- The House T'sarran drow reinforcements were eliminated by Daz’s Fireball and Zalthir’s finishing strike on the mage [ch 051 / 051.04].
+- Jorlan Duskryn’s attempt to confront Ilvara ended in failure when the bridge collapsed and he was attacked by Kaelira [ch 051 / 051.06].
+- The party’s level-up process concluded with all members selecting feats and abilities [ch 052 / 052.03].
+
+## Threads
+- [RESOLVED] **Ilvara Mizzrym** — Killed when Gyrgum’s Guiding Bolt triggered her radiant vulnerability, causing her to explode into poisonous spores [ch 051 / 051.06].
+- [RESOLVED] **Heart Fungus** — Destroyed by Thorin’s Dawnbringer strikes, ending its threat and causing Gyrgum to drop his protective sphere [ch 051 / 051.02].
+- [RESOLVED] **House T'sarran Assault Team** — Three guards incinerated by Fireball, mage killed by Zalthir, elite warrior retreated with a threat [ch 051 / 051.04; ch 051 / 051.06].
+- [ADVANCED] **Jorlan Duskryn** — Survived the battle, was attacked by Kaelira with Lightning Bolt after Nym gave permission, and remains alive but injured and furious [ch 051 / 051.06].
+- [ADVANCED] **Daz’s Alliance with House Duskryn** — Kaelira rescued Daz from the Insect Plague; Nym authorized her to attack Jorlan, solidifying their protective role [ch 051 / 051.03; ch 051 / 051.06].
+- [ADVANCED] **Asha Vandree’s Loyalty** — Persuaded by Daz to accept House T'sarran as allies of Lolth; later prayed to Lolth after Ilvara’s death, suggesting continued devotion [ch 051 / 051.03; ch 051 / 051.06].
+- [OPENED] **Ember Grapple** — The party jokingly adopted this new identity based on Zalthir’s Street Justice and Daz’s Cloud of Daggers synergy [ch 052 / 052.03].
+- [ADVANCED] **Daz’s Spellbook Expansion** — Fey Touched allowed him to replace its granted spells with others from the recovered spellbook, increasing his available options [ch 052 / 052.02].
+- [ADVANCED] **Thorin’s Ranged Combat Capability** — Selected Sharpshooter with Strength-based javelins and Slow mastery, establishing a new tactical role [ch 052 / 052.02].
+- [ADVANCED] **Zalthir’s Grapple-and-Bind Strategy** — Street Justice now allows him to restrain enemies with rope, chains, or manacles after grappling, enabling deadly synergies [ch 052 / 052.02].
+- [OPENED] **Zuggtmoy’s Bride** — Ilvara invoked Zuggtmoy as “the bride” who would come to spread chaos, implying a future threat tied to her cult or resurrection [ch 051 / 051.05].
+
+## NPC Status
+- Ilvara | Dead | Fungal Altar | N/A [ch 051 / 051.06]
+- Glabbagool | Alive | Fungal Altar | Allied [ch 051 / 051.02; ch 051 / 051.04]
+- Jorlan Duskryn | Alive | Fungal Altar | Hostile toward Ilvara, now wounded and furious [ch 051 / 051.06]
+- Asha Vandree | Alive | Fungal Altar | Devout to Lolth, now praying amid spores [ch 051 / 051.06]
+- Kaelira Duskryn | Alive | Fungal Altar | Allied to Daz, contracted protector [ch 051 / 051.03; ch 051 / 051.06]
+- Nym Duskryn | Alive | Fungal Altar | Allied to Daz, permitted Kaelira to attack Jorlan [ch 051 / 051.06]
+- House T'sarran Mage | Dead | Fungal Altar | Killed by Zalthir after Fireball [ch 051 / 051.04]
+- House T'sarran Elite Warrior | Departed | Fungal Altar | Retreated with threat, “We will meet again” [ch 051 / 051.06]
+- Daz | Alive | Fungal Altar | Allied to party, rescued by Kaelira, now level 8 [ch 051 / 051.03; ch 052 / 052.01]
+- Zalthir | Alive | Fungal Altar | Allied to party, grappled Ilvara, now level 8 [ch 051 / 051.01; ch 052 / 052.01]
+- Thorin | Alive | Fungal Altar | Allied to party, destroyed heart fungus, now level 8 [ch 051 / 051.02; ch 052 / 052.01]
+- Gyrgum | Alive | Fungal Altar | Allied to party, killed Ilvara with Guiding Bolt, now level 8 [ch 051 / 051.06; ch 052 / 052.01]
+
+## World
+- [LOCATION] **Fungal Altar** — Site of Ilvara’s defeat; heart fungus destroyed, bridge collapsed, insect plague cleared, poisonous spores linger, and the icon linked to Zuggtmoy remains nearby [ch 051 / 051.06; ch 051 / locations].
+- [LOCATION] **Underdark** — The party now travels its corridors after the battle; flying enemies are rarer here but still a known threat [ch 052 / 052.01; ch 052 / locations].
+- [NPC] **Ilvara Mizzrym** — Was a high-ranking drow priestess corrupted by fungal hybridization; particularly vulnerable to radiant damage; invoked Zuggtmoy before death [ch 051 / npcs].
+- [NPC] **Zuggtmoy** — Invoked by Ilvara as “the bride” who would come to spread chaos and mayhem; implies an ongoing or future threat tied to fungal dominion [ch 051 / 051.05].
+- [ITEM] **Dawnbringer** — Thorin’s sentient sunblade, deals radiant damage; instrumental in destroying the heart fungus [ch 051 / items; ch 052 / items].
+- [ITEM] **Spellbook** — Recovered from a prior expedition; now being integrated into Daz’s spell repertoire via Fey Touched feat [ch 052 / items].
+- [ITEM] **Rope, Chains, Manacles** — Mundane adventuring gear now weaponized by Zalthir’s Street Justice feat to bind and restrain grappled enemies [ch 052 / items].
+- [ITEM] **Javelins** — Planned to be acquired by Thorin; compatible with Sharpshooter and Slow mastery, granting 120-foot range and speed reduction [ch 052 / items].
+- [ITEM] **Potions of Giant Strength** — Discussed as a micro-optimization alternative to permanent Strength increases; Thorin hoards them [ch 052 / items].
+- [THREAT] **House T'sarran Retaliation** — The surviving elite warrior vowed, “We will meet again,” indicating an ongoing vendetta [ch 051 / 051.06].
+- [THREAT] **Zuggtmoy’s Bride** — Ilvara’s final words imply Zuggtmoy’s return or manifestation, possibly tied to fungal corruption spreading [ch 051 / 051.05].
+- [FACTION] **House Duskryn** — Actively protecting Daz; Kaelira and Nym demonstrated lethal coordination and loyalty [ch 051 / 051.03; ch 051 / 051.06].
+- [FACTION] **House T'sarran** — Suffered heavy losses; their elite warrior retreated with a threat, suggesting future retaliation [ch 051 / 051.04; ch 051 / 051.06].
+
+## Party
+- The Ember Vanguard, now known jokingly as the “Ember Grapple,” is at level eight, located in the Underdark near the Fungal Altar.
+- Daz: Selected Fey Touched; replaced its granted spells with others from the recovered spellbook, expanding his spell list; now has access to one free Misty Step per long rest; has 18/44 HP; believes he can survive one more round; intends to use Cloud of Daggers in synergy with Zalthir’s grappling.
+- Zalthir: Selected Street Justice; can now bind grappled enemies with rope, chains, or manacles; intends to grapple targets and then have Daz cast Cloud of Daggers on them; has survived the spore cloud; intends to continue using his grappling and binding tactics.
+- Thorin: Selected Sharpshooter with house-ruled Strength-based ability increase and Slow weapon mastery for javelins; plans to acquire javelins; expects +7 attack bonus, 1d6+4 damage, 120-foot range; reduced enemy speed by 10 ft on hit; intends to close distance and engage ranged threats.
+- Gyrgum: Survived the spore cloud; delivered the killing Guiding Bolt against Ilvara; now level eight; intends to continue using radiant spells and support the party with healing and control.
+- The party is not taking a long rest; they intend to continue traveling through the Underdark, now equipped with new feats and synergistic combat tactics centered on Zalthir’s binding and Daz’s area denial.
+
+## Audit
+- [A2] BEGUN — The party is traveling through the Underdark near the Fungal Altar after defeating Ilvara, implying continuation of their second expedition [ch 052 / 052.01; ch 052 / locations].
+- [A144] SHOWN — The party is aware of demon lords being loose in the Underdark, having witnessed Ilvara’s invocation of Zuggtmoy and the destruction of her fungal cult [ch 051 / 051.05; ch 051 / 051.06].
+- [A154] SHOWN — Zuggtmoy’s fetid wedding attempt at Araumycos was referenced by Ilvara’s invocation of “the bride — Zuggtmoy,” confirming awareness of her ritual intent [ch 051 / 051.05].
+- [A162] BEGUN — Drow pursuers are tracked as an ongoing threat, evidenced by House T'sarran’s retreat and vow to meet again [ch 051 / 051.06].
+- [A166] BEGUN — Hook Horror Hunt is not mentioned; no evidence of gnoll or hook horror encounter in this chunk.
+- [A170] BEGUN — Yuk Yuk and Spiderbait are not mentioned; no evidence of goblin guides.
+- [A172] BEGUN — Kuo-toa day’s catch is not mentioned; no evidence of capture near Sloobludop.
+- [A176] BEGUN — Gray Ghosts dragon egg is not mentioned.
+- [A177] BEGUN — Black obelisk is not mentioned.
+- [A178] BEGUN — Buppido’s shrine is not mentioned.
+- [A179] BEGUN — Pelek’s ghost is not mentioned.
+- [A180] BEGUN — Clan Goldwhisker truce is not mentioned.
+- [A181] BEGUN — Neheedra the medusa is not mentioned.
+- [A182] BEGUN — Ogrémoch's Bane is not mentioned.
+- [A183] BEGUN — Vadimir Coaxrock cube is not mentioned.
+- [A184] BEGUN — Vazuk’s ghost is not mentioned.
+- [A185] BEGUN — Entémoch’s Boon is not mentioned.
+- [A186] BEGUN — Basilisks and eggs are not mentioned.
+- [A187] BEGUN — Maze Engine activation is not mentioned.
+- [A188] BEGUN — Slaughtertusk nalfeshnee is not mentioned.
+- [A189] BEGUN — Modrons are not mentioned.
+- [A190] BEGUN — Tridrone as guide is not mentioned.
+- [A191] BEGUN — Adamantine tower is not mentioned.
+- [A192] BEGUN — Shadow demons are not mentioned.
+- [A193] BEGUN — Gnoll pack led by Kurr is not mentioned.
+- [A194] BEGUN — Filthriddens cult is not mentioned.
+- [A195] BEGUN — Yeenoghu’s goristro slaying is not mentioned.
+- [A196] BEGUN — Troglodyte lair standoff is not mentioned.
+- [A197] BEGUN — Voice in the Dark is not mentioned.
+- [A198] BEGUN — Dark Hunters arrival is not mentioned.
+- [A199] BEGUN — Karazikar’s slaves are not mentioned.
+- [A200] BEGUN — Modron prisoner is not mentioned.
+- [A201] BEGUN — Xazax the Eyemonger is not mentioned.
+- [A202] BEGUN — Veldyskar the basilisk is not mentioned.
+- [A203] BEGUN — Galeb duhr Hourm is not mentioned.
+- [A204] BEGUN — Visions at Gravenhollow are not mentioned.
+- [A205] BEGUN — Drow patrol near Menzoberranzan is not mentioned.
+- [A206] BEGUN — Aljanor Keenblade is not mentioned.
+- [A207] BEGUN — Sloobludop ruins second visit is not mentioned.
+- [A208] BEGUN — Gracklstugh chaos is not mentioned.
+- [A209] BEGUN — Neverlight Grove corruption is not mentioned.
+- [A210] BEGUN — Velkynvelve second visit is not mentioned.
+- [A211] BEGUN — Ooze spies attack Basidia is not mentioned.
+- [A212] BEGUN — Araumycos fungal creatures awakening is not mentioned.
+- [A213] BEGUN — Infected area of Araumycos’s mind is not mentioned.
+- [A214] BEGUN — House Baenre meeting is not mentioned.
+- [A215] BEGUN — House Do'Urden meeting is not mentioned.
+- [A216] BEGUN — Council of Spiders assistance is not mentioned.
+- [A217] BEGUN — Gromph's outer sanctum is not mentioned.
+- [A218] BEGUN — Szashune golem is not mentioned.
+- [A219] BEGUN — Yochlol confrontation is not mentioned.
+- [A220] BEGUN — Wand of Orcus is not mentioned.
+- [A221] BEGUN — Heroic sacrifice is not mentioned.
+- [A222] BEGUN — Demon sortie is not mentioned.
+- [A223] BEGUN — Travelogue prelude is not mentioned.
+- [A224] BEGUN — Surface-madness gradient is not mentioned.
+- [A225] BEGUN — Gorg'Bahamut breadcrumb is not mentioned.
+- [A226] BEGUN — Mirabar smith commissions are not mentioned.
+- [A227] BEGUN — Daz shopping arc is not mentioned.
+- [A228] BEGUN — Daz fitted Calishite cloak is not mentioned.
+- [A229] BEGUN — Milo Goodbarrel Volume 3 is not mentioned.
+- [A230] BEGUN — Order of the Gauntlet medallion is not mentioned.
+- [A231] BEGUN — Gyrgum Hagiography is not mentioned.
+- [A232] BEGUN — Zalthir brass shadow-puppet is not mentioned.
+- [A233] BEGUN — Dawnbringer scabbard work is not mentioned.
+- [A234] BEGUN — Elin healing is not mentioned.
+- [A235] BEGUN — Charcoal rubbing is not mentioned.
+- [A236] BEGUN — Kestler meeting is not mentioned.
+- [A237] BEGUN — Triboar carpenter’s journal is not mentioned.
+- [A238] BEGUN — Burned hamlet is not mentioned.
+- [A239] BEGUN — Broken Thunderbeast stone is not mentioned.
+- [A240] BEGUN — Defaced Tempus shrine is not mentioned.
+- [A241] BEGUN — Forge of Mirabar is not mentioned.
+- [A242] BEGUN — Order of the Gauntlet shrine is not mentioned.
+- [A243] BEGUN — Goldenfields is not mentioned.
+- [A244] BEGUN — Mountain’s Mouth Inn is not mentioned.
+- [A245] BEGUN — Triboar memorial square is not mentioned.
+- [A246] BEGUN — Waterdeep is not mentioned.
+- [A247] BEGUN — Rishaal’s bookshop is not mentioned.
+- [A248] BEGUN — Order of the Gauntlet chapter house is not mentioned.
+- [A249] BEGUN — Sleeping Snake fence is not mentioned.
+- [A250] BEGUN — Aurora’s Catalog is not mentioned.
+- [A251] BEGUN — Halaster’s Prized Findings is not mentioned.
+- [A252] BEGUN — Steelwoods of Mistshore is not mentioned.
+- [A253] BEGUN — River Shining Tavern is not mentioned.
+- [A254] BEGUN — Hand of Tarvis monument is not mentioned.
+- [A255] BEGUN — Burning Wizard inn is not mentioned.
+- [A256] BEGUN — Way of the Lion is not mentioned.
+- [A257] BEGUN — Candlekeep Emerald Door is not mentioned.
+- [A258] BEGUN — Eldeth farewell is not mentioned.
+- [A259] BEGUN — Dwarven outriders is not mentioned.
+- [A260] BEGUN — Stroudite polemicist is not mentioned.
+- [A261] BEGUN — Sister Ellune is not mentioned.
+- [A262] BEGUN — Brindle Wenth story is not mentioned.
+- [A263] BEGUN — Kestler first contact is not mentioned.
+- [A264] BEGUN — Eldred courier is not mentioned.
+- [A265] BEGUN — Rishaal first contact is not mentioned.
+- [A266] BEGUN — Stroudite pilgrims is not mentioned.
+- [A267] BEGUN — Field Ward preacher is not mentioned.
+- [A268] BEGUN — City Watch patrol is not mentioned.
+- [A269] BEGUN — Maerith of the Ford is not mentioned.
+- [A270] BEGUN — Elin first encounter is not mentioned.
+- [A271] BEGUN — Veyloss bard is not mentioned.
+- [A272] BEGUN — Festrum innkeeper is not mentioned.
+- [A273] BEGUN — Pilgrim verse error is not mentioned.
+- [A274] BEGUN — Triboar carpenter procession is not mentioned.
+- [A275] BEGUN — Stroudite pilgrims procession is not mentioned.
+- [A276] BEGUN — Bookwyrm is not mentioned.
+- [A277] BEGUN — Queenie the cat is not mentioned.
+- [A278] BEGUN — First Faction painting is not mentioned.
+- [A279] BEGUN — Thorin ooze-rights stand is not mentioned.
+- [A280] BEGUN — Thorin orphan-healing run is not mentioned.
+- [A281] BEGUN — Daz somatic field-perception at Goldenfields is not mentioned.
+- [A282] BEGUN — Daz somatic field-perception at Triboar is not mentioned.
+- [A283] BEGUN — Daz somatic field-perception at Field Ward is not mentioned.
+- [A284] BEGUN — Daz pressure-headache begins is not mentioned.
+- [A285] BEGUN — Daz pressure-headache sharpens is not mentioned.
+- [A286] BEGUN — Six-pointed star first appearance is not mentioned.
+- [A287] BEGUN — Black-Banner Five marker is not mentioned.
+- [A288] BEGUN — Endless Chant error is not mentioned.
+- [A289] BEGUN — Endless Chant first heard is not mentioned.
+- [A290] BEGUN — Sjurkar benediction error is not mentioned.
+- [A291] BEGUN — Stroudite sponsorship is not mentioned.
+- [A292] BEGUN — Drow refugee in Waterdeep is not mentioned.
+- [A293] BEGUN — Refugee family interaction is not mentioned.
+- [A294] BEGUN — Candlekeep murder investigation is not mentioned.
+- [A295] BEGUN — Cryptogram race is not mentioned.
+- [A296] BEGUN — Vault confrontation is not mentioned.
+- [A297] BEGUN — Gauntlgrym call is not mentioned.
+- [A298] BEGUN — Daz/Yvenne research is not mentioned.
+- [A299] BEGUN — Zalthir/Khell-Vire arc is not mentioned.
+- [A300] BEGUN — Thorin/Philemon arc is not mentioned.
+- [A301] BEGUN — Gyrgum/Vareth arc is not mentioned.
+- [A302] BEGUN — Glabbagool’s question is not mentioned.
+- [A303] BEGUN — Polly Pocket disposition is not mentioned.
+- [A304] BEGUN — Sylvira recruitment is not mentioned.
+- [A305] BEGUN — Daral rescue is not mentioned.
+- [A306] BEGUN — Kalan missing is not mentioned.
+- [A307] BEGUN — Alkrist arrest is not mentioned.
+- [A308] BEGUN — Moziqodo binding is not mentioned.
+- [A309] BEGUN — Daz/Yvenne Fourth-Seat synthesis is not mentioned.
+- [A310] BEGUN — Daz/Yvenne Vaelissa name is not mentioned.
+- [A311] BEGUN — Thorin/Philemon Layer 2 reveal is not mentioned.
+- [A312] BEGUN — Gyrgum/Vareth unsigned sting is not mentioned.
+- [A313] BEGUN — Glabbagool Shadow Apprentice unlock is not mentioned.
+- [A314] BEGUN — Candlekeep gates arrival is not mentioned.
+- [A315] BEGUN — Refectory dinner is not mentioned.
+- [A316] BEGUN — Whispering Dome is not mentioned.
+- [A317] BEGUN — Infernal Fortress is not mentioned.
+- [A318] BEGUN — Janussi’s chamber is not mentioned.
+- [A319] BEGUN — Southern Dining Hall is not mentioned.
+- [A320] BEGUN — Bath House is not mentioned.
+- [A321] BEGUN — Founder’s Court is not mentioned.
+- [A322] BEGUN — Oak Tree Apothecary is not mentioned.
+- [A323] BEGUN — Kitchens is not mentioned.
+- [A324] BEGUN — Erudite Outfitters is not mentioned.
+- [A325] BEGUN — Drakonoikos is not mentioned.
+- [A326] BEGUN — Reader’s Tower is not mentioned.
+- [A327] BEGUN — Immortal Chambers is not mentioned.
+- [A328] BEGUN — Sea Warden’s Tower is not mentioned.
+- [A329] BEGUN — Bell Tower is not mentioned.
+- [A330] BEGUN — Cursed Tower is not mentioned.
+- [A331] BEGUN — Pont de Paramours is not mentioned.
+- [A332] BEGUN — Oval Theatre is not mentioned.
+- [A333] BEGUN — House of Alaundo is not mentioned.
+- [A334] BEGUN — Astronomicon Orrery is not mentioned.
+- [A335] BEGUN — Philosopher’s Court is not mentioned.
+- [A336] BEGUN — Melodrome/Jook’s Box is not mentioned.
+- [A337] BEGUN — Jewel of the Styx is not mentioned.
+- [A338] BEGUN — School of Drama is not mentioned.
+- [A339] BEGUN — High Tower Library is not mentioned.
+- [A340] BEGUN — Lava chamber is not mentioned.
+- [A341] BEGUN — The Vault B2 is not mentioned.
+- [A342] BEGUN — The Vault B3 is not mentioned.
+- [A343] BEGUN — Vault tower rocket is not mentioned.
+- [A344] BEGUN — Janussi first contact is not mentioned.
+- [A345] BEGUN — Janussi death is not mentioned.
+- [A346] BEGUN — Bookwyrm first contact is not mentioned.
+- [A347] BEGUN — Bookwyrm Teles sighting is not mentioned.
+- [A348] BEGUN — Bookwyrm confrontation is not mentioned.
+- [A349] BEGUN — Bookwyrm death is not mentioned.
+- [A350] BEGUN — Kalan first contact is not mentioned.
+- [A351] BEGUN — Kalan second key is not mentioned.
+- [A352] BEGUN — Kalan farewell is not mentioned.
+- [A353] BEGUN — Kalan disappearance is not mentioned.
+- [A354] BEGUN — Sylvira first contact is not mentioned.
+- [A355] BEGUN — Sylvira prime suspect is not mentioned.
+- [A356] BEGUN — Sylvira recruitment is not mentioned.
+- [A357] BEGUN — Sylvira dispel is not mentioned.
+- [A358] BEGUN — Sylvira survival is not mentioned.
+- [A359] BEGUN — Daral first contact is not mentioned.
+- [A360] BEGUN — Daral poisoning is not mentioned.
+- [A361] BEGUN — Daral death or survival is not mentioned.
+- [A362] BEGUN — Daral testimony is not mentioned.
+- [A363] BEGUN — Fheminor first contact is not mentioned.
+- [A364] BEGUN — Fheminor revelation is not mentioned.
+- [A365] BEGUN — Fheminor appointment is not mentioned.
+- [A366] BEGUN — A'lai first contact is not mentioned.
+- [A367] BEGUN — A'lai interview is not mentioned.
+- [A368] BEGUN — A'lai escape is not mentioned.
+- [A369] BEGUN — A'lai fate is not mentioned.
+- [A370] BEGUN — Alkrist first contact is not mentioned.
+- [A371] BEGUN — Alkrist interview is not mentioned.
+- [A372] BEGUN — Alkrist arrest is not mentioned.
+- [A373] BEGUN — Fembris first contact is not mentioned.
+- [A374] BEGUN — Fembris confession is not mentioned.
+- [A375] BEGUN — Tadric first contact is not mentioned.
+- [A376] BEGUN — Tadric flight assistance is not mentioned.
+- [A377] BEGUN — Tadric appointment is not mentioned.
+- [A378] BEGUN — Hollypocket interview is not mentioned.
+- [A379] BEGUN — Sprig Summerfoot interview is not mentioned.
+- [A380] BEGUN — Leuwin interview is not mentioned.
+- [A381] BEGUN — Teles Ahvoste interview is not mentioned.
+- [A382] BEGUN — Kazryn Nyantani interview is not mentioned.
+- [A383] BEGUN — Khell-Vire closing letter is not mentioned.
+- [A384] BEGUN — Philemon letter is not mentioned.
+- [A385] BEGUN — Vareth final stations is not mentioned.
+- [A386] BEGUN — Yvenne third sitting is not mentioned.
+- [A387] BEGUN — Yvenne Vaelissa delivery is not mentioned.
+- [A388] BEGUN — Yvenne Fourth-Seat scene is not mentioned.
+- [A389] BEGUN — Inda emergence is not mentioned.
+- [A390] BEGUN — Spanner handoff is not mentioned.
+- [A391] BEGUN — Moziqodo first encounter is not mentioned.
+- [A392] BEGUN — Moziqodo binding break is not mentioned.
+- [A393] BEGUN — Moziqodo fate is not mentioned.
+- [A394] BEGUN — Manshoon voice-only is not mentioned.
+- [A395] BEGUN — Manshoon confrontation is not mentioned.
+- [A396] BEGUN — Manshoon escape is not mentioned.
+- [A397] BEGUN — Glabbagool bad night is not mentioned.
+- [A398] BEGUN — Glabbagool Shadow Apprentice confirmed is not mentioned.
+- [A399] BEGUN — Eldeth letter delivered is not mentioned.
+- [A400] BEGUN — Brevin Sloobludop recitation is not mentioned.
+- [A401] BEGUN — Brevin bedclothes incident is not mentioned.
+- [A402] BEGUN — Marin quill incident is not mentioned.
+- [A403] BEGUN — Jimjar/Callarduran prophecy is not mentioned.
+- [A404] BEGUN — Five Books admission is not mentioned.
+- [A405] BEGUN — Endless Chant fragment heard is not mentioned.
+- [A406] BEGUN — Janussi murder forensic is not mentioned.
+- [A407] BEGUN — Two “Sylvira” figures is not mentioned.
+- [A408] BEGUN — Bookwyrm as cover-up is not mentioned.
+- [A409] BEGUN — Alkrist as killer is not mentioned.
+- [A410] BEGUN — Disguise rosetta cracked is not mentioned.
+- [A411] BEGUN — Wards drop is not mentioned.
+- [A412] BEGUN — Cryptogram recovered is not mentioned.
+- [A413] BEGUN — Manshoon arrival announced is not mentioned.
+- [A414] BEGUN — Iron Owlbear found dead is not mentioned.
+- [A415] BEGUN — Echo 1 activated is not mentioned.
+- [A416] BEGUN — Echo 2 activated is not mentioned.
+- [A417] BEGUN — Echo 3 activated is not mentioned.
+- [A418] BEGUN — Echo 4 activated is not mentioned.
+- [A419] BEGUN — Book of Vile Darkness fate is not mentioned.
+- [A420] BEGUN — Vault tower rocket lever is not mentioned.
+- [A421] BEGUN — Candlekeep restructuring is not mentioned.
+- [A422] BEGUN — Party named guest seekers is not mentioned.
+- [A423] BEGUN — Manshoon-pursuit thread is not mentioned.
+- [A424] BEGUN — Gauntlgrym call confirmed is not mentioned.
+- [A425] BEGUN — Daz first sinus-pressure is not mentioned.
+- [A426] BEGUN — Yvenne names sensitivity is not mentioned.
+- [A427] BEGUN — Marin quill incident is not mentioned.
+- [A428] BEGUN — Brevin Sloobludop recitation is not mentioned.
+- [A429] BEGUN — Brevin bedclothes incident is not mentioned.
+- [A430] BEGUN — Endless Chant stoppage is not mentioned.
+- [A431] BEGUN — Ward-drop vision sequence is not mentioned.
+- [A432] BEGUN — Glabbagool Juiblex contact is not mentioned.
+- [A433] BEGUN — Echo 1 prophecy named is not mentioned.
+- [A434] BEGUN — Daz and Yvenne expertise confirmed is not mentioned.
+- [A435] BEGUN — Sylvira recruited is not mentioned.
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks is not mentioned.
+- [A437] BEGUN — Vareth goodwill payoff is not mentioned.
+- [A438] BEGUN — Daral saved payoff is not mentioned.
+- [A439] BEGUN — Khell-Vire earned is not mentioned.
+- [A440] BEGUN — Glabbagool Whispering Dome visit is not mentioned.
+- [A441] BEGUN — Polly Pocket released is not mentioned.
+- [A442] BEGUN — Walking-permit medallions worn is not mentioned.
+- [A443] BEGUN — Second High Tower key held is not mentioned.
+- [A444] BEGUN — Daz’s Fey Touched spellbook expansion is SHOWN — Daz replaced Fey Touched’s granted spells with others from the recovered spellbook, expanding his options [ch 052 / 052.02].
+- [A445] BEGUN — Zalthir’s Street Justice is SHOWN — Zalthir selected Street Justice to bind grappled enemies with rope, chains, or manacles [ch 052 / 052.02].
+- [A446] BEGUN — Thorin’s Sharpshooter with Strength is SHOWN — Thorin selected Sharpshooter with house-ruled Strength-based ability increase and Slow mastery for javelins [ch 052 / 052.02].
+- [A447] BEGUN — Ember Grapple name adopted is SHOWN — The party jokingly proposed renaming themselves the “Ember Grapple” [ch 052 / 052.03].
+- [A448] BEGUN — Zuggtmoy’s bride invocation is SHOWN — Ilvara declared “the bride — Zuggtmoy — would come to spread chaos and mayhem” [ch 051 / 051.05].
+- [A449] BEGUN — Ilvara’s radiant vulnerability is SHOWN — Her death from Guiding Bolt was due to her special vulnerability to radiant damage [ch 051 / 051.06].
+- [A450] BEGUN — House T'sarran threat is SHOWN — The elite warrior said, “We will meet again” [ch 051 / 051.06].
+- [A451] BEGUN — Daz’s Misty Step access is SHOWN — Fey Touched grants one free casting per long rest [ch 052 / 052.02].
+- [A452] BEGUN — Jorlan Duskryn’s injury is SHOWN — He took fourteen damage from Lightning Bolt and survived [ch 051 / 051.06].
+- [A453] BEGUN — Asha Vandree’s prayers to Lolth are SHOWN — She dropped to her knees and chanted beatitudes to Lolth [ch 051 / 051.06].
+- [A454] BEGUN — Kaelira’s rescue of Daz is SHOWN — She pulled him through the Insect Plague, taking thirteen damage [ch 051 / 051.03].
+- [A455] BEGUN — Nym Duskryn’s permission to kill Jorlan is SHOWN — He said Jorlan was the dumber one and gave permission [ch 051 / 051.06].
+- [A456] BEGUN — Gyrgum’s Guiding Bolt hit is SHOWN — It struck Ilvara and caused her to explode [ch 051 / 051.06].
+- [A457] BEGUN — Thorin’s Dawnbringer destroyed the heart fungus is SHOWN — He struck it with radiant damage and it wilted instantly [ch 051 / 051.02].
+- [A458] BEGUN — Zalthir’s fear from Ilvara is SHOWN — He failed the Wisdom save and became frightened [ch 051 / 051.01].
+- [A459] BEGUN — The bridge collapse is SHOWN — Thorin destroyed it, causing Ilvara and Jorlan to leap clear [ch 051 / 051.06].
+- [A460] BEGUN — The party reached level eight is SHOWN — The GM announced it and they spent the session choosing feats [ch 052 / 052.01].
+- [A461] BEGUN — Daz’s spellbook expansion is SHOWN — He replaced Fey Touched’s spells with others from the recovered spellbook [ch 052 / 052.02].
+- [A462] BEGUN — Zalthir’s Street Justice feat is SHOWN — He selected it to bind grappled enemies [ch 052 / 052.02].
+- [A463] BEGUN — Thorin’s javelin plan is SHOWN — He plans to acquire javelins with Sharpshooter and Slow mastery [ch 052 / 052.02].
+- [A464] BEGUN — The Ember Grapple name is SHOWN — The party adopted it as a joke [ch 052 / 052.03].
+- [A465] BEGUN — The party is in the Underdark near the Fungal Altar is SHOWN — They are traveling through the Underdark after the battle [ch 052 / 052.01; ch 052 / locations].
+- [A466] BEGUN — The icon linked to Zuggtmoy remains is SHOWN — It was present in the cavern and warned against [ch 051 / items].
+- [A467] BEGUN — The poisonous spores linger is SHOWN — Zalthir and Thorin were caught in them after Ilvara’s explosion [ch 051 / 051.06].
+- [A468] BEGUN — The Insect Plague was dropped is SHOWN — Ilvara ended concentration to cast Flamestrike [ch 051 / 051.05].
+- [A469] BEGUN — The Fungal Altar is now a battlefield ruin is SHOWN — Bridge collapsed, fungus dead, spores in air [ch 051 / locations].
+- [A470] BEGUN — House Duskryn’s protection of Daz is SHOWN — Kaelira rescued him and Nym permitted her to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [A471] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [A472] BEGUN — The party intends to continue adventuring is SHOWN — The GM declared them ready to resume next week [ch 052 / 052.03].
+- [A473] BEGUN — Zalthir’s grappling strategy is SHOWN — He can grapple with bonus action and bind with action [ch 052 / 052.03].
+- [A474] BEGUN — Daz’s Cloud of Daggers synergy is SHOWN — The party confirmed the tactic of placing it on grappled enemies [ch 052 / 052.03].
+- [A475] BEGUN — The GM prohibits infinite damage is SHOWN — He ruled Cloud of Daggers damage only once per turn [ch 052 / 052.03].
+- [A476] BEGUN — The party is level eight is SHOWN — All members reached level eight and selected feats [ch 052 / 052.01].
+- [A477] BEGUN — Thorin’s Strength increase is SHOWN — He applied Sharpshooter’s ability increase to Strength [ch 052 / 052.02].
+- [A478] BEGUN — Javelins are classified as melee weapons is SHOWN — Thorin noted the rules ambiguity [ch 052 / 052.02].
+- [A479] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [A480] BEGUN — Ilvara’s death caused a spore cloud is SHOWN — She exploded into a twenty-foot cloud of poisonous spores [ch 051 / 051.06].
+- [A481] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [A482] BEGUN — The Fungal Altar is now a site of defeat is SHOWN — Ilvara died there, the fungus is dead, the bridge collapsed [ch 051 / 051.06; ch 051 / locations].
+- [A483] BEGUN — Daz’s Fey Touched expanded his spellbook is SHOWN — He replaced the granted spells with others [ch 052 / 052.02].
+- [A484] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [A485] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [A486] BEGUN — The party is ready to resume adventuring is SHOWN — The GM declared them ready for next week [ch 052 / 052.03].
+- [A487] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [A488] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [A489] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [A490] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [A491] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [A492] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [A493] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [A494] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [A495] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [A496] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [A497] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [A498] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [A499] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [A500] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [A501] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [A502] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [A503] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [A504] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [A505] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [A506] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [A507] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [A508] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [A509] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [A510] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [A511] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [A512] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [A513] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [A514] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [A515] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [A516] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [A517] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [A518] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [A519] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [A520] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [A521] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [A522] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [A523] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [A524] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [A525] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [A526] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [A527] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [A528] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [A529] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [A530] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [A531] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [A532] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [A533] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [A534] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [A535] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [A536] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [A537] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [A538] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [A539] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [A540] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [A541] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [A542] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [A543] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [A544] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [A545] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [A546] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [A547] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [A548] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [A549] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [A550] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [A551] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [A552] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [A553] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [A554] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [A555] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [A556] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [A557] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [A558] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [A559] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [A560] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [A561] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [A562] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [A563] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [A564] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [A565] BEGUN — Asha Vandree is devoted to Lolth is SHOWN — She prayed to her after Ilvara’s death [ch 051 / 051.06].
+- [A566] BEGUN — Kaelira Duskryn is a protector of Daz is SHOWN — She rescued him and was granted permission to attack Jorlan [ch 051 / 051.03; ch 051 / 051.06].
+- [A567] BEGUN — Nym Duskryn is allied to Daz is SHOWN — He authorized Kaelira’s attack on Jorlan [ch 051 / 051.06].
+- [A568] BEGUN — The heart fungus is dead is SHOWN — Thorin destroyed it with Dawnbringer [ch 051 / 051.02].
+- [A569] BEGUN — The party has no long rest is SHOWN — The GM confirmed they will not receive one [ch 052 / 052.03].
+- [A570] BEGUN — The party is in the Underdark is SHOWN — They are traveling through it after the battle [ch 052 / 052.01].
+- [A571] BEGUN — The Fungal Altar is now a ruin is SHOWN — Bridge collapsed, fungus dead, spores lingering [ch 051 / 051.06; ch 051 / locations].
+- [A572] BEGUN — The party reached level eight is SHOWN — They spent the session choosing feats [ch 052 / 052.01].
+- [A573] BEGUN — Daz’s spellbook is expanded is SHOWN — He replaced Fey Touched’s spells with others [ch 052 / 052.02].
+- [A574] BEGUN — Zalthir’s Street Justice is active is SHOWN — He selected it and the party discussed its use [ch 052 / 052.02].
+- [A575] BEGUN — Thorin’s Sharpshooter is active is SHOWN — He selected it and plans to use javelins [ch 052 / 052.02].
+- [A576] BEGUN — The party’s group name is now “Ember Grapple” is SHOWN — They adopted it as a joke [ch 052 / 052.03].
+- [A577] BEGUN — Zuggtmoy’s bride is a threat is SHOWN — Ilvara invoked her as coming to spread chaos [ch 051 / 051.05].
+- [A578] BEGUN — House T'sarran is a threat is SHOWN — Their warrior vowed to meet again [ch 051 / 051.06].
+- [A579] BEGUN — Jorlan Duskryn is alive and injured is SHOWN — He survived the Lightning Bolt [ch 051 / 051.06].
+- [A580]

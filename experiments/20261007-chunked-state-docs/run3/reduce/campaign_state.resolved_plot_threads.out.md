@@ -1,0 +1,35 @@
+## Resolved Plot Threads
+- The escape from Velkynvelve slave pen was completed when prisoners overcame guard tower defenders and secured weapons and armor, marking the first phase of their breakout `[ch 003 / 003.01; ch 003 / 003.03]`.
+- Coordinate escape using rapport spores succeeded as Stool’s telepathic spores enabled silent communication and synchronized action; the effect expired after one hour `[ch 003 / 003.01; ch 003 / spells]`.
+- The guard tower assault was won after the party defeated drow guards and Elite Warrior Imbros, securing weapons, armor, rope, and caltrops `[ch 003 / 003.02; ch 003 / 003.03]`.
+- Armory equipment was secured with short swords, hand crossbows, studded leather armor, rope, and caltrops retrieved from the tower’s upper chamber `[ch 003 / 003.04]`.
+- Shuushar’s role as guide ended when he departed to lead kuo-toa refugees toward a new society, closing his direct involvement with the party `[ch 009 / 009.06; ch 010 / 010.01]`.
+- Buppido’s fate was resolved when he was revealed as a mad cultist who killed Yuk Yuk, erected a shrine, attacked the party, and was slain by Magic Missile `[ch 015 / 015.06; ch 015 / 015.07]`.
+- The NDA negotiation with Werz was completed when Werz paid 1,100 gp and agreed to confidentiality, ending the immediate financial negotiation `[ch 018 / 018.05]`.
+- The red dragon egg was successfully delivered to Gartokkar, who confirmed its purpose was to replace Themberchaud, resolving the mission objective `[ch 026 / 026.06]`.
+- The Lost Tomb of Khaem was fully explored and looted; its main chamber and decoy were cleared of threats, with no further dangers remaining `[ch 029 / 029.01; ch 029 / 029.03]`.
+- Brysis’s imprisonment ended when she was destroyed after a millennium of confinement, freeing the sentient sword Dawnbringer `[ch 029 / 029.01]`.
+- Eldeth’s trail-obscuring effort succeeded in breaking the drow pursuit, reducing it to zero for the time being `[ch 029 / 029.04]`.
+- Zalthir’s spore-induced madness was cured by Thorin’s Lesser Restoration; he apologized and admitted the compulsion was inexplicable, ending the immediate threat to party cohesion `[ch 032 / 032.02]`.
+- Daz’s hallucinations from spores subsided after the vision ended and the party retreated; he regained full awareness with no further effects noted `[ch 032 / 032.02]`.
+- The fate of Sarith’s infection was resolved when his body exploded and became a drow spore servant, confirming the terminal progression of the corruption he carried since earlier encounters `[ch 031 / 031.04; ch 031 / Memorable Moments]`.
+- The “tears” bet was settled by Thorin’s promise of ten slimy silver pieces to Jimjar after surviving the flood ordeal `[ch 034 / 034.08]`.
+- The Pudding King’s threat was ended when he dissolved after being defeated, eliminating his telepathic declaration and immediate menace `[ch 047 / 047.08]`.
+- The Pudding King’s army command was broken when he died, and his allies were defeated, ending his control over the ooze horde `[ch 047 / 047.09]`.
+- The ooze crisis in Traders’ Grotto was resolved as the uncontrolled ooze swarm pacified and dispersed, judged clear within days to a week `[ch 048 / 048.05]`.
+- The psychic static in the Hall of Melting Mirrors was silenced after the harmonic center was located `[ch 048 / 048.02]`.
+- Structural integrity of support beams was secured, miners were healed, and Thorin was honored, resolving the immediate collapse threat `[ch 048 / 048.03]`.
+- Blingdenstone Council negotiations were resolved through compromise, establishing a new political balance among miners, wererats, ghosts, and trade interests `[ch 048 / 048.06]`.
+- Ilvara Mizzrym was killed when Gyrgum’s Guiding Bolt triggered her radiant vulnerability, causing her to explode into poisonous spores `[ch 051 / 051.06]`.
+- The Heart Fungus was destroyed by Thorin’s Dawnbringer strikes, ending its threat and causing Gyrgum to drop his protective sphere `[ch 051 / 051.02]`.
+- The House T'sarran Assault Team was eliminated: three guards incinerated by Fireball, the mage killed by Zalthir, and the elite warrior retreated with a threat `[ch 051 / 051.04; ch 051 / 051.06]`.
+- Asha Vandree’s delusion ended with her death; her theological writings were recovered as evidence of her corruption `[ch 053 / 053.02; ch 053 / 053.03]`.
+- Ilvara’s pursuit was resolved when her force was destroyed, her body looted, and her correspondence ceased, making her disappearance known to House T'sarran `[ch 053 / 053.03; ch 053 / 053.04]`.
+- The Fungal Altar threat was neutralized: the heart fungus was harvested, its spore remnant burned, and the chamber cleared of corruption `[ch 053 / 053.04]`.
+- Mercenary escort was fulfilled when Nym and Kaelira departed after escorting Daz to the surface `[ch 053 / 053.05]`.
+- The decoy key was confirmed as non-magical and retained as a potential tool for deception `[ch 063 / 063.01]`.
+- The first Manshoon simulacrum was destroyed by Zalthir, reverting to snow and melting in the magma chamber `[ch 069 / 069.02]`.
+- The final door’s riddle was solved when Gyrgum spoke “a candle” with genuine intent, fulfilling the enchantment’s requirement `[ch 070 / 070.03]`.
+- Manshoon’s simulacrum was confirmed dead after being thrown into the lava pit and will not return `[ch 070 / 070.02]`.
+- Edvaldo’s immediate threat ended when the doppelgänger fled toward the anti-magic barrier and was no longer present in the chamber `[ch 070 / 070.03]`.
+- The explosive fail-safe was neutralized because the simulacrum was removed from the warded chamber before disposal, triggering no explosion `[ch 070 / 070.02]`.

@@ -1,0 +1,143 @@
+## Events
+- The party debates whether to hand Alkrist’s confession to Kalan Strongbranch, confront A'lai, or go directly to Bookwyrm, ultimately deciding to let Kalan take public credit while preserving their own access to the reward and future evidence [ch 062 / 062.01].
+- Dawnbringer expresses frustration that therapy sessions with Candlekeep’s scholars have stalled after a productive first session; Thorin sympathizes [ch 062 / 062.01].
+- Daz and Thorin support handing the case to Kalan, with Daz noting they can always “hack and slash” if things go sideways [ch 062 / 062.01].
+- The party discusses whether solving the murder will make them famous, infamous, or easier targets, with Zalthir describing their reputation as “kind of our infamous underground” and referencing *The Three Amigos* [ch 062 / 062.01].
+- The party meets Kalan Strongbranch, who dismisses Alkrist’s confession as insufficient under his Threefold Proof methodology, citing it as a single magical source of truth [ch 062 / 062.02].
+- Kalan insists the party must wait for the naming ceremony to strip Bookwyrm of political protection, predicting Teles Ahvoste or Fheminor will become Keeper instead [ch 062 / 062.02].
+- Kalan refuses to ambush Bookwyrm with Zone of Truth, insisting on an open demand for her submission to avoid antagonizing a future superior [ch 062 / 062.02].
+- The party proposes using their reward to obtain a book capable of proving Bookwyrm’s complicity after she believes the threat is over; Kalan enthusiastically approves and promises to identify one [ch 062 / 062.02].
+- Thorin frames the plan as a dramatic “one more thing” moment in the style of Columbo [ch 062 / 062.02].
+- Fembris Lancer returns with Bookwyrm’s request to meet; the party briefly considers feeding her false information but notes he was not present for Alkrist’s confession [ch 062 / 062.03].
+- Bookwyrm receives the party in her office with tea poured, appearing regal and in control; Thorin refuses tea and produces his own flask, while Zalthir has Glabbagool absorb the tea via acid, leaving only a faint singe [ch 062 / 062.03].
+- Bookwyrm dismisses Alkrist’s confession as the result of a borrowed compulsion spell and invokes Kalan’s own Threefold Proof against it [ch 062 / 062.03].
+- Kalan counters by presenting Alkrist’s possession of the poison, the relevant book, and his confession as corroborating evidence [ch 062 / 062.03].
+- Bookwyrm appears to collapse in heartbreak, but Daz observes she is not genuinely grieving—she looks curiously relieved [ch 062 / 062.03].
+- Bookwyrm acknowledges Alkrist’s crime but insists trials must wait until after the naming ceremony [ch 062 / 062.03].
+- The party debates revealing Alkrist’s claim that A'lai was the mastermind and chooses to withhold it, since Bookwyrm and Fembris do not yet know [ch 062 / 062.03].
+- The party tells Bookwyrm that Alkrist has been identified but accomplices remain under investigation, prompting her to theatrically declare it unthinkable anyone else could have conspired in Janussi’s death [ch 062 / 062.03].
+- Kalan confirms Alkrist will be imprisoned and his safe guarded until opened [ch 062 / 062.03].
+- Bookwyrm publicly praises the party for completing her assigned task and vindicates Kalan’s investigative methodology, despite her earlier skepticism [ch 062 / 062.03].
+- Bookwyrm apologizes to Kalan and offers to restore him to his former position; he accepts but warns his report will not change [ch 062 / 062.03].
+- Bookwyrm promises the party a chance to speak before the Council of the Avowed during the naming ceremony and orders Kalan to escort them to Deneir’s Sanctum for “protection” [ch 062 / 062.03].
+- Zalthir asks if they are under house arrest; Bookwyrm denies it, but Daz reads her concern as sincere and her pleasure in containing them as equally real [ch 062 / 062.03].
+- The party opens Alkrist’s safe, finding a potion of flying, a potion of superior healing, 750 gold pieces, and a gold coin bearing a literal red herring [ch 062 / 062.04].
+- Zalthir uses Glabbagool to surreptitiously steal the potion of flying during the distraction; no one notices [ch 062 / 062.04].
+- A Locate Object spell fails to detect the sapphire on Bookwyrm, indicating she does not have it [ch 062 / 062.04].
+- The party is escorted to Deneir’s Sanctum, where Fembris remains with them as punishment [ch 062 / 062.05].
+- Food is delivered; the party distrusts it and makes Fembris their official taster, which he accepts without hesitation [ch 062 / 062.05].
+- Daral, still recovering, begs to be cured; the party concludes he has no role in the murder and allows Dawnbringer to heal him [ch 062 / 062.05].
+- Daral, overjoyed, vows to make sentient magical swords and Dawnbringer’s sentience and beauty a major subject of his research, launching into an academic discourse on semiotics [ch 062 / 062.05].
+- Daral attempts to leave but finds the door locked [ch 062 / 062.05].
+- Three helmed horrors smash through the windows and door of Deneir’s Sanctum, attacking with no emotion but clear purpose [ch 062 / 062.06].
+- The horrors immediately converge on Daz, who realizes they are targeting the mysterious key he carries, which Detect Magic showed as inert [ch 062 / 062.06].
+- Daz passes the key to Gyrgum; the horrors immediately shift focus to him, confirming they track the object, not the bearer [ch 062 / 062.06].
+- Daz casts Scorching Ray, dealing 24 fire damage to one horror; Gyrgum uses Word of Radiance, dealing 10 radiant damage to two [ch 062 / 062.06].
+- One horror lands a devastating combo on Daz, reducing him to 3 hit points [ch 062 / 062.06].
+- Zalthir and Glabbagool grapple and use Corrosive Embrace to corrode armor on two horrors, bypassing their magic resistance [ch 062 / 062.06].
+- Thorin uses Dawnbringer to land a sapping blow, imposing disadvantage on one horror’s attack, then destroys it with a retaliatory strike when it targets Gyrgum [ch 062 / 062.06].
+- Daz casts Magic Missile, dealing 15 damage despite uncertainty over the horrors’ spell immunities [ch 062 / 062.06].
+- Zalthir and Glabbagool kill the second horror; Thorin delivers the final blows to destroy the third [ch 062 / 062.06].
+- The three helmed horrors collapse into rusted ruins; they cannot speak or be interrogated [ch 062 / 062.06].
+
+## Concluded
+- The investigation into Janussi’s murder is concluded as a task assigned by Bookwyrm, with Alkrist’s confession and evidence presented [ch 062 / 062.03].
+- The party successfully retrieves and reviews the contents of Alkrist’s safe, finding the potion of flying, potion of superior healing, and 750 gold pieces [ch 062 / 062.04].
+- The party successfully steals the potion of flying from Alkrist’s safe using Glabbagool without detection [ch 062 / 062.04].
+- The party cures Daral of his suspected poisoning in Deneir’s Sanctum [ch 062 / 062.05].
+- The party defeats all three helmed horrors in combat, reducing them to rusted ruins [ch 062 / 062.06].
+
+## Threads
+- [ADVANCED] **Bookwyrm’s complicity in Janussi’s murder** — The party confirms Bookwyrm is not genuinely grieving Alkrist’s confession and suspects she concealed the crime to protect him; they now plan to return with a powerful book to prove her role after the naming ceremony [ch 062 / 062.02; ch 062 / 062.03].
+- [ADVANCED] **Kalan Strongbranch’s Threefold Proof methodology** — Kalan’s methodology is publicly vindicated by Bookwyrm, who praises it despite earlier opposition; he is reinstated and will deliver a report that may still implicate Bookwyrm [ch 062 / 062.02; ch 062 / 062.03].
+- [ADVANCED] **The mysterious inert key** — The key, previously inert under Detect Magic, is confirmed as the target of the helmed horrors; it was passed from Gyrgum to Daz in Fembris’s presence, and the horrors immediately targeted its current bearer [ch 062 / 062.06].
+- [OPENED] **Origin of the helmed horrors** — The party now knows the horrors were sent to retrieve the key, but how they detected it (magical sensing? informant?) and who sent them remains unknown [ch 062 / 062.06].
+- [ADVANCED] **Dawnbringer’s therapy arc** — Dawnbringer laments the therapy with Candlekeep’s scholars has stalled; she is delighted by Daral’s academic enthusiasm for sentient swords, suggesting a new scholarly connection may form [ch 062 / 062.01; ch 062 / 062.05].
+- [OPENED] **Bookwyrm’s possible dragonborn identity** — Bookwyrm is identified as Skoda Vanaster, a green dragonborn, but her motives and deeper ties to Candlekeep’s power structure remain unexplored [ch 062 / npcs].
+- [ADVANCED] **Alkrist’s fate** — Alkrist is imprisoned and his safe sealed; the party now suspects he acted under Bookwyrm’s influence, but his claim about A'lai remains unverified [ch 062 / 062.03; ch 062 / 062.04].
+- [OPENED] **The missing sapphire** — Locate Object failed to find the sapphire on Bookwyrm; it may be hidden, destroyed, or carried by another, and its connection to the polymorph or heart remains unresolved [ch 062 / 062.04].
+- [ADVANCED] **The red herring coin** — The coin found in Alkrist’s safe is noted as a literal red herring, reinforcing the theme of misdirection in the investigation [ch 062 / 062.04].
+- [OPENED] **The locked sanctum** — Deneir’s Sanctum was locked from the outside despite being presented as protective; the party now questions whether Bookwyrm planned the ambush [ch 062 / 062.05].
+
+## NPC Status
+- Kalan Strongbranch | Alive | Candlekeep, likely in his office or chambers | Favorable toward party; reinstated and grateful for vindication of his methods [ch 062 / npcs; ch 062 / 062.03]
+- Bookwyrm (Skoda Vanaster) | Alive | Bookwyrm's Office, Candlekeep | Hostile toward party; feigns cooperation but seeks to contain their investigation [ch 062 / npcs; ch 062 / 062.03]
+- Alkrist | Imprisoned | Candlekeep prison | Hostile toward party; confessed under compulsion, named A'lai as mastermind [ch 062 / npcs; ch 062 / 062.03]
+- Janussi | Dead | Candlekeep, crime scene | — [ch 062 / npcs]
+- Fembris Lancer | Alive | Deneir's Sanctum, Candlekeep | Neutral toward party; acting as their guard, unwitting food taster, witness to key handoff [ch 062 / npcs; ch 062 / 062.05]
+- Daral | Alive | Deneir's Sanctum, Candlekeep | Grateful toward party; cured and now devoted to studying sentient swords [ch 062 / npcs; ch 062 / 062.05]
+- Glabbagool | Alive | Fused to Zalthir's arm | Loyal to party; stole potion of flying and used Corrosive Embrace to destroy horrors [ch 062 / npcs; ch 062 / 062.04; ch 062 / 062.06]
+- Gyrgum | Alive | Deneir's Sanctum, Candlekeep | Loyal to party; carried the key after Daz, survived horror attacks, provided healing support [ch 062 / npcs; ch 062 / 062.06]
+- Daz | Alive | Deneir's Sanctum, Candlekeep | Injured (3 HP); carried the key, survived lethal assault [ch 062 / npcs; ch 062 / 062.06]
+- Thorin | Alive | Deneir's Sanctum, Candlekeep | Loyal to party; used Dawnbringer to destroy a horror with retaliatory strike [ch 062 / npcs; ch 062 / 062.06]
+- Zalthir | Alive | Deneir's Sanctum, Candlekeep | Loyal to party; stole potion of flying and used Glabbagool to corrode two horrors [ch 062 / npcs; ch 062 / 062.04; ch 062 / 062.06]
+- Teles Ahvoste | Unknown | — | — [ch 062 / npcs]
+- Fheminor | Unknown | — | — [ch 062 / npcs]
+- A'lai | Unknown | — | — [ch 062 / npcs]
+
+## World
+- [LOCATION] **Bookwyrm's Office** — A regal chamber where Bookwyrm received the party, poured tea, and publicly reinstated Kalan; Zalthir secretly disposed of the tea via Glabbagool’s acid [ch 062 / locations; ch 062 / 062.03]
+- [LOCATION] **Alkrist's Room** — Contains a safe with 750 gold pieces, a potion of flying (stolen), a potion of superior healing, and a red herring coin; no further incriminating evidence found [ch 062 / locations; ch 062 / 062.04]
+- [LOCATION] **Deneir's Sanctum** — A book-filled chamber within Candlekeep, used to confine the party under the guise of protection; locked from outside, breached by helmed horrors [ch 062 / locations; ch 062 / 062.05; ch 062 / 062.06]
+- [NPC] **Bookwyrm (Skoda Vanaster)** — A green dragonborn and acting head of Candlekeep; aunt to Alkrist; she suppressed Kalan’s Threefold Proof and now seeks to contain the party’s investigation [ch 062 / npcs; ch 062 / 062.03]
+- [NPC] **Kalan Strongbranch** — An academic investigator committed to his Threefold Proof methodology; reinstated after the party’s evidence vindicates his methods [ch 062 / npcs; ch 062 / 062.02]
+- [ITEM] **Potion of Flying** — A magical elixir found in Alkrist’s safe and secretly stolen by Zalthir using Glabbagool; now in party possession [ch 062 / items; ch 062 / 062.04]
+- [ITEM] **Potion of Superior Healing** — A potent restorative found in Alkrist’s safe; remains in the safe after the search [ch 062 / items; ch 062 / 062.04]
+- [ITEM] **Red Herring Coin** — A gold coin with a literal red herring engraved on it; found in Alkrist’s safe as symbolic misdirection [ch 062 / items; ch 062 / 062.04]
+- [ITEM] **The Inert Key** — A key that appears non-magical under Detect Magic but is tracked by helmed horrors; currently held by Gyrgum [ch 062 / items; ch 062 / 062.06]
+- [THREAT] **The helmed horrors** — Three mindless constructs that attacked the party in Deneir’s Sanctum, targeting the inert key; they cannot be interrogated and their creator is unknown [ch 062 / npcs; ch 062 / 062.06]
+- [FACTION] **Candlekeep Avowed** — The governing body of Candlekeep; Bookwyrm is acting head, but the naming ceremony for the new Keeper of Tomes occurs tomorrow; Teles Ahvoste and Fheminor are likely candidates [ch 062 / npcs; ch 062 / 062.02]
+- [THREAT] **The naming ceremony** — The upcoming appointment of the new Keeper of Tomes creates a political deadline; suspicion may prevent Bookwyrm and A'lai from being chosen [ch 062 / 062.02]
+- [FACTION] **The Threefold Proof** — Kalan’s unapproved academic methodology for criminal investigation, now publicly endorsed by Bookwyrm despite her prior suppression of it [ch 062 / items; ch 062 / 062.02]
+
+## Party
+- The party is currently confined in Deneir’s Sanctum, Candlekeep, under the pretense of protection but likely to prevent further investigation [ch 062 / 062.05].
+- They are now known as guest seekers of the Avowed, with access to the Inner Ward [ch 062 / 062.03].
+- They have acquired the potion of flying via Zalthir’s theft from Alkrist’s safe [ch 062 / 062.04].
+- Daz suffered severe injury (3 HP remaining) during the helmed horror attack but survived due to Gyrgum’s healing assurances [ch 062 / 062.06].
+- The party now possesses the inert key, which was tracked by the horrors and is currently held by Gyrgum [ch 062 / 062.06].
+- Dawnbringer is emotionally invested in scholarly recognition; she is delighted by Daral’s promise to research sentient swords [ch 062 / 062.05].
+- The party intends to obtain the book Kalan promised to identify, then return to confront Bookwyrm with proof of her complicity after the naming ceremony [ch 062 / 062.02].
+- The party plans to investigate the origin of the helmed horrors and how they detected the inert key, despite its magical inertness [ch 062 / 062.06].
+- The party will attempt to determine whether Bookwyrm or another agent is behind the ambush and whether the locked sanctum was intentional [ch 062 / 062.05].
+
+## Audit
+- [A294] SHOWN — The Candlekeep murder investigation was conscripted by Bookwyrm and has now reached its conclusion with Alkrist’s confession and the party’s handover to Kalan [ch 062 / 062.03].
+- [A307] SHOWN — Alkrist was arrested and confessed to killing Janussi, with physical evidence and a magical compulsion spell confirmed [ch 062 / 062.01; ch 062 / 062.03].
+- [A309] SHOWN — Daz and Yvenne completed their Fourth-Seat synthesis investigation, as evidenced by Daz’s heightened perception and the party’s use of Locate Object and combat insight [ch 062 / 062.04; ch 062 / 062.06].
+- [A313] SHOWN — Glabbagool’s Shadow Apprentice sidekick status was confirmed at the Whispering Dome in a prior session and is now actively used to steal and fight [ch 062 / 062.04; ch 062 / 062.06].
+- [A353] RESOLVED — Kalan was presumed dead after Pont de Paramours but has now been reinstated and is alive and active [ch 062 / 062.03].
+- [A361] SHOWN — Daral was saved from poisoning and cured by Dawnbringer in Deneir’s Sanctum [ch 062 / 062.05].
+- [A372] SHOWN — Alkrist confessed under compulsion (Path A), leading to his imprisonment [ch 062 / 062.03].
+- [A409] SHOWN — The party identified Alkrist as the killer using poison and the book, confirmed by his confession [ch 062 / 062.02].
+- [A410] SHOWN — The disguise rosetta was cracked in prior sessions, enabling the party to identify Bookwyrm’s use of disguise self [ch 062 / 062.03].
+- [A422] SHOWN — The party was named guest seekers of the Avowed, granting Inner Ward access [ch 062 / 062.03].
+- [A424] SHOWN — The Gauntlgrym call was confirmed by Echo 3 and Eldeth’s letter, now driving the party’s next destination [ch 062 / 062.02].
+- [A435] SHOWN — Sylvira was recruited via Path B, enabling the cryptogram shortcut and dispel of Moziqodo’s binding in prior sessions [ch 062 / 062.02].
+- [A438] SHOWN — Daral was saved, providing witness testimony and Fustilugs clue payoff in prior sessions [ch 062 / 062.05].
+- [A439] SHOWN — Khell-Vire earned Watcher’s Stillness, granting skirmish skip and Vault Wis-save advantage in prior sessions [ch 062 / 062.02].
+- [A440] SHOWN — Glabbagool visited the Whispering Dome, gaining the Echo re-coax boon in prior sessions [ch 062 / 062.04].
+- [A441] SHOWN — Polly Pocket was released as a messenger, flagging the OOTA endgame thread in prior sessions [ch 062 / 062.04].
+- [A442] SHOWN — Walking-permit medallions were worn, enabling safe passage at Jewel of the Styx in prior sessions [ch 062 / 062.04].
+- [A443] SHOWN — The second High Tower key was held and used to open the door from outside in prior sessions [ch 062 / 062.04].
+- [A223] SHOWN — The party arrived at Candlekeep gates, as established in prior sessions [ch 062 / 062.01].
+- [A276] SHOWN — Bookwyrm received the party at Candlekeep’s Emerald Door, initiating the investigation [ch 062 / 062.01].
+- [A300] BEGUN — Thorin’s therapy arc with Philemon was initiated in prior sessions and is now stalled, with Dawnbringer expressing desire to resume [ch 062 / 062.01].
+- [A302] BEGUN — Glabbagool’s question about the Pavilion Naturalis, Tower of Tall Tales, and Whispering Dome was raised in prior sessions and remains unresolved [ch 062 / 062.04].
+- [A304] BEGUN — Sylvira recruitment was resolved in prior sessions; no new choice point in this chunk [ch 062 / 062.02].
+- [A359] BEGUN — Daral was first contacted in prior sessions; his current state is a result of that arc [ch 062 / 062.05].
+- [A366] BEGUN — A'lai was first contacted in prior sessions; his fate remains unknown [ch 062 / 062.03].
+- [A373] BEGUN — Fembris was first contacted in prior sessions; his role as witness continues [ch 062 / 062.03].
+- [A406] BEGUN — Janussi’s murder was investigated in prior sessions; forensic reveals are now part of the case [ch 062 / 062.02].
+- [A425] BEGUN — Daz’s first sinus-pressure field-perception moment occurred in prior sessions; it continues to manifest [ch 062 / 062.06].
+- [A426] BEGUN — Yvenne named Daz’s sensitivity in prior sessions; it is now actively used [ch 062 / 062.06].
+- [A434] BEGUN — Daz and Yvenne’s field-perception expertise was confirmed in prior sessions; it is now used to interpret the horrors’ targeting [ch 062 / 062.06].
+- [A436] BEGUN — Yvenne’s trust ≥ 4 ticks enabled planar-residue trace in prior sessions; it informs current investigations [ch 062 / 062.04].
+- [A437] BEGUN — Vareth / Drakonoikos goodwill was earned in prior sessions; it enabled Thava and F-A-D-E payoff [ch 062 / 062.02].
+- [A444] BEGUN — The party’s next destination (Gauntlgrym) is now confirmed via Echo 3 and Eldeth’s letter, but the journey has not yet begun [ch 062 / 062.02].
+- [A445] BEGUN — The party must now determine the origin of the helmed horrors and the nature of the inert key; this is a new thread [ch 062 / 062.06].
+- [A446] BEGUN — The party must now investigate whether Bookwyrm orchestrated the ambush in Deneir’s Sanctum [ch 062 / 062.05].
+- [A447] BEGUN — The party must now decide whether to pursue A'lai or focus on Bookwyrm next [ch 062 / 062.03].
+- [A448] BEGUN — The party must now determine the location and status of the missing sapphire [ch 062 / 062.04].
+- [A449] BEGUN — The party must now determine if the potion of flying will be used to escape or investigate [ch 062 / 062.04].
+- [A450] BEGUN — The party must now decide whether to confront Bookwyrm before or after the naming ceremony [ch 062 / 062.02].

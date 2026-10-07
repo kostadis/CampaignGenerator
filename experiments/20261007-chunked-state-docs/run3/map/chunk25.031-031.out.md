@@ -1,0 +1,320 @@
+## Events
+- Thorin returns to the party and attunes to Dawnbringer, a sentient gilded longsword with a feminine voice, learning it emits radiant sunlight, deals radiant damage, inflicts extra damage to undead, and can cast lesser restoration once daily [ch 031 / 031.01].
+- Dawnbringer reveals intense anxiety about darkness and abandonment, fearing neglect if Thorin stops using it; Thorin accepts the bond despite his low charisma and the risk of the sword taking control in darkness [ch 031 / 031.01].
+- Basidia leads the party through the Neverlight Grove’s Circle of Growers, where Hebopbe explains myconid herbivory and cultivation practices, objecting to being mistaken for ordinary fungi [ch 031 / 031.02].
+- Basidia privately reveals that Hebopbe is infected by evil spores, though the cultivated fungi remain uncorrupted [ch 031 / 031.02].
+- The party visits the central basin and observes newly spored myconids, then meets Yrberop, the infected leader of the circle mound, who dances to discordant internal noise and speaks of Zuggtmoy’s “great plan” and a coming wedding [ch 031 / 031.02].
+- Yrberop sings a lullaby to the newly spored myconids praising Zuggtmoy, her wedding to the “great body,” and the spread of joy throughout the Underdark and Overbright [ch 031 / 031.02].
+- The party meets Rumpadump, leader of the Circle of Explorers, who distrusts Phylo, advocates nomadism, and confirms myconids belong in darkness; he offers a secret passage into the Garden of Welcome [ch 031 / 031.02].
+- Jimjar behaves strangely, ceasing his usual betting, and claims weddings always make someone unhappy; Basidia confirms he is not infected [ch 031 / 031.02].
+- The party enters the Garden of Welcome via Rumpadump’s secret passage and discovers humanoid heads from a dozen Underdark races buried and sprouting fungi [ch 031 / 031.03].
+- Xinaya, a dying drow scout from Ilvara’s patrol, begs the party for death, warning them of Zuggtmoy’s presence and recognizing Daz as from Menzoberranzan [ch 031 / 031.03].
+- Yestabrod, a larval creature with vestigial fungal growths, rises and welcomes the party to a wedding rehearsal, declaring all will be “embraced by the great cedar” and made one with the “great body” [ch 031 / 031.03].
+- Yestabrod summons two adult myconids and drow spore servants from Xinaya’s former patrol to attack the party [ch 031 / 031.03].
+- The party attempts to use their “audit” ploy, but Yestabrod rejects it, declaring “there will be no audit, only incorporation” [ch 031 / 031.03].
+- Dawnbringer activates, emitting radiant sunlight that hampers light-sensitive myconids; one adult myconid stuns Jimjar with spores [ch 031 / 031.04].
+- Gyrgum channels necrotic energy into Yestabrod, triggering its ability to explode a nearby corpse and heal itself [ch 031 / 031.04].
+- Daz casts fireball, badly burning three enemies but failing to kill them; Yestabrod retaliates with another corpse explosion, showering the battlefield with acid and gore [ch 031 / 031.04].
+- Yestabrod releases a cloud of spores; Daz and Zalthir fail their saves and are secretly afflicted with unique madneses [ch 031 / 031.04].
+- Sarith’s head explodes mid-battle, transforming him into a mindless drow spore servant; Eldeth and Jimjar are forced to kill him [ch 031 / 031.04].
+- Thorin is stunned by myconid spores and incapacitated until late in the battle [ch 031 / 031.04].
+- Zalthir slays Yestabrod with a flurry of strikes, preventing further corpse explosions; Gyrgum withers another myconid; Daz finishes two weakened enemies with magic missiles; Zalthir destroys the final myconid in Dawnbringer’s sunlight [ch 031 / 031.04].
+- Zalthir retrieves the spider medallion from Xinaya’s fungal hand while she is still alive; she warns that infected beings have only days to be cured [ch 031 / 031.05].
+- Thorin consults Dawnbringer and, with its agreement, delivers a merciful death to Xinaya, calling their bond an “arranged marriage” he intends to honor [ch 031 / 031.05].
+- Beyond the Garden of Welcome, the party hears a discordant wedding hymn echoing from the Circle of Masters; the buried victims join in a telepathic chant [ch 031 / 031.06].
+- Zuggtmoy, the Demon Queen of Fungi, appears at the head of a procession of decaying fungal humanoids, leading toward the party as the hymn declares her union with Araumycos [ch 031 / 031.06].
+- Thorin recognizes Zuggtmoy as the same demon he encountered previously [ch 031 / 031.06].
+
+## Concluded
+- The party’s tour of the Neverlight Grove’s circles is concluded after meeting Hebopbe, Yrberop, and Rumpadump [ch 031 / 031.02].
+- The infiltration of the Garden of Welcome is concluded after the party discovers Xinaya and Yestabrod and initiates combat [ch 031 / 031.03].
+- The battle against Yestabrod and his fungal servants is concluded with Yestabrod’s death and the destruction of all attackers [ch 031 / 031.04].
+- Xinaya’s suffering is concluded with her merciful death at Thorin’s hand, granted with Dawnbringer’s consent [ch 031 / 031.05].
+- Sarith’s fate is concluded with his transformation into a spore servant and subsequent destruction by Eldeth and Jimjar [ch 031 / 031.04; ch 031 / Memorable Moments].
+- The party’s initial investigation of the Garden of Welcome is concluded with the emergence of Zuggtmoy’s wedding procession [ch 031 / 031.06].
+
+## Threads
+- [OPENED] **Dawnbringer’s anxiety and bond with Thorin** — Thorin attunes to the sentient sword, which fears darkness and abandonment; Thorin accepts the bond despite risks, calling it an “arranged marriage” he intends to honor [ch 031 / 031.01].
+- [OPENED] **Zuggtmoy’s wedding to Araumycos** — The party learns of Zuggtmoy’s impending union with Araumycos through Yrberop’s lullaby, Yestabrod’s declaration, and the telepathic hymn; Zuggtmoy herself appears leading the procession, confirming the threat [ch 031 / 031.02; ch 031 / 031.03; ch 031 / 031.06].
+- [OPENED] **The corruption of Neverlight Grove** — The party confirms that evil spores have infected Hebopbe and Yrberop, and that the colony’s leadership under Phylo is steering myconids toward Zuggtmoy’s plan; Rumpadump warns of worsening changes and has prepared escape routes [ch 031 / 031.02].
+- [OPENED] **Xinaya’s warning about Zuggtmoy** — Xinaya, moments before death, warns the party that Zuggtmoy has entered the Underdark and urges Daz to warn the drow of Menzoberranzan [ch 031 / 031.05].
+- [OPENED] **Daz and Zalthir’s secret madness** — Both are afflicted with unique, undisclosed mental corruptions after Yestabrod’s spore cloud; the party knows only that recognition of the affliction is required for cure [ch 031 / 031.04].
+- [OPENED] **Sarith’s transformation and death** — Sarith’s body explodes and becomes a drow spore servant, confirming his prior infection has reached its final stage; his death removes ambiguity about his fate [ch 031 / 031.04; ch 031 / Memorable Moments].
+- [OPENED] **Rumpadump’s escape plans** — Rumpadump reveals hidden nutrient caches and escape routes in the exit tunnels, implying the party may need to abandon the grove [ch 031 / 031.02].
+- [ADVANCED] **Basidia’s resistance to Phylo** — Basidia’s distrust of Phylo’s restructuring is confirmed; she reveals the infection of Hebopbe and trusts Rumpadump, positioning herself as a resistance leader [ch 031 / 031.02].
+- [ADVANCED] **The nature of the evil spores** — The party learns the spores infect myconids, not their food; the corruption manifests as discordant internal music, madness, and fungal transformation [ch 031 / 031.02; ch 031 / 031.03].
+- [ADVANCED] **Zuggtmoy’s identity and past connection to Thorin** — Zuggtmoy is confirmed as the same demon lord Thorin encountered before, establishing a personal threat [ch 031 / 031.06].
+- [RESOLVED] **The fate of Sarith’s infection** — Sarith’s transformation and death confirm the terminal progression of the spore corruption he carried since earlier encounters [ch 031 / 031.04; ch 031 / Memorable Moments].
+
+## NPC Status
+- Thorin | Alive | Neverlight Grove | Bonded to Dawnbringer, accepting its anxiety and risks [ch 031 / 031.01; ch 031 / 031.05]
+- Basidia | Alive | Neverlight Grove | Trusting of the party, deeply concerned about colony corruption [ch 031 / 031.02; ch 031 / npcs]
+- Hebopbe | Alive | Neverlight Grove | Infected by evil spores; indifferent to Phylo’s changes, focused on cultivation [ch 031 / 031.02; ch 031 / npcs]
+- Yrberop | Alive | Neverlight Grove | Infected; dances to discordant noise, chants of Zuggtmoy’s wedding [ch 031 / 031.02; ch 031 / npcs]
+- Rumpadump | Alive | Neverlight Grove | Distrusts Phylo, advocates nomadism, has prepared escape routes [ch 031 / 031.02; ch 031 / npcs]
+- Jimjar | Alive | Neverlight Grove | Not infected; unusually silent, no longer bets, hints at wedding-related sorrow [ch 031 / 031.02; ch 031 / npcs]
+- Xinaya | Dead | Garden of Welcome | Died after begging for death; warned Daz about Zuggtmoy [ch 031 / 031.05; ch 031 / npcs]
+- Yestabrod | Dead | Garden of Welcome | Slaughtered by Zalthir; larval creature that commanded fungal servants and regenerated via corpse explosions [ch 031 / 031.04; ch 031 / npcs]
+- Sarith | Dead | Garden of Welcome | Transformed into a drow spore servant and killed by Eldeth and Jimjar [ch 031 / 031.04; ch 031 / npcs]
+- Eldeth | Alive | Neverlight Grove | Participated in killing Sarith’s corrupted form; previously disgusted by Gyrgum’s myconid comparisons [ch 031 / 031.04; ch 031 / npcs]
+- Zuggtmoy | Alive | Circle of Masters | Appears leading a wedding procession toward the party; same demon Thorin encountered before [ch 031 / 031.06; ch 031 / npcs]
+- Araumycos | Unknown | Circle of Masters | Named as Zuggtmoy’s groom in the wedding hymn; not yet seen [ch 031 / 031.06; ch 031 / npcs]
+
+## World
+- [LOCATION] **Neverlight Grove** — A subterranean fungal colony increasingly corrupted by evil spores; society is being restructured by Phylo, who promotes specialization and is secretly guiding myconids toward Zuggtmoy’s plans [ch 031 / locations].
+- [LOCATION] **Circle of Growers** — A cultivated terrace area where myconids grow specific fungi for food; Hebopbe leads it and is infected, but the crops themselves remain clean [ch 031 / locations].
+- [LOCATION] **Central Basin** — Contains sentient zurkhwood trees and circle mounds where new myconids are spored; newly spored myconids are inches tall and unaware [ch 031 / locations].
+- [LOCATION] **Circle of Explorers** — Led by Rumpadump; myconid scouts who advocate nomadism and have prepared escape routes and hidden nutrient caches in exit tunnels [ch 031 / locations].
+- [LOCATION] **Garden of Welcome** — A plateau where victims from a dozen Underdark races are buried alive, sprouting fungi; serves as a ritual site for Zuggtmoy’s wedding; contains corpses Yestabrod can detonate to heal [ch 031 / locations].
+- [LOCATION] **Circle of Masters** — Dominated by a towering mushroom; emits a discordant wedding hymn; Zuggtmoy and her procession emerge from its misty cavern [ch 031 / locations].
+- [ITEM] **Dawnbringer** — A sentient, gilded longsword that emits genuine sunlight in a 15-foot radius; deals radiant damage, +1d8 against undead, casts lesser restoration once daily; fears darkness and abandonment; may attempt to control Thorin if he enters magical darkness [ch 031 / items].
+- [ITEM] **Spider Medallion** — A drow holy symbol half-embedded in Xinaya’s fungal hand; retrieved by Zalthir after her death [ch 031 / items].
+- [THREAT] **Evil spores** — Infect myconids, causing internal discordant noise, madness, fungal growths, and transformation into spore servants; cure must occur within days or results in Xinaya’s fate [ch 031 / 031.05].
+- [THREAT] **Zuggtmoy’s wedding procession** — Zuggtmoy and her fungal bridesmaids are advancing toward the party, chanting of union with Araumycos and the spread of joyous spores [ch 031 / 031.06].
+- [NPC] **Zuggtmoy** — The Demon Queen of Fungi, also known as the Lady of Decay; previously encountered by Thorin; appears as a feminine entity who demands firsthand experience, not explanation [ch 031 / npcs; ch 031 / 031.06].
+- [NPC] **Araumycos** — The “great body” and intended groom of Zuggtmoy; mentioned in the wedding hymn as being joined “heart to heart” until death; nature and form unknown [ch 031 / npcs; ch 031 / 031.06].
+- [NPC] **Phylo** — The myconid sovereign who proposes organizational restructuring; secretly infected and steering the colony toward Zuggtmoy’s plans [ch 031 / 031.02; ch 031 / npcs].
+- [FACTION] **Myconid colony** — Once communal, now divided; Circle leaders are infected, while explorers like Rumpadump resist; the sovereign’s authority is being used to facilitate demonic worship [ch 031 / 031.02; ch 031 / npcs].
+
+## Party
+- The party is located in the Circle of Masters, beyond the Garden of Welcome, facing Zuggtmoy’s advancing wedding procession [ch 031 / 031.06].
+- Their group name remains unchanged; they are an adventuring party of five PCs and two companions (Jimjar, Eldeth), though Sarith is dead.
+- Thorin is bonded to Dawnbringer, a sentient +2 radiant weapon with an anxiety disorder; he has accepted the bond as a permanent “marriage” and will carry it into darkness despite risks [ch 031 / 031.01; ch 031 / 031.05].
+- Daz and Zalthir are each secretly afflicted with a unique madness from Yestabrod’s spores; they must recognize the affliction to be cured [ch 031 / 031.04].
+- The party has acquired the spider medallion from Xinaya’s remains [ch 031 / 031.05].
+- The party’s next intention is to confront Zuggtmoy and her wedding procession, though they are uncertain how to fight a demon lord and are aware that the procession may be a trap [ch 031 / 031.06].
+
+## Audit
+- [A10] SHOWN — The party has reached Neverlight Grove, the myconid colony [ch 031 / 031.02].
+- [A48] SHOWN — The party has reached Neverlight Grove, the myconid colony [ch 031 / 031.02].
+- [A100] SHOWN — Sovereign Phylo is confirmed as a corrupted myconid sovereign guiding the colony toward Zuggtmoy’s plans [ch 031 / npcs].
+- [A101] SHOWN — Sovereign Basidia is confirmed as a resistance leader aware of the corruption and trusting of the party [ch 031 / npcs].
+- [A102] SHOWN — Yestabrod was confronted and slain in the Garden of Welcome [ch 031 / 031.04].
+- [A103] SHOWN — Xinaya’s fate was resolved in the Garden of Welcome; she was mercifully killed after warning the party [ch 031 / 031.05].
+- [A104] SHOWN — Zuggtmoy’s presence was confirmed in Neverlight Grove as she led her wedding procession toward the party [ch 031 / 031.06].
+- [A138] SHOWN — Araumycos was named as Zuggtmoy’s groom in the telepathic wedding hymn, establishing rapport contact [ch 031 / 031.06].
+- [A154] SHOWN — Zuggtmoy’s fetid wedding attempt at Araumycos was witnessed in the Circle of Masters, with the procession underway [ch 031 / 031.06].
+- [A212] SHOWN — Araumycos fungal creatures were awakened in the wedding procession, chanting the hymn [ch 031 / 031.06].
+- [A214] BEGUN — House Baenre private meeting was mentioned as a prior event (Ilvara’s involvement) but not directly encountered in this chunk [ch 031 / 031.03].
+- [A222] BEGUN — Demon sortie encounters are implied by Zuggtmoy’s presence and procession, but no direct confrontation occurred yet [ch 031 / 031.06].
+- [A223] BEGUN — Travelogue prelude and surface-madness gradient were established in prior chapters; not referenced here [ch 031 / 031.01].
+- [A224] BEGUN — Surface-madness gradient was established in prior chapters; not referenced here [ch 031 / 031.01].
+- [A225] BEGUN — Gorg’Bahamut breadcrumb was planted in prior chapters; not referenced here [ch 031 / 031.01].
+- [A226] BEGUN — Mirabar smith commissions were completed prior; not referenced here [ch 031 / 031.01].
+- [A227] BEGUN — Daz shopping arc occurred prior; not referenced here [ch 031 / 031.01].
+- [A228] BEGUN — Daz fitted Calishite cloak occurred prior; not referenced here [ch 031 / 031.01].
+- [A229] BEGUN — Milo Goodbarrel Volume 3 acquired prior; not referenced here [ch 031 / 031.01].
+- [A230] BEGUN — Order of the Gauntlet medallion acquired prior; not referenced here [ch 031 / 031.01].
+- [A231] BEGUN — Gyrgum Hagiography acquired prior; not referenced here [ch 031 / 031.01].
+- [A232] BEGUN — Zalthir brass shadow-puppet hand acquired prior; not referenced here [ch 031 / 031.01].
+- [A233] BEGUN — Dawnbringer scabbard finishing completed prior; not referenced here [ch 031 / 031.01].
+- [A234] BEGUN — Elin the silent child healing attempt occurred prior; not referenced here [ch 031 / 031.01].
+- [A235] BEGUN — Charcoal rubbing of six-pointed star taken prior; not referenced here [ch 031 / 031.01].
+- [A236] BEGUN — Kestler meeting for Gorg’Bahamut occurred prior; not referenced here [ch 031 / 031.01].
+- [A237] BEGUN — Triboar carpenter’s journal donated prior; not referenced here [ch 031 / 031.01].
+- [A238] BEGUN — Burned hamlet “The Auroch’s Horn” was encountered prior; not referenced here [ch 031 / 031.01].
+- [A239] BEGUN — Broken Thunderbeast standing stone was encountered prior; not referenced here [ch 031 / 031.01].
+- [A240] BEGUN — Defaced Tempus shrine was encountered prior; not referenced here [ch 031 / 031.01].
+- [A241] BEGUN — Forge of Mirabar was visited prior; not referenced here [ch 031 / 031.01].
+- [A242] BEGUN — Order of the Gauntlet shrine was visited prior; not referenced here [ch 031 / 031.01].
+- [A243] BEGUN — Goldenfields was visited prior; not referenced here [ch 031 / 031.01].
+- [A244] BEGUN — Mountain’s Mouth Inn was visited prior; not referenced here [ch 031 / 031.01].
+- [A245] BEGUN — Triboar memorial square was visited prior; not referenced here [ch 031 / 031.01].
+- [A246] BEGUN — Waterdeep was visited prior; not referenced here [ch 031 / 031.01].
+- [A247] BEGUN — Rishaal the Pageturner's was visited prior; not referenced here [ch 031 / 031.01].
+- [A248] BEGUN — Order of the Gauntlet chapter house was visited prior; not referenced here [ch 031 / 031.01].
+- [A249] BEGUN — Sleeping Snake fence was encountered prior; not referenced here [ch 031 / 031.01].
+- [A250] BEGUN — Aurora's Whole Realms Catalog was seen prior; not referenced here [ch 031 / 031.01].
+- [A251] BEGUN — Halaster's Prized Findings was seen prior; not referenced here [ch 031 / 031.01].
+- [A252] BEGUN — Steelwoods of Mistshore was visited prior; not referenced here [ch 031 / 031.01].
+- [A253] BEGUN — River Shining Tavern was visited prior; not referenced here [ch 031 / 031.01].
+- [A254] BEGUN — Hand of Tarvis monument was seen prior; not referenced here [ch 031 / 031.01].
+- [A255] BEGUN — Burning Wizard inn was visited prior; not referenced here [ch 031 / 031.01].
+- [A256] BEGUN — Way of the Lion was traveled prior; not referenced here [ch 031 / 031.01].
+- [A257] BEGUN — Candlekeep Emerald Door was arrived at prior; not referenced here [ch 031 / 031.01].
+- [A258] BEGUN — Eldeth farewell occurred prior; not referenced here [ch 031 / 031.01].
+- [A259] BEGUN — Dwarven outriders salute occurred prior; not referenced here [ch 031 / 031.01].
+- [A260] BEGUN — Stroudite polemicist was first contacted prior; not referenced here [ch 031 / 031.01].
+- [A261] BEGUN — Sister Ellune was first contacted prior; not referenced here [ch 031 / 031.01].
+- [A262] BEGUN — Brindle Wenth story was recounted prior; not referenced here [ch 031 / 031.01].
+- [A263] BEGUN — Kestler the half-orc was first contacted prior; not referenced here [ch 031 / 031.01].
+- [A264] BEGUN — Eldred the two-voiced courier was witnessed prior; not referenced here [ch 031 / 031.01].
+- [A265] BEGUN — Rishaal the Pageturner was first contacted prior; not referenced here [ch 031 / 031.01].
+- [A266] BEGUN — Stroudite half-orc pilgrims were first contacted prior; not referenced here [ch 031 / 031.01].
+- [A267] BEGUN — Field Ward street-preacher was witnessed prior; not referenced here [ch 031 / 031.01].
+- [A268] BEGUN — City Watch patrol was witnessed prior; not referenced here [ch 031 / 031.01].
+- [A269] BEGUN — Maerith of the Ford was first contacted prior; not referenced here [ch 031 / 031.01].
+- [A270] BEGUN — Elin the silent child was first encountered prior; not referenced here [ch 031 / 031.01].
+- [A271] BEGUN — Veyloss the bard performed prior; not referenced here [ch 031 / 031.01].
+- [A272] BEGUN — Festrum the gnome innkeeper recounted history prior; not referenced here [ch 031 / 031.01].
+- [A273] BEGUN — Pilgrim at corner table witnessed prior; not referenced here [ch 031 / 031.01].
+- [A274] BEGUN — Triboar carpenter encountered prior; not referenced here [ch 031 / 031.01].
+- [A275] BEGUN — Stroudite half-orc pilgrims encountered prior; not referenced here [ch 031 / 031.01].
+- [A276] BEGUN — Bookwyrm received party at Candlekeep prior; not referenced here [ch 031 / 031.01].
+- [A277] BEGUN — Queenie the cat was witnessed prior; not referenced here [ch 031 / 031.01].
+- [A278] BEGUN — First Faction painting was witnessed prior; not referenced here [ch 031 / 031.01].
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand occurred prior; not referenced here [ch 031 / 031.01].
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run occurred prior; not referenced here [ch 031 / 031.01].
+- [A281] BEGUN — Daz somatic field-perception began prior; not referenced here [ch 031 / 031.01].
+- [A282] BEGUN — Daz somatic field-perception Insight check occurred prior; not referenced here [ch 031 / 031.01].
+- [A283] BEGUN — Daz somatic field-perception Insight check occurred prior; not referenced here [ch 031 / 031.01].
+- [A284] BEGUN — Daz pressure-headache began prior; not referenced here [ch 031 / 031.01].
+- [A285] BEGUN — Daz pressure-headache sharpened prior; not referenced here [ch 031 / 031.01].
+- [A286] BEGUN — Six-pointed star first appeared prior; not referenced here [ch 031 / 031.01].
+- [A287] BEGUN — Black-Banner Five trial-site marker witnessed prior; not referenced here [ch 031 / 031.01].
+- [A288] BEGUN — Endless Chant error witnessed prior; not referenced here [ch 031 / 031.01].
+- [A289] BEGUN — Endless Chant first heard prior; not referenced here [ch 031 / 031.01].
+- [A290] BEGUN — Sjurkar priest benediction error witnessed prior; not referenced here [ch 031 / 031.01].
+- [A291] BEGUN — Stroudite sponsorship of Tarvis monument discovered prior; not referenced here [ch 031 / 031.01].
+- [A292] BEGUN — Drow refugee in Waterdeep mentioned prior; not referenced here [ch 031 / 031.01].
+- [A293] BEGUN — Refugee family from Episode 1 interacted prior; not referenced here [ch 031 / 031.01].
+- [A294] BEGUN — Candlekeep murder investigation was conscripted prior; not referenced here [ch 031 / 031.01].
+- [A295] BEGUN — Cryptogram race occurred prior; not referenced here [ch 031 / 031.01].
+- [A296] BEGUN — Vault confrontation occurred prior; not referenced here [ch 031 / 031.01].
+- [A297] BEGUN — Gauntlgrym call via Eldeth’s letter occurred prior; not referenced here [ch 031 / 031.01].
+- [A298] BEGUN — Daz/Yvenne scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+- [A299] BEGUN — Zalthir/Khell-Vire scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+- [A300] BEGUN — Thorin/Philemon scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+- [A301] BEGUN — Gyrgum/Vareth scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+- [A302] BEGUN — Glabbagool’s question occurred prior; not referenced here [ch 031 / 031.01].
+- [A303] BEGUN — Polly Pocket disposition was chosen prior; not referenced here [ch 031 / 031.01].
+- [A304] BEGUN — Sylvira recruitment path was chosen prior; not referenced here [ch 031 / 031.01].
+- [A305] BEGUN — Daral rescue occurred prior; not referenced here [ch 031 / 031.01].
+- [A306] BEGUN — Kalan missing was investigated prior; not referenced here [ch 031 / 031.01].
+- [A307] BEGUN — Alkrist arrest occurred prior; not referenced here [ch 031 / 031.01].
+- [A308] BEGUN — Moziqodo binding occurred prior; not referenced here [ch 031 / 031.01].
+- [A309] BEGUN — Daz/Yvenne Fourth-Seat synthesis investigation occurred prior; not referenced here [ch 031 / 031.01].
+- [A310] BEGUN — Daz/Yvenne Vaelissa T'sarran name and deadline occurred prior; not referenced here [ch 031 / 031.01].
+- [A311] BEGUN — Thorin/Philemon Layer 2 Brysis reveal occurred prior; not referenced here [ch 031 / 031.01].
+- [A312] BEGUN — Gyrgum/Vareth unsigned sting occurred prior; not referenced here [ch 031 / 031.01].
+- [A313] BEGUN — Glabbagool Shadow Apprentice unlock occurred prior; not referenced here [ch 031 / 031.01].
+- [A314] BEGUN — Candlekeep gates arrival occurred prior; not referenced here [ch 031 / 031.01].
+- [A315] BEGUN — Refectory dinner with Janussi occurred prior; not referenced here [ch 031 / 031.01].
+- [A316] BEGUN — Whispering Dome occurred prior; not referenced here [ch 031 / 031.01].
+- [A317] BEGUN — Infernal Fortress occurred prior; not referenced here [ch 031 / 031.01].
+- [A318] BEGUN — Janussi’s chamber investigation occurred prior; not referenced here [ch 031 / 031.01].
+- [A319] BEGUN — Southern Dining Hall search occurred prior; not referenced here [ch 031 / 031.01].
+- [A320] BEGUN — Bath House poisoning occurred prior; not referenced here [ch 031 / 031.01].
+- [A321] BEGUN — Founder’s Court interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A322] BEGUN — Oak Tree Apothecary evidence occurred prior; not referenced here [ch 031 / 031.01].
+- [A323] BEGUN — Kitchens witness occurred prior; not referenced here [ch 031 / 031.01].
+- [A324] BEGUN — Erudite Outfitters cloak evidence occurred prior; not referenced here [ch 031 / 031.01].
+- [A325] BEGUN — Drakonoikos interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A326] BEGUN — Reader’s Tower interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A327] BEGUN — Immortal Chambers interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A328] BEGUN — Sea Warden’s Tower check-in occurred prior; not referenced here [ch 031 / 031.01].
+- [A329] BEGUN — Bell Tower cells occurred prior; not referenced here [ch 031 / 031.01].
+- [A330] BEGUN — Cursed Tower incidents occurred prior; not referenced here [ch 031 / 031.01].
+- [A331] BEGUN — Pont de Paramours investigation occurred prior; not referenced here [ch 031 / 031.01].
+- [A332] BEGUN — Oval Theatre tournament occurred prior; not referenced here [ch 031 / 031.01].
+- [A333] BEGUN — House of Alaundo riddle occurred prior; not referenced here [ch 031 / 031.01].
+- [A334] BEGUN — Astronomicon Orrery clue occurred prior; not referenced here [ch 031 / 031.01].
+- [A335] BEGUN — Philosopher’s Court clue occurred prior; not referenced here [ch 031 / 031.01].
+- [A336] BEGUN — Melodrome / Jook's Box encounter occurred prior; not referenced here [ch 031 / 031.01].
+- [A337] BEGUN — Jewel of the Styx encounter occurred prior; not referenced here [ch 031 / 031.01].
+- [A338] BEGUN — School of Drama statue encounter occurred prior; not referenced here [ch 031 / 031.01].
+- [A339] BEGUN — High Tower Library combat occurred prior; not referenced here [ch 031 / 031.01].
+- [A340] BEGUN — Lava chamber bridge occurred prior; not referenced here [ch 031 / 031.01].
+- [A341] BEGUN — Vault B2 confrontation occurred prior; not referenced here [ch 031 / 031.01].
+- [A342] BEGUN — Vault B3 Book of Vile Darkness chamber occurred prior; not referenced here [ch 031 / 031.01].
+- [A343] BEGUN — Vault tower rocket lever occurred prior; not referenced here [ch 031 / 031.01].
+- [A344] BEGUN — Janussi first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A345] BEGUN — Janussi death occurred prior; not referenced here [ch 031 / 031.01].
+- [A346] BEGUN — Bookwyrm first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A347] BEGUN — Bookwyrm Teles sighting revealed prior; not referenced here [ch 031 / 031.01].
+- [A348] BEGUN — Bookwyrm confrontation and pivot occurred prior; not referenced here [ch 031 / 031.01].
+- [A349] BEGUN — Bookwyrm death occurred prior; not referenced here [ch 031 / 031.01].
+- [A350] BEGUN — Kalan first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A351] BEGUN — Kalan second key handoff occurred prior; not referenced here [ch 031 / 031.01].
+- [A352] BEGUN — Kalan farewell and deterioration occurred prior; not referenced here [ch 031 / 031.01].
+- [A353] BEGUN — Kalan disappearance occurred prior; not referenced here [ch 031 / 031.01].
+- [A354] BEGUN — Sylvira first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A355] BEGUN — Sylvira prime suspect status occurred prior; not referenced here [ch 031 / 031.01].
+- [A356] BEGUN — Sylvira recruitment occurred prior; not referenced here [ch 031 / 031.01].
+- [A357] BEGUN — Sylvira dispel of Moziqodo’s binding occurred prior; not referenced here [ch 031 / 031.01].
+- [A358] BEGUN — Sylvira survival and senior status occurred prior; not referenced here [ch 031 / 031.01].
+- [A359] BEGUN — Daral first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A360] BEGUN — Daral poisoning discovery occurred prior; not referenced here [ch 031 / 031.01].
+- [A361] BEGUN — Daral death or survival occurred prior; not referenced here [ch 031 / 031.01].
+- [A362] BEGUN — Daral key witness testimony occurred prior; not referenced here [ch 031 / 031.01].
+- [A363] BEGUN — Fheminor first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A364] BEGUN — Fheminor “Bookwyrm was not surprised” revelation occurred prior; not referenced here [ch 031 / 031.01].
+- [A365] BEGUN — Fheminor appointed Keeper of Tomes occurred prior; not referenced here [ch 031 / 031.01].
+- [A366] BEGUN — A'lai first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A367] BEGUN — A'lai interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A368] BEGUN — A'lai sapphire smash and escape occurred prior; not referenced here [ch 031 / 031.01].
+- [A369] BEGUN — A'lai fate resolution occurred prior; not referenced here [ch 031 / 031.01].
+- [A370] BEGUN — Alkrist first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A371] BEGUN — Alkrist interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A372] BEGUN — Alkrist arrest or confession occurred prior; not referenced here [ch 031 / 031.01].
+- [A373] BEGUN — Fembris first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A374] BEGUN — Fembris rooftop confession occurred prior; not referenced here [ch 031 / 031.01].
+- [A375] BEGUN — Tadric first contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A376] BEGUN — Tadric flight assistance occurred prior; not referenced here [ch 031 / 031.01].
+- [A377] BEGUN — Tadric appointed Gatewarden occurred prior; not referenced here [ch 031 / 031.01].
+- [A378] BEGUN — Hollypocket witness occurred prior; not referenced here [ch 031 / 031.01].
+- [A379] BEGUN — Sprig Summerfoot witness occurred prior; not referenced here [ch 031 / 031.01].
+- [A380] BEGUN — Leuwin witness occurred prior; not referenced here [ch 031 / 031.01].
+- [A381] BEGUN — Teles Ahvoste interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A382] BEGUN — Kazryn Nyantani interview occurred prior; not referenced here [ch 031 / 031.01].
+- [A383] BEGUN — Khell-Vire closing letter occurred prior; not referenced here [ch 031 / 031.01].
+- [A384] BEGUN — Philemon sealed letter delivery occurred prior; not referenced here [ch 031 / 031.01].
+- [A385] BEGUN — Vareth final stations occurred prior; not referenced here [ch 031 / 031.01].
+- [A386] BEGUN — Yvenne third sitting occurred prior; not referenced here [ch 031 / 031.01].
+- [A387] BEGUN — Yvenne Vaelissa name delivery occurred prior; not referenced here [ch 031 / 031.01].
+- [A388] BEGUN — Yvenne Fourth-Seat synthesis occurred prior; not referenced here [ch 031 / 031.01].
+- [A389] BEGUN — Inda emergence occurred prior; not referenced here [ch 031 / 031.01].
+- [A390] BEGUN — Spanner mechanism dust handoff occurred prior; not referenced here [ch 031 / 031.01].
+- [A391] BEGUN — Moziqodo first encounter occurred prior; not referenced here [ch 031 / 031.01].
+- [A392] BEGUN — Moziqodo binding break occurred prior; not referenced here [ch 031 / 031.01].
+- [A393] BEGUN — Moziqodo fate resolution occurred prior; not referenced here [ch 031 / 031.01].
+- [A394] BEGUN — Manshoon voice-only announcement occurred prior; not referenced here [ch 031 / 031.01].
+- [A395] BEGUN — Manshoon direct confrontation occurred prior; not referenced here [ch 031 / 031.01].
+- [A396] BEGUN — Manshoon escape occurred prior; not referenced here [ch 031 / 031.01].
+- [A397] BEGUN — Glabbagool bad night occurred prior; not referenced here [ch 031 / 031.01].
+- [A398] BEGUN — Glabbagool Shadow Apprentice status confirmed prior; not referenced here [ch 031 / 031.01].
+- [A399] BEGUN — Eldeth letter delivered prior; not referenced here [ch 031 / 031.01].
+- [A400] BEGUN — Brevin Sloobludop recitation occurred prior; not referenced here [ch 031 / 031.01].
+- [A401] BEGUN — Brevin six-pointed star bedclothes occurred prior; not referenced here [ch 031 / 031.01].
+- [A402] BEGUN — Marin six-pointed star quill occurred prior; not referenced here [ch 031 / 031.01].
+- [A403] BEGUN — Jimjar/Callarduran Echo 4 activation occurred prior; not referenced here [ch 031 / 031.01].
+- [A404] BEGUN — Five Books, Five Questions established prior; not referenced here [ch 031 / 031.01].
+- [A405] BEGUN — Endless Chant Deadwinter Prophecy fragment heard prior; not referenced here [ch 031 / 031.01].
+- [A406] BEGUN — Janussi murder forensic reveals occurred prior; not referenced here [ch 031 / 031.01].
+- [A407] BEGUN — Two "Sylvira" figures revelation assembled prior; not referenced here [ch 031 / 031.01].
+- [A408] BEGUN — Bookwyrm as cover-up identified prior; not referenced here [ch 031 / 031.01].
+- [A409] BEGUN — Alkrist as killer identified prior; not referenced here [ch 031 / 031.01].
+- [A410] BEGUN — Disguise rosetta cracked prior; not referenced here [ch 031 / 031.01].
+- [A411] BEGUN — Wards drop hallucination occurred prior; not referenced here [ch 031 / 031.01].
+- [A412] BEGUN — Cryptogram recovered prior; not referenced here [ch 031 / 031.01].
+- [A413] BEGUN — Manshoon arrival announced prior; not referenced here [ch 031 / 031.01].
+- [A414] BEGUN — Iron Owlbear found dead prior; not referenced here [ch 031 / 031.01].
+- [A415] BEGUN — Echo 1 activated prior; not referenced here [ch 031 / 031.01].
+- [A416] BEGUN — Echo 2 activated prior; not referenced here [ch 031 / 031.01].
+- [A417] BEGUN — Echo 3 activated prior; not referenced here [ch 031 / 031.01].
+- [A418] BEGUN — Echo 4 activated prior; not referenced here [ch 031 / 031.01].
+- [A419] BEGUN — Book of Vile Darkness fate determined prior; not referenced here [ch 031 / 031.01].
+- [A420] BEGUN — Vault tower rocket lever pulled or left prior; not referenced here [ch 031 / 031.01].
+- [A421] BEGUN — Candlekeep restructuring occurred prior; not referenced here [ch 031 / 031.01].
+- [A422] BEGUN — Party named guest seekers occurred prior; not referenced here [ch 031 / 031.01].
+- [A423] BEGUN — Manshoon-pursuit thread activated prior; not referenced here [ch 031 / 031.01].
+- [A424] BEGUN — Gauntlgrym call confirmed prior; not referenced here [ch 031 / 031.01].
+- [A425] BEGUN — Daz first sinus-pressure moment occurred prior; not referenced here [ch 031 / 031.01].
+- [A426] BEGUN — Yvenne named Daz’s sensitivity prior; not referenced here [ch 031 / 031.01].
+- [A427] BEGUN — Marin quill incident occurred prior; not referenced here [ch 031 / 031.01].
+- [A428] BEGUN — Brevin Sloobludop recitation occurred prior; not referenced here [ch 031 / 031.01].
+- [A429] BEGUN — Brevin bedclothes incident occurred prior; not referenced here [ch 031 / 031.01].
+- [A430] BEGUN — Endless Chant first stoppage occurred prior; not referenced here [ch 031 / 031.01].
+- [A431] BEGUN — Ward-drop vision sequence occurred prior; not referenced here [ch 031 / 031.01].
+- [A432] BEGUN — Glabbagool Juiblex contact occurred prior; not referenced here [ch 031 / 031.01].
+- [A433] BEGUN — Echo 1 named surface contamination directly prior; not referenced here [ch 031 / 031.01].
+- [A434] BEGUN — Daz and Yvenne field-perception expertise confirmed prior; not referenced here [ch 031 / 031.01].
+- [A435] BEGUN — Sylvira recruited (Path B) occurred prior; not referenced here [ch 031 / 031.01].
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks occurred prior; not referenced here [ch 031 / 031.01].
+- [A437] BEGUN — Vareth/Drakonoikos goodwill occurred prior; not referenced here [ch 031 / 031.01].
+- [A438] BEGUN — Daral saved occurred prior; not referenced here [ch 031 / 031.01].
+- [A439] BEGUN — Khell-Vire Watcher's Stillness earned prior; not referenced here [ch 031 / 031.01].
+- [A440] BEGUN — Glabbagool Whispering Dome visit occurred prior; not referenced here [ch 031 / 031.01].
+- [A441] BEGUN — Polly Pocket released as messenger occurred prior; not referenced here [ch 031 / 031.01].
+- [A442] BEGUN — Walking-permit medallions worn occurred prior; not referenced here [ch 031 / 031.01].
+- [A443] BEGUN — Second High Tower key held occurred prior; not referenced here [ch 031 / 031.01].

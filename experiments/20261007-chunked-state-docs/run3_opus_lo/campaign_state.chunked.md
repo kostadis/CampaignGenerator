@@ -1,0 +1,3343 @@
+<!-- PROTOTYPE chunked-spark draft | campaign_state | ch002-070 | claude-opus-5-5 | chunk 60000 -->
+## Completed Encounters & Quests
+- The prisoners’ first day of forced labor in Velkynvelve concludes with them returning to the slave pen and sharing intelligence. `[ch 002 / 002.04]`
+- Gyrgum’s first attempt to steal a knife is concluded when he is caught but spared punishment due to his cooking’s goodwill. `[ch 002 / 002.02; ch 002 / Memorable Moments]`
+- The theft of two kitchen knives by Topsy and Turvy is completed successfully on the second day. `[ch 002 / 002.03; ch 002 / Memorable Moments]`
+- Jorlan Duskryn’s offer of escape is fully presented and accepted as a viable plan by the party. `[ch 002 / 002.05]`
+- The party’s initial planning phase for sabotage and escape is concluded with agreement on targeting the spider-silk spools. `[ch 002 / 002.06]`
+- The escape plan from the slave pen is concluded with the decision to secure weapons first [ch 003 / 003.01].
+- The stealth infiltration of the guard tower is concluded after Zalthir and Daz are discovered, triggering a full assault [ch 003 / 003.01].
+- The skirmish in the guard tower is concluded with the deaths of two drow guards and the Elite Warrior Imbros [ch 003 / 003.02; ch 003 / 003.03].
+- Prince Derendil’s role in the breakout is concluded with his death at the hands of Imbros [ch 003 / 003.03].
+- The battle for the guard tower is concluded with the party securing control of the lower chamber and armory [ch 003 / 003.03].
+- The scavenging of equipment from the guard tower armory is concluded with the distribution of weapons, armor, rope, and caltrops [ch 003 / 003.04].
+- The looting of the three fallen drow guards is concluded, with all usable gear claimed. `[ch 004 / 004.01]`
+- The escape from Velkynvelve is concluded, with the party successfully fleeing into the Underdark. `[ch 004 / 004.03; ch 004 / Memorable Moments]`
+- The gray ooze encounter is concluded, with the party escaping without further engagement. `[ch 004 / 004.03]`
+- The vrock ambush and Ront’s death are concluded. `[ch 004 / 004.03; ch 004 / Memorable Moments]`
+- The descent through the waterfall and pool is concluded, bypassing the spider webs. `[ch 004 / 004.02]`
+- The Tongue of Madness experiment is concluded, with all effects witnessed and the fungus partially retained. `[ch 004 / 004.05]`
+- The rockfall and rescue operation are concluded, with all trapped companions freed. `[ch 004 / 004.06; ch 005 / 005.01]`
+- The carrion crawler ambush is concluded, with the creature killed and harvested for rations. `[ch 005 / 005.02]`
+- The long rest and level-up to 2nd level are concluded, with Daz gaining Expertise in Arcana. `[ch 005 / 005.03]`
+- The discovery and confirmation of drow scouts are concluded, leading to the decision to flee. `[ch 005 / 005.04]`
+- The escape from the drow scouts is concluded, with the party losing their scent and gaining a one-day lead. `[ch 005 / 005.05]`
+- The three-day fast travel through the Faerzress tunnels is concluded, with the party maintaining their lead. `[ch 005 / 005.06]`
+- The party’s foraging for water and food in the narrow tunnel concludes with ten gallons of water and seventeen pounds of food gathered [ch 006 / 006.01; ch 006 / 006.02].
+- The effort to cover the party’s tracks concludes with the pursuit level reduced from four to three [ch 006 / 006.02].
+- Jimjar’s deception to disguise the tunnel blockage concludes with him losing the bet and owing Gyrgum five gold pieces [ch 006 / 006.03].
+- The goblin guides’ demonstration across the Silken Paths concludes with Yuk Yuk and Spiderbait winning the bet against Jimjar [ch 006 / 006.05].
+- The goblin guide negotiation concludes with Yuk Yuk and Spiderbait agreeing to guide the party in exchange for a share of future gold [ch 006 / 006.05].
+- The rescue of Fargas Rumblefoot from the cocoon concludes with Thorin successfully cutting it open and freeing him [ch 006 / 006.07].
+- The escape from the giant spiders in the Silken Paths concluded with the party reaching safety and bypassing the web-bound chest [ch 007 / 007.01; ch 007 / 007.04].
+- The interrogation of Fargas regarding the Lost Tomb of Khaem concluded with his admission of ignorance about the tomb’s precise location and the creation of Sarith’s map [ch 007 / 007.02].
+- The battle with the spectator concluded with its death after Daz’s final magic missile volley; its warning was delivered [ch 007 / 007.03].
+- The attempt to communicate with the web-bound chest via myconid spores concluded in failure; the party chose to leave it undisturbed [ch 007 / 007.04].
+- The negotiation with Yuk Yuk and Spiderbait over payment concluded with their agreement to remain with the party until Jimjar could pay them [ch 007 / 007.05].
+- The ritual sacrifice at the Altar of the Deep Father concluded with Ploopploopeen’s betrayal and the eruption of civil war [ch 008 / 008.01].
+- The party’s evasion of the Kuo-toan melee concluded with their successful retreat toward the northeastern boat, avoiding engagement [ch 008 / 008.02].
+- The looting of Ploopploopeen’s hut concluded with the party acquiring a significant hoard of coins, pearls, potions, and a scroll [ch 008 / 008.03].
+- The escape to the northeastern boat concluded with the party reaching it unharmed, just as Demogorgon emerged [ch 008 / 008.03].
+- The civil war among the Kuo-toa concluded with Bloppblippodd’s death at her father’s hands [ch 008 / 008.04].
+- The escape from Sloobludop concludes as the party successfully flees on the boat, leaving Demogorgon to destroy the village. [ch 009 / 009.02]
+- The ambush by Ixitxachitl in the Darklake concludes with all three creatures defeated or driven off; the party survives and regroups. [ch 009 / 009.04]
+- The encounter with the kuo-toa refugees concludes with Shuushar departing to lead them, ending his role as a party companion. [ch 009 / 009.06]
+- The navigation through the submerged stone teeth concludes with the party successfully passing through using Shape Water. [ch 009 / 009.03]
+- The sandbar grounding on the Darklake concludes with Daz using Shape Water to free the boat. [ch 010 / 010.01]
+- The ambush by duergar slavers concludes with all slavers defeated or captured, the keelboat secured, and Spiderbait rescued. [ch 010 / 010.03]
+- The looting of the duergar keelboat concludes with the party acquiring 1,100 gp, an alchemy jug, and two zurkhwood casks of fungi. [ch 010 / 010.04]
+- The interrogation and securing of Brannum Redmarch as a hostage concludes with his reluctant cooperation [ch 011 / 011.01].
+- The battle against the beholder zombie concludes with its destruction by the companion crew’s crossbow volley [ch 011 / 011.03].
+- The investigation into the fate of Brannum’s lost crew concludes with the discovery of sunken boats and aquatic zombies on the lakebed [ch 011 / 011.04].
+- The retrieval of the sunken chest from the zombie-infested lakebed concludes successfully with Thorin’s stealth dive and retrieval [ch 011 / 011.05].
+- The confrontation with the aquatic troll concludes with its retreat into the depths after failing to capture a party member [ch 011 / 011.06].
+- The journey across the Darklake concludes with the party’s arrival at Gracklstugh [ch 011 / 011.07].
+- The journey across the Darklake concludes with the party’s arrival at Gracklstugh. `[ch 012 / 012.01]`
+- The negotiation with Brannum Redmarch concludes with his agreement to procure uncommon magical items in exchange for freedom and debt clearance. `[ch 012 / 012.02]`
+- The decision to release Buppido once the party departs Gracklstugh is finalized after his Tongue of Madness outburst. `[ch 012 / 012.03]`
+- The purchase of a mace, hand axe, light crossbow, and two spell scrolls at the Blade Bazaar concludes the party’s immediate resupply efforts. `[ch 012 / 012.02]`
+- The observation of duergar madness in the Blade Bazaar concludes with the party’s recognition of a pervasive, creeping insanity in the city’s inhabitants. `[ch 012 / 012.04]`
+- The battle against the two-headed stone giant Rihuud concluded with his death at the hands of the duergar militia, despite the party’s non-lethal efforts. `[ch 013 / 013.02]`
+- The conversation with the duergar militia regarding the city’s wave of erratic behavior concluded with their confirmation of increased incidents and suggestion to speak to a clan leader. `[ch 013 / 013.03]`
+- The encounter with Dorhun concluded with his invitation to visit Cairngorm Cavern and his order for the Stone Guard to escort the party there. `[ch 013 / 013.03]`
+- The meeting with Gartokkar Xundorn concluded with his invitation for the party to visit his quarters the next day in exchange for city passes and legal protection. `[ch 013 / 013.04]`
+- The intelligence-gathering session at the Darklake Brewery kiosk concluded with the halfling’s revelations about the Deepking’s madness, faction conflicts, and dragon egg replacement, and the drow’s contemptuous commentary. `[ch 013 / 013.05]`
+- The encounter with Captain Errde Blackskull concluded with her assignment to track Droki, the down payment of 175 gp worth of equipment per party member, and her offer of protection from drow hunters. `[ch 013 / 013.06]`
+- The party’s shopping and preparation for the Underdark journey concluded with the purchase of rations, nine potions of healing, and a scroll of Guiding Bolt using 175 gold in store credit [ch 014 / 014.01].
+- The investigation into the Empty-Scabbard Killers was initiated by Errde Blackskull, but no body was examined and no conclusive evidence was found—only a rumor and a lead to the Whorlstone Tunnels [ch 014 / 014.02].
+- The party’s overnight stay at Gracklstugh Lodgings concluded with the disappearance of the Topsy-Turvy twins and the decision to visit the Keepers of the Flame [ch 014 / 014.03].
+- The ambush at the Darklake Docks concluded with the deaths of both psionic assassins and the survival of Werz, who invited the party to the Shattered Spire [ch 014 / 014.04].
+- The looting and cleanup of the assassin bodies concluded with the discovery of the fish-skin parchment and the disposal of the corpses into the Darklake [ch 014 / 014.05].
+- The party’s short rest and Arcane Recovery concluded with Daz regaining a second-level spell slot [ch 014 / 014.05].
+- The audience with Themberchaud concluded with the party being declared his agents and each receiving a golden badge [ch 014 / 014.06].
+- The mission briefing from Gartokkar concluded with the party accepting the task to track Droki and recover the psionic disturbance’s source, and receiving the holy symbol and gold pins for passage [ch 014 / 014.07].
+- The audience with Hgraam concluded with the party receiving the Stonespeaker Crystal and learning of the Deepking’s decline and the evil in the Underdark. `[ch 015 / 015.02]`
+- The interrogation of Buppido concluded with his revelation of the Whorlstone Tunnels’ hidden entrance and his agreement to guide the party. `[ch 015 / 015.04]`
+- The pursuit and capture of Droki concluded with his disappearance into the Whorlstone Tunnels and the party’s decision to follow him. `[ch 015 / 015.05]`
+- The confrontation with Buppido and his skeletal minions concluded with Buppido’s death and the destruction of his shrine. `[ch 015 / 015.07]`
+- The skeleton fight in the Whorlstone Tunnels concluded with the party defeating the skeletons and leveling up. [ch 016 / 016.01]
+- Pelek’s request to recover his bones and return them to Blingdenstone was accepted by the party, concluding the initial encounter. [ch 016 / 016.01]
+- The party successfully crossed the Dark Pool using Daz’s ice bridge, concluding the obstacle. [ch 016 / 016.03]
+- The centipede swarm ambush in the fungi forest concluded with all swarms destroyed and the party victorious. [ch 017 / 017.01]
+- Gyrgum’s Prayer of Healing concluded the party’s need for a traditional short rest in the fungi forest. [ch 017 / 017.02]
+- The negotiation with Gartokkar Xundorn concluded with a binding agreement for payment, badges, and secrecy. [ch 017 / 017.05]
+- The party’s meeting with Errde Blackskull concludes with her agreeing to arm their allies in exchange for future evidence and directing them to visit Clan Ironhead and Clan Xardelvar as cover `[ch 018 / 018.03]`.
+- The negotiation with Werz Saltbaron concludes with the party receiving 1,100 gp for the Non-Demonic Agreement, five empty spell gems, and a promise of future trade favors in Blingdenstone in exchange for eliminating the assassins targeting him `[ch 018 / 018.05]`.
+- The party’s acquisition of magical items at Ghohlbrorn’s Lair concludes with Zalthir receiving two uncommon magical tattoos and Thorin receiving a +1 longsword, paid for with pooled party funds `[ch 018 / 018.06]`.
+- The party’s visit to Clan Ironhead concludes with Grinta Ironhead’s secret offer of future trade advantages if the Deepking is removed from power `[ch 018 / 018.07]`.
+- The party successfully negotiated a deal with Eldgrim to remove Werz from the assassins’ hit list in exchange for eliminating the Demogorgon cultists. `[ch 019 / 019.02]`
+- The party stole the royal contract linking the Deepking to the Empty-Scabbard Killers. `[ch 019 / 019.03]`
+- The party burned the remaining documents on Eldgrim’s desk to cover the theft, resulting in their banishment from the assassins’ territory. `[ch 019 / 019.03]`
+- The party bypassed the Council of Savants without incident using Flumph’s knowledge of the tunnels. `[ch 019 / 019.04]`
+- The party reached the obelisk chamber and confronted Plinki, triggering a hostile encounter. `[ch 019 / 019.05]`
+- The party initiated combat against Plinki and her cultists, landing a devastating first round of attacks. `[ch 019 / 019.07]`
+- The ambush by Derro cultists and spies in the Obelisk Chamber ends with the party victorious and the egg secured [ch 020 / 020.04].
+- The life of Derro leader Plinki is ended by Zalthir’s breath weapon [ch 020 / 020.01; ch 020 / Memorable Moments].
+- The Master Thief (Uskvil) is killed by Zalthir after a prolonged, tactical engagement [ch 020 / 020.04].
+- The last remaining Derro spy is neutralized when possessed by the ghost Pelek [ch 020 / 020.04; ch 020 / Memorable Moments].
+- The spectator is left at one hit point after being restrained and attacked, and its fate is not resolved — but it is no longer an active threat in this encounter [ch 020 / 020.01; ch 020 / 020.02].
+- The Derro cultists’ attempt to reclaim the egg fails completely as they remain unaware it was stolen [ch 020 / 020.02; ch 020 / 020.04].
+- The investigation of the corrupted chamber and its evidence is concluded; the party has gathered all documents and loot. `[ch 021 / 021.01; ch 021 / 021.03]`
+- The decision to return the dragon’s egg to Gartokkar is finalized, with a cover story prepared. `[ch 021 / 021.02; ch 021 / 021.03]`
+- The decision to withhold the Assassin’s Guild list from Errde Blackskull is confirmed. `[ch 021 / 021.02; ch 021 / 021.03]`
+- The party’s name is officially adopted as the Ember Vanguard after intimidating the Derro guards. `[ch 021 / 021.04]`
+- The ambush by the Trapper is resolved with the creature’s death and Gyrgum’s survival. `[ch 021 / 021.06]`
+- The party’s exit from the Council Dungeon and departure westward through the Underdark is completed. `[ch 021 / 021.04; ch 021 / 021.05]`
+- The party successfully healed Eldeth Feldrun and themselves after prior injuries, restoring combat readiness. `[ch 022 / 022.01]`
+- The bluff on Skiit was attempted and failed, leading to his death; the ruse is concluded. `[ch 022 / 022.02]`
+- Skiit was killed by Daz’s Maximilian’s Earthen Grasp and Toll the Dead, ending his threat. `[ch 022 / 022.02]`
+- Ulnara was convinced of the party’s power and granted them safe passage; the encounter is resolved. `[ch 022 / 022.02]`
+- The party completed their short rest, resetting Zalthir’s focus points. `[ch 022 / 022.03]`
+- The party bypassed the Cauldron Chamber with its cave bears and derro cultists, avoiding conflict. `[ch 022 / 022.04]`
+- The derro patrol of four was entirely eliminated in combat. `[ch 022 / 022.05]`
+- The party safely navigated the pit trap in the Brimstone Cavern. `[ch 022 / 022.06]`
+- Narrak’s ritual site was observed and identified as containing evidence for Errde Blackskull; the reconnaissance is complete. `[ch 022 / 022.06]`
+- The party completes their long rest and regains all spell slots after retreating and returning to the cavern [ch 023 / 023.02; ch 023 / 023.04].
+- The Derro cultist ritual at the Whorlstone Tunnels is disrupted and abandoned after the party kills Narrak and the cultists [ch 024 / 024.03].
+- The five Derro cultists are all slain during the ambush and subsequent combat [ch 024 / 024.03].
+- The ettin Grula-Munga is slain by Zalthir’s tentacles and Thorin’s final strike [ch 024 / 024.03].
+- Narrak, the Derro savant and cult leader, is killed by Thorin after being restrained by Daz’s spell [ch 024 / 024.03].
+- The ritual chamber’s defenses are neutralized; the magical darkness and silence effects end with the deaths of Zalthir and Narrak [ch 024 / 024.03].
+- The party successfully retrieves the key from Narrak’s corpse and opens the iron chest without triggering traps [ch 024 / 024.04].
+- The five doses of Keoghtom’s Ointment are secured and added to the party’s inventory [ch 024 / 024.04].
+- The heretical texts, including *The Rituals of the Two-Headed Beast*, are recovered as evidence [ch 024 / 024.04].
+- The party’s exploration and combat within the Whorlstone Caverns concluded with all derro dead and all treasure secured. `[ch 025 / 025.01]`
+- The party’s attempt to decide how to use their political leverage concluded with no decision made, but plans to hold the evidence and consider a dead man’s switch. `[ch 025 / 025.01]`
+- The party’s journey to locate Rumpadump concluded with their arrival at his cave and his revelation of Voosbur’s role in the madness. `[ch 025 / 025.04]`
+- The party’s encounter with the infected Myconids concluded with Rumpadump’s account and the identification of Zuggtmoy’s influence. `[ch 025 / 025.04]`
+- Thorin and Gyrgum’s journey through Zuggtmoy’s dreamscape concluded with their escape from the Vine Wood and refusal of the Demon Queen’s offer. `[ch 025 / 025.07]`
+- The Myconids’ departure via the spore network concluded with their vanishing from the cave. `[ch 025 / 025.08]`
+- The party’s long rest concluded with their level-up and recovery of all resources. `[ch 025 / 025.08]`
+- The West Cleft Exit checkpoint negotiation concludes with the party paying a 20 gp bribe and passing into Gracklstugh [ch 026 / 026.02].
+- The Stone Giant Hgraam’s quest concludes with the party returning the two-headed statue and receiving 500 gp as reward; the cavern is closed to outsiders [ch 026 / 026.04].
+- The Dragon Egg delivery contract with Gartokkar concludes with the party handing over the corrupted egg and receiving 2,400 gp in final payment, fulfilling the 3,000 gp agreement [ch 026 / 026.06].
+- The Derro assassin ambush concludes with all five Gray Ghosts slain and the party possessing the Council of Savants letter [ch 026 / 026.07].
+- The party’s attempt to bypass the gates of Gracklstugh concluded when they accepted Themberchaud’s offer of a dragon ride instead. `[ch 027 / 027.02]`
+- The dragon flight over Gracklstugh concluded with Themberchaud landing at the Darklake Docks and departing. `[ch 027 / 027.03]`
+- The bluff at the Darklake Docks concluded successfully when the guard rushed off to warn Captain Errde, allowing the party to seize the boat. `[ch 027 / 027.04]`
+- The stirge ambush on the Darklake concluded with all creatures slain and the party unharmed except for Gyrgum’s temporary blood loss. `[ch 027 / 027.05]`
+- The journey across the Darklake concluded with the party’s arrival at the Hidden Beach and scuttling of their boat. `[ch 027 / 027.06]`
+- The party successfully harvests and conceals the quartz crystals in the Faerzress zone, evading Drow detection via Zalthir’s sabotage plan and Eldeth’s track-masking. [ch 028 / 028.02]
+- The party navigates the shrieker-filled fungus cavern without triggering a mass alert, thanks to Eldeth’s DC 16 Survival check. [ch 028 / 028.03]
+- The party defeats all four specters in the sarcophagi chamber, looting their treasures and confirming the undead will reform in 24 hours. [ch 028 / 028.05]
+- The party triggers the wraith’s appearance in the lower chamber and damages her with Magic Missile, forcing her to retreat into her sarcophagus. [ch 028 / 028.06]
+- The party locates the hidden lower vault beneath the sarcophagi chamber and discovers the gilded sarcophagus, invisible chest, and magical sword. [ch 028 / 028.06]
+- The battle against Brysis concluded with her destruction by lingering acid damage from Tasha’s Caustic Brew, after surviving 23 damage from Scorching Ray [ch 029 / 029.01].
+- The exploration of the Lost Tomb of Khaem concluded with the party retrieving the gold covering, the invisible chest’s contents, and confirming the southern chamber was a decoy [ch 029 / 029.02; ch 029 / 029.03].
+- The drow pursuit was concluded as Eldeth’s trail-obscuring efforts reduced the pursuit rating to zero [ch 029 / 029.04].
+- The journey through the Underdark caverns to Neverlight Grove concluded with the party’s arrival at the grove [ch 029 / 029.05].
+- The initial reception and tour of Neverlight Grove concluded with Basidia assigning the party the task of investigating the Garden of Welcome [ch 029 / 029.06].
+- The request to retrieve the grick alpha’s carcass concluded with the party agreeing to the task and being shown its location [ch 029 / 029.07].
+- The Grick Alpha hunt concluded with the creature’s death and hide harvested [ch 030 / 030.03].
+- The Shambling Mound hunt concluded with the creature’s destruction and vines harvested [ch 030 / 030.04].
+- The journey from the caverns back to Neverlight Grove concluded with the party’s arrival and report to Basidia [ch 030 / 030.05].
+- The meeting with Gasbide in the Circle of Builders concluded with the party learning of his dream and Phylo’s vague prophecy [ch 030 / 030.05].
+- The party’s tour of the Neverlight Grove’s circles is concluded after meeting Hebopbe, Yrberop, and Rumpadump [ch 031 / 031.02].
+- The infiltration of the Garden of Welcome is concluded after the party discovers Xinaya and Yestabrod and initiates combat [ch 031 / 031.03].
+- The battle against Yestabrod and his fungal servants is concluded with Yestabrod’s death and the destruction of all attackers [ch 031 / 031.04].
+- Xinaya’s suffering is concluded with her merciful death at Thorin’s hand, granted with Dawnbringer’s consent [ch 031 / 031.05].
+- Sarith’s fate is concluded with his transformation into a spore servant and subsequent destruction by Eldeth and Jimjar [ch 031 / 031.04; ch 031 / Memorable Moments].
+- The party’s initial investigation of the Garden of Welcome is concluded with the emergence of Zuggtmoy’s wedding procession [ch 031 / 031.06].
+- The rehearsal march of Zuggtmoy concludes as the procession retreats into the Majestic Mushroom `[ch 032 / 032.01]`.
+- The mock wedding and fungal vision conclude after the party is overwhelmed by the hallucination and the procession vanishes `[ch 032 / 032.02]`.
+- The confrontation with Phylo and the defense of Neverlight Grove concludes as the party and surviving myconids flee the grove `[ch 032 / 032.03]`.
+- The escape from Neverlight Grove concludes with the party and Basidia’s circle successfully fleeing as the grove is consumed by rot `[ch 032 / 032.03]`.
+- The journey from Neverlight Grove to the gas-filled cavern concludes with the party reaching the cavern and being ambushed by the rocktopus `[ch 032 / 032.04; ch 032 / 032.05]`.
+- The battle with the rocktopus concludes with Gyrgum delivering the killing blow and the creature’s death `[ch 032 / 032.05]`.
+- The journey leg with Rasharoo’s scouts concludes as they bid the party farewell after seven days of travel `[ch 032 / 032.04]`.
+- Jimjar’s attempt to maintain his reputation as a guide concludes with his admission of being lost and the party’s acceptance of the new route `[ch 032 / 032.06]`.
+- The cave-in event concludes with the party trapped in a new maze and agreeing to explore the northern passage `[ch 032 / 032.06]`.
+- The wager over whether their path would “end in tears” is settled with Thorin promising Jimjar ten silver pieces once they emerge from Glabbagool [ch 034 / 034.08].
+- The exploration and escape from the Oozing Temple is completed with the party emerging into a large cavern [ch 034 / 034.08].
+- The encounter with the first gray ooze concludes with Zalthir killing it [ch 034 / 034.02].
+- The second gray ooze encounter concludes with Daz killing it via Toll the Dead [ch 034 / 034.04].
+- The black pudding encounter concludes with the party destroying it via ranged attacks and Glabbagool consuming it [ch 034 / 034.05].
+- The activation and destruction of all four formless sculptures in the fountain chamber concludes with the floor cleaned and treasure absorbed [ch 034 / 034.06].
+- The party’s escape from the flooding complex via air pockets and the breached river passage concludes successfully [ch 034 / 034.08].
+- The long rest at the shores of the Darklake is completed, restoring all party members’ abilities [ch 035 / 035.01].
+- The journey from the Darklake shores to Blingdenstone’s main gate is completed [ch 035 / 035.02].
+- The confrontation with the gate guards and the introduction of Glabbagool are resolved with the party granted entry into Blingdenstone [ch 035 / 035.04].
+- The party’s passage through the Maze is completed without incident, ending with Daz’s compliment earning the gnomes’ approval [ch 035 / 035.05].
+- The deep gnome guards’ pursuit and escort of the party to the second gate are completed, ending with the party’s agreement to meet Dorbo [ch 036 / 036.01].
+- Jimjar’s bet regarding meeting Dorbo and the ooze problem is accepted by the party, concluding the pre-meeting consultation [ch 036 / 036.02].
+- The escort through the reception hall and Traders’ Grotto concludes with arrival at Diggermattock Hall [ch 036 / 036.03].
+- The meeting with Chief Dorbo and Quartermaster Senni concludes with the party formally accepting the task to resolve the ooze infestation [ch 036 / 036.04].
+- The quest to honor Pelek’s wish to be buried is concluded with his spirit fading after interment in the Blingdenstone catacombs. [ch 037 / 037.03]
+- The party’s first task for Burrow Warden Jadger—laying a ghost to rest—is completed with Pelek’s interment, granting them one question. [ch 037 / 037.04]
+- The gelatinous cube attack in the Traders' Grotto is concluded with all non-sentient cubes destroyed by the party’s coordinated actions. [ch 037 / 037.06]
+- The battle with gelatinous cubes in the Traders’ Grotto concluded with the party eliminating the threat and recovering a magical short sword [ch 038 / 038.01].
+- The task of clearing the rubble-choked route out of the Traders’ Grotto concluded with Glabbagool successfully creating a usable passage [ch 038 / 038.02].
+- The exploration of the abandoned residential cave concluded with the discovery of ooze-digested corpses and an ooze trail leading south [ch 038 / 038.03].
+- The reconnaissance of the ooze cavern concluded with Batman identifying the Pudding King’s throne room and confirming his voice as the source of the call [ch 038 / 038.04].
+- The planning session for capturing the Pudding King concluded with the party agreeing on Zalthir’s Shadow Step infiltration plan and the necessity of allied distraction [ch 038 / 038.05].
+- The presentation of the plan to Blingdenstone’s leadership concluded with the party assuming operational command and being tasked to recruit Clan Goldwhisker [ch 038 / 038.06].
+- The political stalemate over the Pudding King response was concluded when Daz forced a decision and the gnome factions agreed to convene a moot [ch 039 / 039.07].
+- The recruitment of Clan Goldwhisker was concluded when Chief Chipgrin agreed to join the campaign after Daz’s blunt offer of personal accountability [ch 039 / 039.05].
+- Glabbagool’s role as a kitchen cleaner was concluded when he accepted the task and earned the nickname “Roomba” [ch 039 / 039.02].
+- The party’s decision on which side quests to pursue was concluded when Thorin’s d20 roll of 17 selected the cautious path: cleansing the Rockblight and retrieving ingredients from Neverlight Grove [ch 039 / 039.10].
+- The assignment of Glabbagool, Eldeth, and Jimjar to assist the Burrow Warden ghosts was concluded as part of the party’s operational division [ch 039 / 039.10].
+- The ghost-hunting assignment in Blingdenstone’s catacombs was concluded with the party identifying Udhask’s remains and collecting them for burial [ch 040 / 040.05].
+- The long rest at the Foaming Mug Tavern concluded with the party securing barrels of spoiled booze and tactical insight into using alcohol against oozes [ch 040 / 040.02].
+- The excavation of the blocked route to the Rockblight through the Cultivation Cave concluded successfully with Glabbagool clearing the debris and the party entering the caverns [ch 040 / 040.03].
+- The discovery and identification of the protective crystals in the Rockblight concluded with the party collecting multiple colored specimens for defensive use [ch 040 / 040.04].
+- The encounter with Udhask’s ghost concluded with the party recovering his bones and treasure, fulfilling part of Burrow Warden Jadger’s request [ch 040 / 040.05].
+- The gargoyle ambush at the stream concluded with one gargoyle destroyed and the second engaged, but the battle was interrupted by the eruption of the earth elemental [ch 040 / 040.06].
+- The battle against the Earth Elemental concluded with its collapse into rubble after Thorin’s Hill Strike. `[ch 041 / 041.01]`
+- The battle against the gargoyle concluded with its destruction by Gyrgum’s Spirit Guardians. `[ch 041 / 041.01]`
+- The investigation into the animated Drow statues concluded with the party confirming the entity’s six-statue limit and testing it with the bat familiar. `[ch 041 / 041.05]`
+- The construction of the ice mirror was completed as a pre-battle strategy before entering the Medusa’s chamber. `[ch 041 / 041.06]`
+- The initial engagement with the Medusa concluded with her knocked prone and the party poised to finish her, though the battle itself was not resolved. `[ch 041 / 041.07]`
+- The battle against the Medusa Neheedra concluded with her death and the party securing her lair’s treasure [ch 042 / 042.01].
+- The first Earth Elemental battle concluded with its destruction by Gyrgum’s critical Guiding Bolt [ch 042 / 042.03].
+- The second Earth Elemental battle concluded with its destruction by Gyrgum’s True Strike [ch 042 / 042.05].
+- The third Earth Elemental battle concluded with its destruction by Zalthir’s Enhanced Unarmed Strike after Thorin’s Action Surge [ch 042 / 042.06].
+- The task of placing the Ruby spell gem into the Steadfast Stone menhir concluded with the gem activating and triggering the elemental attacks [ch 042 / 042.02].
+- The party’s short rest after the Medusa battle concluded, as the GM ruled they had taken one [ch 042 / 042.05].
+- The hallowing of the temple from Ogrémoch’s corruption was completed by the party’s defeat of the earth elementals. `[ch 043 / 043.01]`
+- The quest to destroy Vazuk, the deep gnome ghost, was concluded by Jimjar and Eldeth. `[ch 043 / 043.02]`
+- The party received the empty fourth-level spell gem as a reward from Gurnik Tapfinger and successfully imbued it with Mass Healing Word. `[ch 043 / 043.02]`
+- The party fulfilled Jadger’s request to lay two tormented spirits to rest, earning two boons from him. `[ch 043 / 043.03]`
+- The party successfully pinpointed the exact location of the Ghost Hold Lichen’s growth site through Daz’s Investigation check. `[ch 043 / 043.06]`
+- The party’s recognition of Zuggtmoy as the “Lady of Rot” was confirmed by both Gyrgum and Thorin’s Religion checks. `[ch 043 / 043.05]`
+- The party’s decision to investigate the Festering Fissure was finalized, and they arrived at its entrance. `[ch 043 / 043.05; ch 043 / 043.07]`
+- The battle with the Shambling Mound concluded with its death from Thorin’s opportunity attack. `[ch 044 / 044.01]`
+- The harvest of the rare lichen concluded successfully with two of three checks passed. `[ch 044 / 044.02]`
+- The Galeb Duhr puzzle at Pickshine Mine concluded when the party completed the handshake protocol and the guardians opened the path. `[ch 044 / 044.04]`
+- The time-snagged wall at Whiteshell Mine was breached using gnome explosives and Zalthir’s Shadow Step, concluding the obstacle. `[ch 044 / 044.06]`
+- The basilisks’ initial confrontation concluded with one charmed and one grappled, allowing Thorin to begin the ritual. `[ch 044 / 044.07]`
+- The first sacrifice (weapon) in Entémoch’s boon ritual was completed with the dart’s consumption. `[ch 044 / 044.08]`
+- The ritual to release Entémoch’s boon is completed, granting Stone Skin and Earth Elemental summoning `[ch 045 / 045.01]`.
+- The basilisk encounter concludes with one basilisk charmed and left alive, the other slain by Zalthir `[ch 045 / 045.01]`.
+- The ethical debate on elemental labor concludes with Blingdenstone’s leadership banning the use of Earth Elementals for labor, restricting them to defense only `[ch 045 / 045.02]`.
+- The party’s shopping expedition at Starlace Curios and Arcana concludes with purchases of Dustsight Spectacles, Stonegnarl Warband Token, +1 shield, +1 mace, and sale of studded leather armor +2 `[ch 045 / 045.03]`.
+- The commissioning of Dawnbringer’s scabbard concludes with the purchase of the Vaultmaster locking scabbard for 180 gold `[ch 045 / 045.04]`.
+- The party’s planning phase for the assault on the Pudding King concludes with the acceptance of the minimal distraction strategy and the bridge-building solution [ch 046 / 046.01; ch 046 / 046.04].
+- The Pickshine Miners’ bridge construction over the black pudding pit is completed, and their role as backup is concluded as they remain behind to maintain the span [ch 046 / 046.04].
+- The wererats’ decision to use the “quiet path” through the House of Horrors concludes their role as scouts and allies at the throne room door [ch 046 / 046.06].
+- The party’s reconnaissance and strategy session for bypassing the ochre jelly concludes with the decision to use the Earth Elemental to throw Zalthir into the throne room [ch 046 / 046.07; ch 046 / 046.08].
+- The assault on the Pudding King’s throne room is initiated, concluding the party’s pre-battle preparations and transitioning into active combat [ch 046 / 046.09].
+- The battle against the Pudding King concluded with his complete dissolution and death after being grappled, dragged from his lair, and overwhelmed by Zalthir’s attacks [ch 047 / 047.08].
+- Prince Livid and Princess Ebonmire were both defeated and killed by the party’s coordinated assault, ending their resistance [ch 047 / 047.09].
+- The Pudding King’s lair actions were neutralized when Zalthir dragged him out of the throne room, ending his domain-based advantages [ch 047 / 047.05].
+- The body-swap mystery between Glabbagool and the Pudding King was resolved when Thorin confirmed the swap by asking about their first meeting [ch 047 / 047.06].
+- The party secured a way out of the Underdark by defeating the Pudding King and his minions, fulfilling their immediate goal [ch 047 / 047.10].
+- The Earth Elemental’s stabilization and departure is concluded, with the passage now stable and the geode secured. [ch 048 / 048.01]
+- The psychic static in the Hall of Melting Mirrors is neutralized after Thorin identifies the harmonic center. [ch 048 / 048.02]
+- The structural repairs at the Support Beams are completed, with the critical beam secured and Thorin honored with a patch. [ch 048 / 048.03]
+- The ooze breach at Traders’ Grotto is resolved when Jimjar’s bone die pacifies the entire swarm via Glabbagool. [ch 048 / 048.05]
+- The Blingdenstone Council negotiations conclude with a fragile peace: wage agreement, wererat territorial control, and sustainable mining practices agreed upon. [ch 048 / 048.06]
+- The party’s departure from Blingdenstone is finalized with the Voucher of the Varmint received and the mission to the Overbright assigned. [ch 048 / 048.07]
+- The party’s journey from Blingdenstone to the location of the fungal-infected drow scout is concluded, with the scout captured and interrogated [ch 049 / 049.02; ch 049 / 049.03].
+- The interrogation of Valen is concluded, with him providing full intelligence on Ilvara’s weakened force, her madness, the "bride," and the schism in her camp [ch 049 / 049.03].
+- Thorin’s Lesser Restoration of Valen is concluded, halting his fungal infection and granting him one week before transformation [ch 049 / 049.03].
+- The party’s decision to ambush Ilvara’s camp at the Fungal Altar is concluded, with Valen guiding them there and tactical planning finalized [ch 049 / 049.04].
+- The infiltration and psychological manipulation of Asha Vandree via the spider familiar and Dancing Lights illusion is concluded, successfully convincing her of a divine sign [ch 049 / 049.05].
+- Daz’s deception of Asha Vandree concluded successfully when she accepted him as a powerful, delusional ally who had communed with Lolth [ch 050 / 050.02].
+- The party’s agreement with Asha Vandree to kill Ilvara and destroy the Heart Fungus concluded with a plan finalized and tactical positions set [ch 050 / 050.03].
+- The Glyph of Warding was successfully inscribed and placed on the bridge to ambush Jorlan [ch 050 / 050.03].
+- The ambush of Jorlan via the Glyph of Warding concluded with a successful detonation, killing one sporewalker and severely damaging Jorlan and the Heart Fungus [ch 050 / 050.04].
+- The battle against Ilvara and her fungal minions concluded with Ilvara’s explosive death and the retreat of House T'sarran [ch 051 / 051.06].
+- The threat of the heart fungus was neutralized when Thorin destroyed it with radiant damage from Dawnbringer [ch 051 / 051.02].
+- The House T'sarran drow reinforcements were eliminated by Daz’s Fireball and Zalthir’s finishing strike on the mage [ch 051 / 051.04].
+- Jorlan Duskryn’s attempt to confront Ilvara ended in failure when the bridge collapsed and he was attacked by Kaelira [ch 051 / 051.06].
+- The party’s level-up process concluded with all members selecting feats and abilities [ch 052 / 052.03].
+- The Drow mercenaries’ contract to protect Daz from House Mizzrym and House T'sarran concluded with the defeat of Ilvara’s force and the death of Asha Vandree; the mercenaries agreed only to escort Daz to the surface [ch 053 / 053.01].
+- Asha Vandree’s attempt to seize control of the party ended with her death at Zalthir’s hands [ch 053 / 053.02].
+- The battle at the Fungal Altar concluded with the defeat of Ilvara’s forces and Asha Vandree, and the party’s complete looting of the site [ch 053 / 053.03; ch 053 / 053.04].
+- The purification of Ilvara’s corrupted five-tailed scourge was completed during the party’s long rest with Dawnbringer’s reluctant assistance [ch 053 / 053.05].
+- The party’s journey through the Underdark concluded with their emergence into the Overbright after months of travel [ch 053 / 053.06].
+- The mercenaries’ escort duty ended upon the party’s arrival at the surface [ch 053 / 053.05].
+- The journey from the Underdark exit to the surface is concluded; the party has fully emerged and is traveling west. `[ch 054 / 054.01]`
+- Eldeth’s farewell and departure to Mithral Hall is concluded; she has secured Thorin’s promise to wait before joining her. `[ch 054 / 054.01]`
+- The pursuit by the drow spy is concluded; she has been captured, interrogated, and subdued. `[ch 054 / 054.03; ch 054 / 054.04]`
+- The interrogation of the drow spy is concluded; she has revealed her mission and allegiance to House T’sarran. `[ch 054 / 054.04]`
+- The decision to transport the drow spy is concluded; she has been shrunk, placed in the bag of holding, and assigned Glabbagool as guard. `[ch 054 / 054.05]`
+- The donation of books to Candlekeep is concluded; all five rare texts have been handed over. `[ch 054 / 054.05]`
+- The party’s entry into Candlekeep is concluded; they have been granted access and assigned to scholars. `[ch 054 / 054.06]`
+- Vareth’s immediate academic engagement with Gyrgum is concluded; he has secured the scholar’s presence for future interviews. `[ch 054 / 054.06]`
+- The journey from Blingdenstone’s surface exit to Daggerford is completed. `[ch 055 / 055.09]`
+- The detour to Mirabar is concluded with Gyrgum acquiring the Stroudite pamphlet and Thorin considering armor upgrades. `[ch 055 / 055.03]`
+- The visit to Triboar concludes with Gyrgum accepting Kestler’s note and the party witnessing Eldred’s fractured speech. `[ch 055 / 055.04]`
+- The stay in Waterdeep concludes with Thorin acquiring mithral plate armor, Daz purchasing Volume Three, Zalthir obtaining the letter to Khell-Vire, and the ooze rights confrontation resolved. `[ch 055 / 055.05; ch 055 / 055.06; ch 055 / 055.07; ch 055 / 055.08]`
+- The monastery’s roof repair is completed successfully by Daz using Mending, fulfilling the requirement for the letter of introduction. `[ch 055 / 055.07]`
+- Gyrgum’s Mass Healing Word ritual in Triboar concludes, sparking theological debate but no further action taken. `[ch 055 / 055.04]`
+- The street preacher’s chant in Waterdeep ends without resolution, but the pattern is noted. `[ch 055 / 055.07]`
+- The city guard’s inspection of Glabbagool’s bag ends with Zalthir’s Shadow Step and Thorin walking away. `[ch 055 / 055.08]`
+- The party’s journey from the Silver Marches to Candlekeep concludes with their arrival at the fortress-library. `[ch 056 / 056.04]`
+- The investigation into Elin’s affliction concludes with the party recognizing it as interior madness linked to Underdark corruption, not a conventional illness. `[ch 056 / 056.02]`
+- The party’s decision regarding the shrunken House T’sarran spy concludes with them leaving her in Glabbagool’s care. `[ch 056 / 056.04]`
+- Zalthir’s Trial of the Broken Mirror concludes with his successful brick-smash and selection of specialized shadow technique option C. `[ch 056 / 056.05]`
+- Thorin and Dawnbringer’s artifact assessment concludes with their enrollment in a two-phase therapeutic process: light, then mourning. `[ch 056 / 056.06]`
+- Daz’s inquiry into his past concludes with the discovery of the razored appendix and the name "Daz'issin," and his realization that records were deliberately erased. `[ch 056 / 056.07]`
+- The philosophical debate with Brother Vareth concluded with Gyrgum receiving Stroudite notes for study and Vareth rushing off to pursue his own research [ch 057 / 057.01].
+- The dinner at the Refectory concluded with the party retiring to the House of Rest and the Hearth after hearing the prophecy [ch 057 / 057.02].
+- The morning tour of Candlekeep’s grounds concluded with the party arriving at the Chapter House [ch 057 / 057.04].
+- The Council of Twelve’s initial crisis concluded with the party appointed as independent investigators, signing confidentiality papers, and receiving a book-reward promise [ch 057 / 057.05].
+- The dismissal of Kalan Strongbranch as lead investigator concluded with him storming off, visibly angered [ch 057 / 057.05].
+- The arrival at Janussi’s chambers and the initial crime scene briefing concluded with the party beginning their forensic examination [ch 057 / 057.06].
+- The initial investigation of Janussi’s chambers concluded with the party identifying key clues: ink switch, missing heart, tobacco smoke, and the possibility of prior *Speak with Dead* [ch 057 / 057.07].
+- The forensic investigation of Janussi’s murder is concluded with the identification of post-mortem heart removal, poison ingestion, magic missile damage, locket theft, and the missing *Golden Ass* [ch 058 / 058.01; ch 058 / 058.02; ch 058 / 058.03].
+- The interview with Hollypocket is concluded, yielding a timeline of Janussi’s final day and the violent encounters preceding his death [ch 058 / 058.05].
+- The interrogation of Queenie the cat is concluded, revealing key eyewitness details about the murder night, including Daral fleeing with the book and a disguised figure resembling Sylvira leaving the tower [ch 058 / 058.06].
+- The party has fully assembled the core clues of the murder: the poison, the locket, the missing book, the magic missiles, and the disguised intruder [ch 058 / 058.01; ch 058 / 058.02; ch 058 / 058.03; ch 058 / 058.06].
+- The party’s initial investigation of Janussi’s room and body is concluded, with findings reported to Bookwyrm. `[ch 059 / 059.01]`
+- Kalan Strongbranch’s secret handoff of the second High Tower key to Gyrgum is concluded. `[ch 059 / 059.03; ch 059 / moment]`
+- Gyrgum’s research in the Flora Theca concludes with identification of midnight tears and the sapphire’s connection to Drawmij’s Instant Summons. `[ch 059 / 059.04]`
+- The party’s interrogation of Daral Yashenti at the Hearth concludes with the book secured as evidence and Daral under observation. `[ch 059 / 059.05]`
+- Glabbagool’s philosophical trial at the Whispering Dome concludes with his formal apprenticeship and sidekick bond with Zalthir. `[ch 059 / 059.06]`
+- The academic disputation at the Oval Theatre concluded as the Avowed dispersed to attend, leaving the keep unguarded [ch 060 / 060.01].
+- The investigation into the poisoned book’s timeline concluded with the confirmation that the gift was tampered with between 11 a.m. and dinner [ch 060 / 060.07].
+- The discovery of Janussi’s severed heart and blood-stained cleaver in Milil’s chalice concluded the search of the Southern Dining Hall [ch 060 / 060.05].
+- The interview with Orrin Glass concluded with the confirmation that Janussi’s gift had been cut and retied and that Alkrist burned a note during the feast [ch 060 / 060.07].
+- The interrogation of Nibbles the squirrel concluded with the identification of a Dragonborn thief who stole a toxin component from the apothecary while A’lai distracted Leuwin [ch 060 / 060.08].
+- The search of A’lai’s chambers concluded with the discovery of the reduced dove cage and absence of incriminating items [ch 060 / 060.09].
+- The search of Alkrist’s chambers concluded with the discovery of the poisoned rats, the locked safe, and the bookmarked *1001 Tashalian Nights* [ch 060 / 060.09].
+- The search of Bookwyrm’s chambers concluded with no evidence found [ch 060 / 060.09].
+- The poisoning of Janussi via Midnight Tears on Daral’s gift is conclusively solved with Alkrist’s confession under Zone of Truth [ch 061 / 061.07].
+- The tampering of Daral’s gift is confirmed by Gyrgum’s Mending spell revealing a deliberate second cut in the wrapping paper [ch 061 / 061.06].
+- Alkrist’s motive — being ordered to abandon his germ-warfare research and denied leadership potential — is fully established during interrogation [ch 061 / 061.07].
+- The identity of the person who stole the Midnight Tears and applied it to the book is resolved: Alkrist, with A'lai’s assistance [ch 061 / 061.07].
+- The connection between the Deadwinter Tree, the poisoned gift, and the burned vial label is confirmed through Alkrist’s testimony [ch 061 / 061.07].
+- The role of the Oak Tree Apothecary and Leuwin’s distraction by A'lai is verified by Alkrist’s confession [ch 061 / 061.07].
+- The discovery of Janussi’s note condemning Kalan’s methodology in his love nest establishes a clear motive for Janussi’s opposition to Kalan [ch 061 / 061.04].
+- The claim that Sylvira’s double was seen during the murder window is confirmed as a separate mystery, not yet resolved, but the evidence of the Polymorph duration problem is fully articulated [ch 061 / 061.02; ch 061 / 061.05].
+- The theory that the locket and sapphire were stolen by different individuals is supported by the party’s analysis and Alkrist’s ignorance of the heart’s removal [ch 061 / 061.01; ch 061 / 061.07].
+- The investigation into Janussi’s murder is concluded as a task assigned by Bookwyrm, with Alkrist’s confession and evidence presented [ch 062 / 062.03].
+- The party successfully retrieves and reviews the contents of Alkrist’s safe, finding the potion of flying, potion of superior healing, and 750 gold pieces [ch 062 / 062.04].
+- The party successfully steals the potion of flying from Alkrist’s safe using Glabbagool without detection [ch 062 / 062.04].
+- The party cures Daral of his suspected poisoning in Deneir’s Sanctum [ch 062 / 062.05].
+- The party defeats all three helmed horrors in combat, reducing them to rusted ruins [ch 062 / 062.06].
+- The attack by the three helmed horrors in Deneir's Sanctum concluded with their destruction and the revelation that the key carried was a decoy [ch 063 / 063.01].
+- The investigation into Bookwyrm’s murder concluded with the discovery of her half-finished note and the identification of Moziqodo as the killer [ch 063 / 063.02].
+- The search for Kalan concluded with his location confirmed in the Sea Warden’s Tower and his admission of the decoy scheme [ch 063 / 063.03].
+- The deception surrounding the high tower key was conclusively exposed when Detect Magic confirmed its mundane nature [ch 063 / 063.01].
+- Fembris’s betrayal was resolved when he admitted A'lai Aivenmore was present during the key transfer report [ch 063 / 063.03].
+- The confrontation with Moziqodo in the North Galleries concluded with his death and Tadric’s rescue [ch 063 / 063.05].
+- The immediate threat to the real high tower key was neutralized with Tadric’s survival and the party’s acquisition of the key [ch 063 / 063.05].
+- The investigation into the Watcher’s murder is concluded: the foreign bolt and its direction confirm the attackers came from outside and used the same path toward the High Tower. [ch 064 / 064.02]
+- Tadric’s internal conflict over the High Tower key is resolved: he surrenders it but chooses to accompany the party. [ch 064 / 064.01]
+- The party’s decision to defer informing Sylvira of her son’s death is finalized as a future Ember Grapple responsibility. [ch 064 / 064.01]
+- The Zhentarim raiders’ looting mission is interrupted and partially neutralized: one raider is killed, the other incapacitated but alive. [ch 064 / 064.04]
+- A'lai Aivenmore’s attempt to smash the sapphire is thwarted by Daz’s Telekinesis, preventing its triggering effect. [ch 064 / 064.04]
+- Daz’s sleight-of-hand transfer of the sapphire to Gyrgum is successfully concealed from A'lai. [ch 064 / 064.04]
+- Gyrgum’s Bless spell concludes when he begins concentrating on Tasha's Caustic Brew. [ch 064 / 064.04]
+- The battle against the surviving Zhentarim thug concluded with his death at A'lai’s hands after enduring Daz’s fireball [ch 065 / 065.01].
+- The confrontation with the Zhentarim assassin concluded with his death at Thorin’s hands after he failed to locate the sapphire [ch 065 / 065.02].
+- A'lai Aivenmore’s surrender and attempted betrayal concluded with his capture and binding by the party [ch 065 / 065.02].
+- The party’s mission to secure the two High Tower keys concluded with both keys now in their possession—one held by Gyrgum, the other hidden in Glabbagool—and deliberately kept apart [ch 065 / 065.03].
+- The breach of Candlekeep’s inner sanctum by Manshoon’s simulacrum concluded the immediate defense of the High Tower’s security control room [ch 065 / 065.03].
+- A'lai Aivenmore’s capture and interrogation concluded with his agreement to provide vault secrets in exchange for imprisonment in Candlekeep’s null magic prison [ch 067 / 067.02].
+- The cryptogram cipher was fully decoded by the party, revealing all seven instructions for accessing the Vault of Secrets [ch 067 / 067.03].
+- The first riddle — “Feed the quill of Alaundo the seer” — was resolved by pouring ink into the statue’s ink pot, triggering the hidden staircase [ch 067 / 067.04].
+- The second riddle — “Tread as many steps as he lived in years” — was resolved by discovering Alaundo died at age ninety-seven [ch 067 / 067.05].
+- The third riddle — “Utter the original prophecy to unseen ears” — was resolved by obtaining the prophecy from Candlekeep scholars [ch 067 / 067.05].
+- The fourth riddle — “Sprinkle dust of Mechanus on dormant gears” — was resolved by securing modron-made tools as a substitute, with Spanner’s conditional agreement [ch 067 / 067.05].
+- The fifth riddle — “One last guardian of knowledge remains to verify the chosen Reader’s claims” — was acknowledged as pending but not yet encountered [ch 067 / 067.03].
+- The party’s journey to the Vault’s entrance and activation of the staircase mechanism concluded with the collapse and Thorin’s fall [ch 067 / 067.06].
+- The descent through the Great Shaft is concluded with the party safely landing in the tunnel beneath Candlekeep `[ch 068 / 068.01]`.
+- The bridge mechanism across the lava cavern is successfully activated and crossed, concluding the obstacle to the Obsidian Tower `[ch 068 / 068.02]`.
+- The iron owlbear guardian’s three-question trial is completed successfully, allowing the party to pass `[ch 068 / 068.03]`.
+- Miirym’s verification of Gyrgum as the Reader is concluded, closing riddle line 5 `[ch 068 / 068.04]`.
+- The party’s choice of boon from Miirym is finalized: the anti-magic field extension is banked, not yet activated `[ch 068 / 068.04]`.
+- The party’s confrontation with Manshoon in the Vault is concluded by his voluntary relocation to the lower chamber for the duel `[ch 068 / 068.05]`.
+- The initial round of combat with Manshoon is initiated but not concluded; Daz’s *Phantasmal Killer* lands and the party positions for the next phase `[ch 068 / 068.05]`.
+- The battle against the first Manshoon simulacrum concluded with its destruction and dissolution into snow. [ch 069 / 069.02]
+- The interrogation and suspicion of Edvaldo concluded with his binding in the anti-magic zone and agreement to second authorship on the combat paper. [ch 069 / 069.03; ch 069 / 069.04]
+- The discovery and confirmation of a second Manshoon simulacrum in the upper chamber concluded with his proposal of a bargain. [ch 069 / 069.05]
+- The party’s attempt to determine the answer to the Obsidian Door riddle concluded without resolution; no utterance was made. [ch 069 / 069.07]
+- The negotiation with Manshoon’s simulacrum concluded when Zalthir threw him into the lava pit `[ch 070 / 070.02]`.
+- The riddle of the final door concluded when Gyrgum spoke “a candle” with genuine intent, opening the door `[ch 070 / 070.03]`.
+- The threat of Edvaldo destroying the prophecy crystals concluded when he fled and Gyrgum secured the remaining four `[ch 070 / 070.03]`.
+- The confrontation with the Manshoon simulacrum concluded with his death in the lava `[ch 070 / 070.02]`.
+- The deception of the Book of Vile Darkness’s destruction concluded when Edvaldo believed the illusion and retreated `[ch 070 / 070.03]`.
+- The immediate threat of the Book of Vile Darkness’s corruption was contained as Daz used Mage Hand to avoid physical contact and resisted its influence `[ch 070 / 070.04]`.
+
+## Resolved Plot Threads
+### Velkynvelve escape (ch 003)
+- **Escape from Velkynvelve slave pen**: The prisoners escaped their cell and overcame the guard tower's defenders, completing the first phase of the breakout [ch 003 / 003.01; ch 003 / 003.03].
+- **Coordinate escape using rapport spores**: Stool's spores allowed silent, synchronized action. The effect expired after one hour [ch 003 / 003.01; ch 003 / spells].
+- **Survive the guard tower assault**: The prisoners defeated the drow guards and Elite Warrior Imbros and secured weapons and armor [ch 003 / 003.02; ch 003 / 003.03].
+- **Secure armory equipment**: The party took short swords, hand crossbows, studded leather armor, rope and caltrops from the tower's upper chamber [ch 003 / 003.04].
+
+### Companions and guides
+- **Shuushar as guide**: Shuushar left the party to lead kuo-toa refugees. His imperfect map remains with the party, but his direct involvement is over [ch 009 / 009.06; ch 010 / 010.01].
+- **Buppido's fate**: In ch 012 the party decided they could abandon him on leaving Gracklstugh [ch 012 / 012.03]. That plan is superseded by ch 015, where he was revealed as a mad cultist who killed Yuk Yuk, erected a shrine and attacked the party. He was slain by Magic Missile [ch 015 / 015.06; ch 015 / 015.07].
+- **Pelek's restraint**: Pelek stayed bound and unharmed through the night, so the party won its bet and the feared host reclamation did not happen [ch 023 / 023.02].
+- **Stool's plea to find Rumpadump**: The party travelled to Rumpadump's location and spoke with him [ch 025 / 025.04].
+- **Stool and Rumpadump's companionship**: When the party checked on the two Myconids, both declined to rejoin [ch 030 / 030.05; ch 030 / npcs].
+- **Mercenary escort**: Nym and Kaelira escorted Daz to the surface as agreed, then departed [ch 053 / 053.05].
+
+### Gracklstugh (ch 018–027)
+- **The NDA negotiation**: The Non-Demonic Agreement was signed. Werz paid 1,100 gp and agreed to confidentiality [ch 018 / 018.05].
+- **Thorin's decision to enter the dreamscape**: Thorin experienced the vision and refused the offer [ch 025 / 025.07].
+- **The dragon egg's handoff**: The party confirmed they had already handed off Themberchaud's egg, so they no longer carry it as an incriminating item [ch 027 / 027.02].
+
+### Lost Tomb of Khaem and Neverlight Grove (ch 029–032)
+- **Brysis's imprisonment**: Brysis was destroyed after a millennium of confinement, which freed Dawnbringer [ch 029 / 029.01].
+- **Lost Tomb of Khaem exploration**: The main chamber and the decoy were fully explored and looted. No threats remain [ch 029 / 029.01; ch 029 / 029.03].
+- **Eldeth's trail-obscuring effort**: The drow pursuit was broken for now [ch 029 / 029.04].
+- **The fate of Sarith's infection**: Sarith transformed and died, confirming that the spore corruption he carried is terminal [ch 031 / 031.04; ch 031 / Memorable Moments].
+- **Zalthir's spore-induced madness**: Thorin's Lesser Restoration cured Zalthir's hoarding. Zalthir apologized and said the compulsion was inexplicable [ch 032 / 032.02].
+- **Daz's hallucinations from spores**: The hallucinations subsided after the vision ended and the party retreated [ch 032 / 032.02].
+
+### Blingdenstone (ch 034–048)
+- **The "tears" bet**: Settled by Thorin's promise of ten slimy silver pieces to Jimjar [ch 034 / 034.08].
+- **Entémoch's Boon**: The ritual was completed. It granted the ability to summon Earth Elementals and the Stone Skin buff, and lifted the boon's curse [ch 045 / 045.01].
+- **Cursed Elemental Gem**: The gem was confirmed no longer cursed after Entémoch's Doom was released. Gyrgum removed the cursed note from inventory [ch 045 / 045.03].
+- **Jimjar's bet about Thorin crossing the pit**: Thorin walked across the bridge rather than jumping, so the bet went his way [ch 046 / 046.05].
+- **Wererat scout's disappearance**: The scout was found frozen in terror [ch 046 / 046.06].
+- **Pickshine Miners' bridge construction**: The bridge was built and works, removing the pit as an obstacle [ch 046 / 046.04].
+- **The Pudding King's threat to reduce gnomekind to ooze**: The Pudding King dissolved when defeated [ch 047 / 047.08].
+- **The Pudding King's army command**: His death broke his control over the ooze army, and his allies were defeated [ch 047 / 047.09].
+- **Ooze Crisis in Traders' Grotto**: The swarm was pacified and is dispersing. The area should be clear within days to a week [ch 048 / 048.05].
+- **Psychic Static in the Hall of Melting Mirrors**: The party located the harmonic center and silenced the noise [ch 048 / 048.02].
+- **Structural Integrity of Support Beams**: The critical beam was secured, the miners healed, and Thorin honored [ch 048 / 048.03].
+- **Blingdenstone Council Negotiations**: All faction disputes were settled through compromise [ch 048 / 048.06].
+
+### Ilvara's camp (ch 051–053)
+- **Ilvara Mizzrym**: Killed when Gyrgum's Guiding Bolt triggered her radiant vulnerability. She exploded into poisonous spores [ch 051 / 051.06].
+- **Heart Fungus**: Destroyed by Thorin's Dawnbringer strikes [ch 051 / 051.02].
+- **House T'sarran Assault Team**: The outcome per member was:
+  - three guards incinerated by Fireball;
+  - the mage killed by Zalthir;
+  - the elite warrior retreated, leaving a threat behind [ch 051 / 051.04; ch 051 / 051.06].
+- **Asha Vandree's delusion**: Her belief ended with her death. Her theological writings were recovered [ch 053 / 053.02; ch 053 / 053.03].
+- **Ilvara's pursuit**: Ilvara's force was destroyed and her body looted. House T'sarran now knows she has disappeared [ch 053 / 053.03; ch 053 / 053.04].
+- **The Fungal Altar threat**: The heart fungus was harvested, its spore remnant burned, and the chamber cleared [ch 053 / 053.04].
+
+### Candlekeep (ch 059–070)
+- **Kalan's collaboration proposal**: The party and Kalan agreed to "merge all the things" through five work streams and a group debrief [ch 059 / 059.03; ch 059 / moment].
+- **The decoy key**: Confirmed non-magical. The party keeps it as a possible deception tool [ch 063 / 063.01].
+- **The Zhentarim threat in the High Tower**: All agents present are dead: two thugs and one assassin [ch 065 / 065.01; ch 065 / 065.02; ch 065 / NPCs].
+- **Zalthir's survival**: Gyrgum's *healing word* revived him from zero hit points [ch 065 / 065.01].
+- **Daz's near-death**: Gyrgum's healing restored him to forty hit points mid death saves [ch 065 / 065.02].
+- **Manshoon simulacra**: There were two, and both are now dead.
+  - **First simulacrum**: Destroyed by Zalthir. It reverted to snow and melted in the magma chamber [ch 069 / 069.02].
+  - **Second simulacrum**: Opened as a separate thread in ch 069 [ch 069 / 069.05]. In ch 070 a duplicate was thrown into the lava pit and confirmed dead [ch 070 / 070.02].
+- **The explosive fail-safe**: Nothing exploded, because the simulacrum was removed from the warded chamber before disposal [ch 070 / 070.02].
+- **The final door's riddle**: The door opened after Gyrgum spoke "a candle" with genuine intent [ch 070 / 070.03].
+- **Edvaldo's immediate threat**: The doppelganger fled toward the anti-magic barrier and is no longer in the chamber [ch 070 / 070.03].
+
+## NPC Current States
+| NPC | Status | Last Known Location | Disposition toward Party | Established |
+|---|---|---|---|---|
+| A'lai Aivenmore | Imprisoned | Candlekeep’s null magic prison | Grateful and resigned | [ch 067 / 067.02] |
+| Alaundo the Seer | Unknown | — | — | [ch 069 / 069.05] |
+| Alkrist | Imprisoned | Candlekeep prison | Hostile toward party; confessed under compulsion, named A'lai as mastermind | [ch 062 / npcs; ch 062 / 062.03] |
+| Aquatic Troll ⚠ | Alive | In the Darklake depths | Retreated after failing to capture a party member; claims it was “trying to be helpful” | [ch 011 / 011.06] |
+| Araumycos | Unknown | Circle of Masters | Named as Zuggtmoy’s groom in the wedding hymn; not yet seen | [ch 031 / 031.06; ch 031 / npcs] |
+| Asha Vandree | Alive | Fungal Altar | Devout to Lolth, now praying amid spores | [ch 051 / 051.06] |
+| A’lai Aivenmore ⚠ | Alive | — | Suspected of orchestrating toxin theft and sending messages; location unknown | [ch 060 / 060.08; ch 060 / 060.09] |
+| Baedora | Alive | Traveling with party | Fearful, hungry, silent | [ch 028 / 028.01] |
+| Bahamut | Unknown | Unknown | Platinum Dragon deity; communicated with Gyrgum, reminded him of patronage | [ch 049 / npcs] |
+| Batman (Familiar) ⚠ | Alive | With Daz | Neutral; scouting familiar, telepathically linked to Daz | [ch 038 / 038.04] |
+| Beholder Zombie ⚠ | Dead | On the bone pyramid islet | Destroyed by crossbow fire; its inability to understand Common noted | [ch 011 / 011.03] |
+| Blingdenstone ghosts ⚠ | Alive | Diggermattock Hall | Disappointed by minimal distraction, one objects to being used | [ch 046 / 046.01; ch 046 / npcs] |
+| Bloppblippodd | Dead | Altar of the Deep Father | Killed by her father; her death summoned Demogorgon | [ch 008 / NPCs] |
+| Bookwyrm (First Reader) | Dead | — | Disposition: murdered by Moziqodo; key stolen and delivered to A'lai | [ch 065 / NPCs; ch 065 / end] |
+| Bookwyrm (Skoda Vanaster) ⚠ | Alive | Bookwyrm's Office, Candlekeep | Hostile toward party; feigns cooperation but seeks to contain their investigation | [ch 062 / npcs; ch 062 / 062.03] |
+| Brannum Redmarch | Alive | On the party’s boat | Hostile but coerced into cooperation; resentful and seeking a share of treasure | [ch 011 / 011.01; ch 011 / 011.05; ch 011 / 011.07] |
+| Brother Khell-Vire ⚠ | Alive | Candlekeep | 200-year-old half-elf ex-shadow monk, wears faded under-robe, gives Zalthir cryptic note and trial | [ch 056 / 056.05] |
+| Brysis Of Khaem | Unknown | Lost Tomb of Khaem | Netherese sorcerer, tomb’s namesake, depicted in diorama | [ch 028 / npcs] |
+| Buppido | Dead | Whorlstone Caverns | Previously derro, now deceased; believed to be “the force of history” | [ch 018 / npcs] |
+| Chipgrin Goldwhisker | Alive | Blingdenstone | Favorable toward party; gifted Voucher of the Varmint | [ch 048 / 048.07] |
+| Clan Ironhead | Unknown | Gracklstugh | Pro-gnome; party hopes to strengthen them indirectly | [ch 021 / NPCs; ch 021 / 021.02] |
+| Clan Thrazgad | Unknown | Gracklstugh | Name inscribed on dragon rattle; unknown involvement | [ch 021 / NPCs; ch 021 / 021.03] |
+| Council of Savants | Unknown | Gracklstugh | Derro governing body; Buppido claims they are corrupt and failed to free derro | [ch 015 / 015.04] |
+| Daral Yashenti | Alive | Deneir's Sanctum, Candlekeep | Grateful toward party; cured and now devoted to studying sentient swords | [ch 062 / npcs; ch 062 / 062.05] |
+| Dasco Pickshine | Alive | Blingdenstone | Neutral; agreed to fair wages and sustainable mining | [ch 048 / 048.06] |
+| Dawnbringer | Alive | Pudding King’s Court corridor | Sentient sword, opposed Thorin’s jump, active in decision-making | [ch 046 / 046.05; ch 046 / npcs] |
+| Death Dog ⚠ | Unknown | Ritual Chamber | Unknown | [ch 024 / 024.04] |
+| Deep Gnome Guards ⚠ | Alive | Blingdenstone Caverns | Sincere, procedural | [ch 036 / 036.01] |
+| Deepking Tarngardt | Alive | Gracklstugh | Hostile to party; unaware they possess proof of his crimes | [ch 021 / NPCs; ch 021 / 021.02] |
+| Demogorgon | Unknown | Darklake, near Sloobludop | Hostile | [ch 009 / 009.01; ch 009 / NPCs] |
+| Derro Cultists ⚠ | Dead | Ritual Chamber | Hostile | [ch 024 / 024.03] |
+| Derro Guards ⚠ | Alive | Council Dungeon exit | Intimidated, believe Daz is a 20th-level drow archmage | [ch 021 / NPCs; ch 021 / 021.04] |
+| Derro Spies ⚠ | Unknown | Obelisk Chamber | Hostile | [ch 020 / 020.01; ch 020 / NPCs] |
+| Dorbo Diggermattock | Alive | Blingdenstone | Cautious toward party; appointed them to the Overbright, fears Daz’s influence | [ch 048 / 048.06; ch 048 / 048.07] |
+| Droki | Alive | Following his daily route through Whorlstone Tunnels; later, status not stated: Whorlstone Caverns (Known to both Stone Guard and Keepers of the Flame as the key to locating hidden information) [ch 018 / 018.01; ch 018 / npcs] | Unknown | [ch 016 / 016.02; ch 016 / NPCs] |
+| Drow Scouts ⚠ | Alive | Pursuing party | Trackers from Velkynvelve; lost scent after party’s Stealth check; hunting party likely nearby | [ch 005 / npcs; ch 005 / 005.05] |
+| Drow Spy ⚠ | Imprisoned | Inside bag of holding at Candlekeep | Shrunken, nicknamed Polly Pocket, under Glabbagool’s guard, hostile but psychologically broken | [ch 054 / 054.05; ch 054 / 054.06] |
+| Duergar Guard ⚠ | Alive | Gracklstugh docks | Deceived into believing the party are undercover agents; handed a caltrop as a symbol; rushing to inform Errde | [ch 027 / npcs; ch 027 / 027.04] |
+| Duergar Informant ⚠ | Alive | Clan Thrazgad Forge | Neutral (sold information, vanished) | [ch 026 / 026.03; ch 026 / npcs] |
+| Duergar Slaver (captured) ⚠ | Imprisoned | On the duergar keelboat with party | Knocked unconscious, to be interrogated; interested in profit, not heroism | [ch 010 / 010.03; ch 010 / NPCs] |
+| Earth Elemental ⚠ | Dead | — | Favorable toward party | [ch 048 / 048.01] |
+| Earth Elemental (first) ⚠ | Dead | Steadfast Stone | Hostile | [ch 042 / 042.03] |
+| Earth Elemental (second) ⚠ | Dead | Steadfast Stone | Hostile | [ch 042 / 042.05] |
+| Earth Elemental (third) ⚠ | Dead | Steadfast Stone | Hostile | [ch 042 / 042.06] |
+| Edvaldo ⚠ | Alive | Anti-magic zone, lower tower | Hostile (bound, resentful) | [ch 069 / 069.04] |
+| Eldeth Feldrun | Departed | Blingdenstone surface exit | Farewell, no further contact | [ch 055 / 055.01; ch 055 / npcs] |
+| Eldred | Alive | Triboar, Mountain’s Mouth inn | Fractured, dual-voiced, cared for by locals | [ch 055 / 055.04; ch 055 / npcs] |
+| Elian | Alive | — | Enthusiastic clerk, delivers Kalan’s paper, seeks Thorin’s endorsement | [ch 061 / 061.02] |
+| Elin | Alive | Daggerford | Silent, mentally twisted by an interior force | [ch 056 / 056.02] |
+| Entémoch | Unknown | — | Favorable toward party; sensed after Earth Elemental’s departure | [ch 048 / 048.01] |
+| Errde Blackskull | Alive | Gracklstugh docks | Will be informed by the guard that the party are at the docks and likely to pursue them | [ch 027 / npcs; ch 027 / 027.04] |
+| Fargas Rumblefoot | Alive | Unknown; later, status not stated: — (Provided tip about secret tomb; last survivor of his group) [ch 028 / npcs] | Cautious toward party; desperate to survive | [ch 007 / NPCs] |
+| Fembris Lancer | Alive | Deneir's Sanctum, Candlekeep | Neutral toward party; acting as their guard, unwitting food taster, witness to key handoff | [ch 062 / npcs; ch 062 / 062.05] |
+| Festrum | Alive | Beregost | Gnome innkeeper who believes "the wall remembers" | [ch 056 / 056.03] |
+| Fheminor Scrivenbark | Alive | —; later, status not stated: — (—) [ch 062 / npcs] | Visited apothecary for cold medicine before theft; described as “unfriendly girl gnome” by Nibbles | [ch 060 / 060.08] |
+| Field Ward Street Preacher ⚠ | Alive | Waterdeep, Field Ward | Obsessive, chants about kraken, recognized Daz | [ch 055 / 055.07; ch 055 / npcs] |
+| Flumph | Alive | With party | Emotionally drained; no longer satisfied by trauma dumps; seeks new trauma | [ch 018 / 018.03; ch 018 / npcs] |
+| Fuurm ⚠ | Alive | Traveling with party | Desperate, grateful, loyal to sister | [ch 028 / 028.01] |
+| Galeb Duhr ⚠ | Alive | Temple of the Rock | Amused and respectful toward party; impressed by Thorin’s humor | [ch 043 / 043.01] |
+| Galeb Duhr (first) ⚠ | Alive | Steadfast Stone | Neutral, bound to duty | [ch 042 / 042.04] |
+| Galeb Duhr (second) ⚠ | Alive | Steadfast Stone | Neutral, bound to duty | [ch 042 / 042.06] |
+| Galeb Duhr (third) ⚠ | Alive | Steadfast Stone | Neutral, bound to duty | [ch 042 / 042.06] |
+| Gartokkar Xundorn | Alive | Gartokkar's Residence | Cautiously satisfied (payment received, secret kept) | [ch 026 / 026.06; ch 026 / npcs] |
+| Gasbide | Alive | Circle of Builders, Neverlight Grove | Obsessively curious, supportive of Sovereign Phylo | [ch 030 / 030.05; ch 030 / npcs] |
+| Glabbagool | Alive | Upper tower chamber | Friendly, respectful | [ch 069 / 069.04] |
+| Glyphic Shroomlight | Alive | Temple of the Ruby in the Rough | Willing to bend burial rules to avoid haunting; permits interments in catacombs | [ch 037 / 037.03; ch 037 / npcs] |
+| Gnome Guards ⚠ | Alive | Blingdenstone Gate | Suspicious, then permissive | [ch 035 / 035.03; ch 036 / 036.01] |
+| Gorglak | Alive | West Cleft Exit | Hostile (bribed, but wary) | [ch 026 / 026.02; ch 026 / npcs] |
+| Gray Ghosts | Dead | Gracklstugh Passageway | Hostile (all five slain in ambush) | [ch 026 / 026.07; ch 026 / npcs] |
+| Grick Alpha ⚠ | Dead | — | — | [ch 030 / 030.03; ch 030 / npcs] |
+| Grinta Ironhead | Alive | Clan Ironhead Forge | Secretly offers party trade advantages if Deepking is removed; politically savvy | [ch 018 / npcs] |
+| Grula-Munga | Dead | Ritual Chamber | Hostile | [ch 024 / 024.03] |
+| Gurnik Tapfinger | Alive | Diggermattock Hall | Grateful and rewarding toward party | [ch 043 / 043.02] |
+| Hebopbe | Alive | Neverlight Grove | Infected by evil spores; indifferent to Phylo’s changes, focused on cultivation | [ch 031 / 031.02; ch 031 / npcs] |
+| Hemeth | Alive | On the party’s boat | Claims to “know a guy” for slave sales; advises entering Gracklstugh via docks | [ch 011 / 011.01; ch 011 / 011.07] |
+| Hgraam's apprentice ⚠ | Unknown | Cairngorm Cavern | Unknown; driven mad and presumably deceased, not seen | [ch 015 / 015.02] |
+| House T'sarran Elite Warrior ⚠ | Departed | Fungal Altar | Retreated with threat, “We will meet again” | [ch 051 / 051.06] |
+| House T'sarran Mage ⚠ | Dead | Fungal Altar | Killed by Zalthir after Fireball | [ch 051 / 051.04] |
+| House T'sarran Spy ⚠ | Alive | Candlekeep | Miniature drow, furious, imprisoned in Glabbagool’s care; constantly tries to kill him | [ch 056 / 056.04] |
+| Ilvara Mizzrym | Dead | Fungal Altar | N/A | [ch 051 / 051.06] |
+| Imbros | Dead | Velkynvelve | Drow Elite Warrior; corpse looted for poison and poisoned bolts | [ch 004 / npcs; ch 004 / 004.01] |
+| Imbros, the Drow Elite Warrior ⚠ | Dead | Guard tower lower chamber | Hostile; killed Prince Derendil and nearly stopped the escape | [ch 003 / npcs] |
+| Irony | Alive | — | Delivered basin of water to Alkrist during evidence destruction | [ch 061 / 061.07] |
+| Ixitxachitl ⚠ | Dead | Darklake, near Sloobludop | All three slain or driven off during ambush | [ch 009 / 009.04; ch 009 / NPCs] |
+| Jadger | Alive | Blingdenstone | Favorable toward party; saluted them at departure | [ch 048 / 048.07] |
+| Janussi | Dead | Candlekeep, crime scene | — | [ch 062 / npcs] |
+| Jezebel ⚠ | Alive | Sylvira’s quarters | Familiar, uses mage hand to open door, arranges seating | [ch 061 / 061.05] |
+| Jimjar | Departed | Blingdenstone (last known); later, status not stated: Unknown (Gnomish god who appeared in the prime material plane; Zalthir is disillusioned by his lack of boon) [ch 049 / npcs] | Unknown; vanished after revealing angelic immunities | [ch 048 / 048.07] |
+| Jorlan Duskryn | Alive | Fungal Altar | Hostile toward Ilvara, now wounded and furious | [ch 051 / 051.06] |
+| Juiblex | Unknown | Unknown | Hostile, declared intent to be reborn | [ch 047 / 047.10; ch 047 / npcs] |
+| Kaelira Duskryn | Alive | Fungal Altar | Allied to Daz, contracted protector | [ch 051 / 051.03; ch 051 / 051.06] |
+| Kalan Strongbranch | Alive | Investigator’s office | Relieved and eager to contribute | [ch 067 / 067.03] |
+| Kazook Pickshine | Alive | Kazook’s Chambers | Snake-oil salesman demeanor; protective of Bimble; secretive about spell gems | [ch 043 / 043.05; ch 043 / 043.06] |
+| Kazryn Nyantani | Alive | Southern Dining Hall; later, status not stated: — (Named by Sylvira as Janussi’s resentful former lover) [ch 061 / 061.05] | Distributed the poisoned gift; may have handled it after tampering | [ch 060 / 060.03; ch 060 / 060.06] |
+| Kei Tigersteel | Alive | Shrine of Oghma | Tasked with purifying Janussi’s body; spiritual leader of Candlekeep | [ch 059 / 059.01; ch 059 / npcs] |
+| Kestler | Alive | Triboar, near Mountain’s Mouth inn | Hopeful, trusts party to deliver note | [ch 055 / 055.04; ch 055 / npcs] |
+| Khell-Vire | Alive | Candlekeep; later, status not stated: Candlekeep (Described as “the best of the best” shadow monk trainer; letter obtained) [ch 055 / 055.07; ch 055 / npcs] | Scholar who specifically requested to study Gyrgum | [ch 054 / 054.06] |
+| Kuo-toan Refugees ⚠ | Alive | Deep in the Darklake | Fleeing destruction, carrying forgotten statues, no interest in trade | [ch 009 / 009.05; ch 009 / NPCs] |
+| Leuwin | Alive | Oak Tree Apothecary | Distracted by A'lai, unaware of theft | [ch 061 / 061.07] |
+| Loobamub | Alive | Neverlight Grove, Circle of Hunters | Ally of Basidia; tasked the party with killing the grick alpha | [ch 029 / 029.07] |
+| Maerith of the Ford | Alive | Daggerford | Desperate, seeking help for her daughter | [ch 056 / 056.02] |
+| Malfire | Unknown | — | Depicted in painting; no direct interaction | [ch 055 / 055.03; ch 055 / npcs] |
+| Manshoon | Unknown | — | Mentioned as A'lai’s master; no direct appearance | [ch 064 / 064.04; ch 064 / npcs] |
+| Manshoon (Simulacrum) ⚠ | Alive | Inside Candlekeep, security control room | Disposition: hostile, depleted, unaware of depository’s true contents | [ch 065 / 065.03; ch 065 / NPCs; ch 065 / end] |
+| Manshoon (Simulacrum, first) ⚠ | Dead | Magma chamber | Hostile | [ch 069 / 069.02] |
+| Manshoon (Simulacrum, second) ⚠ | Alive | Upper tower chamber | Neutral, bargaining | [ch 069 / 069.05] |
+| Master Archivist Philemon ⚠ | Alive | Candlekeep | Clinical specialist in sentient artifacts; begins therapy with Dawnbringer | [ch 056 / 056.06] |
+| Master Kenshi ⚠ | Alive | Candlekeep | Blind half-elf monk who tests Zalthir, acknowledges his unique combat style | [ch 056 / 056.05] |
+| Master Thief (Uskvil) ⚠ | Dead | Obelisk Chamber | Hostile | [ch 020 / 020.04; ch 020 / NPCs] |
+| Matron Mother of House T’sarran ⚠ | Unknown | Unknown | Ruling for 200 years; orchestrating surveillance of Daz | [ch 054 / 054.04] |
+| Milo Goodbarrel | Unknown | — | Author and painter; painting in Mirabar and Waterdeep; no direct contact | [ch 055 / 055.03; ch 055 / 055.06; ch 055 / npcs] |
+| Miss Hollypocket | Alive | Hollypocket's Apartment | Provided testimony on Janussi’s final day and the glowing vision of Sylvira | [ch 058 / 058.05; ch 058 / NPCs] |
+| Modrons ⚠ | Alive | House of Mechanus | Mechanically synchronized, deliberating | [ch 067 / 067.05] |
+| Moziqodo | Dead | — | Disposition: killed by party in prior session; delivered Bookwyrm’s key to A'lai | [ch 065 / NPCs; ch 065 / end] |
+| Narrak | Dead | Ritual Chamber | Hostile | [ch 024 / 024.03] |
+| Neheedra Duskryn | Dead | Neheedra's Lair | Hostile | [ch 042 / 042.01; ch 042 / npcs] |
+| Nibbles | Alive | Oak Tree Apothecary | Witnessed Alkrist entering shop and making mess | [ch 061 / 061.07] |
+| Nomi Pathshutter | Alive | Diggermattock Hall | Exhausted, initially racist but now respectful; tasked party with investigating vibrations | [ch 043 / 043.04] |
+| Nym Duskryn | Alive | Fungal Altar | Allied to Daz, permitted Kaelira to attack Jorlan | [ch 051 / 051.06] |
+| Ogrémoch | Unknown | Temple of the Rock | Banished from the temple, but his influence lingers in the rock blight | [ch 043 / 043.01] |
+| Orrin Glass | Alive | Southern Dining Hall | Deaf in one ear, highly observant; saw paper burning and gift tampering | [ch 060 / 060.07] |
+| Pelek | Dead | Blingdenstone catacombs | Spirit has passed on after burial; remains interred | [ch 037 / 037.03; ch 037 / npcs] |
+| Philemon (Master Archivist) | Alive | Candlekeep | Avowed monk specializing in sentient artifacts; assigned to Thorin and Dawnbringer | [ch 054 / 054.06] |
+| Pizwog | Alive | Immortal Chambers, West Inner Ward | Disposition unknown; gave Gyrgum his tract and shuffled away | [ch 057 / 057.01] |
+| Plinki | Dead | Obelisk Chamber | Hostile | [ch 020 / 020.01; ch 020 / NPCs] |
+| Ploopploopeen | Unknown | Altar of the Deep Father | Killed his daughter; last seen before Demogorgon’s emergence | [ch 008 / NPCs] |
+| Prince Derendil | Dead | Guard tower lower chamber | Hostile (until death); sacrificed himself to hold the doorway | [ch 003 / npcs] |
+| Prince Livid | Dead | Throne room | Hostile until death | [ch 047 / 047.09; ch 047 / npcs] |
+| Princess Ebonmire | Dead | Throne room | Hostile until death | [ch 047 / 047.09; ch 047 / npcs] |
+| Queenie | Alive | Janussi's Chambers | Cat who provided crucial testimony; dismissive of the party | [ch 058 / 058.06; ch 058 / NPCs] |
+| Rishaal | Alive | Waterdeep, Rishaal’s Pageturners | Observant, explains painting’s impact on sales | [ch 055 / 055.06; ch 055 / npcs] |
+| Ront | Dead | Velkynvelve | Killed by vrock while attacking it to prove his worth | [ch 004 / 004.03; ch 004 / Memorable Moments] |
+| Rumpadump | Alive | Neverlight Grove | Distrusts Phylo, advocates nomadism, has prepared escape routes | [ch 031 / 031.02; ch 031 / npcs] |
+| Sarith Kzekarit | Dead | Garden of Welcome | Transformed into a drow spore servant and killed by Eldeth and Jimjar | [ch 031 / 031.04; ch 031 / npcs] |
+| Senni Diggermattock | Alive | Blingdenstone | Favorable toward party; supported wererat territorial compromise | [ch 048 / 048.06] |
+| Sergeant ⚠ | Departed | Traders’ Grotto | Neutral; nervous, focused on narrative control | [ch 038 / 038.01] |
+| Shal | Unknown | Gracklstugh | Unknown; new advisor to the Deepking, never met by Hgraam | [ch 015 / 015.02] |
+| Shambling Mound ⚠ | Alive | Festering Fissure | Tending the lichen garden; engaged in combat with the party | [ch 043 / 043.08; ch 043 / 043.10] |
+| Shoor Vandree | Alive | Velkynvelve upper tower quarters | Hostile, Ilvara’s current favorite lieutenant, resented by Jorlan | [ch 002 / 002.03; ch 002 / NPCs] |
+| Shuushar the Awakened | Departed | Deep in the Darklake with kuo-toa refugees | Neutral toward party, focused on new mission | [ch 009 / 009.06; ch 009 / NPCs] |
+| Sister Yvenne | Alive | Candlekeep (location unknown) | Threatened to confiscate bookplates; not present | [ch 057 / 057.01] |
+| Sovereign Basidia | Alive | Neverlight Grove | Trusting of the party, deeply concerned about colony corruption | [ch 031 / 031.02; ch 031 / npcs] |
+| Sovereign Phylo | Alive | Neverlight Grove | Revered by Gasbide as prophet of a “Great Awakening” | [ch 030 / 030.05; ch 030 / npcs] |
+| Spanner | Alive | House of Mechanus | Methodical and cautious | [ch 067 / 067.05] |
+| Spectator ⚠ | Dead | Silken Paths; later, status not stated: Obelisk Chamber (Hostile) [ch 020 / 020.01; ch 020 / 020.02] | Hostile; slain by the party | [ch 007 / NPCs] |
+| Specters ⚠ | Dead | Destroyed in sarcophagi chamber | Four slain, but will reform every 24 hours | [ch 028 / npcs] |
+| Spiderbait | Alive | Candlekeep | Seeking innocuous work; traveling with party | [ch 054 / 054.01] |
+| Sprig Summerfoot | Alive | Southern Dining Hall | Tasted all feast dishes; recommended Orrin as observant witness | [ch 060 / 060.06] |
+| Stonespeaker Hgraam | Alive | Cairngorm Cavern | Grateful (closed cavern to consult stones) | [ch 026 / 026.04; ch 026 / npcs] |
+| Stool | Alive | Neverlight Grove | Happy, declined to rejoin adventuring | [ch 030 / 030.05; ch 030 / npcs] |
+| Stroud School Polemicist ⚠ | Alive | Mirabar market | Hostile, attempted conversion; gave pamphlet | [ch 055 / 055.03; ch 055 / npcs] |
+| Sylvira Savikas | Alive | Investigator’s office | Grateful and helpful | [ch 067 / 067.03] |
+| Tadric | Alive | Candlekeep’s null magic prison | Cooperative and supportive | [ch 067 / 067.02] |
+| Teles Ahvoste | Alive | —; later, status not stated: — (—) [ch 062 / npcs] | Named by Sylvira as long-time rival, passed over for Keeper of Tomes | [ch 061 / 061.05] |
+| Thangus Ironhead | Alive | Clan Ironhead Forge | Publicly dismisses Whorlstone Caverns as children’s tales; leader of Clan Ironhead | [ch 018 / npcs] |
+| The Bard ⚠ | Alive | Beregost | Traveling performer who sings of Kenku and Stroud | [ch 056 / 056.03] |
+| The Flying Iron Owlbear | Alive | Near magma chamber | Observational, amused | [ch 069 / 069.04] |
+| The Ghost (Pelek) ⚠ | Alive | Possessed Derro Spy | Allied (now controlling spy) | [ch 020 / 020.04; ch 020 / NPCs] |
+| The Human Scholar ⚠ | Alive | Beregost | Chanting with syncopated wrongness; Daz records his pattern | [ch 056 / 056.03] |
+| The Pudding King | Dead | Throne room, dissolved | Hostile until death | [ch 047 / 047.08; ch 047 / npcs] |
+| The Trapper ⚠ | Dead | Western Underdark tunnels | Killed by Zalthir after grappling Gyrgum | [ch 021 / NPCs; ch 021 / 021.06] |
+| The Village Priest ⚠ | Alive | Daggerford | Proudly "pure Bahamutian," pragmatic about Stroudite inscriptions | [ch 056 / 056.01] |
+| The Voice ⚠ | Unknown | Inside gilded sarcophagus | Feminine telepathic presence offering aid; source unknown | [ch 028 / npcs] |
+| The Wraith ⚠ | Alive | Inside gilded sarcophagus | Bound to tomb, hostile, resistant to fire, retreated into sarcophagus | [ch 028 / npcs] |
+| Themberchaud | Alive | Gracklstugh lair | Deluded belief that the party are his agents; sees them as loyal and efficient | [ch 027 / npcs; ch 027 / 027.04] |
+| Topsy | Alive | Traveling with party | Reluctant to return to Blingdenstone; wererat; active companion | [ch 004 / npcs; ch 005 / 005.02] |
+| Topsy and Turvy | Missing | Unknown | Could wear splint mail and carry weapons; disappeared; party has not confirmed return | [ch 018 / npcs] |
+| Turvy | Alive | Traveling with party | Reluctant to return to Blingdenstone; wererat; active companion | [ch 004 / npcs; ch 005 / 005.02] |
+| Unseen Figure ⚠ | Unknown | Ritual Chamber | Unknown | [ch 024 / 024.04] |
+| Valen | Alive | Fungal Altar | Grateful and terrified, seeking protection from the party | [ch 049 / npcs; ch 049 / 049.03] |
+| Vareth | Alive | Oval Theatre | Engaged in academic disputation, unaware of murder investigation | [ch 060 / 060.01] |
+| Violet Fungus ⚠ | Alive | Festering Fissure | Incapacitated by Hypnotic Pattern; still present and hostile | [ch 043 / 043.10] |
+| Vooshadi Moonriver | Alive | Deneir’s Sanctum | Guarding the party’s office; moon elf scribe who initially blocked them | [ch 059 / 059.01; ch 059 / npcs] |
+| Wererat scout ⚠ | Missing | House of Horrors corridor | Frozen in terror, last seen by Chipgrin, fate unknown | [ch 046 / 046.06; ch 046 / npcs] |
+| Werz Saltbaron | Alive | Werz's Place of Work | Smooth merchant; paid NDA; holds secret knowledge of assassins and spell gems | [ch 018 / npcs] |
+| Whistler | Unknown | Caravan trails north of Yartar | Rumored to be a Kenku; behavior and identity unconfirmed | [ch 055 / 055.04; ch 055 / npcs] |
+| Xinaya | Dead | Garden of Welcome | Died after begging for death; warned Daz about Zuggtmoy | [ch 031 / 031.05; ch 031 / npcs] |
+| Yestabrod | Dead | Garden of Welcome | Slaughtered by Zalthir; larval creature that commanded fungal servants and regenerated via corpse explosions | [ch 031 / 031.04; ch 031 / npcs] |
+| Yrberop | Alive | Neverlight Grove | Infected; dances to discordant noise, chants of Zuggtmoy’s wedding | [ch 031 / 031.02; ch 031 / npcs] |
+| Yuk Yuk | Alive | With party | Grateful but demanding; now a traveling guide | [ch 007 / NPCs; ch 007 / 007.05] |
+| Zhentarim Assassin ⚠ | Dead | — | Disposition: killed by Thorin after failing to find the sapphire | [ch 065 / NPCs; ch 065 / end] |
+| Zhentarim Thugs ⚠ | Dead | — | Disposition: both killed; one by acid, one by A'lai | [ch 065 / NPCs; ch 065 / end] |
+| Zubriska | Alive | Near obelisk chamber, leading Council of Savants | Hostile, leader of psionic group | [ch 017 / 017.04; ch 017 / NPCs] |
+| Zuggtmoy | Alive | Circle of Masters; later, status not stated: Unknown (Active, encroaching via twisted fungi) [ch 047 / 047.10; ch 047 / npcs] | Appears leading a wedding procession toward the party; same demon Thorin encountered before | [ch 031 / 031.06; ch 031 / npcs] |
+
+## Active Quests & Open Threads
+### Candlekeep Vault: immediate situation (end of ch 070)
+
+**Book of Vile Darkness**
+- The party holds the sentient artifact. Daz has begun reading it and is receiving information about the Underdark from a potentially untrustworthy source. Its corruption remains an active threat [ch 070 / 070.04; ch 070 / items].
+- The notes do not record what the book has revealed so far.
+
+**Surviving Avowed Readers**
+- The last remaining Avowed Readers are expected to arrive shortly. They will not permit the party to leave with the Book of Vile Darkness, so a confrontation is imminent [ch 070 / 070.04; ch 070 / locations].
+
+**Alaundo's prophecy crystals**
+- Edvaldo destroyed two of the six crystals. Gyrgum has secured the remaining four [ch 070 / 070.03; ch 070 / items].
+- The four surviving crystals hold unrevealed prophecies that are still active and likely tied to the party [ch 070 / 070.03; ch 070 / items].
+- One prophecy has already been heard. A voice foretold a dwarf (Eldeth) returning to the Hall of Stone "with demon names in her mouth," alongside a giant-raised dwarf (Thorin) and a shadow-walker (Zalthir) [ch 069 / 069.04].
+
+**Edvaldo Sedanur (doppelgänger)**
+- He fled toward the anti-magic barrier, so his immediate leverage is gone [ch 070 / 070.03].
+- He is still at large.
+- His claim that the High Tower is "over 500 feet" tall remains unverified [ch 068 / 068.03; ch 068 / npcs].
+
+**Vault's destruction mechanism**
+- A note in the Vault says the means to destroy the collection are stored in the chamber above. The party has not located or accessed it [ch 068 / 068.05].
+
+**Banked anti-magic boon**
+- Miirym agreed to widen the anti-magic band to thirty feet for ten minutes. The party banked this to use later against Manshoon [ch 068 / 068.04; ch 068 / locations].
+- Its status after ch 070 is not stated in the notes.
+- Miirym's true name is Vydykyq. Her ultimate purpose remains unclear [ch 068 / npcs].
+
+**Modron tools debt**
+- Spanner lent the modron tools on one condition: after the descent, Zalthir and Glabbagool must submit to a mechanical symmetry study [ch 067 / 067.05].
+
+**Thorin's fall into the well**
+- At the end of ch 067, Thorin's survival and location were unknown [ch 067 / 067.06].
+- The notes have no later bullet on this.
+
+### Manshoon
+
+**Vengeance**
+- The second simulacrum was thrown into the lava. Its final words promised eternal vengeance, so the party now faces the wrath of the original Manshoon [ch 070 / 070.02; ch 070 / npcs].
+
+**Simulacrum "factory"**
+- Gyrgum observed, "There must be a whole factory of these things" [ch 069 / 069.04].
+
+**Agents and confederates**
+- A'lai Aivenmore removed books for eleven years on Manshoon's orders. The lists were delivered by a courier with a metal hand concealed under a glove; this courier is unidentified [ch 064 / 064.04].
+- A'lai never disclosed the true nature of the depository's contents to Manshoon. That secret is a bargaining chip [ch 065 / 065.03].
+- A'lai is now confined in Candlekeep's null magic prison [ch 067 / 067.02].
+
+**Orrery of the Astronomicon**
+- Sylvira saw three non-staff individuals inside the Orrery [ch 067 / 067.03].
+
+**Candlekeep's wards**
+- The wards have been proven broken: Daz's fireball got through, and Manshoon breached them again with wall of force [ch 065 / 065.01; ch 065 / locations].
+- The eternal chant of prophecies has stopped for the first time in memory [ch 064 / 064.01].
+
+**High Tower keys**
+- The party holds both real keys (one with Gyrgum, one hidden in Glabbagool), the fake key, and the sapphire. The keys are deliberately kept apart [ch 065 / 065.03; ch 065 / items; ch 065 / end].
+
+### Janussi murder: loose ends
+
+**Investigation outcome**
+- Alkrist confessed under Zone of Truth to poisoning the gift and implicated A'lai. Consequences remain undecided [ch 061 / 061.07].
+- Alkrist is imprisoned and his safe sealed [ch 062 / 062.03; ch 062 / 062.04].
+- The party was weighing several institutional responses: hand the evidence to Kalan, blackmail the suspects, or demand rare books [ch 061 / 061.08].
+
+**Kalan Strongbranch's report**
+- Kalan has been reinstated. His report may still implicate Bookwyrm (Skoda Vanaster) [ch 062 / 062.02; ch 062 / 062.03; ch 062 / npcs].
+- Moziqodo later murdered Bookwyrm [ch 063 / 063.02; ch 063 / 063.05].
+
+**Sylvira's son**
+- Tadric: "Sylvira, someone needs to tell Sylvira that her son is dead." The party deferred this as an Ember Grapple problem [ch 064 / 064.01].
+- Sylvira still does not know the party killed Moziqodo [ch 067 / 067.03].
+
+**Daral Yashenti**
+- He believed he would die at midnight from midnight tears. Gyrgum delayed casting Lesser Restoration [ch 061 / 061.01].
+- No later outcome appears in the notes.
+
+**Unexplained details**
+- The three missing doves from A'lai's cage [ch 060 / 060.09].
+- The identity of the Dragonborn who stole the toxin [ch 060 / 060.08].
+- Who sent the helmed horrors, and how they sensed the key [ch 062 / 062.06].
+- The locked Deneir's Sanctum [ch 062 / 062.05].
+- The duration discrepancy in Sylvira's impersonation [ch 061 / 061.02; ch 061 / 061.05; ch 061 / 061.07].
+- The gray cat's nature [ch 057 / 057.06].
+- The hooded Avowed seen at dinner [ch 057 / 057.02].
+- The candle on the marble statue [ch 058 / 058.02].
+
+### Daz's origins and drow politics
+
+**Who wants Daz**
+- Powerful factions paid both to protect Daz and to extract him alive [ch 053 / 053.04; ch 053 / 053.05].
+- House T'sarran was paid to abduct him. The party holds a signet ring from the mage, which serves as proof and could enable forgery [ch 053 / 053.04].
+- House T'sarran is using Daz as bait to identify his unknown benefactor [ch 054 / 054.04].
+- A'lai deduces that only House Baenre could fund eleven years of pursuit. He admits this is deduction, not proof [ch 067 / 067.02].
+- The House T'sarran elite warrior retreated with a threat [ch 051 / 051.04; ch 051 / 051.06].
+
+**Lineage clues**
+- "Daz'issin" was a name mothers gave sons they hoped would survive. Daz suspects it is his true name [ch 056 / 056.07].
+- The fourth seat of Menzoberranzan was "struck," which implies political censorship rather than destruction [ch 056 / 056.07].
+- Candlekeep's records on one house are sealed [ch 056 / 056.07].
+
+**The captive spy ("Polly Pocket")**
+- She is shrunken, kept in a bag of holding, and guarded by Glabbagool. She believes she can escape [ch 054 / 054.05; ch 054 / 054.06].
+- Glabbagool has reminded Zalthir to check on her [ch 059 / 059.06].
+
+**Jorlan Duskryn**
+- He is alive, injured and furious [ch 051 / 051.06].
+
+**Daz's counter-account**
+- Daz plans to write his own version of the War of the Dragons [ch 054 / 054.06].
+
+### Demons and spreading madness
+
+**Zuggtmoy**
+- She plans to wed or possess Araumycos [ch 032 / 032.01; ch 032 / 032.02].
+- She has claimed Neverlight Grove [ch 032 / 032.03].
+- She told the party she intends to "claim this outpost" [ch 044 / 044.03; ch 044 / Memorable Moments].
+- Zuggtmoy–Lolth syncretism is spreading; the ceremonial bundle under Ilvara's platform is physical evidence [ch 053 / 053.04].
+- An Ilvara letter mentions "the bride" and a meeting that never occurred [ch 053 / 053.03].
+- Xinaya urged Daz to warn Menzoberranzan [ch 031 / 031.05].
+
+**Juiblex**
+- A voice declared Juiblex will be reborn and consume Zuggtmoy's "banquet" [ch 047 / 047.10].
+
+**Surface madness**
+- Eldred's two voices, the Field Ward preacher, and the Beregost scholar all share a syncopated chant pattern [ch 055 / 055.04; ch 056 / 056.03].
+- The same chant was heard on the wind approaching Candlekeep [ch 056 / 056.07].
+- Elin's phrase: "The wells are not wells anymore" [ch 056 / 056.02].
+- Elin draws a six-pointed star repeatedly. The same symbol appears on rubbings from Daggerford and is the Black-Banner Five marker [ch 056 / 056.02; ch 056 / 056.07].
+
+**Faerzress "blink"**
+- This is the party's working hypothesis for the outbreak of madness [ch 028 / 028.01; ch 017 / 017.04].
+
+**Lolth stirring**
+- Daz suspects Lolth is stirring, and that her absence is being exploited [ch 049 / 049.01; ch 049 / 049.03].
+
+### Party members and companions
+
+**Thorin and Dawnbringer**
+- Dawnbringer is in a two-phase therapy: first remembering daylight without fighting, then grieving [ch 056 / 056.06].
+- She says her therapy has stalled. She is delighted by Daral's interest [ch 062 / 062.01; ch 062 / 062.05].
+- She wants to add bling to her new scabbard [ch 045 / 045.04].
+- Eldeth swore that Thorin's clan will embrace him after she warns Mithral Hall and Gauntlgrym [ch 054 / 054.01].
+
+**Zalthir**
+- He holds a letter of introduction for shadow-monk training with Khell-Vire [ch 055 / 055.07].
+- Cryptic note found: "Zalthir, the Underdark, until the Bone King sings" [ch 056 / 056.05].
+
+**Gyrgum**
+- Vareth and Khell-Vire both want to study him [ch 054 / 054.06].
+- He founded the "Gyrgumite School," whose idea Vareth labels the "strong-weak hypothesis" [ch 057 / 057.01; ch 057 / 057.05].
+- Bahamut reminded him: "don't forget who's buttering your bread" [ch 049 / 049.01].
+- He holds the Bone Die (now inert) and the lucky foot charm [ch 048 / 048.05; ch 026 / 026.07].
+
+**Daz**
+- He holds the Voucher of the Varmint, recognized by wererats from Blingdenstone to Menzoberranzan [ch 048 / 048.07].
+- He recovered a Robe of the Archmagi. Attunement is pending a long rest and may displace an attuned item [ch 070 / 070.01; ch 070 / items].
+
+**Glabbagool**
+- He is Zalthir's sidekick, and eyes are visible on Zalthir's arm [ch 059 / 059.06].
+- He is undergoing pre-monk training [ch 056 / 056.04; ch 056 / 056.05].
+- He has an unasked question owed to him at Candlekeep [ch 054 / 054.05].
+- He showed latent hive-telepathy [ch 048 / 048.01; ch 048 / 048.05; ch 048 / 048.07].
+
+**Jimjar**
+- He has angelic-level immunities. He is not a normal gnome, and his nature is a major mystery [ch 048 / 048.07].
+- He is on the Candlekeep research list [ch 053 / 053.06].
+
+### Candlekeep research mission
+- The party plans to investigate Daz's background, House T'sarran, Jimjar, Bahamut, and intelligent-weapon trauma [ch 053 / 053.06].
+
+### Surface rumors (Triboar)
+- **The Ardragon:** a kenku seen north of Yartar, possibly linked to Whistler [ch 055 / 055.04].
+- **Kestler's note:** to be delivered to a southern temple whose fire still burns and whose keeper has been missing for three years [ch 055 / 055.04].
+- **Mortal Agency doctrine:** Gyrgum was handed a pamphlet on it [ch 055 / 055.03].
+
+### Underdark leftovers (dormant, last noted)
+
+**Gracklstugh**
+- The Derro High Council, Gray Ghosts and Deepking want the party dead [ch 027 / 027.04].
+- The Council of Savants' plot is unresolved [ch 026 / 026.07].
+- The party concealed the Deepking–Assassin's Guild link from Errde [ch 021 / 021.02; ch 021 / 021.03].
+- Hemeth's invitation is still open [ch 008 / 008.01].
+
+**Debts and odds**
+- Brannum's magic items were never received [ch 012 / 012.02].
+- The goblin guides' 20 gp debt [ch 007 / 007.05].
+- The Thrazgad dragon rattle [ch 021 / 021.03].
+- The unreadable obsidian-scale phrase [ch 022 / 022.04].
+- Narrak's last word: "sacrificed" [ch 024 / 024.03].
+- Pelek's obsidian ring [ch 016 / 016.01].
+
+**Blingdenstone**
+- Its new order is uncertain [ch 048 / 048.06].
+- Valimor Brightgem's scabbard venture [ch 045 / 045.04].
+- Entémoch's favor [ch 048 / 048.01].
+
+## Party Current Situation
+### Location and immediate situation (end of ch 070)
+- The party is in the obsidian tower in the volcanic cavern beneath Candlekeep. The last door, sealed by Alaundo's riddle, now stands open, and the inner book chamber beyond it holds the Book of Vile Darkness on a podium [ch 070 / 070.03].
+- The dragon's ten-minute anti-magic field had already been active for six minutes when ch 070 opened, so its protection is running out [ch 070 / 070.02].
+- The surviving Avowed Readers are expected to arrive within minutes. They will be pleased that the hidden books were found, but the party "will not be able to walk away with artifacts of such extraordinary power" without Candlekeep's authorities noticing [ch 070 / 070.04].
+- Gyrgum's summary at session end: "We made a few irrevocable choices in this one." and "Yes, we threw Manshoon into the pit, and I opened the door." [ch 070 / 070.04].
+
+### What they just did
+- **Second Manshoon simulacrum:** He wanted the book behind the door, not the prophecies. He passed the party the riddle's answer, "a candle." Zalthir punched and grappled him, carried him out of the tower into the dragon's anti-magic field, and threw him into the lava pit. Zalthir did this knowing the death might destroy the prophecy gems. The simulacrum promised Manshoon's revenge as he fell [ch 070 / 070.01; ch 070 / 070.02].
+- **Edvaldo:** The bound "Avowed Reader" was a doppelganger who served Manshoon. He escaped his ropes, warned the party of the simulacrum's explosive fail-safe, and smashed two prophecy crystals with owlbear debris. Thorin frightened him with a Menacing Attack. Zalthir grappled him and dragged him toward the stairs. He then shifted into halfling form and fled toward the anti-magic barrier, still loose at session end [ch 070 / 070.02; ch 070 / 070.03].
+- **The door:** Gyrgum spoke "A candle." and the door opened [ch 070 / 070.03].
+- **The book:** Daz reached it first with Misty Step. He used a Minor Illusion to make it appear to crumble to ash, and Edvaldo believed the book was destroyed. Daz then turned its pages with Mage Hand and resisted its corruption [ch 070 / 070.03; ch 070 / 070.04].
+  - The sentient book offered Daz a choice: knowledge of himself, or knowledge of how to defeat the demons. He chose the demons.
+  - It began revealing information about events in the Underdark. Daz sensed that the narrator cannot be trusted.
+  - The exact content is to be resolved when play resumes [ch 070 / 070.04].
+
+### Party status
+- **Group name:** The notes conflict, and the GM should confirm.
+  - "Ember Grapple" was formally adopted [ch 064 / 064.01].
+  - The next chapter's notes say the name is "Not stated; known as guest seekers of the Avowed" [ch 065 / end].
+  - Earlier names include Ember Vanguard [ch 026 / 026.01] and the provisional Ash Enclave [ch 037 / 037.01].
+- **Level:** 9th [ch 065 / spells; ch 047 / 047.10]. Note the conflict with "seventh level" [ch 048 / 048.07].
+- **Standing:** They are deputized agents of Candlekeep, recognized by Tadric and Kalan [ch 067 / 067.02; ch 067 / 067.03].
+
+### Per character
+- **Daz:**
+  - Recovered a legendary black Robe of the Archmagi from the first simulacrum. He wears it for style. Its powers need attunement at the next long rest and may require dropping an attuned item such as his Ring of Protection [ch 070 / 070.01].
+  - Has the Book of Vile Darkness in front of him, concealed behind the illusory ashes, and is reading it [ch 070 / 070.04].
+  - His sinus-pressure sensitivity is ongoing [ch 069 / 069.01].
+- **Gyrgum:**
+  - He is the verified Reader who opened the door [ch 069 / 069.04; ch 070 / 070.03].
+  - He holds the four surviving prophecy crystals and has a Guiding Bolt readied against Edvaldo [ch 070 / 070.03].
+  - Previously he held the real High Tower key, the fake key, and the stolen sapphire [ch 065 / 065.03].
+- **Zalthir:** Last seen grappling and dragging Edvaldo downstairs, away from the chamber and the gems [ch 070 / 070.03].
+- **Thorin:**
+  - Wields Dawnbringer, who is displeased with events [ch 070 / 070.03].
+  - Stands between Edvaldo and the crystals [ch 070 / 070.03].
+- **Glabbagool:**
+  - Was guarding the bound Edvaldo in the anti-magic zone [ch 069 / 069.04].
+  - Holds one real High Tower key inside his body [ch 065 / 065.03].
+  - The ch 070 evidence does not mention him.
+
+### Prophecy crystals
+- Of the ten gems, four had already played. Six unplayed stones were left [ch 070 / 070.01].
+- Edvaldo smashed two of them. Four survive, held by Gyrgum, and they may concern the party [ch 070 / 070.03].
+- One known prophecy names Eldeth, Thorin, and Zalthir [ch 069 / 069.05].
+
+### Next intentions
+- Learn and evaluate what the book reveals about the demons [ch 070 / 070.04].
+- Deal with the fleeing Edvaldo [ch 070 / 070.03].
+- Face the arriving Readers while holding the book and crystals [ch 070 / 070.04].
+- Expect the real Manshoon's vengeance [ch 070 / 070.02].
+
+## Audit: Tracking Claims
+### tracking.txt
+
+- "Escape from Velkynvelve — drow outpost" — `SUPPORTED`
+  - The party has escaped the drow outpost of Velkynvelve by breaching the slave pen and securing the guard tower armory [ch 003 / 003.01; ch 003 / 003.04].
+  - The party escaped from Velkynvelve during the vrock chaos, abandoning gear and fleeing into the Underdark [ch 004 / 004.03; ch 004 / Memorable Moments].
+  - Escape from Velkynvelve confirmed [ch 004 / 004.03].
+- "Return to the Underdark — second expedition" — `SUPPORTED`
+  - The party has returned to the Underdark after escaping Velkynvelve and is now traveling through its tunnels [ch 004 / 004.04; ch 005 / 005.06].
+- "Gather components for Vizeran's ritual — dark heart talisman" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gather components for Vizeran's ritual — dark heart talisman — Not referenced `[ch 068 / 068.05]`
+- "Place the dark heart talisman — final ritual setup" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Place the dark heart talisman — final ritual setup — Not referenced `[ch 068 / 068.05]`
+- "Perform Vizeran's ritual — demon lord summoning" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Perform Vizeran's ritual — demon lord summoning — Not referenced `[ch 068 / 068.05]`
+- "Final battle against demon lords — Against the Demon Lords" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Final battle against demon lords — Against the Demon Lords — Not referenced `[ch 068 / 068.05]`
+- "Jorlan's Gambit — gate left unlocked" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Jorlan Duskryn offers to leave the slave pen gate unlocked and create a distraction during guard change [ch 002 / 002.05; ch 002 / Memorable Moments]
+  - begun, not shown done: Jorlan's Gambit — gate left unlocked — Not referenced `[ch 068 / 068.05]`
+- "Reach Sloobludop — kuo-toa settlement" — `SUPPORTED`
+  - The party reached Sloobludop, the kuo-toa settlement, as evidenced by their arrival at the Altar of the Deep Father and docks [ch 008 / 008.01; ch 008 / locations].
+  - The party reached Sloobludop and witnessed Demogorgon’s arrival, fleeing as the village was destroyed [ch 009 / 009.01; ch 009 / Memorable Moments]
+- "Reach Gracklstugh — duergar city" — `SUPPORTED`
+  - The party arrives at Gracklstugh, the duergar city, as confirmed by their arrival at the docks and discussion of its advantages [ch 011 / 011.07].
+  - The party arrives at Gracklstugh, the duergar city, after traveling across the Darklake. `[ch 012 / 012.01]`
+  - The party has reached Gracklstugh, as confirmed by all events, NPCs, and locations in this chapter. `[ch 013 / 013.01; ch 013 / Locations]`
+  - The party has reached Gracklstugh, as confirmed by their activities in the city, interactions with Errde, Themberchaud, and Gartokkar, and travel through its districts [ch 014 / 014.02; ch 014 / 014.06; ch 014 / locations].
+  - The party reached Gracklstugh, returning to the Darklake District after exploring the Whorlstone Tunnels [ch 017 / 017.05].
+  - The party is confirmed to be in Gracklstugh, meeting with Errde Blackskull, Werz Saltbaron, and Clan Ironhead [ch 018 / 018.01; ch 018 / 018.04; ch 018 / 018.07].
+  - The party has reached Gracklstugh, as confirmed by their presence in its underground caverns and interactions with its factions. `[ch 019 / 019.01; ch 019 / locations]`
+  - The party has reached Gracklstugh, the duergar city, having operated within it and exited through its dungeon complex. `[ch 021 / 021.01; ch 021 / 021.05]`
+  - The party has reached Gracklstugh, as they are actively navigating tunnels beneath it and interacting with its denizens. `[ch 022 / 022.01; ch 022 / locations]`
+  - The party reached Gracklstugh, emerging from the Whorlstone Caverns and confronting the sealed city gates. `[ch 025 / 025.08]`
+  - The party has reached Gracklstugh, having passed through the West Cleft Exit and navigated its districts [ch 026 / 026.01; ch 026 / 026.02].
+  - The party reached Gracklstugh and interacted with Themberchaud and the Duergar guard at the docks. `[ch 027 / 027.01; ch 027 / 027.04]`
+  - The party has learned of Gracklstugh’s chaos and Ilvara’s ambush there, confirming their knowledge of the location [ch 049 / 049.03].
+- "Reach Neverlight Grove — myconid colony" — `SUPPORTED`
+  - The party has arrived at Neverlight Grove, the myconid colony [ch 029 / 029.05].
+  - The party reached Neverlight Grove and reported to Basidia [ch 030 / 030.05].
+  - The party has reached Neverlight Grove, the myconid colony [ch 031 / 031.02].
+  - The party reached Neverlight Grove, witnessed its corruption, and fled as it was consumed by Zuggtmoy’s evil `[ch 032 / 032.03]`.
+  - The party has learned Ilvara’s descent into madness began in Neverlight Grove, where she communed with a fungal entity [ch 049 / 049.03].
+- "Reach Blingdenstone — deep gnome settlement" — `SUPPORTED`
+  - The party has reached Blingdenstone’s vicinity after escaping the Oozing Temple, with Jimjar claiming the detour was a shortcut [ch 034 / 034.08].
+  - The party has reached Blingdenstone, entering through its main gate and then being escorted through its internal caverns to Diggermattock Hall [ch 035 / 035.02; ch 036 / 036.01; ch 036 / 036.04].
+  - The party has reached Blingdenstone, as confirmed by their presence in Diggermattock Hall, the Temple of the Ruby in the Rough, the catacombs, and the Traders' Grotto [ch 037 / 037.01; ch 037 / 037.02; ch 037 / 037.03; ch 037 / 037.05]
+  - The party has reached Blingdenstone, the deep gnome settlement, as confirmed by their presence in the Traders’ Grotto, Blingdenstone Chamber, and all subsequent interactions [ch 038 / 038.01; ch 038 / 038.06; ch 038 / locations].
+  - The party has reached Blingdenstone, as confirmed by their presence in its bureaucratic hub, negotiations with Dorbo and Chipgrin, and planning for the Pudding King operation [ch 039 / 039.01; ch 039 / 039.05; ch 039 / npcs].
+  - The party has reached Blingdenstone, as confirmed by their activities at the Foaming Mug Tavern, Cultivation Cave, and Rockblight, all within the settlement’s vicinity [ch 040 / 040.01; ch 040 / 040.02; ch 040 / 040.03].
+  - The party reached Blingdenstone, as they are active within Diggermattock Hall and interacting with its leaders and citizens. `[ch 043 / 043.02; ch 043 / 043.03; ch 043 / 043.04]`
+  - The party has reached Blingdenstone, as confirmed by all interactions with Senni, Dorbo, Valimor, Starlace, and preparation for battle `[ch 045 / 045.01; ch 045 / 045.02; ch 045 / 045.03; ch 045 / 045.04]`.
+  - The party has reached Blingdenstone, as confirmed by the battle plan briefing at Diggermattock Hall and all subsequent events occurring within the settlement [ch 046 / 046.01; ch 046 / locations].
+  - The party has reached Blingdenstone and completed all major interactions there, including council mediation and departure. [ch 048 / 048.06; ch 048 / 048.07]
+  - The party has reached and departed Blingdenstone, finalizing plans to escape the Underdark [ch 049 / 049.01].
+- "Reach Gravenhollow — stone giant library" — `SUPPORTED`
+  - Daz’s fireball detonated successfully on the High Tower walkway, proving Candlekeep’s magical wards had been broken [ch 065 / Memorable Moments].
+  - Manshoon’s simulacrum breached Candlekeep’s inner sanctum by shattering the High Tower’s magical door [ch 065 / Memorable Moments].
+  - The real High Tower key held by Tadric was voluntarily given to Gyrgum [ch 065 / NPCs; ch 065 / end].
+  - The second real High Tower key, taken from Moziqodo, was stripped from A'lai and hidden inside Glabbagool [ch 065 / 065.03; ch 065 / end].
+  - The stolen sapphire is now in Gyrgum’s possession and bound to the real key he holds [ch 065 / items; ch 065 / end].
+  - A'lai Aivenmore was captured, bound, and is in the party’s custody [ch 065 / end].
+  - The Zhentarim assassin was killed by Thorin and his body searched [ch 065 / end].
+  - Both Zhentarim thugs are dead [ch 065 / end].
+  - Bookwyrm is dead, killed by Moziqodo [ch 065 / end].
+  - Moziqodo is dead, killed by the party [ch 065 / end].
+  - Kalan Strongbranch is “to the wind,” fled and whereabouts unknown [ch 065 / end].
+  - Zalthir and Daz are conscious and recovered [ch 065 / end].
+  - Reach Gravenhollow — stone giant library — The party has descended beneath Candlekeep and entered the Obsidian Tower; Gravenhollow is not referenced or reached `[ch 068 / locations]`
+  - Reach Gravenhollow — stone giant library — The party has reached and is now inside the tower of Candlekeep, which contains the Obsidian Door and is explicitly identified as a library of dangerous books, matching the description of Gravenhollow as a stone giant library. [ch 069 / locations; ch 069 / npcs]
+  - Reached Gravenhollow — stone giant library `[ch 070 / 070.04]`
+  - Reached Candlekeep — outer ward arrival `[ch 070 / 070.01]`
+  - Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched) `[ch 070 / 070.04; ch 070 / items]`
+  - Manshoon-pursuit thread — activated regardless of escape outcome `[ch 070 / 070.02; ch 070 / npcs]`
+  - Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence `[ch 070 / 070.04]`
+  - Daz and Yvenne — field-perception expertise confirmed (post-arc) `[ch 070 / 070.04]`
+  - Sylvira recruited (Path B) — dispel payoff and cryptogram shortcut `[ch 070 / 070.04]`
+  - Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7) `[ch 070 / 070.04]`
+  - Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7) `[ch 070 / 070.04]`
+  - Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7) `[ch 070 / 070.04]`
+  - Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage `[ch 070 / 070.04]`
+  - Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8) `[ch 070 / 070.04]`
+  - Polly Pocket released as messenger — OOTA endgame thread flagged `[ch 070 / 070.04]`
+  - Walking-permit medallions worn — wight-safe at Jewel of the Styx `[ch 070 / 070.04]`
+  - Second High Tower key held — door opened from outside (Session 6) `[ch 070 / 070.04]`
+  - Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden `[ch 070 / 070.04]`
+  - Party named guest seekers of the Avowed — Inner Ward access ceremony `[ch 070 / 070.04]`
+  - Cryptogram recovered — six-clue text transcribed from High Tower Library `[ch 070 / 070.04]`
+  - Manshoon arrival announced — keep under siege `[ch 070 / 070.04]`
+  - Iron Owlbear found dead — Manshoon already in the Vault `[ch 070 / 070.04]`
+  - Echo 1 activated — surface contamination prophecy `[ch 070 / 070.04]`
+  - Echo 2 activated — wedding / Zuggtmoy prophecy `[ch 070 / 070.04]`
+  - Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named) `[ch 070 / 070.04]`
+  - Echo 4 activated — Jimjar / Callarduran witness prophecy `[ch 070 / 070.04]`
+  - Janussi murder — crime scene forensic reveals (poison, heart post-mortem, no defensive wounds) `[ch 070 / 070.04]`
+  - Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use `[ch 070 / 070.04]`
+  - Alkrist as killer — party identifies the poisoner `[ch 070 / 070.04]`
+  - Disguise rosetta cracked — milestone event, level-up to 9 `[ch 070 / 070.04]`
+  - Ward-drop vision sequence — per-PC hallucinations (Session 6) `[ch 070 / 070.04]`
+  - Echo 1 — prophecy names surface-contamination field-effect directly `[ch 070 / 070.04]`
+  - Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+  - Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+  - Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+  - Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+  - Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+  - Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+  - Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- "Reach Mantol-Derith — Zhentarim outpost" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Reach Mantol-Derith — Zhentarim outpost — Not referenced `[ch 068 / 068.05]`
+- "Reach Menzoberranzan — City of Spiders" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Reach Menzoberranzan — City of Spiders — Not referenced `[ch 068 / 068.05]`
+- "Reach the Wormwrithings — purple worm territory" — `SUPPORTED`
+  - The party reached and entered the Medusa’s chamber, a key location in Velkynvelve, a drow outpost. `[ch 041 / 041.07; ch 041 / locations]`
+- "Reach the Labyrinth — maze tunnels" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party plans to escape Velkynvelve via webs and the waterfall pool, with sabotage of spools and lift planned [ch 002 / 002.06]
+  - begun, not shown done: The party is being tracked by drow scouts; pursuit level is now four, with the threat of capture if it reaches five [ch 005 / 005.06].
+  - begun, not shown done: Reach the Labyrinth — maze tunnels — Not referenced `[ch 068 / 068.05]`
+- "Retrieve Gromph Baenre's grimoire — Sorcere" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Retrieve Gromph Baenre's grimoire — Sorcere — Not referenced `[ch 068 / 068.05]`
+- "Obtain purple worm egg — worm nursery" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Obtain purple worm egg — worm nursery — Not referenced `[ch 068 / 068.05]`
+- "Obtain beholder central eye — Vast Oblivium" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Obtain beholder central eye — Vast Oblivium — Not referenced `[ch 068 / 068.05]`
+- "Obtain six angel feathers — Gallery of Angels" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Obtain six angel feathers — Gallery of Angels — Not referenced `[ch 068 / 068.05]`
+- "Obtain goristro heart — Yeenoghu's hunt" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Obtain goristro heart — Yeenoghu's hunt — Not referenced `[ch 068 / 068.05]`
+- "Obtain timmask mushrooms — demon footprint spores" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has encountered fungal spores and infection, but has not yet obtained timmask mushrooms [ch 049 / 049.02].
+  - begun, not shown done: Obtain timmask mushrooms — demon footprint spores — Not referenced `[ch 068 / 068.05]`
+- "Obtain demon lord blood or ichor — component collection" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Obtain demon lord blood or ichor — component collection — Not referenced `[ch 068 / 068.05]`
+- "Eldeth Feldrun — return to Gauntlgrym or honor her memory" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Eldeth’s fate is not yet determined; she expresses relief at the possibility of managing infection but has not returned to Gauntlgrym or been honored [ch 049 / npcs].
+  - begun, not shown done: Eldeth has departed for Gauntlgrym and promised Thorin will be embraced by her clan, but the audience has not yet occurred [ch 054 / 054.01]
+  - begun, not shown done: Eldeth Feldrun — return to Gauntlgrym or honor her memory — confirmed as next goal [ch 063 / 063.06].
+  - begun, not shown done: Eldeth Feldrun — return to Gauntlgrym or honor her memory — Not referenced `[ch 068 / 068.05]`
+- "Shuushar — guide to Sloobludop" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Shuushar is traveling toward Sloobludop, his home, and is distressed by Faerzress; he has not yet arrived [ch 004 / npcs; ch 005 / 005.06].
+  - begun, not shown done: Shuushar — guide to Sloobludop — Not referenced `[ch 068 / 068.05]`
+- "Stool — return to Neverlight Grove" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Stool hopes to be taken to Neverlight Grove; he is currently with the party and has not yet reached it [ch 004 / npcs; ch 005 / 005.01].
+  - begun, not shown done: Stool wishes to return to Neverlight Grove, but the party’s current goal is to investigate Rumpadump and assassins, not to return [ch 018 / 018.06].
+  - begun, not shown done: Stool’s request to return to Neverlight Grove is noted but not acted upon; thread initiated but not progressed. `[ch 021 / 021.05]`
+  - begun, not shown done: The party now intends to return to Neverlight Grove with Stool to help Rumpadump, fulfilling his request. `[ch 025 / 025.04]`
+  - begun, not shown done: Stool’s goal to return to the Neverlight Grove is active and the party plans to go there next. `[ch 027 / 027.05; ch 027 / 027.06]`
+  - begun, not shown done: Stool — return to Neverlight Grove — Not referenced `[ch 068 / 068.05]`
+- "Rumpadump — return to Neverlight Grove" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Rumpadump, the myconid sprout, is located in the Whorlstone Caverns near dancing myconids; the party has agreed to find him but has not yet reached him [ch 018 / 018.06].
+  - begun, not shown done: The party has been reminded by Stool to rescue Rumpadump, but has not yet traveled to his location or opened the cell [ch 024 / 024.04].
+  - begun, not shown done: The party intends to return to Neverlight Grove to help Rumpadump, who fears the infection has spread to his kin. `[ch 025 / 025.04]`
+  - begun, not shown done: Rumpadump’s goal to return to the Neverlight Grove is active and aligned with Stool’s. `[ch 027 / 027.05; ch 027 / 027.06]`
+  - begun, not shown done: Rumpadump — return to Neverlight Grove — Not referenced `[ch 068 / 068.05]`
+- "Deliver Werz Saltbaron's gems — Kazook Pickshine in Blingdenstone" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has received five empty spell gems from Werz and now intends to deliver them to Kazook Pickshine in Blingdenstone, but has not yet traveled there [ch 018 / 018.06].
+  - begun, not shown done: The “fungal wedding celebration” has been named as a location for ingredient recovery, but the event itself has not been encountered [ch 035 / 035.04].
+  - begun, not shown done: Deliver Werz Saltbaron's gems — Kazook Pickshine in Blingdenstone — Not referenced `[ch 068 / 068.05]`
+- "Droki delivery interception — Whorlstone Tunnels" — `SUPPORTED`
+  - The party intercepted and eliminated Droki’s cultist group, who were part of the Derro operation in the Whorlstone Tunnels [ch 024 / 024.03].
+- "Ylsa Henstak's investigation — surface-world currency source" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Ylsa Henstak's investigation — surface-world currency source — Not referenced `[ch 068 / 068.05]`
+- "Find Entémoch's Boon — Blingdenstone outskirts" — `SUPPORTED`
+  - The party reached and activated Entémoch’s Boon by discovering the summoning circle and completing the first sacrifice. `[ch 044 / 044.08; ch 044 / tracking.txt]`
+  - Entémoch's Boon was located and activated at the ritual site, granting Earth Elemental summoning and Stone Skin `[ch 045 / 045.01]`.
+  - Entémoch's Boon has been located and utilized, as the Earth Elemental is imbued with its power and summoned to assist the party [ch 046 / 046.01; ch 046 / items].
+- "Cleanse the Steadfast Stone — Rockblight" — `SUPPORTED`
+  - The party completed the hallowing ritual by placing the Ruby spell gem into the menhir of the Steadfast Stone [ch 042 / 042.02].
+  - The Steadfast Stone was hallowed via gem placement [ch 042 / 042.02].
+  - Steadfast Stone hallowed [ch 042 / 042.02].
+  - The Steadfast Stone (temple) was cleansed of Ogrémoch’s corruption by the party’s actions, confirmed by the Galeb Duhr. `[ch 043 / 043.01]`
+- "Encounter with the Pudding King — Blingdenstone" — `SUPPORTED`
+  - The party has encountered the Pudding King, identified him as the source of the ooze threat, and observed him on his slime-covered throne [ch 038 / 038.04].
+  - The party has encountered the Pudding King during his monologue and initiated the assault on his throne room [ch 046 / 046.09; ch 046 / npcs].
+  - The party encountered and defeated the Pudding King in the throne room of Blingdenstone [ch 047 / 047.01; ch 047 / npcs].
+  - The party confronted and defeated the Pudding King in Blingdenstone. [ch 048 / 048.01]
+- "Battle for Blingdenstone — ooze incursion" — `SUPPORTED`
+  - The party battled the ooze incursion at Traders’ Grotto and pacified the swarm. [ch 048 / 048.04; ch 048 / 048.05]
+- "Burrow Warden Jadger's tasks — lay gnome spirits to rest" — `SUPPORTED`
+  - Burrow Warden Jadger’s task of laying gnome spirits to rest has begun; Pelek’s interment counts as the first completed task [ch 037 / 037.03; ch 037 / 037.04]
+  - Burrow Warden Jadger’s task of laying two gnome spirits to rest was completed, as he thanked the party and offered boons. `[ch 043 / 043.03]`
+  - The party interacted with Burrow Warden Jadger, who saluted them at departure. [ch 048 / 048.07]
+- "Retrieve Pelek's remains — Blingdenstone catacombs" — `SUPPORTED`
+  - Pelek’s remains have been retrieved and interred in the Blingdenstone catacombs [ch 037 / 037.03]
+- "Return Sladis Vadir — Emerald Enclave scout" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Return Sladis Vadir — Emerald Enclave scout — Not referenced `[ch 068 / 068.05]`
+- "Return Rystia Zav — Harper spy" — `SUPPORTED`
+  - The party encountered and resolved interactions with Rystia Zav (implied by context of surface-world awareness and diplomatic recognition). [ch 048 / 048.07]
+- "Locate Khalessa Draga — Lords' Alliance deep cover operative" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Locate Khalessa Draga — Lords' Alliance deep cover operative — Not referenced `[ch 068 / 068.05]`
+- "Activate or disable the Maze Engine — Labyrinth" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Activate or disable the Maze Engine — Labyrinth — Not referenced `[ch 068 / 068.05]`
+- "Xazax the Eyemonger — beholder encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Xazax the Eyemonger — beholder encounter — Not referenced `[ch 068 / 068.05]`
+- "Zuggtmoy's fetid wedding — Araumycos confrontation" — `SUPPORTED`
+  - Reach Gravenhollow — stone giant library — The party has descended beneath Candlekeep and entered the Obsidian Tower; Gravenhollow is not referenced or reached `[ch 068 / locations]`
+- "Fraz-Urb'luu's gem — Mantol-Derith conflict" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Fraz-Urb'luu's gem has not been mentioned or encountered [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: Fraz-Urb'luu's gem — Mantol-Derith conflict — Not referenced `[ch 068 / 068.05]`
+- "Stonespeaker Hgraam audience — stone giant leader" — `SUPPORTED`
+  - The party had an audience with Hgraam, the stone giant leader, and received the Stonespeaker Crystal. `[ch 015 / 015.02]`
+  - The party has acquired the stone giant statue and ritual texts to present to Stonespeaker Hgraam, fulfilling the requirement for an audience [ch 023 / 023.01; ch 024 / 024.04].
+- "Velkynvelve — drow outpost, slave pen" — `SUPPORTED`
+  - The drow outpost of Velkynvelve has been breached; the slave pen door was opened, and the guard tower was overrun [ch 003 / locations].
+  - The party is actively exploring and combatting threats within Velkynvelve, the drow outpost. `[ch 041 / 041.01; ch 041 / 041.07]`
+- "Sloobludop — kuo-toa town on the Darklake" — `SUPPORTED`
+  - The party reached Sloobludop, the kuo-toa town on the Darklake, confirmed by their presence at the altar, docks, and Ploopploopeen’s hut [ch 008 / locations].
+  - The party was present at Sloobludop, witnessed its destruction, and escaped from its shores [ch 009 / 009.01; ch 009 / Locations]
+- "Gracklstugh — duergar city, City of Blades" — `SUPPORTED`
+  - The party reaches Gracklstugh, the duergar city, known as the City of Blades, with explicit mention of its Blade Bazaar and duergar laws [ch 011 / locations; ch 011 / 011.07].
+  - The party is present in Gracklstugh, the duergar city, known as the City of Blades. `[ch 012 / 012.01; ch 012 / locations]`
+  - Gracklstugh is confirmed as the duergar city where the party operates; they are in the Darklake District [ch 017 / 017.05].
+  - Gracklstugh, the duergar city, is the current setting, with political tensions, clan rivalries, and the Deepking’s rule confirmed [ch 018 / 018.02; ch 018 / 018.04].
+  - Gracklstugh is confirmed as the duergar city where the party operated and departed. `[ch 021 / locations]`
+  - The party is operating within Gracklstugh’s subterranean network, confirmed by multiple encounters with derro and duergar-associated threats. `[ch 022 / 022.01; ch 022 / locations]`
+  - The party is at Gracklstugh, specifically at its sealed gates, after emerging from the Whorlstone Caverns. `[ch 025 / 025.08]`
+  - The party is in Gracklstugh, the duergar city, and has interacted with its factions, guards, and districts [ch 026 / 026.01; ch 026 / 026.02; ch 026 / 026.03].
+  - The party was in Gracklstugh, navigating its industrial districts, gates, and docks. `[ch 027 / locations; ch 027 / 027.01]`
+- "Neverlight Grove — myconid colony" — `SUPPORTED`
+  - The party has arrived at Neverlight Grove, the myconid colony [ch 029 / 029.05].
+  - The party is present in Neverlight Grove and interacted with its Circles [ch 030 / 030.05].
+  - The party has reached Neverlight Grove, the myconid colony [ch 031 / 031.02].
+  - Neverlight Grove is confirmed as a myconid colony now fully corrupted by Zuggtmoy `[ch 032 / 032.03]`.
+  - Neverlight Grove has been reached previously and is being revisited; the party plans to retrieve ingredients there [ch 039 / 039.09; ch 039 / locations].
+- "Blingdenstone — deep gnome settlement" — `SUPPORTED`
+  - Blingdenstone is reached and explored in detail [ch 035 / 035.02; ch 036 / 036.04].
+  - Blingdenstone has been reached, as the entire chapter occurs within its locations [ch 037 / 037.01; ch 037 / 037.02; ch 037 / 037.03; ch 037 / 037.05]
+  - Blingdenstone, the deep gnome settlement, is confirmed as the current location through multiple scenes, NPCs, and locations [ch 038 / 038.01; ch 038 / 038.06; ch 038 / locations].
+  - Blingdenstone is confirmed as the party’s location, with multiple scenes occurring in Diggermattock Hall and interactions with its leaders. `[ch 043 / 043.02; ch 043 / 043.03; ch 043 / 043.04]`
+  - The party is actively operating within Blingdenstone (Pickshine and Whiteshell Mines), confirming presence in the deep gnome settlement. `[ch 044 / 044.04; ch 044 / 044.05; ch 044 / tracking.txt]`
+  - Blingdenstone is the current location, with multiple NPCs, locations, and events centered there `[ch 045 / locations]`.
+  - The party was in Blingdenstone, the deep gnome settlement, during the battle with the Pudding King [ch 047 / 047.01; ch 047 / locations].
+  - The party has fully engaged with Blingdenstone, including political resolution and departure. [ch 048 / 048.06; ch 048 / 048.07]
+- "Whorlstone Tunnels — beneath Gracklstugh" — `SUPPORTED`
+  - The Whorlstone Tunnels were identified by Errde Blackskull as a possible hiding place for the Empty-Scabbard Killers, establishing their relevance as a location [ch 014 / 014.02].
+  - The party entered the Whorlstone Tunnels, confirmed its location, and are now navigating its faerzress-lit caverns. `[ch 015 / 015.05]`
+  - The party actively explored the Whorlstone Tunnels, encountering the Dark Pool, fungi forest, cracked wall, and obelisk chamber [ch 016 / locations; ch 017 / locations].
+  - The party is preparing to descend into the Whorlstone Caverns, having discussed its dangers and Derro traps [ch 018 / 018.01; ch 018 / 018.06].
+  - The party has reached the Whorlstone Tunnels, navigating its halls and confronting factions within. `[ch 019 / 019.01; ch 019 / locations]`
+  - The party is actively traversing the Whorlstone Tunnels beneath Gracklstugh, encountering multiple chambers and derro cultists. `[ch 022 / 022.01; ch 022 / locations]`
+  - The party has operated within the Whorlstone Tunnels, clearing the ritual chamber and recovering key items [ch 024 / 024.04].
+  - The party completed their time in the Whorlstone Tunnels, securing all evidence and departing after three days. `[ch 025 / 025.08]`
+- "Darklake — Underdark waterway" — `SUPPORTED`
+  - The party is in the Darklake, the Underdark waterway, as they are at its docks, witness its churning waters, and the creature beneath it [ch 008 / locations; ch 008 / 008.03].
+  - The party is actively navigating the Darklake, surviving its hazards and encountering its dangers and refugees [ch 009 / 009.03; ch 010 / 010.01]
+  - The party navigates the Darklake, encountering its dangers including the bone pyramid islet, beholder zombie, aquatic zombies, and aquatic troll [ch 011 / locations].
+  - The party traveled across the Darklake for four days, survived a stirge ambush, and landed at the Hidden Beach. `[ch 027 / 027.05; ch 027 / 027.06]`
+- "Gravenhollow — stone giant library" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not reached Gravenhollow. `[ch 044 / 044.08; ch 044 / tracking.txt]`
+  - begun, not shown done: The party has arrived at Candlekeep, which is the stone giant library, but has not yet engaged with Gravenhollow’s stone giants [ch 054 / 054.06]
+  - begun, not shown done: Gravenhollow — stone giant library — Not referenced `[ch 068 / 068.05]`
+- "Araj — Vizeran's tower" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Araj — Vizeran's tower — Not referenced `[ch 068 / 068.05]`
+- "Mantol-Derith — Underdark trade outpost" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not traveled to Mantol-Derith; they only received reports about it from the Gracklstugh merchant [ch 040 / 040.02].
+  - begun, not shown done: Mantol-Derith — Underdark trade outpost — Not referenced `[ch 068 / 068.05]`
+- "Menzoberranzan — drow city, City of Spiders" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Menzoberranzan — drow city, City of Spiders — Not referenced `[ch 068 / 068.05]`
+- "Wormwrithings — purple worm tunnel network" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Wormwrithings — purple worm tunnel network — Not referenced `[ch 068 / 068.05]`
+- "Vast Oblivium — beholder lair chasm" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vast Oblivium — beholder lair chasm — Not referenced `[ch 068 / 068.05]`
+- "Labyrinth — maze tunnels, Baphomet's domain" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Labyrinth — maze tunnels, Baphomet's domain — Not referenced `[ch 068 / 068.05]`
+- "Gallery of Angels — petrified angel cavern" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gallery of Angels — petrified angel cavern — Not referenced `[ch 068 / 068.05]`
+- "Araumycos — vast fungal entity cavern" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Araumycos — vast fungal entity cavern — Not referenced `[ch 068 / 068.05]`
+- "Gauntlgrym — dwarf fortress, Bruenor's seat" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not reached Gauntlgrym. `[ch 044 / 044.08; ch 044 / tracking.txt]`
+  - begun, not shown done: Gauntlgrym — dwarf fortress, Bruenor's seat — confirmed as next goal [ch 063 / 063.06].
+  - begun, not shown done: Gauntlgrym — dwarf fortress, Bruenor's seat — Not referenced `[ch 068 / 068.05]`
+- "Sorcere — drow arcane academy in Menzoberranzan" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sorcere — drow arcane academy in Menzoberranzan — Not referenced `[ch 068 / 068.05]`
+- "Yggmorgus — Zuggtmoy's mushroom tower" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yggmorgus — Zuggtmoy's mushroom tower — Not referenced `[ch 068 / 068.05]`
+- "Overlake Hold — Dunglorrin Torune, Gracklstugh fortress" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Overlake Hold mentioned in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Overlake Hold — Dunglorrin Torune, Gracklstugh fortress — Not referenced `[ch 068 / 068.05]`
+- "Cairngorm Cavern — stone giant home in Gracklstugh" — `SUPPORTED`
+  - The party arrived at Cairngorm Cavern and met Hgraam. `[ch 015 / 015.01]`
+  - The party has visited Cairngorm Cavern, met Hgraam, and delivered the two-headed statue [ch 026 / 026.04].
+- "Silken Paths — spider web chasm" — `SUPPORTED`
+  - The party has arrived at the Silken Paths, a spider web chasm [ch 006 / 006.04; ch 006 / locations].
+  - The party traversed the Silken Paths, as confirmed by their escape from giant spiders and passage through the web network [ch 007 / 007.01; ch 007 / locations].
+- "Oozing Temple — flooded dungeon" — `SUPPORTED`
+  - The party explored and escaped the Oozing Temple, encountering oozes, a black pudding, a pit trap, and a treasure-filled fountain [ch 034 / locations; ch 034 / 034.08].
+- "Lost Tomb of Khaem — Netherese tomb" — `SUPPORTED`
+  - The party reached and explored the Lost Tomb of Khaem, entering its shrine, descending its staircase, battling specters in the sarcophagi chamber, and discovering its hidden lower vault. [ch 028 / 028.04; ch 028 / 028.05; ch 028 / 028.06]
+  - The party has explored the Lost Tomb of Khaem, including the sarcophagus and decoy chamber [ch 029 / 029.01; ch 029 / 029.03].
+- "Troglodyte Lair — Wormwrithings encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not entered the Wormwrithings; they only heard of duergar executions and surface coins, unrelated to purple worms [ch 040 / 040.02].
+  - begun, not shown done: Troglodyte Lair — Wormwrithings encounter — Not referenced `[ch 068 / 068.05]`
+- "Worm Nursery — purple worm egg chamber" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party became aware of the purple worm egg chamber’s existence indirectly through the Darklake’s predatory threat, but no egg was sought or found [ch 008 / 008.03].
+  - begun, not shown done: Worm Nursery — purple worm egg chamber — Not referenced `[ch 068 / 068.05]`
+- "Hook Horror Lair — gnoll hunt encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Hook Horror Lair — gnoll hunt encounter — Not referenced `[ch 068 / 068.05]`
+- "Spiral of the Horned King — Labyrinth entrance maze" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Spiral of the Horned King — Labyrinth entrance maze — Not referenced `[ch 068 / 068.05]`
+- "Ilvara Mizzrym — drow commander, first contact in Velkynvelve" — `SUPPORTED`
+  - Ilvara Mizzrym is identified as the drow commander who holds the party’s confiscated belongings, including Thorin’s pendant [ch 003 / items].
+  - Ilvara Mizzrym, drow commander, was confronted and attacked in the Fungal Altar [ch 050 / NPCs; ch 050 / 050.04].
+- "Jorlan Duskryn — drow elite warrior, potential aid to escaping prisoners" — `SUPPORTED`
+  - Jorlan Duskryn has been identified as a resentful, scarred warrior who may sabotage Ilvara [ch 049 / npcs; ch 049 / 049.03].
+- "Shoor Vandree — Ilvara's lieutenant, antagonist" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: First contact with Shoor Vandree occurs as he is present in Ilvara’s quarters as her favored lieutenant [ch 002 / 002.03; ch 002 / NPCs]
+  - begun, not shown done: Shoor Vandree — Ilvara's lieutenant, antagonist — Not referenced `[ch 068 / 068.05]`
+- "Asha Vandree — junior priestess, potential betrayal of Ilvara" — `SUPPORTED`
+  - Asha Vandree has been identified and observed; the party has initiated contact and deception toward her [ch 049 / npcs; ch 049 / 049.05].
+  - Asha Vandree, junior priestess, was encountered and allied with the party to eliminate Ilvara [ch 050 / NPCs; ch 050 / 050.02].
+- "Buppido — derro prisoner, true nature as killer revealed" — `SUPPORTED`
+  - Buppido’s true nature as a derro killer was revealed when he attacked the party at his shrine and was slain. `[ch 015 / 015.06; ch 015 / 015.07]`
+  - The party has discovered the black obelisk in the Whorlstone Tunnels and observed its function in the ritual. `[ch 019 / items]`
+- "Prince Derendil — quaggoth prisoner, delusion exposed" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: First contact with Prince Derendil occurs as he demands dignity and is threatened by Ilvara [ch 002 / 002.03; ch 002 / NPCs]
+  - begun, not shown done: Prince Derendil’s delusion as a cursed elven prince is presented but not exposed or confirmed in this chunk; he is dead [ch 003 / npcs].
+  - begun, not shown done: Prince Derendil — quaggoth prisoner, delusion exposed — Not referenced `[ch 068 / 068.05]`
+- "Eldeth Feldrun — shield dwarf prisoner, fate determined" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: First contact with Eldeth occurs as she finds a comb and occasionally bets with Jimjar [ch 002 / 002.02; ch 002 / NPCs]
+  - begun, not shown done: Udhask’s bones were recovered, but Pelek’s remains have not been mentioned or sought [ch 040 / 040.05].
+  - begun, not shown done: Eldeth Feldrun — shield dwarf prisoner, fate determined — Not referenced `[ch 068 / 068.05]`
+- "Jimjar — deep gnome prisoner, first contact" — `SUPPORTED`
+  - Jimjar, a deep gnome prisoner, is encountered and lands a crossbow shot [ch 003 / npcs].
+  - Jimjar, the deep gnome with a gambling habit, is actively betting and owes debts [ch 006 / 006.03; ch 006 / 006.05; ch 006 / npcs].
+- "Ront — orc prisoner, first contact" — `SUPPORTED`
+  - Ront, an orc prisoner, is encountered and kills a drow guard [ch 003 / npcs].
+- "Sarith Kzekarit — drow prisoner, demonic spore infection revealed" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sarith Kzekarit’s demonic spore infection is not mentioned; his spiritual shift is noted but no infection is described [ch 003 / npcs].
+  - begun, not shown done: Sarith Kzekarit was not mentioned; no evidence of demonic spore infection being revealed here. `[ch 043 / 043.05]`
+  - begun, not shown done: Sarith Kzekarit — drow prisoner, demonic spore infection revealed — Not referenced `[ch 068 / 068.05]`
+- "Shuushar the Awakened — kuo-toa prisoner, first contact" — `SUPPORTED`
+  - Shuushar the Awakened, a kuo-toa prisoner, is encountered and participates in the fight [ch 003 / npcs].
+- "Stool — myconid sprout prisoner, first contact" — `SUPPORTED`
+  - Stool, the myconid sprout, is encountered and releases rapport spores, enabling telepathic coordination [ch 003 / npcs].
+- "Topsy and Turvy — svirfneblin twins, lycanthropy secret revealed" — `SUPPORTED`
+  - Topsy and Turvy, the deep gnome twins, were observed whispering secretly, their motives unknown [ch 006 / 006.03].
+- "Ploopploopeen — kuo-toa archpriest, alliance offer" — `SUPPORTED`
+  - Yuk Yuk and Spiderbait have been encountered and negotiated with as goblin guides [ch 006 / 006.04; ch 006 / 006.05].
+  - Ploopploopeen, the kuo-toa archpriest, was encountered and presented the party as offerings [ch 008 / 008.01; ch 008 / NPCs].
+- "Bloppblippodd — kuo-toa archpriest of Deep Father, confrontation" — `SUPPORTED`
+  - Bloppblippodd, the kuo-toa archpriest of the Deep Father, was encountered, accepted the offerings, and was killed by her father [ch 008 / 008.01; ch 008 / NPCs].
+- "Demogorgon — demon lord, rise at Sloobludop" — `SUPPORTED`
+  - Demogorgon, the demon lord, rose from the Darklake at Sloobludop, ending the session on a cliffhanger [ch 008 / 008.04; ch 008 / NPCs].
+  - Demogorgon, the Prince of Demons, erupted from the Darklake and attacked Sloobludop, confirming his first appearance [ch 009 / 009.01; ch 009 / Memorable Moments]
+- "Shuushar — pacifist kuo-toa, at Sloobludop" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Shuushar pacifist kuo-toa first met at Sloobludop [ch 010 / 010.01]
+  - begun, not shown done: Shuushar — pacifist kuo-toa, at Sloobludop — Not referenced `[ch 068 / 068.05]`
+- "Gorglak — corrupt duergar gate guard, bribe encounter" — `SUPPORTED`
+  - The party encountered and bribed Gorglak, the corrupt duergar gate guard [ch 026 / 026.02; ch 026 / npcs].
+- "Errde Blackskull — Stone Guard captain, employment offer" — `SUPPORTED`
+  - Captain Errde Blackskull, Stone Guard captain, directly offers the party a mission. `[ch 013 / 013.06; ch 013 / NPCs]`
+  - Errde Blackskull, Stone Guard captain, offered the party employment and assigned the investigation into the Empty-Scabbard Killers [ch 014 / 014.02].
+  - Errde Blackskull, captain of the Stone Guard, has employed the party to gather evidence for a pacification mission [ch 018 / 018.01].
+  - The party has encountered Errde Blackskull, who has assigned them objectives regarding the derro and assassins. `[ch 019 / npcs]`
+  - Errde Blackskull is identified as the Stone Guard captain whose knowledge of the Council’s corruption the party is withholding. `[ch 021 / 021.02]`
+- "Themberchaud — red dragon Wyrmsmith, alliance offer" — `SUPPORTED`
+  - Themberchaud, the red dragon Wyrmsmith, is confirmed to be present and active in Gracklstugh, tended by the Keepers of the Flame. `[ch 013 / 013.04; ch 013 / NPCs]`
+  - Themberchaud, the red dragon Wyrmsmith, declared the party his agents and presented them with golden badges [ch 014 / 014.06].
+  - Themberchaud is referenced as the dragon whose replacement the egg is intended to be. `[ch 019 / 019.01]`
+  - Themberchaud is acknowledged as a potential ally or threat, and the party has chosen to avoid informing him. `[ch 021 / 021.02]`
+  - The party interacted with Themberchaud’s agent Gartokkar and delivered the dragon egg intended to replace him [ch 026 / 026.06; ch 026 / npcs].
+  - Themberchaud, the red dragon Wyrmsmith, offered the party a ride and believes them to be his agents. `[ch 027 / npcs; ch 027 / 027.02]`
+- "Gartokkar Xundorn — Keeper of the Flame, quest giver" — `SUPPORTED`
+  - Gartokkar Xundorn, Keeper of the Flame, directly invites the party to his quarters for an unspecified task. `[ch 013 / 013.04; ch 013 / NPCs]`
+  - Gartokkar Xundorn, Keeper of the Flame, revealed the plot to replace Themberchaud and tasked the party with tracking Droki and recovering the stolen dragon egg [ch 014 / 014.07].
+  - The party met Gartokkar Xundorn, Keeper of the Flame, and negotiated a quest to retrieve the dragon egg [ch 017 / 017.05; ch 017 / NPCs].
+  - The Keepers of the Flame are referenced as the original owners of the egg and as a threat if the party fails them. `[ch 019 / 019.01]`
+  - Gartokkar is identified as the Keeper of the Flame to whom the party plans to return the dragon’s egg. `[ch 021 / 021.02]`
+  - The party completed their contract with Gartokkar, Keeper of the Flame, by delivering the dragon egg and receiving payment [ch 026 / 026.06].
+- "Ylsa Henstak — duergar merchant, quest giver" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Ylsa Henstak quest giver in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Ylsa Henstak — duergar merchant, quest giver — Not referenced `[ch 068 / 068.05]`
+- "Droki — derro courier, capture objective" — `SUPPORTED`
+  - The derro Droki is identified as the target of the Stone Guard’s mission. `[ch 013 / 013.06; ch 013 / NPCs]`
+  - Droki, the derro courier, was named as the target of the party’s investigation by both Gartokkar and Errde [ch 014 / 014.07].
+  - The party pursued Droki, the derro courier, following his food trail through the tunnels [ch 016 / 016.02; ch 016 / NPCs].
+- "Werz Saltbaron — duergar merchant, assassination attempt witnessed" — `SUPPORTED`
+  - Werz Saltbaron, Duergar merchant, was attacked by assassins and invited the party to the Shattered Spire for a reward [ch 014 / 014.04].
+  - Werz Saltbaron, a duergar merchant, has been targeted by assassins and has hired the party to resolve the threat [ch 018 / 018.04].
+  - Werz Saltbaron is the merchant targeted by assassins, and the party has negotiated his removal from the hit list. `[ch 019 / npcs]`
+- "Stonespeaker Hgraam — stone giant elder, audience" — `SUPPORTED`
+  - The party had an audience with Stonespeaker Hgraam and received the crystal. `[ch 015 / 015.02]`
+  - The party now possesses the evidence and means to seek an audience with Stonespeaker Hgraam to reverse the stone giant curse [ch 023 / 023.01; ch 024 / 024.04].
+  - The party had an audience with Stonespeaker Hgraam and returned the ritual statue [ch 026 / 026.04; ch 026 / npcs].
+- "Narrak — derro savant cultist, confrontation" — `SUPPORTED`
+  - Narrak, the derro savant cultist, was observed leading a ritual and declaring his intent to find “the spell we need.” `[ch 022 / 022.06; ch 022 / npcs]`
+  - Narrak, the derro savant cultist, was confronted and slain by the party in the ritual chamber [ch 024 / 024.03].
+- "Glabbagool — sentient gelatinous cube, first contact" — `SUPPORTED`
+  - The party made first contact with Glabbagool, a sentient gelatinous cube who joined them after gaining sentience [ch 034 / 034.03].
+  - Glabbagool has been encountered and is now a traveling companion, confirmed as sentient and friendly [ch 035 / 035.04; ch 036 / 036.04].
+  - Glabbagool, the sentient gelatinous cube, was first contacted in this chapter and integrated into the party [ch 038 / 038.01].
+  - Glabbagool was fully integrated into the party’s actions, consuming the Medusa’s remains and commenting on their "dietary flavoring," confirming his first contact status [ch 042 / 042.01].
+  - Glabbagool’s first contact was confirmed through his dialogue and actions [ch 042 / 042.01].
+  - Glabbagool was confirmed as present and active [ch 042 / 042.01].
+  - Glabbagool confirmed [ch 042 / 042.01].
+  - Glabbagool, sentient gelatinous cube, was present and passed off as Daz’s familiar [ch 050 / NPCs; ch 050 / 050.03].
+- "Sovereign Phylo — myconid sovereign, corrupted by Zuggtmoy" — `SUPPORTED`
+  - Sovereign Phylo has been encountered and is behaving strangely, speaking of the “Great Seeder” and segregating circles [ch 029 / npcs; ch 029 / 029.05].
+  - Sovereign Phylo was referenced by Gasbide as the prophet of a “Great Awakening” [ch 030 / 030.05; ch 030 / npcs].
+  - Sovereign Phylo is confirmed as a corrupted myconid sovereign guiding the colony toward Zuggtmoy’s plans [ch 031 / npcs].
+  - Sovereign Phylo is confirmed as corrupted by Zuggtmoy, leading the grove’s transformation and rejecting the party `[ch 032 / 032.03]`.
+- "Sovereign Basidia — myconid sovereign, resistance leader" — `SUPPORTED`
+  - Sovereign Basidia has been encountered, revealed the corruption, and assigned the party to investigate the Garden of Welcome [ch 029 / npcs; ch 029 / 029.06].
+  - Sovereign Basidia is present in Neverlight Grove and fulfilled her role as a quest-giver [ch 030 / 030.05; ch 030 / npcs].
+  - Sovereign Basidia is confirmed as a resistance leader aware of the corruption and trusting of the party [ch 031 / npcs].
+  - Sovereign Basidia is confirmed as a resistance leader who fled Neverlight Grove with the party and provided aid `[ch 032 / 032.03]`.
+- "Yestabrod — Circle of Masters leader, confrontation" — `SUPPORTED`
+  - Yestabrod was confronted and slain in the Garden of Welcome [ch 031 / 031.04].
+  - Yestabrod is confirmed as a servant of Zuggtmoy whose corpse was used in the mock wedding ritual `[ch 032 / 032.02]`.
+- "Xinaya — drow scout, fate in Garden of Welcome" — `SUPPORTED`
+  - Xinaya’s fate was resolved in the Garden of Welcome; she was mercifully killed after warning the party [ch 031 / 031.05].
+- "Zuggtmoy — Demon Queen of Fungi, presence at Neverlight Grove" — `SUPPORTED`
+  - Zuggtmoy’s presence was confirmed through Gyrgum’s religion check and her spectral manifestation in the dreamscape. `[ch 025 / 025.04; ch 025 / 025.07]`
+  - Zuggtmoy’s presence is implied by the unknown spores infecting Sarith and Phylo, and Basidia’s fear of corruption [ch 029 / 029.06].
+  - Zuggtmoy’s presence was confirmed in Neverlight Grove as she led her wedding procession toward the party [ch 031 / 031.06].
+  - Zuggtmoy is confirmed as present at Neverlight Grove, leading the rehearsal march and preparing to mate with Araumycos `[ch 032 / 032.01]`.
+  - Zuggtmoy’s influence was confirmed by the twisted, malevolent fungi growing in the aftermath of the Pudding King’s defeat [ch 047 / 047.10].
+  - Zuggtmoy is confirmed as the entity Ilvara worships as "the bride," establishing her active influence [ch 049 / 049.03].
+  - Zuggtmoy’s presence was confirmed through Ilvara’s corruption and the Heart Fungus [ch 050 / 050.02].
+- "Dorbo Diggermattock — Blingdenstone leader, first contact" — `SUPPORTED`
+  - Chief Dorbo Diggermattock has been introduced and is now interacting with the party in Diggermattock Hall [ch 036 / 036.04].
+  - Chief Dorbo Diggermattock has been encountered and identified as leader of the mining coalition [ch 037 / 037.01; ch 037 / npcs]
+  - Chief Dorbo Diggermattock has been encountered and interacted with directly in the Blingdenstone Chamber [ch 038 / 038.06].
+  - Dorbo Diggermattock has been encountered and interacted with extensively in this chapter [ch 039 / 039.01; ch 039 / 039.02; ch 039 / npcs].
+  - Dorbo Diggermattock is confirmed as Blingdenstone leader. `[ch 043 / 043.03]`
+  - Kazook Pickshine’s quest for lichen was completed; he is confirmed as the quest-giver. `[ch 044 / 044.02; ch 044 / tracking.txt]`
+  - Dorbo Diggermattock was first contacted in this chapter, as he presents the battle plan and reveals his hidden map [ch 046 / 046.01; ch 046 / npcs].
+  - The party first contacted Dorbo Diggermattock and mediated his council. [ch 048 / 048.06]
+- "Senni Diggermattock — Blingdenstone quartermaster, first contact" — `SUPPORTED`
+  - Quartermaster Senni Diggermattock has been introduced and is now interacting with the party in Diggermattock Hall [ch 036 / 036.04].
+  - Senni Diggermattock has been encountered as the civilian leader opposing Dorbo [ch 037 / 037.01; ch 037 / npcs]
+  - Senni Diggermattock has been encountered and interacted with directly in the Blingdenstone Chamber [ch 038 / 038.06].
+  - Senni Diggermattock has been encountered and is actively supporting Daz’s leadership [ch 039 / 039.01; ch 039 / 039.07].
+  - Senni Diggermattock is mentioned as quartermaster, though not present in this chunk; referenced in NPCs list. `[ch 043 / npcs]`
+  - Senni Diggermattock was first contacted in this chapter, voicing concerns about civilian safety and the success of her reforms [ch 046 / 046.01; ch 046 / npcs].
+  - The party first contacted Senni Diggermattock and secured her support. [ch 048 / 048.06]
+- "Kazook Pickshine — svirfneblin alchemist, quest giver" — `SUPPORTED`
+  - Kazook Pickshine is confirmed as a quest giver, offering the Ghost Hold Lichen task and revealing Bimble’s infection. `[ch 043 / 043.05; ch 043 / 043.06]`
+  - Kazook Pickshine’s quest for lichen was completed; he is confirmed as the quest-giver. `[ch 044 / 044.02; ch 044 / tracking.txt]`
+- "Chipgrin Goldwhisker — wererat leader, negotiation" — `SUPPORTED`
+  - Chipgrin Goldwhisker has been encountered and negotiated with; he agreed to join the campaign [ch 039 / 039.03; ch 039 / 039.05].
+  - Chipgrin Goldwhisker was first contacted in this chapter, leading the wererats and offering scouting and diversion support [ch 046 / 046.01; ch 046 / npcs].
+  - The party negotiated with Chipgrin Goldwhisker, securing the Voucher of the Varmint. [ch 048 / 048.07]
+- "Burrow Warden Jadger — ghost, quest giver" — `SUPPORTED`
+  - Burrow Warden Jadger has been encountered and offers knowledge in exchange for laying ghosts to rest [ch 037 / 037.04; ch 037 / npcs]
+  - Burrow Warden Jadger has been encountered and offered assistance in exchange for a task [ch 039 / 039.07; ch 039 / 039.09].
+  - Burrow Warden Jadger is confirmed as a ghost quest giver who offered two boons. `[ch 043 / 043.03]`
+- "The Pudding King — insane deep gnome, confrontation" — `SUPPORTED`
+  - The Pudding King has been confronted and identified as the insane gnome controlling the ooze army [ch 038 / 038.04].
+  - The Pudding King was confronted in this chapter, with direct dialogue, monologue, and physical engagement initiated [ch 046 / 046.09; ch 046 / npcs].
+  - The party confronted and defeated the Pudding King, the insane deep gnome turned ooze [ch 047 / 047.01; ch 047 / npcs].
+  - The party confronted and defeated the Pudding King. [ch 048 / 048.01]
+- "Bruenor Battlehammer — dwarf king, audience at Gauntlgrym" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Bruenor Battlehammer audience in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The party intends to reach Blingdenstone, the deep gnome settlement, as their next exit point. `[ch 012 / 012.01]`
+  - begun, not shown done: Bruenor Battlehammer — dwarf king — confirmed as next goal [ch 063 / 063.06].
+  - begun, not shown done: Bruenor Battlehammer — dwarf king, audience at Gauntlgrym — Not referenced `[ch 068 / 068.05]`
+- "Lord Zelraun Roaringhorn — Harper representative, alliance negotiation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Lord Zelraun Roaringhorn negotiation in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Lord Zelraun Roaringhorn — Harper representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- "Sir Lanniver Strayl — Order of the Gauntlet representative, alliance negotiation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sir Lanniver Strayl negotiation in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Sir Lanniver Strayl — Order of the Gauntlet representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- "Morista Malkin — Emerald Enclave representative, alliance negotiation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Morista Malkin negotiation in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Morista Malkin — Emerald Enclave representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- "Lord Eravien Haund — Lords' Alliance representative, alliance negotiation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Lord Eravien Haund negotiation in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Lord Eravien Haund — Lords' Alliance representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- "Davra Jassur — Zhentarim representative, alliance negotiation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Davra Jassur negotiation in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Davra Jassur — Zhentarim representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- "Ghazrim DuLoc — Zhentarim contact, ring acquisition" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Ghazrim DuLoc ring acquisition in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Ghazrim DuLoc — Zhentarim contact, ring acquisition — Not referenced `[ch 068 / 068.05]`
+- "Lorthuun — maimed beholder, confrontation at Mantol-Derith" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Lorthuun confrontation in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Lorthuun — maimed beholder, confrontation at Mantol-Derith — Not referenced `[ch 068 / 068.05]`
+- "Kinyel Druu'giir — drow assassin, disruption at Mantol-Derith" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Kinyel Druu’giir disruption in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Kinyel Druu'giir — drow assassin, disruption at Mantol-Derith — Not referenced `[ch 068 / 068.05]`
+- "Yantha Coaxrock — svirfneblin mage, capture and rescue" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yantha Coaxrock capture and rescue in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Yantha Coaxrock has not been mentioned or encountered [ch 040 / 040.02].
+  - begun, not shown done: Yantha Coaxrock — svirfneblin mage, capture and rescue — Not referenced `[ch 068 / 068.05]`
+- "Peebles — svirfneblin spy for Xazax, first contact" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Peebles first contact in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Peebles — svirfneblin spy for Xazax, first contact — Not referenced `[ch 068 / 068.05]`
+- "Zilchyn Q'Leptin — kleptomaniac drow mage, first contact" — `SUPPORTED`
+  - Sarith’s demonic infection was revealed as Zuggtmoy’s influence, confirmed by his behavior and Gyrgum’s lore check. `[ch 025 / 025.04; ch 025 / npcs]`
+- "Sladis Vadir — Emerald Enclave scout, discovery at Mantol-Derith" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sladis Vadir discovery in prior chapters [ch 010 / 010.01]
+- "Rystia Zav — Harper spy, discovery at Mantol-Derith" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Rystia Zav discovery in prior chapters [ch 010 / 010.01]
+- "Vizeran DeVir — drow archmage, alliance offer at Gravenhollow" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vizeran DeVir encounter in prior chapters [ch 010 / 010.01]
+- "Grin Ousstyl — Vizeran's apprentice, change of heart revelation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Grin Ousstyl revelation in prior chapters [ch 010 / 010.01]
+- "Karazikar — beholder of Vast Oblivium, confrontation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Karazikar confrontation in prior chapters [ch 010 / 010.01]
+- "Shedrak of the Eyes — beholder's thrall, confrontation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Shedrak confrontation in prior chapters [ch 010 / 010.01]
+- "Baphomet — demon lord, presence in Labyrinth" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Baphomet presence in prior chapters [ch 010 / 010.01]
+- "Yeenoghu — demon lord, hunt encounter in Labyrinth" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yeenoghu hunt in prior chapters [ch 010 / 010.01]
+- "Gash — gnoll servant, guide encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gash guide encounter in prior chapters [ch 010 / 010.01]
+- "Quenthel Baenre — matron mother, private meeting" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Quenthel Baenre meeting in prior chapters [ch 010 / 010.01]
+- "Jarlaxle Baenre — Bregan D'aerthe leader, private meeting" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Jarlaxle Baenre meeting in prior chapters [ch 010 / 010.01]
+- "Hanne Hallen — young drow mage, encounter near worm nursery" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Hanne Hallen encounter in prior chapters [ch 010 / 010.01]
+- "Zhora Hallen — Dark Hunters leader, reunion with Hanne" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Zhora Hallen reunion in prior chapters [ch 010 / 010.01]
+- "Khalessa Draga — Lords' Alliance spy, possible encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Khalessa Draga possible encounter in prior chapters [ch 010 / 010.01]
+- "Juiblex — Faceless Lord, Underdark presence" — `SUPPORTED`
+  - Juiblex has been named and described by Jimjar as the demon lord of oozes, with his influence implied in the ooze surge [ch 035 / 035.04].
+  - Juiblex, the Faceless Lord, has been identified as the demonic force behind the ooze army through Gyrgum’s recognition and the party’s deduction [ch 038 / 038.04].
+  - Juiblex’s presence was confirmed through the Pudding King’s transformation and his final declaration of rebirth [ch 047 / 047.01; ch 047 / 047.10].
+- "Araumycos — vast fungal entity, rapport contact" — `SUPPORTED`
+  - Araumycos was named as Zuggtmoy’s groom in the telepathic wedding hymn, establishing rapport contact [ch 031 / 031.06].
+- "Orcus — demon lord, presence in final battle" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Orcus presence in prior chapters [ch 010 / 010.01]
+- "Demogorgon — Prince of Demons, final battle" — `SUPPORTED`
+  - Demogorgon, Prince of Demons, was encountered and rose from the Darklake [ch 008 / 008.04].
+- "Drow prisoners escape Velkynvelve — chapter 1" — `SUPPORTED`
+  - Drow prisoners escaped Velkynvelve [ch 004 / 004.03].
+  - The party escaped from Velkynvelve, confirmed by deep gnome guards who recognize them as escapees [ch 036 / 036.01].
+- "Flight of demons distraction at Velkynvelve — escape event" — `SUPPORTED`
+  - Flight of demons distracted drow defenses at Velkynvelve [ch 004 / 004.01].
+- "Demogorgon's rise from the Darklake at Sloobludop — demon lord first appearance" — `SUPPORTED`
+  - Demogorgon’s rise from the Darklake at Sloobludop occurred, confirmed by his eruption and attack [ch 008 / 008.04].
+  - Demogorgon’s rise from the Darklake at Sloobludop occurred, witnessed by the party and confirmed as an avatar manifestation [ch 009 / 009.01; ch 009 / Memorable Moments]
+- "Discovery of demon lords loose in the Underdark — party awareness moment" — `SUPPORTED`
+  - The party has confirmed the presence of demons (vrocks) in the Underdark, recognizing this as abnormal and frightening [ch 004 / 004.01].
+  - The party now has awareness that demon lords are loose in the Underdark, confirmed by the spectator’s warning and Demogorgon’s emergence [ch 007 / 007.03; ch 008 / 008.04].
+  - The party connected prior demon encounters at Velkynvelve and since to conclude that demons are loose in the Underdark due to a greater force [ch 009 / 009.02]
+  - The party now has awareness of multiple demon lords (Demogorgon and Zuggtmoy) active in the Underdark. `[ch 025 / 025.01; ch 025 / 025.04]`
+  - The party is aware of demon lords being loose in the Underdark, having witnessed Ilvara’s invocation of Zuggtmoy and the destruction of her fungal cult [ch 051 / 051.05; ch 051 / 051.06].
+- "Characters return to the surface world — end of chapter 7" — `SUPPORTED`
+  - The party has reached the final exit from the Underdark toward the surface world (Overbright). [ch 048 / 048.07]
+  - The party reached the surface world — the Overbright — after months in the Underdark, emerging from the Fungal Altar [ch 053 / 053.05; ch 053 / Memorable Moments].
+  - The party has reached the surface world after emerging from the Underdark and traveling west [ch 054 / 054.01]
+  - The party emerges from the Underdark and reaches the surface world, beginning their journey through the Silver Marches. `[ch 055 / 055.01]`
+- "Audience with Bruenor at Gauntlgrym — chapter 8" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Audience with Bruenor at Gauntlgrym in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Audience with Bruenor at Gauntlgrym is pending after Eldeth’s report [ch 054 / 054.01]
+- "Faction alliance negotiations at Gauntlgrym — chapter 8" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Faction alliance negotiations at Gauntlgrym in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Faction alliance negotiations at Gauntlgrym are pending [ch 054 / 054.01]
+- "Arrival at Mantol-Derith — chapter 9" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Arrival at Mantol-Derith in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The party has been to Mantol-Derith in prior sessions, but this chapter confirms they are now in Gracklstugh, not returning [ch 018 / 018.01].
+- "Fraz-Urb'luu's influence discovered at Mantol-Derith — plot reveal" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Fraz-Urb'luu’s influence discovered in prior chapters [ch 010 / 010.01]
+- "Vizeran DeVir encountered at Gravenhollow — chapter 11 reveal" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vizeran DeVir encountered at Gravenhollow in prior chapters [ch 010 / 010.01]
+- "Gromph Baenre's ritual identified as cause of demon lord summoning — vision at Gravenhollow" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gromph Baenre’s ritual identified in prior chapters [ch 010 / 010.01]
+- "Vizeran's plan revealed at Araj — chapter 12" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vizeran’s plan revealed at Araj in prior chapters [ch 010 / 010.01]
+- "Grin Ousstyl reveals Vizeran's true intent to destroy Menzoberranzan — chapter 15" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Grin Ousstyl reveals Vizeran’s intent in prior chapters [ch 010 / 010.01]
+- "Zuggtmoy's fetid wedding attempt at Araumycos — chapter 16" — `SUPPORTED`
+  - Zuggtmoy’s fetid wedding attempt at Araumycos was witnessed in the Circle of Masters, with the procession underway [ch 031 / 031.06].
+  - Zuggtmoy’s fetid wedding attempt at Araumycos is confirmed as a rehearsal march, not the actual ceremony, and the party witnessed its components `[ch 032 / 032.01; ch 032 / 032.02]`.
+  - Zuggtmoy’s fetid wedding attempt at Araumycos was referenced by Ilvara’s invocation of “the bride — Zuggtmoy,” confirming awareness of her ritual intent [ch 051 / 051.05].
+- "Juiblex crashes the wedding, destroys Zuggtmoy's material form — chapter 16" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Juiblex crashes wedding in prior chapters [ch 010 / 010.01]
+- "Dark heart talisman placed — final ritual setup" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Dark heart talisman placed in prior chapters [ch 010 / 010.01]
+- "Demon lords drawn together by Vizeran's ritual — chapter 17" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Demon lords drawn together by ritual in prior chapters [ch 010 / 010.01]
+- "Demogorgon defeats remaining demon lords — chapter 17" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Demogorgon defeats other demon lords in prior chapters [ch 010 / 010.01]
+- "Final battle against Demogorgon — chapter 17" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Final battle against Demogorgon not yet occurred [ch 010 / 010.01]
+- "Acquiring scavenged possessions in Velkynvelve slave pen" — `SUPPORTED`
+  - The party has acquired scavenged possessions from Velkynvelve: 170 gold, the dragon’s egg, incriminating notes, Assassin’s List, ghost bones, and the dragon rattle. `[ch 021 / items]`
+  - The party acquired scavenged possessions in Velkynvelve: anti-Medusa sunglasses and the elemental gem. `[ch 041 / 041.02; ch 041 / 041.06]`
+- "Escaping Velkynvelve via webs and pool" — `SUPPORTED`
+  - Escaped Velkynvelve via waterfall and pool, bypassing webs [ch 004 / 004.02].
+  - The party has escaped Velkynvelve via the dungeon’s western exit, bypassing assassin territory. `[ch 021 / 021.05]`
+  - The party has escaped the initial Velkynvelve slave pen and is now deeper within the outpost, engaging in dungeon exploration. `[ch 041 / 041.01; ch 041 / 041.07]`
+- "Drow pursuit level tracked — ongoing" — `SUPPORTED`
+  - The party is now being tracked by drow scouts; pursuit level is at four, with a one-day lead [ch 005 / 005.06].
+  - Drow pursuit level tracked and now at four [ch 005 / 005.06].
+  - The pursuit level has been tracked and reduced from four to three by Eldeth’s Stealth check [ch 006 / 006.02].
+  - The drow pursuit level remains tracked and active at three [ch 007 / 007.02].
+  - The Drow pursuit level was tracked and reduced to one by Eldeth’s Survival checks. [ch 028 / 028.03; ch 028 / 028.04]
+  - Drow pursuit level was tracked and dropped to zero after Eldeth’s successful Wisdom checks [ch 029 / 029.04].
+  - Drow pursuit level is tracked; Ilvara and her hunters remain an active threat after the party’s escape from Neverlight Grove `[ch 032 / 032.04]`.
+  - Drow pursuit is actively tracked: Ilvara’s force is reduced to eight, she can track the party via fungi, and a scout was captured [ch 049 / 049.03].
+- "Drow pursuers final confrontation — chapter 7" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Drow pursuers final confrontation in chapter 7 [ch 010 / 010.01]
+- "Characters encounter Society of Brilliance members — random event" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not encountered the Society of Brilliance or any modrons [ch 005 / 005.06].
+  - begun, not shown done: Society of Brilliance not encountered [ch 005 / 005.06].
+  - begun, not shown done: The Society of Brilliance is not mentioned in this chunk [ch 008 / 008.04].
+  - begun, not shown done: Society of Brilliance members encountered in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The party encountered the Society of Brilliance members indirectly through the Netherese lore and artifacts, but no direct contact occurred. [ch 028 / locations]
+  - begun, not shown done: The party encountered Society of Brilliance members — implied by their awareness of surface world phenomena and Daz’s field-perception, though no direct encounter occurred [ch 053 / 053.05; ch 053 / 053.06].
+- "Society of Brilliance encounter with tridrone modrons — Labyrinth" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Society of Brilliance with tridrone modrons in prior chapters [ch 010 / 010.01]
+- "Hook Horror Hunt — gnoll and hook horror encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The Hook Horror Hunt is not referenced [ch 008 / 008.04].
+  - begun, not shown done: Hook Horror Hunt in prior chapters [ch 010 / 010.01]
+- "Oozing Temple — flooded dungeon exploration" — `SUPPORTED`
+  - The party explored the Oozing Temple, encountering flooding, oozes, and a fountain with hidden treasure [ch 034 / 034.06; ch 034 / 034.08].
+- "Lost Tomb of Khaem — Netherese tomb exploration" — `SUPPORTED`
+  - The party explored the Lost Tomb of Khaem, encountering its diorama, staircase, shrine, sarcophagi chamber, and lower vault. [ch 028 / 028.04; ch 028 / 028.05; ch 028 / 028.06]
+  - The Lost Tomb of Khaem was explored, including the sarcophagus and decoy chamber [ch 029 / 029.01; ch 029 / 029.03].
+- "Silken Paths traversal — spider web chasm" — `SUPPORTED`
+  - The party has reached and begun traversing the Silken Paths spider web chasm, engaging goblin guides and facing giant spiders [ch 006 / 006.04; ch 006 / 006.05; ch 006 / 006.07; ch 006 / 006.08].
+  - The Silken Paths traversal was completed, with the party escaping and reaching its end [ch 007 / 007.01; ch 007 / 007.04].
+- "Yuk Yuk and Spiderbait — goblin guides encounter" — `SUPPORTED`
+  - Yuk Yuk and Spiderbait have been encountered and hired as guides through the Silken Paths [ch 006 / 006.04; ch 006 / 006.05].
+  - Yuk Yuk and Spiderbait were encountered as goblin guides and now travel with the party [ch 007 / NPCs; ch 007 / 007.05].
+  - Spiderbait and Yuk Yuk were introduced as goblin guides; Yuk Yuk is dead, Spiderbait was rescued from duergar slavers [ch 010 / 010.03; ch 010 / NPCs]
+- "Fargas Rumblefoot — halfling rescue in Silken Paths" — `SUPPORTED`
+  - Fargas Rumblefoot has been rescued from his spider cocoon and now travels with the party [ch 006 / 006.07].
+  - Fargas Rumblefoot was rescued from a spider cocoon and interrogated about the tomb [ch 007 / NPCs; ch 007 / 007.02].
+- "Kuo-toa day's catch — capture encounter near Sloobludop" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not yet reached Sloobludop or encountered kuo-toa day’s catch [ch 005 / 005.06].
+  - begun, not shown done: The Kuo-toa day’s catch was observed as Hemeth was prepared for sacrifice, but no capture event occurred in this chunk [ch 008 / 008.01].
+  - begun, not shown done: Kuo-toa day’s catch encounter in prior chapters [ch 010 / 010.01]
+- "Rampaging two-headed stone giant — Gracklstugh encounter" — `SUPPORTED`
+  - A rampaging two-headed stone giant bursts into the plaza of Gracklstugh and engages the party in combat. `[ch 012 / 012.05]`
+  - The party encountered and fought the rampaging two-headed stone giant Rihuud. `[ch 013 / 013.01; ch 013 / Memorable Moments]`
+- "Stone giant curse at Whorlstone Tunnels — ritual disruption" — `SUPPORTED`
+  - The party disrupted the stone giant curse ritual at Whorlstone Tunnels, killing the cultists and recovering the ritual book [ch 024 / 024.04].
+  - The party disrupted the stone giant curse ritual at Whorlstone Tunnels, leaving one statue completed and one interrupted. `[ch 025 / 025.01]`
+- "Broken statue of Rihuud — returned to Stonespeaker Hgraam" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Broken statue of Rihuud returned in prior chapters [ch 010 / 010.01]
+- "Gray Ghosts dragon egg — recovered or returned" — `SUPPORTED`
+  - The dragon egg has been recovered and is now in the party’s possession; they plan to return it. `[ch 021 / items]`
+  - The party recovered and delivered the corrupted dragon egg to Gartokkar [ch 026 / 026.06].
+- "Black obelisk — Whorlstone Tunnels discovery" — `SUPPORTED`
+  - The black obelisk has been discovered and its function confirmed in the Whorlstone Tunnels. `[ch 019 / items]`
+- "Buppido's shrine and killings — revealed in Whorlstone Tunnels" — `SUPPORTED`
+  - Buppido’s shrine and killings were revealed in the Whorlstone Tunnels when the party found his altar and skeletons. `[ch 015 / 015.06]`
+  - Buppido’s shrine and killings were revealed by Pelek’s ghost; his body and axe remain at the resting place [ch 016 / 016.01].
+  - Buppido’s shrine and killings were referenced as context for the party’s decision to tie up new members, but no new evidence about Buppido’s past was revealed in this chunk [ch 023 / 023.02].
+- "Pelek the deep gnome ghost — laid to rest" — `SUPPORTED`
+  - Pelek’s ghost is present with the party and active in the caverns. `[ch 019 / 019.01]`
+  - Pelek the deep gnome ghost has been laid to rest in the Blingdenstone catacombs [ch 037 / 037.03]
+- "Clan Goldwhisker truce negotiation — Blingdenstone" — `SUPPORTED`
+  - Clan Goldwhisker truce negotiation concluded with Chipgrin’s wererats agreeing to support the party’s plan, marking the truce as active [ch 046 / 046.06].
+- "Neheedra the medusa — Rockblight confrontation" — `SUPPORTED`
+  - The party encountered and engaged the Medusa, identified as Neheedra in tracking, within Velkynvelve. `[ch 041 / 041.07]`
+  - The party defeated the Medusa Neheedra in her lair, concluding the Rockblight confrontation as tracked [ch 042 / 042.01].
+  - The Medusa Neheedra was slain in her lair, concluding the Rockblight confrontation [ch 042 / 042.01].
+  - The Medusa Neheedra was defeated, concluding the Rockblight confrontation [ch 042 / 042.01].
+  - Neheedra was defeated [ch 042 / 042.01].
+  - Neheedra defeated [ch 042 / 042.01].
+- "Ogrémoch's Bane — elemental entity banishment" — `SUPPORTED`
+  - The party defeated three Earth Elementals and encountered three Galeb Duhr in the Steadfast Stone, directly addressing the threat of Ogrémoch's Bane as described in the audit item [ch 042 / 042.03; ch 042 / 042.04; ch 042 / 042.06].
+  - Ogrémoch's Bane was confronted and weakened through the defeat of Earth Elementals, as required by the audit item [ch 042 / 042.04].
+  - The Earth Elementals were defeated in the Steadfast Stone under Ogrémoch’s influence, directly addressing the banishment objective [ch 042 / 042.03; ch 042 / 042.06].
+  - Ogrémoch’s Bane was confronted and weakened through elemental defeat [ch 042 / 042.04].
+  - Ogrémoch's Bane was actively confronted and weakened by defeating Earth Elementals [ch 042 / 042.03; ch 042 / 042.06].
+  - The threat of Ogrémoch's Bane was engaged through the ritual activation and elemental battles [ch 042 / 042.02; ch 042 / 042.04].
+  - The party successfully engaged Ogrémoch's Bane by defeating three Earth Elementals and freeing three Galeb Duhr [ch 042 / 042.03; ch 042 / 042.06].
+  - Ogrémoch’s Bane was confronted and weakened [ch 042 / 042.04].
+  - Ogrémoch’s Bane was confronted [ch 042 / 042.04].
+  - Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+  - Ogrémoch’s Bane was achieved: the temple was hallowed, and the Galeb Duhr confirmed Ogrémoch’s power was banished. `[ch 043 / 043.01]`
+  - Ogrémoch’s Bane was achieved. `[ch 043 / 043.01]`
+- "Vadimir Coaxrock cube incursion — Blingdenstone traders grotto" — `SUPPORTED`
+  - Vadimir Coaxrock cube incursion — the party encountered and destroyed non-sentient gelatinous cubes in the Traders' Grotto [ch 037 / 037.06]
+- "Vazuk's ghost — laid to rest" — `SUPPORTED`
+  - Vazuk’s ghost was laid to rest by Jimjar and Eldeth. `[ch 043 / 043.02]`
+  - Vazuk’s ghost was laid to rest. `[ch 043 / 043.02]`
+- "Entémoch's Boon — summoning circle discovered" — `SUPPORTED`
+  - Entémoch’s Boon’s summoning circle was discovered. `[ch 044 / 044.07; ch 044 / tracking.txt]`
+  - Entémoch's Boon was discovered and activated during the ritual `[ch 045 / 045.01]`.
+  - Entémoch's Boon was discovered as the source of the Earth Elemental’s power, referenced in Dorbo’s offer [ch 046 / 046.01].
+  - The party received Entémoch’s Boon, sensed through the Earth Elemental’s favor. [ch 048 / 048.01]
+- "Basilisks and eggs at Entémoch's Boon — encounter" — `SUPPORTED`
+  - Basilisks were encountered guarding the summoning circle. `[ch 044 / 044.07; ch 044 / tracking.txt]`
+  - Basilisks and their eggs were encountered at Entémoch's Boon; one charmed, one slain `[ch 045 / 045.01]`.
+- "Maze Engine activation — Labyrinth" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Maze Engine activation in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The Maze Engine was not encountered; this audit item is unrelated to this chunk. `[ch 025 / 025.08]`
+- "Slaughtertusk nalfeshnee — Maze Engine guardian" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The Maze Engine’s activation is not mentioned; this chunk concerns Sloobludop and the Darklake, not the Labyrinth [ch 008 / 008.01].
+  - begun, not shown done: Slaughtertusk nalfeshnee guardian in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The party encountered a ritual platform and books that may relate to a Maze Engine or demonic activation, but no direct connection to the Maze Engine is confirmed. `[ch 022 / 022.06]`
+- "Modrons encountered — March to Nowhere" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Modrons encountered in prior chapters [ch 010 / 010.01]
+- "Tridrone as Labyrinth guide — alliance opportunity" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Tridrone as Labyrinth guide in prior chapters [ch 010 / 010.01]
+- "Adamantine tower — haunted encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Adamantine tower haunted encounter in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The ghost’s obsidian gem is to be deposited in his grave in Blingdenstone, but the party has not yet traveled there [ch 018 / npcs].
+- "Shadow demons in adamantine tower — cleared" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Shadow demons cleared in prior chapters [ch 010 / 010.01]
+- "Gnoll pack led by Kurr — Labyrinth encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gnoll pack led by Kurr in prior chapters [ch 010 / 010.01]
+- "Filthriddens cult of Yeenoghu — Grisha encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Filthriddens cult of Yeenoghu in prior chapters [ch 010 / 010.01]
+- "Yeenoghu's goristro slaying — observed in Labyrinth" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yeenoghu's goristro slaying observed in prior chapters [ch 010 / 010.01]
+- "Troglodyte lair standoff — resolved" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Troglodyte lair standoff resolved in prior chapters [ch 010 / 010.01]
+- "Voice in the Dark — Hanne Hallen encounter near worm nursery" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Voice in the Dark encounter in prior chapters [ch 010 / 010.01]
+- "Dark Hunters arrival at worm nursery — Zhora and Hanne" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Dark Hunters arrival at worm nursery in prior chapters [ch 010 / 010.01]
+- "Karazikar's slaves — liberated" — `SUPPORTED`
+  - The party liberated Glabbagool from his previous state, now recognizing his sentience and potential. [ch 048 / 048.05; ch 048 / 048.07]
+- "Modron prisoner at Vast Oblivium — rescued and questioned" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Modron prisoner rescued in prior chapters [ch 010 / 010.01]
+- "Xazax the Eyemonger — beholder encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Xazax the Eyemonger is not mentioned [ch 008 / 008.04].
+  - begun, not shown done: Xazax the Eyemonger encounter in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The beholder zombie encounter establishes a threat from a beholder-type creature; though not Xazax, it introduces the possibility of further beholder encounters [ch 011 / 011.03].
+  - begun, not shown done: A spectator, a beholder-kin creature, was encountered and fought; though not named as Xazax, it matches the category of beholder encounter [ch 020 / 020.01; ch 020 / NPCs].
+  - begun, not shown done: Xazax the Eyemonger has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: Xazax the Eyemonger has not been encountered [ch 040 / 040.02].
+  - begun, not shown done: Xazax the Eyemonger was not encountered. `[ch 043 / 043.01]`
+- "Veldyskar the basilisk — guide to Gravenhollow" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Veldyskar the basilisk guide in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Veldyskar the basilisk has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- "Galeb duhr Hourm — guide within Gravenhollow" — `SUPPORTED`
+  - Three Galeb Duhr appeared and spoke to the party, confirming their presence and role as guides within the temple, matching the audit item’s description [ch 042 / 042.04; ch 042 / 042.06].
+  - The Galeb Duhr appeared and communicated with the party, fulfilling the audit item’s requirement for their presence as a guide [ch 042 / 042.04; ch 042 / 042.06].
+  - The Galeb Duhr were identified as stone guardians bound to the temple, matching the audit item’s description [ch 042 / 042.04].
+  - The Galeb Duhr appeared and communicated, fulfilling their role as stone guardians [ch 042 / 042.04].
+  - Three Galeb Duhr appeared and spoke [ch 042 / 042.04; ch 042 / 042.06].
+  - Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- "Visions obtained at Gravenhollow — various reveals" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Visions obtained at Gravenhollow in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Visions at Gravenhollow occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: The party received information about Ogrémoch’s corruption and the Galeb Duhr’s duty, but this occurred in the Steadfast Stone, not Gravenhollow [ch 042 / 042.04].
+  - begun, not shown done: Information received, but not at Gravenhollow [ch 042 / 042.04].
+  - begun, not shown done: Information received, not at Gravenhollow [ch 042 / 042.04].
+- "Drow patrol confrontation near Menzoberranzan — chapter 10" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Drow patrol confrontation near Menzoberranzan is not relevant; the party is still in Velkynvelve [ch 003 / locations].
+  - begun, not shown done: Drow patrol confrontation near Menzoberranzan is not referenced [ch 008 / 008.04].
+  - begun, not shown done: Drow patrol confrontation near Menzoberranzan in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Drow patrol confrontation occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: Drow patrol confrontation near Menzoberranzan was not encountered. `[ch 043 / 043.01]`
+- "Aljanor Keenblade — Order of the Gauntlet captive rescued" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Aljanor Keenblade rescued in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Aljanor Keenblade rescued before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- "Sloobludop ruins — second visit after Demogorgon's attack" — `SUPPORTED`
+  - Sloobludop ruins were visited and destroyed by Demogorgon; the party fled and will not return [ch 009 / 009.01; ch 009 / Locations]
+- "Gracklstugh chaos — second visit conditions" — `SUPPORTED`
+  - The party has returned to Gracklstugh’s underworld, confirming second visit conditions. `[ch 019 / 019.01]`
+  - The party’s second visit to Blingdenstone concluded with peace and departure. [ch 048 / 048.06; ch 048 / 048.07]
+- "Neverlight Grove corruption — second visit conditions" — `SUPPORTED`
+  - Velkynvelve’s condition is now known to be abandoned by the party after their raid; no further visits planned. `[ch 021 / 021.05]`
+  - Neverlight Grove corruption has been confirmed: Phylo is corrupted, Sarith is infected, and the Circle of Masters is active [ch 029 / 029.06].
+  - Neverlight Grove’s corruption is evident through Gasbide’s fanatical devotion to Phylo and the vague threat of Araumycos [ch 030 / 030.05].
+- "Velkynvelve — second visit conditions" — `SUPPORTED`
+  - Velkynvelve is confirmed as visited and departed; no return planned. `[ch 021 / 021.05]`
+  - Neverlight Grove corruption is confirmed as complete; the grove is now fully consumed by Zuggtmoy’s rot `[ch 032 / 032.03]`.
+- "Ooze spies attack Basidia's group — chapter 16" — `SUPPORTED`
+  - The party encountered and neutralized the ooze spies, now pacified. [ch 048 / 048.05]
+- "Araumycos fungal creatures — awakening sequence encounter" — `SUPPORTED`
+  - Araumycos fungal creatures were awakened in the wedding procession, chanting the hymn [ch 031 / 031.06].
+  - Araumycos fungal creatures are confirmed as present in the vision of Zuggtmoy’s tower, where fungal bridesmaids weave her bridal train `[ch 032 / 032.02]`.
+- "Infected area of Araumycos's mind — destroyed during rapport" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Infected area of Araumycos not destroyed [ch 005 / 005.06].
+  - begun, not shown done: The infected area of Araumycos’s mind is not referenced; this chunk concerns Demogorgon, not Zuggtmoy [ch 008 / 008.04].
+  - begun, not shown done: Infected area of Araumycos’s mind destroyed in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Infected area of Araumycos’s mind destroyed before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: Infected area of Araumycos’s mind not destroyed. `[ch 043 / 043.01]`
+- "House Baenre private meeting — Quenthel negotiation" — `SUPPORTED`
+  - The party encountered and resolved the influence of Zuggtmoy, with her presence confirmed. [ch 048 / 048.01; ch 048 / 048.07]
+- "House Do'Urden Bregan D'aerthe meeting — Jarlaxle negotiation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Bregan D'aerthe meeting not held [ch 005 / 005.06].
+  - begun, not shown done: House Do'Urden Bregan D'aerthe meeting in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: House Do'Urden meeting occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: The party has not met Jarlaxle or House Do'Urden [ch 040 / 040.02].
+  - begun, not shown done: House Do’Urden meeting not occurred. `[ch 043 / 043.01]`
+- "Council of Spiders assistance — Sorcere infiltration aid" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Council of Spiders assistance not sought [ch 005 / 005.06].
+  - begun, not shown done: Council of Spiders assistance in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The party has learned of the Gray Ghosts as a faction in conflict with the Keepers of the Flame and the Crown, though they know nothing of their nature or goals. `[ch 013 / 013.05]`
+  - begun, not shown done: The Council of Savants’ plot has been revealed through the letter, but its full scope is unknown [ch 026 / 026.07].
+  - begun, not shown done: Council of Spiders assistance occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: Council of Spiders assistance not occurred. `[ch 043 / 043.01]`
+- "Gromph's outer sanctum — infiltration and trap encounter" — `SUPPORTED`
+  - The black obelisk is confirmed as a discovered location in the Whorlstone Tunnels. `[ch 019 / items]`
+- "Four-armed stone golem Szashune — Gromph's sanctum guardian" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Szashune not encountered [ch 005 / 005.06].
+  - begun, not shown done: Szashune golem guardian in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The party encountered a ritual platform and books, but no stone golem or Gromph’s sanctum was involved. `[ch 022 / 022.06]`
+  - begun, not shown done: Szashune encountered before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: Szashune, Gromph’s golem, is mentioned as part of prior lore, but not encountered [ch 039 / 039.06].
+  - begun, not shown done: Szashune not encountered. `[ch 043 / 043.01]`
+- "Yochlol in Gromph's inner sanctum — confrontation" — `SUPPORTED`
+  - The party encountered and recognized Jimjar as a divine entity. [ch 048 / 048.07]
+- "Wand of Orcus — claimed during final battle" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Wand of Orcus not claimed [ch 005 / 005.06].
+  - begun, not shown done: Wand of Orcus is not mentioned [ch 008 / 008.04].
+  - begun, not shown done: Wand of Orcus claimed in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: The party observed ritual books and demonic activity, but no Wand of Orcus was present or claimed. `[ch 022 / 022.06]`
+  - begun, not shown done: Wand of Orcus claimed before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: Wand of Orcus is referenced as a potential final battle item, but not obtained [ch 039 / 039.06].
+  - begun, not shown done: Wand of Orcus has not been mentioned [ch 040 / 040.02].
+  - begun, not shown done: Wand of Orcus not claimed. `[ch 043 / 043.01]`
+- "Heroic sacrifice opportunity — final battle" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Heroic sacrifice opportunity not presented [ch 005 / 005.06].
+  - begun, not shown done: Heroic sacrifice opportunity is not yet presented [ch 008 / 008.04].
+  - begun, not shown done: Heroic sacrifice opportunity not yet occurred [ch 010 / 010.01]
+  - begun, not shown done: Heroic sacrifice opportunity occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: No heroic sacrifice has occurred [ch 040 / 040.02].
+  - begun, not shown done: Heroic sacrifice not offered. `[ch 043 / 043.01]`
+- "Demon sortie encounters — final battle complications" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Demon sortie encounters not experienced [ch 005 / 005.06].
+  - begun, not shown done: Demon sortie encounters are not yet occurring [ch 008 / 008.04].
+  - begun, not shown done: Demon sortie encounters not yet occurred [ch 010 / 010.01]
+  - begun, not shown done: Demon sortie complications are implied by the growing influence of Zuggtmoy via Phylo and Araumycos [ch 030 / 030.05].
+  - begun, not shown done: Demon sortie encounters are implied by Zuggtmoy’s presence and procession, but no direct confrontation occurred yet [ch 031 / 031.06].
+  - begun, not shown done: Demon sortie encounters occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+  - begun, not shown done: No demon sortie has occurred [ch 040 / 040.02].
+  - begun, not shown done: Demon sortie encounters not occurred. `[ch 043 / 043.01]`
+
+### tracking_blingdenstone_travelogue.txt
+
+- "Travelogue prelude — party arrival at Candlekeep gates" — `SUPPORTED`
+  - The party has completed their travelogue arc, arriving at the surface threshold. [ch 048 / 048.07]
+  - The party reached Candlekeep gates, concluding the surface travelogue arc [ch 054 / 054.06]
+  - The party arrives at Candlekeep’s outer gates, as this chapter concludes with their arrival in Daggerford and Candlekeep as the next destination. `[ch 055 / 055.09]`
+  - The party arrived at Candlekeep gates, as established in prior sessions [ch 062 / 062.01].
+  - Party arrived at Candlekeep gates, as confirmed by their presence and actions within Candlekeep’s locations [ch 063 / 063.01; ch 063 / locations].
+- "Surface-madness gradient — party awareness established before Candlekeep" — `SUPPORTED`
+  - The party becomes aware of the surface-madness gradient through Eldred’s fractured speech and the Field Ward preacher’s chant, recognizing it as the same madness from the Underdark. `[ch 055 / 055.04; ch 055 / 055.07]`
+  - Surface-madness gradient — party awareness established before Candlekeep [ch 056 / 056.02; ch 056 / 056.04]
+- "Gorg'Bahamut breadcrumb — planted with Kestler at Triboar" — `SUPPORTED`
+  - Kestler gives the party a note regarding a temple with a burning fire, planting a Gorg’Bahamut breadcrumb. `[ch 055 / 055.04]`
+- "Mirabar smith commissions — armor or weapon work ordered and collected" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Mirabar smith commissions not ordered [ch 005 / 005.06].
+  - begun, not shown done: Mirabar smith commissions collected before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Mirabar smith commissions were completed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Mirabar smith commissions occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Mirabar smith commissions are referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Mirabar smith commissions not addressed. `[ch 043 / 043.01]`
+- "Daz shopping arc — ink, vellum, spell-component refills acquired (Waterdeep)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daz shopping arc not completed [ch 005 / 005.06].
+  - begun, not shown done: Daz shopping arc completed before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daz continues to act independently in acquiring and concealing items, consistent with prior shopping arcs [ch 020 / 020.02].
+  - begun, not shown done: Daz shopping arc occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz shopping arc occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz shopping arc is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daz shopping arc not addressed. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz’s shopping arc in Waterdeep occurred prior to this chunk; no new purchases here [ch 054 / 054.01]
+- "Daz fitted Calishite cloak — purchased at Open Lord's Bazaar" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Calishite cloak not purchased [ch 005 / 005.06].
+  - begun, not shown done: Daz fitted Calishite cloak before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daz fitted Calishite cloak occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz fitted Calishite cloak before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz fitted Calishite cloak is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Calishite cloak not acquired. `[ch 043 / 043.01]`
+- "Milo Goodbarrel Volume 3 — acquired at Rishaal the Pageturner's" — `SUPPORTED`
+  - Daz acquires Milo Goodbarrel’s Account, Volume Three at Rishaal’s Pageturners in Waterdeep. `[ch 055 / 055.06]`
+- "Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford" — `SUPPORTED`
+  - Party acquired Order of the Gauntlet pewter Tarvis-hand medallion at Daggerford [ch 056 / 056.01]
+- "Gyrgum Hagiography of the Dragon-Born Faithful Vol III — acquired (Waterdeep)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gyrgum Hagiography not acquired [ch 005 / 005.06].
+  - begun, not shown done: Gyrgum Hagiography acquired before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Gyrgum Hagiography acquired prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Gyrgum Hagiography acquired before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Gyrgum Hagiography is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Gyrgum’s Hagiography not acquired. `[ch 043 / 043.01]`
+  - begun, not shown done: Gyrgum expresses interest in acquiring the Hagiography of the Dragon-Born Faithful Vol III, but no purchase is confirmed. `[ch 055 / 055.05]`
+- "Zalthir brass shadow-puppet hand — acquired (Waterdeep)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Zalthir shadow-puppet hand not acquired [ch 005 / 005.06].
+  - begun, not shown done: Zalthir brass puppet acquired before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Zalthir brass shadow-puppet hand acquired prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Zalthir brass puppet acquired before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Zalthir brass shadow-puppet hand is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Zalthir’s brass shadow-puppet hand was acquired earlier [ch 040 / 040.02].
+  - begun, not shown done: Zalthir’s puppet hand not acquired. `[ch 043 / 043.01]`
+  - begun, not shown done: Zalthir is directed to Khell-Vire for shadow monk training; the brass shadow-puppet hand is not mentioned as acquired. `[ch 055 / 055.07]`
+- "Dawnbringer scabbard finishing work — completed at Steelwoods of Mistshore" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Dawnbringer scabbard not finished [ch 005 / 005.06].
+  - begun, not shown done: Dawnbringer scabbard finished before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Dawnbringer scabbard finishing completed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Dawnbringer scabbard work completed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Dawnbringer scabbard finishing is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Dawnbringer’s scabbard finishing work is discussed but not completed; the party is planning to find a craftsman. `[ch 041 / 041.06]`
+  - begun, not shown done: Dawnbringer scabbard work completed earlier. `[ch 043 / 043.01]`
+- "Elin the silent child — Gyrgum healing attempt (Daggerford)" — `SUPPORTED`
+  - Elin the silent child — Gyrgum healing attempt (Daggerford) [ch 056 / 056.02]
+- "Charcoal rubbing of six-pointed star — taken from Daggerford inn table" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Charcoal rubbing not taken [ch 005 / 005.06].
+  - begun, not shown done: Charcoal rubbing taken before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Charcoal rubbing of six-pointed star taken prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Charcoal rubbing taken before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Charcoal rubbing is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Charcoal rubbing not taken. `[ch 043 / 043.01]`
+- "Kestler meeting — Gorg'Bahamut temple lead received (Triboar)" — `SUPPORTED`
+  - Kestler gives the party a note regarding the temple fire, fulfilling the Gorg’Bahamut temple lead. `[ch 055 / 055.04]`
+- "Triboar carpenter's journal — donated at Candlekeep gate" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Triboar carpenter's journal not donated [ch 005 / 005.06].
+  - begun, not shown done: Triboar carpenter’s journal donated before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Triboar carpenter’s journal donated prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Carpenter’s journal donated before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Triboar carpenter’s journal is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Carpenter’s journal donated earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: The Triboar carpenter’s journal was donated at Candlekeep gate; this was prior to this chapter [ch 054 / 054.06]
+- "Burned hamlet "The Auroch's Horn" — Silver Marches road" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Burned hamlet encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Burned hamlet is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Burned hamlet not visited. `[ch 043 / 043.01]`
+- "Broken Thunderbeast standing stone — Silver Marches road" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Broken Thunderbeast stone not seen [ch 005 / 005.06].
+  - begun, not shown done: Broken Thunderbeast standing stone on Silver Marches before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Broken Thunderbeast standing stone was encountered prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Broken Thunderbeast stone encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Broken Thunderbeast stone is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Broken Thunderbeast stone not seen. `[ch 043 / 043.01]`
+- "Defaced Tempus shrine — Silver Marches crossroads" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Defaced Tempus shrine not witnessed [ch 005 / 005.06].
+  - begun, not shown done: Defaced Tempus shrine on Silver Marches before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Defaced Tempus shrine was encountered prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Defaced Tempus shrine encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Defaced Tempus shrine is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Defaced Tempus shrine not seen. `[ch 043 / 043.01]`
+- "Forge of Mirabar — dwarven smithing city" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Forge of Mirabar not visited [ch 005 / 005.06].
+  - begun, not shown done: Forge of Mirabar visited before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Forge of Mirabar was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Forge of Mirabar visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Forge of Mirabar is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Forge of Mirabar not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Forge of Mirabar — dwarven smithing city: not referenced here [ch 064 / 064.01].
+- "Order of the Gauntlet shrine — Mirabar temples' quarter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Order of the Gauntlet shrine not visited [ch 005 / 005.06].
+  - begun, not shown done: Order of the Gauntlet shrine in Mirabar before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Order of the Gauntlet shrine was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Order of the Gauntlet shrine visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Order of the Gauntlet shrine is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Order of the Gauntlet shrine not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Order of the Gauntlet shrine — Mirabar temples' quarter: not referenced here [ch 064 / 064.01].
+- "Goldenfields — Chauntean temple-city and refugee shelter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Goldenfields not visited [ch 005 / 005.06].
+  - begun, not shown done: Goldenfields visited before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Goldenfields was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Goldenfields visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Goldenfields is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Goldenfields not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Goldenfields — Chauntean temple-city and refugee shelter: not referenced here [ch 064 / 064.01].
+- "Mountain's Mouth Inn — Triboar" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not yet reached Mountain’s Mouth Inn or any surface locations [ch 005 / 005.06].
+  - begun, not shown done: Mountain's Mouth Inn not visited [ch 005 / 005.06].
+  - begun, not shown done: Mountain's Mouth Inn visited before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The party has entered Laduguer's Furrow, the wealthy district of Gracklstugh [ch 026 / 026.03].
+  - begun, not shown done: Mountain’s Mouth Inn was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Mountain's Mouth Inn visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Mountain’s Mouth Inn is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Mountain’s Mouth Inn was visited earlier [ch 040 / 040.02].
+  - begun, not shown done: Mountain's Mouth Inn is not referenced; this chunk is entirely in Velkynvelve. `[ch 041 / 041.01]`
+  - begun, not shown done: Mountain’s Mouth Inn not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Mountain's Mouth Inn — Triboar: not referenced here [ch 064 / 064.01].
+- "Triboar memorial square — cairn of the Triboar dead" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Triboar memorial square not visited [ch 005 / 005.06].
+  - begun, not shown done: Triboar memorial square was visited in prior chapters [ch 010 / 010.01]
+  - begun, not shown done: Triboar memorial square visited before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Triboar memorial square was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Triboar memorial square visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Triboar memorial square is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Triboar memorial square not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Triboar memorial square — cairn of the Triboar dead: not referenced here [ch 064 / 064.01].
+- "Waterdeep — city visit and shopping arc" — `SUPPORTED`
+  - The party visits Waterdeep, shopping, debating philosophy, and encountering the preacher and bookshop. `[ch 055 / 055.05; ch 055 / 055.06; ch 055 / 055.07; ch 055 / 055.08]`
+- "Rishaal the Pageturner's — Waterdeep Castle Ward bookshop" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Rishaal the Pageturner's not visited [ch 005 / 005.06].
+  - begun, not shown done: Rishaal the Pageturner's visited before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The party is now in the Underdark; no surface-world locations like Rishaal’s bookshop are referenced [ch 011 / 011.07].
+  - begun, not shown done: Rishaal the Pageturner's was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Rishaal the Pageturner's visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Rishaal the Pageturner's is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Rishaal the Pageturner’s not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Rishaal the Pageturner's — Waterdeep Castle Ward bookshop: not referenced here [ch 064 / 064.01].
+- "Order of the Gauntlet chapter house — Waterdeep Sea Ward" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Order of the Gauntlet chapter house not visited [ch 005 / 005.06].
+  - begun, not shown done: Order of the Gauntlet chapter house in Waterdeep before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Order of the Gauntlet chapter house was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Order of the Gauntlet chapter house visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Order of the Gauntlet chapter house is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Order of the Gauntlet chapter house not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Order of the Gauntlet chapter house — Waterdeep Sea Ward: not referenced here [ch 064 / 064.01].
+- "Sleeping Snake fence — Waterdeep Dock Ward" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sleeping Snake fence not visited [ch 005 / 005.06].
+  - begun, not shown done: Sleeping Snake fence in Waterdeep before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The party is in the Underdark, but no encounter with the Sleeping Snake fence or Waterdeep locations occurred. `[ch 022 / 022.01]`
+  - begun, not shown done: Sleeping Snake fence was encountered prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sleeping Snake fence encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sleeping Snake fence is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sleeping Snake fence is not mentioned. `[ch 043 / 043.01]`
+  - begun, not shown done: Sleeping Snake fence not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: The Sleeping Snake fence in Waterdeep is referenced in audit but not mentioned in this chapter [ch 047 / 047.10].
+  - begun, not shown done: The Sleeping Snake fence is mentioned as a location in Waterdeep, but no interaction occurs. `[ch 055 / locations]`
+  - begun, not shown done: Sleeping Snake fence — Waterdeep Dock Ward: not referenced here [ch 064 / 064.01].
+- "Aurora's Whole Realms Catalog — Waterdeep Castle Ward" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Aurora's Whole Realms Catalog not seen [ch 005 / 005.06].
+  - begun, not shown done: Aurora's Whole Realms Catalog in Waterdeep before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Aurora's Whole Realms Catalog was seen prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Aurora's Whole Realms Catalog encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Aurora's Whole Realms Catalog is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Aurora’s Catalog not seen. `[ch 043 / 043.01]`
+  - begun, not shown done: Aurora's Whole Realms Catalog — Waterdeep Castle Ward: not referenced here [ch 064 / 064.01].
+- "Halaster's Prized Findings — Waterdeep Trades Ward" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Halaster's Prized Findings not seen [ch 005 / 005.06].
+  - begun, not shown done: Halaster's Prized Findings in Waterdeep before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The party has encountered the smog-choked, industrial streets of Gracklstugh, described as Dickensian London and Pittsburgh-like [ch 026 / 026.03; ch 026 / 026.05].
+  - begun, not shown done: Halaster's Prized Findings was seen prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Halaster's Prized Findings encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Halaster's Prized Findings is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Halaster’s Findings not seen. `[ch 043 / 043.01]`
+  - begun, not shown done: Halaster's Prized Findings — Waterdeep Trades Ward: not referenced here [ch 064 / 064.01].
+- "Steelwoods of Mistshore — Waterdeep docks smith" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Steelwoods of Mistshore not visited [ch 005 / 005.06].
+  - begun, not shown done: Steelwoods of Mistshore visited before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Steelwoods of Mistshore was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Steelwoods of Mistshore visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Steelwoods of Mistshore is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Steelwoods of Mistshore not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Steelwoods of Mistshore — Waterdeep docks smith: not referenced here [ch 064 / 064.01].
+- "River Shining Tavern — Daggerford" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: River Shining Tavern not visited [ch 005 / 005.06].
+  - begun, not shown done: River Shining Tavern in Daggerford before this chunk [ch 010 / 010.01]
+  - begun, not shown done: River Shining Tavern was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: River Shining Tavern visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: River Shining Tavern is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: River Shining Tavern not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: River Shining Tavern — Daggerford: not referenced here [ch 064 / 064.01].
+- "Hand of Tarvis monument — Daggerford village square" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Hand of Tarvis monument not seen [ch 005 / 005.06].
+  - begun, not shown done: Hand of Tarvis monument in Daggerford before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Hand of Tarvis monument was seen prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Hand of Tarvis monument visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Hand of Tarvis monument is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Hand of Tarvis monument not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Hand of Tarvis monument — Daggerford village square: not referenced here [ch 064 / 064.01].
+- "Burning Wizard inn — Beregost" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Burning Wizard inn not visited [ch 005 / 005.06].
+  - begun, not shown done: Burning Wizard inn in Beregost before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Burning Wizard inn was visited prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Burning Wizard inn visited before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Burning Wizard inn is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Burning Wizard inn not visited. `[ch 043 / 043.01]`
+  - begun, not shown done: Burning Wizard inn — Beregost: not referenced here [ch 064 / 064.01].
+- "Way of the Lion — cliff road to Candlekeep" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Way of the Lion not traveled [ch 005 / 005.06].
+  - begun, not shown done: Way of the Lion is a surface path [ch 008 / 008.04].
+  - begun, not shown done: Way of the Lion road before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Way of the Lion was traveled prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Way of the Lion encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Way of the Lion is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Way of the Lion not traveled. `[ch 043 / 043.01]`
+  - begun, not shown done: The Way of the Lion road to Candlekeep was traveled prior to this chapter [ch 054 / 054.06]
+  - begun, not shown done: Way of the Lion — cliff road to Candlekeep: not referenced here [ch 064 / 064.01].
+- "Candlekeep Emerald Door — outer ward arrival" — `SUPPORTED`
+  - Candlekeep Emerald Door — outer ward arrival [ch 056 / 056.04]
+- "Eldeth farewell — Mithral Hall outskirts (Day 3)" — `SUPPORTED`
+  - Eldeth’s farewell occurred at the Mithral Hall outskirts, where she swore to embrace Thorin’s clan after reporting to the lords [ch 054 / 054.01]
+- "Dwarven outriders — Mithral Hall salute to Eldeth" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Dwarven outriders not saluted [ch 005 / 005.06].
+  - begun, not shown done: Dwarven outriders salute before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Dwarven outriders salute occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Dwarven outriders salute occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Dwarven outriders is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Dwarven outriders salute occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Dwarven outriders — Mithral Hall salute to Eldeth: not referenced here [ch 064 / 064.01].
+- "Stroudite polemicist — first contact and pamphlet handout (Mirabar)" — `SUPPORTED`
+  - The Stroudite polemicist makes first contact in Mirabar and hands Gyrgum the pamphlet. `[ch 055 / 055.03]`
+- "Sister Ellune — first contact at Goldenfields" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sister Ellune not encountered [ch 005 / 005.06].
+  - begun, not shown done: Sister Ellune at Goldenfields before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Sister Ellune was first contacted prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sister Ellune first contact before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sister Ellune is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sister Ellune not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Sister Ellune — first contact at Goldenfields: not referenced here [ch 064 / 064.01].
+- "Brindle Wenth and the Dornal Greyhand cup story — Mountain's Mouth Inn" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Brindle Wenth story not heard [ch 005 / 005.06].
+  - begun, not shown done: Brindle Wenth and Dornal Greyhand cup story at Mountain's Mouth before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Brindle Wenth story was recounted prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Brindle Wenth story recounted before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Brindle Wenth story is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Brindle Wenth story was recounted earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Brindle Wenth story not recounted. `[ch 043 / 043.01]`
+  - begun, not shown done: Brindle Wenth and the Dornal Greyhand cup story — Mountain's Mouth Inn: not referenced here [ch 064 / 064.01].
+- "Kestler the half-orc lay brother — first contact (Triboar)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Kestler the half-orc not met [ch 005 / 005.06].
+  - begun, not shown done: Kestler the half-orc first contact before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Kestler the half-orc was first contacted prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Kestler first contact before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Kestler the half-orc is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Kestler was met earlier [ch 040 / 040.02].
+  - begun, not shown done: Kestler was met earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Kestler not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Kestler the half-orc lay brother — first contact: not referenced here [ch 064 / 064.01].
+- "Eldred the two-voiced courier — witnessed at Mountain's Mouth Inn" — `SUPPORTED`
+  - Eldred is witnessed speaking in two voices at the Mountain’s Mouth Inn. `[ch 055 / 055.04]`
+- "Rishaal the Pageturner — first contact at Waterdeep bookshop" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Rishaal the Pageturner not met [ch 005 / 005.06].
+  - begun, not shown done: Rishaal the Pageturner was not encountered in this chunk; the party is in the Underdark [ch 008 / 008.04].
+  - begun, not shown done: Rishaal the Pageturner first contact before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The ghost Pelek’s possession ability was successfully activated, adding to the party’s supernatural capabilities [ch 020 / spells].
+  - begun, not shown done: Rishaal the Pageturner was first contacted prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Rishaal first contact before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Rishaal the Pageturner is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Rishaal was met earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Rishaal not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Rishaal the Pageturner — first contact: not referenced here [ch 064 / 064.01].
+- "Stroudite half-orc pilgrims — first contact (Waterdeep)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Stroudite half-orc pilgrims not seen [ch 005 / 005.06].
+  - begun, not shown done: Stroudite half-orc pilgrims in Waterdeep before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Stroudite half-orc pilgrims were encountered in prior chapters; not relevant here. `[ch 025 / 025.08]`
+  - begun, not shown done: Stroudite half-orc pilgrims were not encountered; no surface faction interactions beyond architecture [ch 030 / 030.05].
+  - begun, not shown done: Stroudite half-orc pilgrims were first contacted prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Stroudite pilgrims encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Stroudite half-orc pilgrims is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Stroudite half-orc pilgrims were met earlier [ch 040 / 040.02].
+  - begun, not shown done: Stroudite pilgrims not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Stroudite half-orc pilgrims — first contact: not referenced here [ch 064 / 064.01].
+- "Field Ward street-preacher — witnessed (Waterdeep)" — `SUPPORTED`
+  - The Field Ward street preacher is witnessed chanting about the kraken and addressing Daz. `[ch 055 / 055.07]`
+- "City Watch patrol — ooze-rights confrontation (Waterdeep Trades Ward)" — `SUPPORTED`
+  - The city watch patrol confronts the party over Glabbagool’s bag, triggering Thorin’s ooze rights stand. `[ch 055 / 055.08]`
+- "Maerith of the Ford — first contact regarding Elin (Daggerford)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Maerith of the Ford not met [ch 005 / 005.06].
+  - begun, not shown done: Maerith of the Ford first contact in Daggerford before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Maerith of the Ford was first contacted prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Maerith first contact before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Maerith of the Ford is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Maerith of the Ford not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Maerith of the Ford — first contact: not referenced here [ch 064 / 064.01].
+- "Elin the silent child — first encounter (Daggerford)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Elin the silent child not encountered [ch 005 / 005.06].
+  - begun, not shown done: Elin the silent child first encounter before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Elin the silent child was first encountered prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Elin first encounter before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Elin the silent child is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Elin not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Elin the silent child — first encounter: not referenced here [ch 064 / 064.01].
+- "Veyloss the bard — "The Kenku Could Not Fly" performance (Beregost)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Veyloss the bard not heard [ch 005 / 005.06].
+  - begun, not shown done: Veyloss the bard performance in Beregost before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Veyloss the bard performed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Veyloss performance witnessed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Veyloss the bard is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Veyloss the bard not performed. `[ch 043 / 043.01]`
+- "Festrum the gnome innkeeper — Burning Wizard history recounted" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Festrum the gnome innkeeper not met [ch 005 / 005.06].
+  - begun, not shown done: Festrum the gnome innkeeper history recounted before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Festrum the gnome innkeeper recounted history prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Festrum recounted history before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Festrum the gnome innkeeper is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Festrum the gnome not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Festrum the gnome innkeeper — Burning Wizard history: not referenced here [ch 064 / 064.01].
+- "Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)" — `SUPPORTED`
+  - Pilgrim at corner table — Endless Chant verse error witnessed (Beregost) [ch 056 / 056.03]
+- "Triboar carpenter — Way of the Lion procession encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Triboar carpenter not encountered [ch 005 / 005.06].
+  - begun, not shown done: Triboar carpenter Way of the Lion procession before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The party’s self-proclaimed identity as the Ember Vanguard has become a city-wide rumor [ch 026 / 026.01].
+  - begun, not shown done: Triboar carpenter encountered prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Triboar carpenter encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Triboar carpenter is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Triboar carpenter not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Triboar carpenter — Way of the Lion procession: not referenced here [ch 064 / 064.01].
+- "Stroudite half-orc pilgrims — Way of the Lion procession encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Stroudite half-orc pilgrims not seen on Way of the Lion [ch 005 / 005.06].
+  - begun, not shown done: Stroudite half-orc pilgrims Way of the Lion procession before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Stroudite half-orc pilgrims encountered prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Stroudite pilgrims encountered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Stroudite half-orc pilgrims is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Stroudite pilgrims not encountered. `[ch 043 / 043.01]`
+  - begun, not shown done: Stroudite half-orc pilgrims — Way of the Lion procession: not referenced here [ch 064 / 064.01].
+- "Bookwyrm — receives party at Candlekeep Emerald Door" — `SUPPORTED`
+  - The party arrived at Candlekeep’s Emerald Door and were received by the Bookwyrm [ch 054 / 054.06]
+  - Bookwyrm — receives party at Candlekeep Emerald Door [ch 056 / 056.04]
+  - Bookwyrm received the party at Candlekeep’s Emerald Door, initiating the investigation [ch 062 / 062.01].
+- "Queenie the cat — witnessed at Candlekeep gate bollard" — `SUPPORTED`
+  - The party has recovered and secured five doses of Keoghtom’s Ointment, adding them to their inventory [ch 024 / 024.04].
+- "First Faction painting — party witnesses original above Rishaal's cash desk" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: First Faction painting not witnessed [ch 005 / 005.06].
+  - begun, not shown done: First Faction painting witnessed before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The party is in the Underdark; no Candlekeep, Bookwyrm, or surface-world locations are referenced. `[ch 022 / 022.01]`
+  - begun, not shown done: First Faction painting was witnessed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: First Faction painting witnessed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: First Faction painting is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: First Faction painting not witnessed. `[ch 043 / 043.01]`
+  - begun, not shown done: First Faction painting — party witnesses original: not referenced here [ch 064 / 064.01].
+- "Thorin and Dawnbringer ooze-rights stand — City Watch confrontation (Waterdeep)" — `SUPPORTED`
+  - Thorin and Dawnbringer publicly defend ooze rights during the city guard confrontation. `[ch 055 / 055.08]`
+- "Thorin and Dawnbringer orphan-healing run — Dock Ward (Waterdeep)" — `SUPPORTED`
+  - Thorin and Dawnbringer heal orphans in Waterdeep’s Dock Ward, bonding over mercy. `[ch 055 / 055.08]`
+- "Daz somatic field-perception — first tell at Goldenfields (spiral wheat)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daz somatic field-perception not triggered [ch 005 / 005.06].
+  - begun, not shown done: Daz somatic field-perception first tell at Goldenfields before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daz somatic field-perception began prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz somatic field-perception began before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daz’s field-perception began earlier [ch 040 / 040.02].
+  - begun, not shown done: Daz’s field-perception began earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Daz’s field-perception first tell at Goldenfields occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz somatic field-perception — first tell: not referenced here [ch 064 / 064.01].
+- "Daz somatic field-perception — Eldred two-voice Insight check (Triboar)" — `SUPPORTED`
+  - Daz uses insight to recognize Eldred’s dual voices as the same madness from the Underdark. `[ch 055 / 055.04]`
+- "Daz somatic field-perception — Field Ward preacher Insight check (Waterdeep)" — `SUPPORTED`
+  - Daz uses insight on the Field Ward preacher and recognizes the same fractured rhythm. `[ch 055 / 055.07]`
+- "Daz somatic field-perception — pressure-headache begins (Beregost)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daz pressure-headache not begun [ch 005 / 005.06].
+  - begun, not shown done: Daz somatic field-perception pressure-headache begins in Beregost before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daz pressure-headache began prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz pressure-headache began before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daz’s pressure-headache began in Beregost. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz somatic field-perception — pressure-headache begins: not referenced here [ch 064 / 064.01].
+- "Daz somatic field-perception — pressure-headache sharpens on Way of the Lion" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daz pressure-headache not sharpened [ch 005 / 005.06].
+  - begun, not shown done: Daz somatic field-perception sharpens on Way of the Lion before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daz pressure-headache sharpened prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz pressure-headache sharpened before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz somatic field-perception is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daz’s pressure-headache sharpened on Way of the Lion. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz somatic field-perception — pressure-headache sharpens: continues from prior sessions, not new here [ch 064 / 064.01].
+- "Six-pointed star — first appearance (Elin's drawings, Daggerford)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Six-pointed star not seen [ch 005 / 005.06].
+  - begun, not shown done: Six-pointed star first appeared in Elin’s drawings during Candlekeep arc [ch 010 / 010.01]
+  - begun, not shown done: Six-pointed star first appearance in Elin’s drawings before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The six-pointed star was seen earlier; this is not referenced in this chunk. `[ch 025 / 025.08]`
+  - begun, not shown done: Six-pointed star was not mentioned or observed; no connection to previous Candlekeep threads [ch 030 / 030.05].
+  - begun, not shown done: Six-pointed star first appeared prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Six-pointed star first appeared before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Six-pointed star is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Six-pointed star was first seen earlier [ch 040 / 040.02].
+  - begun, not shown done: Six-pointed star first appeared earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Six-pointed star is referenced in Candlekeep arc, not here. `[ch 043 / 043.01]`
+  - begun, not shown done: Six-pointed star first appeared in Daggerford. `[ch 043 / 043.01]`
+  - begun, not shown done: The six-pointed star first appeared in Daggerford; this chapter does not mention it [ch 047 / 047.10].
+  - begun, not shown done: The six-pointed star was first seen in Elin’s drawings in Daggerford; not referenced here [ch 054 / 054.06]
+  - begun, not shown done: The six-pointed star is first mentioned as appearing in Elin’s drawings at Daggerford, but Elin is not encountered in this chapter. `[ch 055 / 055.09]`
+  - begun, not shown done: Six-pointed star — first appearance: not referenced here [ch 064 / 064.01].
+- "Black-Banner Five trial-site marker — six-pointed shape witnessed (Waterdeep)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Black-Banner Five marker not witnessed [ch 005 / 005.06].
+  - begun, not shown done: Black-Banner Five trial-site marker six-pointed shape witnessed before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Black-Banner Five trial-site marker witnessed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Black-Banner Five marker witnessed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Black-Banner Five trial-site marker is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Black-Banner Five marker not witnessed. `[ch 043 / 043.01]`
+  - begun, not shown done: Black-Banner Five trial-site marker: not referenced here [ch 064 / 064.01].
+- "Endless Chant error — verse substitution witnessed (Beregost)" — `SUPPORTED`
+  - Endless Chant error — verse substitution witnessed (Beregost) [ch 056 / 056.03]
+- "Endless Chant — first heard on wind approaching Candlekeep (Way of the Lion)" — `SUPPORTED`
+  - Endless Chant — first heard on wind approaching Candlekeep (Way of the Lion) [ch 056 / 056.04]
+- "Sjurkar priest benediction error — witnessed at Mirabar West Gate" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sjurkar benediction error not witnessed [ch 005 / 005.06].
+  - begun, not shown done: Sjurkar priest benediction error witnessed before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Sjurkar priest benediction error witnessed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sjurkar benediction error witnessed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sjurkar priest benediction error is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sjurkar benediction error not witnessed. `[ch 043 / 043.01]`
+  - begun, not shown done: Sjurkar priest benediction error: not referenced here [ch 064 / 064.01].
+- "Stroud-school sponsorship of Tarvis monument — discovered (Daggerford)" — `SUPPORTED`
+  - Stroud-school sponsorship of Tarvis monument — discovered (Daggerford) [ch 056 / 056.01]
+- "Drow refugee in Waterdeep — Sleeping Snake fence mention (banked thread)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Drow refugee not mentioned [ch 005 / 005.06].
+  - begun, not shown done: Drow refugee in Waterdeep mention before this chunk [ch 010 / 010.01]
+  - begun, not shown done: The party has learned drow are hunting them, reinforcing the thread of drow refugees and pursuers from earlier. `[ch 013 / 013.06; ch 013 / Memorable Moments]`
+  - begun, not shown done: Drow refugee in Waterdeep mentioned prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Drow refugee mentioned before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Drow refugee in Waterdeep is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Drow refugee mention was earlier [ch 040 / 040.02].
+  - begun, not shown done: Drow refugee mention occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Drow refugee in Waterdeep not mentioned. `[ch 043 / 043.01]`
+  - begun, not shown done: Drow refugee mentioned at Sleeping Snake fence, but no encounter occurs. `[ch 055 / locations]`
+  - begun, not shown done: Drow refugee in Waterdeep — Sleeping Snake fence mention (banked thread) [ch 056 / 056.07]
+  - begun, not shown done: Drow refugee in Waterdeep: not referenced here [ch 064 / 064.01].
+- "Refugee family from Episode 1 — party interaction (Silver Marches road)" — `SUPPORTED`
+  - The refugee family from Episode 1 is encountered on the Silver Marches road. `[ch 055 / 055.02]`
+
+### tracking_candlekeep_murders.txt
+
+- "Candlekeep murder investigation — conscription by Bookwyrm" — `SUPPORTED`
+  - The party was conscripted by Bookwyrm as independent investigators into the murder of the Keeper of Tomes [ch 057 / 057.05].
+  - Candlekeep murder investigation conscripted by Bookwyrm; party reported findings and were assigned Deneir’s Sanctum as base [ch 059 / 059.01]
+  - Candlekeep murder investigation — conscription by Bookwyrm [ch 060 / 060.01; ch 060 / locations]
+  - The Candlekeep murder investigation was conscripted by Bookwyrm and has now reached its conclusion with Alkrist’s confession and the party’s handover to Kalan [ch 062 / 062.03].
+  - Candlekeep murder investigation was conscripted by Bookwyrm, and now continues with her death and new attacks [ch 063 / 063.01; ch 063 / 063.02].
+- "Cryptogram race — six-clue chase to the Vault" — `SUPPORTED`
+  - The cryptogram race concluded with the party decoding all seven instructions and acquiring the answers to the riddles [ch 067 / 067.03; ch 067 / 067.05].
+  - Cryptogram race — six-clue chase to the Vault — The party solved the three riddles of the iron owlbear, which were part of the cryptogram’s sequence; the Vault was reached `[ch 068 / 068.03]`
+- "Vault confrontation — Manshoon and the Book of Vile Darkness" — `SUPPORTED`
+  - Vault confrontation — Manshoon and the Book of Vile Darkness — The party confronted Manshoon in the Vault of Dangerous Secrets, where he was reading one of the tomes; the confrontation has begun `[ch 068 / 068.05]`
+- "Gauntlgrym call — Eldeth's letter and the forge" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not yet received Eldeth’s letter or been called to Gauntlgrym [ch 005 / 005.06].
+  - begun, not shown done: Gauntlgrym call not received [ch 005 / 005.06].
+  - begun, not shown done: Gauntlgrym call is referenced but not yet reached [ch 008 / 008.04].
+  - begun, not shown done: Gauntlgrym call via Eldeth’s letter before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Gauntlgrym call via Eldeth’s letter occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Gauntlgrym call occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Gauntlgrym call is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Gauntlgrym call occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Gauntlgrym call — confirmed as next goal [ch 063 / 063.06].
+  - begun, not shown done: Gauntlgrym call — Eldeth's letter: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Gauntlgrym call was referenced in Echo 3 and Eldeth’s letter; no travel or arrival occurred in this chunk [ch 067 / 067.03].
+- "Daz / Yvenne scholar arc — Drow Material Culture research (multiple sittings)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daz / Yvenne research not begun [ch 005 / 005.06].
+  - begun, not shown done: Daz / Yvenne scholar arc before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daz/Yvenne scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz / Yvenne research occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz / Yvenne scholar arc is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daz/Yvenne research occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz / Yvenne scholar arc — ongoing, referenced in field-perception confirmation [ch 063 / 063.02].
+  - begun, not shown done: Daz / Yvenne scholar arc — Drow Material Culture: not referenced here [ch 064 / 064.01].
+- "Zalthir / Khell-Vire scholar arc — Watcher's Stillness / Severed Path (multiple sittings)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Zalthir / Khell-Vire research not begun [ch 005 / 005.06].
+  - begun, not shown done: Zalthir / Khell-Vire scholar arc before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Zalthir/Khell-Vire scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Zalthir / Khell-Vire research occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Zalthir / Khell-Vire scholar arc is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Zalthir/Khell-Vire research occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Zalthir / Khell-Vire scholar arc — ongoing [ch 063 / 063.05].
+  - begun, not shown done: Zalthir / Khell-Vire scholar arc — Watcher's Stillness: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Zalthir / Khell-Vire scholar arc — Watcher's Stillness / Severed Path (multiple sittings) — Watcher's Stillness was earned in prior sessions; not mentioned here `[ch 068 / 068.05]`
+- "Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Thorin / Philemon therapy not begun [ch 005 / 005.06].
+  - begun, not shown done: Thorin / Philemon scholar arc before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Thorin/Philemon scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Thorin / Philemon therapy occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Thorin / Philemon scholar arc is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Thorin’s therapy arc occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Thorin/Philemon therapy occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Thorin and Dawnbringer’s therapy arc with Philemon has begun but not concluded [ch 054 / 054.06]
+  - begun, not shown done: Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C) [ch 056 / 056.06]
+  - begun, not shown done: Thorin’s therapy arc with Philemon was initiated in prior sessions and is now stalled, with Dawnbringer expressing desire to resume [ch 062 / 062.01].
+  - begun, not shown done: Thorin / Philemon scholar arc — ongoing [ch 063 / 063.05].
+  - begun, not shown done: Thorin / Philemon scholar arc — therapy phases: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C) — No therapy or Philemon references in this session `[ch 068 / 068.05]`
+- "Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gyrgum / Vareth research not begun [ch 005 / 005.06].
+  - begun, not shown done: Gyrgum’s Vareth arc is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Gyrgum / Vareth scholar arc before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Gyrgum/Vareth scholar arc occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Gyrgum / Vareth stations occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Gyrgum / Vareth scholar arc is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Gyrgum’s Vareth arc occurred earlier [ch 040 / 040.02].
+  - begun, not shown done: Gyrgum’s Vareth arc occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Gyrgum/Vareth arc occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Gyrgum’s arc with Vareth has begun with immediate interview request [ch 054 / 054.06]
+  - begun, not shown done: Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10) [ch 056 / 056.01]
+  - begun, not shown done: Gyrgum / Vareth scholar arc — ongoing [ch 063 / 063.02].
+  - begun, not shown done: Gyrgum / Vareth scholar arc — Stroud Wake stations: completed in prior sessions; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10) — No Stroud Wake references in this session `[ch 068 / 068.05]`
+- "Glabbagool's question — Pavilion Naturalis / Tower of Tall Tales / Whispering Dome" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Glabbagool's question not asked [ch 005 / 005.06].
+  - begun, not shown done: Glabbagool’s question is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Glabbagool's question before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Glabbagool’s question occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Glabbagool’s question occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Glabbagool's question is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Glabbagool’s question occurred earlier [ch 040 / 040.02].
+  - begun, not shown done: Glabbagool’s question occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Glabbagool’s question was asked in Candlekeep; not addressed here. `[ch 043 / 043.08]`
+  - begun, not shown done: Glabbagool’s question occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Glabbagool’s question is pending at the Whispering Dome or Pavilion Naturalis [ch 054 / 054.05]
+  - begun, not shown done: Glabbagool’s question about the Pavilion Naturalis, Tower of Tall Tales, and Whispering Dome was raised in prior sessions and remains unresolved [ch 062 / 062.04].
+  - begun, not shown done: Glabbagool's question — ongoing [ch 063 / 063.05].
+  - begun, not shown done: Glabbagool's question: resolved in prior sessions; not referenced here [ch 064 / 064.01].
+- "Polly Pocket disposition — kept / Bell Tower / messenger release" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Polly Pocket disposition not decided [ch 005 / 005.06].
+  - begun, not shown done: Polly Pocket disposition is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Polly Pocket disposition before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Polly Pocket disposition was chosen prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Polly Pocket disposition determined before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Polly Pocket disposition is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Polly Pocket disposition occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Polly Pocket’s disposition is now imprisonment in the bag of holding, but her release or fate is undecided [ch 054 / 054.05]
+  - begun, not shown done: Polly Pocket disposition — ongoing [ch 063 / 063.01].
+  - begun, not shown done: Polly Pocket disposition: resolved in prior sessions; not referenced here [ch 064 / 064.01].
+- "Sylvira recruitment — Path A / B / C choice" — `SUPPORTED`
+  - Sylvira recruited (Path B) confirmed by her active help and key contributions [ch 067 / 067.03].
+- "Daral rescue — Bath House poisoning intervention" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daral rescue not attempted [ch 005 / 005.06].
+  - begun, not shown done: Daral rescue is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Daral rescue before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daral rescue occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daral rescue occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daral rescue is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daral rescue occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Daral rescue occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Daral rescue — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Daral rescue — Bath House poisoning: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Daral rescue — Bath House poisoning intervention — Daral’s fate was resolved prior `[ch 068 / 068.05]`
+- "Kalan missing — Pont de Paramours investigation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Kalan missing not investigated [ch 005 / 005.06].
+  - begun, not shown done: Kalan missing is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Kalan missing before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Kalan missing was investigated prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Kalan missing occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Kalan missing is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Kalan missing occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Kalan missing occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Kalan missing — resolved in this chapter [ch 063 / 063.03].
+  - begun, not shown done: Kalan missing — Pont de Paramours: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Kalan missing — Pont de Paramours investigation — Kalan is dead; investigation resolved prior `[ch 068 / 068.05]`
+- "Alkrist arrest — Drakonoikos confrontation" — `SUPPORTED`
+  - Alkrist was arrested and confessed to killing Janussi, with physical evidence and a magical compulsion spell confirmed [ch 062 / 062.01; ch 062 / 062.03].
+- "Moziqodo binding — Cursed Tower ritual evidence" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Moziqodo binding not discovered [ch 005 / 005.06].
+  - begun, not shown done: Moziqodo binding is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Moziqodo binding before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Moziqodo binding occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Moziqodo binding occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Moziqodo binding is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Moziqodo binding occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Moziqodo binding occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Moziqodo binding — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Moziqodo binding — Cursed Tower: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Moziqodo binding — Cursed Tower ritual evidence — Binding resolved prior `[ch 068 / 068.05]`
+- "Daz / Yvenne — Fourth-Seat synthesis investigation (DC 20 roll)" — `SUPPORTED`
+  - Daz and Yvenne completed their Fourth-Seat synthesis investigation, as evidenced by Daz’s heightened perception and the party’s use of Locate Object and combat insight [ch 062 / 062.04; ch 062 / 062.06].
+- "Daz / Yvenne — Vaelissa T'sarran name and Bell Tower deadline" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vaelissa T'sarran name not delivered [ch 005 / 005.06].
+  - begun, not shown done: Vaelissa T'sarran name is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Daz / Yvenne Vaelissa T'sarran name and deadline before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Daz/Yvenne Vaelissa T'sarran name and deadline occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz / Yvenne Vaelissa name and deadline occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz / Yvenne Vaelissa name is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Vaelissa T'sarran name and Bell Tower deadline occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Yvenne delivered Vaelissa name earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Yvenne has not yet delivered Vaelissa T’sarran’s name; this is still pending [ch 054 / 054.04]
+  - begun, not shown done: Daz / Yvenne — Vaelissa T'sarran name and Bell Tower deadline [ch 056 / 056.07]
+  - begun, not shown done: Daz / Yvenne — Vaelissa T'sarran name — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Daz / Yvenne — Vaelissa T'sarran name: not referenced here [ch 064 / 064.01].
+- "Thorin / Philemon — Layer 2 Brysis reveal (Path C only)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Thorin / Philemon Layer 2 Brysis not revealed [ch 005 / 005.06].
+  - begun, not shown done: Layer 2 Brysis reveal is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Thorin / Philemon Layer 2 Brysis reveal before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Thorin/Philemon Layer 2 Brysis reveal occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Thorin / Philemon Layer 2 reveal occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Thorin / Philemon Layer 2 reveal is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Thorin/Philemon Layer 2 Brysis reveal occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Philemon’s Layer 2 Brysis reveal was Candlekeep arc. `[ch 043 / 043.01]`
+  - begun, not shown done: Philemon’s Layer 2 Brysis revealed earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Thorin / Philemon — Layer 2 Brysis — occurred previously [ch 063 / 063.05].
+  - begun, not shown done: Thorin / Philemon — Layer 2 Brysis: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Thorin / Philemon — Layer 2 Brysis reveal (Path C only) — No Brysis or Philemon mentioned `[ch 068 / 068.05]`
+- "Gyrgum / Vareth — unsigned sting (Stations 9–10)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Gyrgum / Vareth unsigned sting not completed [ch 005 / 005.06].
+  - begun, not shown done: Unsigned sting is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Gyrgum / Vareth unsigned sting before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Gyrgum/Vareth unsigned sting occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Gyrgum / Vareth unsigned sting occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Gyrgum / Vareth unsigned sting is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Gyrgum/Vareth unsigned sting occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Vareth’s unsigned sting occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Gyrgum / Vareth — unsigned sting — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: Gyrgum / Vareth — unsigned sting: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Gyrgum / Vareth — unsigned sting (Stations 9–10) — Resolved prior `[ch 068 / 068.05]`
+- "Glabbagool — Shadow Apprentice sidekick unlock at Whispering Dome" — `SUPPORTED`
+  - Glabbagool’s Shadow Apprentice sidekick unlock confirmed at Whispering Dome; granted eighth-level abilities [ch 059 / 059.06]
+  - Glabbagool’s Shadow Apprentice sidekick status was confirmed at the Whispering Dome in a prior session and is now actively used to steal and fight [ch 062 / 062.04; ch 062 / 062.06].
+- "Candlekeep gates — party arrival and Five Books admission" — `SUPPORTED`
+  - The party arrived at Candlekeep and were granted admission by donating five unique books [ch 054 / 054.05; ch 054 / 054.06]
+- "Refectory — dinner with Janussi alive" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Refectory dinner not occurred [ch 005 / 005.06].
+  - begun, not shown done: Refectory dinner is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Refectory dinner with Janussi before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Refectory dinner with Janussi occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Refectory dinner occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Refectory is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Refectory dinner with Janussi occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Refectory dinner occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Refectory — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Refectory — dinner with Janussi alive: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Refectory — dinner with Janussi alive — Janussi dead prior `[ch 068 / 068.05]`
+- "Whispering Dome — Glabbagool's question" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Whispering Dome not visited [ch 005 / 005.06].
+  - begun, not shown done: Whispering Dome is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Whispering Dome before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Whispering Dome occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Whispering Dome visit occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Whispering Dome is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Whispering Dome visit occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Whispering Dome visit occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Glabbagool’s question about the Whispering Dome was raised, but the party has not yet visited it in this chapter [ch 057 / 057.04].
+  - begun, not shown done: Whispering Dome — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Whispering Dome — Glabbagool's question: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Whispering Dome — Glabbagool's question — Answered prior `[ch 068 / 068.05]`
+- "Infernal Fortress — Sylvira interview and Abyssal Plague" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Infernal Fortress not visited [ch 005 / 005.06].
+  - begun, not shown done: Infernal Fortress is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Infernal Fortress before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Infernal Fortress occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Infernal Fortress interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Infernal Fortress is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Infernal Fortress interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Infernal Fortress interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Infernal Fortress — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Infernal Fortress — Sylvira interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Infernal Fortress — Sylvira interview and Abyssal Plague — Interview prior `[ch 068 / 068.05]`
+- "Janussi's chamber — crime scene investigation" — `SUPPORTED`
+  - The party entered and began investigating Janussi’s chamber as the crime scene [ch 057 / 057.07].
+- "Southern Dining Hall — heart and lead chalice search" — `SUPPORTED`
+  - Southern Dining Hall — heart and lead chalice search [ch 060 / 060.05; ch 060 / Memorable Moments]
+- "Bath House — Daral interview and poisoning" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Bath House not visited [ch 005 / 005.06].
+  - begun, not shown done: Bath House is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Bath House before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Bath House poisoning occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Bath House poisoning occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Bath House is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Bath House poisoning occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Bath House poisoning occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Bath House — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Bath House — Daral interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Bath House — Daral interview and poisoning — Resolved prior `[ch 068 / 068.05]`
+- "Founder's Court — Fheminor interview" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Founder's Court not visited [ch 005 / 005.06].
+  - begun, not shown done: Founder’s Court is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Founder's Court before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Founder’s Court interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Founder's Court interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Founder's Court is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Founder’s Court interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Founder’s Court interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Founder's Court — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Founder's Court — Fheminor interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Founder's Court — Fheminor interview — Resolved prior `[ch 068 / 068.05]`
+- "Oak Tree Apothecary — midnight tears evidence (Leuwin / Nibbles)" — `SUPPORTED`
+  - Oak Tree Apothecary — midnight tears evidence (Leuwin / Nibbles) [ch 060 / 060.08]
+- "Kitchens — Sprig Summerfoot witness" — `SUPPORTED`
+  - Kitchens — Sprig Summerfoot witness [ch 060 / 060.06]
+- "Erudite Outfitters — Bookwyrm's cloak evidence" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Erudite Outfitters not visited [ch 005 / 005.06].
+  - begun, not shown done: Erudite Outfitters is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Erudite Outfitters before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Erudite Outfitters cloak evidence occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Erudite Outfitters evidence occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Erudite Outfitters is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Erudite Outfitters cloak evidence occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Erudite Outfitters evidence occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Erudite Outfitters is mentioned as a Waterdeep location, but no interaction occurs. `[ch 055 / locations]`
+  - begun, not shown done: Erudite Outfitters — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Erudite Outfitters — Bookwyrm's cloak: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Erudite Outfitters — Bookwyrm's cloak evidence — Resolved prior `[ch 068 / 068.05]`
+- "Drakonoikos — Alkrist interview and evidence" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Drakonoikos not visited [ch 005 / 005.06].
+  - begun, not shown done: Drakonoikos is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Drakonoikos before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Drakonoikos interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Drakonoikos interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Drakonoikos is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Drakonoikos interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Drakonoikos interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Drakonoikos — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Drakonoikos — Alkrist interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Drakonoikos — Alkrist interview and evidence — Resolved prior `[ch 068 / 068.05]`
+- "Reader's Tower — Bookwyrm interview and death scene" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Reader's Tower not visited [ch 005 / 005.06].
+  - begun, not shown done: Reader’s Tower is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Reader's Tower before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Reader’s Tower interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Reader's Tower interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Reader's Tower is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Reader’s Tower death scene occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Reader’s Tower interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Reader's Tower — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Reader's Tower — Bookwyrm interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Reader's Tower — Bookwyrm interview and death scene — Bookwyrm dead prior `[ch 068 / 068.05]`
+- "Immortal Chambers — A'lai Aivenmore interview" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Immortal Chambers not visited [ch 005 / 005.06].
+  - begun, not shown done: Immortal Chambers is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Immortal Chambers before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Immortal Chambers interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Immortal Chambers interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Immortal Chambers is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Immortal Chambers interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Immortal Chambers interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Immortal Chambers — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: Immortal Chambers — A'lai interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Immortal Chambers — A'lai Aivenmore interview — Resolved prior `[ch 068 / 068.05]`
+- "Sea Warden's Tower — Kalan check-in and Trial of the Broken Mirror" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sea Warden's Tower not visited [ch 005 / 005.06].
+  - begun, not shown done: Sea Warden’s Tower is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Sea Warden's Tower before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Sea Warden’s Tower check-in occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sea Warden's Tower check-in occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sea Warden's Tower is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sea Warden’s Tower check-in occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Sea Warden’s Tower check-in occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: The Sea Warden’s Tower and Kalan’s check-in are referenced, but not yet visited in this chapter [ch 057 / 057.05].
+  - begun, not shown done: Sea Warden's Tower — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: Sea Warden's Tower — Kalan check-in: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Sea Warden's Tower — Kalan check-in and Trial of the Broken Mirror — Resolved prior `[ch 068 / 068.05]`
+- "Bell Tower — Polly Pocket cells" — `SUPPORTED`
+  - Bell Tower — Polly Pocket cells [ch 060 / 060.01]
+- "Cursed Tower — Moziqodo and rooftop incidents" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Cursed Tower not visited [ch 005 / 005.06].
+  - begun, not shown done: Cursed Tower is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Cursed Tower before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Cursed Tower incidents occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Cursed Tower incidents occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Cursed Tower is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Cursed Tower incidents occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Cursed Tower incidents occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Cursed Tower is mentioned as a location, but not visited. `[ch 055 / locations]`
+  - begun, not shown done: Cursed Tower — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Cursed Tower — Moziqodo and rooftop: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Cursed Tower — Moziqodo and rooftop incidents — Resolved prior `[ch 068 / 068.05]`
+- "Pont de Paramours — Kalan disappearance and forged note" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Pont de Paramours not visited [ch 005 / 005.06].
+  - begun, not shown done: Pont de Paramours is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Pont de Paramours before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Pont de Paramours investigation occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Pont de Paramours disappearance occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Pont de Paramours is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Pont de Paramours disappearance occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Pont de Paramours investigation occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Pont de Paramours — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: Pont de Paramours — Kalan disappearance: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Pont de Paramours — Kalan disappearance and forged note — Resolved prior `[ch 068 / 068.05]`
+- "Oval Theatre — Casketball Tournament" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Oval Theatre not visited [ch 005 / 005.06].
+  - begun, not shown done: Oval Theatre is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Oval Theatre before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Oval Theatre tournament occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Oval Theatre tournament occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Oval Theatre is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Oval Theatre tournament occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Oval Theatre occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Oval Theatre — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Oval Theatre — Casketball Tournament: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Oval Theatre — Casketball Tournament — Resolved prior `[ch 068 / 068.05]`
+- "House of Alaundo — riddle, inkpot, first prophecy" — `SUPPORTED`
+  - House of Alaundo riddle and inkpot trigger resolved [ch 067 / 067.04].
+- "Astronomicon Orrery — Limniz clue / Manshoon raiders" — `SUPPORTED`
+  - Astronomicon Orrery clue and Manshoon raiders noted [ch 067 / 067.03].
+- "Philosopher's Court — Fustilugs clue (black marble knight)" — `SUPPORTED`
+  - Philosopher’s Court Fustilugs clue resolved [ch 067 / 067.02].
+- "Melodrome / Jook's Box — Stars at Dawn clue / doppelganger encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Melodrome / Jook's Box not visited [ch 005 / 005.06].
+  - begun, not shown done: Melodrome is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Melodrome / Jook's Box before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Melodrome / Jook's Box encounter occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Melodrome / Jook's Box encounter occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Melodrome / Jook's Box is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Melodrome doppelganger occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Melodrome occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Melodrome / Jook's Box — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Melodrome / Jook's Box — Stars at Dawn: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Melodrome / Jook's Box — Stars at Dawn clue / doppelganger encounter — Resolved prior `[ch 068 / 068.05]`
+- "Jewel of the Styx — wight shanty encounter" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Jewel of the Styx not visited [ch 005 / 005.06].
+  - begun, not shown done: Jewel of the Styx is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Jewel of the Styx before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Jewel of the Styx encounter occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Jewel of the Styx encounter occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Jewel of the Styx is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Jewel of the Styx wight encounter occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Jewel of the Styx occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Jewel of the Styx — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Jewel of the Styx — wight shanty: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Jewel of the Styx — wight shanty encounter — Resolved prior `[ch 068 / 068.05]`
+- "School of Drama — Batbayar statue encounter" — `SUPPORTED`
+  - School of Drama Batbayar statue encounter resolved [ch 067 / 067.02].
+- "High Tower Library — A'lai and Moziqodo combat, cryptogram recovery" — `SUPPORTED`
+  - High Tower Library cryptogram recovery occurred [ch 067 / 067.01].
+- "Lava chamber — bridge, Obsidian Door, Iron Owlbear corpse" — `SUPPORTED`
+  - Lava chamber — bridge, Obsidian Door, Iron Owlbear corpse — The party crossed the lava via the bridge, entered the Obsidian Tower, and encountered the iron owlbear guardian; a damaged predecessor was seen `[ch 068 / 068.02; ch 068 / 068.03]`
+- "The Vault (B2) — Manshoon confrontation and Echoes of Alaundo" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The Vault (B2) not entered [ch 005 / 005.06].
+  - begun, not shown done: The Vault (B2) is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: The Vault (B2) before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Vault B2 confrontation occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Vault B2 confrontation occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: The Vault (B2) is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Vault B2 confrontation occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Vault B2 confrontation occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: The Vault (B2) — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: The Vault (B2) — Manshoon confrontation: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: The Vault (B2) — Manshoon confrontation and Echoes of Alaundo — Confrontation ongoing; Echoes not referenced `[ch 068 / 068.05]`
+- "The Vault (B3) — Book of Vile Darkness chamber" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The Vault (B3) not entered [ch 005 / 005.06].
+  - begun, not shown done: The Vault (B3) is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: The Vault (B3) before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Vault B3 Book of Vile Darkness chamber occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Vault B3 chamber occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: The Vault (B3) is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Book of Vile Darkness chamber occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Vault B3 chamber occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: The Vault (B3) — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: The Vault (B3) — Book of Vile Darkness chamber: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: The Vault (B3) — Book of Vile Darkness chamber — Book of Vile Darkness not confirmed present `[ch 068 / 068.05]`
+- "Vault tower rocket — last resort lever" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vault tower rocket not pulled [ch 005 / 005.06].
+  - begun, not shown done: Vault tower rocket is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Vault tower rocket before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Vault tower rocket lever occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Vault tower rocket lever occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Vault tower rocket is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Vault tower rocket lever occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Vault tower rocket lever occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Vault tower rocket — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Vault tower rocket — last resort lever: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Vault tower rocket — last resort lever — Lever not accessed `[ch 068 / 068.05]`
+- "Janussi — first contact (refectory dinner, Day One)" — `SUPPORTED`
+  - Janussi was first contacted during the Refectory dinner the previous evening [ch 057 / 057.02].
+  - Janussi was first contacted at the refectory dinner, confirmed by prior context and his murder being central to the investigation [ch 063 / 063.01].
+- "Janussi — death (just after midnight, Day One)" — `SUPPORTED`
+  - Janussi died just after midnight on Day One, discovered at 7:30 a.m. [ch 057 / 057.06].
+- "Bookwyrm — first contact (Chapter House conscription)" — `SUPPORTED`
+  - Bookwyrm first contacted the party during the Chapter House meeting, conscripting them as investigators [ch 057 / 057.05].
+  - Bookwyrm — first contact (Chapter House conscription) [ch 060 / 060.01]
+  - Bookwyrm was first contacted during conscription into the murder investigation [ch 063 / 063.01; ch 063 / 063.02].
+- "Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)" — `SUPPORTED`
+  - Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower) [ch 060 / 060.01]
+- "Bookwyrm — confrontation and pivot (signed deposition / Alkrist sacrifice)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Bookwyrm confrontation not occurred [ch 005 / 005.06].
+  - begun, not shown done: Bookwyrm confrontation is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Bookwyrm confrontation before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Bookwyrm confrontation and pivot occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Bookwyrm confrontation occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Bookwyrm confrontation is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Bookwyrm confrontation occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Bookwyrm confrontation occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Bookwyrm — confrontation and pivot — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Bookwyrm — confrontation and pivot: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Bookwyrm — confrontation and pivot (signed deposition / Alkrist sacrifice) — Resolved prior `[ch 068 / 068.05]`
+- "Bookwyrm — death (Reader's Tower, Beast attack)" — `SUPPORTED`
+  - Bookwyrm — death (Reader's Tower, Beast attack) [ch 060 / 060.01]
+- "Kalan Strongbranch — first contact (private corridor after Chapter House)" — `SUPPORTED`
+  - Kalan Strongbranch — first contact (private corridor after Chapter House) [ch 060 / 060.01]
+  - Kalan Strongbranch was first contacted in a private corridor after Chapter House [ch 063 / 063.03].
+- "Kalan — second key handoff" — `SUPPORTED`
+  - Kalan Strongbranch’s second key handoff occurred; he pressed the brass key into Gyrgum’s hand [ch 059 / 059.03; ch 059 / moment]
+  - Kalan — second key handoff [ch 060 / 060.01]
+  - Kalan handed off the second key (the fake) to Gyrgum [ch 063 / 063.03].
+- "Kalan — farewell / deterioration (Sea Warden's Tower check-in)" — `SUPPORTED`
+  - Kalan — farewell / deterioration (Sea Warden's Tower check-in) [ch 060 / 060.01]
+- "Kalan — disappearance and presumed death (Pont de Paramours)" — `SUPPORTED`
+  - Kalan — disappearance and presumed death (Pont de Paramours) [ch 060 / 060.01]
+- "Sylvira Sashenstar — first contact and demon-lord-evidence handoff (Day One)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sylvira not first contacted [ch 005 / 005.06].
+  - begun, not shown done: Sylvira first contact is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Sylvira first contact before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Sylvira first contact occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sylvira first contact occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sylvira is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sylvira’s first contact was earlier [ch 040 / 040.02].
+  - begun, not shown done: Sylvira first contact occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Sylvira first contact occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Sylvira is referenced as a character, but not encountered. `[ch 055 / locations]`
+  - begun, not shown done: Sylvira was first contacted during the Refectory dinner, where she looked unwell [ch 057 / 057.02].
+  - begun, not shown done: Sylvira — first contact — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Sylvira Sashenstar — first contact: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Sylvira Sashenstar — first contact and demon-lord-evidence handoff (Day One) — Sylvira is not present; referenced only as name known to Miirym `[ch 068 / npcs]`
+- "Sylvira — prime suspect status (interview, Infernal Fortress)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sylvira not prime suspect [ch 005 / 005.06].
+  - begun, not shown done: Sylvira suspect status is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Sylvira prime suspect before this chunk [ch 010 / 010.01]
+  - begun, not shown done: Sylvira prime suspect status occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sylvira prime suspect status occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sylvira prime suspect is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sylvira prime suspect occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Sylvira prime suspect status occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Sylvira — prime suspect — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Sylvira — prime suspect status: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Sylvira — prime suspect status (interview, Infernal Fortress) — Resolved prior `[ch 068 / 068.05]`
+- "Sylvira — recruitment as battlefield ally (Path B choice point)" — `SUPPORTED`
+  - Sylvira recruited as battlefield ally [ch 067 / 067.03].
+- "Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sylvira not dispel Moziqodo [ch 005 / 005.06].
+  - begun, not shown done: Sylvira dispel is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Sylvira dispel of Moziqodo’s binding occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sylvira dispel occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sylvira dispel is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sylvira dispel occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Sylvira dispel occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Sylvira — dispel of Moziqodo’s binding — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Sylvira — dispel of Moziqodo's binding: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B) — Resolved prior `[ch 068 / 068.05]`
+- "Sylvira — survival and senior Great Reader status (post-arc)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Sylvira not senior Great Reader [ch 005 / 005.06].
+  - begun, not shown done: Sylvira survival is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Sylvira survival and senior status occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Sylvira survival status occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Sylvira survival is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Sylvira survival occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Sylvira survival occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Sylvira — survival and senior status — ongoing [ch 063 / 063.02].
+  - begun, not shown done: Sylvira — survival and senior status: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Sylvira — survival and senior Great Reader status (post-arc) — Resolved prior `[ch 068 / 068.05]`
+- "Daral — first contact (Chapter House)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daral not first contacted [ch 005 / 005.06].
+  - begun, not shown done: Daral first contact is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Daral first contact occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daral first contact occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daral is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daral’s first contact was earlier [ch 040 / 040.02].
+  - begun, not shown done: Daral first contact occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Daral first contact occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Daral was first contacted in the Chapter House [ch 057 / 057.05].
+  - begun, not shown done: Daral was first contacted in prior sessions; his current state is a result of that arc [ch 062 / 062.05].
+  - begun, not shown done: Daral — first contact — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Daral first contact: occurred in prior sessions; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Daral — first contact: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Daral — first contact (Chapter House) — Resolved prior `[ch 068 / 068.05]`
+- "Daral — poisoning discovery (Bath House)" — `SUPPORTED`
+  - Daral Yashenti’s poisoning discovery confirmed; party identified *The Golden Ass* as the delivery method and observed him licking poisoned pages [ch 059 / 059.05]
+- "Daral — death or survival (player choice)" — `SUPPORTED`
+  - Daral was saved from poisoning and cured by Dawnbringer in Deneir’s Sanctum [ch 062 / 062.05].
+- "Daral — key witness testimony (if saved, Session 5)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daral not witness [ch 005 / 005.06].
+  - begun, not shown done: Daral testimony is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Daral key witness testimony occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daral testimony occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daral testimony is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daral testimony occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Daral testimony occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Daral — key witness — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Daral — key witness testimony: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Daral — key witness testimony (if saved, Session 5) — Resolved prior `[ch 068 / 068.05]`
+- "Fheminor — first contact (Founder's Court interview)" — `SUPPORTED`
+  - Fheminor — first contact (Founder's Court interview) [ch 060 / 060.01]
+- "Fheminor — "Bookwyrm was not surprised" revelation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Fheminor revelation is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Fheminor revelation occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Fheminor revelation is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Fheminor revelation occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Fheminor revelation occurred earlier. `[ch 043 / 043.01]`
+- "Fheminor — appointment as Keeper of Tomes (post-arc)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Fheminor not appointed Keeper [ch 005 / 005.06].
+  - begun, not shown done: Fheminor appointment is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Fheminor appointed Keeper of Tomes occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Fheminor appointment occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Fheminor appointment is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Fheminor appointment occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Fheminor appointment occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Fheminor — appointment as Keeper — implied by restructuring [ch 063 / 063.06].
+  - begun, not shown done: Fheminor — appointment as Keeper: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Fheminor — appointment as Keeper of Tomes (post-arc) — Resolved prior `[ch 068 / 068.05]`
+- "A'lai Aivenmore — first contact (Chapter House)" — `SUPPORTED`
+  - A'lai Aivenmore — first contact (Chapter House) [ch 060 / 060.01]
+  - A'lai Aivenmore was first contacted in the Chapter House [ch 063 / 063.03].
+- "A'lai — interview (Immortal Chambers)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: A'lai interview not held [ch 005 / 005.06].
+  - begun, not shown done: A'lai interview is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: A'lai interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: A'lai interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: A'lai interview is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: A'lai interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: A’lai interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: A'lai — interview — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: A'lai — interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: A'lai — interview (Immortal Chambers) — Resolved prior `[ch 068 / 068.05]`
+- "A'lai — sapphire smash and escape (High Tower Library)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: A'lai sapphire smash not occurred [ch 005 / 005.06].
+  - begun, not shown done: A'lai smash is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: A'lai sapphire smash and escape occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: A'lai sapphire smash occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: A'lai sapphire smash is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: A'lai escape occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: A’lai escape occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: A'lai — sapphire smash — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: A'lai — sapphire smash and escape: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: A'lai — sapphire smash and escape (High Tower Library) — Resolved prior `[ch 068 / 068.05]`
+- "A'lai — fate resolution (dead / escaped)" — `SUPPORTED`
+  - A'lai fate resolution: imprisoned in null magic prison [ch 067 / 067.02].
+- "Alkrist — first contact (Chapter House)" — `SUPPORTED`
+  - Alkrist — first contact (Chapter House) [ch 060 / 060.01]
+- "Alkrist — interview (Drakonoikos)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Alkrist interview not held [ch 005 / 005.06].
+  - begun, not shown done: Alkrist interview is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Alkrist interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Alkrist interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Alkrist interview is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Alkrist interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Alkrist interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Alkrist — interview — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Alkrist — interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Alkrist — interview (Drakonoikos) — Resolved prior `[ch 068 / 068.05]`
+- "Alkrist — arrest or confession (Path A)" — `SUPPORTED`
+  - Alkrist confessed under compulsion (Path A), leading to his imprisonment [ch 062 / 062.03].
+- "Fembris — first contact (Fembris-at-door cliffhanger)" — `SUPPORTED`
+  - Fembris — first contact (Fembris-at-door cliffhanger) [ch 060 / 060.01]
+  - Fembris was first contacted at the door of the sanctum [ch 063 / 063.01].
+- "Fembris — rooftop confession (Bell Tower break)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Fembris rooftop confession not occurred [ch 005 / 005.06].
+  - begun, not shown done: Fembris confession is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Fembris rooftop confession occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Fembris rooftop confession occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Fembris confession is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Fembris confession occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Fembris confession occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Fembris — rooftop confession — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: Fembris — rooftop confession: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Fembris — rooftop confession (Bell Tower break) — Resolved prior `[ch 068 / 068.05]`
+- "Tadric — first contact (crime scene witness)" — `SUPPORTED`
+  - Tadric was first contacted as a witness at Janussi’s murder scene [ch 063 / 063.03].
+- "Tadric — flight assistance (High Tower approach)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Tadric flight assistance not provided [ch 005 / 005.06].
+  - begun, not shown done: Tadric assistance is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Tadric flight assistance occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Tadric flight assistance occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Tadric flight is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Tadric assistance occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Tadric flight assistance occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Tadric — flight assistance — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: Tadric — flight assistance: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Tadric — flight assistance (High Tower approach) — Resolved prior `[ch 068 / 068.05]`
+- "Tadric — acting Gatewarden appointment (post-arc)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Tadric not appointed Gatewarden [ch 005 / 005.06].
+  - begun, not shown done: Tadric appointment is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Tadric appointed Gatewarden occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Tadric appointment occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Tadric appointment is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Tadric appointment occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Tadric appointment occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Tadric — acting Gatewarden appointment — implied by deputation and key custody [ch 063 / 063.05].
+  - begun, not shown done: Tadric — acting Gatewarden appointment: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Tadric — acting Gatewarden appointment (post-arc) — Resolved prior `[ch 068 / 068.05]`
+- "Hollypocket — witness interview (Janussi's chamber)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Hollypocket not interviewed [ch 005 / 005.06].
+  - begun, not shown done: Hollypocket witness is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Hollypocket witness occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Hollypocket witness occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Hollypocket is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Hollypocket’s interview was earlier [ch 040 / 040.02].
+  - begun, not shown done: Hollypocket interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Hollypocket interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Hollypocket was first contacted as a discoverer of the body [ch 057 / 057.06].
+  - begun, not shown done: Hollypocket — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Hollypocket — witness interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Hollypocket — witness interview (Janussi's chamber) — Resolved prior `[ch 068 / 068.05]`
+- "Sprig Summerfoot — witness interview (Kitchens)" — `SUPPORTED`
+  - Sprig Summerfoot — witness interview (Kitchens) [ch 060 / 060.06]
+- "Leuwin — witness interview (Oak Tree Apothecary)" — `SUPPORTED`
+  - Leuwin — witness interview (Oak Tree Apothecary) [ch 060 / 060.08]
+- "Teles Ahvoste — interview and disguise sighting (if earned)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Teles Ahvoste not interviewed [ch 005 / 005.06].
+  - begun, not shown done: Teles interview is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Teles Ahvoste interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Teles interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Teles Ahvoste is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Teles sighting was earlier [ch 040 / 040.02].
+  - begun, not shown done: Teles interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Teles Ahvoste interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Teles Ahvoste — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Teles Ahvoste — interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Teles Ahvoste — interview and disguise sighting (if earned) — Resolved prior `[ch 068 / 068.05]`
+- "Kazryn Nyantani — interview and A'lai alibi break" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Kazryn Nyantani not interviewed [ch 005 / 005.06].
+  - begun, not shown done: Kazryn interview is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Kazryn Nyantani interview occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Kazryn interview occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Kazryn Nyantani is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Kazryn’s interview was earlier [ch 040 / 040.02].
+  - begun, not shown done: Kazryn interview occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Kazryn Nyantani interview occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Kazryn Nyantani was first contacted arriving distraught at the crime scene [ch 057 / 057.06].
+  - begun, not shown done: Kazryn Nyantani — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Kazryn Nyantani — interview: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Kazryn Nyantani — interview and A'lai alibi break — Resolved prior `[ch 068 / 068.05]`
+- "Khell-Vire — closing letter and standing correspondence sealed" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Khell-Vire closing letter not sealed [ch 005 / 005.06].
+  - begun, not shown done: Khell-Vire letter is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Khell-Vire closing letter occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Khell-Vire letter sealed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Khell-Vire is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Khell-Vire’s closing letter was earlier [ch 040 / 040.02].
+  - begun, not shown done: Khell-Vire letter occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Khell-Vire letter sealed earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Khell-Vire — closing letter — occurred previously [ch 063 / 063.05].
+  - begun, not shown done: Khell-Vire — closing letter: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Khell-Vire — closing letter and standing correspondence sealed — Resolved prior `[ch 068 / 068.05]`
+- "Philemon — sealed letter delivery (Path C)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Philemon letter not delivered [ch 005 / 005.06].
+  - begun, not shown done: Philemon letter is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Philemon sealed letter delivery occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Philemon letter delivered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Philemon is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Philemon’s letter delivery was earlier [ch 040 / 040.02].
+  - begun, not shown done: Philemon letter occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Philemon letter delivered earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Philemon — sealed letter — occurred previously [ch 063 / 063.05].
+  - begun, not shown done: Philemon — sealed letter: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Philemon — sealed letter delivery (Path C) — Resolved prior `[ch 068 / 068.05]`
+- "Vareth — final stations and unsigned sting" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vareth final stations not completed [ch 005 / 005.06].
+  - begun, not shown done: Vareth final stations is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Vareth final stations occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Vareth final stations occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Vareth is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Vareth’s final stations were earlier [ch 040 / 040.02].
+  - begun, not shown done: Vareth final stations occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Vareth final stations occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Vareth — final stations — occurred previously [ch 063 / 063.03].
+  - begun, not shown done: Vareth — final stations: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Vareth — final stations and unsigned sting — Resolved prior `[ch 068 / 068.05]`
+- "Yvenne — third sitting and bloodline-pattern observation" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yvenne third sitting not held [ch 005 / 005.06].
+  - begun, not shown done: Yvenne third sitting is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Daz’s field-perception sensitivity is confirmed through his stealthy acquisition of the egg, though not explicitly noted as such [ch 020 / 020.02].
+  - begun, not shown done: Yvenne third sitting occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Yvenne third sitting occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Yvenne is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Yvenne’s third sitting was earlier [ch 040 / 040.02].
+  - begun, not shown done: Yvenne third sitting occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Yvenne third sitting occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Yvenne has not yet completed her fourth sitting or bloodline-pattern observation [ch 054 / 054.06]
+  - begun, not shown done: Yvenne — third sitting and bloodline-pattern observation [ch 056 / 056.07]
+  - begun, not shown done: Yvenne — third sitting — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Yvenne — third sitting: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Yvenne — third sitting and bloodline-pattern observation — Resolved prior `[ch 068 / 068.05]`
+- "Yvenne — Vaelissa name delivery" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yvenne Vaelissa name not delivered [ch 005 / 005.06].
+  - begun, not shown done: Yvenne name delivery is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Yvenne Vaelissa name delivery occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Yvenne Vaelissa name delivery occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Yvenne Vaelissa delivery is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Yvenne delivered Vaelissa’s name earlier [ch 040 / 040.02].
+  - begun, not shown done: Yvenne Vaelissa delivery occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Yvenne delivered Vaelissa name earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Yvenne — Vaelissa name delivery — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Yvenne — Vaelissa name: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Yvenne — Vaelissa name delivery — Resolved prior `[ch 068 / 068.05]`
+- "Yvenne — Fourth-Seat synthesis scene" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yvenne Fourth-Seat synthesis not completed [ch 005 / 005.06].
+  - begun, not shown done: Yvenne synthesis is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Yvenne Fourth-Seat synthesis occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Yvenne Fourth-Seat synthesis occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Yvenne synthesis is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Yvenne’s synthesis scene was earlier [ch 040 / 040.02].
+  - begun, not shown done: Yvenne Fourth-Seat synthesis occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Yvenne Fourth-Seat synthesis occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Yvenne — Fourth-Seat synthesis scene [ch 056 / 056.07]
+  - begun, not shown done: Yvenne — Fourth-Seat synthesis — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Yvenne — Fourth-Seat synthesis: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Yvenne — Fourth-Seat synthesis scene — Resolved prior `[ch 068 / 068.05]`
+- "Inda — emergence from brass statue and vault escort" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Inda not emerged [ch 005 / 005.06].
+  - begun, not shown done: Inda emergence is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Inda emergence occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Inda emergence occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Inda emergence is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Inda emerged earlier [ch 040 / 040.02].
+  - begun, not shown done: Inda emergence occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Inda emergence occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Inda — emergence — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Inda — emergence: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Inda — emergence from brass statue and vault escort — Resolved prior `[ch 068 / 068.05]`
+- "Spanner — Mechanus dust handoff" — `SUPPORTED`
+  - Spanner Mechanus dust handoff: tools lent instead of dust [ch 067 / 067.05].
+- "Moziqodo — first encounter (rooftop / Cursed Tower)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Moziqodo not first encountered [ch 005 / 005.06].
+  - begun, not shown done: Moziqodo first encounter is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Moziqodo first encounter occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Moziqodo first encounter occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Moziqodo first encounter is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Moziqodo’s first encounter was earlier [ch 040 / 040.02].
+  - begun, not shown done: Moziqodo first encounter occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Moziqodo first encounter occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Moziqodo has not appeared in this chapter; this thread is inactive here [ch 054 / 054.06]
+  - begun, not shown done: Moziqodo has not appeared in this chapter [ch 057 / 057.07].
+  - begun, not shown done: Moziqodo — first encounter — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Moziqodo first encounter: occurred in prior sessions; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Moziqodo — first encounter: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Moziqodo — first encounter (rooftop / Cursed Tower) — Resolved prior `[ch 068 / 068.05]`
+- "Moziqodo — binding break (Path B, High Tower fight)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Moziqodo binding not broken [ch 005 / 005.06].
+  - begun, not shown done: Moziqodo binding break is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Moziqodo binding break occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Moziqodo binding break occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Moziqodo binding break is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Moziqodo’s binding break was earlier [ch 040 / 040.02].
+  - begun, not shown done: Moziqodo binding break occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Moziqodo binding break occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Moziqodo — binding break — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Moziqodo — binding break: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Moziqodo — binding break (Path B, High Tower fight) — Resolved prior `[ch 068 / 068.05]`
+- "Moziqodo — fate resolution (killed / unbound with Sylvira / fled)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Moziqodo fate not resolved [ch 005 / 005.06].
+  - begun, not shown done: Moziqodo fate is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Moziqodo fate resolution occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Moziqodo fate resolved before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Moziqodo fate is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Moziqodo’s fate was resolved earlier [ch 040 / 040.02].
+  - begun, not shown done: Moziqodo fate occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Moziqodo fate occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Moziqodo — fate resolution — killed [ch 063 / 063.05].
+  - begun, not shown done: Moziqodo — fate resolution: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Moziqodo — fate resolution (killed / unbound with Sylvira / fled) — Resolved prior `[ch 068 / 068.05]`
+- "Manshoon — voice-only arrival announcement (Session 6)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Manshoon not announced [ch 005 / 005.06].
+  - begun, not shown done: Manshoon announcement is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Manshoon voice-only announcement occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Manshoon voice announcement occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Manshoon arrival is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Manshoon’s voice announcement was earlier [ch 040 / 040.02].
+  - begun, not shown done: Manshoon voice announcement occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Manshoon voice announcement occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Manshoon is referenced as a voice-only arrival, but not encountered. `[ch 055 / locations]`
+  - begun, not shown done: Manshoon has not appeared [ch 057 / 057.07].
+  - begun, not shown done: Manshoon — voice-only — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Manshoon voice-only arrival announced: Manshoon was only mentioned by A'lai; no direct appearance or voice [ch 064 / 064.04].
+  - begun, not shown done: Manshoon — voice-only arrival: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Manshoon’s voice-only arrival was in prior sessions; his simulacrum’s physical breach occurred here but was not a voice-only event [ch 067 / 067.01].
+  - begun, not shown done: Manshoon — voice-only arrival announcement (Session 6) — Manshoon is now directly present; this is direct confrontation `[ch 068 / 068.05]`
+- "Manshoon — direct confrontation (Vault B2)" — `SUPPORTED`
+  - Manshoon — direct confrontation (Vault B2) — The party confronted Manshoon in the Vault, and the duel has begun in the lower chamber `[ch 068 / 068.05]`
+- "Manshoon — escape (with or without Book of Vile Darkness)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Manshoon not escaped [ch 005 / 005.06].
+  - begun, not shown done: Manshoon escape is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Manshoon escape occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Manshoon escape occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Manshoon escape is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Manshoon’s escape was earlier [ch 040 / 040.02].
+  - begun, not shown done: Manshoon escape occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Manshoon escape occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Manshoon — escape — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Manshoon escape: Manshoon is not present; no escape occurs [ch 064 / 064.04].
+  - begun, not shown done: Manshoon — escape: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Manshoon — escape (with or without Book of Vile Darkness) — Escape not yet attempted; combat ongoing `[ch 068 / 068.05]`
+- "Glabbagool — bad night / Juiblex reach (Session 5)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Glabbagool bad night not occurred [ch 005 / 005.06].
+  - begun, not shown done: Glabbagool bad night is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Glabbagool bad night occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Glabbagool bad night occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Glabbagool bad night is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Glabbagool’s bad night was earlier [ch 040 / 040.02].
+  - begun, not shown done: Glabbagool bad night occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Glabbagool’s bad night occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Glabbagool — bad night — occurred previously [ch 063 / 063.05].
+  - begun, not shown done: Glabbagool — bad night / Juiblex reach: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Glabbagool — bad night / Juiblex reach (Session 5) — Juiblex contact occurred prior `[ch 068 / 068.05]`
+- "Glabbagool — Shadow Apprentice sidekick status confirmed" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Glabbagool Shadow Apprentice not confirmed [ch 005 / 005.06].
+  - begun, not shown done: Glabbagool sidekick is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Glabbagool Shadow Apprentice status confirmed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Glabbagool Shadow Apprentice status confirmed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Glabbagool Shadow Apprentice status is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Glabbagool’s Shadow Apprentice status was confirmed earlier [ch 040 / 040.02].
+  - begun, not shown done: Glabbagool Shadow Apprentice status occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Glabbagool’s Shadow Apprentice status confirmed earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Glabbagool — Shadow Apprentice status — shown as confirmed [ch 050 / 050.03].
+  - begun, not shown done: Glabbagool — Shadow Apprentice status — confirmed [ch 063 / 063.05].
+  - begun, not shown done: Glabbagool — Shadow Apprentice status: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Glabbagool — Shadow Apprentice sidekick status confirmed — Confirmed prior `[ch 068 / 068.05]`
+- "Eldeth — letter delivered via courier (Session 8)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Eldeth letter not delivered [ch 005 / 005.06].
+  - begun, not shown done: Eldeth letter is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Eldeth’s letter was delivered in a prior chapter; this chapter only shows her healed and present. `[ch 022 / 022.01]`
+  - begun, not shown done: Eldeth letter delivered prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Eldeth letter delivered before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Eldeth letter delivered is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Eldeth’s letter delivery was earlier [ch 040 / 040.02].
+  - begun, not shown done: Eldeth letter delivered occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Eldeth’s letter delivered earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Eldeth — letter delivered — occurred previously [ch 063 / 063.06].
+  - begun, not shown done: Eldeth — letter delivered: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Eldeth — letter delivered via courier (Session 8) — Delivered prior `[ch 068 / 068.05]`
+- "Brevin — Sloobludop recitation incident" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not yet encountered Brevin or Sloobludop recitation [ch 005 / 005.06].
+  - begun, not shown done: Brevin Sloobludop recitation not occurred [ch 005 / 005.06].
+  - begun, not shown done: Brevin’s Sloobludop recitation incident is referenced in tracking but not mentioned in this chunk’s evidence [ch 008 / 008.01].
+  - begun, not shown done: Brevin Sloobludop recitation occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Brevin incident occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Brevin Sloobludop recitation is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Brevin’s recitation was earlier [ch 040 / 040.02].
+  - begun, not shown done: Brevin Sloobludop recitation occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Brevin’s Sloobludop recitation occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Brevin — Sloobludop recitation — occurred previously [ch 063 / 063.06].
+  - begun, not shown done: Brevin — Sloobludop recitation: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Brevin — Sloobludop recitation incident — Not referenced `[ch 068 / 068.05]`
+- "Brevin — six-pointed star bedclothes incident" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Brevin bedclothes incident not occurred [ch 005 / 005.06].
+  - begun, not shown done: Brevin bedclothes incident is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Brevin six-pointed star bedclothes occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Brevin bedclothes incident occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Brevin bedclothes incident is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Brevin’s bedclothes incident was earlier [ch 040 / 040.02].
+  - begun, not shown done: Brevin bedclothes incident occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Brevin’s bedclothes incident occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Brevin — bedclothes incident — occurred previously [ch 063 / 063.06].
+  - begun, not shown done: Brevin — six-pointed star bedclothes: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Brevin — six-pointed star bedclothes incident — Not referenced `[ch 068 / 068.05]`
+- "Marin — six-pointed star quill arrangement incident" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Marin quill incident not occurred [ch 005 / 005.06].
+  - begun, not shown done: Marin quill incident is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Marin six-pointed star quill occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Marin quill incident occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Marin quill incident is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Marin’s quill incident was earlier [ch 040 / 040.02].
+  - begun, not shown done: Marin quill incident occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Marin’s quill incident occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Marin — quill incident — occurred previously [ch 063 / 063.06].
+  - begun, not shown done: Marin — six-pointed star quill: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Marin — six-pointed star quill arrangement incident — Not referenced `[ch 068 / 068.05]`
+- "Jimjar / Callarduran — Echo 4 witness prophecy activation" — `SUPPORTED`
+  - Jimjar’s navigational claim is directly referenced as a “shortcut” to Blingdenstone, activating his Echo 4 prophecy [ch 034 / 034.08].
+  - Jimjar’s prophecy was activated by his vanishing and divine reveal. [ch 048 / 048.07]
+- "Five Books, Five Questions — gate admission and scholar pairings established" — `SUPPORTED`
+  - The Five Books donation established the Five Questions scholar pairings: Zalthir to Jimjar, Thorin/Dawnbringer to Philemon, Gyrgum to Vareth and Khell-Vire [ch 054 / 054.06]
+  - Five Books, Five Questions — gate admission and scholar pairings established [ch 056 / 056.04]
+- "Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand")" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Endless Chant fragment not heard [ch 005 / 005.06].
+  - begun, not shown done: Endless Chant fragment is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Endless Chant Deadwinter Prophecy fragment heard prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Endless Chant fragment heard before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Endless Chant fragment is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Endless Chant fragment was heard earlier [ch 040 / 040.02].
+  - begun, not shown done: Endless Chant fragment heard earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Endless Chant fragment heard earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Endless Chant — Deadwinter Prophecy — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Endless Chant — Deadwinter Prophecy fragment heard: heard in prior sessions; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Endless Chant — Deadwinter Prophecy: not referenced here [ch 064 / 064.01].
+- "Janussi murder — crime scene forensic reveals (poison, heart post-mortem, no defensive wounds)" — `SUPPORTED`
+  - The party confirmed the murder’s forensic details: heart removed post-mortem, ribs shattered by precise blows, no defensive wounds, lingering tobacco smoke [ch 057 / 057.07].
+  - The party conducted a forensic investigation of Janussi’s death, confirming the heart was removed post-mortem, poison was ingested, and the nose was fractured before death [ch 058 / 058.01].
+  - Janussi murder forensic reveals: poison via saliva interaction, heart removed post-mortem, no defensive wounds [ch 059 / 059.03]
+  - Janussi murder — crime scene forensic reveals (poison, heart post-mortem, no defensive wounds) [ch 060 / 060.03; ch 060 / 060.05]
+  - Janussi’s murder was forensically revealed: poison, heart removed, no defensive wounds [ch 063 / 063.01].
+- "Two "Sylvira" figures — dual-timeline disguise revelation assembled" — `SUPPORTED`
+  - The party assembled the dual-timeline disguise revelation: Sylvira was seen during the day and again at night, but the night figure did not smell like her [ch 058 / 058.06; ch 058 / Memorable Moments].
+  - Two “Sylvira” figures revelation assembled; impersonation confirmed by party and relayed to Kalan [ch 059 / 059.03]
+- "Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use" — `SUPPORTED`
+  - Party identified Bookwyrm’s use of *disguise self* to cover up Janussi’s murder [ch 063 / 063.02].
+- "Alkrist as killer — party identifies the poisoner" — `SUPPORTED`
+  - The party identified Alkrist as the killer using poison and the book, confirmed by his confession [ch 062 / 062.02].
+  - Party identified Alkrist as Janussi’s killer [ch 063 / 063.01].
+- "Disguise rosetta cracked — milestone event, level-up to 9" — `SUPPORTED`
+  - The disguise rosetta was cracked in prior sessions, enabling the party to identify Bookwyrm’s use of disguise self [ch 062 / 062.03].
+  - Disguise rosetta cracked, milestone event, level-up to 9 confirmed [ch 063 / 063.06].
+- "Wards drop — ward-flex hallucination sequence (narrative, per-PC visions)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Wards drop not occurred [ch 005 / 005.06].
+  - begun, not shown done: Wards drop is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Wards drop hallucination occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Wards drop hallucinations occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Wards drop is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Wards drop hallucinations occurred earlier [ch 040 / 040.02].
+  - begun, not shown done: Wards drop hallucination occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Wards drop hallucinations occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Wards drop — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Wards drop: occurred in prior session; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Wards drop: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Wards drop — ward-flex hallucination sequence (narrative, per-PC visions) — Wards dropped prior; not referenced `[ch 068 / 068.05]`
+- "Cryptogram recovered — six-clue text transcribed from High Tower Library" — `SUPPORTED`
+  - Cryptogram recovered; party now has six-clue text from High Tower Library (implied by prior session context) [ch 059 / 059.04; ch 059 / 059.05]
+  - The cryptogram was recovered and transcribed in full from A'lai’s memory and deciphered by the party [ch 067 / 067.03].
+  - Cryptogram recovered — six-clue text transcribed from High Tower Library — The cryptogram was recovered in prior sessions; this session’s riddles are part of its resolution `[ch 068 / 068.03]`
+- "Manshoon arrival announced — keep under siege" — `SUPPORTED`
+  - Manshoon’s arrival was announced and confirmed by his simulacrum breaching the inner sanctum [ch 067 / 067.01].
+- "Iron Owlbear found dead — Manshoon already in the Vault" — `SUPPORTED`
+  - The Iron Owlbear corpse was found dead, confirming Manshoon had already reached the Vault [ch 067 / 067.01].
+  - Iron Owlbear found dead — Manshoon already in the Vault — The party found a damaged iron owlbear statue on the floor, evidence that Manshoon had previously passed through `[ch 068 / 068.03; ch 068 / npcs]`
+- "Echo 1 activated — surface contamination prophecy" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Echo 1 not activated [ch 005 / 005.06].
+  - begun, not shown done: Echo 1 activated is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Echo 1 activated prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Echo 1 activated before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Echo 1 activated is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Echo 1 activated was earlier [ch 040 / 040.02].
+  - begun, not shown done: Echo 1 activated occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Echo 1 activated earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: The prophecy “the keeper falls, the heart is sold” has just been fulfilled, activating Echo 1 (surface contamination) as a narrative consequence [ch 057 / 057.02].
+  - begun, not shown done: Echo 1 activated — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Echo 1 activated: occurred in prior session; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Echo 1 activated: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Echo 1 activated — surface contamination prophecy — Activated prior; not referenced `[ch 068 / 068.05]`
+- "Echo 2 activated — wedding / Zuggtmoy prophecy" — `SUPPORTED`
+  - Echo 2 (Zuggtmoy’s wedding) was activated by the puffball mushroom and Jimjar’s warning. [ch 048 / 048.07]
+- "Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named)" — `SUPPORTED`
+  - Echo 3 was activated, naming Thorin, Zalthir, Daz, and Gyrgum in the Keeper prophecy [ch 067 / 067.03].
+- "Echo 4 activated — Jimjar / Callarduran witness prophecy" — `SUPPORTED`
+  - Echo 4 is activated by Jimjar’s claim of finding a shortcut to Blingdenstone [ch 034 / 034.08].
+  - Echo 4 (Jimjar / Callarduran) was activated by his revelation and disappearance. [ch 048 / 048.07]
+- "Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Book of Vile Darkness fate not determined [ch 005 / 005.06].
+  - begun, not shown done: Book of Vile Darkness fate is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: The red dragon egg has been obtained by the party, determining its fate as a held artifact [ch 020 / items].
+  - begun, not shown done: Book of Vile Darkness fate determined prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Book of Vile Darkness fate determined before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Book of Vile Darkness fate is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Book of Vile Darkness fate was determined earlier [ch 040 / 040.02].
+  - begun, not shown done: Book of Vile Darkness fate occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Book of Vile Darkness fate determined earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: The Book of Vile Darkness has not been encountered in this chapter [ch 054 / 054.06]
+  - begun, not shown done: The Book of Vile Darkness has not been accessed [ch 057 / 057.07].
+  - begun, not shown done: Book of Vile Darkness — fate determined — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Book of Vile Darkness fate determined: resolved in prior session; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Book of Vile Darkness — fate determined: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched) — The Book of Vile Darkness is not mentioned; the Vault contains “dangerous tomes,” not specifically this book `[ch 068 / 068.05]`
+- "Vault tower rocket — lever pulled or left" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Vault tower rocket not pulled [ch 005 / 005.06].
+  - begun, not shown done: Vault tower rocket is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Vault tower rocket lever pulled or left prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Vault tower rocket lever pulled or left before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Vault tower rocket lever is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Vault tower lever was pulled or left earlier [ch 040 / 040.02].
+  - begun, not shown done: Vault tower rocket lever occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Vault tower rocket lever pulled earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: The Vault tower rocket lever has not been pulled [ch 057 / 057.07].
+  - begun, not shown done: Vault tower rocket — occurred previously [ch 063 / 063.01].
+  - begun, not shown done: Vault tower rocket lever pulled or left: resolved in prior session; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Vault tower rocket — lever pulled: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Vault tower rocket — lever pulled or left — The destruction mechanism is mentioned in the note but not accessed `[ch 068 / 068.05]`
+- "Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden" — `SUPPORTED`
+  - Candlekeep institutional restructuring: Tadric appointed as Gatewarden, Fheminor as Keeper — implied by Kalan’s deputation and Tadric’s new role [ch 063 / 063.03; ch 063 / 063.05].
+- "Party named guest seekers of the Avowed — Inner Ward access ceremony" — `SUPPORTED`
+  - The party was named guest seekers of the Avowed, granting Inner Ward access [ch 062 / 062.03].
+- "Manshoon-pursuit thread — activated regardless of escape outcome" — `SUPPORTED`
+  - Manshoon-pursuit thread activated; implied by prior session continuity and Bookwyrm’s knowledge [ch 059 / 059.01; ch 059 / 059.03]
+  - Manshoon-pursuit thread activated: A'lai Aivenmore explicitly names Manshoon as his master and confirms eleven years of book thefts under his direction [ch 064 / 064.04].
+  - Manshoon-pursuit thread activated: A'lai names Manshoon as master; confirmed by party history checks [ch 064 / 064.04].
+  - The Manshoon-pursuit thread was activated as Manshoon’s simulacrum breached the sanctum and is now racing the party to the Vault [ch 067 / 067.01].
+- "Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence" — `SUPPORTED`
+  - The Gauntlgrym call is confirmed: Echo 3 and Eldeth’s letter converge as the party prepares to leave Gracklstugh, with Cairngorm Cavern and the Keepers as potential stepping stones. `[ch 013 / 013.03; ch 013 / 013.04]`
+  - The Gauntlgrym call is confirmed via the party’s progression toward Blingdenstone and their level-up, aligning with Echo 3’s prophecy [ch 034 / 034.08].
+  - The Gauntlgrym call was confirmed by Echo 3 and Eldeth’s letter, now driving the party’s next destination [ch 062 / 062.02].
+  - Gauntlgrym call confirmed: Echo 3 + Eldeth’s letter convergence — referenced as the party’s next destination after resolving Candlekeep crisis [ch 063 / 063.06].
+  - Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence — Echo 3 was activated in prior sessions; this session confirms Manshoon’s presence but does not advance the Gauntlgrym call `[ch 068 / 068.05]`
+- "Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daz sinus-pressure not begun [ch 005 / 005.06].
+  - begun, not shown done: Daz’s first pressure moment is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Daz’s sinus-pressure field-perception has not been mentioned; no surface contamination arc is active [ch 011 / 011.07].
+  - begun, not shown done: Daz’s sinus-pressure perception began in Candlekeep; not referenced here. `[ch 025 / 025.08]`
+  - begun, not shown done: Daz first sinus-pressure moment occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz first sinus-pressure moment occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz sinus-pressure is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daz’s first pressure moment was earlier [ch 040 / 040.02].
+  - begun, not shown done: Daz’s field-perception began earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Daz’s sinus-pressure began in Candlekeep. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz’s field-perception began earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) [ch 056 / 056.04]
+  - begun, not shown done: Daz’s first sinus-pressure moment occurred prior to this chapter [ch 057 / 057.07].
+  - begun, not shown done: Daz’s first sinus-pressure field-perception moment occurred in prior sessions; it continues to manifest [ch 062 / 062.06].
+  - begun, not shown done: Daz — first sinus-pressure — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Daz’s sinus-pressure field-perception continues to sharpen, as previously established in prior sessions, but no new moment of perception or revelation is recorded here [ch 064 / 064.01; ch 064 / 064.04].
+  - begun, not shown done: Daz’s field-perception pressure: continues from prior sessions [ch 064 / 064.01].
+  - begun, not shown done: Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) — First moment occurred prior `[ch 068 / 068.05]`
+- "Yvenne — names Daz's field-perception sensitivity" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Yvenne not named Daz’s sensitivity [ch 005 / 005.06].
+  - begun, not shown done: Yvenne names sensitivity is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Yvenne named Daz’s sensitivity prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Yvenne named Daz’s sensitivity before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Yvenne names field-perception is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Yvenne named Daz’s sensitivity earlier [ch 040 / 040.02].
+  - begun, not shown done: Yvenne named Daz’s sensitivity earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Yvenne named Daz’s sensitivity earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Yvenne — names Daz's field-perception sensitivity [ch 056 / 056.07]
+  - begun, not shown done: Yvenne named Daz’s sensitivity prior to this chapter [ch 057 / 057.07].
+  - begun, not shown done: Yvenne named Daz’s sensitivity in prior sessions; it is now actively used [ch 062 / 062.06].
+  - begun, not shown done: Yvenne — names sensitivity — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Yvenne names Daz’s sensitivity: achieved in prior session [ch 064 / 064.01].
+  - begun, not shown done: Yvenne — names Daz's field-perception sensitivity — Named prior `[ch 068 / 068.05]`
+- "Marin — quill six-pointed star incident" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Marin quill incident not occurred [ch 005 / 005.06].
+  - begun, not shown done: Marin quill incident is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Marin quill incident occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Marin quill incident occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Marin quill incident is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Marin’s quill incident was earlier [ch 040 / 040.02].
+  - begun, not shown done: Marin quill incident occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Marin’s quill incident occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Marin’s quill incident occurred prior [ch 057 / 057.07].
+  - begun, not shown done: Marin — quill incident — occurred previously [ch 063 / 063.06].
+  - begun, not shown done: Marin — quill six-pointed star: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Marin — quill six-pointed star incident — Not referenced `[ch 068 / 068.05]`
+- "Brevin — Sloobludop recitation at cliff base" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Brevin Sloobludop recitation not occurred [ch 005 / 005.06].
+  - begun, not shown done: Brevin’s Sloobludop recitation is not mentioned in this chunk’s evidence [ch 008 / 008.01].
+  - begun, not shown done: Brevin Sloobludop recitation occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Brevin Sloobludop recitation occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Brevin Sloobludop recitation is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Brevin’s recitation was earlier [ch 040 / 040.02].
+  - begun, not shown done: Brevin Sloobludop recitation occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Brevin’s recitation occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Brevin’s recitation occurred prior [ch 057 / 057.07].
+  - begun, not shown done: Brevin — Sloobludop — occurred previously [ch 063 / 063.06].
+  - begun, not shown done: Brevin — Sloobludop recitation: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Brevin — Sloobludop recitation at cliff base — Not referenced `[ch 068 / 068.05]`
+- "Brevin — bedclothes six-pointed star incident" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: The party has not yet encountered Brevin’s bedclothes incident [ch 005 / 005.06].
+  - begun, not shown done: Brevin bedclothes incident not occurred [ch 005 / 005.06].
+  - begun, not shown done: Brevin bedclothes incident is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Brevin bedclothes incident occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Brevin bedclothes incident occurred before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Brevin bedclothes incident is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Brevin’s bedclothes incident was earlier [ch 040 / 040.02].
+  - begun, not shown done: Brevin bedclothes incident occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Brevin’s bedclothes incident occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Brevin’s bedclothes incident occurred prior [ch 057 / 057.07].
+  - begun, not shown done: Brevin — bedclothes — occurred previously [ch 063 / 063.06].
+  - begun, not shown done: Brevin — bedclothes six-pointed star: not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Brevin — bedclothes six-pointed star incident — Not referenced `[ch 068 / 068.05]`
+- "Endless Chant — first complete stoppage (Session 5 opening)" — `SUPPORTED`
+  - Endless Chant first complete stoppage: the prophecy chant in Candlekeep falls completely silent, a phenomenon Tadric confirms has never happened before [ch 064 / 064.01].
+  - Endless Chant — first complete stoppage: confirmed by Tadric’s shock and Gyrgum’s observation [ch 064 / 064.01].
+- "Ward-drop vision sequence — per-PC hallucinations (Session 6)" — `SUPPORTED`
+  - Ward-drop vision sequence occurred: party experienced hallucinations and sensed ward anomalies [ch 063 / 063.02].
+- "Glabbagool — Juiblex "mother voice" contact (Session 5)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Glabbagool Juiblex contact not occurred [ch 005 / 005.06].
+  - begun, not shown done: Glabbagool Juiblex contact is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Glabbagool Juiblex contact occurred prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Glabbagool’s Juiblex contact occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+  - begun, not shown done: Glabbagool Juiblex contact is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Glabbagool’s Juiblex contact was earlier [ch 040 / 040.02].
+  - begun, not shown done: Glabbagool Juiblex contact occurred earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Glabbagool’s Juiblex contact occurred earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Glabbagool’s Juiblex contact has not occurred [ch 057 / 057.03].
+- "Echo 1 — prophecy names surface-contamination field-effect directly" — `SUPPORTED`
+  - Echo 1 (surface contamination) is activated by the party’s imminent surface arrival. [ch 048 / 048.07]
+- "Daz and Yvenne — field-perception expertise confirmed (post-arc)" — `NOT FOUND IN SUMMARIES`
+  - begun, not shown done: Daz’s field-perception expertise is confirmed only in hindsight; he has not yet been formally recognized as having it [ch 005 / 005.06].
+  - begun, not shown done: Daz and Yvenne field-perception not confirmed [ch 005 / 005.06].
+  - begun, not shown done: Daz/Yvenne expertise confirmed is Candlekeep-related [ch 008 / 008.04].
+  - begun, not shown done: Daz’s field-perception ability was not tested or referenced in this chapter. `[ch 022 / 022.01]`
+  - begun, not shown done: Daz and Yvenne field-perception expertise confirmed prior; not referenced here [ch 031 / 031.01].
+  - begun, not shown done: Daz and Yvenne field-perception expertise confirmed before this chunk [ch 035 / 035.01].
+  - begun, not shown done: Daz and Yvenne field-perception confirmed is referenced as prior [ch 039 / 039.01].
+  - begun, not shown done: Daz/Yvenne field-perception confirmed earlier [ch 040 / 040.02].
+  - begun, not shown done: Daz/Yvenne field-perception expertise confirmed earlier. `[ch 041 / 041.01]`
+  - begun, not shown done: Daz and Yvenne’s expertise confirmed earlier. `[ch 043 / 043.01]`
+  - begun, not shown done: Daz’s field-perception sensitivity is now confirmed by Yvenne’s analysis, but the full arc is unresolved [ch 053 / 053.05].
+  - begun, not shown done: Daz and Yvenne — field-perception expertise confirmed (post-arc) [ch 056 / 056.07]
+  - begun, not shown done: Daz and Yvenne’s field-perception expertise was confirmed prior [ch 057 / 057.07].
+  - begun, not shown done: Daz and Yvenne’s field-perception expertise was confirmed in prior sessions; it is now used to interpret the horrors’ targeting [ch 062 / 062.06].
+  - begun, not shown done: Daz and Yvenne — expertise confirmed — occurred previously [ch 063 / 063.02].
+  - begun, not shown done: Daz and Yvenne field-perception expertise confirmed: achieved in prior session; not referenced here [ch 064 / 064.01].
+  - begun, not shown done: Daz and Yvenne field-perception expertise: confirmed in prior session [ch 064 / 064.01].
+  - begun, not shown done: Daz and Yvenne — field-perception expertise confirmed (post-arc) — Confirmed prior `[ch 068 / 068.05]`
+- "Sylvira recruited (Path B) — dispel payoff and cryptogram shortcut" — `SUPPORTED`
+  - Sylvira was recruited via Path B, enabling the cryptogram shortcut and dispel of Moziqodo’s binding in prior sessions [ch 062 / 062.02].
+  - Sylvira was recruited via Path B, as she provided key riddle answers and was present during the cipher solution [ch 067 / 067.03].
+- "Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7)" — `SUPPORTED`
+  - Yvenne trust ≥ 4 ticks: Daz’s field-perception sensitivity was confirmed and named by Yvenne [ch 063 / 063.02].
+  - Yvenne’s trust ≥ 4 ticks enabled the planar-residue trace payoff, as she provided the true name of Miirym [ch 067 / 067.03].
+- "Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7)" — `SUPPORTED`
+  - Vareth / Drakonoikos goodwill enabled the Thava and F-A-D-E payoff, though not directly shown here, implied by prior context [ch 067 / 067.03].
+- "Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7)" — `SUPPORTED`
+  - Daral was saved, providing witness testimony and Fustilugs clue payoff in prior sessions [ch 062 / 062.05].
+  - Daral saved as witness, enabling the Fustilugs clue payoff; Daral’s survival was confirmed in prior sessions [ch 067 / 067.02].
+- "Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage" — `SUPPORTED`
+  - Khell-Vire earned Watcher’s Stillness, granting skirmish skip and Vault Wis-save advantage in prior sessions [ch 062 / 062.02].
+  - Khell-Vire’s Watcher’s Stillness was earned, granting advantage on Vault Wis-save; this was granted in prior sessions [ch 067 / 067.02].
+- "Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)" — `SUPPORTED`
+  - Glabbagool’s Whispering Dome visit triggered a boon via the Zuggtmoy mushroom absorption. [ch 048 / 048.07]
+  - Glabbagool visited the Whispering Dome, gaining the Echo re-coax boon in prior sessions [ch 062 / 062.04].
+- "Polly Pocket released as messenger — OOTA endgame thread flagged" — `SUPPORTED`
+  - Polly Pocket was released as a messenger, flagging the OOTA endgame thread in prior sessions [ch 062 / 062.04].
+  - Polly Pocket released as messenger, flagging OOTA endgame thread; this occurred in prior sessions [ch 067 / 067.02].
+- "Walking-permit medallions worn — wight-safe at Jewel of the Styx" — `SUPPORTED`
+  - Walking-permit medallions were worn, enabling safe passage at Jewel of the Styx in prior sessions [ch 062 / 062.04].
+  - Walking-permit medallions worn: party used them to be wight-safe at Jewel of the Styx — referenced in prior arc, but not contradicted here; contextually assumed active [ch 063 / 063.01].
+  - Walking-permit medallions worn, enabling wight-safe passage; this was established in prior sessions [ch 067 / 067.02].
+- "Second High Tower key held — door opened from outside (Session 6)" — `SUPPORTED`
+  - The second High Tower key was held and used to open the door from outside in prior sessions [ch 062 / 062.04].
+  - Polly Pocket released as messenger — OOTA endgame thread flagged — referenced in prior arc; not contradicted here; assumed active [ch 063 / 063.01].
+  - Second High Tower key held: Tadric surrendered it to the party; Gyrgum now holds it [ch 064 / 064.01; ch 064 / 064.04].
+  - Second High Tower key held by party, enabling door access from outside; this was established in prior sessions [ch 067 / 067.02].

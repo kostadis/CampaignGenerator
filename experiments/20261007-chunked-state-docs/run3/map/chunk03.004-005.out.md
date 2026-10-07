@@ -1,0 +1,401 @@
+## Events
+- The party searches the bodies of three fallen drow guards, acquiring chain shirts for Thorin and Gyrgum, studded leather armor for Sarith, a shield, three short swords, three hand crossbows, and a vial of poison with three poisoned bolts from Imbros’s corpse. `[ch 004 / 004.01]`
+- Gyrgum uses Cure Wounds to restore Zalthir to full health, exhausting his remaining spell slots. `[ch 004 / 004.01]`
+- Three vrocks descend from the sky above Velkynvelve, attacking each other and distracting the drow and quaggoths. `[ch 004 / 004.01]`
+- The party abandons their confiscated gear, deciding not to retrieve it or sabotage the outpost to avoid provoking greater retaliation. `[ch 004 / 004.01]`
+- Topsy and Turvy reveal themselves as wererats by transforming into rats and leaping into the darkness below, promising to meet the party downstairs. `[ch 004 / 004.01; ch 004 / Memorable Moments]`
+- The party descends via the waterfall and pool instead of the spider webs, avoiding giant spiders. `[ch 004 / 004.02]`
+- A gray ooze emerges from the water and attacks Thorin, dealing 12 damage; the party flees, leaving it behind. `[ch 004 / 004.03]`
+- A wounded vrock lands beside the fleeing party; Ront attacks it with his great axe, dealing 9 damage, but is killed by its talons. `[ch 004 / 004.03; ch 004 / Memorable Moments]`
+- The vrock menaces Daz but flies away, deeming him not worth the effort. `[ch 004 / 004.03]`
+- The party escapes into the Underdark tunnels, realizing they have no food, water, money, or map. `[ch 004 / 004.03]`
+- After a long rest, the party begins traveling through the Underdark at a normal pace toward Sloobludop. `[ch 004 / 004.04]`
+- Sarith volunteers as navigator, appearing truthful about his knowledge of the tunnels. `[ch 004 / 004.04]`
+- The party learns of the Faerzress, a magical energy that interferes with divination and teleportation and provides dim illumination. `[ch 004 / 004.04]`
+- Stool, the myconid sprout, chooses Gyrgum as his “bestest friend” and follows him closely for protection. `[ch 004 / 004.04]`
+- The party discovers the Tongue of Madness fungus, which causes involuntary speech when consumed. Thorin resists its effect; Daz consumes it and begins blurting thoughts aloud. `[ch 004 / 004.05; ch 004 / Memorable Moments]`
+- The rest of the party eats the Tongue of Madness, resulting in an hour of chaotic, involuntary chatter; Zalthir compulsively repeats, “I'm meditating.” `[ch 004 / 004.05; ch 004 / Memorable Moments]`
+- Daz saves some of the Tongue of Madness for future use. `[ch 004 / 004.05]`
+- A sudden rockfall collapses the tunnel ceiling, burying Daz, Gyrgum, Buppido, Eldeth, and Jimjar. `[ch 004 / 004.06; ch 004 / Memorable Moments]`
+- Daz is knocked unconscious; Gyrgum survives at 1 HP due to Relentless Endurance. `[ch 004 / 004.06]`
+- Zalthir and Thorin free trapped companions; Stool helps pull Shuushar and Buppido to safety. `[ch 005 / 005.01]`
+- Zalthir frees Daz; Thorin rescues Gyrgum. `[ch 005 / 005.01]`
+- A carrion crawler erupts from the ground, attacking the party. `[ch 005 / 005.02]`
+- Zalthir uses Breath Weapon twice, dealing 10 and 2 damage; the crawler hits Gyrgum and Thorin. `[ch 005 / 005.02]`
+- Thorin attacks with his short sword, gaining advantage from Vex property. `[ch 005 / 005.02]`
+- The companions (Shuushar, Turvy, Topsy, Sarith, Buppido) fire a volley of crossbow bolts, landing four hits for 20 damage. `[ch 005 / 005.02]`
+- Thorin uses Second Wind to gain 10 HP. `[ch 005 / 005.02]`
+- Topsy and Turvy dig out Eldeth and Jimjar. `[ch 005 / 005.02]`
+- The companions’ volleys kill the carrion crawler; the party finds no loot but harvests nine rations from its corpse. `[ch 005 / 005.02]`
+- The harvested meat tastes remarkably like chicken. `[ch 005 / 005.02; ch 005 / Memorable Moments]`
+- The party takes a long rest in a defensible corner, reaching 2nd level. `[ch 005 / 005.03]`
+- Daz takes Expertise in Arcana, doubling his proficiency bonus. `[ch 005 / 005.03]`
+- Daz and Zalthir detect drow scouts trailing them via passive Perception and Insight. `[ch 005 / 005.04]`
+- Zalthir recalls from a monastery text that killing scouts won’t stop the main hunting party. `[ch 005 / 005.04]`
+- The party decides to flee rather than ambush. `[ch 005 / 005.04]`
+- Gyrgum hands Stool to Thorin to carry on his back; Stool releases rapport spores to enable silent telepathic communication. `[ch 005 / 005.05; ch 005 / Memorable Moments]`
+- Zalthir dashes ahead, finds a natural alcove granting advantage on Stealth, and guides the group there. `[ch 005 / 005.05]`
+- Gyrgum dashes, gains two temporary HP from Adrenaline Rush, and uses Thaumaturgy to make the ground tremble. `[ch 005 / 005.05]`
+- The drow scouts encounter a drop but make their Dexterity save and avoid falling. `[ch 005 / 005.05]`
+- The party makes a successful group Stealth check, losing the scouts’ scent. `[ch 005 / 005.05]`
+- The scouts double back down a different corridor. `[ch 005 / 005.05]`
+- Zalthir warns the party via telepathy to maintain speed to avoid being caught again. `[ch 005 / 005.05]`
+- The party travels at a fast pace for three days, pushing through Faerzress tunnels, avoiding its worst effects. `[ch 005 / 005.06]`
+- Shuushar is visibly distressed by the Faerzress. `[ch 005 / 005.06]`
+- Sarith nearly leads the group down the wrong path; Gyrgum corrects him. `[ch 005 / 005.06]`
+- Sarith begrudgingly acknowledges Gyrgum’s help: “Yes, I saw that. Thank you. I didn't need your help. But it's good we're all on the same page.” `[ch 005 / 005.06; ch 005 / Memorable Moments]`
+- By the end of day three, the party has a one-day lead at pursuit level four. `[ch 005 / 005.06]`
+
+## Concluded
+- The looting of the three fallen drow guards is concluded, with all usable gear claimed. `[ch 004 / 004.01]`
+- The escape from Velkynvelve is concluded, with the party successfully fleeing into the Underdark. `[ch 004 / 004.03; ch 004 / Memorable Moments]`
+- The gray ooze encounter is concluded, with the party escaping without further engagement. `[ch 004 / 004.03]`
+- The vrock ambush and Ront’s death are concluded. `[ch 004 / 004.03; ch 004 / Memorable Moments]`
+- The descent through the waterfall and pool is concluded, bypassing the spider webs. `[ch 004 / 004.02]`
+- The Tongue of Madness experiment is concluded, with all effects witnessed and the fungus partially retained. `[ch 004 / 004.05]`
+- The rockfall and rescue operation are concluded, with all trapped companions freed. `[ch 004 / 004.06; ch 005 / 005.01]`
+- The carrion crawler ambush is concluded, with the creature killed and harvested for rations. `[ch 005 / 005.02]`
+- The long rest and level-up to 2nd level are concluded, with Daz gaining Expertise in Arcana. `[ch 005 / 005.03]`
+- The discovery and confirmation of drow scouts are concluded, leading to the decision to flee. `[ch 005 / 005.04]`
+- The escape from the drow scouts is concluded, with the party losing their scent and gaining a one-day lead. `[ch 005 / 005.05]`
+- The three-day fast travel through the Faerzress tunnels is concluded, with the party maintaining their lead. `[ch 005 / 005.06]`
+
+## Threads
+- [ADVANCED] **Escape from Velkynvelve** — The party successfully escaped the outpost, abandoned their gear, and fled into the Underdark; the drow are now actively pursuing them [ch 004 / 004.03; ch 005 / 005.04].
+- [OPENED] **Drow pursuit level** — The party is being tracked by drow scouts; pursuit level is now at four, with a one-day lead, and level five means capture [ch 005 / 005.06; ch 005 / 005.05].
+- [ADVANCED] **Sarith as navigator** — Sarith is guiding the party toward Sloobludop; he nearly led them astray in the Faerzress tunnels but accepted Gyrgum’s correction, revealing his pride and fragile competence [ch 004 / 004.04; ch 005 / 005.06].
+- [OPENED] **Stool’s dependency on Gyrgum** — Stool has attached himself to Gyrgum as his “bestest friend,” relying on him for protection and hoping to be taken home; Gyrgum has accepted this responsibility without understanding its weight [ch 004 / 004.04; ch 005 / 005.01].
+- [ADVANCED] **Topsy and Turvy’s wererat secret** — The twins revealed their lycanthropy to escape Velkynvelve; they remain with the party but avoid Blingdenstone due to past disputes over their “profession” [ch 004 / 004.01; ch 004 / npcs].
+- [ADVANCED] **The Faerzress** — The party now knows the Faerzress interferes with magic, provides dim light, and causes distress to Shuushar; they have survived its effects by traveling quickly [ch 004 / 004.04; ch 005 / 005.06].
+- [ADVANCED] **Ront’s death** — Ront died proving his worth against a vrock; his death has solidified the party’s awareness of the Underdark’s lethality and Shuushar’s refusal to fight [ch 004 / 004.03; ch 004 / Memorable Moments].
+- [OPENED] **The Tongue of Madness fungus** — The party now possesses a sample of the fungus; Daz intends to use it for future tricks or potions, and its effects are understood as a harmless Underdark prank [ch 004 / 004.05].
+- [ADVANCED] **Journey toward Sloobludop** — The party has chosen Sloobludop as their next destination, eight days away, and are now actively traveling toward it under pursuit pressure [ch 004 / 004.04; ch 005 / 005.06].
+- [OPENED] **Gyrgum’s new responsibility** — Gyrgum is now the de facto protector of Stool, a myconid sprout who cannot travel alone; this bond has formed without his full awareness of its implications [ch 005 / 005.01; ch 005 / 005.05].
+- [ADVANCED] **The carrion crawler encounter** — The party harvested nine rations from the creature, providing two days of food; the meat’s chicken-like taste has become a darkly humorous memory [ch 005 / 005.02; ch 005 / Memorable Moments].
+
+## NPC Status
+- Sarith | Alive | Traveling with party | Trustworthy but prideful navigator; accepts help reluctantly [ch 004 / npcs; ch 005 / 005.06]
+- Topsy | Alive | Traveling with party | Reluctant to return to Blingdenstone; wererat; active companion [ch 004 / npcs; ch 005 / 005.02]
+- Turvy | Alive | Traveling with party | Reluctant to return to Blingdenstone; wererat; active companion [ch 004 / npcs; ch 005 / 005.02]
+- Shuushar | Alive | Traveling with party | Pacifist kuo-toa; distressed by Faerzress; fired crossbow in combat [ch 004 / npcs; ch 005 / 005.02; ch 005 / 005.06]
+- Buppido | Alive | Traveling with party | Derro prisoner; rescued from rockfall; contributed to carrion crawler fight [ch 004 / npcs; ch 005 / 005.01]
+- Eldeth | Alive | Traveling with party | Dwarf; nearly died in rockfall; rescued by Topsy and Turvy; +5 Survival [ch 004 / npcs; ch 005 / 005.01; ch 005 / 005.02]
+- Jimjar | Alive | Traveling with party | Deep gnome; trapped in rockfall; rescued; +4 Survival; complains about pace [ch 004 / npcs; ch 005 / 005.01; ch 005 / 005.06]
+- Stool | Alive | Traveling with party | Myconid sprout; rides on Thorin’s back; telepathic rapport spores active; seeks Gyrgum’s protection [ch 004 / npcs; ch 005 / 005.01; ch 005 / 005.05]
+- Ront | Dead | Velkynvelve | Killed by vrock while attacking it to prove his worth [ch 004 / 004.03; ch 004 / Memorable Moments]
+- Drow Scouts | Alive | Pursuing party | Trackers from Velkynvelve; lost scent after party’s Stealth check; hunting party likely nearby [ch 005 / npcs; ch 005 / 005.05]
+- Imbros | Dead | Velkynvelve | Drow Elite Warrior; corpse looted for poison and poisoned bolts [ch 004 / npcs; ch 004 / 004.01]
+
+## World
+- [LOCATION] **Velkynvelve** — A drow prison outpost above a cavern with a waterfall, pool, and giant spider webs; abandoned by its garrison during the vrock attack; the party escaped from it [ch 004 / locations; ch 004 / 004.01].
+- [LOCATION] **Darklake** — A vast network of underground rivers, canals, and flooded caverns over a hundred miles long; ceiling miles high; the party plans to reach it to find a boat for travel to Gracklstugh or Blingdenstone [ch 004 / locations; ch 004 / 004.04].
+- [LOCATION] **Underdark Tunnels** — A labyrinthine network of twisting, uneven, and treacherous passages; travel is slow and disorienting without a navigator; portions are suffused by Faerzress; the site of the rockfall that trapped the party [ch 004 / locations; ch 005 / locations].
+- [LOCATION] **Faerzress Tunnels** — Sections of the Underdark filled with dim, magical light that disrupts divination and teleportation; causes visible distress to Shuushar; the party passed through them at high speed to avoid worse effects [ch 005 / locations; ch 005 / 005.06].
+- [LOCATION] **The Rockfall Cavern** — A treacherous tunnel section where the ceiling collapsed, trapping multiple companions; the party took a long rest here after the rescue and carrion crawler fight [ch 005 / locations].
+- [FACTION] **Drow** — The drow of Velkynvelve are actively hunting the escaped prisoners; they have sent scouts with darkvision and tracking skills; a full hunting party is following behind [ch 005 / 005.04; ch 005 / npcs].
+- [NPC] **Sarith** — A drow prisoner who serves as the party’s navigator; claims knowledge of the Underdark tunnels; prideful, nearly led them astray in Faerzress but accepted Gyrgum’s correction [ch 004 / npcs; ch 005 / 005.06].
+- [NPC] **Stool** — A young myconid sprout who treats Gyrgum as his “bestest friend”; has only four rapport spores and cannot mind-control drow; moves at 10 feet; rides on Thorin’s back [ch 004 / npcs; ch 005 / 005.05].
+- [ITEM] **Chain Shirt** — Two recovered from fallen drow; now worn by Thorin and Gyrgum; Thorin fled the gray ooze to preserve it after Eldeth warned it would corrode [ch 004 / items].
+- [ITEM] **Studded Leather Armor** — Claimed by Sarith after Thorin upgraded; no longer worn by Thorin [ch 004 / items].
+- [ITEM] **Hand Crossbow** — One claimed by Gyrgum from the drow dead; used with poisoned bolts [ch 004 / items].
+- [ITEM] **Vial of Poison** — Recovered from Imbros; can be applied to weapons in combat to inflict additional damage [ch 004 / items].
+- [ITEM] **Poisoned Crossbow Bolts** — Three recovered from Imbros; claimed by Gyrgum for his hand crossbow [ch 004 / items].
+- [ITEM] **Giant's Tooth Pendant** — Thorin’s sentimental keepsake; small enough to remain around his neck during imprisonment; not confiscated [ch 004 / items].
+- [ITEM] **Tongue of Madness** — An edible fungus resembling a human tongue; causes involuntary speech for an hour; Daz retains some for future use [ch 004 / items].
+- [ITEM] **Carrion Crawler Rations** — Nine rations harvested from the slain carrion crawler; taste like chicken; provide about two days of food [ch 005 / items].
+- [THREAT] **Drow Hunting Party** — A full force is following the party’s trail; scouts have their scent; if pursuit reaches level five, they will catch up [ch 005 / 005.06].
+- [THREAT] **Faerzress Radiation** — Lingering in certain tunnels; causes physical and spiritual distress to Shuushar; prolonged exposure may be dangerous [ch 005 / 005.06].
+
+## Party
+- The party is traveling at a fast pace through the Underdark, one day ahead of drow scouts at pursuit level four.
+- Their group name is not stated; they are a mixed group of player characters and former prisoners.
+- All party members are 2nd level.
+- Daz has gained Expertise in Arcana, doubling his proficiency bonus for Arcana checks.
+- Daz retains a sample of the Tongue of Madness fungus for potential future use.
+- Gyrgum has gained two temporary HP from Adrenaline Rush (still active from the chase).
+- Gyrgum is now responsible for protecting Stool, the myconid sprout, who rides on Thorin’s back and communicates telepathically with the group via rapport spores.
+- Thorin carries Stool on his back during travel, adopting a “Yoda style” approach.
+- Thorin and Gyrgum now wear chain shirts, replacing their previous armor.
+- Sarith wears studded leather armor.
+- Gyrgum wields a hand crossbow with three poisoned bolts.
+- The party has nine rations from the carrion crawler, providing two days of food with the Tongue of Madness fungus.
+- The party has no coins or other wealth.
+- The party intends to continue traveling at a fast pace toward Sloobludop, avoiding the Darklake for now, and is trying to outrun the drow hunting party.
+- Zalthir is the party’s primary scout and spellcaster; Daz is the primary arcane expert; Thorin is the frontline fighter; Gyrgum is the healer and protector of Stool.
+
+## Audit
+- [A1] SHOWN — The party escaped from Velkynvelve during the vrock chaos, abandoning gear and fleeing into the Underdark [ch 004 / 004.03; ch 004 / Memorable Moments].
+- [A2] SHOWN — The party has returned to the Underdark after escaping Velkynvelve and is now traveling through its tunnels [ch 004 / 004.04; ch 005 / 005.06].
+- [A8] BEGUN — The party has chosen Sloobludop as their destination, eight days away, and is actively traveling toward it [ch 004 / 004.04; ch 005 / 005.06].
+- [A12] BEGUN — The party is traveling toward Gravenhollow only as a theoretical future step; they are currently en route to Sloobludop, not Gravenhollow [ch 004 / 004.04].
+- [A16] BEGUN — The party is being tracked by drow scouts; pursuit level is now four, with the threat of capture if it reaches five [ch 005 / 005.06].
+- [A25] BEGUN — Shuushar is traveling toward Sloobludop, his home, and is distressed by Faerzress; he has not yet arrived [ch 004 / npcs; ch 005 / 005.06].
+- [A26] BEGUN — Stool hopes to be taken to Neverlight Grove; he is currently with the party and has not yet reached it [ch 004 / npcs; ch 005 / 005.01].
+- [A46] BEGUN — The party is traveling toward Sloobludop, a kuo-toa settlement; they have not yet arrived [ch 004 / 004.04; ch 005 / 005.06].
+- [A51] BEGUN — The party is aware of the Darklake as a potential route to Gracklstugh or Blingdenstone, but they are not currently heading there [ch 004 / locations].
+- [A144] SHOWN — The party has confirmed the presence of demons (vrocks) in the Underdark, recognizing this as abnormal and frightening [ch 004 / 004.01].
+- [A162] SHOWN — The party is now being tracked by drow scouts; pursuit level is at four, with a one-day lead [ch 005 / 005.06].
+- [A164] BEGUN — The party has not encountered the Society of Brilliance or any modrons [ch 005 / 005.06].
+- [A172] BEGUN — The party has not yet reached Sloobludop or encountered kuo-toa day’s catch [ch 005 / 005.06].
+- [A184] BEGUN — The party has not encountered Vazuk’s ghost or laid any spirits to rest [ch 005 / 005.06].
+- [A207] BEGUN — The party has not yet reached Sloobludop ruins [ch 005 / 005.06].
+- [A210] BEGUN — The party has not returned to Velkynvelve [ch 005 / 005.06].
+- [A223] BEGUN — The party has not yet reached Candlekeep or the surface world [ch 005 / 005.06].
+- [A224] BEGUN — The party has not yet experienced surface-madness gradient; they are still deep in the Underdark [ch 005 / 005.06].
+- [A244] BEGUN — The party has not yet reached Mountain’s Mouth Inn or any surface locations [ch 005 / 005.06].
+- [A258] BEGUN — The party has not yet reached Mithral Hall or encountered Eldeth’s farewell [ch 005 / 005.06].
+- [A297] BEGUN — The party has not yet received Eldeth’s letter or been called to Gauntlgrym [ch 005 / 005.06].
+- [A314] BEGUN — The party has not yet reached Candlekeep [ch 005 / 005.06].
+- [A400] BEGUN — The party has not yet encountered Brevin or Sloobludop recitation [ch 005 / 005.06].
+- [A429] BEGUN — The party has not yet encountered Brevin’s bedclothes incident [ch 005 / 005.06].
+- [A430] BEGUN — The party has not yet heard the Endless Chant stoppage [ch 005 / 005.06].
+- [A432] BEGUN — The party has not yet encountered Juiblex’s “mother voice” [ch 005 / 005.06].
+- [A434] BEGUN — Daz’s field-perception expertise is confirmed only in hindsight; he has not yet been formally recognized as having it [ch 005 / 005.06].
+- [A435] BEGUN — Sylvira has not been recruited; the party has not encountered her [ch 005 / 005.06].
+- [A436] BEGUN — Yvenne has not been encountered; no planar-residue trace has been established [ch 005 / 005.06].
+- [A437] BEGUN — Vareth and Drakonoikos have not been encountered [ch 005 / 005.06].
+- [A438] BEGUN — Daral has not been encountered [ch 005 / 005.06].
+- [A439] BEGUN — Khell-Vire’s Watcher’s Stillness has not been earned [ch 005 / 005.06].
+- [A440] BEGUN — Glabbagool has not been visited at the Whispering Dome [ch 005 / 005.06].
+- [A441] BEGUN — Polly Pocket has not been released as a messenger [ch 005 / 005.06].
+- [A442] BEGUN — Walking-permit medallions have not been acquired [ch 005 / 005.06].
+- [A443] BEGUN — The party does not hold a second High Tower key [ch 005 / 005.06].
+- [A1] SHOWN — Escape from Velkynvelve confirmed [ch 004 / 004.03].
+- [A141] SHOWN — Drow prisoners escaped Velkynvelve [ch 004 / 004.03].
+- [A142] SHOWN — Flight of demons distracted drow defenses at Velkynvelve [ch 004 / 004.01].
+- [A161] SHOWN — Escaped Velkynvelve via waterfall and pool, bypassing webs [ch 004 / 004.02].
+- [A162] SHOWN — Drow pursuit level tracked and now at four [ch 005 / 005.06].
+- [A164] BEGUN — Society of Brilliance not encountered [ch 005 / 005.06].
+- [A211] BEGUN — Ooze spies not encountered [ch 005 / 005.06].
+- [A212] BEGUN — Araumycos fungal creatures not encountered [ch 005 / 005.06].
+- [A213] BEGUN — Infected area of Araumycos not destroyed [ch 005 / 005.06].
+- [A214] BEGUN — House Baenre meeting not held [ch 005 / 005.06].
+- [A215] BEGUN — Bregan D'aerthe meeting not held [ch 005 / 005.06].
+- [A216] BEGUN — Council of Spiders assistance not sought [ch 005 / 005.06].
+- [A217] BEGUN — Gromph's outer sanctum not infiltrated [ch 005 / 005.06].
+- [A218] BEGUN — Szashune not encountered [ch 005 / 005.06].
+- [A219] BEGUN — Yochlol not confronted [ch 005 / 005.06].
+- [A220] BEGUN — Wand of Orcus not claimed [ch 005 / 005.06].
+- [A221] BEGUN — Heroic sacrifice opportunity not presented [ch 005 / 005.06].
+- [A222] BEGUN — Demon sortie encounters not experienced [ch 005 / 005.06].
+- [A223] BEGUN — Travelogue prelude not reached [ch 005 / 005.06].
+- [A224] BEGUN — Surface-madness gradient not established [ch 005 / 005.06].
+- [A225] BEGUN — Gorg'Bahamut breadcrumb not planted [ch 005 / 005.06].
+- [A226] BEGUN — Mirabar smith commissions not ordered [ch 005 / 005.06].
+- [A227] BEGUN — Daz shopping arc not completed [ch 005 / 005.06].
+- [A228] BEGUN — Calishite cloak not purchased [ch 005 / 005.06].
+- [A229] BEGUN — Milo Goodbarrel Volume 3 not acquired [ch 005 / 005.06].
+- [A230] BEGUN — Order of the Gauntlet medallion not acquired [ch 005 / 005.06].
+- [A231] BEGUN — Gyrgum Hagiography not acquired [ch 005 / 005.06].
+- [A232] BEGUN — Zalthir shadow-puppet hand not acquired [ch 005 / 005.06].
+- [A233] BEGUN — Dawnbringer scabbard not finished [ch 005 / 005.06].
+- [A234] BEGUN — Elin the silent child not encountered [ch 005 / 005.06].
+- [A235] BEGUN — Charcoal rubbing not taken [ch 005 / 005.06].
+- [A236] BEGUN — Kestler meeting not held [ch 005 / 005.06].
+- [A237] BEGUN — Triboar carpenter's journal not donated [ch 005 / 005.06].
+- [A238] BEGUN — Burned hamlet "The Auroch's Horn" not witnessed [ch 005 / 005.06].
+- [A239] BEGUN — Broken Thunderbeast stone not seen [ch 005 / 005.06].
+- [A240] BEGUN — Defaced Tempus shrine not witnessed [ch 005 / 005.06].
+- [A241] BEGUN — Forge of Mirabar not visited [ch 005 / 005.06].
+- [A242] BEGUN — Order of the Gauntlet shrine not visited [ch 005 / 005.06].
+- [A243] BEGUN — Goldenfields not visited [ch 005 / 005.06].
+- [A244] BEGUN — Mountain's Mouth Inn not visited [ch 005 / 005.06].
+- [A245] BEGUN — Triboar memorial square not visited [ch 005 / 005.06].
+- [A246] BEGUN — Waterdeep not visited [ch 005 / 005.06].
+- [A247] BEGUN — Rishaal the Pageturner's not visited [ch 005 / 005.06].
+- [A248] BEGUN — Order of the Gauntlet chapter house not visited [ch 005 / 005.06].
+- [A249] BEGUN — Sleeping Snake fence not visited [ch 005 / 005.06].
+- [A250] BEGUN — Aurora's Whole Realms Catalog not seen [ch 005 / 005.06].
+- [A251] BEGUN — Halaster's Prized Findings not seen [ch 005 / 005.06].
+- [A252] BEGUN — Steelwoods of Mistshore not visited [ch 005 / 005.06].
+- [A253] BEGUN — River Shining Tavern not visited [ch 005 / 005.06].
+- [A254] BEGUN — Hand of Tarvis monument not seen [ch 005 / 005.06].
+- [A255] BEGUN — Burning Wizard inn not visited [ch 005 / 005.06].
+- [A256] BEGUN — Way of the Lion not traveled [ch 005 / 005.06].
+- [A257] BEGUN — Candlekeep Emerald Door not arrived at [ch 005 / 005.06].
+- [A258] BEGUN — Eldeth farewell not occurred [ch 005 / 005.06].
+- [A259] BEGUN — Dwarven outriders not saluted [ch 005 / 005.06].
+- [A260] BEGUN — Stroudite polemicist not encountered [ch 005 / 005.06].
+- [A261] BEGUN — Sister Ellune not encountered [ch 005 / 005.06].
+- [A262] BEGUN — Brindle Wenth story not heard [ch 005 / 005.06].
+- [A263] BEGUN — Kestler the half-orc not met [ch 005 / 005.06].
+- [A264] BEGUN — Eldred the two-voiced courier not witnessed [ch 005 / 005.06].
+- [A265] BEGUN — Rishaal the Pageturner not met [ch 005 / 005.06].
+- [A266] BEGUN — Stroudite half-orc pilgrims not seen [ch 005 / 005.06].
+- [A267] BEGUN — Field Ward street-preacher not witnessed [ch 005 / 005.06].
+- [A268] BEGUN — City Watch patrol not encountered [ch 005 / 005.06].
+- [A269] BEGUN — Maerith of the Ford not met [ch 005 / 005.06].
+- [A270] BEGUN — Elin the silent child not encountered [ch 005 / 005.06].
+- [A271] BEGUN — Veyloss the bard not heard [ch 005 / 005.06].
+- [A272] BEGUN — Festrum the gnome innkeeper not met [ch 005 / 005.06].
+- [A273] BEGUN — Pilgrim at corner table not witnessed [ch 005 / 005.06].
+- [A274] BEGUN — Triboar carpenter not encountered [ch 005 / 005.06].
+- [A275] BEGUN — Stroudite half-orc pilgrims not seen on Way of the Lion [ch 005 / 005.06].
+- [A276] BEGUN — Bookwyrm not met [ch 005 / 005.06].
+- [A277] BEGUN — Queenie the cat not witnessed [ch 005 / 005.06].
+- [A278] BEGUN — First Faction painting not witnessed [ch 005 / 005.06].
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand not occurred [ch 005 / 005.06].
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run not occurred [ch 005 / 005.06].
+- [A281] BEGUN — Daz somatic field-perception not triggered [ch 005 / 005.06].
+- [A282] BEGUN — Daz somatic field-perception not tested on Eldred [ch 005 / 005.06].
+- [A283] BEGUN — Daz somatic field-perception not tested on preacher [ch 005 / 005.06].
+- [A284] BEGUN — Daz pressure-headache not begun [ch 005 / 005.06].
+- [A285] BEGUN — Daz pressure-headache not sharpened [ch 005 / 005.06].
+- [A286] BEGUN — Six-pointed star not seen [ch 005 / 005.06].
+- [A287] BEGUN — Black-Banner Five marker not witnessed [ch 005 / 005.06].
+- [A288] BEGUN — Endless Chant error not witnessed [ch 005 / 005.06].
+- [A289] BEGUN — Endless Chant not heard on wind [ch 005 / 005.06].
+- [A290] BEGUN — Sjurkar benediction error not witnessed [ch 005 / 005.06].
+- [A291] BEGUN — Stroudite sponsorship not discovered [ch 005 / 005.06].
+- [A292] BEGUN — Drow refugee not mentioned [ch 005 / 005.06].
+- [A293] BEGUN — Refugee family not interacted with [ch 005 / 005.06].
+- [A294] BEGUN — Candlekeep murder investigation not begun [ch 005 / 005.06].
+- [A295] BEGUN — Cryptogram race not begun [ch 005 / 005.06].
+- [A296] BEGUN — Vault confrontation not occurred [ch 005 / 005.06].
+- [A297] BEGUN — Gauntlgrym call not received [ch 005 / 005.06].
+- [A298] BEGUN — Daz / Yvenne research not begun [ch 005 / 005.06].
+- [A299] BEGUN — Zalthir / Khell-Vire research not begun [ch 005 / 005.06].
+- [A300] BEGUN — Thorin / Philemon therapy not begun [ch 005 / 005.06].
+- [A301] BEGUN — Gyrgum / Vareth research not begun [ch 005 / 005.06].
+- [A302] BEGUN — Glabbagool's question not asked [ch 005 / 005.06].
+- [A303] BEGUN — Polly Pocket disposition not decided [ch 005 / 005.06].
+- [A304] BEGUN — Sylvira recruitment not attempted [ch 005 / 005.06].
+- [A305] BEGUN — Daral rescue not attempted [ch 005 / 005.06].
+- [A306] BEGUN — Kalan missing not investigated [ch 005 / 005.06].
+- [A307] BEGUN — Alkrist arrest not attempted [ch 005 / 005.06].
+- [A308] BEGUN — Moziqodo binding not discovered [ch 005 / 005.06].
+- [A309] BEGUN — Daz / Yvenne Fourth-Seat synthesis not attempted [ch 005 / 005.06].
+- [A310] BEGUN — Vaelissa T'sarran name not delivered [ch 005 / 005.06].
+- [A311] BEGUN — Thorin / Philemon Layer 2 Brysis not revealed [ch 005 / 005.06].
+- [A312] BEGUN — Gyrgum / Vareth unsigned sting not completed [ch 005 / 005.06].
+- [A313] BEGUN — Glabbagool Shadow Apprentice not unlocked [ch 005 / 005.06].
+- [A314] BEGUN — Candlekeep gates not arrived at [ch 005 / 005.06].
+- [A315] BEGUN — Refectory dinner not occurred [ch 005 / 005.06].
+- [A316] BEGUN — Whispering Dome not visited [ch 005 / 005.06].
+- [A317] BEGUN — Infernal Fortress not visited [ch 005 / 005.06].
+- [A318] BEGUN — Janussi's chamber not investigated [ch 005 / 005.06].
+- [A319] BEGUN — Southern Dining Hall not searched [ch 005 / 005.06].
+- [A320] BEGUN — Bath House not visited [ch 005 / 005.06].
+- [A321] BEGUN — Founder's Court not visited [ch 005 / 005.06].
+- [A322] BEGUN — Oak Tree Apothecary not visited [ch 005 / 005.06].
+- [A323] BEGUN — Kitchens not visited [ch 005 / 005.06].
+- [A324] BEGUN — Erudite Outfitters not visited [ch 005 / 005.06].
+- [A325] BEGUN — Drakonoikos not visited [ch 005 / 005.06].
+- [A326] BEGUN — Reader's Tower not visited [ch 005 / 005.06].
+- [A327] BEGUN — Immortal Chambers not visited [ch 005 / 005.06].
+- [A328] BEGUN — Sea Warden's Tower not visited [ch 005 / 005.06].
+- [A329] BEGUN — Bell Tower not visited [ch 005 / 005.06].
+- [A330] BEGUN — Cursed Tower not visited [ch 005 / 005.06].
+- [A331] BEGUN — Pont de Paramours not visited [ch 005 / 005.06].
+- [A332] BEGUN — Oval Theatre not visited [ch 005 / 005.06].
+- [A333] BEGUN — House of Alaundo not visited [ch 005 / 005.06].
+- [A334] BEGUN — Astronomicon Orrery not visited [ch 005 / 005.06].
+- [A335] BEGUN — Philosopher's Court not visited [ch 005 / 005.06].
+- [A336] BEGUN — Melodrome / Jook's Box not visited [ch 005 / 005.06].
+- [A337] BEGUN — Jewel of the Styx not visited [ch 005 / 005.06].
+- [A338] BEGUN — School of Drama not visited [ch 005 / 005.06].
+- [A339] BEGUN — High Tower Library not visited [ch 005 / 005.06].
+- [A340] BEGUN — Lava chamber not visited [ch 005 / 005.06].
+- [A341] BEGUN — The Vault (B2) not entered [ch 005 / 005.06].
+- [A342] BEGUN — The Vault (B3) not entered [ch 005 / 005.06].
+- [A343] BEGUN — Vault tower rocket not pulled [ch 005 / 005.06].
+- [A344] BEGUN — Janussi not first contacted [ch 005 / 005.06].
+- [A345] BEGUN — Janussi not killed [ch 005 / 005.06].
+- [A346] BEGUN — Bookwyrm not first contacted [ch 005 / 005.06].
+- [A347] BEGUN — Bookwyrm Teles sighting not revealed [ch 005 / 005.06].
+- [A348] BEGUN — Bookwyrm confrontation not occurred [ch 005 / 005.06].
+- [A349] BEGUN — Bookwyrm not killed [ch 005 / 005.06].
+- [A350] BEGUN — Kalan not first contacted [ch 005 / 005.06].
+- [A351] BEGUN — Kalan second key not handed off [ch 005 / 005.06].
+- [A352] BEGUN — Kalan farewell not occurred [ch 005 / 005.06].
+- [A353] BEGUN — Kalan disappearance not occurred [ch 005 / 005.06].
+- [A354] BEGUN — Sylvira not first contacted [ch 005 / 005.06].
+- [A355] BEGUN — Sylvira not prime suspect [ch 005 / 005.06].
+- [A356] BEGUN — Sylvira not recruited [ch 005 / 005.06].
+- [A357] BEGUN — Sylvira not dispel Moziqodo [ch 005 / 005.06].
+- [A358] BEGUN — Sylvira not senior Great Reader [ch 005 / 005.06].
+- [A359] BEGUN — Daral not first contacted [ch 005 / 005.06].
+- [A360] BEGUN — Daral poisoning not discovered [ch 005 / 005.06].
+- [A361] BEGUN — Daral fate not determined [ch 005 / 005.06].
+- [A362] BEGUN — Daral not witness [ch 005 / 005.06].
+- [A363] BEGUN — Fheminor not first contacted [ch 005 / 005.06].
+- [A364] BEGUN — Fheminor "Bookwyrm was not surprised" not revealed [ch 005 / 005.06].
+- [A365] BEGUN — Fheminor not appointed Keeper [ch 005 / 005.06].
+- [A366] BEGUN — A'lai not first contacted [ch 005 / 005.06].
+- [A367] BEGUN — A'lai interview not held [ch 005 / 005.06].
+- [A368] BEGUN — A'lai sapphire smash not occurred [ch 005 / 005.06].
+- [A369] BEGUN — A'lai fate not resolved [ch 005 / 005.06].
+- [A370] BEGUN — Alkrist not first contacted [ch 005 / 005.06].
+- [A371] BEGUN — Alkrist interview not held [ch 005 / 005.06].
+- [A372] BEGUN — Alkrist arrest not occurred [ch 005 / 005.06].
+- [A373] BEGUN — Fembris not first contacted [ch 005 / 005.06].
+- [A374] BEGUN — Fembris rooftop confession not occurred [ch 005 / 005.06].
+- [A375] BEGUN — Tadric not first contacted [ch 005 / 005.06].
+- [A376] BEGUN — Tadric flight assistance not provided [ch 005 / 005.06].
+- [A377] BEGUN — Tadric not appointed Gatewarden [ch 005 / 005.06].
+- [A378] BEGUN — Hollypocket not interviewed [ch 005 / 005.06].
+- [A379] BEGUN — Sprig Summerfoot not interviewed [ch 005 / 005.06].
+- [A380] BEGUN — Leuwin not interviewed [ch 005 / 005.06].
+- [A381] BEGUN — Teles Ahvoste not interviewed [ch 005 / 005.06].
+- [A382] BEGUN — Kazryn Nyantani not interviewed [ch 005 / 005.06].
+- [A383] BEGUN — Khell-Vire closing letter not sealed [ch 005 / 005.06].
+- [A384] BEGUN — Philemon letter not delivered [ch 005 / 005.06].
+- [A385] BEGUN — Vareth final stations not completed [ch 005 / 005.06].
+- [A386] BEGUN — Yvenne third sitting not held [ch 005 / 005.06].
+- [A387] BEGUN — Yvenne Vaelissa name not delivered [ch 005 / 005.06].
+- [A388] BEGUN — Yvenne Fourth-Seat synthesis not completed [ch 005 / 005.06].
+- [A389] BEGUN — Inda not emerged [ch 005 / 005.06].
+- [A390] BEGUN — Spanner not handed dust [ch 005 / 005.06].
+- [A391] BEGUN — Moziqodo not first encountered [ch 005 / 005.06].
+- [A392] BEGUN — Moziqodo binding not broken [ch 005 / 005.06].
+- [A393] BEGUN — Moziqodo fate not resolved [ch 005 / 005.06].
+- [A394] BEGUN — Manshoon not announced [ch 005 / 005.06].
+- [A395] BEGUN — Manshoon not confronted [ch 005 / 005.06].
+- [A396] BEGUN — Manshoon not escaped [ch 005 / 005.06].
+- [A397] BEGUN — Glabbagool bad night not occurred [ch 005 / 005.06].
+- [A398] BEGUN — Glabbagool Shadow Apprentice not confirmed [ch 005 / 005.06].
+- [A399] BEGUN — Eldeth letter not delivered [ch 005 / 005.06].
+- [A400] BEGUN — Brevin Sloobludop recitation not occurred [ch 005 / 005.06].
+- [A401] BEGUN — Brevin bedclothes incident not occurred [ch 005 / 005.06].
+- [A402] BEGUN — Marin quill incident not occurred [ch 005 / 005.06].
+- [A403] BEGUN — Jimjar / Callarduran prophecy not activated [ch 005 / 005.06].
+- [A404] BEGUN — Five Books, Five Questions not established [ch 005 / 005.06].
+- [A405] BEGUN — Endless Chant fragment not heard [ch 005 / 005.06].
+- [A406] BEGUN — Janussi murder not occurred [ch 005 / 005.06].
+- [A407] BEGUN — Two "Sylvira" figures not revealed [ch 005 / 005.06].
+- [A408] BEGUN — Bookwyrm disguise not identified [ch 005 / 005.06].
+- [A409] BEGUN — Alkrist not identified as killer [ch 005 / 005.06].
+- [A410] BEGUN — Disguise rosetta not cracked [ch 005 / 005.06].
+- [A411] BEGUN — Wards drop not occurred [ch 005 / 005.06].
+- [A412] BEGUN — Cryptogram not recovered [ch 005 / 005.06].
+- [A413] BEGUN — Manshoon arrival not announced [ch 005 / 005.06].
+- [A414] BEGUN — Iron Owlbear not found dead [ch 005 / 005.06].
+- [A415] BEGUN — Echo 1 not activated [ch 005 / 005.06].
+- [A416] BEGUN — Echo 2 not activated [ch 005 / 005.06].
+- [A417] BEGUN — Echo 3 not activated [ch 005 / 005.06].
+- [A418] BEGUN — Echo 4 not activated [ch 005 / 005.06].
+- [A419] BEGUN — Book of Vile Darkness fate not determined [ch 005 / 005.06].
+- [A420] BEGUN — Vault tower rocket not pulled [ch 005 / 005.06].
+- [A421] BEGUN — Candlekeep restructuring not occurred [ch 005 / 005.06].
+- [A422] BEGUN — Party not named guest seekers [ch 005 / 005.06].
+- [A423] BEGUN — Manshoon-pursuit thread not activated [ch 005 / 005.06].
+- [A424] BEGUN — Gauntlgrym call not confirmed [ch 005 / 005.06].
+- [A425] BEGUN — Daz sinus-pressure not begun [ch 005 / 005.06].
+- [A426] BEGUN — Yvenne not named Daz’s sensitivity [ch 005 / 005.06].
+- [A427] BEGUN — Marin quill incident not occurred [ch 005 / 005.06].
+- [A428] BEGUN — Brevin Sloobludop recitation not occurred [ch 005 / 005.06].
+- [A429] BEGUN — Brevin bedclothes incident not occurred [ch 005 / 005.06].
+- [A430] BEGUN — Endless Chant not stopped [ch 005 / 005.06].
+- [A431] BEGUN — Ward-drop vision not occurred [ch 005 / 005.06].
+- [A432] BEGUN — Glabbagool Juiblex contact not occurred [ch 005 / 005.06].
+- [A433] BEGUN — Echo 1 prophecy not named [ch 005 / 005.06].
+- [A434] BEGUN — Daz and Yvenne field-perception not confirmed [ch 005 / 005.06].
+- [A435] BEGUN — Sylvira not recruited [ch 005 / 005.06].
+- [A436] BEGUN — Yvenne trust not reached 4 ticks [ch 005 / 005.06].
+- [A437] BEGUN — Vareth / Drakonoikos goodwill not established [ch 005 / 005.06].
+- [A438] BEGUN — Daral not saved [ch 005 / 005.06].
+- [A439] BEGUN — Khell-Vire Watcher's Stillness not earned [ch 005 / 005.06].
+- [A440] BEGUN — Glabbagool Whispering Dome not visited [ch 005 / 005.06].
+- [A441] BEGUN — Polly Pocket not released [ch 005 / 005.06].
+- [A442] BEGUN — Walking-permit medallions not worn [ch 005 / 005.06].
+- [A443] BEGUN — Second High Tower key not held [ch 005 / 005.06].

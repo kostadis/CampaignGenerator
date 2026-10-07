@@ -1,0 +1,361 @@
+## Events
+- Zalthir dives after Thorin during his fall down the Great Shaft and catches him mid-air five hundred feet below, saving him from certain death `[ch 068 / 068.01; ch 068 / moment]`.
+- Glabbagool accompanies the fall with calm enthusiasm, screaming “Wee!” and later questioning if there is “too much hugging” `[ch 068 / 068.01; ch 068 / moment]`.
+- Thorin shouts he is “still kicking” to reassure the party above, and Zalthir decides to continue descending rather than return to the stairs `[ch 068 / 068.01; ch 068 / moment]`.
+- The entire party, including Gyrgum, Daz, and Edvaldo Sedanur, leaps into the Great Shaft after Thorin and Zalthir, trusting the feather-fall zone to save them `[ch 068 / 068.01]`.
+- The party lands safely in a tunnel one thousand feet beneath Candlekeep `[ch 068 / 068.01]`.
+- The party enters a cylindrical lava cavern two hundred feet high and one hundred feet across, with a steaming lake of molten lava below and an obsidian tower rising from it `[ch 068 / 068.02; ch 068 / locations]`.
+- Edvaldo Sedanur identifies the obsidian tower as a classic example of an Avowed architect’s style and declares its preservation worth the journey `[ch 068 / 068.02]`.
+- Daz discovers mechanical cogs on the party’s ledge that can extend a stone bridge across the lava and notes an anti-magic field in the airspace `[ch 068 / 068.02]`.
+- The party uses tools borrowed from the House of Mechanus to activate the bridge mechanism, which grinds outward across the lava with a resonant groan `[ch 068 / 068.02; ch 068 / items]`.
+- The party crosses the newly extended bridge into the Obsidian Tower’s first chamber `[ch 068 / 068.02]`.
+- An iron owlbear statue on a pedestal activates, opens glowing white eyes, unfolds its wings, and hovers twelve feet above the ground, demanding three riddles be answered to proceed `[ch 068 / 068.03; ch 068 / moment]`.
+- Daz answers the first riddle correctly: “The Hearth” is the only refuge for flame in Candlekeep `[ch 068 / 068.03]`.
+- Gyrgum answers the second riddle correctly: the holy triumvirate patroning Candlekeep are Oghma, Deneir, and Milil `[ch 068 / 068.03]`.
+- Edvaldo Sedanur states the High Tower of Exaltation is “over five hundred feet” tall, and Thorin and Daz deduce the exact answer, satisfying the third riddle `[ch 068 / 068.03]`.
+- The iron owlbear guardian permits the party to pass and remains neutral for the coming battle `[ch 068 / 068.03]`.
+- A spectral silver dragon, Miirym, manifests in the lava chamber, her form insubstantial as lava flows through her, and reveals Manshoon entered her keep and remains inside `[ch 068 / 068.04; ch 068 / moment]`.
+- Daz concludes the protections fell when Manshoon entered `[ch 068 / 068.04]`.
+- Gyrgum identifies himself as the Reader and proves his knowledge of Candlekeep’s lore, satisfying the dragon’s verification requirement `[ch 068 / 068.04]`.
+- Miirym asks Gyrgum his stance on “the question of the age”; he replies his school holds “certain fixed points among which we may make our own paths,” earning her praise: “wisdom truly flows from Bahamut into you” `[ch 068 / 068.04; ch 068 / moment]`.
+- Miirym offers the party a boon: they choose to have her widen the anti-magic field around the bridge from ten to thirty feet for ten minutes, to be held in reserve `[ch 068 / 068.04; ch 068 / moment]`.
+- The party ascends to the Vault of Dangerous Secrets, a circular room sealed with windows, lit by *Continual Flame*, and lined with one hundred dangerous magical tomes `[ch 068 / 068.05; ch 068 / locations]`.
+- A note in archaic Common warns that the vault contains Candlekeep’s most dangerous secrets and instructs keepers to leave the tomes unless destruction is necessary `[ch 068 / 068.05]`.
+- Manshoon (a simulacrum) is seated calmly at the desk, reading a tome, and greets the party with, “By all means, browse. The trick is leaving with what you came for. Did you come for the book or did you come for me?” `[ch 068 / 068.05; ch 068 / moment]`.
+- Gyrgum answers they came for Manshoon, calling the books a “bonus”; Manshoon sighs and prepares for battle `[ch 068 / 068.05; ch 068 / moment]`.
+- Gyrgum persuades Manshoon to relocate their duel to a lower chamber to protect the tomes, rolling a 22 with advantage `[ch 068 / 068.05; ch 068 / moment]`.
+- Manshoon agrees, acknowledges the possibility he may kill them, casts *Mirror Image*, and lets the party descend first `[ch 068 / 068.05]`.
+- Daz opens combat with *Phantasmal Killer* at fourth level; Manshoon saves with a roll of 8 + 9 = 17, taking 13 psychic damage and ending the spell `[ch 068 / 068.05; ch 068 / spells]`.
+- Daz moves onto the bridge, entering the ten-foot anti-magic field, rendering him unable to cast spells `[ch 068 / 068.05]`.
+- The party’s strategy is to attack Manshoon and retreat into the anti-magic zone to nullify his spellcasting, using ranged attacks `[ch 068 / 068.05]`.
+- Thorin prepares to act as the battle begins, with Manshoon standing menacingly near Daz on the bridge `[ch 068 / 068.05]`.
+
+## Concluded
+- The descent through the Great Shaft is concluded with the party safely landing in the tunnel beneath Candlekeep `[ch 068 / 068.01]`.
+- The bridge mechanism across the lava cavern is successfully activated and crossed, concluding the obstacle to the Obsidian Tower `[ch 068 / 068.02]`.
+- The iron owlbear guardian’s three-question trial is completed successfully, allowing the party to pass `[ch 068 / 068.03]`.
+- Miirym’s verification of Gyrgum as the Reader is concluded, closing riddle line 5 `[ch 068 / 068.04]`.
+- The party’s choice of boon from Miirym is finalized: the anti-magic field extension is banked, not yet activated `[ch 068 / 068.04]`.
+- The party’s confrontation with Manshoon in the Vault is concluded by his voluntary relocation to the lower chamber for the duel `[ch 068 / 068.05]`.
+- The initial round of combat with Manshoon is initiated but not concluded; Daz’s *Phantasmal Killer* lands and the party positions for the next phase `[ch 068 / 068.05]`.
+
+## Threads
+- [ADVANCED] **Manshoon’s presence in Candlekeep** — Manshoon (a simulacrum) is confirmed inside the Obsidian Tower, actively reading from the Vault’s forbidden tomes; the party has engaged him in combat `[ch 068 / 068.05; ch 068 / npcs]`.
+- [ADVANCED] **The anti-magic field boon** — Miirym has agreed to widen the anti-magic band to thirty feet for ten minutes, and the party has banked this effect to be activated later against Manshoon; activation pending `[ch 068 / 068.04; ch 068 / locations]`.
+- [ADVANCED] **Gyrgum as the verified Reader** — Gyrgum has been confirmed by Miirym as the Reader through his knowledge of Candlekeep’s lore and devotion to Bahamut; this satisfies riddle line 5 `[ch 068 / 068.04]`.
+- [ADVANCED] **The Iron Owlbear Guardian’s role** — The guardian has completed its trial and remains neutral; a damaged predecessor lies on the floor, confirming Manshoon’s prior passage `[ch 068 / 068.03; ch 068 / npcs]`.
+- [OPENED] **The second Manshoon simulacrum** — A second simulacrum of Manshoon is confirmed to be present and concealed in the Vault, actively trying to get through it, unknown to the party `[ch 068 / npcs]`.
+- [OPENED] **Edvaldo Sedanur’s true identity** — Edvaldo is revealed to be a doppelgänger, unexposed to the party, who claimed the High Tower’s height is “over 500 feet” without confirmation `[ch 068 / npcs]`.
+- [OPENED] **The Vault’s destruction mechanism** — The note in the Vault states the means to destroy the collection are stored in the chamber above; the party has not yet located or accessed it `[ch 068 / 068.05]`.
+- [OPENED] **The Mechanist Tools and riddle line 4** — The tools from the House of Mechanus were used to activate the bridge, but whether they satisfy the cryptogram’s requirement for “dust of Mechanus” remains unresolved `[ch 068 / items; ch 068 / npcs]`.
+- [OPENED] **Miirym’s true name Vydykyq** — The dragon’s true name, known since Chapter 67, is confirmed as her identity; her role as witness is complete, but her ultimate purpose remains unclear `[ch 068 / npcs]`.
+- [OPENED] **The “over 500 feet” claim** — Edvaldo’s assertion that the High Tower is “over 500 feet” tall is unverified; whether it is accurate or misleading is now a mystery `[ch 068 / 068.03; ch 068 / npcs]`.
+
+## NPC Status
+- Glabbagool | Alive | With party | Amused and philosophical, accompanies fall with delight `[ch 068 / npcs]`
+- Edvaldo Sedanur | Alive | With party | Calm, academic, unexposed doppelgänger; claims High Tower height is “over 500 feet” `[ch 068 / npcs]`
+- Iron Owlbear Guardian | Alive | In Obsidian Tower, first chamber | Completed its trial, neutral, ready to comment on combat `[ch 068 / npcs]`
+- Miirym, the Sentinel Wyrm | Alive | In lava cavern | Grouchy, spectral, bound as witness; widened anti-magic field boon banked `[ch 068 / npcs]`
+- Manshoon (Simulacrum) | Alive | In Obsidian Tower, lower chamber | Calm, civilized, cast *Mirror Image*, took 13 psychic damage, has unspent *Counterspell* `[ch 068 / npcs]`
+
+## World
+- [LOCATION] **The Great Shaft** — A vertical drop descending roughly one thousand feet beneath Candlekeep, with a feather-fall zone near the bottom; a creature falls five hundred feet per round `[ch 068 / locations]`
+- [LOCATION] **The Lava Cavern** — A cylindrical chamber two hundred feet high and one hundred feet across, filled with acrid, sweltering air; a steaming lake of molten lava lies one hundred feet below the party’s ledge `[ch 068 / locations]`
+- [LOCATION] **The Obsidian Tower** — A three-story stone tower on a pedestal of obsidian rising from the lava lake; resembles Candlekeep’s oldest spires; contains a guardian chamber, vault, and upper chamber with destruction mechanism `[ch 068 / locations]`
+- [LOCATION] **The Vault of Dangerous Secrets** — A circular room on the upper floor of the Obsidian Tower, sealed with windows, lit by *Continual Flame*, containing approximately one hundred dangerous magical tomes; a note instructs keepers to leave the books unless destruction is necessary `[ch 068 / locations]`
+- [LOCATION] **The Obsidian Bridge** — A stone walkway extended from the party’s ledge to the tower via mechanical cogs; the first ten feet lie within an anti-magic field; Miirym can widen it to thirty feet for ten minutes `[ch 068 / locations]`
+- [ITEM] **Mechanist Tools** — Specialized tools from the House of Mechanus; used to activate the bridge mechanism; the party lacks the dust of Mechanus but used these tools successfully `[ch 068 / items]`
+- [ITEM] **Dangerous Tomes** — One hundred powerful and hazardous magical tomes stored in the Vault; Manshoon is reading one; their removal is forbidden by the vault’s note `[ch 068 / items]`
+- [ITEM] **Dawnbringer** — Thorin’s sentient weapon; reacted to the fall with “Not this again!”; still in his possession `[ch 068 / items]`
+- [THREAT] **Manshoon’s simulacrum** — One simulacrum is engaged in combat; a second remains concealed in the Vault, actively attempting to access the collection `[ch 068 / npcs]`
+- [THREAT] **Anti-magic field** — Suppresses spellcasting within ten feet of the bridge; Miirym’s boon can extend it to thirty feet, but the party’s own spellcasters will be hindered `[ch 068 / locations]`
+- [NPC] **Miirym, the Sentinel Wyrm** — Spectral silver dragon guardian of Candlekeep; true name Vydykyq; bound to be a witness, not a weapon; cannot fight Manshoon directly `[ch 068 / npcs]`
+- [NPC] **Edvaldo Sedanur** — Presented as a Candlekeep historian; is actually a doppelgänger; unexposed to the party; claims knowledge of the High Tower’s height `[ch 068 / npcs]`
+- [NPC] **Iron Owlbear Guardian** — Sentient iron statue that tests visitors with three riddles; has been waiting to “tear petitioners to shreds”; replaced a previous one destroyed by Manshoon `[ch 068 / npcs]`
+- [FACTION] **House of Mechanus** — Provided the Mechanist Tools used to activate the bridge; the party owes them collateral (Glabbagool and Zalthir) for their use `[ch 068 / items; ch 068 / npcs]`
+- [FACTION] **Candlekeep Avowed** — Historical scholars who once memorized the height of the High Tower of Exaltation; Edvaldo references this practice `[ch 068 / 068.03]`
+- [LOCATION] **The Hearth** — The only place in Candlekeep where ordinary flame is permitted; key to the first riddle `[ch 068 / 068.03]`
+- [LOCATION] **High Tower of Exaltation** — A structure whose height above sea level was once memorized by all Avowed; the party deduced its measurement as the answer to the third riddle `[ch 068 / 068.03]`
+- [THREAT] **Manshoon’s escape** — The party knows Manshoon is inside and has not yet prevented his potential escape; the anti-magic field is their only tactical advantage `[ch 068 / 068.04]`
+
+## Party
+- The party is located in the lower chamber of the Obsidian Tower, on the bridge over the lava lake, directly facing Manshoon, who is surrounded by *Mirror Image* duplicates.
+- Party level: 9.
+- The party’s group name is not stated; they are referred to as “seekers” by the guardian and “Reader and witnesses” by Miirym.
+- Thorin: Carries Dawnbringer, which reacted to the fall with “Not this again!”; preparing to act in the next round of combat.
+- Zalthir: Used his dragonborn flight ability to catch Thorin mid-fall; carries a potion of flying as backup; remains with the party.
+- Gyrgum: Verified as the Reader by Miirym; his devotion to Bahamut impressed the dragon; chose the anti-magic field boon; has not cast spells since entering the anti-magic zone.
+- Daz: Moved into the ten-foot anti-magic field, rendering him unable to cast; launched *Phantasmal Killer* at Manshoon, dealing 13 damage; strategy is to lure Manshoon into the field.
+- Glabbagool: Remains with the party; philosophical throughout the descent; unharmed.
+- Edvaldo Sedanur: Still with the party; unexposed doppelgänger; contributed the “over 500 feet” answer to the riddle.
+- The party’s next action is to engage Manshoon in combat, using ranged attacks and the anti-magic field to neutralize his spellcasting; Thorin is about to take his turn.
+
+## Audit
+- [A12] SHOWN — Reach Gravenhollow — stone giant library — The party has descended beneath Candlekeep and entered the Obsidian Tower; Gravenhollow is not referenced or reached `[ch 068 / locations]`
+- [A42] SHOWN — Reach Gravenhollow — stone giant library — The party has descended beneath Candlekeep and entered the Obsidian Tower; Gravenhollow is not referenced or reached `[ch 068 / locations]`
+- [A295] SHOWN — Cryptogram race — six-clue chase to the Vault — The party solved the three riddles of the iron owlbear, which were part of the cryptogram’s sequence; the Vault was reached `[ch 068 / 068.03]`
+- [A296] SHOWN — Vault confrontation — Manshoon and the Book of Vile Darkness — The party confronted Manshoon in the Vault of Dangerous Secrets, where he was reading one of the tomes; the confrontation has begun `[ch 068 / 068.05]`
+- [A340] SHOWN — Lava chamber — bridge, Obsidian Door, Iron Owlbear corpse — The party crossed the lava via the bridge, entered the Obsidian Tower, and encountered the iron owlbear guardian; a damaged predecessor was seen `[ch 068 / 068.02; ch 068 / 068.03]`
+- [A414] SHOWN — Iron Owlbear found dead — Manshoon already in the Vault — The party found a damaged iron owlbear statue on the floor, evidence that Manshoon had previously passed through `[ch 068 / 068.03; ch 068 / npcs]`
+- [A412] SHOWN — Cryptogram recovered — six-clue text transcribed from High Tower Library — The cryptogram was recovered in prior sessions; this session’s riddles are part of its resolution `[ch 068 / 068.03]`
+- [A395] SHOWN — Manshoon — direct confrontation (Vault B2) — The party confronted Manshoon in the Vault, and the duel has begun in the lower chamber `[ch 068 / 068.05]`
+- [A424] SHOWN — Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence — Echo 3 was activated in prior sessions; this session confirms Manshoon’s presence but does not advance the Gauntlgrym call `[ch 068 / 068.05]`
+- [A162] BEGUN — Drow pursuit level tracked — ongoing — No drow are mentioned in this session; pursuit not referenced `[ch 068 / 068.05]`
+- [A423] BEGUN — Manshoon-pursuit thread — activated regardless of escape outcome — The pursuit is now active as Manshoon is engaged; the party is in combat with him `[ch 068 / 068.05]`
+- [A299] BEGUN — Zalthir / Khell-Vire scholar arc — Watcher's Stillness / Severed Path (multiple sittings) — Watcher's Stillness was earned in prior sessions; not mentioned here `[ch 068 / 068.05]`
+- [A300] BEGUN — Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C) — No therapy or Philemon references in this session `[ch 068 / 068.05]`
+- [A301] BEGUN — Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10) — No Stroud Wake references in this session `[ch 068 / 068.05]`
+- [A309] BEGUN — Daz / Yvenne — Fourth-Seat synthesis investigation (DC 20 roll) — No Yvenne or synthesis mentioned `[ch 068 / 068.05]`
+- [A311] BEGUN — Thorin / Philemon — Layer 2 Brysis reveal (Path C only) — No Brysis or Philemon mentioned `[ch 068 / 068.05]`
+- [A344] BEGUN — Daz and Yvenne — field-perception expertise confirmed (post-arc) — No field-perception mentioned `[ch 068 / 068.05]`
+- [A346] BEGUN — Bookwyrm — first contact (Chapter House conscription) — Bookwyrm is dead; not referenced `[ch 068 / 068.05]`
+- [A354] BEGUN — Sylvira Sashenstar — first contact and demon-lord-evidence handoff (Day One) — Sylvira is not present; referenced only as name known to Miirym `[ch 068 / npcs]`
+- [A394] BEGUN — Manshoon — voice-only arrival announcement (Session 6) — Manshoon is now directly present; this is direct confrontation `[ch 068 / 068.05]`
+- [A413] BEGUN — Manshoon arrival announced — keep under siege — Manshoon is now present and engaged; siege is active `[ch 068 / 068.05]`
+- [A419] BEGUN — Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched) — The Book of Vile Darkness is not mentioned; the Vault contains “dangerous tomes,” not specifically this book `[ch 068 / 068.05]`
+- [A420] BEGUN — Vault tower rocket — lever pulled or left — The destruction mechanism is mentioned in the note but not accessed `[ch 068 / 068.05]`
+- [A421] BEGUN — Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden — Fheminor and Tadric are not present; restructuring occurred prior `[ch 068 / 068.05]`
+- [A422] BEGUN — Party named guest seekers of the Avowed — Inner Ward access ceremony — Ceremony occurred prior; party is now beneath Candlekeep `[ch 068 / 068.05]`
+- [A390] BEGUN — Spanner — Mechanus dust handoff — The dust was not obtained; the party used tools instead `[ch 068 / items]`
+- [A439] BEGUN — Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage — Already earned prior; not mentioned `[ch 068 / 068.05]`
+- [A440] BEGUN — Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8) — Whispering Dome was visited prior; not referenced `[ch 068 / 068.05]`
+- [A441] BEGUN — Polly Pocket released as messenger — OOTA endgame thread flagged — Polly Pocket not referenced `[ch 068 / 068.05]`
+- [A442] BEGUN — Walking-permit medallions worn — wight-safe at Jewel of the Styx — Not referenced `[ch 068 / 068.05]`
+- [A443] BEGUN — Second High Tower key held — door opened from outside (Session 6) — Key not referenced `[ch 068 / 068.05]`
+- [A409] BEGUN — Alkrist as killer — party identifies the poisoner — Alkrist’s identity was resolved in prior sessions `[ch 068 / 068.05]`
+- [A410] BEGUN — Disguise rosetta cracked — milestone event, level-up to 9 — Level-up occurred prior; not referenced `[ch 068 / 068.05]`
+- [A411] BEGUN — Wards drop — ward-flex hallucination sequence (narrative, per-PC visions) — Wards dropped prior; not referenced `[ch 068 / 068.05]`
+- [A415] BEGUN — Echo 1 activated — surface contamination prophecy — Activated prior; not referenced `[ch 068 / 068.05]`
+- [A416] BEGUN — Echo 2 activated — wedding / Zuggtmoy prophecy — Activated prior; not referenced `[ch 068 / 068.05]`
+- [A417] BEGUN — Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named) — Activated prior; referenced in party’s state `[ch 068 / 068.05]`
+- [A418] BEGUN — Echo 4 activated — Jimjar / Callarduran witness prophecy — Activated prior; not referenced `[ch 068 / 068.05]`
+- [A305] BEGUN — Daral rescue — Bath House poisoning intervention — Daral’s fate was resolved prior `[ch 068 / 068.05]`
+- [A306] BEGUN — Kalan missing — Pont de Paramours investigation — Kalan is dead; investigation resolved prior `[ch 068 / 068.05]`
+- [A307] BEGUN — Alkrist arrest — Drakonoikos confrontation — Alkrist arrested prior `[ch 068 / 068.05]`
+- [A308] BEGUN — Moziqodo binding — Cursed Tower ritual evidence — Binding resolved prior `[ch 068 / 068.05]`
+- [A312] BEGUN — Gyrgum / Vareth — unsigned sting (Stations 9–10) — Resolved prior `[ch 068 / 068.05]`
+- [A313] BEGUN — Glabbagool — Shadow Apprentice sidekick unlock at Whispering Dome — Unlock occurred prior `[ch 068 / 068.05]`
+- [A314] BEGUN — Candlekeep gates — party arrival and Five Books admission — Arrived prior `[ch 068 / 068.05]`
+- [A315] BEGUN — Refectory — dinner with Janussi alive — Janussi dead prior `[ch 068 / 068.05]`
+- [A316] BEGUN — Whispering Dome — Glabbagool's question — Answered prior `[ch 068 / 068.05]`
+- [A317] BEGUN — Infernal Fortress — Sylvira interview and Abyssal Plague — Interview prior `[ch 068 / 068.05]`
+- [A318] BEGUN — Janussi's chamber — crime scene investigation — Resolved prior `[ch 068 / 068.05]`
+- [A319] BEGUN — Southern Dining Hall — heart and lead chalice search — Resolved prior `[ch 068 / 068.05]`
+- [A320] BEGUN — Bath House — Daral interview and poisoning — Resolved prior `[ch 068 / 068.05]`
+- [A321] BEGUN — Founder's Court — Fheminor interview — Resolved prior `[ch 068 / 068.05]`
+- [A322] BEGUN — Oak Tree Apothecary — midnight tears evidence (Leuwin / Nibbles) — Resolved prior `[ch 068 / 068.05]`
+- [A323] BEGUN — Kitchens — Sprig Summerfoot witness — Resolved prior `[ch 068 / 068.05]`
+- [A324] BEGUN — Erudite Outfitters — Bookwyrm's cloak evidence — Resolved prior `[ch 068 / 068.05]`
+- [A325] BEGUN — Drakonoikos — Alkrist interview and evidence — Resolved prior `[ch 068 / 068.05]`
+- [A326] BEGUN — Reader's Tower — Bookwyrm interview and death scene — Bookwyrm dead prior `[ch 068 / 068.05]`
+- [A327] BEGUN — Immortal Chambers — A'lai Aivenmore interview — Resolved prior `[ch 068 / 068.05]`
+- [A328] BEGUN — Sea Warden's Tower — Kalan check-in and Trial of the Broken Mirror — Resolved prior `[ch 068 / 068.05]`
+- [A329] BEGUN — Bell Tower — Polly Pocket cells — Resolved prior `[ch 068 / 068.05]`
+- [A330] BEGUN — Cursed Tower — Moziqodo and rooftop incidents — Resolved prior `[ch 068 / 068.05]`
+- [A331] BEGUN — Pont de Paramours — Kalan disappearance and forged note — Resolved prior `[ch 068 / 068.05]`
+- [A332] BEGUN — Oval Theatre — Casketball Tournament — Resolved prior `[ch 068 / 068.05]`
+- [A333] BEGUN — House of Alaundo — riddle, inkpot, first prophecy — Resolved prior `[ch 068 / 068.05]`
+- [A334] BEGUN — Astronomicon Orrery — Limniz clue / Manshoon raiders — Resolved prior `[ch 068 / 068.05]`
+- [A335] BEGUN — Philosopher's Court — Fustilugs clue (black marble knight) — Resolved prior `[ch 068 / 068.05]`
+- [A336] BEGUN — Melodrome / Jook's Box — Stars at Dawn clue / doppelganger encounter — Resolved prior `[ch 068 / 068.05]`
+- [A337] BEGUN — Jewel of the Styx — wight shanty encounter — Resolved prior `[ch 068 / 068.05]`
+- [A338] BEGUN — School of Drama — Batbayar statue encounter — Resolved prior `[ch 068 / 068.05]`
+- [A339] BEGUN — High Tower Library — A'lai and Moziqodo combat, cryptogram recovery — Resolved prior `[ch 068 / 068.05]`
+- [A341] BEGUN — The Vault (B2) — Manshoon confrontation and Echoes of Alaundo — Confrontation ongoing; Echoes not referenced `[ch 068 / 068.05]`
+- [A342] BEGUN — The Vault (B3) — Book of Vile Darkness chamber — Book of Vile Darkness not confirmed present `[ch 068 / 068.05]`
+- [A343] BEGUN — Vault tower rocket — last resort lever — Lever not accessed `[ch 068 / 068.05]`
+- [A345] BEGUN — Janussi — death (just after midnight, Day One) — Resolved prior `[ch 068 / 068.05]`
+- [A347] BEGUN — Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower) — Resolved prior `[ch 068 / 068.05]`
+- [A348] BEGUN — Bookwyrm — confrontation and pivot (signed deposition / Alkrist sacrifice) — Resolved prior `[ch 068 / 068.05]`
+- [A349] BEGUN — Bookwyrm — death (Reader's Tower, Beast attack) — Resolved prior `[ch 068 / 068.05]`
+- [A350] BEGUN — Kalan Strongbranch — first contact (private corridor after Chapter House) — Resolved prior `[ch 068 / 068.05]`
+- [A351] BEGUN — Kalan — second key handoff — Resolved prior `[ch 068 / 068.05]`
+- [A352] BEGUN — Kalan — farewell / deterioration (Sea Warden's Tower check-in) — Resolved prior `[ch 068 / 068.05]`
+- [A353] BEGUN — Kalan — disappearance and presumed death (Pont de Paramours) — Resolved prior `[ch 068 / 068.05]`
+- [A355] BEGUN — Sylvira — prime suspect status (interview, Infernal Fortress) — Resolved prior `[ch 068 / 068.05]`
+- [A356] BEGUN — Sylvira — recruitment as battlefield ally (Path B choice point) — Resolved prior `[ch 068 / 068.05]`
+- [A357] BEGUN — Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B) — Resolved prior `[ch 068 / 068.05]`
+- [A358] BEGUN — Sylvira — survival and senior Great Reader status (post-arc) — Resolved prior `[ch 068 / 068.05]`
+- [A359] BEGUN — Daral — first contact (Chapter House) — Resolved prior `[ch 068 / 068.05]`
+- [A360] BEGUN — Daral — poisoning discovery (Bath House) — Resolved prior `[ch 068 / 068.05]`
+- [A361] BEGUN — Daral — death or survival (player choice) — Resolved prior `[ch 068 / 068.05]`
+- [A362] BEGUN — Daral — key witness testimony (if saved, Session 5) — Resolved prior `[ch 068 / 068.05]`
+- [A363] BEGUN — Fheminor — first contact (Founder's Court interview) — Resolved prior `[ch 068 / 068.05]`
+- [A364] BEGUN — Fheminor — "Bookwyrm was not surprised" revelation — Resolved prior `[ch 068 / 068.05]`
+- [A365] BEGUN — Fheminor — appointment as Keeper of Tomes (post-arc) — Resolved prior `[ch 068 / 068.05]`
+- [A366] BEGUN — A'lai Aivenmore — first contact (Chapter House) — Resolved prior `[ch 068 / 068.05]`
+- [A367] BEGUN — A'lai — interview (Immortal Chambers) — Resolved prior `[ch 068 / 068.05]`
+- [A368] BEGUN — A'lai — sapphire smash and escape (High Tower Library) — Resolved prior `[ch 068 / 068.05]`
+- [A369] BEGUN — A'lai — fate resolution (dead / escaped) — Resolved prior `[ch 068 / 068.05]`
+- [A370] BEGUN — Alkrist — first contact (Chapter House) — Resolved prior `[ch 068 / 068.05]`
+- [A371] BEGUN — Alkrist — interview (Drakonoikos) — Resolved prior `[ch 068 / 068.05]`
+- [A372] BEGUN — Alkrist — arrest or confession (Path A) — Resolved prior `[ch 068 / 068.05]`
+- [A373] BEGUN — Fembris — first contact (Fembris-at-door cliffhanger) — Resolved prior `[ch 068 / 068.05]`
+- [A374] BEGUN — Fembris — rooftop confession (Bell Tower break) — Resolved prior `[ch 068 / 068.05]`
+- [A375] BEGUN — Tadric — first contact (crime scene witness) — Resolved prior `[ch 068 / 068.05]`
+- [A376] BEGUN — Tadric — flight assistance (High Tower approach) — Resolved prior `[ch 068 / 068.05]`
+- [A377] BEGUN — Tadric — acting Gatewarden appointment (post-arc) — Resolved prior `[ch 068 / 068.05]`
+- [A378] BEGUN — Hollypocket — witness interview (Janussi's chamber) — Resolved prior `[ch 068 / 068.05]`
+- [A379] BEGUN — Sprig Summerfoot — witness interview (Kitchens) — Resolved prior `[ch 068 / 068.05]`
+- [A380] BEGUN — Leuwin — witness interview (Oak Tree Apothecary) — Resolved prior `[ch 068 / 068.05]`
+- [A381] BEGUN — Teles Ahvoste — interview and disguise sighting (if earned) — Resolved prior `[ch 068 / 068.05]`
+- [A382] BEGUN — Kazryn Nyantani — interview and A'lai alibi break — Resolved prior `[ch 068 / 068.05]`
+- [A383] BEGUN — Khell-Vire — closing letter and standing correspondence sealed — Resolved prior `[ch 068 / 068.05]`
+- [A384] BEGUN — Philemon — sealed letter delivery (Path C) — Resolved prior `[ch 068 / 068.05]`
+- [A385] BEGUN — Vareth — final stations and unsigned sting — Resolved prior `[ch 068 / 068.05]`
+- [A386] BEGUN — Yvenne — third sitting and bloodline-pattern observation — Resolved prior `[ch 068 / 068.05]`
+- [A387] BEGUN — Yvenne — Vaelissa name delivery — Resolved prior `[ch 068 / 068.05]`
+- [A388] BEGUN — Yvenne — Fourth-Seat synthesis scene — Resolved prior `[ch 068 / 068.05]`
+- [A389] BEGUN — Inda — emergence from brass statue and vault escort — Resolved prior `[ch 068 / 068.05]`
+- [A391] BEGUN — Moziqodo — first encounter (rooftop / Cursed Tower) — Resolved prior `[ch 068 / 068.05]`
+- [A392] BEGUN — Moziqodo — binding break (Path B, High Tower fight) — Resolved prior `[ch 068 / 068.05]`
+- [A393] BEGUN — Moziqodo — fate resolution (killed / unbound with Sylvira / fled) — Resolved prior `[ch 068 / 068.05]`
+- [A396] BEGUN — Manshoon — escape (with or without Book of Vile Darkness) — Escape not yet attempted; combat ongoing `[ch 068 / 068.05]`
+- [A397] BEGUN — Glabbagool — bad night / Juiblex reach (Session 5) — Juiblex contact occurred prior `[ch 068 / 068.05]`
+- [A398] BEGUN — Glabbagool — Shadow Apprentice sidekick status confirmed — Confirmed prior `[ch 068 / 068.05]`
+- [A399] BEGUN — Eldeth — letter delivered via courier (Session 8) — Delivered prior `[ch 068 / 068.05]`
+- [A400] BEGUN — Brevin — Sloobludop recitation incident — Not referenced `[ch 068 / 068.05]`
+- [A401] BEGUN — Brevin — six-pointed star bedclothes incident — Not referenced `[ch 068 / 068.05]`
+- [A402] BEGUN — Marin — six-pointed star quill arrangement incident — Not referenced `[ch 068 / 068.05]`
+- [A403] BEGUN — Jimjar / Callarduran — Echo 4 witness prophecy activation — Activated prior `[ch 068 / 068.05]`
+- [A404] BEGUN — Five Books, Five Questions — gate admission and scholar pairings established — Resolved prior `[ch 068 / 068.05]`
+- [A405] BEGUN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") — Heard prior `[ch 068 / 068.05]`
+- [A406] BEGUN — Janussi murder — crime scene forensic reveals (poison, heart post-mortem, no defensive wounds) — Resolved prior `[ch 068 / 068.05]`
+- [A407] BEGUN — Two "Sylvira" figures — dual-timeline disguise revelation assembled — Resolved prior `[ch 068 / 068.05]`
+- [A408] BEGUN — Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use — Resolved prior `[ch 068 / 068.05]`
+- [A425] BEGUN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) — First moment occurred prior `[ch 068 / 068.05]`
+- [A426] BEGUN — Yvenne — names Daz's field-perception sensitivity — Named prior `[ch 068 / 068.05]`
+- [A427] BEGUN — Marin — quill six-pointed star incident — Not referenced `[ch 068 / 068.05]`
+- [A428] BEGUN — Brevin — Sloobludop recitation at cliff base — Not referenced `[ch 068 / 068.05]`
+- [A429] BEGUN — Brevin — bedclothes six-pointed star incident — Not referenced `[ch 068 / 068.05]`
+- [A430] BEGUN — Endless Chant — first complete stoppage (Session 5 opening) — Stopped prior `[ch 068 / 068.05]`
+- [A431] BEGUN — Ward-drop vision sequence — per-PC hallucinations (Session 6) — Occurred prior `[ch 068 / 068.05]`
+- [A432] BEGUN — Glabbagool — Juiblex "mother voice" contact (Session 5) — Contact occurred prior `[ch 068 / 068.05]`
+- [A433] BEGUN — Echo 1 — prophecy names surface-contamination field-effect directly — Activated prior `[ch 068 / 068.05]`
+- [A434] BEGUN — Daz and Yvenne — field-perception expertise confirmed (post-arc) — Confirmed prior `[ch 068 / 068.05]`
+- [A435] BEGUN — Sylvira recruited (Path B) — dispel payoff and cryptogram shortcut — Recruited prior `[ch 068 / 068.05]`
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7) — Achieved prior `[ch 068 / 068.05]`
+- [A437] BEGUN — Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7) — Achieved prior `[ch 068 / 068.05]`
+- [A438] BEGUN — Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7) — Achieved prior `[ch 068 / 068.05]`
+- [A1] BEGUN — Escape from Velkynvelve — drow outpost — Not referenced `[ch 068 / 068.05]`
+- [A2] BEGUN — Return to the Underdark — second expedition — Not referenced `[ch 068 / 068.05]`
+- [A3] BEGUN — Gather components for Vizeran's ritual — dark heart talisman — Not referenced `[ch 068 / 068.05]`
+- [A4] BEGUN — Place the dark heart talisman — final ritual setup — Not referenced `[ch 068 / 068.05]`
+- [A5] BEGUN — Perform Vizeran's ritual — demon lord summoning — Not referenced `[ch 068 / 068.05]`
+- [A6] BEGUN — Final battle against demon lords — Against the Demon Lords — Not referenced `[ch 068 / 068.05]`
+- [A7] BEGUN — Jorlan's Gambit — gate left unlocked — Not referenced `[ch 068 / 068.05]`
+- [A8] BEGUN — Reach Sloobludop — kuo-toa settlement — Not referenced `[ch 068 / 068.05]`
+- [A9] BEGUN — Reach Gracklstugh — duergar city — Not referenced `[ch 068 / 068.05]`
+- [A10] BEGUN — Reach Neverlight Grove — myconid colony — Not referenced `[ch 068 / 068.05]`
+- [A11] BEGUN — Reach Blingdenstone — deep gnome settlement — Not referenced `[ch 068 / 068.05]`
+- [A12] BEGUN — Reach Gravenhollow — stone giant library — Not referenced `[ch 068 / 068.05]`
+- [A13] BEGUN — Reach Mantol-Derith — Zhentarim outpost — Not referenced `[ch 068 / 068.05]`
+- [A14] BEGUN — Reach Menzoberranzan — City of Spiders — Not referenced `[ch 068 / 068.05]`
+- [A15] BEGUN — Reach the Wormwrithings — purple worm territory — Not referenced `[ch 068 / 068.05]`
+- [A16] BEGUN — Reach the Labyrinth — maze tunnels — Not referenced `[ch 068 / 068.05]`
+- [A17] BEGUN — Retrieve Gromph Baenre's grimoire — Sorcere — Not referenced `[ch 068 / 068.05]`
+- [A18] BEGUN — Obtain purple worm egg — worm nursery — Not referenced `[ch 068 / 068.05]`
+- [A19] BEGUN — Obtain beholder central eye — Vast Oblivium — Not referenced `[ch 068 / 068.05]`
+- [A20] BEGUN — Obtain six angel feathers — Gallery of Angels — Not referenced `[ch 068 / 068.05]`
+- [A21] BEGUN — Obtain goristro heart — Yeenoghu's hunt — Not referenced `[ch 068 / 068.05]`
+- [A22] BEGUN — Obtain timmask mushrooms — demon footprint spores — Not referenced `[ch 068 / 068.05]`
+- [A23] BEGUN — Obtain demon lord blood or ichor — component collection — Not referenced `[ch 068 / 068.05]`
+- [A24] BEGUN — Eldeth Feldrun — return to Gauntlgrym or honor her memory — Not referenced `[ch 068 / 068.05]`
+- [A25] BEGUN — Shuushar — guide to Sloobludop — Not referenced `[ch 068 / 068.05]`
+- [A26] BEGUN — Stool — return to Neverlight Grove — Not referenced `[ch 068 / 068.05]`
+- [A27] BEGUN — Rumpadump — return to Neverlight Grove — Not referenced `[ch 068 / 068.05]`
+- [A28] BEGUN — Deliver Werz Saltbaron's gems — Kazook Pickshine in Blingdenstone — Not referenced `[ch 068 / 068.05]`
+- [A29] BEGUN — Droki delivery interception — Whorlstone Tunnels — Not referenced `[ch 068 / 068.05]`
+- [A30] BEGUN — Ylsa Henstak's investigation — surface-world currency source — Not referenced `[ch 068 / 068.05]`
+- [A31] BEGUN — Find Entémoch's Boon — Blingdenstone outskirts — Not referenced `[ch 068 / 068.05]`
+- [A32] BEGUN — Cleanse the Steadfast Stone — Rockblight — Not referenced `[ch 068 / 068.05]`
+- [A33] BEGUN — Encounter with the Pudding King — Blingdenstone — Not referenced `[ch 068 / 068.05]`
+- [A34] BEGUN — Battle for Blingdenstone — ooze incursion — Not referenced `[ch 068 / 068.05]`
+- [A35] BEGUN — Burrow Warden Jadger's tasks — lay gnome spirits to rest — Not referenced `[ch 068 / 068.05]`
+- [A36] BEGUN — Retrieve Pelek's remains — Blingdenstone catacombs — Not referenced `[ch 068 / 068.05]`
+- [A37] BEGUN — Return Sladis Vadir — Emerald Enclave scout — Not referenced `[ch 068 / 068.05]`
+- [A38] BEGUN — Return Rystia Zav — Harper spy — Not referenced `[ch 068 / 068.05]`
+- [A39] BEGUN — Locate Khalessa Draga — Lords' Alliance deep cover operative — Not referenced `[ch 068 / 068.05]`
+- [A40] BEGUN — Activate or disable the Maze Engine — Labyrinth — Not referenced `[ch 068 / 068.05]`
+- [A41] BEGUN — Xazax the Eyemonger — beholder encounter — Not referenced `[ch 068 / 068.05]`
+- [A42] BEGUN — Zuggtmoy's fetid wedding — Araumycos confrontation — Not referenced `[ch 068 / 068.05]`
+- [A43] BEGUN — Fraz-Urb'luu's gem — Mantol-Derith conflict — Not referenced `[ch 068 / 068.05]`
+- [A44] BEGUN — Stonespeaker Hgraam audience — stone giant leader — Not referenced `[ch 068 / 068.05]`
+- [A45] BEGUN — Velkynvelve — drow outpost, slave pen — Not referenced `[ch 068 / 068.05]`
+- [A46] BEGUN — Sloobludop — kuo-toa town on the Darklake — Not referenced `[ch 068 / 068.05]`
+- [A47] BEGUN — Gracklstugh — duergar city, City of Blades — Not referenced `[ch 068 / 068.05]`
+- [A48] BEGUN — Neverlight Grove — myconid colony — Not referenced `[ch 068 / 068.05]`
+- [A49] BEGUN — Blingdenstone — deep gnome settlement — Not referenced `[ch 068 / 068.05]`
+- [A50] BEGUN — Whorlstone Tunnels — beneath Gracklstugh — Not referenced `[ch 068 / 068.05]`
+- [A51] BEGUN — Darklake — Underdark waterway — Not referenced `[ch 068 / 068.05]`
+- [A52] BEGUN — Gravenhollow — stone giant library — Not referenced `[ch 068 / 068.05]`
+- [A53] BEGUN — Araj — Vizeran's tower — Not referenced `[ch 068 / 068.05]`
+- [A54] BEGUN — Mantol-Derith — Underdark trade outpost — Not referenced `[ch 068 / 068.05]`
+- [A55] BEGUN — Menzoberranzan — drow city, City of Spiders — Not referenced `[ch 068 / 068.05]`
+- [A56] BEGUN — Wormwrithings — purple worm tunnel network — Not referenced `[ch 068 / 068.05]`
+- [A57] BEGUN — Vast Oblivium — beholder lair chasm — Not referenced `[ch 068 / 068.05]`
+- [A58] BEGUN — Labyrinth — maze tunnels, Baphomet's domain — Not referenced `[ch 068 / 068.05]`
+- [A59] BEGUN — Gallery of Angels — petrified angel cavern — Not referenced `[ch 068 / 068.05]`
+- [A60] BEGUN — Araumycos — vast fungal entity cavern — Not referenced `[ch 068 / 068.05]`
+- [A61] BEGUN — Gauntlgrym — dwarf fortress, Bruenor's seat — Not referenced `[ch 068 / 068.05]`
+- [A62] BEGUN — Sorcere — drow arcane academy in Menzoberranzan — Not referenced `[ch 068 / 068.05]`
+- [A63] BEGUN — Yggmorgus — Zuggtmoy's mushroom tower — Not referenced `[ch 068 / 068.05]`
+- [A64] BEGUN — Overlake Hold — Dunglorrin Torune, Gracklstugh fortress — Not referenced `[ch 068 / 068.05]`
+- [A65] BEGUN — Cairngorm Cavern — stone giant home in Gracklstugh — Not referenced `[ch 068 / 068.05]`
+- [A66] BEGUN — Silken Paths — spider web chasm — Not referenced `[ch 068 / 068.05]`
+- [A67] BEGUN — Oozing Temple — flooded dungeon — Not referenced `[ch 068 / 068.05]`
+- [A68] BEGUN — Lost Tomb of Khaem — Netherese tomb — Not referenced `[ch 068 / 068.05]`
+- [A69] BEGUN — Troglodyte Lair — Wormwrithings encounter — Not referenced `[ch 068 / 068.05]`
+- [A70] BEGUN — Worm Nursery — purple worm egg chamber — Not referenced `[ch 068 / 068.05]`
+- [A71] BEGUN — Hook Horror Lair — gnoll hunt encounter — Not referenced `[ch 068 / 068.05]`
+- [A72] BEGUN — Spiral of the Horned King — Labyrinth entrance maze — Not referenced `[ch 068 / 068.05]`
+- [A73] BEGUN — Ilvara Mizzrym — drow commander, first contact in Velkynvelve — Not referenced `[ch 068 / 068.05]`
+- [A74] BEGUN — Jorlan Duskryn — drow elite warrior, potential aid to escaping prisoners — Not referenced `[ch 068 / 068.05]`
+- [A75] BEGUN — Shoor Vandree — Ilvara's lieutenant, antagonist — Not referenced `[ch 068 / 068.05]`
+- [A76] BEGUN — Asha Vandree — junior priestess, potential betrayal of Ilvara — Not referenced `[ch 068 / 068.05]`
+- [A77] BEGUN — Buppido — derro prisoner, true nature as killer revealed — Not referenced `[ch 068 / 068.05]`
+- [A78] BEGUN — Prince Derendil — quaggoth prisoner, delusion exposed — Not referenced `[ch 068 / 068.05]`
+- [A79] BEGUN — Eldeth Feldrun — shield dwarf prisoner, fate determined — Not referenced `[ch 068 / 068.05]`
+- [A80] BEGUN — Jimjar — deep gnome prisoner, first contact — Not referenced `[ch 068 / 068.05]`
+- [A81] BEGUN — Ront — orc prisoner, first contact — Not referenced `[ch 068 / 068.05]`
+- [A82] BEGUN — Sarith Kzekarit — drow prisoner, demonic spore infection revealed — Not referenced `[ch 068 / 068.05]`
+- [A83] BEGUN — Shuushar the Awakened — kuo-toa prisoner, first contact — Not referenced `[ch 068 / 068.05]`
+- [A84] BEGUN — Stool — myconid sprout prisoner, first contact — Not referenced `[ch 068 / 068.05]`
+- [A85] BEGUN — Topsy and Turvy — svirfneblin twins, lycanthropy secret revealed — Not referenced `[ch 068 / 068.05]`
+- [A86] BEGUN — Ploopploopeen — kuo-toa archpriest, alliance offer — Not referenced `[ch 068 / 068.05]`
+- [A87] BEGUN — Bloppblippodd — kuo-toa archpriest of Deep Father, confrontation — Not referenced `[ch 068 / 068.05]`
+- [A88] BEGUN — Demogorgon — demon lord, rise at Sloobludop — Not referenced `[ch 068 / 068.05]`
+- [A89] BEGUN — Shuushar — pacifist kuo-toa, at Sloobludop — Not referenced `[ch 068 / 068.05]`
+- [A90] BEGUN — Gorglak — corrupt duergar gate guard, bribe encounter — Not referenced `[ch 068 / 068.05]`
+- [A91] BEGUN — Errde Blackskull — Stone Guard captain, employment offer — Not referenced `[ch 068 / 068.05]`
+- [A92] BEGUN — Themberchaud — red dragon Wyrmsmith, alliance offer — Not referenced `[ch 068 / 068.05]`
+- [A93] BEGUN — Gartokkar Xundorn — Keeper of the Flame, quest giver — Not referenced `[ch 068 / 068.05]`
+- [A94] BEGUN — Ylsa Henstak — duergar merchant, quest giver — Not referenced `[ch 068 / 068.05]`
+- [A95] BEGUN — Droki — derro courier, capture objective — Not referenced `[ch 068 / 068.05]`
+- [A96] BEGUN — Werz Saltbaron — duergar merchant, assassination attempt witnessed — Not referenced `[ch 068 / 068.05]`
+- [A97] BEGUN — Stonespeaker Hgraam — stone giant elder, audience — Not referenced `[ch 068 / 068.05]`
+- [A98] BEGUN — Narrak — derro savant cultist, confrontation — Not referenced `[ch 068 / 068.05]`
+- [A99] BEGUN — Glabbagool — sentient gelatinous cube, first contact — First contact occurred prior `[ch 068 / npcs]`
+- [A100] BEGUN — Sovereign Phylo — myconid sovereign, corrupted by Zuggtmoy — Not referenced `[ch 068 / 068.05]`
+- [A101] BEGUN — Sovereign Basidia — myconid sovereign, resistance leader — Not referenced `[ch 068 / 068.05]`
+- [A102] BEGUN — Yestabrod — Circle of Masters leader, confrontation — Not referenced `[ch 068 / 068.05]`
+- [A103] BEGUN — Xinaya — drow scout, fate in Garden of Welcome — Not referenced `[ch 068 / 068.05]`
+- [A104] BEGUN — Zuggtmoy — Demon Queen of Fungi, presence at Neverlight Grove — Not referenced `[ch 068 / 068.05]`
+- [A105] BEGUN — Dorbo Diggermattock — Blingdenstone leader, first contact — Not referenced `[ch 068 / 068.05]`
+- [A106] BEGUN — Senni Diggermattock — Blingdenstone quartermaster, first contact — Not referenced `[ch 068 / 068.05]`
+- [A107] BEGUN — Kazook Pickshine — svirfneblin alchemist, quest giver — Not referenced `[ch 068 / 068.05]`
+- [A108] BEGUN — Chipgrin Goldwhisker — wererat leader, negotiation — Not referenced `[ch 068 / 068.05]`
+- [A109] BEGUN — Burrow Warden Jadger — ghost, quest giver — Not referenced `[ch 068 / 068.05]`
+- [A110] BEGUN — The Pudding King — insane deep gnome, confrontation — Not referenced `[ch 068 / 068.05]`
+- [A111] BEGUN — Bruenor Battlehammer — dwarf king, audience at Gauntlgrym — Not referenced `[ch 068 / 068.05]`
+- [A112] BEGUN — Lord Zelraun Roaringhorn — Harper representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- [A113] BEGUN — Sir Lanniver Strayl — Order of the Gauntlet representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- [A114] BEGUN — Morista Malkin — Emerald Enclave representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- [A115] BEGUN — Lord Eravien Haund — Lords' Alliance representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- [A116] BEGUN — Davra Jassur — Zhentarim representative, alliance negotiation — Not referenced `[ch 068 / 068.05]`
+- [A117] BEGUN — Ghazrim DuLoc — Zhentarim contact, ring acquisition — Not referenced `[ch 068 / 068.05]`
+- [A118] BEGUN — Lorthuun — maimed beholder, confrontation at Mantol-Derith — Not referenced `[ch 068 / 068.05]`
+- [A119] BEGUN — Kinyel Druu'giir — drow assassin, disruption at Mantol-Derith — Not referenced `[ch 068 / 068.05]`
+- [A120] BEGUN — Yantha Coaxrock — svirfneblin mage, capture and rescue — Not referenced `[ch 068 / 068.05]`
+- [A121] BEGUN — Peebles — svirfneblin spy for Xazax, first contact — Not referenced `[ch 068 / 068.05]`
+- [A122] BEGUN — Zilchyn Q'Leptin — kleptomaniac drow mage, first contact — Not

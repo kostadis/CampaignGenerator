@@ -1,0 +1,47 @@
+{
+  "world_state.factions_and_powers": {
+    "secs": 42.3,
+    "prompt_chars": 18498,
+    "endpoint": "claude-code"
+  },
+  "world_state.party": {
+    "secs": 43.6,
+    "prompt_chars": 89262,
+    "endpoint": "claude-code"
+  },
+  "world_state.key_npcs": {
+    "secs": 78.2,
+    "prompt_chars": 58013,
+    "endpoint": "claude-code"
+  },
+  "world_state.locations": {
+    "secs": 61.0,
+    "prompt_chars": 68591,
+    "endpoint": "claude-code"
+  },
+  "world_state.items_and_artifacts": {
+    "secs": 79.8,
+    "prompt_chars": 52505,
+    "endpoint": "claude-code"
+  },
+  "world_state.active_threats_and_open_pressures": {
+    "secs": 48.2,
+    "prompt_chars": 155322,
+    "endpoint": "claude-code"
+  },
+  "campaign_state.resolved_plot_threads": {
+    "secs": 42.8,
+    "prompt_chars": 130949,
+    "endpoint": "claude-code"
+  },
+  "campaign_state.party_current_situation": {
+    "secs": 33.6,
+    "prompt_chars": 89253,
+    "endpoint": "claude-code"
+  },
+  "campaign_state.active_quests_and_open_threads": {
+    "secs": 106.7,
+    "prompt_chars": 162507,
+    "endpoint": "claude-code"
+  }
+}

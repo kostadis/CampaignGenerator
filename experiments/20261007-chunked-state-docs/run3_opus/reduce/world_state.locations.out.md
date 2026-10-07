@@ -1,0 +1,266 @@
+## Locations
+
+### Where the party stands now
+- At the end of the range the party is in the vault complex beneath **Candlekeep**. The door to the Book of Vile Darkness has been opened. The surviving Avowed Readers will not allow the party to leave with the book [ch 070 / 070.03; ch 070 / 070.04; ch 070 / locations].
+
+### Candlekeep: the fortress overall
+- It is a fortress-library south of Waterdeep and the world's largest library [ch 053 / 053.06; ch 053 / locations; ch 058 / Locations].
+- The party chose it as their next destination to investigate House T'sarran, Jimjar, Daz's past, Bahamut, and sentient weapons [ch 053 / 053.06; ch 053 / locations].
+- **Entry and access**
+  - Entry requires donating a unique book that is not already in the collection [ch 054 / 054.05; ch 054 / 054.06].
+  - Donating more books grants more time with the Avowed [ch 054 / 054.05; ch 054 / 054.06].
+  - The First Reader oversees admissions and scholar assignments [ch 054 / 054.05; ch 054 / 054.06].
+- **Prisoners:** Candlekeep holds prisoners in antimagic cells but does not keep them. It exiles offenders with a warning [ch 056 / 056.04].
+- **Wards**
+  - The primary defense is a ward that prevents teleportation and suppresses fire. It is sourced from the High Tower [ch 063 / 063.01; ch 063 / 063.02].
+  - Daz's fireball proved the wards broken [ch 065 / 065.01; ch 065 / locations; ch 065 / Memorable Moments].
+  - Manshoon's simulacrum breached them again [ch 065 / 065.01; ch 065 / locations; ch 065 / Memorable Moments].
+- **Reputation:** Its reputation for inviolability has been shattered by multiple murders and an assault by helmed horrors [ch 063 / 063.01; ch 063 / 063.02].
+- **Prophecy chant:** The centuries-old chant of prophecies has fallen silent for the first time, which visibly stunned Tadric [ch 064 / 064.01; ch 064 / locations].
+- **Outside infiltration**
+  - A Watcher was killed on the walkway to the High Tower by a crossbow bolt with foreign fletching. This proves outside attackers moved undetected toward the tower [ch 064 / 064.02; ch 064 / locations].
+  - Sylvira noted three suspicious non-staff individuals in the **Orrery of the Astronomicon**, suggesting infiltration by Manshoon's agents [ch 067 / 067.03; ch 067 / locations].
+- **Janussi murder:** The murder of Janussi triggered a major internal investigation and exposed political rivalries [ch 058 / Locations; ch 060 / locations]. Milil's chalice was used to conceal the crime [ch 060 / locations].
+
+### Candlekeep: High Tower and security
+- **High Tower**
+  - It is a restricted area that needs both keys to enter. It is under doubled guard, and entry is always observed [ch 059 / 059.03; ch 059 / locations].
+  - Janussi held one key, in the locket. Kalan Strongbranch held the other [ch 058 / Locations; ch 058 / 058.06].
+  - It contains the source of the ward [ch 063 / 063.02; ch 063 / 063.06].
+- **High Tower Lobby:** Two Zhentarim raiders were found looting books according to a written manifest. One carried the walkway murder weapon [ch 064 / 064.03; ch 064 / locations].
+- **High Tower inner door**
+  - It needs both keys. A'lai held key #1. Gyrgum holds key #2 and the sapphire. As of ch 064 the door was unopened [ch 064 / 064.03; ch 064 / items].
+- **Security Control Room**
+  - It is protected by a magical door needing two real High Tower keys [ch 065 / 065.03; ch 065 / locations].
+  - Manshoon's wall of force shattered that door. The room's artifacts are intact but now unguarded [ch 065 / 065.03; ch 065 / locations].
+  - *GM note:* the notes do not say whether this is the same door as the ch 064 "inner door". The ch 065 state is the later one.
+- **Candlekeep Prison / null magic prison**
+  - It negates all magic and is the only known safe haven for spellcasters under threat [ch 065 / 065.01; ch 065 / locations; ch 067 / 067.02; ch 067 / locations].
+  - A'lai seeks incarceration there as his only hope against Manshoon, though Manshoon's breach makes him fear even its safety [ch 065 / 065.01; ch 065 / locations; ch 067 / 067.02; ch 067 / locations].
+- **North Galleries**
+  - Kalan hid Tadric there with the real key. It is reached with a Watcher's stair key [ch 063 / 063.04; ch 063 / 063.05].
+  - It is the site of Moziqodo's attack and death [ch 063 / 063.04; ch 063 / 063.05].
+- **Sea Warden's Tower**
+  - Kalan was found here after the alarm and deputized the party as Watchers of Candlekeep [ch 063 / 063.03].
+  - Earlier it was the site of Zalthir's Trial of the Broken Mirror and the blind monk's martial tests [ch 056 / 056.05].
+
+### Candlekeep: the Vault of Secrets complex
+- **Vault of Secrets**
+  - It is a hidden chamber beneath Candlekeep, unknown to most scholars, holding artifacts of extraordinary power [ch 067 / 067.02; ch 067 / locations].
+  - It is protected by a cryptogram and riddles, and Manshoon sought it [ch 067 / 067.02; ch 067 / locations].
+- **House of Alaundo (Founders Court):** Filling the ink pot of the brass statue of Alaundo the Seer opens a hidden staircase to the Vault [ch 067 / 067.04; ch 067 / locations].
+- **Riddle answer sites**
+  - **Philosopher's Court:** the black knight's base bears "Fustilugs" [ch 067 / 067.02; ch 067 / locations].
+  - **School of the Drama Library:** the statue of the halfling bard Batbayar bows when applauded [ch 067 / 067.02; ch 067 / locations].
+  - **The Hearth:** the only place in Candlekeep where ordinary flame is permitted; this answers the first riddle [ch 068 / 068.03].
+  - **High Tower of Exaltation:** its height above sea level answered the third riddle [ch 068 / 068.03].
+- **The Grove:** It is the burial ground for keepers of tomes. Alaundo's grave shows he died at ninety-seven [ch 067 / 067.05; ch 067 / locations].
+- **The Great Shaft**
+  - It drops about one thousand feet, with a feather-fall zone near the bottom [ch 068 / locations].
+  - A falling creature drops five hundred feet per round [ch 068 / locations].
+- **The Lava Cavern / Volcanic Cavern**
+  - It is a cylindrical chamber 200 ft high and 100 ft across [ch 068 / locations].
+  - A molten lava lake lies 100 ft below the ledge [ch 068 / locations].
+  - The lava pit outside the tower remains active [ch 070 / 070.03; ch 070 / locations].
+- **Magma Chamber**
+  - It has a basalt walkway, an extendable bridge, and a standing anti-magic zone [ch 069 / locations].
+  - It is the site of the first Manshoon simulacrum's defeat [ch 069 / locations].
+- **The Obsidian Bridge**
+  - It extends from the ledge via mechanical cogs [ch 068 / locations].
+  - Its first ten feet lie within an anti-magic field [ch 068 / locations].
+  - Miirym can widen it to thirty feet for ten minutes [ch 068 / locations].
+- **The Lava Pit:** It is the final resting place of Manshoon's simulacrum. Its heat and anti-magic field remain active [ch 070 / 070.02; ch 070 / locations].
+- **The Obsidian Tower**
+  - It is three stories, on an obsidian pedestal, and resembles Candlekeep's oldest spires [ch 068 / locations].
+  - It contains a guardian chamber, a vault, and an upper chamber with a destruction mechanism [ch 068 / locations].
+  - Its inner chamber is now accessible [ch 070 / 070.03; ch 070 / locations].
+- **The Vault of Dangerous Secrets / The Tower Library**
+  - It holds about one hundred dangerous magical tomes [ch 068 / locations; ch 069 / locations].
+  - A note instructs keepers to leave the books unless destruction is necessary [ch 068 / locations].
+  - Any disturbance risks chain-reaction explosions [ch 069 / locations].
+- **The Tower Chamber:** It holds warded books, a desk with a note, an open velvet tray of ten prismatic gemstones (four dark), and an obsidian door with eleven scorch marks [ch 069 / locations].
+- **The Obsidian Door:** It has no handle or keyhole. Alaundo's riddle requires a single spoken answer about "what is consumed to make light", spoken in darkness as a gift [ch 069 / locations].
+- **The Inner Book Chamber:** The Book of Vile Darkness sits on its podium. The door is open and unguarded [ch 070 / 070.03; ch 070 / locations].
+
+### Candlekeep: other sites from the investigation
+- **Deneir's Sanctum**
+  - It is a shrine and library to the art of writing, guarded by Vooshadi Moonriver. It was made the party's official base [ch 059 / 059.01; ch 059 / locations].
+  - Later it was used to confine them, locked from outside [ch 062 / locations; ch 062 / 062.05; ch 062 / 062.06].
+  - Helmed horrors smashed the door to target Daz [ch 063 / 063.01].
+- **Bookwyrm's Office**
+  - Bookwyrm received the party here and publicly reinstated Kalan. Zalthir secretly disposed of the tea via Glabbagool's acid [ch 062 / locations; ch 062 / 062.03].
+  - It is the site of Bookwyrm's murder: her throat was torn out by a beast. A note on her desk reads *He is using the beast to—* [ch 063 / 063.02].
+- **Bookwyrm's Chambers:** These are on the top floor of the Readers' Tower. They were searched with no evidence found [ch 060 / locations].
+- **Janussi's Chambers**
+  - It is a circular tower with twelve lancet windows and is the murder scene [ch 057 / locations].
+  - Contents: cherry tobacco smoke, a toppled marble statue, an armchair with magic missile holes, an open safe, and a silver pedestal with a pipe [ch 058 / Locations; ch 058 / items].
+  - The third floor was a discreet love nest. Gyrgum found a note there showing Janussi's contempt for Kalan's reforms [ch 061 / 061.04; ch 061 / locations].
+- **Hollypocket's Apartment:** It is directly below Janussi's chamber. The party took the housekeeper's testimony here [ch 058 / Locations].
+- **Alkrist's Chambers / Room**
+  - Contents: sealed jars of poisoned rats and *1001 Tashalian Nights* bookmarked at the Midnight Tears murder method [ch 060 / locations; ch 061 / 061.07; ch 061 / locations].
+  - His safe held 750 gp, a stolen potion of flying, a potion of superior healing, and a red herring coin. No further incriminating evidence was found [ch 062 / locations; ch 062 / 062.04].
+- **A'lai Aivenmore's Chambers:** A dove cage recently held five birds. The three missing doves may carry secret messages [ch 060 / locations].
+- **Oak Tree Apothecary**
+  - It is a treehouse pharmacy between the Sea Warden's Tower and House of Mechanus [ch 060 / locations].
+  - A'lai distracted Leuwin so Alkrist could steal Midnight Tears, spilling ground peppermint. Nibbles witnessed the intruder [ch 061 / 061.07; ch 061 / locations].
+- **The Baths:** Alkrist and A'lai met here at 11:45 a.m. to plan the murder method [ch 061 / 061.07; ch 061 / locations].
+- **The Deadwinter Tree / Southern Dining Hall**
+  - Alkrist opened Daral's gift, coated the book with Midnight Tears, re-wrapped it, tied the vial's label to the tree, and tried to burn it [ch 061 / 061.07; ch 061 / locations].
+  - Janussi's heart and cleaver were hidden in Milil's lead-lined chalice in the hall [ch 060 / locations].
+- **Oval Theatre:** The disputation over Vareth's quadrangle expansion drew away nearly all Avowed [ch 060 / locations].
+- **The Hearth (tavern):** Daral Yashenti was found and interrogated here [ch 059 / 059.05; ch 059 / locations].
+- **Sylvira's Quarters:** A magical fire keeps it uncomfortably hot while Sylvira shivers with fever [ch 061 / 061.05; ch 061 / locations].
+- **Flora Theca (Pavilion Naturalis):** Gyrgum identified midnight tears and the sapphire's spell use here [ch 059 / 059.04; ch 059 / locations].
+- **Shrine of Oghma:** Janussi's body is being purified under Kei Tigersteel [ch 059 / 059.01; ch 059 / locations].
+- **Great Chapter House:** It is the central administrative hub. Moon elf scribes require Bookwyrm's permission for access [ch 059 / 059.01; ch 059 / locations].
+- **Chapter House (Exaltation bastion):** It has the Council of Twelve's dodecagonal table and a rose window. The party was appointed investigators here [ch 057 / locations].
+- **House of the Binder:** The party is promised a copy of any book here on resolving the investigation [ch 057 / locations].
+- **Whispering Dome:** Glabbagool formalized his sidekick bond with Zalthir here [ch 059 / 059.06; ch 059 / locations]. Heroes' words can be heard here [ch 057 / locations].
+- **House of Mechanus:** It is an engineering library and home to Spanner and thirteen modrons [ch 067 / 067.05; ch 067 / locations].
+- **Other sites**
+  - **The Atheneum (Echoing Hall):** Khell-Vire's office and the Shadow Discipline Lineage Records; Zalthir is assigned here [ch 056 / 056.05].
+  - **Hall of Divination:** Sister Yvenne consulted with Daz here [ch 056 / 056.07].
+  - **Immortal Chambers:** Brother Vareth's polemics collection [ch 057 / locations].
+  - **The Refectory:** Alaundo's prophecies were heard here [ch 057 / locations].
+  - **House of Rest and the Hearth:** the party's guest quarters [ch 057 / locations].
+  - **Astronomicon** [ch 057 / locations].
+  - **Drakonoikos:** built from Fyrentennimar's remains; its fatal breath simulation chamber needs Keeper's permission [ch 057 / locations].
+
+### Surface route (the Overbright)
+- **The Overbright**
+  - It is the Underdark name for the surface. The party entered it after months underground [ch 049 / locations; ch 053 / 053.05; ch 053 / locations].
+  - Sunlight destroys drow-crafted items such as the cloak of elvenkind [ch 053 / 053.05; ch 053 / locations].
+- **Forest Road**
+  - It runs west of the Underdark exit [ch 054 / locations].
+  - A tracker used it for cover [ch 054 / locations].
+  - Thorin's Tremor Sense is useless there [ch 054 / locations].
+- **Gauntlgrym and Mithral Hall:** Eldeth intends to warn their lords before Thorin arrives [ch 054 / locations].
+- **Silver Marches:** It is devastated by Uthgardt raids. Signs: burned hamlets, a broken standing stone, a defiled Tempus shrine, and refugees [ch 055 / locations].
+- **Mirabar**
+  - It is a dwarven forge city crowded with refugees at Smith's Gate [ch 055 / locations].
+  - Stroud is everywhere there [ch 055 / locations].
+  - It has an Order of the Gauntlet shrine with Milo Goodbarrel's frontispiece [ch 055 / locations].
+- **Triboar**
+  - It is one-third in ruins. Its cairn names 243 dead [ch 055 / locations].
+  - Its Mountain's Mouth inn is where Eldred and Glabbagool's cheese moment occurred [ch 055 / locations].
+- **Waterdeep**
+  - It is intolerant of oozes [ch 055 / locations].
+  - Castle Ward has a bronze Stroud statue and Protanther's chess match plaque, *This is the position. The move is yours.* [ch 055 / locations]
+  - **Rishaal's Pageturners** holds Milo's original painting of Stroud, Milo, Malfire, and Whistler [ch 055 / locations].
+  - In **Field Ward**, a kraken-chanting preacher recognized Daz as drow and gave a cryptic warning [ch 055 / locations].
+- **Daggerford**
+  - It is a quiet, cautious town with a bronze monument to Travis Houlin [ch 055 / locations; ch 056 / 056.01].
+  - At the **River Shining Tavern** the party met Maerith and Elin, and a priest sells pewter hand medallions [ch 056 / 056.01; ch 056 / 056.02].
+- **Beregost / The Burning Wizard Inn**
+  - Beregost is the last meaningful stop before Candlekeep. At the inn Thorin first saw the sea [ch 056 / 056.03].
+  - The inn preserves a soot-mark memorial [ch 056 / 056.03].
+- **Way of the Lion:** It is the cliff road to Candlekeep. The pressure in Daz's head intensifies there [ch 056 / 056.04].
+
+### Fungal Altar (last Underdark stop)
+- It was Ilvara's base, with the 30-foot heart fungus, pools, bridges, and erupting vents [ch 049 / locations; ch 050 / Locations].
+- State after the battle:
+  - Ilvara and Asha Vandree defeated; the bridge collapsed; poisonous spores linger [ch 051 / 051.06; ch 051 / locations; ch 053 / 053.03; ch 053 / 053.04].
+  - The site is looted, the heart fungus harvested, the Zuggtmoy spore remnant burned, and the ceremonial bundle recovered [ch 053 / 053.03; ch 053 / 053.04].
+  - The icon linked to Zuggtmoy was noted nearby [ch 051 / 051.06; ch 051 / locations].
+- **Underdark Tunnels toward the exit:** A fungal-infected drow scout followed the party, and spores show active fungal spread [ch 049 / locations].
+
+### Blingdenstone (deep gnome city)
+- **Status at departure**
+  - It is a fragile peace: miners pay fair wages, wererats control the upper boroughs, ghosts retain sanctum rights, and the city is open for trade but not tourism [ch 048 / 048.06].
+  - Earth Elementals are banned from labor and restricted to defense. The party are heroes among laborers [ch 045 / 045.02; ch 045 / locations].
+  - Clan Diggermattock had retaken it from the drow [ch 035 / 035.02; ch 035 / 035.05; ch 036 / 036.03].
+  - Its standing order escorts Velkynvelve escapees to Chief Dorbo [ch 036 / 036.01].
+- **Diggermattock Hall**
+  - It is the command center of Chief Dorbo and Quartermaster Senni [ch 036 / 036.04].
+  - It became crowded with 60 people after Daz was put in charge [ch 043 / 043.03; ch 043 / 043.04].
+  - Dorbo revealed he had long held a full map of the area [ch 046 / 046.01].
+- **Traders' Grotto**
+  - It is the central market on petrified fungi [ch 037 / 037.05; ch 037 / locations].
+  - Gelatinous cubes damaged it. The party recovered a Short Sword +1 here [ch 038 / 038.01; ch 038 / locations].
+  - The ooze breach is sealed and should be clear within days to a week [ch 048 / 048.05].
+  - **Starlace Curios and Arcana** opened here, and the 10% merchant coupon applies [ch 045 / locations; ch 045 / 045.03].
+- **Foaming Mug (Tavern)**
+  - It is built for larger visitors and serves Darklake Stout [ch 038 / 038.02; ch 040 / 040.02; ch 040 / locations].
+  - Tappy Foamstrap agreed to supply alcohol for weaponization under strict conditions [ch 040 / 040.02; ch 040 / locations].
+- **The Gilded Sheath:** Valimor Brightgem plans tiered, gem-upgradable product lines, inspired by Thorin [ch 045 / locations; ch 045 / 045.04].
+- **Goldwhisker Warrens**
+  - Wererat gnomes under Chief Chipgrin hold it behind fifty-foot double doors [ch 039 / 039.03; ch 039 / locations].
+  - Dorbo denied their legitimacy [ch 038 / 038.02; ch 038 / 038.06; ch 038 / locations]. The ch 048 settlement gives wererats the upper boroughs [ch 048 / 048.06].
+- **Temple of the Ruby in the Rough and Catacombs**
+  - Glyphic Shroomlight is priest there [ch 037 / 037.02; ch 037 / locations].
+  - Pelek is interred in the catacombs [ch 037 / 037.03; ch 037 / 037.04; ch 037 / locations].
+  - Ghosts were haunting the catacombs [ch 040 / 040.02; ch 040 / locations].
+  - The ch 043 notes call the temple **Ruby in the Rough**. Burrow Warden Jadger lives there training new Burrow Wardens [ch 043 / 043.03].
+- **Kazook Pickshine's Chambers:** It is an alchemist's lab with spell gems. Bimble is strapped to a table [ch 043 / 043.06].
+- **Rockblight / Temple of the Steadfast Stone (Area 22)**
+  - Ogrémoch's Bane was driving earth elementals mad there [ch 039 / 039.08; ch 040 / 040.04; ch 040 / 040.06; ch 040 / locations].
+  - The menhir now houses three freed Galeb Duhr [ch 042 / 042.02; ch 042 / locations].
+  - Allies waited there in reserve during the assault [ch 046 / 046.01; ch 046 / locations].
+- **Rockblight sub-sites**
+  - **Cultivation Cave:** the Stoneheart Enclave's alternate entrance [ch 040 / 040.03; ch 040 / locations].
+  - **Udhask's Burrow:** Udhask's remains and a hidden cache of six gems and a potion of invisibility [ch 040 / 040.05; ch 040 / locations].
+  - **Stream Cavern:** has gargoyle statues [ch 040 / 040.06; ch 040 / locations].
+  - **Drow Statue Chamber:** petrified drow that reanimate endlessly [ch 041 / 041.04].
+  - **Medusa's Chamber** [ch 041 / 041.07].
+  - **Neheedra's Lair:** five drow spider-silk dresses worth 200 gp each; abandoned after the Medusa's death [ch 042 / 042.01; ch 042 / locations].
+- **Mines**
+  - **Pickshine Mine** (Dasco Pickshine) is open after the Galeb Duhr handshake protocol [ch 044 / 044.04; ch 044 / locations].
+  - **Whiteshell Mine** (Perigrog Scrapedust) has a time-snagged wall [ch 044 / 044.05; ch 044 / locations].
+  - Its hidden **Summoning Circle Cavern**, guarded by two mechanical basilisks, was the site of Entémoch's boon ritual [ch 044 / 044.07; ch 044 / locations].
+- **Festering Fissure:** Zuggtmoy has planted nightmare mushroom children here. It was the site of the Shambling Mound fight and the Ghost Hold Lichen harvest [ch 043 / 043.07; ch 043 / 043.08; ch 044 / 044.01; ch 044 / locations].
+- **Pudding King's domain**
+  - The **Throne Room** is abandoned. Green slime now only drops directly beneath itself, and acidic pools still nourish oozes [ch 047 / 047.09; ch 047 / locations].
+  - The Earth Elemental's passage is stable, but fungi grow unnaturally fast, a sign of Zuggtmoy's creeping influence [ch 048 / 048.01].
+  - Juiblex's power is receding while fungi grow more malevolent [ch 047 / 047.10].
+  - The **Hall of Melting Mirrors** is quiet after Thorin found its harmonic center [ch 048 / 048.02].
+  - The **Support Beams** are reinforced, and Thorin was honored with a patch [ch 048 / 048.03].
+  - **Black Pudding Pit Passageway** was bridged with mithral braces and salt neutralizers [ch 046 / 046.04; ch 046 / locations].
+- **Northern Exit Tunnels:** A Zuggtmoy puffball was seen growing rapidly in a wall crack as the honor guard escorted the party out [ch 048 / 048.07].
+
+### Neverlight Grove (myconid colony)
+- It is fully consumed by Zuggtmoy's corruption. Trees attack allies and Phylo is corrupted [ch 032 / 032.03].
+- **Garden of Welcome:** Victims are buried alive and sprout fungi. It is the ritual site for Zuggtmoy's wedding [ch 031 / locations].
+- **The Majestic Mushroom:** It is Zuggtmoy's ritual site and fungal tower [ch 032 / 032.01; ch 032 / 032.02].
+- **Circle of Explorers:** Rumpadump's scouts have escape routes and hidden nutrient caches in the exit tunnels [ch 031 / locations].
+- **Return plan:** The party planned to return for ingredients for ooze-acid protection [ch 039 / 039.09; ch 039 / locations]. The notes do not record such a return.
+- **Ilvara's mushroom:** Ilvara found the mushroom that began her madness here [ch 049 / locations].
+- **Route to Blingdenstone**
+  - The **Collapsed Tunnels** sealed the original route [ch 032 / 032.06].
+  - The party detoured through the **Oozing Temple**, a flooded site they abandoned [ch 034 / locations; ch 034 / 034.08].
+
+### Gracklstugh (duergar City of Blades)
+- **Latest state**
+  - It is in riotous chaos. Ilvara's force was ambushed there after being mistaken for the Ember Vanguard [ch 049 / locations].
+  - Authorities blame the Ember Vanguard, derro are publicly executed, surface coins are appearing, and the Assassin's Guild is rumored back [ch 040 / 040.02; ch 040 / locations].
+  - A weapons trade with the city was proposed and rejected due to poor prior relations [ch 039 / 039.09; ch 039 / locations].
+- **Party standing**
+  - The party had permission to leave the **Darklake District** via the holy symbol of Laduguer and Themberchaud's gold pins [ch 014 / 014.07; ch 014 / locations].
+  - Their deception at the **Darklake Docks** alarmed the Deepking's guard [ch 027 / locations; ch 027 / 027.04].
+  - The gates were sealed and guarded when they last emerged [ch 025 / 025.08; ch 025 / locations].
+- **Cairngorm Cavern:** It is closed to outsiders while Hgraam seeks to cure his kin using the ritual statue [ch 026 / locations].
+- **Whorlstone Tunnels / Caverns**
+  - They are empty of derro, the treasure is secured, and the myconids have departed [ch 025 / 025.01; ch 025 / 025.08].
+  - The **Ritual Chamber** still holds three stone giant statues as cursed foci, one with a second head [ch 024 / 024.04].
+  - An unnoticed figure lingered in the background of the Ritual Chamber [ch 024 / 024.04].
+  - The red dragon egg was secured in the **Obelisk Chamber** [ch 020 / locations].
+- **Other named sites**
+  - **Overlake Hold:** the Stone Guard and Errde Blackskull [ch 013 / Locations; ch 013 / 013.06; ch 018 / locations].
+  - **Themberchaud's Lair** in the Flowstone District [ch 014 / 014.06; ch 014 / locations].
+  - **Laduguer's Furrow** / **Forge of Thrazgad** [ch 026 / locations; ch 027 / locations; ch 027 / 027.03].
+  - **Ghohlbrorn's Lair:** the party's lodging [ch 018 / locations].
+  - **West Cleft District** [ch 015 / 015.05].
+  - **Gartokkar's Residence** [ch 026 / locations].
+
+### Darklake and the early Underdark
+- **Darklake**
+  - It is a vast, waveless subterranean waterway [ch 008 / locations; ch 011 / locations].
+  - The party crossed it for four days and scuttled their boat at **The Hidden Beach** [ch 027 / locations; ch 027 / 027.05; ch 027 / 027.06].
+- **Lost Tomb of Khaem**
+  - It held Brysis's remains and the sentient sword Dawnbringer [ch 029 / locations; ch 029 / 029.01; ch 029 / 029.03].
+  - Its decoy chamber is confirmed harmless [ch 029 / locations; ch 029 / 029.01; ch 029 / 029.03].
+- **Sloobludop:** The kuo-toa village was left in ruins after Demogorgon's attack [ch 009 / 009.01; ch 009 / Locations].
+- **Bone Pyramid Islet:** Aquatic zombies guard it [ch 011 / locations].
+- **Velkynvelve**
+  - It is the drow outpost the party escaped from. Its garrison abandoned it during the vrock attack [ch 004 / locations; ch 004 / 004.01].
+  - The slave pen and guard tower were breached, Imbros and two guards were killed, and the armory was looted [ch 003 / locations].
+- **Menzoberranzan:** Daz's protection contract was funded there. The patron is unknown, and the mercenaries do not know who hired them [ch 053 / 053.01; ch 053 / locations].

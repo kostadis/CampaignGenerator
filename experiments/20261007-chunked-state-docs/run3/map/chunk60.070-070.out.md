@@ -1,0 +1,407 @@
+## Events
+- Daz recovered the legendary black Robe of the Archmagi from the first defeated Manshoon simulacrum, wearing it for style but delaying attunement until the next long rest `[ch 070 / npcs]`.
+- Manshoon’s simulacrum revealed that he breached Candlekeep’s wards using staggering magic and a Staff of Power after the party disrupted his plans with Alkrist, leaving him weakened and forced to negotiate `[ch 070 / 070.01]`.
+- Manshoon presented the final door’s riddle: “What is consumed to make light? Say the answer in the dark,” explaining it required a verified Reader to speak the correct answer in darkness with genuine intent `[ch 070 / 070.01]`.
+- Manshoon wrote the answer—“a candle”—on a note and passed it to the party, acknowledging he could not speak it himself `[ch 070 / 070.01]`.
+- Zalthir interrupted Manshoon’s negotiation by grapping and striking him, declaring, “Before you say, before you say it, I want to punch him,” turning the standoff into chaos `[ch 070 / 070.02; ch 070 / moment]`.
+- Edvaldo, previously bound and presumed secured, escaped by shapeshifting into a thinner form and revealed himself as a doppelganger at the top of the stairs `[ch 070 / 070.02; ch 070 / npcs]`.
+- Edvaldo warned the party that killing the simulacrum would trigger a fail-safe explosion, which would activate the chamber’s glyphs of warding in a catastrophic chain reaction `[ch 070 / 070.02]`.
+- Zalthir ignored the warning, carried the screaming simulacrum through the anti-magic field, and hurled him into the lava pit, saying, “Yeah, no, I let him go. I toss him over the edge” `[ch 070 / 070.02; ch 070 / moment]`.
+- Edvaldo, panicked after Manshoon’s death, smashed two prophecy crystals with debris from the dead owlbear, threatening to destroy the rest unless the door was opened `[ch 070 / 070.03]`.
+- Gyrgum, exhausted and done waiting, spoke the answer “a candle” with genuine intent, causing the ancient door to swing open `[ch 070 / 070.03; ch 070 / moment]`.
+- Daz used Misty Step to teleport to the inner book chamber and saw the Book of Vile Darkness on a podium, immediately recognizing it as a sentient artifact written by Vecna `[ch 070 / 070.03; ch 070 / items]`.
+- Daz cast Minor Illusion to create a false image of his hand touching the book, causing it to sparkle and collapse into ash, deceiving Edvaldo into believing it was destroyed `[ch 070 / 070.03; ch 070 / spells]`.
+- Thorin used Dawnbringer to perform a Menacing Attack, frightening Edvaldo and blocking his path to the remaining prophecy crystals `[ch 070 / 070.03; ch 070 / items]`.
+- Zalthir returned, punched and grappled Edvaldo, dragging him toward the stairs `[ch 070 / 070.03]`.
+- Edvaldo shapeshifted into a halfling to escape Zalthir’s grip and fled toward the anti-magic barrier, avoiding Thorin `[ch 070 / 070.03]`.
+- Gyrgum secured the four surviving prophecy crystals, declaring that enough people had used them as leverage `[ch 070 / 070.03]`.
+- Daz, using Mage Hand to avoid physical contact, began flipping through the Book of Vile Darkness and resisted its corrupting influence `[ch 070 / 070.04; ch 070 / spells]`.
+- The Book of Vile Darkness spoke to Daz, offering a choice: knowledge of himself or knowledge of how to defeat the demons `[ch 070 / 070.04; ch 070 / moment]`.
+- Daz chose knowledge of how to defeat the demons, believing self-knowledge must be earned independently `[ch 070 / 070.04; ch 070 / moment]`.
+- The Book of Vile Darkness began revealing information about events in the Underdark, though its narrator’s trustworthiness was deeply suspect `[ch 070 / 070.04]`.
+- The surviving Avowed Readers were expected to arrive within minutes, displeased that the party had found and taken the Book of Vile Darkness `[ch 070 / 070.04; ch 070 / locations]`.
+
+## Concluded
+- The negotiation with Manshoon’s simulacrum concluded when Zalthir threw him into the lava pit `[ch 070 / 070.02]`.
+- The riddle of the final door concluded when Gyrgum spoke “a candle” with genuine intent, opening the door `[ch 070 / 070.03]`.
+- The threat of Edvaldo destroying the prophecy crystals concluded when he fled and Gyrgum secured the remaining four `[ch 070 / 070.03]`.
+- The confrontation with the Manshoon simulacrum concluded with his death in the lava `[ch 070 / 070.02]`.
+- The deception of the Book of Vile Darkness’s destruction concluded when Edvaldo believed the illusion and retreated `[ch 070 / 070.03]`.
+- The immediate threat of the Book of Vile Darkness’s corruption was contained as Daz used Mage Hand to avoid physical contact and resisted its influence `[ch 070 / 070.04]`.
+
+## Threads
+- [ADVANCED] **Manshoon’s pursuit** — The real Manshoon’s simulacrum was killed in the lava, and his final words promised eternal vengeance; the party now faces the wrath of the original Manshoon `[ch 070 / 070.02; ch 070 / npcs]`.
+- [ADVANCED] **Alaundo’s prophecy crystals** — Two of the six prophecy crystals were destroyed by Edvaldo; four remain secured by Gyrgum, and their unrevealed prophecies are still active and likely tied to the party `[ch 070 / 070.03; ch 070 / items]`.
+- [ADVANCED] **The Book of Vile Darkness** — The party now possesses the sentient artifact, and Daz has begun reading it, receiving information about the Underdark from a potentially untrustworthy source; its corruption remains an active threat `[ch 070 / 070.04; ch 070 / items]`.
+- [OPENED] **Surviving Avowed Readers’ response** — The last remaining Avowed Readers are expected to arrive shortly and will not permit the party to leave with the Book of Vile Darkness, creating an imminent confrontation `[ch 070 / 070.04; ch 070 / locations]`.
+- [RESOLVED] **The final door’s riddle** — The door opened after Gyrgum spoke “a candle” with genuine intent; the enchantment’s requirement has been fulfilled `[ch 070 / 070.03]`.
+- [RESOLVED] **Manshoon’s simulacrum** — The duplicate was confirmed dead after being thrown into the lava pit; it will not return `[ch 070 / 070.02]`.
+- [RESOLVED] **Edvaldo’s immediate threat** — The doppelganger fled toward the anti-magic barrier and is no longer present in the chamber; his immediate leverage is gone `[ch 070 / 070.03]`.
+- [RESOLVED] **The explosive fail-safe** — The simulacrum’s death triggered no explosion because it was removed from the warded chamber before disposal; the threat is neutralized `[ch 070 / 070.02]`.
+
+## NPC Status
+- Manshoon (simulacrum) | Dead | Lava pit | — `[ch 070 / 070.02; ch 070 / npcs]`
+- Edvaldo | Missing | Toward anti-magic barrier | Hostile `[ch 070 / 070.03; ch 070 / npcs]`
+- Alaundo | Unknown | — | — `[ch 070 / npcs]`
+- Vecna | Unknown | — | — `[ch 070 / npcs]`
+
+## World
+- [LOCATION] **Candlekeep** — The inner vault beneath the library has been breached; the surviving Avowed Readers will not allow the party to leave with the Book of Vile Darkness `[ch 070 / 070.04; ch 070 / locations]`.
+- [LOCATION] **The Volcanic Cavern and Obsidian Tower** — The tower’s inner chamber is now accessible; the door to the Book of Vile Darkness has been opened and the lava pit outside remains active `[ch 070 / 070.03; ch 070 / locations]`.
+- [LOCATION] **The Lava Pit** — The pit is now the final resting place of Manshoon’s simulacrum; its heat and anti-magic field remain active `[ch 070 / 070.02; ch 070 / locations]`.
+- [LOCATION] **The Inner Book Chamber** — The chamber now contains the Book of Vile Darkness on its podium; the door is open and unguarded `[ch 070 / 070.03; ch 070 / locations]`.
+- [ITEM] **Robe of the Archmagi** — Daz possesses the robe and will attune to it at his next long rest, potentially replacing an existing attuned item `[ch 070 / items]`.
+- [ITEM] **Staff of Power** — The staff was used by Manshoon to breach Candlekeep’s wards; it is now lost with the simulacrum in the lava `[ch 070 / items]`.
+- [ITEM] **Prophecy Crystals** — Four of the six prophecy crystals remain intact and are now in Gyrgum’s possession; their prophecies are still active and likely tied to the party `[ch 070 / items]`.
+- [ITEM] **Book of Vile Darkness** — The sentient artifact of cosmic evil, written by Vecna, has been secured by Daz and is being read with Mage Hand; it cannot be permanently destroyed while evil exists `[ch 070 / items]`.
+- [THREAT] **Manshoon’s vengeance** — The real Manshoon has now lost a simulacrum and will pursue the party with full fury for killing his duplicate and stealing the Book of Vile Darkness `[ch 070 / 070.02; ch 070 / npcs]`.
+- [THREAT] **Avowed Readers’ intervention** — The remaining Avowed Readers are approaching and will attempt to reclaim the Book of Vile Darkness, forcing an immediate confrontation `[ch 070 / 070.04; ch 070 / locations]`.
+- [NPC] **Vecna** — Identified as the purported author of the Book of Vile Darkness; his name is so feared that even drow use it to frighten children `[ch 070 / npcs]`.
+- [NPC] **Alaundo** — The legendary seer whose door was protected by a riddle requiring genuine intent; his prophecies remain active in the remaining crystals `[ch 070 / npcs]`.
+
+## Party
+- The party is in the Inner Book Chamber beneath Candlekeep, directly after opening the final door and acquiring the Book of Vile Darkness.
+- They are known as the “Guest Seekers of the Avowed,” having earned Inner Ward access `[ch 070 / 070.04]`.
+- Daz has the Robe of the Archmagi in his possession and will attune to it at the next long rest; he is currently using Mage Hand to manipulate the Book of Vile Darkness and has resisted its corruption.
+- Daz has received cryptic information about the Underdark from the Book of Vile Darkness, though its source is untrustworthy.
+- Gyrgum secured the four remaining prophecy crystals and is now their custodian.
+- Zalthir killed the Manshoon simulacrum and carried him into the lava, accepting the risk of triggering the glyphs; he now has the reputation of a reckless, decisive warrior.
+- Thorin used Dawnbringer to frighten Edvaldo and blocked his path to the crystals; the sword remains displeased with the chaos.
+- The party intends to flee Candlekeep before the surviving Avowed Readers arrive, but they are now burdened with the Book of Vile Darkness and the knowledge that Manshoon will hunt them.
+- They are aware that their next move must be rapid and secretive, and that the Book’s influence on Daz is an ongoing danger.
+
+## Audit
+- [A12] SHOWN — Reached Gravenhollow — stone giant library `[ch 070 / 070.04]`
+- [A12] SHOWN — Reached Candlekeep — outer ward arrival `[ch 070 / 070.01]`
+- [A12] SHOWN — Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched) `[ch 070 / 070.04; ch 070 / items]`
+- [A12] SHOWN — Manshoon-pursuit thread — activated regardless of escape outcome `[ch 070 / 070.02; ch 070 / npcs]`
+- [A12] SHOWN — Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz and Yvenne — field-perception expertise confirmed (post-arc) `[ch 070 / 070.04]`
+- [A12] SHOWN — Sylvira recruited (Path B) — dispel payoff and cryptogram shortcut `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne trust ≥ 4 ticks — planar-residue trace payoff (Session 7) `[ch 070 / 070.04]`
+- [A12] SHOWN — Vareth / Drakonoikos goodwill — Thava and F-A-D-E payoff (Session 7) `[ch 070 / 070.04]`
+- [A12] SHOWN — Daral saved — Alkrist ID witness and Fustilugs clue payoff (Sessions 5 / 7) `[ch 070 / 070.04]`
+- [A12] SHOWN — Khell-Vire Watcher's Stillness earned — skirmish skip and Vault Wis-save advantage `[ch 070 / 070.04]`
+- [A12] SHOWN — Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8) `[ch 070 / 070.04]`
+- [A12] SHOWN — Polly Pocket released as messenger — OOTA endgame thread flagged `[ch 070 / 070.04]`
+- [A12] SHOWN — Walking-permit medallions worn — wight-safe at Jewel of the Styx `[ch 070 / 070.04]`
+- [A12] SHOWN — Second High Tower key held — door opened from outside (Session 6) `[ch 070 / 070.04]`
+- [A12] SHOWN — Candlekeep institutional restructuring — Fheminor as Keeper, Tadric as Gatewarden `[ch 070 / 070.04]`
+- [A12] SHOWN — Party named guest seekers of the Avowed — Inner Ward access ceremony `[ch 070 / 070.04]`
+- [A12] SHOWN — Cryptogram recovered — six-clue text transcribed from High Tower Library `[ch 070 / 070.04]`
+- [A12] SHOWN — Manshoon arrival announced — keep under siege `[ch 070 / 070.04]`
+- [A12] SHOWN — Iron Owlbear found dead — Manshoon already in the Vault `[ch 070 / 070.04]`
+- [A12] SHOWN — Echo 1 activated — surface contamination prophecy `[ch 070 / 070.04]`
+- [A12] SHOWN — Echo 2 activated — wedding / Zuggtmoy prophecy `[ch 070 / 070.04]`
+- [A12] SHOWN — Echo 3 activated — Gauntlgrym / Keeper prophecy (Thorin / Zalthir / Daz / Gyrgum named) `[ch 070 / 070.04]`
+- [A12] SHOWN — Echo 4 activated — Jimjar / Callarduran witness prophecy `[ch 070 / 070.04]`
+- [A12] SHOWN — Janussi murder — crime scene forensic reveals (poison, heart post-mortem, no defensive wounds) `[ch 070 / 070.04]`
+- [A12] SHOWN — Two "Sylvira" figures — dual-timeline disguise revelation assembled `[ch 070 / 070.04]`
+- [A12] SHOWN — Bookwyrm as cover-up — party identifies Bookwyrm's `disguise self` use `[ch 070 / 070.04]`
+- [A12] SHOWN — Alkrist as killer — party identifies the poisoner `[ch 070 / 070.04]`
+- [A12] SHOWN — Disguise rosetta cracked — milestone event, level-up to 9 `[ch 070 / 070.04]`
+- [A12] SHOWN — Ward-drop vision sequence — per-PC hallucinations (Session 6) `[ch 070 / 070.04]`
+- [A12] SHOWN — Glabbagool — Juiblex "mother voice" contact (Session 5) `[ch 070 / 070.04]`
+- [A12] SHOWN — Echo 1 — prophecy names surface-contamination field-effect directly `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (Session 5 opening) `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — Deadwinter Prophecy fragment heard ("many-faced man / metal hand") `[ch 070 / 070.04]`
+- [A12] SHOWN — Five Books, Five Questions — gate admission and scholar pairings established `[ch 070 / 070.04]`
+- [A12] SHOWN — Daz — first sinus-pressure field-perception moment (Western Gallery, Session 3) `[ch 070 / 070.04]`
+- [A12] SHOWN — Yvenne — names Daz's field-perception sensitivity `[ch 070 / 070.04]`
+- [A12] SHOWN — Marin — quill six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — Sloobludop recitation at cliff base `[ch 070 / 070.04]`
+- [A12] SHOWN — Brevin — bedclothes six-pointed star incident `[ch 070 / 070.04]`
+- [A12] SHOWN — Endless Chant — first complete stoppage (

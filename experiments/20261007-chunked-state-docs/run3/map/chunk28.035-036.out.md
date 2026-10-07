@@ -1,0 +1,378 @@
+## Events
+- The party arrives at the shores of the Darklake, soaked and miserable, and agrees to take a long rest after Jimjar correctly predicts their need for one [ch 035 / 035.01].
+- Jimjar celebrates winning his bet about the rest, admits to a “slight miscalculation” in securing a wager, and attempts to start another bet with Gyrgum [ch 035 / 035.01].
+- Gyrgum reflects on the concept of a long rest after being explained it, connecting it to his own past experiences of feeling refreshed after closing his eyes [ch 035 / 035.01].
+- The party begins a day-long march toward Blingdenstone after recovering from their rest [ch 035 / 035.01].
+- The party reaches the gnome-sized staircase leading to Blingdenstone’s gate; larger members struggle with the difficult terrain while Jimjar, Spiderbait, and dwarves climb easily [ch 035 / 035.02].
+- Jimjar declares they have arrived at Blingdenstone and explains its history of changing hands between gnomes and drow, calling it “a little bit of a mess” [ch 035 / 035.02].
+- The party is confronted by eight gnome guards at Blingdenstone’s adamantine-plated gate; one guard immediately distrusts Daz as a drow [ch 035 / 035.03].
+- Gyrgum counters the guard’s prejudice by declaring, “But I am an orc, and everyone knows that orcs only tell the truth,” astonishing the guards as they realize he is an orc cleric of Bahamut [ch 035 / 035.03].
+- Jimjar vouches for Daz, claiming he is interested in exploration and growth, and jokes that Daz has been reading *The Up in the Overbright* [ch 035 / 035.03].
+- Daz explains the party was detained and exploited by captors, escaped, and now seeks safe passage and fellowship [ch 035 / 035.03].
+- Glabbagool arrives at the gate after climbing the stairs, causing the guards to panic and prepare to attack until the party intervenes [ch 035 / 035.04].
+- Glabbagool speaks for himself, greeting the guards cheerfully and offering to not squeeze through the gate because it would be rude [ch 035 / 035.04].
+- The guards correct themselves from claiming a “fungi problem” to admitting they have a serious “ooze problem” [ch 035 / 035.04].
+- Glabbagool reveals he was once an unintelligent ooze until an unknown event caused him to think and speak, and now observes an “oozapalooza” of unusually active oozes [ch 035 / 035.04].
+- At the mention of Juiblex, Jimjar’s expression shifts as if recalling something painful; he identifies Juiblex as the demon lord of oozes and shapeless things, embodying “unrivaled obscenity” [ch 035 / 035.04].
+- Jimjar makes a fifty-gold-piece bet that before the end of the month, the party will need to equip an army with acid-resistant gear, followed by a side bet that the ingredients must be recovered from a fungal wedding celebration [ch 035 / 035.04].
+- The party suspects Jimjar uses bets to covertly guide them, noting his precise knowledge and the guards’ deference toward him [ch 035 / 035.04].
+- A guard admits Jimjar looks familiar but cannot place where he has seen him, reinforcing the party’s impression he is a concealed dignitary [ch 035 / 035.04].
+- Glabbagool explains gelatinous cubes reproduce slowly by leaving behind a smaller cube, and that he believes he is the only speaking one in the universe [ch 035 / 035.04].
+- The guards permit the party to enter Blingdenstone but direct them to Chief Dorbo Diggermattock and Quartermaster Senni for permission regarding Glabbagool and information on the ooze crisis [ch 035 / 035.05].
+- The party enters the Maze, a defensive network of twisting tunnels with deadly traps; a guard warns them against “funny business” while pointing at Daz [ch 035 / 035.05].
+- Daz diplomatically compliments the defenses, saying they make him feel safer, which delights the gnomes [ch 035 / 035.05].
+- Eldeth confesses to Daz that she was raised to believe “The only good drow is a dead drow,” but traveling with him has made her reconsider, distinguishing the cult of Lolth from individual drow [ch 035 / 035.05].
+- Daz urges Eldeth to see those raised in Lolth’s cult as redeemable, shaped by a terrible environment, and she accepts that her culture’s reflexive massacre of entire peoples may be wrong [ch 035 / 035.05].
+- The party arrives at a second gate within Blingdenstone’s caverns, where deep gnome guards who admitted them earlier catch up, huffing and puffing [ch 036 / 036.01].
+- A squeaky-voiced guard confirms the party escaped from Velkynvelve and reveals a “small semantical problem”: a sergeant failed to read the latest report, which required all Drow escapees to be escorted to Chief Dorbo [ch 036 / 036.01].
+- The guard publicly reprimands the sergeant: “Shame on you,” and stresses the importance of reading orders thoroughly [ch 036 / 036.01].
+- The guards explain Clan Diggermattock took this territory from the drow and need intelligence about them to prepare defenses [ch 036 / 036.01].
+- The party uses insight to determine the request is sincere, not manipulative, and agrees to meet Dorbo to gain favor and possibly learn a route to the surface [ch 036 / 036.01].
+- The party consults Jimjar before proceeding; he bets five empty spell gems that meeting Dorbo is the right thing to do and adds, “But you’re going to have to figure out how to get rid of the oozes” [ch 036 / 036.02].
+- Glabbagool corrects Jimjar’s terminology: “It’s not an ooze, it’s a cube,” and Jimjar clarifies Blingdenstone is suffering from an extensive ooze infestation [ch 036 / 036.02].
+- The party accepts the bet after confirming they will receive the gems if the prediction leads to a quest, interpreting it as Jimjar’s indirect instruction [ch 036 / 036.02].
+- The party is escorted through Blingdenstone’s reception hall, where a cart is jokingly called a “medieval pickup truck,” and then through the Traders’ Grotto [ch 036 / 036.03].
+- Glabbagool’s presence causes nervous reactions among less adventurous deep gnomes, despite the party’s assurances he is friendly [ch 036 / 036.03].
+- The guards bring the party to Diggermattock Hall, where roughly two dozen Svirfneblin are engaged in serious administrative work [ch 036 / 036.04].
+- Chief Dorbo Diggermattock and Quartermaster Senni Diggermattock introduce themselves and ask the party’s identity; the party initially falters on “Emerald Vanguard” and settles on “adventurers trying to reach the Overbright” [ch 036 / 036.04].
+- Dorbo and Senni engage in a heated private argument involving muttering and finger-pointing [ch 036 / 036.04].
+- A party member anticipates Jimjar’s warning and asks if they have a side quest about oozes; Senni seizes the opportunity, saying they would help the party reach the Overbright but must first address the ooze problem [ch 036 / 036.04].
+- Glabbagool insists, “I’m not an ooze. I’m a gelatinous cube. A totally different species,” and is supported by the party’s observation that oozes cannot maintain a square shape [ch 036 / 036.04].
+- Glabbagool declares, “I knew there was a reason I was just better than them,” after being validated [ch 036 / 036.04].
+- Glabbagool asks about shambling mounds and learns they do not retain objects like gelatinous cubes do, and he confirms he does not eat oozes but sometimes punches them, demonstrating with a pseudopod [ch 036 / 036.04].
+- The session ends with the party having been tasked with resolving Blingdenstone’s ooze infestation before receiving help to reach the Overbright [ch 036 / 036.04].
+
+## Concluded
+- The long rest at the shores of the Darklake is completed, restoring all party members’ abilities [ch 035 / 035.01].
+- The journey from the Darklake shores to Blingdenstone’s main gate is completed [ch 035 / 035.02].
+- The confrontation with the gate guards and the introduction of Glabbagool are resolved with the party granted entry into Blingdenstone [ch 035 / 035.04].
+- The party’s passage through the Maze is completed without incident, ending with Daz’s compliment earning the gnomes’ approval [ch 035 / 035.05].
+- The deep gnome guards’ pursuit and escort of the party to the second gate are completed, ending with the party’s agreement to meet Dorbo [ch 036 / 036.01].
+- Jimjar’s bet regarding meeting Dorbo and the ooze problem is accepted by the party, concluding the pre-meeting consultation [ch 036 / 036.02].
+- The escort through the reception hall and Traders’ Grotto concludes with arrival at Diggermattock Hall [ch 036 / 036.03].
+- The meeting with Chief Dorbo and Quartermaster Senni concludes with the party formally accepting the task to resolve the ooze infestation [ch 036 / 036.04].
+
+## Threads
+- [ADVANCED] **Jimjar’s true identity** — The party observes that gnomes treat Jimjar with peculiar deference, one guard recognizes him but cannot place him, and his bets contain unnervingly precise predictions, suggesting he is a concealed dignitary or VIP [ch 035 / 035.04; ch 036 / 036.02].
+- [ADVANCED] **Blingdenstone’s ooze infestation** — The party learns from Glabbagool and the guards that oozes are unusually active, aggressive, and numerous, termed an “oozapalooza,” and are now confirmed as a critical threat requiring intervention [ch 035 / 035.04; ch 036 / 036.04].
+- [ADVANCED] **Glabbagool’s sentience and uniqueness** — Glabbagool confirms he is the only known speaking gelatinous cube, distinguishes himself from oozes taxonomically, and asserts his non-hostile nature, reinforcing his role as an ally and anomaly [ch 035 / 035.04; ch 036 / 036.04].
+- [OPENED] **Quest to eliminate Blingdenstone’s oozes** — Chief Dorbo and Quartermaster Senni explicitly task the party with resolving the ooze infestation before assisting them to reach the Overbright, fulfilling Jimjar’s bet and launching a new mission [ch 036 / 036.04].
+- [ADVANCED] **Juiblex’s influence in the Underdark** — Jimjar’s visceral reaction to Juiblex’s name and his description of the demon lord as the “unrivaled obscenity” that dissolves everything into shapeless messes, combined with Glabbagool’s observations, strongly imply Juiblex’s direct involvement in the ooze surge [ch 035 / 035.04].
+- [ADVANCED] **Eldeth’s prejudice against drow** — Eldeth openly admits her upbringing taught her “The only good drow is a dead drow,” but now distinguishes the cult of Lolth from individual drow, crediting Daz’s example for her change of heart [ch 035 / 035.05].
+- [OPENED] **The fungal wedding celebration as a source of acid-resistant gear** — Jimjar’s side bet specifies that the ingredients for acid-resistant gear must be recovered from a fungal wedding celebration, introducing a new, specific objective tied to the ooze threat [ch 035 / 035.04].
+- [OPENED] **The identity of the “fungal wedding”** — The nature, location, and participants of the fungal wedding celebration are unknown, creating a mystery tied to the quest for acid-resistant gear [ch 035 / 035.04].
+- [ADVANCED] **Daz’s integration into the party** — Daz’s diplomatic response to the Maze’s defenses and his role in guiding Eldeth’s epiphany solidify his acceptance as a trusted member, countering initial prejudice [ch 035 / 035.05; ch 036 / 036.04].
+- [OPENED] **Blingdenstone’s leadership structure** — Chief Dorbo Diggermattock and Quartermaster Senni Diggermattock are confirmed as the ruling authorities, with Dorbo handling intelligence and Senni managing resources and logistics [ch 036 / 036.04].
+- [OPENED] **The “oozapalooza” phenomenon** — Glabbagool’s term for the unusual ooze activity introduces a new concept: a coordinated, non-natural surge of oozes that contradicts their typical passive behavior [ch 035 / 035.04].
+
+## NPC Status
+- Jimjar | Alive | Blingdenstone | Favorable [ch 035 / 035.04; ch 036 / 036.02]
+- Glabbagool | Alive | Blingdenstone | Favorable [ch 035 / 035.04; ch 036 / 036.04]
+- Chief Dorbo Diggermattock | Alive | Diggermattock Hall, Blingdenstone | Neutral, tasking [ch 036 / 036.04]
+- Quartermaster Senni Diggermattock | Alive | Diggermattock Hall, Blingdenstone | Neutral, tasking [ch 036 / 036.04]
+- Gnome Guards | Alive | Blingdenstone Gate | Suspicious, then permissive [ch 035 / 035.03; ch 036 / 036.01]
+- Deep Gnome Guards | Alive | Blingdenstone Caverns | Sincere, procedural [ch 036 / 036.01]
+- Eldeth | Alive | Blingdenstone | Resolved prejudice toward drow [ch 035 / 035.05]
+
+## World
+- [LOCATION] **Blingdenstone** — A deep gnome city in the Underdark, recently retaken from the drow by Clan Diggermattock, currently suffering from a widespread ooze infestation known as an “oozapalooza”; its main gate is constructed of steel, mithral, magical alloys, and adamantine; the city features a gnome-sized staircase, the Maze defensive tunnels, a reception hall, and a Traders’ Grotto [ch 035 / 035.02; ch 035 / 035.05; ch 036 / 036.03].
+- [LOCATION] **Diggermattock Hall** — The administrative and command center of Clan Diggermattock, a well-lit cavern with stone desks, maps, documents, and approximately two dozen Svirfneblin engaged in urgent work; Chief Dorbo and Quartermaster Senni preside here [ch 036 / 036.04].
+- [LOCATION] **The Maze** — A defensive network of twisting, trapped tunnels within Blingdenstone designed to slow and kill invading armies; the party passes through it with no incident after Daz’s compliment reassures the guards [ch 035 / 035.05].
+- [LOCATION] **Velkynvelve** — A drow outpost from which the party escaped; its name triggers Blingdenstone’s standing order to escort all escapees to Chief Dorbo for intelligence gathering [ch 036 / 036.01].
+- [NPC] **Jimjar** — A gnome companion who conveys critical information through wagers; he knows Blingdenstone’s leaders, history, and crises in excessive detail; the gnomes treat him with deference, and he is suspected of being a concealed dignitary [ch 035 / 035.04; ch 036 / 036.02].
+- [NPC] **Glabbagool** — A sentient gelatinous cube who was once unintelligent; he believes he is the only speaking one in the universe; he eats only dead matter, is friendly, and distinguishes himself from oozes as a different species [ch 035 / 035.04; ch 036 / 036.04].
+- [THREAT] **Oozapalooza** — An unexplained, abnormal surge of aggressive, roaming oozes in Blingdenstone, contrasting their normally passive behavior; the party suspects Juiblex’s influence [ch 035 / 035.04; ch 036 / 036.04].
+- [FACTION] **Clan Diggermattock** — The ruling deep gnome clan of this sector of Blingdenstone; they took the territory from the drow and treat all Drow escapees as valuable intelligence sources; they are focused on defense and resource management [ch 036 / 036.01; ch 036 / 036.04].
+- [ITEM] **Dawnbringer** — A sword that becomes agitated in darkness; its bearer notes it is “very upset” while passing through the poorly lit Maze [ch 035 / 035.05].
+- [NPC] **Juiblex** — The demon lord of oozes and shapeless things, described by Jimjar as embodying the “unrivaled obscenity” of the Abyss and dissolving all structure; his influence is strongly implied in the ooze surge [ch 035 / 035.04].
+- [ITEM] ***The Up in the Overbright*** — A popular book mentioned by Jimjar as something Daz is allegedly reading; its nature and relevance are unexplained but used to disarm suspicion [ch 035 / 035.03].
+
+## Party
+- The party is currently located in Diggermattock Hall, Blingdenstone, having just been tasked with resolving the ooze infestation before receiving aid to reach the Overbright [ch 036 / 036.04].
+- The group identifies itself as adventurers seeking to return home and reach the Overbright, avoiding the tainted name “Emerald Vanguard” [ch 036 / 036.04].
+- The party has acquired a new objective: to eliminate the ooze threat in Blingdenstone and recover ingredients for acid-resistant gear from a fungal wedding celebration, as predicted by Jimjar’s bet [ch 035 / 035.04; ch 036 / 036.02].
+- Eldeth has resolved her prejudice against drow, now distinguishing individual drow from the cult of Lolth, and credits Daz for changing her perspective [ch 035 / 035.05].
+- The party now trusts Glabbagool as a non-hostile, sentient ally and has publicly defended his distinction from oozes [ch 035 / 035.04; ch 036 / 036.04].
+- Jimjar’s bets are now interpreted as covert guidance; the party suspects he is a concealed dignitary and plans to use more bets to extract information [ch 035 / 035.04; ch 036 / 036.02].
+- The party intends to investigate the ooze infestation, identify the source of the “oozapalooza,” locate the fungal wedding celebration, and acquire the materials for acid-resistant gear to fulfill Jimjar’s bet and gain Blingdenstone’s aid [ch 036 / 036.04].
+
+## Audit
+- [A11] SHOWN — The party has reached Blingdenstone, entering through its main gate and then being escorted through its internal caverns to Diggermattock Hall [ch 035 / 035.02; ch 036 / 036.01; ch 036 / 036.04].
+- [A105] SHOWN — Chief Dorbo Diggermattock has been introduced and is now interacting with the party in Diggermattock Hall [ch 036 / 036.04].
+- [A106] SHOWN — Quartermaster Senni Diggermattock has been introduced and is now interacting with the party in Diggermattock Hall [ch 036 / 036.04].
+- [A99] SHOWN — Glabbagool has been encountered and is now a traveling companion, confirmed as sentient and friendly [ch 035 / 035.04; ch 036 / 036.04].
+- [A137] SHOWN — Juiblex has been named and described by Jimjar as the demon lord of oozes, with his influence implied in the ooze surge [ch 035 / 035.04].
+- [A141] SHOWN — The party escaped from Velkynvelve, confirmed by deep gnome guards who recognize them as escapees [ch 036 / 036.01].
+- [A34] BEGUN — The party has been tasked with addressing Blingdenstone’s ooze infestation, but the battle or resolution has not yet begun [ch 036 / 036.04].
+- [A31] BEGUN — Entémoch's Boon has not been found or mentioned; this thread remains unaddressed [ch 035 / 035.04; ch 036 / 036.04].
+- [A33] BEGUN — The Pudding King has not been encountered; this thread remains unaddressed [ch 035 / 035.04; ch 036 / 036.04].
+- [A43] BEGUN — Fraz-Urb'luu's gem has not been mentioned or encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A42] BEGUN — Zuggtmoy's fetid wedding has been referenced indirectly via Jimjar’s side bet about a fungal wedding, but the event itself has not occurred [ch 035 / 035.04].
+- [A28] BEGUN — The “fungal wedding celebration” has been named as a location for ingredient recovery, but the event itself has not been encountered [ch 035 / 035.04].
+- [A162] BEGUN — Drow pursuers are no longer active; the party has not been pursued since leaving Velkynvelve, and this thread is now inactive [ch 035 / 035.01].
+- [A101] BEGUN — Sovereign Basidia has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A104] BEGUN — Zuggtmoy has not been encountered or mentioned directly [ch 035 / 035.04; ch 036 / 036.04].
+- [A223] BEGUN — Travelogue prelude events occurred prior to this chunk; this chunk does not bear on it [ch 035 / 035.01].
+- [A224] BEGUN — Surface-madness gradient was established before this chunk; not addressed here [ch 035 / 035.01].
+- [A403] BEGUN — Jimjar / Callarduran prophecy activation occurred in Candlekeep arc, not this chunk [ch 035 / 035.04].
+- [A404] BEGUN — Five Books admission occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A423] BEGUN — Manshoon-pursuit thread was activated in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A424] BEGUN — Gauntlgrym call was confirmed in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A431] BEGUN — Ward-drop visions occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A432] BEGUN — Glabbagool’s Juiblex contact occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A436] BEGUN — Yvenne’s trace payoff occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A437] BEGUN — Vareth / Drakonoikos goodwill payoff occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A438] BEGUN — Daral saved payoff occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A439] BEGUN — Khell-Vire earned in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A440] BEGUN — Glabbagool’s Whispering Dome visit occurred in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A441] BEGUN — Polly Pocket released in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A442] BEGUN — Walking-permit medallions worn in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A443] BEGUN — Second High Tower key held in Candlekeep arc, not this chunk [ch 035 / 035.01].
+- [A1] BEGUN — Escape from Velkynvelve occurred before this chunk, confirmed but not repeated [ch 036 / 036.01].
+- [A45] BEGUN — Velkynvelve was referenced as the source of escape, but not revisited [ch 036 / 036.01].
+- [A51] BEGUN — Darklake was visited earlier; this chunk only references arrival at its shores, not the lake itself [ch 035 / 035.01].
+- [A49] SHOWN — Blingdenstone is reached and explored in detail [ch 035 / 035.02; ch 036 / 036.04].
+- [A107] BEGUN — Kazook Pickshine has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A110] BEGUN — The Pudding King has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A180] BEGUN — Clan Goldwhisker truce negotiation has not occurred [ch 035 / 035.04; ch 036 / 036.04].
+- [A183] BEGUN — Vadimir Coaxrock cube incursion has not occurred [ch 035 / 035.04; ch 036 / 036.04].
+- [A185] BEGUN — Entémoch's Boon has not been discovered [ch 035 / 035.04; ch 036 / 036.04].
+- [A186] BEGUN — Basilisks and eggs at Entémoch's Boon have not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A201] BEGUN — Xazax the Eyemonger has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A202] BEGUN — Veldyskar the basilisk has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A203] BEGUN — Galeb duhr Hourm has not been encountered [ch 035 / 035.04; ch 036 / 036.04].
+- [A204] BEGUN — Visions at Gravenhollow occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A205] BEGUN — Drow patrol confrontation occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A206] BEGUN — Aljanor Keenblade rescued before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A207] BEGUN — Sloobludop ruins visited before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A208] BEGUN — Gracklstugh chaos occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A209] BEGUN — Neverlight Grove corruption occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A210] BEGUN — Velkynvelve second visit occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A211] BEGUN — Ooze spies attacked Basidia’s group before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A212] BEGUN — Araumycos fungal creatures awakened before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A213] BEGUN — Infected area of Araumycos’s mind destroyed before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A214] BEGUN — House Baenre meeting occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A215] BEGUN — House Do'Urden meeting occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A216] BEGUN — Council of Spiders assistance occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A217] BEGUN — Gromph's outer sanctum infiltrated before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A218] BEGUN — Szashune encountered before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A219] BEGUN — Yochlol confronted before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A220] BEGUN — Wand of Orcus claimed before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A221] BEGUN — Heroic sacrifice opportunity occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A222] BEGUN — Demon sortie encounters occurred before this chunk [ch 035 / 035.04; ch 036 / 036.04].
+- [A225] BEGUN — Gorg'Bahamut breadcrumb planted before this chunk [ch 035 / 035.01].
+- [A226] BEGUN — Mirabar smith commissions occurred before this chunk [ch 035 / 035.01].
+- [A227] BEGUN — Daz shopping arc occurred before this chunk [ch 035 / 035.01].
+- [A228] BEGUN — Daz fitted Calishite cloak before this chunk [ch 035 / 035.01].
+- [A229] BEGUN — Milo Goodbarrel Volume 3 acquired before this chunk [ch 035 / 035.01].
+- [A230] BEGUN — Order of the Gauntlet medallion acquired before this chunk [ch 035 / 035.01].
+- [A231] BEGUN — Gyrgum Hagiography acquired before this chunk [ch 035 / 035.01].
+- [A232] BEGUN — Zalthir brass puppet acquired before this chunk [ch 035 / 035.01].
+- [A233] BEGUN — Dawnbringer scabbard work completed before this chunk [ch 035 / 035.01].
+- [A234] BEGUN — Elin healing attempt occurred before this chunk [ch 035 / 035.01].
+- [A235] BEGUN — Charcoal rubbing taken before this chunk [ch 035 / 035.01].
+- [A236] BEGUN — Kestler meeting occurred before this chunk [ch 035 / 035.01].
+- [A237] BEGUN — Carpenter’s journal donated before this chunk [ch 035 / 035.01].
+- [A238] BEGUN — Burned hamlet encountered before this chunk [ch 035 / 035.01].
+- [A239] BEGUN — Broken Thunderbeast stone encountered before this chunk [ch 035 / 035.01].
+- [A240] BEGUN — Defaced Tempus shrine encountered before this chunk [ch 035 / 035.01].
+- [A241] BEGUN — Forge of Mirabar visited before this chunk [ch 035 / 035.01].
+- [A242] BEGUN — Order of the Gauntlet shrine visited before this chunk [ch 035 / 035.01].
+- [A243] BEGUN — Goldenfields visited before this chunk [ch 035 / 035.01].
+- [A244] BEGUN — Mountain's Mouth Inn visited before this chunk [ch 035 / 035.01].
+- [A245] BEGUN — Triboar memorial square visited before this chunk [ch 035 / 035.01].
+- [A246] BEGUN — Waterdeep visited before this chunk [ch 035 / 035.01].
+- [A247] BEGUN — Rishaal the Pageturner's visited before this chunk [ch 035 / 035.01].
+- [A248] BEGUN — Order of the Gauntlet chapter house visited before this chunk [ch 035 / 035.01].
+- [A249] BEGUN — Sleeping Snake fence encountered before this chunk [ch 035 / 035.01].
+- [A250] BEGUN — Aurora's Whole Realms Catalog encountered before this chunk [ch 035 / 035.01].
+- [A251] BEGUN — Halaster's Prized Findings encountered before this chunk [ch 035 / 035.01].
+- [A252] BEGUN — Steelwoods of Mistshore visited before this chunk [ch 035 / 035.01].
+- [A253] BEGUN — River Shining Tavern visited before this chunk [ch 035 / 035.01].
+- [A254] BEGUN — Hand of Tarvis monument visited before this chunk [ch 035 / 035.01].
+- [A255] BEGUN — Burning Wizard inn visited before this chunk [ch 035 / 035.01].
+- [A256] BEGUN — Way of the Lion encountered before this chunk [ch 035 / 035.01].
+- [A257] BEGUN — Candlekeep Emerald Door arrived at before this chunk [ch 035 / 035.01].
+- [A258] BEGUN — Eldeth farewell occurred before this chunk [ch 035 / 035.01].
+- [A259] BEGUN — Dwarven outriders salute occurred before this chunk [ch 035 / 035.01].
+- [A260] BEGUN — Stroudite polemicist first contact before this chunk [ch 035 / 035.01].
+- [A261] BEGUN — Sister Ellune first contact before this chunk [ch 035 / 035.01].
+- [A262] BEGUN — Brindle Wenth story recounted before this chunk [ch 035 / 035.01].
+- [A263] BEGUN — Kestler first contact before this chunk [ch 035 / 035.01].
+- [A264] BEGUN — Eldred witnessed before this chunk [ch 035 / 035.01].
+- [A265] BEGUN — Rishaal first contact before this chunk [ch 035 / 035.01].
+- [A266] BEGUN — Stroudite pilgrims encountered before this chunk [ch 035 / 035.01].
+- [A267] BEGUN — Field Ward preacher witnessed before this chunk [ch 035 / 035.01].
+- [A268] BEGUN — City Watch ooze-rights confrontation occurred before this chunk [ch 035 / 035.01].
+- [A269] BEGUN — Maerith first contact before this chunk [ch 035 / 035.01].
+- [A270] BEGUN — Elin first encounter before this chunk [ch 035 / 035.01].
+- [A271] BEGUN — Veyloss performance witnessed before this chunk [ch 035 / 035.01].
+- [A272] BEGUN — Festrum recounted history before this chunk [ch 035 / 035.01].
+- [A273] BEGUN — Pilgrim’s chant error witnessed before this chunk [ch 035 / 035.01].
+- [A274] BEGUN — Triboar carpenter encountered before this chunk [ch 035 / 035.01].
+- [A275] BEGUN — Stroudite pilgrims encountered before this chunk [ch 035 / 035.01].
+- [A276] BEGUN — Bookwyrm received party before this chunk [ch 035 / 035.01].
+- [A277] BEGUN — Queenie the cat witnessed before this chunk [ch 035 / 035.01].
+- [A278] BEGUN — First Faction painting witnessed before this chunk [ch 035 / 035.01].
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand occurred before this chunk [ch 035 / 035.01].
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run occurred before this chunk [ch 035 / 035.01].
+- [A281] BEGUN — Daz somatic field-perception began before this chunk [ch 035 / 035.01].
+- [A282] BEGUN — Daz field-perception Insight check on Eldred before this chunk [ch 035 / 035.01].
+- [A283] BEGUN — Daz field-perception Insight check on preacher before this chunk [ch 035 / 035.01].
+- [A284] BEGUN — Daz pressure-headache began before this chunk [ch 035 / 035.01].
+- [A285] BEGUN — Daz pressure-headache sharpened before this chunk [ch 035 / 035.01].
+- [A286] BEGUN — Six-pointed star first appeared before this chunk [ch 035 / 035.01].
+- [A287] BEGUN — Black-Banner Five marker witnessed before this chunk [ch 035 / 035.01].
+- [A288] BEGUN — Endless Chant error witnessed before this chunk [ch 035 / 035.01].
+- [A289] BEGUN — Endless Chant first heard before this chunk [ch 035 / 035.01].
+- [A290] BEGUN — Sjurkar benediction error witnessed before this chunk [ch 035 / 035.01].
+- [A291] BEGUN — Stroudite sponsorship discovered before this chunk [ch 035 / 035.01].
+- [A292] BEGUN — Drow refugee mentioned before this chunk [ch 035 / 035.01].
+- [A293] BEGUN — Refugee family interaction occurred before this chunk [ch 035 / 035.01].
+- [A294] BEGUN — Candlekeep murder investigation occurred before this chunk [ch 035 / 035.01].
+- [A295] BEGUN — Cryptogram race occurred before this chunk [ch 035 / 035.01].
+- [A296] BEGUN — Vault confrontation occurred before this chunk [ch 035 / 035.01].
+- [A297] BEGUN — Gauntlgrym call occurred before this chunk [ch 035 / 035.01].
+- [A298] BEGUN — Daz / Yvenne research occurred before this chunk [ch 035 / 035.01].
+- [A299] BEGUN — Zalthir / Khell-Vire research occurred before this chunk [ch 035 / 035.01].
+- [A300] BEGUN — Thorin / Philemon therapy occurred before this chunk [ch 035 / 035.01].
+- [A301] BEGUN — Gyrgum / Vareth stations occurred before this chunk [ch 035 / 035.01].
+- [A302] BEGUN — Glabbagool’s question occurred before this chunk [ch 035 / 035.01].
+- [A303] BEGUN — Polly Pocket disposition determined before this chunk [ch 035 / 035.01].
+- [A304] BEGUN — Sylvira recruitment occurred before this chunk [ch 035 / 035.01].
+- [A305] BEGUN — Daral rescue occurred before this chunk [ch 035 / 035.01].
+- [A306] BEGUN — Kalan missing occurred before this chunk [ch 035 / 035.01].
+- [A307] BEGUN — Alkrist arrest occurred before this chunk [ch 035 / 035.01].
+- [A308] BEGUN — Moziqodo binding occurred before this chunk [ch 035 / 035.01].
+- [A309] BEGUN — Daz / Yvenne synthesis investigation occurred before this chunk [ch 035 / 035.01].
+- [A310] BEGUN — Daz / Yvenne Vaelissa name and deadline occurred before this chunk [ch 035 / 035.01].
+- [A311] BEGUN — Thorin / Philemon Layer 2 reveal occurred before this chunk [ch 035 / 035.01].
+- [A312] BEGUN — Gyrgum / Vareth unsigned sting occurred before this chunk [ch 035 / 035.01].
+- [A313] BEGUN — Glabbagool Shadow Apprentice unlock occurred before this chunk [ch 035 / 035.01].
+- [A314] BEGUN — Candlekeep gates arrival occurred before this chunk [ch 035 / 035.01].
+- [A315] BEGUN — Refectory dinner occurred before this chunk [ch 035 / 035.01].
+- [A316] BEGUN — Whispering Dome visit occurred before this chunk [ch 035 / 035.01].
+- [A317] BEGUN — Infernal Fortress interview occurred before this chunk [ch 035 / 035.01].
+- [A318] BEGUN — Janussi’s chamber investigation occurred before this chunk [ch 035 / 035.01].
+- [A319] BEGUN — Southern Dining Hall search occurred before this chunk [ch 035 / 035.01].
+- [A320] BEGUN — Bath House poisoning occurred before this chunk [ch 035 / 035.01].
+- [A321] BEGUN — Founder's Court interview occurred before this chunk [ch 035 / 035.01].
+- [A322] BEGUN — Oak Tree Apothecary evidence occurred before this chunk [ch 035 / 035.01].
+- [A323] BEGUN — Kitchens witness occurred before this chunk [ch 035 / 035.01].
+- [A324] BEGUN — Erudite Outfitters evidence occurred before this chunk [ch 035 / 035.01].
+- [A325] BEGUN — Drakonoikos interview occurred before this chunk [ch 035 / 035.01].
+- [A326] BEGUN — Reader's Tower interview occurred before this chunk [ch 035 / 035.01].
+- [A327] BEGUN — Immortal Chambers interview occurred before this chunk [ch 035 / 035.01].
+- [A328] BEGUN — Sea Warden's Tower check-in occurred before this chunk [ch 035 / 035.01].
+- [A329] BEGUN — Bell Tower cells occurred before this chunk [ch 035 / 035.01].
+- [A330] BEGUN — Cursed Tower incidents occurred before this chunk [ch 035 / 035.01].
+- [A331] BEGUN — Pont de Paramours disappearance occurred before this chunk [ch 035 / 035.01].
+- [A332] BEGUN — Oval Theatre tournament occurred before this chunk [ch 035 / 035.01].
+- [A333] BEGUN — House of Alaundo riddle occurred before this chunk [ch 035 / 035.01].
+- [A334] BEGUN — Astronomicon Orrery clue occurred before this chunk [ch 035 / 035.01].
+- [A335] BEGUN — Philosopher's Court clue occurred before this chunk [ch 035 / 035.01].
+- [A336] BEGUN — Melodrome / Jook's Box encounter occurred before this chunk [ch 035 / 035.01].
+- [A337] BEGUN — Jewel of the Styx encounter occurred before this chunk [ch 035 / 035.01].
+- [A338] BEGUN — School of Drama statue occurred before this chunk [ch 035 / 035.01].
+- [A339] BEGUN — High Tower Library combat occurred before this chunk [ch 035 / 035.01].
+- [A340] BEGUN — Lava chamber occurred before this chunk [ch 035 / 035.01].
+- [A341] BEGUN — Vault B2 confrontation occurred before this chunk [ch 035 / 035.01].
+- [A342] BEGUN — Vault B3 chamber occurred before this chunk [ch 035 / 035.01].
+- [A343] BEGUN — Vault tower rocket lever occurred before this chunk [ch 035 / 035.01].
+- [A344] BEGUN — Janussi first contact occurred before this chunk [ch 035 / 035.01].
+- [A345] BEGUN — Janussi death occurred before this chunk [ch 035 / 035.01].
+- [A346] BEGUN — Bookwyrm first contact occurred before this chunk [ch 035 / 035.01].
+- [A347] BEGUN — Bookwyrm Teles sighting occurred before this chunk [ch 035 / 035.01].
+- [A348] BEGUN — Bookwyrm confrontation occurred before this chunk [ch 035 / 035.01].
+- [A349] BEGUN — Bookwyrm death occurred before this chunk [ch 035 / 035.01].
+- [A350] BEGUN — Kalan first contact occurred before this chunk [ch 035 / 035.01].
+- [A351] BEGUN — Kalan second key handoff occurred before this chunk [ch 035 / 035.01].
+- [A352] BEGUN — Kalan farewell occurred before this chunk [ch 035 / 035.01].
+- [A353] BEGUN — Kalan disappearance occurred before this chunk [ch 035 / 035.01].
+- [A354] BEGUN — Sylvira first contact occurred before this chunk [ch 035 / 035.01].
+- [A355] BEGUN — Sylvira prime suspect status occurred before this chunk [ch 035 / 035.01].
+- [A356] BEGUN — Sylvira recruitment occurred before this chunk [ch 035 / 035.01].
+- [A357] BEGUN — Sylvira dispel occurred before this chunk [ch 035 / 035.01].
+- [A358] BEGUN — Sylvira survival status occurred before this chunk [ch 035 / 035.01].
+- [A359] BEGUN — Daral first contact occurred before this chunk [ch 035 / 035.01].
+- [A360] BEGUN — Daral poisoning discovery occurred before this chunk [ch 035 / 035.01].
+- [A361] BEGUN — Daral fate determined before this chunk [ch 035 / 035.01].
+- [A362] BEGUN — Daral testimony occurred before this chunk [ch 035 / 035.01].
+- [A363] BEGUN — Fheminor first contact occurred before this chunk [ch 035 / 035.01].
+- [A364] BEGUN — Fheminor revelation occurred before this chunk [ch 035 / 035.01].
+- [A365] BEGUN — Fheminor appointment occurred before this chunk [ch 035 / 035.01].
+- [A366] BEGUN — A'lai first contact occurred before this chunk [ch 035 / 035.01].
+- [A367] BEGUN — A'lai interview occurred before this chunk [ch 035 / 035.01].
+- [A368] BEGUN — A'lai sapphire smash occurred before this chunk [ch 035 / 035.01].
+- [A369] BEGUN — A'lai fate resolved before this chunk [ch 035 / 035.01].
+- [A370] BEGUN — Alkrist first contact occurred before this chunk [ch 035 / 035.01].
+- [A371] BEGUN — Alkrist interview occurred before this chunk [ch 035 / 035.01].
+- [A372] BEGUN — Alkrist arrest occurred before this chunk [ch 035 / 035.01].
+- [A373] BEGUN — Fembris first contact occurred before this chunk [ch 035 / 035.01].
+- [A374] BEGUN — Fembris rooftop confession occurred before this chunk [ch 035 / 035.01].
+- [A375] BEGUN — Tadric first contact occurred before this chunk [ch 035 / 035.01].
+- [A376] BEGUN — Tadric flight assistance occurred before this chunk [ch 035 / 035.01].
+- [A377] BEGUN — Tadric appointment occurred before this chunk [ch 035 / 035.01].
+- [A378] BEGUN — Hollypocket witness occurred before this chunk [ch 035 / 035.01].
+- [A379] BEGUN — Sprig Summerfoot witness occurred before this chunk [ch 035 / 035.01].
+- [A380] BEGUN — Leuwin witness occurred before this chunk [ch 035 / 035.01].
+- [A381] BEGUN — Teles interview occurred before this chunk [ch 035 / 035.01].
+- [A382] BEGUN — Kazryn interview occurred before this chunk [ch 035 / 035.01].
+- [A383] BEGUN — Khell-Vire letter sealed before this chunk [ch 035 / 035.01].
+- [A384] BEGUN — Philemon letter delivered before this chunk [ch 035 / 035.01].
+- [A385] BEGUN — Vareth final stations occurred before this chunk [ch 035 / 035.01].
+- [A386] BEGUN — Yvenne third sitting occurred before this chunk [ch 035 / 035.01].
+- [A387] BEGUN — Yvenne Vaelissa name delivery occurred before this chunk [ch 035 / 035.01].
+- [A388] BEGUN — Yvenne Fourth-Seat synthesis occurred before this chunk [ch 035 / 035.01].
+- [A389] BEGUN — Inda emergence occurred before this chunk [ch 035 / 035.01].
+- [A390] BEGUN — Spanner handoff occurred before this chunk [ch 035 / 035.01].
+- [A391] BEGUN — Moziqodo first encounter occurred before this chunk [ch 035 / 035.01].
+- [A392] BEGUN — Moziqodo binding break occurred before this chunk [ch 035 / 035.01].
+- [A393] BEGUN — Moziqodo fate resolved before this chunk [ch 035 / 035.01].
+- [A394] BEGUN — Manshoon voice announcement occurred before this chunk [ch 035 / 035.01].
+- [A395] BEGUN — Manshoon confrontation occurred before this chunk [ch 035 / 035.01].
+- [A396] BEGUN — Manshoon escape occurred before this chunk [ch 035 / 035.01].
+- [A397] BEGUN — Glabbagool bad night occurred before this chunk [ch 035 / 035.01].
+- [A398] BEGUN — Glabbagool Shadow Apprentice status confirmed before this chunk [ch 035 / 035.01].
+- [A399] BEGUN — Eldeth letter delivered before this chunk [ch 035 / 035.01].
+- [A400] BEGUN — Brevin incident occurred before this chunk [ch 035 / 035.01].
+- [A401] BEGUN — Brevin bedclothes incident occurred before this chunk [ch 035 / 035.01].
+- [A402] BEGUN — Marin quill incident occurred before this chunk [ch 035 / 035.01].
+- [A404] BEGUN — Five Books admission occurred before this chunk [ch 035 / 035.01].
+- [A405] BEGUN — Endless Chant fragment heard before this chunk [ch 035 / 035.01].
+- [A406] BEGUN — Janussi murder forensic reveals occurred before this chunk [ch 035 / 035.01].
+- [A407] BEGUN — Two “Sylvira” figures revealed before this chunk [ch 035 / 035.01].
+- [A408] BEGUN — Bookwyrm disguise revealed before this chunk [ch 035 / 035.01].
+- [A409] BEGUN — Alkrist identified as killer before this chunk [ch 035 / 035.01].
+- [A410] BEGUN — Disguise rosetta cracked before this chunk [ch 035 / 035.01].
+- [A411] BEGUN — Wards drop hallucinations occurred before this chunk [ch 035 / 035.01].
+- [A412] BEGUN — Cryptogram recovered before this chunk [ch 035 / 035.01].
+- [A413] BEGUN — Manshoon arrival announced before this chunk [ch 035 / 035.01].
+- [A414] BEGUN — Iron Owlbear found dead before this chunk [ch 035 / 035.01].
+- [A415] BEGUN — Echo 1 activated before this chunk [ch 035 / 035.01].
+- [A416] BEGUN — Echo 2 activated before this chunk [ch 035 / 035.01].
+- [A417] BEGUN — Echo 3 activated before this chunk [ch 035 / 035.01].
+- [A418] BEGUN — Echo 4 activated before this chunk [ch 035 / 035.01].
+- [A419] BEGUN — Book of Vile Darkness fate determined before this chunk [ch 035 / 035.01].
+- [A420] BEGUN — Vault tower rocket lever pulled or left before this chunk [ch 035 / 035.01].
+- [A421] BEGUN — Candlekeep restructuring occurred before this chunk [ch 035 / 035.01].
+- [A422] BEGUN — Party named guest seekers occurred before this chunk [ch 035 / 035.01].
+- [A425] BEGUN — Daz first sinus-pressure moment occurred before this chunk [ch 035 / 035.01].
+- [A426] BEGUN — Yvenne named Daz’s sensitivity before this chunk [ch 035 / 035.01].
+- [A427] BEGUN — Marin quill incident occurred before this chunk [ch 035 / 035.01].
+- [A428] BEGUN — Brevin Sloobludop recitation occurred before this chunk [ch 035 / 035.01].
+- [A429] BEGUN — Brevin bedclothes incident occurred before this chunk [ch 035 / 035.01].
+- [A430] BEGUN — Endless Chant first stoppage occurred before this chunk [ch 035 / 035.01].
+- [A433] BEGUN — Echo 1 named surface contamination before this chunk [ch 035 / 035.01].
+- [A434] BEGUN — Daz and Yvenne field-perception expertise confirmed before this chunk [ch 035 / 035.01].
+- [A435] BEGUN — Sylvira recruited before this chunk [ch 035 / 035.01].
+- [A441] BEGUN — Polly Pocket released before this chunk [ch 035 / 035.01].
+- [A442] BEGUN — Walking-permit medallions worn before this chunk [ch 035 / 035.01].
+- [A443] BEGUN — Second High Tower key held before this chunk [ch 035 / 035.01].
+- [A444] BEGUN — Glabbagool’s Whispering Dome visit occurred before this chunk [ch 035 / 035.01].
+- [A445] BEGUN — Glabbagool’s Shadow Apprentice status confirmed before this chunk [ch 035 / 035.01].
+- [A446] BEGUN — Glabbagool’s Juiblex contact occurred before this chunk [ch 035 / 035.01].
+- [A447] BEGUN — Glabbagool’s “mother voice” contact occurred before this chunk [ch 035 / 035.01].
+- [A448] BEGUN — Glabbagool’s “I’m the only one” declaration occurred before this chunk [ch 035 / 035.04].
+- [A449] BEGUN — Glabbagool’s pseudopod demonstration occurred before this chunk [ch 036 / 036.04].
+- [A450] BEGUN — Glabbagool’s “I’m better than them” declaration occurred before this chunk [ch 036 / 036.04].

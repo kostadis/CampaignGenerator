@@ -1,0 +1,344 @@
+## Events
+- The party takes a short rest beside the healed Tadric, who struggles to use his hit dice to restore himself. [ch 064 / 064.01]
+- Tadric surrenders the genuine High Tower key but refuses to withdraw from the mission, declaring, “I held it all night and I didn't know what it was. Now that I know what it is, I'm not giving it to you and going to bed.” [ch 064 / 064.01]
+- Gyrgum warns Tadric that accompanying the party is dangerous; Tadric insists, “I faced Moziqodo,” and Gyrgum relents, noting he now has resurrection magic “if worst comes to worst.” [ch 064 / 064.01]
+- The endless chant of prophecies in Candlekeep abruptly and completely stops, a phenomenon Tadric recognizes as unprecedented. [ch 064 / 064.01]
+- Tadric urgently tells the party, “Sylvira, someone needs to tell Sylvira that her son is dead,” triggering an awkward silence. [ch 064 / 064.01]
+- Gyrgum suggests the messenger should be someone who knows Sylvira; Daz frames it as needing someone with the best understanding of empathy to deliver the news. [ch 064 / 064.01]
+- The party decides to defer informing Sylvira as a problem for the Ember Grapple and presses toward the High Tower, with Tadric guiding them. [ch 064 / 064.01]
+- Gyrgum casts Bless on the party as they depart toward the High Tower, granting them additional 1d4 on attack rolls and saving throws. [ch 064 / 064.02]
+- On the walkway to the High Tower, the party discovers the body of a Watcher killed by a crossbow bolt with foreign fletching. [ch 064 / 064.02]
+- Daz identifies the bolt’s fletching as inconsistent with Candlekeep’s standard ammunition, confirming outside attackers used the same route. [ch 064 / 064.02]
+- Gyrgum estimates the Watcher was killed within the last half hour and deduces the intruders climbed the stairs behind them and proceeded toward the tower. [ch 064 / 064.02]
+- The party advances cautiously toward the High Tower lobby, abandoning an ordinary approach due to imminent threat. [ch 064 / 064.02]
+- The party arrives at the High Tower lobby and observes two Zhentarim raiders looting books from shelves according to a written manifest, their swords bloodied. [ch 064 / 064.03]
+- One raider carries the bow used to kill the Watcher, confirming the connection between the two events. [ch 064 / 064.03]
+- A'lai Aivenmore stands on a landing fifteen feet above, awaiting Moziqodo’s arrival, unaware the demonspawn is dead or that the party holds the second key. [ch 064 / 064.03]
+- Gyrgum attempts a surprise Guiding Bolt on A'lai, but it fails to penetrate his Mage Armor. [ch 064 / 064.04]
+- Zalthir and Glabbagool rush into the chamber and strike A'lai, inflicting twenty-two points of damage before combat fully begins. [ch 064 / 064.04]
+- Daz casts Maximilian's Earthen Grasp on A'lai; A'lai counters it with Counterspell, consuming a spell slot and reaction. [ch 064 / 064.04]
+- Daz immediately casts Maximilian's Earthen Grasp again, declaring, “I'm persistent.” A'lai fails the Strength save, takes fifteen bludgeoning damage, and is restrained. [ch 064 / 064.04]
+- A'lai uses Misty Step to teleport across the room, escaping the restraint but expending another spell and preventing a more devastating spell that turn. [ch 064 / 064.04]
+- A'lai unleashes Arcane Burst attacks: one misses Daz, another deals twenty-six damage to him, and a third deals twenty-nine damage to Zalthir. [ch 064 / 064.04]
+- A'lai pauses combat to say, “You've been so thorough,” and adds, “I want that on the record before anything else happens.” [ch 064 / 064.04]
+- Gyrgum asks if the murders were for academic prestige; A'lai replies, “You understand me.” [ch 064 / 064.04]
+- A'lai reveals Janussi gave him ten days to vacate his chair, and he would do “a great deal to keep it,” having no house, family, or country after thirty-one years at Candlekeep. [ch 064 / 064.04]
+- A'lai insists he did not set out to be a murderer or exile. [ch 064 / 064.04]
+- Daz compares him to “the dude with the red stapler in Office Space.” [ch 064 / 064.04]
+- A'lai corrects the party: “I have been removing books from this library for 11 years, and I have never once chosen which ones. A list arrives. I fill it.” [ch 064 / 064.04]
+- He describes the courier: “wears a glove on his right hand, and under the glove, the hand is metal,” and admits he never asked why. [ch 064 / 064.04]
+- A'lai identifies his master as Manshoon, saying, “You have not heard of it. That is not an accident. It is a career.” [ch 064 / 064.04]
+- The party recognizes Manshoon as the legendary wizard tied to the Zhentarim, the Moonsea, and Zhentil Keep, known to have died more than once. [ch 064 / 064.04]
+- A'lai produces the sapphire and declares, “He wants one book out of this keep, and he was always going to have it. It was simply the version where nobody had to die.” [ch 064 / 064.04]
+- After seeing the dead, A'lai revises it to “fewer people had to die” and attempts to smash the sapphire. [ch 064 / 064.04]
+- Daz uses Telekinesis to wrench the sapphire from A'lai’s hand, forcing a failed Strength save. [ch 064 / 064.04]
+- Daz feigns retreat toward the hallway and secretly passes the sapphire to Gyrgum with a successful 19 Sleight of Hand check. [ch 064 / 064.04]
+- Gyrgum now holds the sapphire, the genuine High Tower key #2, and Kalan’s fake decoy key. [ch 064 / 064.04]
+- A'lai, furious at being outmaneuvered, unleashes four Arcane Burst attacks against Zalthir; enough connect to knock him unconscious. [ch 064 / 064.04]
+- Glabbagool settles over Zalthir to guard and stabilize him. [ch 064 / 064.04]
+- Thorin engages the Zhentarim raiders with Dawnbringer, dealing thirteen points of damage and using a superiority die for Menacing Attack, but one raider resists intimidation. [ch 064 / 064.04]
+- Gyrgum charges forward and casts Tasha's Caustic Brew in a line through both raiders; both fail their Dexterity saves. [ch 064 / 064.04]
+- One raider takes eight points of acid damage and dies immediately; the other takes only two and remains standing, coated in acid. [ch 064 / 064.04]
+- Casting Tasha's Caustic Brew ends Gyrgum’s Bless. [ch 064 / 064.04]
+- The session ends with one acid-coated Zhentarim raider still standing, Zalthir unconscious under Glabbagool, A'lai deprived of the sapphire but still dangerous, and the sealed inner door unopened. [ch 064 / end]
+
+## Concluded
+- The investigation into the Watcher’s murder is concluded: the foreign bolt and its direction confirm the attackers came from outside and used the same path toward the High Tower. [ch 064 / 064.02]
+- Tadric’s internal conflict over the High Tower key is resolved: he surrenders it but chooses to accompany the party. [ch 064 / 064.01]
+- The party’s decision to defer informing Sylvira of her son’s death is finalized as a future Ember Grapple responsibility. [ch 064 / 064.01]
+- The Zhentarim raiders’ looting mission is interrupted and partially neutralized: one raider is killed, the other incapacitated but alive. [ch 064 / 064.04]
+- A'lai Aivenmore’s attempt to smash the sapphire is thwarted by Daz’s Telekinesis, preventing its triggering effect. [ch 064 / 064.04]
+- Daz’s sleight-of-hand transfer of the sapphire to Gyrgum is successfully concealed from A'lai. [ch 064 / 064.04]
+- Gyrgum’s Bless spell concludes when he begins concentrating on Tasha's Caustic Brew. [ch 064 / 064.04]
+
+## Threads
+- [ADVANCED] **Sylvira’s son’s death** — Tadric explicitly reminds the party, “Sylvira, someone needs to tell Sylvira that her son is dead,” making the obligation immediate and undeniable; the party defers it as an Ember Grapple problem [ch 064 / 064.01].
+- [OPENED] **Manshoon’s influence in Candlekeep** — A'lai Aivenmore confesses he has been removing books for eleven years on Manshoon’s orders, delivered by a courier with a metal hand; the party learns Manshoon wants one specific book and has been operating covertly for over a decade [ch 064 / 064.04].
+- [ADVANCED] **High Tower key and sapphire** — The genuine High Tower key #2 is now in Gyrgum’s possession alongside the sapphire; A'lai retains key #1 but is deprived of the gem, leaving the door sealed and the sapphire’s effect untriggered [ch 064 / 064.04].
+- [ADVANCED] **A'lai Aivenmore’s fate** — A'lai is stripped of the sapphire, restrained once, teleported, and damaged by Daz’s spells; he remains alive, furious, and dangerous, with his magical resources diminished and his plan in ruins [ch 064 / 064.04].
+- [ADVANCED] **The silence of Candlekeep’s prophecies** — The eternal chant of prophecies stops completely for the first time in memory; Tadric’s shock confirms its significance, and the party now knows this unprecedented silence is a major event tied to the unfolding crisis [ch 064 / 064.01].
+- [OPENED] **The metal-hand courier** — A'lai describes the courier who delivers book lists with a glove concealing a metal hand; the party now has a distinct, unexplained physical identifier for Manshoon’s agent [ch 064 / 064.04].
+- [ADVANCED] **The Ember Grapple’s identity** — The party formally adopts the name “Ember Grapple” as the group responsible for future tasks, including informing Sylvira [ch 064 / 064.01].
+- [ADVANCED] **Zalthir’s condition** — Zalthir is knocked unconscious by A'lai’s Arcane Burst attacks; Glabbagool remains on him to stabilize him, making his survival an immediate concern [ch 064 / 064.04].
+
+## NPC Status
+- Tadric | Alive | High Tower lobby | Allied, emboldened, and determined to prove himself [ch 064 / 064.01; ch 064 / end]
+- A'lai Aivenmore | Alive | High Tower lobby | Hostile, diminished in resources, furious at being outmaneuvered [ch 064 / 064.04; ch 064 / end]
+- Moziqodo | Dead | — | Confirmed deceased before this session; his corpse remains with the party [ch 064 / 064.01; ch 064 / npcs]
+- Manshoon | Unknown | — | Mentioned as A'lai’s master; no direct appearance [ch 064 / 064.04; ch 064 / npcs]
+- Glabbagool | Alive | High Tower lobby | Allied, guarding Zalthir [ch 064 / 064.04; ch 064 / end]
+- Zhentarim Raider 1 | Dead | High Tower lobby | Killed by Tasha's Caustic Brew [ch 064 / 064.04; ch 064 / end]
+- Zhentarim Raider 2 | Alive | High Tower lobby | Coated in acid, still standing, suffering ongoing damage [ch 064 / 064.04; ch 064 / end]
+- Gyrgum | Alive | High Tower lobby | Allied, holding key #2 and sapphire, ended Bless to cast Tasha's Caustic Brew [ch 064 / 064.04; ch 064 / end]
+- Daz | Alive | High Tower lobby | Allied, used Telekinesis to steal sapphire, performed sleight-of-hand, feels responsible for Zalthir’s fall [ch 064 / 064.04; ch 064 / end]
+- Thorin | Alive | High Tower lobby | Allied, engaged raiders with Dawnbringer, used Menacing Attack [ch 064 / 064.04; ch 064 / end]
+- Zalthir | Unconscious | High Tower lobby | Knocked out by A'lai’s Arcane Bursts; guarded by Glabbagool [ch 064 / 064.04; ch 064 / end]
+
+## World
+- [LOCATION] **Candlekeep** — The endless chant of prophecies, a constant background feature for centuries, has fallen completely silent for the first time, an event so unprecedented that Tadric is visibly stunned [ch 064 / 064.01; ch 064 / locations].
+- [LOCATION] **Walkway to the High Tower** — A Watcher has been killed by a crossbow bolt with foreign fletching, proving outside attackers have infiltrated Candlekeep and moved undetected toward the High Tower [ch 064 / 064.02; ch 064 / locations].
+- [LOCATION] **High Tower Lobby** — Two Zhentarim raiders are looting books according to a written manifest; one carries the murder weapon, confirming the link between the walkway killing and the High Tower incursion [ch 064 / 064.03; ch 064 / locations].
+- [LOCATION] **High Tower inner door** — The sealed inner door on the landing requires both High Tower keys to open; A'lai holds key #1, and Gyrgum now holds key #2 and the sapphire, leaving the door unopened [ch 064 / 064.03; ch 064 / items].
+- [NPC] **A'lai Aivenmore** — A 31-year veteran scholar of Candlekeep who, fearing loss of his academic chair, orchestrated book thefts for eleven years under Manshoon’s orders; he claims he never chose the books, only followed lists [ch 064 / 064.04; ch 064 / npcs].
+- [NPC] **Manshoon** — A legendary, feared wizard tied to the Zhentarim, the Moonsea, and Zhentil Keep; A'lai confirms he has been directing book thefts for eleven years through a courier with a metal hand; the party now knows he seeks one specific book from Candlekeep [ch 064 / 064.04; ch 064 / npcs].
+- [ITEM] **Sapphire Artifact** — A magical gem A'lai intended to smash to trigger an unknown effect tied to the High Tower keys; now in Gyrgum’s possession, its function remains uncertain [ch 064 / 064.04; ch 064 / items].
+- [ITEM] **Real High Tower Key #2** — The genuine key, previously carried unknowingly by Tadric, is now held by Gyrgum; it is one of two required to open the sealed inner door [ch 064 / 064.04; ch 064 / items].
+- [ITEM] **Foreign Crossbow Bolt** — A bolt with fletching inconsistent with Candlekeep’s standard issue; its presence confirms external attackers used the same route as the party [ch 064 / 064.02; ch 064 / items].
+- [ITEM] **Written Manifest** — A list used by Zhentarim raiders to identify which books to steal; confirms the looting is targeted and matches A'lai’s confession of receiving similar lists for eleven years [ch 064 / 064.03; ch 064 / items].
+- [THREAT] **Manshoon’s pursuit** — A'lai confirms Manshoon has been orchestrating book thefts for eleven years; the party now knows Manshoon is actively seeking a specific book and may have agents inside Candlekeep [ch 064 / 064.04].
+- [FACTION] **Zhentarim** — Two raiders confirmed as Zhentarim operatives, looting books on a written manifest; one carries the bow that killed the Watcher, proving direct involvement in the murder and theft [ch 064 / 064.03; ch 064 / npcs].
+- [FACTION] **Ember Grapple** — The party formally adopts this name as their group identity for future missions, including informing Sylvira of her son’s death [ch 064 / 064.01].
+
+## Party
+- The party is in the High Tower lobby of Candlekeep, engaged in an unresolved battle with A'lai Aivenmore and a surviving Zhentarim raider.
+- Group name: Ember Grapple (formally adopted in this session) [ch 064 / 064.01].
+- Zalthir is unconscious, guarded by Glabbagool; his survival is uncertain and requires stabilization.
+- Daz is emotionally shaken, blaming himself for Zalthir’s condition after stealing the sapphire and retreating.
+- Gyrgum holds the genuine High Tower key #2, the sapphire artifact, and Kalan’s fake decoy key; he has expended Bless and is now concentrating on Tasha's Caustic Brew.
+- Thorin used Dawnbringer against the raiders, dealing significant damage; his sword’s pommel was considered for smashing the sapphire but not used.
+- Tadric accompanies the party, now fully committed to the mission, having surrendered the key and insisted on joining despite danger.
+- The party intends to defeat A'lai Aivenmore, secure the inner door, and determine the sapphire’s effect; they must also decide how to proceed with the surviving acid-coated raider and the unconscious Zalthir.
+- Daz’s field-perception pressure headache continues to sharpen, though no new insight is recorded in this session.
+
+## Audit
+- [A423] SHOWN — Manshoon-pursuit thread activated: A'lai Aivenmore explicitly names Manshoon as his master and confirms eleven years of book thefts under his direction [ch 064 / 064.04].
+- [A425] BEGUN — Daz’s sinus-pressure field-perception continues to sharpen, as previously established in prior sessions, but no new moment of perception or revelation is recorded here [ch 064 / 064.01; ch 064 / 064.04].
+- [A430] SHOWN — Endless Chant first complete stoppage: the prophecy chant in Candlekeep falls completely silent, a phenomenon Tadric confirms has never happened before [ch 064 / 064.01].
+- [A438] BEGUN — Daral saved: Daral was saved in a prior session; this session confirms his survival is relevant to the party’s knowledge but no new action regarding him occurs [ch 064 / 064.01].
+- [A441] BEGUN — Polly Pocket released as messenger: Polly Pocket was released in a prior session; this session does not reference her again [ch 064 / 064.01].
+- [A442] BEGUN — Walking-permit medallions worn: these were acquired and worn in prior sessions; no mention of them here [ch 064 / 064.01].
+- [A443] BEGUN — Second High Tower key held: Tadric surrendered key #2 in this session; it is now in Gyrgum’s possession [ch 064 / 064.01; ch 064 / 064.04].
+- [A394] BEGUN — Manshoon voice-only arrival announced: Manshoon was only mentioned by A'lai; no direct appearance or voice [ch 064 / 064.04].
+- [A395] BEGUN — Manshoon direct confrontation: Manshoon is mentioned but not present; no direct confrontation occurs [ch 064 / 064.04].
+- [A396] BEGUN — Manshoon escape: Manshoon is not present; no escape occurs [ch 064 / 064.04].
+- [A413] BEGUN — Manshoon arrival announced: Manshoon’s presence is implied via A'lai’s confession, but no announcement occurs [ch 064 / 064.04].
+- [A421] BEGUN — Candlekeep institutional restructuring: Tadric’s appointment as Gatewarden is implied as a future possibility, but not yet confirmed [ch 064 / 064.01].
+- [A422] BEGUN — Party named guest seekers of the Avowed: this title was granted in a prior session; not referenced here [ch 064 / 064.01].
+- [A301] BEGUN — Gyrgum / Vareth scholar arc — Stroud Wake stations: completed in prior sessions; not referenced here [ch 064 / 064.01].
+- [A302] BEGUN — Glabbagool's question: resolved in prior sessions; not referenced here [ch 064 / 064.01].
+- [A303] BEGUN — Polly Pocket disposition: resolved in prior sessions; not referenced here [ch 064 / 064.01].
+- [A359] BEGUN — Daral first contact: occurred in prior sessions; not referenced here [ch 064 / 064.01].
+- [A366] BEGUN — A'lai Aivenmore first contact: occurred in prior sessions; not referenced here [ch 064 / 064.01].
+- [A375] BEGUN — Tadric first contact: occurred in prior sessions; not referenced here [ch 064 / 064.01].
+- [A391] BEGUN — Moziqodo first encounter: occurred in prior sessions; not referenced here [ch 064 / 064.01].
+- [A405] BEGUN — Endless Chant — Deadwinter Prophecy fragment heard: heard in prior sessions; not referenced here [ch 064 / 064.01].
+- [A410] BEGUN — Disguise rosetta cracked: achieved in prior session; not referenced here [ch 064 / 064.01].
+- [A411] BEGUN — Wards drop: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A412] BEGUN — Cryptogram recovered: achieved in prior session; not referenced here [ch 064 / 064.01].
+- [A415] BEGUN — Echo 1 activated: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A416] BEGUN — Echo 2 activated: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A417] BEGUN — Echo 3 activated: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A418] BEGUN — Echo 4 activated: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A419] BEGUN — Book of Vile Darkness fate determined: resolved in prior session; not referenced here [ch 064 / 064.01].
+- [A420] BEGUN — Vault tower rocket lever pulled or left: resolved in prior session; not referenced here [ch 064 / 064.01].
+- [A431] BEGUN — Ward-drop vision sequence: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A432] BEGUN — Glabbagool Juiblex “mother voice” contact: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A433] BEGUN — Echo 1 prophecy names surface-contamination: occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A434] BEGUN — Daz and Yvenne field-perception expertise confirmed: achieved in prior session; not referenced here [ch 064 / 064.01].
+- [A435] BEGUN — Sylvira recruited (Path B): occurred in prior session; not referenced here [ch 064 / 064.01].
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks: achieved in prior session; not referenced here [ch 064 / 064.01].
+- [A437] BEGUN — Vareth / Drakonoikos goodwill: achieved in prior session; not referenced here [ch 064 / 064.01].
+- [A439] BEGUN — Khell-Vire Watcher's Stillness earned: achieved in prior session; not referenced here [ch 064 / 064.01].
+- [A440] BEGUN — Glabbagool Whispering Dome visit: achieved in prior session; not referenced here [ch 064 / 064.01].
+- [A223] BEGUN — Travelogue prelude — party arrival at Candlekeep gates: occurred prior to this session [ch 064 / 064.01].
+- [A224] BEGUN — Surface-madness gradient — party awareness established: occurred prior to this session [ch 064 / 064.01].
+- [A241] BEGUN — Forge of Mirabar — dwarven smithing city: not referenced here [ch 064 / 064.01].
+- [A242] BEGUN — Order of the Gauntlet shrine — Mirabar temples' quarter: not referenced here [ch 064 / 064.01].
+- [A243] BEGUN — Goldenfields — Chauntean temple-city and refugee shelter: not referenced here [ch 064 / 064.01].
+- [A244] BEGUN — Mountain's Mouth Inn — Triboar: not referenced here [ch 064 / 064.01].
+- [A245] BEGUN — Triboar memorial square — cairn of the Triboar dead: not referenced here [ch 064 / 064.01].
+- [A246] BEGUN — Waterdeep — city visit and shopping arc: not referenced here [ch 064 / 064.01].
+- [A247] BEGUN — Rishaal the Pageturner's — Waterdeep Castle Ward bookshop: not referenced here [ch 064 / 064.01].
+- [A248] BEGUN — Order of the Gauntlet chapter house — Waterdeep Sea Ward: not referenced here [ch 064 / 064.01].
+- [A249] BEGUN — Sleeping Snake fence — Waterdeep Dock Ward: not referenced here [ch 064 / 064.01].
+- [A250] BEGUN — Aurora's Whole Realms Catalog — Waterdeep Castle Ward: not referenced here [ch 064 / 064.01].
+- [A251] BEGUN — Halaster's Prized Findings — Waterdeep Trades Ward: not referenced here [ch 064 / 064.01].
+- [A252] BEGUN — Steelwoods of Mistshore — Waterdeep docks smith: not referenced here [ch 064 / 064.01].
+- [A253] BEGUN — River Shining Tavern — Daggerford: not referenced here [ch 064 / 064.01].
+- [A254] BEGUN — Hand of Tarvis monument — Daggerford village square: not referenced here [ch 064 / 064.01].
+- [A255] BEGUN — Burning Wizard inn — Beregost: not referenced here [ch 064 / 064.01].
+- [A256] BEGUN — Way of the Lion — cliff road to Candlekeep: not referenced here [ch 064 / 064.01].
+- [A257] BEGUN — Candlekeep Emerald Door — outer ward arrival: not referenced here [ch 064 / 064.01].
+- [A258] BEGUN — Eldeth farewell — Mithral Hall outskirts: not referenced here [ch 064 / 064.01].
+- [A259] BEGUN — Dwarven outriders — Mithral Hall salute to Eldeth: not referenced here [ch 064 / 064.01].
+- [A260] BEGUN — Stroudite polemicist — first contact and pamphlet handout: not referenced here [ch 064 / 064.01].
+- [A261] BEGUN — Sister Ellune — first contact at Goldenfields: not referenced here [ch 064 / 064.01].
+- [A262] BEGUN — Brindle Wenth and the Dornal Greyhand cup story — Mountain's Mouth Inn: not referenced here [ch 064 / 064.01].
+- [A263] BEGUN — Kestler the half-orc lay brother — first contact: not referenced here [ch 064 / 064.01].
+- [A264] BEGUN — Eldred the two-voiced courier — witnessed: not referenced here [ch 064 / 064.01].
+- [A265] BEGUN — Rishaal the Pageturner — first contact: not referenced here [ch 064 / 064.01].
+- [A266] BEGUN — Stroudite half-orc pilgrims — first contact: not referenced here [ch 064 / 064.01].
+- [A267] BEGUN — Field Ward street-preacher — witnessed: not referenced here [ch 064 / 064.01].
+- [A268] BEGUN — City Watch patrol — ooze-rights confrontation: not referenced here [ch 064 / 064.01].
+- [A269] BEGUN — Maerith of the Ford — first contact: not referenced here [ch 064 / 064.01].
+- [A270] BEGUN — Elin the silent child — first encounter: not referenced here [ch 064 / 064.01].
+- [A271] BEGUN — Veyloss the bard — "The Kenku Could Not Fly" performance: not referenced here [ch 064 / 064.01].
+- [A272] BEGUN — Festrum the gnome innkeeper — Burning Wizard history: not referenced here [ch 064 / 064.01].
+- [A273] BEGUN — Pilgrim at corner table — Endless Chant verse error: not referenced here [ch 064 / 064.01].
+- [A274] BEGUN — Triboar carpenter — Way of the Lion procession: not referenced here [ch 064 / 064.01].
+- [A275] BEGUN — Stroudite half-orc pilgrims — Way of the Lion procession: not referenced here [ch 064 / 064.01].
+- [A276] BEGUN — Bookwyrm — receives party at Candlekeep Emerald Door: not referenced here [ch 064 / 064.01].
+- [A277] BEGUN — Queenie the cat — witnessed at Candlekeep gate: not referenced here [ch 064 / 064.01].
+- [A278] BEGUN — First Faction painting — party witnesses original: not referenced here [ch 064 / 064.01].
+- [A279] BEGUN — Thorin and Dawnbringer ooze-rights stand: not referenced here [ch 064 / 064.01].
+- [A280] BEGUN — Thorin and Dawnbringer orphan-healing run: not referenced here [ch 064 / 064.01].
+- [A281] BEGUN — Daz somatic field-perception — first tell: not referenced here [ch 064 / 064.01].
+- [A282] BEGUN — Daz somatic field-perception — Eldred two-voice Insight: not referenced here [ch 064 / 064.01].
+- [A283] BEGUN — Daz somatic field-perception — Field Ward preacher Insight: not referenced here [ch 064 / 064.01].
+- [A284] BEGUN — Daz somatic field-perception — pressure-headache begins: not referenced here [ch 064 / 064.01].
+- [A285] BEGUN — Daz somatic field-perception — pressure-headache sharpens: continues from prior sessions, not new here [ch 064 / 064.01].
+- [A286] BEGUN — Six-pointed star — first appearance: not referenced here [ch 064 / 064.01].
+- [A287] BEGUN — Black-Banner Five trial-site marker: not referenced here [ch 064 / 064.01].
+- [A288] BEGUN — Endless Chant error — verse substitution: not referenced here [ch 064 / 064.01].
+- [A289] BEGUN — Endless Chant — first heard on wind: not referenced here [ch 064 / 064.01].
+- [A290] BEGUN — Sjurkar priest benediction error: not referenced here [ch 064 / 064.01].
+- [A291] BEGUN — Stroud-school sponsorship of Tarvis monument: not referenced here [ch 064 / 064.01].
+- [A292] BEGUN — Drow refugee in Waterdeep: not referenced here [ch 064 / 064.01].
+- [A293] BEGUN — Refugee family from Episode 1: not referenced here [ch 064 / 064.01].
+- [A294] BEGUN — Candlekeep murder investigation — conscription by Bookwyrm: not referenced here [ch 064 / 064.01].
+- [A295] BEGUN — Cryptogram race — six-clue chase: not referenced here [ch 064 / 064.01].
+- [A296] BEGUN — Vault confrontation — Manshoon and Book of Vile Darkness: not referenced here [ch 064 / 064.01].
+- [A297] BEGUN — Gauntlgrym call — Eldeth's letter: not referenced here [ch 064 / 064.01].
+- [A298] BEGUN — Daz / Yvenne scholar arc — Drow Material Culture: not referenced here [ch 064 / 064.01].
+- [A299] BEGUN — Zalthir / Khell-Vire scholar arc — Watcher's Stillness: not referenced here [ch 064 / 064.01].
+- [A300] BEGUN — Thorin / Philemon scholar arc — therapy phases: not referenced here [ch 064 / 064.01].
+- [A304] BEGUN — Sylvira recruitment — Path A / B / C: not referenced here [ch 064 / 064.01].
+- [A305] BEGUN — Daral rescue — Bath House poisoning: not referenced here [ch 064 / 064.01].
+- [A306] BEGUN — Kalan missing — Pont de Paramours: not referenced here [ch 064 / 064.01].
+- [A307] BEGUN — Alkrist arrest — Drakonoikos: not referenced here [ch 064 / 064.01].
+- [A308] BEGUN — Moziqodo binding — Cursed Tower: not referenced here [ch 064 / 064.01].
+- [A309] BEGUN — Daz / Yvenne — Fourth-Seat synthesis: not referenced here [ch 064 / 064.01].
+- [A310] BEGUN — Daz / Yvenne — Vaelissa T'sarran name: not referenced here [ch 064 / 064.01].
+- [A311] BEGUN — Thorin / Philemon — Layer 2 Brysis: not referenced here [ch 064 / 064.01].
+- [A312] BEGUN — Gyrgum / Vareth — unsigned sting: not referenced here [ch 064 / 064.01].
+- [A313] BEGUN — Glabbagool — Shadow Apprentice unlock: not referenced here [ch 064 / 064.01].
+- [A314] BEGUN — Candlekeep gates — party arrival: not referenced here [ch 064 / 064.01].
+- [A315] BEGUN — Refectory — dinner with Janussi alive: not referenced here [ch 064 / 064.01].
+- [A316] BEGUN — Whispering Dome — Glabbagool's question: not referenced here [ch 064 / 064.01].
+- [A317] BEGUN — Infernal Fortress — Sylvira interview: not referenced here [ch 064 / 064.01].
+- [A318] BEGUN — Janussi's chamber — crime scene: not referenced here [ch 064 / 064.01].
+- [A319] BEGUN — Southern Dining Hall — heart and lead chalice: not referenced here [ch 064 / 064.01].
+- [A320] BEGUN — Bath House — Daral interview: not referenced here [ch 064 / 064.01].
+- [A321] BEGUN — Founder's Court — Fheminor interview: not referenced here [ch 064 / 064.01].
+- [A322] BEGUN — Oak Tree Apothecary — midnight tears: not referenced here [ch 064 / 064.01].
+- [A323] BEGUN — Kitchens — Sprig Summerfoot: not referenced here [ch 064 / 064.01].
+- [A324] BEGUN — Erudite Outfitters — Bookwyrm's cloak: not referenced here [ch 064 / 064.01].
+- [A325] BEGUN — Drakonoikos — Alkrist interview: not referenced here [ch 064 / 064.01].
+- [A326] BEGUN — Reader's Tower — Bookwyrm interview: not referenced here [ch 064 / 064.01].
+- [A327] BEGUN — Immortal Chambers — A'lai interview: not referenced here [ch 064 / 064.01].
+- [A328] BEGUN — Sea Warden's Tower — Kalan check-in: not referenced here [ch 064 / 064.01].
+- [A329] BEGUN — Bell Tower — Polly Pocket cells: not referenced here [ch 064 / 064.01].
+- [A330] BEGUN — Cursed Tower — Moziqodo and rooftop: not referenced here [ch 064 / 064.01].
+- [A331] BEGUN — Pont de Paramours — Kalan disappearance: not referenced here [ch 064 / 064.01].
+- [A332] BEGUN — Oval Theatre — Casketball Tournament: not referenced here [ch 064 / 064.01].
+- [A333] BEGUN — House of Alaundo — riddle: not referenced here [ch 064 / 064.01].
+- [A334] BEGUN — Astronomicon Orrery — Limniz clue: not referenced here [ch 064 / 064.01].
+- [A335] BEGUN — Philosopher's Court — Fustilugs clue: not referenced here [ch 064 / 064.01].
+- [A336] BEGUN — Melodrome / Jook's Box — Stars at Dawn: not referenced here [ch 064 / 064.01].
+- [A337] BEGUN — Jewel of the Styx — wight shanty: not referenced here [ch 064 / 064.01].
+- [A338] BEGUN — School of Drama — Batbayar statue: not referenced here [ch 064 / 064.01].
+- [A339] BEGUN — High Tower Library — A'lai and Moziqodo combat: not referenced here [ch 064 / 064.01].
+- [A340] BEGUN — Lava chamber — bridge, Obsidian Door: not referenced here [ch 064 / 064.01].
+- [A341] BEGUN — The Vault (B2) — Manshoon confrontation: not referenced here [ch 064 / 064.01].
+- [A342] BEGUN — The Vault (B3) — Book of Vile Darkness chamber: not referenced here [ch 064 / 064.01].
+- [A343] BEGUN — Vault tower rocket — last resort lever: not referenced here [ch 064 / 064.01].
+- [A344] BEGUN — Janussi — first contact: not referenced here [ch 064 / 064.01].
+- [A345] BEGUN — Janussi — death: not referenced here [ch 064 / 064.01].
+- [A346] BEGUN — Bookwyrm — first contact: not referenced here [ch 064 / 064.01].
+- [A347] BEGUN — Bookwyrm — Teles sighting: not referenced here [ch 064 / 064.01].
+- [A348] BEGUN — Bookwyrm — confrontation and pivot: not referenced here [ch 064 / 064.01].
+- [A349] BEGUN — Bookwyrm — death: not referenced here [ch 064 / 064.01].
+- [A350] BEGUN — Kalan Strongbranch — first contact: not referenced here [ch 064 / 064.01].
+- [A351] BEGUN — Kalan — second key handoff: not referenced here [ch 064 / 064.01].
+- [A352] BEGUN — Kalan — farewell / deterioration: not referenced here [ch 064 / 064.01].
+- [A353] BEGUN — Kalan — disappearance: not referenced here [ch 064 / 064.01].
+- [A354] BEGUN — Sylvira Sashenstar — first contact: not referenced here [ch 064 / 064.01].
+- [A355] BEGUN — Sylvira — prime suspect status: not referenced here [ch 064 / 064.01].
+- [A356] BEGUN — Sylvira — recruitment: not referenced here [ch 064 / 064.01].
+- [A357] BEGUN — Sylvira — dispel of Moziqodo's binding: not referenced here [ch 064 / 064.01].
+- [A358] BEGUN — Sylvira — survival and senior status: not referenced here [ch 064 / 064.01].
+- [A359] BEGUN — Daral — first contact: not referenced here [ch 064 / 064.01].
+- [A360] BEGUN — Daral — poisoning discovery: not referenced here [ch 064 / 064.01].
+- [A361] BEGUN — Daral — death or survival: not referenced here [ch 064 / 064.01].
+- [A362] BEGUN — Daral — key witness testimony: not referenced here [ch 064 / 064.01].
+- [A363] BEGUN — Fheminor — first contact: not referenced here [ch 064 / 064.01].
+- [A364] BEGUN — Fheminor — "Bookwyrm was not surprised": not referenced here [ch 064 / 064.01].
+- [A365] BEGUN — Fheminor — appointment as Keeper: not referenced here [ch 064 / 064.01].
+- [A366] BEGUN — A'lai Aivenmore — first contact: not referenced here [ch 064 / 064.01].
+- [A367] BEGUN — A'lai — interview: not referenced here [ch 064 / 064.01].
+- [A368] BEGUN — A'lai — sapphire smash and escape: not referenced here [ch 064 / 064.01].
+- [A369] BEGUN — A'lai — fate resolution: not referenced here [ch 064 / 064.01].
+- [A370] BEGUN — Alkrist — first contact: not referenced here [ch 064 / 064.01].
+- [A371] BEGUN — Alkrist — interview: not referenced here [ch 064 / 064.01].
+- [A372] BEGUN — Alkrist — arrest or confession: not referenced here [ch 064 / 064.01].
+- [A373] BEGUN — Fembris — first contact: not referenced here [ch 064 / 064.01].
+- [A374] BEGUN — Fembris — rooftop confession: not referenced here [ch 064 / 064.01].
+- [A375] BEGUN — Tadric — first contact: not referenced here [ch 064 / 064.01].
+- [A376] BEGUN — Tadric — flight assistance: not referenced here [ch 064 / 064.01].
+- [A377] BEGUN — Tadric — acting Gatewarden appointment: not referenced here [ch 064 / 064.01].
+- [A378] BEGUN — Hollypocket — witness interview: not referenced here [ch 064 / 064.01].
+- [A379] BEGUN — Sprig Summerfoot — witness interview: not referenced here [ch 064 / 064.01].
+- [A380] BEGUN — Leuwin — witness interview: not referenced here [ch 064 / 064.01].
+- [A381] BEGUN — Teles Ahvoste — interview: not referenced here [ch 064 / 064.01].
+- [A382] BEGUN — Kazryn Nyantani — interview: not referenced here [ch 064 / 064.01].
+- [A383] BEGUN — Khell-Vire — closing letter: not referenced here [ch 064 / 064.01].
+- [A384] BEGUN — Philemon — sealed letter: not referenced here [ch 064 / 064.01].
+- [A385] BEGUN — Vareth — final stations: not referenced here [ch 064 / 064.01].
+- [A386] BEGUN — Yvenne — third sitting: not referenced here [ch 064 / 064.01].
+- [A387] BEGUN — Yvenne — Vaelissa name: not referenced here [ch 064 / 064.01].
+- [A388] BEGUN — Yvenne — Fourth-Seat synthesis: not referenced here [ch 064 / 064.01].
+- [A389] BEGUN — Inda — emergence: not referenced here [ch 064 / 064.01].
+- [A390] BEGUN — Spanner — Mechanus dust: not referenced here [ch 064 / 064.01].
+- [A391] BEGUN — Moziqodo — first encounter: not referenced here [ch 064 / 064.01].
+- [A392] BEGUN — Moziqodo — binding break: not referenced here [ch 064 / 064.01].
+- [A393] BEGUN — Moziqodo — fate resolution: not referenced here [ch 064 / 064.01].
+- [A394] BEGUN — Manshoon — voice-only arrival: not referenced here [ch 064 / 064.01].
+- [A395] BEGUN — Manshoon — direct confrontation: not referenced here [ch 064 / 064.01].
+- [A396] BEGUN — Manshoon — escape: not referenced here [ch 064 / 064.01].
+- [A397] BEGUN — Glabbagool — bad night / Juiblex reach: not referenced here [ch 064 / 064.01].
+- [A398] BEGUN — Glabbagool — Shadow Apprentice status: not referenced here [ch 064 / 064.01].
+- [A399] BEGUN — Eldeth — letter delivered: not referenced here [ch 064 / 064.01].
+- [A400] BEGUN — Brevin — Sloobludop recitation: not referenced here [ch 064 / 064.01].
+- [A401] BEGUN — Brevin — six-pointed star bedclothes: not referenced here [ch 064 / 064.01].
+- [A402] BEGUN — Marin — six-pointed star quill: not referenced here [ch 064 / 064.01].
+- [A403] BEGUN — Jimjar / Callarduran — Echo 4: not referenced here [ch 064 / 064.01].
+- [A404] BEGUN — Five Books, Five Questions: not referenced here [ch 064 / 064.01].
+- [A405] BEGUN — Endless Chant — Deadwinter Prophecy: not referenced here [ch 064 / 064.01].
+- [A406] BEGUN — Janussi murder — forensic reveals: not referenced here [ch 064 / 064.01].
+- [A407] BEGUN — Two "Sylvira" figures: not referenced here [ch 064 / 064.01].
+- [A408] BEGUN — Bookwyrm as cover-up: not referenced here [ch 064 / 064.01].
+- [A409] BEGUN — Alkrist as killer: not referenced here [ch 064 / 064.01].
+- [A410] BEGUN — Disguise rosetta cracked: not referenced here [ch 064 / 064.01].
+- [A411] BEGUN — Wards drop: not referenced here [ch 064 / 064.01].
+- [A412] BEGUN — Cryptogram recovered: not referenced here [ch 064 / 064.01].
+- [A413] BEGUN — Manshoon arrival announced: not referenced here [ch 064 / 064.01].
+- [A414] BEGUN — Iron Owlbear found dead: not referenced here [ch 064 / 064.01].
+- [A415] BEGUN — Echo 1 activated: not referenced here [ch 064 / 064.01].
+- [A416] BEGUN — Echo 2 activated: not referenced here [ch 064 / 064.01].
+- [A417] BEGUN — Echo 3 activated: not referenced here [ch 064 / 064.01].
+- [A418] BEGUN — Echo 4 activated: not referenced here [ch 064 / 064.01].
+- [A419] BEGUN — Book of Vile Darkness — fate determined: not referenced here [ch 064 / 064.01].
+- [A420] BEGUN — Vault tower rocket — lever pulled: not referenced here [ch 064 / 064.01].
+- [A421] BEGUN — Candlekeep institutional restructuring: not referenced here [ch 064 / 064.01].
+- [A422] BEGUN — Party named guest seekers: not referenced here [ch 064 / 064.01].
+- [A423] SHOWN — Manshoon-pursuit thread activated: A'lai names Manshoon as master; confirmed by party history checks [ch 064 / 064.04].
+- [A424] BEGUN — Gauntlgrym call confirmed: Echo 3 + Eldeth’s letter converged in prior session; not referenced here [ch 064 / 064.01].
+- [A425] BEGUN — Daz’s field-perception pressure: continues from prior sessions [ch 064 / 064.01].
+- [A426] BEGUN — Yvenne names Daz’s sensitivity: achieved in prior session [ch 064 / 064.01].
+- [A427] BEGUN — Marin — quill six-pointed star: not referenced here [ch 064 / 064.01].
+- [A428] BEGUN — Brevin — Sloobludop recitation: not referenced here [ch 064 / 064.01].
+- [A429] BEGUN — Brevin — bedclothes six-pointed star: not referenced here [ch 064 / 064.01].
+- [A430] SHOWN — Endless Chant — first complete stoppage: confirmed by Tadric’s shock and Gyrgum’s observation [ch 064 / 064.01].
+- [A431] BEGUN — Ward-drop vision sequence: occurred in prior session [ch 064 / 064.01].
+- [A432] BEGUN — Glabbagool Juiblex “mother voice”: occurred in prior session [ch 064 / 064.01].
+- [A433] BEGUN — Echo 1 prophecy names surface-contamination: occurred in prior session [ch 064 / 064.01].
+- [A434] BEGUN — Daz and Yvenne field-perception expertise: confirmed in prior session [ch 064 / 064.01].
+- [A435] BEGUN — Sylvira recruited (Path B): occurred in prior session [ch 064 / 064.01].
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks: achieved in prior session [ch 064 / 064.01].
+- [A437] BEGUN — Vareth / Drakonoikos goodwill: achieved in prior session [ch 064 / 064.01].
+- [A438] BEGUN — Daral saved: confirmed as prior outcome [ch 064 / 064.01].
+- [A439] BEGUN — Khell-Vire Watcher's Stillness earned: achieved in prior session [ch 064 / 064.01].
+- [A440] BEGUN — Glabbagool Whispering Dome visit: achieved in prior session [ch 064 / 064.01].
+- [A441] BEGUN — Polly Pocket released: achieved in prior session [ch 064 / 064.01].
+- [A442] BEGUN — Walking-permit medallions worn: achieved in prior session [ch 064 / 064.01].
+- [A443] SHOWN — Second High Tower key held: Tadric surrendered it to the party; Gyrgum now holds it [ch 064 / 064.01; ch 064 / 064.04].

@@ -1,0 +1,1089 @@
+{
+  "wall_secs": 0.5,
+  "workers_per_endpoint": 3,
+  "calls_per_endpoint": {
+    "claude-code": 0
+  },
+  "chunks": [
+    {
+      "chunk": 1,
+      "chapters": "002-002",
+      "chars": 39304,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 5,
+        "## Threads": 10,
+        "## NPC Status": 16,
+        "## World": 21,
+        "## Party": 0,
+        "## Audit": 17
+      },
+      "dropped": 15
+    },
+    {
+      "chunk": 2,
+      "chapters": "003-003",
+      "chars": 32977,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 27,
+        "## Concluded": 6,
+        "## Threads": 9,
+        "## NPC Status": 9,
+        "## World": 20,
+        "## Party": 10,
+        "## Audit": 16
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 3,
+      "chapters": "004-005",
+      "chars": 53713,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 46,
+        "## Concluded": 12,
+        "## Threads": 11,
+        "## NPC Status": 11,
+        "## World": 18,
+        "## Party": 0,
+        "## Audit": 271
+      },
+      "dropped": 19
+    },
+    {
+      "chunk": 4,
+      "chapters": "006-006",
+      "chars": 35909,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 19,
+        "## Concluded": 6,
+        "## Threads": 8,
+        "## NPC Status": 0,
+        "## World": 11,
+        "## Party": 9,
+        "## Audit": 9
+      },
+      "dropped": 63
+    },
+    {
+      "chunk": 5,
+      "chapters": "007-008",
+      "chars": 53078,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 26,
+        "## Concluded": 10,
+        "## Threads": 11,
+        "## NPC Status": 12,
+        "## World": 18,
+        "## Party": 10,
+        "## Audit": 183
+      },
+      "dropped": 3
+    },
+    {
+      "chunk": 6,
+      "chapters": "009-010",
+      "chars": 57901,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 47,
+        "## Concluded": 7,
+        "## Threads": 7,
+        "## NPC Status": 14,
+        "## World": 13,
+        "## Party": 0,
+        "## Audit": 298
+      },
+      "dropped": 12
+    },
+    {
+      "chunk": 7,
+      "chapters": "011-011",
+      "chars": 33132,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 51,
+        "## Concluded": 6,
+        "## Threads": 8,
+        "## NPC Status": 9,
+        "## World": 11,
+        "## Party": 1,
+        "## Audit": 14
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 8,
+      "chapters": "012-012",
+      "chars": 32550,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 15,
+        "## Concluded": 5,
+        "## Threads": 7,
+        "## NPC Status": 0,
+        "## World": 14,
+        "## Party": 10,
+        "## Audit": 11
+      },
+      "dropped": 6
+    },
+    {
+      "chunk": 9,
+      "chapters": "013-013",
+      "chars": 36852,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 30,
+        "## Concluded": 6,
+        "## Threads": 12,
+        "## NPC Status": 0,
+        "## World": 19,
+        "## Party": 0,
+        "## Audit": 17
+      },
+      "dropped": 19
+    },
+    {
+      "chunk": 10,
+      "chapters": "014-014",
+      "chars": 38757,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 24,
+        "## Concluded": 8,
+        "## Threads": 9,
+        "## NPC Status": 0,
+        "## World": 21,
+        "## Party": 7,
+        "## Audit": 9
+      },
+      "dropped": 12
+    },
+    {
+      "chunk": 11,
+      "chapters": "015-015",
+      "chars": 33824,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 4,
+        "## Threads": 8,
+        "## NPC Status": 10,
+        "## World": 14,
+        "## Party": 11,
+        "## Audit": 8
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 12,
+      "chapters": "016-017",
+      "chars": 55505,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 27,
+        "## Concluded": 6,
+        "## Threads": 14,
+        "## NPC Status": 7,
+        "## World": 27,
+        "## Party": 13,
+        "## Audit": 11
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 13,
+      "chapters": "018-018",
+      "chars": 46125,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 4,
+        "## Threads": 15,
+        "## NPC Status": 16,
+        "## World": 25,
+        "## Party": 1,
+        "## Audit": 19
+      },
+      "dropped": 12
+    },
+    {
+      "chunk": 14,
+      "chapters": "019-019",
+      "chars": 36110,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 20,
+        "## Concluded": 6,
+        "## Threads": 8,
+        "## NPC Status": 0,
+        "## World": 13,
+        "## Party": 9,
+        "## Audit": 12
+      },
+      "dropped": 12
+    },
+    {
+      "chunk": 15,
+      "chapters": "020-020",
+      "chars": 27152,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 16,
+        "## Concluded": 6,
+        "## Threads": 8,
+        "## NPC Status": 8,
+        "## World": 14,
+        "## Party": 8,
+        "## Audit": 18
+      },
+      "dropped": 4
+    },
+    {
+      "chunk": 16,
+      "chapters": "021-021",
+      "chars": 35086,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 10,
+        "## Concluded": 6,
+        "## Threads": 10,
+        "## NPC Status": 10,
+        "## World": 18,
+        "## Party": 9,
+        "## Audit": 13
+      },
+      "dropped": 250
+    },
+    {
+      "chunk": 17,
+      "chapters": "022-022",
+      "chars": 31119,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 35,
+        "## Concluded": 9,
+        "## Threads": 9,
+        "## NPC Status": 0,
+        "## World": 11,
+        "## Party": 7,
+        "## Audit": 17
+      },
+      "dropped": 11
+    },
+    {
+      "chunk": 18,
+      "chapters": "023-024",
+      "chars": 54336,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 9,
+        "## Threads": 7,
+        "## NPC Status": 9,
+        "## World": 10,
+        "## Party": 0,
+        "## Audit": 11
+      },
+      "dropped": 23
+    },
+    {
+      "chunk": 19,
+      "chapters": "025-025",
+      "chars": 45192,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 22,
+        "## Concluded": 7,
+        "## Threads": 11,
+        "## NPC Status": 0,
+        "## World": 23,
+        "## Party": 10,
+        "## Audit": 25
+      },
+      "dropped": 278
+    },
+    {
+      "chunk": 20,
+      "chapters": "026-026",
+      "chars": 38430,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 33,
+        "## Concluded": 4,
+        "## Threads": 7,
+        "## NPC Status": 6,
+        "## World": 19,
+        "## Party": 9,
+        "## Audit": 14
+      },
+      "dropped": 2
+    },
+    {
+      "chunk": 21,
+      "chapters": "027-027",
+      "chars": 29609,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 14,
+        "## Concluded": 5,
+        "## Threads": 10,
+        "## NPC Status": 8,
+        "## World": 16,
+        "## Party": 9,
+        "## Audit": 13
+      },
+      "dropped": 3
+    },
+    {
+      "chunk": 22,
+      "chapters": "028-028",
+      "chars": 40277,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 26,
+        "## Concluded": 5,
+        "## Threads": 12,
+        "## NPC Status": 10,
+        "## World": 18,
+        "## Party": 10,
+        "## Audit": 4
+      },
+      "dropped": 202
+    },
+    {
+      "chunk": 23,
+      "chapters": "029-029",
+      "chars": 35914,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 28,
+        "## Concluded": 6,
+        "## Threads": 11,
+        "## NPC Status": 9,
+        "## World": 17,
+        "## Party": 0,
+        "## Audit": 10
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 24,
+      "chapters": "030-030",
+      "chars": 32746,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 29,
+        "## Concluded": 4,
+        "## Threads": 6,
+        "## NPC Status": 7,
+        "## World": 13,
+        "## Party": 7,
+        "## Audit": 14
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 25,
+      "chapters": "031-031",
+      "chars": 43267,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 23,
+        "## Concluded": 6,
+        "## Threads": 11,
+        "## NPC Status": 12,
+        "## World": 14,
+        "## Party": 5,
+        "## Audit": 230
+      },
+      "dropped": 6
+    },
+    {
+      "chunk": 26,
+      "chapters": "032-032",
+      "chars": 45624,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 36,
+        "## Concluded": 9,
+        "## Threads": 11,
+        "## NPC Status": 0,
+        "## World": 15,
+        "## Party": 0,
+        "## Audit": 12
+      },
+      "dropped": 28
+    },
+    {
+      "chunk": 27,
+      "chapters": "034-034",
+      "chars": 40441,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 22,
+        "## Concluded": 7,
+        "## Threads": 6,
+        "## NPC Status": 3,
+        "## World": 19,
+        "## Party": 5,
+        "## Audit": 8
+      },
+      "dropped": 3
+    },
+    {
+      "chunk": 28,
+      "chapters": "035-036",
+      "chars": 48744,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 41,
+        "## Concluded": 8,
+        "## Threads": 11,
+        "## NPC Status": 7,
+        "## World": 11,
+        "## Party": 7,
+        "## Audit": 271
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 29,
+      "chapters": "037-037",
+      "chars": 35051,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 14,
+        "## Concluded": 3,
+        "## Threads": 7,
+        "## NPC Status": 6,
+        "## World": 16,
+        "## Party": 7,
+        "## Audit": 13
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 30,
+      "chapters": "038-038",
+      "chars": 42365,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 40,
+        "## Concluded": 6,
+        "## Threads": 7,
+        "## NPC Status": 7,
+        "## World": 19,
+        "## Party": 8,
+        "## Audit": 10
+      },
+      "dropped": 2
+    },
+    {
+      "chunk": 31,
+      "chapters": "039-039",
+      "chars": 47197,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 28,
+        "## Concluded": 5,
+        "## Threads": 11,
+        "## NPC Status": 0,
+        "## World": 18,
+        "## Party": 0,
+        "## Audit": 238
+      },
+      "dropped": 29
+    },
+    {
+      "chunk": 32,
+      "chapters": "040-040",
+      "chars": 37717,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 19,
+        "## Concluded": 6,
+        "## Threads": 9,
+        "## NPC Status": 0,
+        "## World": 16,
+        "## Party": 10,
+        "## Audit": 113
+      },
+      "dropped": 13
+    },
+    {
+      "chunk": 33,
+      "chapters": "041-041",
+      "chars": 37465,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 10,
+        "## Concluded": 5,
+        "## Threads": 7,
+        "## NPC Status": 0,
+        "## World": 14,
+        "## Party": 8,
+        "## Audit": 167
+      },
+      "dropped": 8
+    },
+    {
+      "chunk": 34,
+      "chapters": "042-042",
+      "chars": 40265,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 15,
+        "## Concluded": 6,
+        "## Threads": 9,
+        "## NPC Status": 10,
+        "## World": 10,
+        "## Party": 9,
+        "## Audit": 217
+      },
+      "dropped": 122
+    },
+    {
+      "chunk": 35,
+      "chapters": "043-043",
+      "chars": 45751,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 45,
+        "## Concluded": 7,
+        "## Threads": 10,
+        "## NPC Status": 13,
+        "## World": 13,
+        "## Party": 9,
+        "## Audit": 279
+      },
+      "dropped": 16
+    },
+    {
+      "chunk": 36,
+      "chapters": "044-044",
+      "chars": 38433,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 20,
+        "## Concluded": 6,
+        "## Threads": 6,
+        "## NPC Status": 0,
+        "## World": 15,
+        "## Party": 7,
+        "## Audit": 14
+      },
+      "dropped": 17
+    },
+    {
+      "chunk": 37,
+      "chapters": "045-045",
+      "chars": 36139,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 17,
+        "## Concluded": 5,
+        "## Threads": 8,
+        "## NPC Status": 0,
+        "## World": 15,
+        "## Party": 2,
+        "## Audit": 10
+      },
+      "dropped": 24
+    },
+    {
+      "chunk": 38,
+      "chapters": "046-046",
+      "chars": 40312,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 26,
+        "## Concluded": 5,
+        "## Threads": 10,
+        "## NPC Status": 14,
+        "## World": 20,
+        "## Party": 6,
+        "## Audit": 11
+      },
+      "dropped": 11
+    },
+    {
+      "chunk": 39,
+      "chapters": "047-047",
+      "chars": 34458,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 29,
+        "## Concluded": 5,
+        "## Threads": 7,
+        "## NPC Status": 6,
+        "## World": 9,
+        "## Party": 3,
+        "## Audit": 17
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 40,
+      "chapters": "048-048",
+      "chars": 41633,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 38,
+        "## Concluded": 6,
+        "## Threads": 12,
+        "## NPC Status": 9,
+        "## World": 15,
+        "## Party": 10,
+        "## Audit": 23
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 41,
+      "chapters": "049-049",
+      "chars": 29399,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 23,
+        "## Concluded": 5,
+        "## Threads": 7,
+        "## NPC Status": 7,
+        "## World": 15,
+        "## Party": 12,
+        "## Audit": 12
+      },
+      "dropped": 4
+    },
+    {
+      "chunk": 42,
+      "chapters": "050-050",
+      "chars": 30716,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 21,
+        "## Concluded": 4,
+        "## Threads": 11,
+        "## NPC Status": 0,
+        "## World": 14,
+        "## Party": 7,
+        "## Audit": 10
+      },
+      "dropped": 412
+    },
+    {
+      "chunk": 43,
+      "chapters": "051-052",
+      "chars": 59126,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 30,
+        "## Concluded": 5,
+        "## Threads": 11,
+        "## NPC Status": 12,
+        "## World": 13,
+        "## Party": 0,
+        "## Audit": 4
+      },
+      "dropped": 414
+    },
+    {
+      "chunk": 44,
+      "chapters": "053-053",
+      "chars": 39956,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 21,
+        "## Concluded": 6,
+        "## Threads": 11,
+        "## NPC Status": 0,
+        "## World": 14,
+        "## Party": 0,
+        "## Audit": 10
+      },
+      "dropped": 16
+    },
+    {
+      "chunk": 45,
+      "chapters": "054-054",
+      "chars": 43067,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 25,
+        "## Concluded": 8,
+        "## Threads": 9,
+        "## NPC Status": 10,
+        "## World": 17,
+        "## Party": 11,
+        "## Audit": 25
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 46,
+      "chapters": "055-055",
+      "chars": 48435,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 36,
+        "## Concluded": 8,
+        "## Threads": 8,
+        "## NPC Status": 12,
+        "## World": 21,
+        "## Party": 7,
+        "## Audit": 33
+      },
+      "dropped": 3
+    },
+    {
+      "chunk": 47,
+      "chapters": "056-056",
+      "chars": 53604,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 40,
+        "## Concluded": 6,
+        "## Threads": 9,
+        "## NPC Status": 14,
+        "## World": 19,
+        "## Party": 5,
+        "## Audit": 32
+      },
+      "dropped": 5
+    },
+    {
+      "chunk": 48,
+      "chapters": "057-057",
+      "chars": 51982,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 31,
+        "## Concluded": 7,
+        "## Threads": 13,
+        "## NPC Status": 15,
+        "## World": 28,
+        "## Party": 9,
+        "## Audit": 58
+      },
+      "dropped": 3
+    },
+    {
+      "chunk": 49,
+      "chapters": "058-058",
+      "chars": 28411,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 4,
+        "## Threads": 11,
+        "## NPC Status": 12,
+        "## World": 17,
+        "## Party": 0,
+        "## Audit": 7
+      },
+      "dropped": 15
+    },
+    {
+      "chunk": 50,
+      "chapters": "059-059",
+      "chars": 39371,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 31,
+        "## Concluded": 5,
+        "## Threads": 10,
+        "## NPC Status": 13,
+        "## World": 19,
+        "## Party": 9,
+        "## Audit": 12
+      },
+      "dropped": 0
+    },
+    {
+      "chunk": 51,
+      "chapters": "060-060",
+      "chars": 51103,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 18,
+        "## Concluded": 8,
+        "## Threads": 12,
+        "## NPC Status": 18,
+        "## World": 22,
+        "## Party": 0,
+        "## Audit": 22
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 52,
+      "chapters": "061-061",
+      "chars": 50109,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 28,
+        "## Concluded": 9,
+        "## Threads": 10,
+        "## NPC Status": 16,
+        "## World": 20,
+        "## Party": 8,
+        "## Audit": 0
+      },
+      "dropped": 26
+    },
+    {
+      "chunk": 53,
+      "chapters": "062-062",
+      "chars": 40655,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 39,
+        "## Concluded": 5,
+        "## Threads": 10,
+        "## NPC Status": 14,
+        "## World": 13,
+        "## Party": 9,
+        "## Audit": 31
+      },
+      "dropped": 9
+    },
+    {
+      "chunk": 54,
+      "chapters": "063-063",
+      "chars": 46359,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 24,
+        "## Concluded": 7,
+        "## Threads": 8,
+        "## NPC Status": 0,
+        "## World": 15,
+        "## Party": 0,
+        "## Audit": 151
+      },
+      "dropped": 228
+    },
+    {
+      "chunk": 55,
+      "chapters": "064-064",
+      "chars": 31288,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 41,
+        "## Concluded": 7,
+        "## Threads": 8,
+        "## NPC Status": 2,
+        "## World": 13,
+        "## Party": 1,
+        "## Audit": 237
+      },
+      "dropped": 22
+    },
+    {
+      "chunk": 56,
+      "chapters": "065-065",
+      "chars": 36523,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 17,
+        "## Concluded": 5,
+        "## Threads": 8,
+        "## NPC Status": 11,
+        "## World": 14,
+        "## Party": 8,
+        "## Audit": 20
+      },
+      "dropped": 2
+    },
+    {
+      "chunk": 57,
+      "chapters": "067-067",
+      "chars": 40049,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 17,
+        "## Concluded": 8,
+        "## Threads": 9,
+        "## NPC Status": 6,
+        "## World": 17,
+        "## Party": 9,
+        "## Audit": 28
+      },
+      "dropped": 147
+    },
+    {
+      "chunk": 58,
+      "chapters": "068-068",
+      "chars": 42064,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 29,
+        "## Concluded": 7,
+        "## Threads": 9,
+        "## NPC Status": 0,
+        "## World": 17,
+        "## Party": 0,
+        "## Audit": 264
+      },
+      "dropped": 22
+    },
+    {
+      "chunk": 59,
+      "chapters": "069-069",
+      "chars": 41609,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 23,
+        "## Concluded": 4,
+        "## Threads": 8,
+        "## NPC Status": 6,
+        "## World": 11,
+        "## Party": 8,
+        "## Audit": 1
+      },
+      "dropped": 1
+    },
+    {
+      "chunk": 60,
+      "chapters": "070-070",
+      "chars": 31374,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "claude-code",
+      "kept": {
+        "## Events": 21,
+        "## Concluded": 6,
+        "## Threads": 8,
+        "## NPC Status": 0,
+        "## World": 12,
+        "## Party": 0,
+        "## Audit": 294
+      },
+      "dropped": 53
+    }
+  ]
+}

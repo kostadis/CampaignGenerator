@@ -1,0 +1,411 @@
+## Events
+- The party defeated the Medusa Neheedra by reflecting her petrifying gaze with an ice mirror, causing her to become restrained by her own power, then finishing her with Daz’s Magic Missile [ch 042 / 042.01].
+- Zalthir, fighting without his magical darkness to enable the ice mirror’s function, was knocked unconscious by the Medusa’s attacks but revived to 1 hit point after her death [ch 042 / 042.01].
+- The party looted five drow spider-silk dresses from the Medusa’s lair, valued at 200 gp each, and added them to the party inventory [ch 042 / 042.01].
+- Glabbagool delighted in consuming the Medusa’s remains, calling the party an “excellent supply of dietary flavoring” [ch 042 / 042.01].
+- The party entered the Steadfast Stone temple to place Gurnik Tapfinger’s Ruby spell gem into the central menhir to hallow the area against Ogrémoch’s Bane [ch 042 / 042.02].
+- Gyrgum placed the Ruby spell gem into the menhir’s socket, causing it to glow and the temple walls to rumble ominously [ch 042 / 042.02].
+- An Earth Elemental erupted from the temple wall and charged the party; Daz incapacitated it with Hypnotic Pattern, and Zalthir delivered a critical hit for ~57 damage after Daz’s Magic Missile broke the effect [ch 042 / 042.03].
+- Gyrgum destroyed the first Earth Elemental with a critical Guiding Bolt, dealing 36 radiant damage [ch 042 / 042.03].
+- A Galeb Duhr materialized and revealed that defeating the elemental freed it from Ogrémoch’s control, but it could not act until all its “brothers” were freed [ch 042 / 042.04].
+- A second Earth Elemental emerged from the northern wall; the party fought it with coordinated attacks, and Gyrgum killed it with a True Strike cantrip from his crossbow, dealing 19 damage [ch 042 / 042.05].
+- Zalthir drank a Potion of Greater Healing, restoring 14 hit points, after taking heavy damage from the second elemental [ch 042 / 042.05].
+- Thorin used Action Surge and Dawnbringer to deal 39 damage to the third Earth Elemental, reducing it to 15 hit points before Zalthir finished it with an Enhanced Unarmed Strike [ch 042 / 042.06].
+- A second Galeb Duhr appeared as the second elemental fell, and a third Earth Elemental emerged behind Gyrgum, startling him [ch 042 / 042.06].
+- Daz killed the third Earth Elemental with a Fireball, dealing 27 fire damage [ch 042 / 042.06].
+- A third Galeb Duhr materialized as the session ended [ch 042 / 042.06].
+
+## Concluded
+- The battle against the Medusa Neheedra concluded with her death and the party securing her lair’s treasure [ch 042 / 042.01].
+- The first Earth Elemental battle concluded with its destruction by Gyrgum’s critical Guiding Bolt [ch 042 / 042.03].
+- The second Earth Elemental battle concluded with its destruction by Gyrgum’s True Strike [ch 042 / 042.05].
+- The third Earth Elemental battle concluded with its destruction by Zalthir’s Enhanced Unarmed Strike after Thorin’s Action Surge [ch 042 / 042.06].
+- The task of placing the Ruby spell gem into the Steadfast Stone menhir concluded with the gem activating and triggering the elemental attacks [ch 042 / 042.02].
+- The party’s short rest after the Medusa battle concluded, as the GM ruled they had taken one [ch 042 / 042.05].
+
+## Threads
+- [ADVANCED] **Cleanse the Steadfast Stone — Rockblight** — The Ruby spell gem was placed in the menhir, activating the temple’s defenses and revealing that Ogrémoch’s Bane has infected the temple and corrupted the Galeb Duhr; defeating Earth Elementals weakens Ogrémoch’s control [ch 042 / 042.02; ch 042 / 042.04].
+- [OPENED] **Ogrémoch's Bane — elemental entity banishment** — The Galeb Duhr revealed that Ogrémoch’s spirit infests the temple and prevents them from guarding it; freeing all Earth Elementals is required to fully cleanse the area [ch 042 / 042.04].
+- [ADVANCED] **Neheedra the medusa — Rockblight confrontation** — The Medusa was slain, her lair looted, and her taunts about Zalthir’s draconic heritage confirmed her knowledge of his lineage [ch 042 / 042.01; ch 042 / npcs].
+- [ADVANCED] **Galeb Duhr — stone guardian presence** — Three Galeb Duhr have now appeared, each emerging after an Earth Elemental’s defeat; they are bound to protect the temple and cannot act until all brothers are freed [ch 042 / 042.04; ch 042 / 042.06].
+- [ADVANCED] **Glabbagool — sentient gelatinous cube, first contact** — Glabbagool demonstrated increased integration into the party, actively cleaning battle debris and expressing delight in consuming fallen foes [ch 042 / 042.01; ch 042 / 042.05].
+- [ADVANCED] **Ruby Spell Gem — ritual component** — The gem was successfully placed and activated, confirming its function as a trigger for the temple’s defenses; Gurnik Tapfinger’s assurance that “nothing bad would happen” now appears dangerously misleading [ch 042 / 042.02; ch 042 / items].
+- [ADVANCED] **Dawnbringer — magical sword** — Thorin used Dawnbringer effectively in all three elemental battles, including two precise strikes against the third elemental totaling 32 damage [ch 042 / 042.05; ch 042 / 042.06].
+- [ADVANCED] **Ice Mirror — tactical tool** — The ice mirror was used successfully to deflect the Medusa’s gaze and later held by Thorin as a defensive prepared action, establishing it as a key item in gaze-based combat [ch 042 / 042.01].
+- [ADVANCED] **Zalthir’s draconic heritage** — The Medusa explicitly cursed Zalthir, calling Dragonborn “a chemical experiment gone horribly wrong,” reinforcing a personal threat tied to his identity [ch 042 / 042.01; ch 042 / moment].
+
+## NPC Status
+- Neheedra | Dead | Neheedra's Lair | Hostile [ch 042 / 042.01; ch 042 / npcs]
+- Glabbagool | Alive | Steadfast Stone | Friendly [ch 042 / 042.01; ch 042 / npcs]
+- Gurnik Tapfinger | Unknown | — | Trusted (assured gem placement would be safe) [ch 042 / 042.02; ch 042 / npcs]
+- Earth Elemental (first) | Dead | Steadfast Stone | Hostile [ch 042 / 042.03]
+- Earth Elemental (second) | Dead | Steadfast Stone | Hostile [ch 042 / 042.05]
+- Earth Elemental (third) | Dead | Steadfast Stone | Hostile [ch 042 / 042.06]
+- Galeb Duhr (first) | Alive | Steadfast Stone | Neutral, bound to duty [ch 042 / 042.04]
+- Galeb Duhr (second) | Alive | Steadfast Stone | Neutral, bound to duty [ch 042 / 042.06]
+- Galeb Duhr (third) | Alive | Steadfast Stone | Neutral, bound to duty [ch 042 / 042.06]
+- Ogrémoch | Unknown | Steadfast Stone | Hostile (spirit infesting temple) [ch 042 / 042.02; ch 042 / npcs]
+
+## World
+- [LOCATION] **Steadfast Stone** — A temple chamber with a menhir carved from a stalagmite, pockmarked with empty gem sockets; its walls contain humanoid-shaped outlines and spawn Earth Elementals when the Ruby spell gem is activated; now housing three freed Galeb Duhr [ch 042 / 042.02; ch 042 / locations].
+- [LOCATION] **Neheedra's Lair** — A cavernous lair beyond the Steadfast Stone, containing five drow spider-silk dresses worth 200 gp each; now abandoned after the Medusa’s death [ch 042 / 042.01; ch 042 / locations].
+- [FACTION] **Galeb Duhr** — Ancient stone guardians lawfully bound to protect specific locations; they cannot be bribed, speak slowly, and are called “doorstops” by drow; they cannot spawn Earth Elementals but are freed when those elementals are slain [ch 042 / 042.04; ch 042 / npcs].
+- [NPC] **Gurnik Tapfinger** — A cleric who provided the Ruby spell gem to the party, assuring them that placing it in the menhir would “hallow the area” and “nothing bad would happen” [ch 042 / 042.02; ch 042 / npcs].
+- [THREAT] **Ogrémoch's Bane** — An evil spirit from the elemental plane of earth that infests the Steadfast Stone, driving Earth Elementals insane and preventing Galeb Duhr from fulfilling their duty; defeating the elementals weakens its control [ch 042 / 042.02; ch 042 / 042.04].
+- [ITEM] **Ruby Spell Gem** — A magical gem given by Gurnik Tapfinger; when placed in the menhir’s socket, it glows and triggers the release of Earth Elementals from the temple walls [ch 042 / 042.02; ch 042 / items].
+- [ITEM] **Ice Mirror** — A temporary construct of ice used to reflect the Medusa’s petrifying gaze; requires light to function and cost Thorin his bonus action when picked up [ch 042 / 042.01; ch 042 / items].
+- [ITEM] **Drow Spider Silk Dresses** — Five exquisite garments made of drow magic and spider silk, worth 200 gp each; now in the party’s inventory to be divided later [ch 042 / 042.01; ch 042 / items].
+- [ITEM] **Potion of Greater Healing** — One was consumed by Zalthir during combat, restoring 14 hit points; the party inventory also holds a regular Potion of Healing [ch 042 / 042.06; ch 042 / items].
+- [THREAT] **Elemental Spawning Cycle** — The temple’s design forces the party to confront multiple Earth Elementals in succession, each emerging as the previous is defeated, testing endurance and resource management [ch 042 / 042.03; ch 042 / 042.06].
+- [FACTION] **Ogrémoch** — A powerful entity from the elemental plane of earth who chose to linger in the Steadfast Stone among drow statues; his spirit is the source of the temple’s corruption [ch 042 / 042.02; ch 042 / npcs].
+
+## Party
+- The party is in the Steadfast Stone temple chamber, having just defeated three Earth Elementals and encountered three Galeb Duhr [ch 042 / 042.06].
+- The party’s group name remains unnamed; no new title or rank is established [ch 042 / 042.06].
+- Daz is 6th level; confirmed his access to Sculpt Spells, has two Fireballs remaining, and used Magic Missile, Hypnotic Pattern, Toll the Dead, Scorching Ray, and Fireball in this session [ch 042 / 042.01; ch 042 / 042.03; ch 042 / 042.06].
+- Thorin wielded Dawnbringer effectively, used Action Surge, delivered a critical Hill Strike (partial success), and used Sentinel opportunity attacks; no new abilities or items gained [ch 042 / 042.01; ch 042 / 042.06].
+- Zalthir consumed a Potion of Greater Healing, restoring 14 hit points; used ice mirror to deflect the Medusa’s gaze repeatedly; showed restraint despite taunts about his draconic heritage; no new abilities gained [ch 042 / 042.01; ch 042 / 042.06].
+- Gyrgum used Guiding Bolt four times (two critical hits), True Strike to kill an elemental, and declined healing spells to conserve resources; no new abilities or items gained [ch 042 / 042.01; ch 042 / 042.03; ch 042 / 042.05].
+- Glabbagool remains with the party, actively cleaning battle sites and expressing satisfaction with their “dietary flavoring” [ch 042 / 042.01; ch 042 / 042.05].
+- The party holds five drow spider-silk dresses (1,000 gp total) and has consumed one Potion of Greater Healing; they now know the Steadfast Stone must be fully cleansed by defeating all Earth Elementals tied to Ogrémoch’s Bane [ch 042 / 042.01; ch 042 / 042.04].
+- The party intends to confront the remaining Earth Elementals and free all Galeb Duhr to fully hallow the temple, as directed by the stone guardians [ch 042 / 042.04].
+
+## Audit
+- [A182] SHOWN — The party defeated three Earth Elementals and encountered three Galeb Duhr in the Steadfast Stone, directly addressing the threat of Ogrémoch's Bane as described in the audit item [ch 042 / 042.03; ch 042 / 042.04; ch 042 / 042.06].
+- [A32] SHOWN — The party placed the Ruby spell gem into the menhir of the Steadfast Stone to hallow the area against Ogrémoch's influence, directly completing the "Cleanse the Steadfast Stone — Rockblight" objective [ch 042 / 042.02].
+- [A181] SHOWN — The party defeated the Medusa Neheedra in her lair, concluding the Rockblight confrontation as tracked [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool was fully integrated into the party’s actions, consuming the Medusa’s remains and commenting on their "dietary flavoring," confirming his first contact status [ch 042 / 042.01].
+- [A12] BEGUN — The party reached the Steadfast Stone, a location explicitly named in the audit list as Gravenhollow — stone giant library; however, the Steadfast Stone is a temple, not a library, and no connection to Gravenhollow is established [ch 042 / 042.02; ch 042 / locations]. 
+- [A12] BEGUN — The party reached the Steadfast Stone, but this location is not Gravenhollow; the audit item [A12] requires reaching Gravenhollow, which has not occurred [ch 042 / 042.02; ch 042 / locations].
+- [A182] SHOWN — The party engaged and defeated multiple Earth Elementals, fulfilling the “Ogrémoch's Bane — elemental entity banishment” audit item’s requirement for confronting the entity [ch 042 / 042.03; ch 042 / 042.06].
+- [A203] SHOWN — Three Galeb Duhr appeared and spoke to the party, confirming their presence and role as guides within the temple, matching the audit item’s description [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — The party received information about Ogrémoch’s corruption and the Galeb Duhr’s duty from the stone guardians, which may constitute “Visions obtained at Gravenhollow,” but the location is not Gravenhollow; this audit item is not yet SHOWN [ch 042 / 042.04].
+- [A405] BEGUN — The Endless Chant was not referenced in this chapter; no new fragments or disruptions were noted [ch 042 / 042.01-042.06].
+- [A201] BEGUN — Xazax the Eyemonger was not encountered; no beholder appeared in this chapter [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch's Bane was confronted and weakened through the defeat of Earth Elementals, as required by the audit item [ch 042 / 042.04].
+- [A410] BEGUN — The party did not encounter any disguise-related events, cryptograms, or illusions; no milestone toward level-up occurred [ch 042 / 042.01-042.06].
+- [A203] SHOWN — The Galeb Duhr appeared and communicated with the party, fulfilling the audit item’s requirement for their presence as a guide [ch 042 / 042.04; ch 042 / 042.06].
+- [A203] SHOWN — The Galeb Duhr were identified as stone guardians bound to the temple, matching the audit item’s description [ch 042 / 042.04].
+- [A182] SHOWN — The Earth Elementals were defeated in the Steadfast Stone under Ogrémoch’s influence, directly addressing the banishment objective [ch 042 / 042.03; ch 042 / 042.06].
+- [A32] SHOWN — The party placed the Ruby spell gem into the menhir to hallow the temple against Ogrémoch’s Bane, directly completing the “Cleanse the Steadfast Stone” objective [ch 042 / 042.02].
+- [A181] SHOWN — The Medusa Neheedra was slain in her lair, concluding the Rockblight confrontation [ch 042 / 042.01].
+- [A162] BEGUN — Drow pursuers were not mentioned; no pursuit level was tracked or escalated [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane was confronted and weakened through elemental defeat [ch 042 / 042.04].
+- [A12] BEGUN — The Steadfast Stone is not Gravenhollow; no evidence of reaching the stone giant library [ch 042 / 042.02; ch 042 / locations].
+- [A182] SHOWN — Ogrémoch's Bane was actively confronted and weakened by defeating Earth Elementals [ch 042 / 042.03; ch 042 / 042.06].
+- [A182] SHOWN — The threat of Ogrémoch's Bane was engaged through the ritual activation and elemental battles [ch 042 / 042.02; ch 042 / 042.04].
+- [A182] SHOWN — The party successfully engaged Ogrémoch's Bane by defeating three Earth Elementals and freeing three Galeb Duhr [ch 042 / 042.03; ch 042 / 042.06].
+- [A32] SHOWN — The party completed the hallowing ritual by placing the Ruby spell gem into the menhir of the Steadfast Stone [ch 042 / 042.02].
+- [A181] SHOWN — The Medusa Neheedra was defeated, concluding the Rockblight confrontation [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool’s first contact was confirmed through his dialogue and actions [ch 042 / 042.01].
+- [A203] SHOWN — The Galeb Duhr appeared and communicated, fulfilling their role as stone guardians [ch 042 / 042.04].
+- [A204] BEGUN — The party received information about Ogrémoch’s corruption and the Galeb Duhr’s duty, but this occurred in the Steadfast Stone, not Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — The party did not reach Gravenhollow; the location is the Steadfast Stone [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — The Endless Chant was not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise or cryptogram milestones occurred [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder was encountered [ch 042 / 042.01-042.06].
+- [A162] BEGUN — Drow pursuers were not mentioned [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane was confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — The Steadfast Stone was hallowed via gem placement [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra was defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool was confirmed as present and active [ch 042 / 042.01].
+- [A203] SHOWN — Three Galeb Duhr appeared and spoke [ch 042 / 042.04; ch 042 / 042.06].
+- [A12] BEGUN — The party is not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane was confronted [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, but not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not heard [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEGUN — Endless Chant not referenced [ch 042 / 042.01-042.06].
+- [A410] BEGUN — No disguise milestone [ch 042 / 042.01-042.06].
+- [A201] BEGUN — No beholder [ch 042 / 042.01-042.06].
+- [A162] BEGUN — No drow pursuers [ch 042 / 042.01-042.06].
+- [A182] SHOWN — Ogrémoch’s Bane confronted and weakened [ch 042 / 042.04].
+- [A32] SHOWN — Steadfast Stone hallowed [ch 042 / 042.02].
+- [A181] SHOWN — Neheedra defeated [ch 042 / 042.01].
+- [A99] SHOWN — Glabbagool confirmed [ch 042 / 042.01].
+- [A203] SHOWN — Galeb Duhr appeared [ch 042 / 042.04; ch 042 / 042.06].
+- [A204] BEGUN — Information received, not at Gravenhollow [ch 042 / 042.04].
+- [A12] BEGUN — Not at Gravenhollow [ch 042 / 042.02; ch 042 / locations].
+- [A405] BEG

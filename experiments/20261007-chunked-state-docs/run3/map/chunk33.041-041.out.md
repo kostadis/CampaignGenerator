@@ -1,0 +1,232 @@
+## Events
+- The party fought and defeated a maddened Earth Elemental and a gargoyle in a dark chamber, with Zalthir grappling the elemental, Daz casting Fireball for 24 damage to both, Gyrgum destroying the gargoyle with Spirit Guardians, and Thorin delivering the final blow with a Hill Strike that collapsed the elemental into rubble. `[ch 041 / 041.01]`
+- The party discovered a yellow diamond elemental gem among the elemental’s remains, which can summon an Earth Elemental but is cursed to cause madness; Gyrgum added it to their inventory and recalled the area’s malevolent curse. `[ch 041 / 041.02]`
+- The party traveled through barren passageways with Glabbagool, who commented on “talking statues and moving dirt,” and returned near the room where they obtained their anti-Medusa sunglasses, facing two tunnels: east and west. `[ch 041 / 041.03]`
+- The party entered a chamber filled with Drow statues; six animated immediately and attacked with AC 18 and 33 HP each, and after being destroyed, six more animated, revealing the threat’s endless nature. `[ch 041 / 041.04]`
+- Daz rolled a 28 on Arcana and deduced a malevolent entity was animating only six statues at a time, incapable of controlling more; the party confirmed this by stepping in and out of the chamber and sending Daz’s bat familiar to occupy all six animation threads. `[ch 041 / 041.05]`
+- The party prepared to confront the Medusa by crafting an ice mirror using Shape Water, gems, and silvered water, with Dawnbringer providing light; they agreed to build it before entering her chamber. `[ch 041 / 041.06]`
+- The party entered the Medusa’s chamber, adorned with Drow-style tapestries and furniture; she charged upon seeing them, Daz cast Fireball dealing 30 damage (halved to 15), ignited a bed to provide light for the mirror, Zalthir rushed forward with the ice mirror, and landed two punches for 21 damage. `[ch 041 / 041.07]`
+- The Medusa attempted to use her petrifying gaze on Zalthir; he raised the ice mirror, causing her to scream “My hair. My hair's a mess.” and resist petrification, then she attacked him with claws and snake hair for 15 poison damage. `[ch 041 / 041.07]`
+- Thorin, positioned 55 feet away, threw darts at the Medusa with disadvantage, used a luck point to turn a miss into a hit, and delivered a Hill Strike that knocked her prone with a DC 15 Strength save failure; he then hit again for 6 damage. `[ch 041 / 041.07]`
+- The session ended mid-combat as the party readied to finish the Medusa, with Gyrgum and Thorin having just acted. `[ch 041 / 041.07]`
+
+## Concluded
+- The battle against the Earth Elemental concluded with its collapse into rubble after Thorin’s Hill Strike. `[ch 041 / 041.01]`
+- The battle against the gargoyle concluded with its destruction by Gyrgum’s Spirit Guardians. `[ch 041 / 041.01]`
+- The investigation into the animated Drow statues concluded with the party confirming the entity’s six-statue limit and testing it with the bat familiar. `[ch 041 / 041.05]`
+- The construction of the ice mirror was completed as a pre-battle strategy before entering the Medusa’s chamber. `[ch 041 / 041.06]`
+- The initial engagement with the Medusa concluded with her knocked prone and the party poised to finish her, though the battle itself was not resolved. `[ch 041 / 041.07]`
+
+## Threads
+- [ADVANCED] **Cursed elemental gem** — The party acquired the yellow diamond gem capable of summoning a mad Earth Elemental and now possess a scroll of Remove Curse to potentially cleanse it; they intend to use it as a weapon-bomb. `[ch 041 / 041.02]`
+- [ADVANCED] **Malevolent entity animating Drow statues** — The party deduced the entity animates only six statues at a time and can be occupied by distracting it; they now know it is impervious to normal attacks and linked to the area’s curse. `[ch 041 / 041.05]`
+- [ADVANCED] **Ice mirror strategy against the Medusa** — The party successfully constructed and tested the ice mirror using Shape Water and Dawnbringer’s light; Zalthir used it effectively in combat to reflect the Medusa’s gaze, though she resisted petrification. `[ch 041 / 041.06; ch 041 / 041.07]`
+- [OPENED] **Dawnbringer’s scabbard** — Thorin negotiated with Dawnbringer for a finer scabbard in exchange for fighting in light; she began pitching designs into his mind, acknowledging the challenge of crafting a scabbard for a light-blade. `[ch 041 / 041.01; ch 041 / 041.06]`
+- [OPENED] **Medusa’s madness and chamber corruption** — The Medusa is driven mad by the chamber’s influence; her reaction to her reflection suggests deeper psychological or magical corruption tied to the malevolent entity. `[ch 041 / 041.07]`
+- [OPENED] **The source of the area’s curse** — The party now knows the elemental gem’s curse and the statue animation stem from a single malevolent entity, but its identity, form, and location remain unknown. `[ch 041 / 041.02; ch 041 / 041.05]`
+- [ADVANCED] **Anti-Medusa sunglasses** — The party confirmed they are ready to use them, and Gyrgum noted they are in his back pocket; they grant advantage on Constitution saves against petrification. `[ch 041 / 041.02; ch 041 / 041.06]`
+
+## NPC Status
+- Earth Elemental | Dead | Chamber of the Elemental | — `[ch 041 / 041.01]`
+- Gargoyle | Dead | Chamber of the Elemental | — `[ch 041 / 041.01]`
+- Dawnbringer | Alive | With Thorin | Cooperative, seeking a better scabbard; displeased by darkness `[ch 041 / 041.01; ch 041 / 041.06]`
+- Glabbagool | Alive | With party | Excited, curious, advised to sit out Medusa fight `[ch 041 / 041.03; ch 041 / 041.07]`
+- Animated Drow Statues | Unknown | Drow Statue Chamber | Animated by entity, reanimate when party enters `[ch 041 / 041.04]`
+- Daz's Bat Familiar | Alive | Unknown | Sent into statue chamber to occupy entity’s six threads `[ch 041 / 041.05]`
+- Medusa | Alive | Medusa’s Chamber | Driven mad, injured, knocked prone, awaiting final blow `[ch 041 / 041.07]`
+
+## World
+- [LOCATION] **Dark Chamber with Earth Elemental** — A combat area with an upper level 30 feet above the floor; magical darkness was used tactically, and Dawnbringer’s light was essential for visibility. `[ch 041 / 041.01]`
+- [LOCATION] **Passageway** — A barren path leading back to the anti-Medusa sunglasses room and branching into east and west tunnels; illuminated by Dawnbringer. `[ch 041 / 041.03]`
+- [LOCATION] **Drow Statue Chamber** — A room filled with statues of Drow warriors; six animate upon entry and reanimate endlessly; they are petrified Drow, and their animation is unnatural due to the malevolent entity. `[ch 041 / 041.04]`
+- [LOCATION] **Medusa’s Chamber** — A large chamber decorated with Drow city-style spider-themed tapestries, zurkhwood furniture, and racks of old, expensive clothing; a bed was ignited to provide light for the ice mirror. `[ch 041 / 041.07]`
+- [ITEM] **Yellow Diamond Elemental Gem** — A one-time-use gem that summons an Earth Elemental; cursed by the area’s malevolent entity, causing summoned elementals to go mad; even an uncursed stone would produce a mad elemental here. `[ch 041 / 041.02]`
+- [ITEM] **Scroll of Remove Curse** — In the party’s possession; capable of potentially cleansing the elemental gem or other cursed items. `[ch 041 / 041.02]`
+- [ITEM] **Anti-Medusa Sunglasses** — Provide advantage on Constitution saving throws against the Medusa’s petrifying gaze; kept ready and accessible. `[ch 041 / 041.02; ch 041 / 041.06]`
+- [ITEM] **Ice Mirror** — A reflective surface crafted from shaped, frozen, and silvered water with gems; designed to reflect the Medusa’s gaze; its construction was completed before the encounter. `[ch 041 / 041.06; ch 041 / 041.07]`
+- [ITEM] **Dawnbringer** — An intelligent magical sword with a hilt but no physical blade; emits bright light; dislikes darkness; desires a scabbard and can impose control via Charisma save. `[ch 041 / 041.01; ch 041 / 041.06]`
+- [THREAT] **Malevolent entity** — A powerful, likely incorporeal force animating Drow statues and corrupting the area; impervious to normal attacks; responsible for the elemental gem’s curse and the Medusa’s madness. `[ch 041 / 041.02; ch 041 / 041.05]`
+- [THREAT] **Endless wave of animated Drow statues** — The chamber’s threat regenerates six statues as others are destroyed, requiring strategic avoidance or entity neutralization. `[ch 041 / 041.04]`
+- [NPC] **Medusa** — A female Drow with serpentine hair, driven mad by the chamber; her gaze has a 30-foot cone; she is physically powerful and venomous. `[ch 041 / 041.07]`
+- [NPC] **Dawnbringer** — An intelligent sword with personality; values light, resents darkness, and is negotiating for a scabbard despite having no physical blade. `[ch 041 / 041.01; ch 041 / 041.06]`
+- [NPC] **Glabbagool** — An intelligent gelatinous cube; childlike in curiosity, confused by body language, and enjoys games involving animated statues. `[ch 041 / 041.03; ch 041 / 041.05]`
+
+## Party
+- The party is in Medusa’s chamber, mid-combat with the Medusa, who is knocked prone; session ended with Thorin and Gyrgum having just acted. `[ch 041 / 041.07]`
+- The party’s group name is not stated; no level or rank is given. `[ch 041 / 041.07]`
+- Daz has access to Sculpt Spells (Fireball protects allies), and used it successfully; he has a bat familiar and is cautious with spell usage. `[ch 041 / 041.01; ch 041 / 041.04; ch 041 / 041.07]`
+- Zalthir has Shadow Step and Darkness spells; used Shadow Step to teleport into darkness and grapple the elemental; used Darkness in combat; holds the ice mirror. `[ch 041 / 041.01; ch 041 / 041.04; ch 041 / 041.07]`
+- Thorin has Hill Strike (used twice), Precision Attack, and feinting attacks; used a luck point to turn a dart miss into a hit; negotiated with Dawnbringer for a scabbard. `[ch 041 / 041.01; ch 041 / 041.04; ch 041 / 041.07]`
+- Gyrgum has Spirit Guardians (with designate exceptions), Spiritual Weapon; used both effectively; carries the scroll of Remove Curse and the elemental gem. `[ch 041 / 041.01; ch 041 / 041.04; ch 041 / 041.07]`
+- The party possesses the yellow diamond elemental gem, scroll of Remove Curse, anti-Medusa sunglasses, and ice mirror. `[ch 041 / 041.02; ch 041 / 041.06]`
+- The party intends to finish the Medusa in the next session and likely pursue the malevolent entity responsible for the curses and statue animation. `[ch 041 / 041.05; ch 041 / 041.07]`
+
+## Audit
+- [A15] SHOWN — The party reached and entered the Medusa’s chamber, a key location in Velkynvelve, a drow outpost. `[ch 041 / 041.07; ch 041 / locations]`
+- [A45] SHOWN — The party is actively exploring and combatting threats within Velkynvelve, the drow outpost. `[ch 041 / 041.01; ch 041 / 041.07]`
+- [A161] SHOWN — The party has escaped the initial Velkynvelve slave pen and is now deeper within the outpost, engaging in dungeon exploration. `[ch 041 / 041.01; ch 041 / 041.07]`
+- [A181] SHOWN — The party encountered and engaged the Medusa, identified as Neheedra in tracking, within Velkynvelve. `[ch 041 / 041.07]`
+- [A160] SHOWN — The party acquired scavenged possessions in Velkynvelve: anti-Medusa sunglasses and the elemental gem. `[ch 041 / 041.02; ch 041 / 041.06]`
+- [A162] BEGUN — Drow pursuers are not mentioned as actively pursuing; the threat is implied but not yet active in this chunk. `[ch 041 / 041.07]`
+- [A182] BEGUN — The party has not yet confronted or banished Ogrémoch’s Bane; the elemental gem is cursed but not yet cleansed. `[ch 041 / 041.02]`
+- [A207] BEGUN — The party has not yet returned to Sloobludop; this is their first encounter with the Medusa in Velkynvelve. `[ch 041 / 041.07]`
+- [A210] BEGUN — Velkynvelve is being explored deeper; second visit conditions are not yet met. `[ch 041 / 041.07]`
+- [A223] BEGUN — Dawnbringer’s scabbard work is being negotiated but not completed; it remains a future task. `[ch 041 / 041.01; ch 041 / 041.06]`
+- [A233] BEGUN — Dawnbringer’s scabbard finishing work is discussed but not completed; the party is planning to find a craftsman. `[ch 041 / 041.06]`
+- [A244] BEGUN — Mountain's Mouth Inn is not referenced; this chunk is entirely in Velkynvelve. `[ch 041 / 041.01]`
+- [A246] BEGUN — Waterdeep is not referenced; this chunk is entirely in the Underdark. `[ch 041 / 041.01]`
+- [A258] BEGUN — Eldeth’s farewell occurred prior to this chunk. `[ch 041 / 041.01]`
+- [A260] BEGUN — Stroudite polemicist was encountered earlier. `[ch 041 / 041.01]`
+- [A262] BEGUN — Brindle Wenth story was recounted earlier. `[ch 041 / 041.01]`
+- [A263] BEGUN — Kestler was met earlier. `[ch 041 / 041.01]`
+- [A265] BEGUN — Rishaal was met earlier. `[ch 041 / 041.01]`
+- [A268] BEGUN — City Watch ooze-rights confrontation occurred earlier. `[ch 041 / 041.01]`
+- [A279] BEGUN — Thorin and Dawnbringer’s ooze-rights stand occurred earlier. `[ch 041 / 041.01]`
+- [A280] BEGUN — Thorin and Dawnbringer’s orphan-healing run occurred earlier. `[ch 041 / 041.01]`
+- [A281] BEGUN — Daz’s field-perception began earlier. `[ch 041 / 041.01]`
+- [A286] BEGUN — Six-pointed star first appeared earlier. `[ch 041 / 041.01]`
+- [A292] BEGUN — Drow refugee mention occurred earlier. `[ch 041 / 041.01]`
+- [A294] BEGUN — Candlekeep murder investigation occurred earlier. `[ch 041 / 041.01]`
+- [A300] BEGUN — Thorin’s therapy arc occurred earlier. `[ch 041 / 041.01]`
+- [A301] BEGUN — Gyrgum’s Vareth arc occurred earlier. `[ch 041 / 041.01]`
+- [A302] BEGUN — Glabbagool’s question occurred earlier. `[ch 041 / 041.01]`
+- [A304] BEGUN — Sylvira recruitment occurred earlier. `[ch 041 / 041.01]`
+- [A305] BEGUN — Daral rescue occurred earlier. `[ch 041 / 041.01]`
+- [A306] BEGUN — Kalan missing occurred earlier. `[ch 041 / 041.01]`
+- [A307] BEGUN — Alkrist arrest occurred earlier. `[ch 041 / 041.01]`
+- [A308] BEGUN — Moziqodo binding occurred earlier. `[ch 041 / 041.01]`
+- [A309] BEGUN — Daz/Yvenne Fourth-Seat synthesis occurred earlier. `[ch 041 / 041.01]`
+- [A310] BEGUN — Vaelissa T'sarran name and Bell Tower deadline occurred earlier. `[ch 041 / 041.01]`
+- [A311] BEGUN — Thorin/Philemon Layer 2 Brysis reveal occurred earlier. `[ch 041 / 041.01]`
+- [A312] BEGUN — Gyrgum/Vareth unsigned sting occurred earlier. `[ch 041 / 041.01]`
+- [A313] BEGUN — Glabbagool’s Shadow Apprentice unlock occurred earlier. `[ch 041 / 041.01]`
+- [A314] BEGUN — Candlekeep gates arrival occurred earlier. `[ch 041 / 041.01]`
+- [A315] BEGUN — Refectory dinner with Janussi occurred earlier. `[ch 041 / 041.01]`
+- [A316] BEGUN — Whispering Dome visit occurred earlier. `[ch 041 / 041.01]`
+- [A317] BEGUN — Infernal Fortress interview occurred earlier. `[ch 041 / 041.01]`
+- [A318] BEGUN — Janussi’s chamber investigation occurred earlier. `[ch 041 / 041.01]`
+- [A319] BEGUN — Southern Dining Hall search occurred earlier. `[ch 041 / 041.01]`
+- [A320] BEGUN — Bath House poisoning occurred earlier. `[ch 041 / 041.01]`
+- [A321] BEGUN — Founder’s Court interview occurred earlier. `[ch 041 / 041.01]`
+- [A322] BEGUN — Oak Tree Apothecary evidence occurred earlier. `[ch 041 / 041.01]`
+- [A323] BEGUN — Kitchens witness occurred earlier. `[ch 041 / 041.01]`
+- [A324] BEGUN — Erudite Outfitters cloak evidence occurred earlier. `[ch 041 / 041.01]`
+- [A325] BEGUN — Drakonoikos interview occurred earlier. `[ch 041 / 041.01]`
+- [A326] BEGUN — Reader’s Tower death scene occurred earlier. `[ch 041 / 041.01]`
+- [A327] BEGUN — Immortal Chambers interview occurred earlier. `[ch 041 / 041.01]`
+- [A328] BEGUN — Sea Warden’s Tower check-in occurred earlier. `[ch 041 / 041.01]`
+- [A329] BEGUN — Bell Tower cells occurred earlier. `[ch 041 / 041.01]`
+- [A330] BEGUN — Cursed Tower incidents occurred earlier. `[ch 041 / 041.01]`
+- [A331] BEGUN — Pont de Paramours disappearance occurred earlier. `[ch 041 / 041.01]`
+- [A332] BEGUN — Oval Theatre tournament occurred earlier. `[ch 041 / 041.01]`
+- [A333] BEGUN — House of Alaundo riddle occurred earlier. `[ch 041 / 041.01]`
+- [A334] BEGUN — Astronomicon Orrery clue occurred earlier. `[ch 041 / 041.01]`
+- [A335] BEGUN — Philosopher’s Court clue occurred earlier. `[ch 041 / 041.01]`
+- [A336] BEGUN — Melodrome doppelganger occurred earlier. `[ch 041 / 041.01]`
+- [A337] BEGUN — Jewel of the Styx wight encounter occurred earlier. `[ch 041 / 041.01]`
+- [A338] BEGUN — School of Drama statue occurred earlier. `[ch 041 / 041.01]`
+- [A339] BEGUN — High Tower Library combat occurred earlier. `[ch 041 / 041.01]`
+- [A340] BEGUN — Lava chamber bridge occurred earlier. `[ch 041 / 041.01]`
+- [A341] BEGUN — Vault B2 confrontation occurred earlier. `[ch 041 / 041.01]`
+- [A342] BEGUN — Book of Vile Darkness chamber occurred earlier. `[ch 041 / 041.01]`
+- [A343] BEGUN — Vault tower rocket lever occurred earlier. `[ch 041 / 041.01]`
+- [A344] BEGUN — Janussi first contact occurred earlier. `[ch 041 / 041.01]`
+- [A345] BEGUN — Janussi death occurred earlier. `[ch 041 / 041.01]`
+- [A346] BEGUN — Bookwyrm conscription occurred earlier. `[ch 041 / 041.01]`
+- [A347] BEGUN — Bookwyrm Teles sighting occurred earlier. `[ch 041 / 041.01]`
+- [A348] BEGUN — Bookwyrm confrontation occurred earlier. `[ch 041 / 041.01]`
+- [A349] BEGUN — Bookwyrm death occurred earlier. `[ch 041 / 041.01]`
+- [A350] BEGUN — Kalan first contact occurred earlier. `[ch 041 / 041.01]`
+- [A351] BEGUN — Kalan key handoff occurred earlier. `[ch 041 / 041.01]`
+- [A352] BEGUN — Kalan deterioration occurred earlier. `[ch 041 / 041.01]`
+- [A353] BEGUN — Kalan disappearance occurred earlier. `[ch 041 / 041.01]`
+- [A354] BEGUN — Sylvira first contact occurred earlier. `[ch 041 / 041.01]`
+- [A355] BEGUN — Sylvira prime suspect occurred earlier. `[ch 041 / 041.01]`
+- [A356] BEGUN — Sylvira recruitment occurred earlier. `[ch 041 / 041.01]`
+- [A357] BEGUN — Sylvira dispel occurred earlier. `[ch 041 / 041.01]`
+- [A358] BEGUN — Sylvira survival occurred earlier. `[ch 041 / 041.01]`
+- [A359] BEGUN — Daral first contact occurred earlier. `[ch 041 / 041.01]`
+- [A360] BEGUN — Daral poisoning occurred earlier. `[ch 041 / 041.01]`
+- [A361] BEGUN — Daral fate decision occurred earlier. `[ch 041 / 041.01]`
+- [A362] BEGUN — Daral testimony occurred earlier. `[ch 041 / 041.01]`
+- [A363] BEGUN — Fheminor first contact occurred earlier. `[ch 041 / 041.01]`
+- [A364] BEGUN — Fheminor revelation occurred earlier. `[ch 041 / 041.01]`
+- [A365] BEGUN — Fheminor appointment occurred earlier. `[ch 041 / 041.01]`
+- [A366] BEGUN — A'lai first contact occurred earlier. `[ch 041 / 041.01]`
+- [A367] BEGUN — A'lai interview occurred earlier. `[ch 041 / 041.01]`
+- [A368] BEGUN — A'lai escape occurred earlier. `[ch 041 / 041.01]`
+- [A369] BEGUN — A'lai fate occurred earlier. `[ch 041 / 041.01]`
+- [A370] BEGUN — Alkrist first contact occurred earlier. `[ch 041 / 041.01]`
+- [A371] BEGUN — Alkrist interview occurred earlier. `[ch 041 / 041.01]`
+- [A372] BEGUN — Alkrist arrest occurred earlier. `[ch 041 / 041.01]`
+- [A373] BEGUN — Fembris first contact occurred earlier. `[ch 041 / 041.01]`
+- [A374] BEGUN — Fembris confession occurred earlier. `[ch 041 / 041.01]`
+- [A375] BEGUN — Tadric first contact occurred earlier. `[ch 041 / 041.01]`
+- [A376] BEGUN — Tadric assistance occurred earlier. `[ch 041 / 041.01]`
+- [A377] BEGUN — Tadric appointment occurred earlier. `[ch 041 / 041.01]`
+- [A378] BEGUN — Hollypocket interview occurred earlier. `[ch 041 / 041.01]`
+- [A379] BEGUN — Sprig Summerfoot interview occurred earlier. `[ch 041 / 041.01]`
+- [A380] BEGUN — Leuwin interview occurred earlier. `[ch 041 / 041.01]`
+- [A381] BEGUN — Teles interview occurred earlier. `[ch 041 / 041.01]`
+- [A382] BEGUN — Kazryn interview occurred earlier. `[ch 041 / 041.01]`
+- [A383] BEGUN — Khell-Vire letter occurred earlier. `[ch 041 / 041.01]`
+- [A384] BEGUN — Philemon letter occurred earlier. `[ch 041 / 041.01]`
+- [A385] BEGUN — Vareth final stations occurred earlier. `[ch 041 / 041.01]`
+- [A386] BEGUN — Yvenne third sitting occurred earlier. `[ch 041 / 041.01]`
+- [A387] BEGUN — Yvenne Vaelissa delivery occurred earlier. `[ch 041 / 041.01]`
+- [A388] BEGUN — Yvenne Fourth-Seat synthesis occurred earlier. `[ch 041 / 041.01]`
+- [A389] BEGUN — Inda emergence occurred earlier. `[ch 041 / 041.01]`
+- [A390] BEGUN — Spanner handoff occurred earlier. `[ch 041 / 041.01]`
+- [A391] BEGUN — Moziqodo first encounter occurred earlier. `[ch 041 / 041.01]`
+- [A392] BEGUN — Moziqodo binding break occurred earlier. `[ch 041 / 041.01]`
+- [A393] BEGUN — Moziqodo fate occurred earlier. `[ch 041 / 041.01]`
+- [A394] BEGUN — Manshoon voice announcement occurred earlier. `[ch 041 / 041.01]`
+- [A395] BEGUN — Manshoon confrontation occurred earlier. `[ch 041 / 041.01]`
+- [A396] BEGUN — Manshoon escape occurred earlier. `[ch 041 / 041.01]`
+- [A397] BEGUN — Glabbagool bad night occurred earlier. `[ch 041 / 041.01]`
+- [A398] BEGUN — Glabbagool Shadow Apprentice status occurred earlier. `[ch 041 / 041.01]`
+- [A399] BEGUN — Eldeth letter delivered occurred earlier. `[ch 041 / 041.01]`
+- [A400] BEGUN — Brevin Sloobludop recitation occurred earlier. `[ch 041 / 041.01]`
+- [A401] BEGUN — Brevin bedclothes incident occurred earlier. `[ch 041 / 041.01]`
+- [A402] BEGUN — Marin quill incident occurred earlier. `[ch 041 / 041.01]`
+- [A403] BEGUN — Jimjar prophecy activation occurred earlier. `[ch 041 / 041.01]`
+- [A404] BEGUN — Five Books admission occurred earlier. `[ch 041 / 041.01]`
+- [A405] BEGUN — Endless Chant fragment heard earlier. `[ch 041 / 041.01]`
+- [A406] BEGUN — Janussi murder forensic reveals occurred earlier. `[ch 041 / 041.01]`
+- [A407] BEGUN — Two "Sylvira" revelation occurred earlier. `[ch 041 / 041.01]`
+- [A408] BEGUN — Bookwyrm disguise revealed earlier. `[ch 041 / 041.01]`
+- [A409] BEGUN — Alkrist identified as killer occurred earlier. `[ch 041 / 041.01]`
+- [A410] BEGUN — Disguise rosetta cracked occurred earlier. `[ch 041 / 041.01]`
+- [A411] BEGUN — Wards drop hallucination occurred earlier. `[ch 041 / 041.01]`
+- [A412] BEGUN — Cryptogram recovered occurred earlier. `[ch 041 / 041.01]`
+- [A413] BEGUN — Manshoon arrival announced occurred earlier. `[ch 041 / 041.01]`
+- [A414] BEGUN — Iron Owlbear found dead occurred earlier. `[ch 041 / 041.01]`
+- [A415] BEGUN — Echo 1 activated occurred earlier. `[ch 041 / 041.01]`
+- [A416] BEGUN — Echo 2 activated occurred earlier. `[ch 041 / 041.01]`
+- [A417] BEGUN — Echo 3 activated occurred earlier. `[ch 041 / 041.01]`
+- [A418] BEGUN — Echo 4 activated occurred earlier. `[ch 041 / 041.01]`
+- [A419] BEGUN — Book of Vile Darkness fate occurred earlier. `[ch 041 / 041.01]`
+- [A420] BEGUN — Vault tower rocket lever occurred earlier. `[ch 041 / 041.01]`
+- [A421] BEGUN — Candlekeep restructuring occurred earlier. `[ch 041 / 041.01]`
+- [A422] BEGUN — Party named guest seekers occurred earlier. `[ch 041 / 041.01]`
+- [A423] BEGUN — Manshoon-pursuit thread activated earlier. `[ch 041 / 041.01]`
+- [A424] BEGUN — Gauntlgrym call confirmed earlier. `[ch 041 / 041.01]`
+- [A425] BEGUN — Daz’s field-perception began earlier. `[ch 041 / 041.01]`
+- [A426] BEGUN — Yvenne named Daz’s sensitivity earlier. `[ch 041 / 041.01]`
+- [A427] BEGUN — Marin quill incident occurred earlier. `[ch 041 / 041.01]`
+- [A428] BEGUN — Brevin Sloobludop recitation occurred earlier. `[ch 041 / 041.01]`
+- [A429] BEGUN — Brevin bedclothes incident occurred earlier. `[ch 041 / 041.01]`
+- [A430] BEGUN — Endless Chant stoppage occurred earlier. `[ch 041 / 041.01]`
+- [A431] BEGUN — Ward-drop vision sequence occurred earlier. `[ch 041 / 041.01]`
+- [A432] BEGUN — Glabbagool Juiblex contact occurred earlier. `[ch 041 / 041.01]`
+- [A433] BEGUN — Echo 1 prophecy named surface contamination earlier. `[ch 041 / 041.01]`
+- [A434] BEGUN — Daz/Yvenne field-perception expertise confirmed earlier. `[ch 041 / 041.01]`
+- [A435] BEGUN — Sylvira recruited (Path B) occurred earlier. `[ch 041 / 041.01]`
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks occurred earlier. `[ch 041 / 041.01]`
+- [A437] BEGUN — Vareth/Drakonoikos goodwill occurred earlier. `[ch 041 / 041.01]`
+- [A438] BEGUN — Daral saved occurred earlier. `[ch 041 / 041.01]`
+- [A439] BEGUN — Khell-Vire Watcher’s Stillness earned occurred earlier. `[ch 041 / 041.01]`
+- [A440] BEGUN — Glabbagool Whispering Dome visit occurred earlier. `[ch 041 / 041.01]`
+- [A441] BEGUN — Polly Pocket released occurred earlier. `[ch 041 / 041.01]`
+- [A442] BEGUN — Walking-permit medallions worn occurred earlier. `[ch 041 / 041.01]`
+- [A443] BEGUN — Second High Tower key held occurred earlier. `[ch 041 / 041.01]`

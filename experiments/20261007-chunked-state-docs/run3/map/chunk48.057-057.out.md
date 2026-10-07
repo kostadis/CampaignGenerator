@@ -1,0 +1,177 @@
+## Events
+- Brother Vareth leads Gyrgum to the Immortal Chambers in Candlekeep’s West Inner Ward, where he outlines the three dominant schools of thought on the Question of the Age: Stroudite, Bahamutian, and Draconic [ch 057 / 057.01].
+- Pizwog, an ancient tortle librarian, shuffles past and gives Gyrgum his tract, *On the Necessary Absence of the Gods Who Are Present*, which Gyrgum tucks into his satchel and promises to read [ch 057 / 057.01].
+- Gyrgum proposes a fourth philosophical school — “fixed points” — where mortal choices are constrained by cosmic structure, sparking intense excitement in Vareth, who labels it the “strong-weak hypothesis” and classifies Gyrgum as a “weak Stroudite and strong Bahamutian around fixed points” [ch 057 / 057.01].
+- Vareth hands Gyrgum a collection of Stroudite notes and papers for study, then rushes off to begin his own research, leaving Gyrgum with a promise to return a marked-up copy [ch 057 / 057.01].
+- The party gathers for dinner at the Refectory, observing one Great Reader drunk, one unwell, two in hushed conversation, and a hooded Avowed hurrying past with something hidden under their robes [ch 057 / 057.02].
+- The party hears the prophecy from Alaundo’s recitation: “On the longest night of winter’s deepest cold, the keeper falls, the heart is sold” [ch 057 / 057.02].
+- The party retires to the House of Rest and the Hearth, but is awakened before dawn by Fembris Lancer, the First Reader’s adjutant, who announces the Keeper of Tomes is dead and demands they report to the Emerald Door immediately [ch 057 / 057.03].
+- Glabbagool tucks himself into the bag of holding with eyeballs peering out as the party departs into the snow-covered grounds of Candlekeep [ch 057 / 057.03].
+- Fembris leads the party through Candlekeep’s snow-blanketed grounds, pointing out the Astronomicon, the Whispering Dome, and the Drakonoikos — a structure built from the scales and bones of the ancient red dragon Fyrentennimar [ch 057 / 057.04].
+- Fembris warns the party that the Drakonoikos contains a dragon breath simulation chamber that has killed one Avowed, and now requires the Keeper’s personal permission to enter [ch 057 / 057.04].
+- The party arrives at the Chapter House, where the Council of Twelve is in chaos over the Keeper’s death, with members arguing over leadership, succession, and the murderer’s identity [ch 057 / 057.05].
+- Gyrgum interrupts the council by introducing himself as the founder of the Gyrgumite School, derailing the crisis into an academic debate [ch 057 / 057.05].
+- Daral Yashenti dismisses the party as “sell-swords” unfamiliar with Alaundo, but the party defends their credentials by recounting their Underdark survival and discovery of Dawnbringer, who confirms they are the greatest discoverers of all [ch 057 / 057.05].
+- Thorin asks for remuneration, prompting stunned silence; after negotiation, Bookwyrm agrees each party member will receive a copy of any book in the library, made at the House of the Binder, upon successful resolution [ch 057 / 057.05].
+- Bookwyrm requires the party to sign confidentiality papers before beginning their investigation [ch 057 / 057.05].
+- Bookwyrm publicly strips Gatewarden Kalan Strongbranch of the investigation due to his troubled relationship with the victim, citing his recent request for Kalan’s resignation over concerns of mental decline and negligence [ch 057 / 057.05].
+- Kalan bows curtly and storms off, visibly angered, but Tadric later notes he looked more determined after his private inspection of the crime scene [ch 057 / 057.05].
+- Bookwyrm escorts the party up a spiraling staircase to Janussi’s chambers, passing a shrine of Oghma and a large apartment with an ajar door [ch 057 / 057.06].
+- A gray cat lies sleeping on the stairs, opens its yellow eyes as the party approaches, and Bookwyrm admits no one can prove whether it is a supernatural entity or just a cat — so it remains undisturbed [ch 057 / 057.06].
+- Fembris dismisses the cat as superstition until Zalthir quietly asks, “Is it?”, causing Fembris to pause [ch 057 / 057.06].
+- Tadric, the watcher, provides a detailed timeline: Janussi was found dead at 7:30 a.m. by A'lai Aivenmore and Miss Hollypocket; Kalan arrived at 8 a.m.; Kazryn Nyantani arrived distraught shortly after; Fheminor Scrivenbark was turned away at 8:30 a.m.; Bookwyrm arrived at 9 a.m.; Kalan returned at 11 a.m. for a private inspection [ch 057 / 057.06].
+- Tadric admits he did not observe what Kalan did inside the chamber during his inspection [ch 057 / 057.06].
+- The party enters Janussi’s circular chamber, finding his body near the mahogany desk, ribs caved in, heart missing, robes soaked in blood, and the room in disorder [ch 057 / 057.07].
+- Fembris vomits outside the window after seeing the body, but no evidence is disturbed [ch 057 / 057.07].
+- The party finds The Discoveries spellbook open on the desk with Celestial annotations on papyrus, a quill with midnight blue ink on the floor, and a damp linen ink carrier [ch 057 / 057.07].
+- Atop a pile of notes, newer annotations in midnight blue ink are on *The Golden Ass*; beneath them, older dry purple ink notes on *The Discoveries*, indicating Janussi switched inks recently [ch 057 / 057.07].
+- Blue gemstones and empty pouches are scattered before the safe, suggesting the thief took something more valuable than the gems [ch 057 / 057.07].
+- Zalthir determines Janussi’s rib cage was shattered by precise axe-like blows, and only the heart was removed — no other organs were taken [ch 057 / 057.07].
+- Gyrgum theorizes the heart was removed post-mortem to prevent *Raise Dead* [ch 057 / 057.07].
+- The party notes the lingering tobacco smoke despite burned-out candles, and deduces the murder occurred many hours before discovery, as Miss Hollypocket would never permit such negligence [ch 057 / 057.07].
+- The party considers whether *Speak with Dead* was already cast, blocking further attempts for ten days, and wonders if Kalan found something during his inspection [ch 057 / 057.07].
+
+## Concluded
+- The philosophical debate with Brother Vareth concluded with Gyrgum receiving Stroudite notes for study and Vareth rushing off to pursue his own research [ch 057 / 057.01].
+- The dinner at the Refectory concluded with the party retiring to the House of Rest and the Hearth after hearing the prophecy [ch 057 / 057.02].
+- The morning tour of Candlekeep’s grounds concluded with the party arriving at the Chapter House [ch 057 / 057.04].
+- The Council of Twelve’s initial crisis concluded with the party appointed as independent investigators, signing confidentiality papers, and receiving a book-reward promise [ch 057 / 057.05].
+- The dismissal of Kalan Strongbranch as lead investigator concluded with him storming off, visibly angered [ch 057 / 057.05].
+- The arrival at Janussi’s chambers and the initial crime scene briefing concluded with the party beginning their forensic examination [ch 057 / 057.06].
+- The initial investigation of Janussi’s chambers concluded with the party identifying key clues: ink switch, missing heart, tobacco smoke, and the possibility of prior *Speak with Dead* [ch 057 / 057.07].
+
+## Threads
+- [ADVANCED] **The Question of the Age** — Gyrgum proposes a fourth school of thought — “fixed points” — which Vareth labels the “strong-weak hypothesis,” transforming the academic debate from three schools to a potential quadrangle [ch 057 / 057.01].
+- [OPENED] **The Gyrgumite School** — Gyrgum introduces himself as its founder to the Council of Twelve, establishing a new philosophical identity that derails a murder investigation [ch 057 / 057.05].
+- [OPENED] **The Murder of Janussi** — The Keeper of Tomes is found dead with his heart removed and ribs shattered; the party is appointed investigators, with multiple suspects and unanswered questions [ch 057 / 057.07].
+- [OPENED] **The Prophecy of Alaundo** — The line “On the longest night of winter’s deepest cold, the keeper falls, the heart is sold” is heard the night before Janussi’s murder, creating an immediate, chilling correlation [ch 057 / 057.02].
+- [OPENED] **The Midnight Blue Ink and The Golden Ass** — Janussi’s recent annotations on *The Golden Ass* in fresh ink, and the absence of the book itself from the chamber, suggest a hidden connection or motive [ch 057 / 057.07].
+- [OPENED] **The Gray Cat’s Nature** — The cat’s behavior and Bookwyrm’s ambiguous admission that its nature is unprovable, combined with Zalthir’s quiet “Is it?”, opens a mystery about its possible supernatural status [ch 057 / 057.06].
+- [OPENED] **Kalan Strongbranch’s Private Inspection** — Kalan’s determined demeanor after inspecting the crime scene, despite being removed from the case, suggests he discovered or concealed something [ch 057 / 057.05; ch 057 / 057.06].
+- [OPENED] **The Hooded Avowed** — A hooded member of the Avowed was seen hurrying past during dinner with something hidden under their robes, linking them to the murder or the prophecy [ch 057 / 057.02].
+- [OPENED] **The Heart’s Removal and *Raise Dead*** — Gyrgum’s theory that the heart was removed to prevent resurrection opens a thread about necromantic interference or ritual intent [ch 057 / 057.07].
+- [OPENED] **The Book of *The Golden Ass*** — The book itself is missing from the chamber, despite Janussi’s recent annotations on it, raising the question of its location and contents [ch 057 / 057.07].
+- [OPENED] **The Gatewarden’s Resignation Request** — Janussi asked for Kalan’s resignation the morning of his death, citing negligence — the nature of that negligence remains unexplained [ch 057 / 057.05].
+- [OPENED] **The Identity of Sylvira Savikas’s Absence** — Sylvira, who looked unwell at dinner, is absent from the council meeting; Daral draws attention to her absence, suggesting possible involvement or concealment [ch 057 / 057.05].
+- [OPENED] **The Possibility of Prior *Speak with Dead*** — The party speculates whether the spell was cast before their arrival, potentially blocking their own attempts for ten days [ch 057 / 057.07].
+
+## NPC Status
+- Brother Vareth | Alive | Immortal Chambers, West Inner Ward | Enthusiastic and eager to research Gyrgum’s “strong-weak hypothesis” [ch 057 / 057.01]
+- Pizwog | Alive | Immortal Chambers, West Inner Ward | Disposition unknown; gave Gyrgum his tract and shuffled away [ch 057 / 057.01]
+- Sister Yvenne | Alive | Candlekeep (location unknown) | Threatened to confiscate bookplates; not present [ch 057 / 057.01]
+- Fembris Lancer | Alive | Chapter House | Adjutant to the First Reader; assigned to assist the party; visibly shaken by the crime scene [ch 057 / 057.03; ch 057 / 057.06]
+- Glabbagool | Alive | In the bag of holding | Tucked inside with eyeballs peering out; excited by the investigation [ch 057 / 057.03]
+- Bookwyrm | Alive | Chapter House | First Reader; appointed the party investigators; escorted them to the crime scene; deflected questions about her whereabouts [ch 057 / 057.05; ch 057 / 057.06]
+- A'lai Aivenmore | Alive | Chapter House | Great Reader; pushed for leadership vote; discovered the body; supports the party’s appointment if Bookwyrm prefers [ch 057 / 057.05; ch 057 / 057.06]
+- Daral Yashenti | Alive | Chapter House | Great Reader; dismissed the party as sell-swords; asked why Sylvira was absent [ch 057 / 057.05]
+- Janussi | Dead | Janussi’s Chambers | Keeper of Tomes; murdered with ribs crushed and heart removed [ch 057 / 057.07]
+- Sylvira Savikas | Unknown | Location unknown | Great Reader; absent from council meeting; looked unwell at dinner [ch 057 / 057.05]
+- Kalan Strongbranch | Alive | Location unknown | Gatewarden; publicly stripped of investigation; looked determined after private inspection of the crime scene [ch 057 / 057.05; ch 057 / 057.06]
+- Tadric | Alive | Janussi’s Chambers | Watcher; provided timeline; admits he didn’t observe Kalan’s actions inside [ch 057 / 057.06]
+- Miss Hollypocket | Alive | Janussi’s Chambers | Ancient gnome housekeeper; discovered the body with A'lai [ch 057 / 057.06]
+- Kazryn Nyantani | Alive | Janussi’s Chambers | Great Reader; arrived distraught, viewed body only from doorway [ch 057 / 057.06]
+- Fheminor Scrivenbark | Alive | Janussi’s Chambers | Scholar; arrived at 8:30 a.m., wanted to inspect but was turned away [ch 057 / 057.06]
+
+## World
+- [LOCATION] **Immortal Chambers** — Candlekeep’s theology and religion library in the West Inner Ward; features a tile floor with one deity symbol per tile; Brother Vareth maintains a decades-long collection of polemics here [ch 057 / locations].
+- [LOCATION] **The Refectory** — Candlekeep’s dining hall where the Great Readers and Avowed gather; the party observed the council’s unease and heard Alaundo’s prophecies here [ch 057 / locations].
+- [LOCATION] **House of Rest and the Hearth** — Guest quarters in Candlekeep’s Outer Ward where the party stayed; Fembris banged on their door to summon them [ch 057 / locations].
+- [LOCATION] **Astronomicon** — A blue stack of globes in Candlekeep; Fembris claims everything Candlekeep knows about the stars is stored here [ch 057 / locations].
+- [LOCATION] **Whispering Dome** — Part of the Hall of Momentous Deeds; its gold gleams under snow; heroes’ words can be heard here to inspire visitors [ch 057 / locations].
+- [LOCATION] **Drakonoikos** — A building constructed from the scales and bones of the ancient red dragon Fyrentennimar; houses lore on fire- and lightning-breathing creatures; contains a fatal dragon breath simulation chamber requiring Keeper’s permission [ch 057 / locations].
+- [LOCATION] **Chapter House** — The executive meeting room of the Exaltation bastion; features a dodecagonal table for the Council of Twelve and a rose window; the party was appointed investigators here [ch 057 / locations].
+- [LOCATION] **Janussi’s Chambers** — A circular tower chamber with twelve lancet windows; the murder scene; contains a mahogany desk, a safe, a toppled marble statue, and a gray cat that sleeps on the stairs below [ch 057 / locations].
+- [LOCATION] **House of the Binder** — Facility in Candlekeep where books are copied; the party will receive a copy of any book here upon successful resolution of the investigation [ch 057 / locations].
+- [NPC] **Brother Vareth** — Elder scholar of the Immortal Chambers; specializes in why half-orcs convert to Bahamut; was electrified by Gyrgum’s “fixed points” theory [ch 057 / npcs].
+- [NPC] **Pizwog** — Ancient tortle librarian who shuffles at one mile per hour; distributes his own syncretic religious analysis, *On the Necessary Absence of the Gods Who Are Present* [ch 057 / npcs].
+- [NPC] **Bookwyrm** — Green dragonborn First Reader; took charge of the Council; appointed the party as investigators; deflected questions about her alibi [ch 057 / npcs].
+- [NPC] **Kalan Strongbranch** — Gatewarden; asked to resign by Janussi the morning of the murder; publicly stripped of investigation; looked more determined after private inspection [ch 057 / npcs].
+- [ITEM] ***On the Necessary Absence of the Gods Who Are Present*** — Syncretic religious tract by Pizwog; given to Gyrgum; dense and structurally incoherent [ch 057 / items].
+- [ITEM] **Stroudite School Notes** — Collection of marked-up research papers given to Gyrgum by Vareth; to be returned marked up [ch 057 / items].
+- [ITEM] **Dawnbringer** — Sentient artifact; cited by the party and by itself to prove their investigative credentials to the Council [ch 057 / items].
+- [ITEM] **The Discoveries** — Spellbook found open on Janussi’s desk; contains Celestial annotations on unfamiliar spells [ch 057 / items].
+- [ITEM] **The Golden Ass** — Book referenced in Janussi’s recent midnight blue ink notes; missing from the chamber [ch 057 / items].
+- [ITEM] **Midnight Blue Ink** — Fresh ink used in Janussi’s final annotations; spilled on the floor and on the quill; contrasts with older dry purple ink [ch 057 / items].
+- [ITEM] **Blue Gemstones** — Scattered before the safe in Janussi’s chamber; left behind, suggesting the thief sought something more valuable [ch 057 / items].
+- [THREAT] **The Prophecy’s Fulfillment** — “On the longest night of winter’s deepest cold, the keeper falls, the heart is sold” has just come true; the prophecy system may be collapsing [ch 057 / 057.02].
+- [THREAT] **The Council’s Instability** — The Council of Twelve is fractured, with factions pushing for leadership restoration, murder investigation, or dismissal of the Gatewarden; Candlekeep’s governance is in crisis [ch 057 / 057.05].
+- [THREAT] **The Risk of *Speak with Dead*** — If the spell was already cast on Janussi, the party has ten days before another attempt, during which the body will deteriorate [ch 057 / 057.07].
+- [FACTION] **The Stroudite School** — One of the three dominant theological schools; holds mortal choice is sovereign; now challenged by Gyrgum’s “fixed points” theory [ch 057 / 057.01].
+- [FACTION] **The Bahamutian School** — Argues divine providence arranges all things; Vareth aligns with this, and Gyrgum’s theory is seen as a compromise toward it [ch 057 / 057.01].
+- [FACTION] **The Draconic School** — Claims ancient agency sets the frame for mortal action; presented as one of the three schools by Vareth [ch 057 / 057.01].
+- [FACTION] **The Avowed** — Candlekeep’s administrative and security order; a hooded member was seen hurrying past with something hidden during dinner [ch 057 / 057.02].
+- [FACTION] **The Council of Twelve** — Governing body of Candlekeep; includes the Keeper, First Reader, eight Great Readers, Gatewarden, and Lorekeeper; currently in uproar over leadership and murder [ch 057 / 057.05].
+
+## Party
+- The party is located in Janussi’s chambers in Candlekeep’s tower, mid-investigation of the Keeper’s murder [ch 057 / 057.07].
+- The party is known as independent investigators appointed by Bookwyrm, with authority to access any book in Candlekeep’s library [ch 057 / 057.05].
+- The party’s level or rank is not stated, but they are treated as elite investigators by Candlekeep’s leadership [ch 057 / 057.05].
+- Gyrgum has acquired the Stroudite School Notes and *On the Necessary Absence of the Gods Who Are Present*; he has proposed and named the Gyrgumite School; he theorizes the heart was removed to prevent *Raise Dead* [ch 057 / 057.01; ch 057 / 057.07].
+- Thorin negotiated the party’s reward: each member will receive a copy of any book in the library from the House of the Binder upon successful resolution; he is focused on remuneration and access [ch 057 / 057.05].
+- Dawnbringer affirmed the party’s status as the greatest discoverers of all, having found her after two thousand years [ch 057 / 057.05].
+- Glabbagool is concealed in the bag of holding, eyeballs peering out, actively observing the investigation [ch 057 / 057.03].
+- The party is aware of the prophecy and its chilling fulfillment; they suspect Kalan found something during his inspection; they are considering whether *Speak with Dead* was already cast [ch 057 / 057.02; ch 057 / 057.07].
+- The party intends to investigate the meaning of *The Golden Ass*, the significance of the ink switch, the identity of the hooded Avowed, the nature of the gray cat, and the truth behind Kalan’s determined demeanor [ch 057 / 057.07].
+
+## Audit
+- [A294] SHOWN — The party was conscripted by Bookwyrm as independent investigators into the murder of the Keeper of Tomes [ch 057 / 057.05].
+- [A318] SHOWN — The party entered and began investigating Janussi’s chamber as the crime scene [ch 057 / 057.07].
+- [A344] SHOWN — Janussi was first contacted during the Refectory dinner the previous evening [ch 057 / 057.02].
+- [A345] SHOWN — Janussi died just after midnight on Day One, discovered at 7:30 a.m. [ch 057 / 057.06].
+- [A346] SHOWN — Bookwyrm first contacted the party during the Chapter House meeting, conscripting them as investigators [ch 057 / 057.05].
+- [A406] SHOWN — The party confirmed the murder’s forensic details: heart removed post-mortem, ribs shattered by precise blows, no defensive wounds, lingering tobacco smoke [ch 057 / 057.07].
+- [A408] BEGUN — The party suspects Bookwyrm may be using *disguise self*, but no direct evidence of the spell is yet confirmed [ch 057 / 057.06].
+- [A415] BEGUN — The prophecy “the keeper falls, the heart is sold” has just been fulfilled, activating Echo 1 (surface contamination) as a narrative consequence [ch 057 / 057.02].
+- [A417] BEGUN — Echo 3 (“Gauntlgrym / Keeper prophecy”) is activated by the murder and the party’s involvement, naming Thorin, Zalthir, Daz, and Gyrgum [ch 057 / 057.02; ch 057 / 057.05].
+- [A424] BEGUN — The Gauntlgrym call is confirmed by the convergence of Echo 3 and Eldeth’s letter, though the letter has not yet been received in this chapter [ch 057 / 057.02].
+- [A430] BEGUN — The Endless Chant was last heard approaching Candlekeep; its full stoppage has not yet occurred in this chapter [ch 057 / 057.02].
+- [A433] BEGUN — Echo 1’s prophecy names the surface-contamination field-effect directly, now activated by the murder’s timing [ch 057 / 057.02].
+- [A442] BEGUN — Walking-permit medallions are not mentioned in this chapter; no evidence of acquisition or use [ch 057 / 057.07].
+- [A223] BEGUN — The party has arrived at Candlekeep’s gates, as confirmed by their presence and Fembris’s summons [ch 057 / 057.03].
+- [A257] BEGUN — The party arrived at the Candlekeep Emerald Door, as Fembris summoned them from the House of Rest and the Hearth [ch 057 / 057.03].
+- [A314] BEGUN — The party gained admission to Candlekeep’s Five Books and were granted access to the Inner Ward [ch 057 / 057.03].
+- [A316] BEGUN — Glabbagool’s question about the Whispering Dome was raised, but the party has not yet visited it in this chapter [ch 057 / 057.04].
+- [A328] BEGUN — The Sea Warden’s Tower and Kalan’s check-in are referenced, but not yet visited in this chapter [ch 057 / 057.05].
+- [A333] BEGUN — The House of Alaundo and first prophecy are referenced, but not yet visited [ch 057 / 057.02].
+- [A347] BEGUN — Bookwyrm’s disguise is suspected, but no sighting of Teles or confirmation of disguise self is made [ch 057 / 057.06].
+- [A350] BEGUN — Kalan was first contacted in the Chapter House, when he was dismissed [ch 057 / 057.05].
+- [A354] BEGUN — Sylvira was first contacted during the Refectory dinner, where she looked unwell [ch 057 / 057.02].
+- [A359] BEGUN — Daral was first contacted in the Chapter House [ch 057 / 057.05].
+- [A363] BEGUN — Fheminor was first contacted as a scholar who was turned away from the crime scene [ch 057 / 057.06].
+- [A366] BEGUN — A'lai was first contacted in the Chapter House [ch 057 / 057.05].
+- [A370] BEGUN — Alkrist was first contacted in the Chapter House [ch 057 / 057.05].
+- [A373] BEGUN — Fembris was first contacted when he banged on the party’s door [ch 057 / 057.03].
+- [A375] BEGUN — Tadric was first contacted at the crime scene [ch 057 / 057.06].
+- [A378] BEGUN — Hollypocket was first contacted as a discoverer of the body [ch 057 / 057.06].
+- [A382] BEGUN — Kazryn Nyantani was first contacted arriving distraught at the crime scene [ch 057 / 057.06].
+- [A391] BEGUN — Moziqodo has not appeared in this chapter [ch 057 / 057.07].
+- [A394] BEGUN — Manshoon has not appeared [ch 057 / 057.07].
+- [A397] BEGUN — Glabbagool’s “bad night” or Juiblex reach has not occurred [ch 057 / 057.03].
+- [A404] BEGUN — The Five Books, Five Questions admission and scholar pairings were established prior to this chapter [ch 057 / 057.03].
+- [A405] BEGUN — The Endless Chant fragment “many-faced man / metal hand” has not been heard in this chapter [ch 057 / 057.02].
+- [A412] BEGUN — The cryptogram has not been recovered in this chapter [ch 057 / 057.07].
+- [A413] BEGUN — Manshoon’s arrival has not been announced [ch 057 / 057.07].
+- [A414] BEGUN — The Iron Owlbear has not been found dead [ch 057 / 057.07].
+- [A416] BEGUN — Echo 2 (wedding/Zuggtmoy) has not been activated [ch 057 / 057.07].
+- [A418] BEGUN — Echo 4 (Jimjar/Callarduran) has not been activated [ch 057 / 057.07].
+- [A419] BEGUN — The Book of Vile Darkness has not been accessed [ch 057 / 057.07].
+- [A420] BEGUN — The Vault tower rocket lever has not been pulled [ch 057 / 057.07].
+- [A421] BEGUN — Institutional restructuring has not occurred [ch 057 / 057.07].
+- [A422] BEGUN — The party has not yet been named guest seekers of the Avowed [ch 057 / 057.07].
+- [A423] BEGUN — The Manshoon-pursuit thread is activated by the prophecy and Bookwyrm’s behavior, but no direct contact has occurred [ch 057 / 057.07].
+- [A425] BEGUN — Daz’s first sinus-pressure moment occurred prior to this chapter [ch 057 / 057.07].
+- [A426] BEGUN — Yvenne named Daz’s sensitivity prior to this chapter [ch 057 / 057.07].
+- [A427] BEGUN — Marin’s quill incident occurred prior [ch 057 / 057.07].
+- [A428] BEGUN — Brevin’s recitation occurred prior [ch 057 / 057.07].
+- [A429] BEGUN — Brevin’s bedclothes incident occurred prior [ch 057 / 057.07].
+- [A431] BEGUN — Ward-drop visions have not occurred yet [ch 057 / 057.07].
+- [A432] BEGUN — Glabbagool’s Juiblex contact has not occurred [ch 057 / 057.03].
+- [A434] BEGUN — Daz and Yvenne’s field-perception expertise was confirmed prior [ch 057 / 057.07].
+- [A435] BEGUN — Sylvira recruited via Path B has not occurred [ch 057 / 057.07].
+- [A436] BEGUN — Yvenne’s trust ≥ 4 ticks has not occurred [ch 057 / 057.07].
+- [A437] BEGUN — Vareth/Drakonoikos goodwill has not been established [ch 057 / 057.07].
+- [A438] BEGUN — Daral saved has not occurred [ch 057 / 057.07].
+- [A439] BEGUN — Khell-Vire’s Watcher’s Stillness has not been earned [ch 057 / 057.07].
+- [A440] BEGUN — Glabbagool’s Whispering Dome visit has not occurred [ch 057 / 057.04].
+- [A441] BEGUN — Polly Pocket released has not occurred [ch 057 / 057.07].
+- [A443] BEGUN — Second High Tower key held has not been mentioned [ch 057 / 057.07].

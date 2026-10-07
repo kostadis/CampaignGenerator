@@ -1,0 +1,199 @@
+## Events
+- Eldeth, Jimjar, and Spiderbait were assigned to handle the ghost problem in Blingdenstone’s catacombs, while Glabbagool initially volunteered but remained with the main party after the plan changed [ch 040 / 040.01].
+- Burrow Warden Jadger wished the ghost-hunting group well and stated that fallen adventurers could still fight as ghosts, prompting Glabbagool to ask if he would become the first gelatinous cube ghost [ch 040 / 040.01].
+- The party chose the nearby Rockblight as their first objective and planned a long rest before setting out [ch 040 / 040.01].
+- The party took a long rest at the Foaming Mug Tavern, where they gathered information from patrons and proprietor Tappy Foamstrap about worsening ghost hauntings, the Pudding King’s sightings, Gracklstugh’s unrest, dancing myconids, and the return of the Assassin’s Guild [ch 040 / 040.02].
+- Glabbagool absorbed spilled alcohol at the tavern, became intoxicated, and began singing gelatinous cube sea shanties, leading the party to realize alcohol could affect oozes [ch 040 / 040.02].
+- The party negotiated with Tappy Foamstrap to obtain barrels of spoiled booze for use against ooze threats, securing his agreement on condition that the Foaming Mug’s reputation not be tarnished and that he receive an official city notice advertising him as a hero [ch 040 / 040.02].
+- The party traveled to the Cultivation Cave, where a Stoneheart Enclave member provided them with fresh fungi for their expedition [ch 040 / 040.03].
+- Glabbagool excavated a blocked route to the Rockblight by plowing through dirt and gravel while consuming fungi along the way, clearing the path after several hours [ch 040 / 040.03].
+- The party entered the Rockblight caverns and discovered a chamber illuminated by bioluminescent fungi and semi-transparent crystals that refracted light into a kaleidoscope of colors [ch 040 / 040.04].
+- Thorin rolled a natural 20 on Arcana, combined with Daz’s expertise, revealing that viewing creatures through the crystals grants protection against harmful gaze attacks, like magical sunglasses against a Medusa [ch 040 / 040.04].
+- The party found a petrified deep gnome statue holding a broken crystal to its face and collected portable crystals of multiple colors for defensive use [ch 040 / 040.04].
+- The party encountered a hostile deep gnome ghost, Udhask, who attacked them and cried, “They’re coming! Everyone must hide!” after being struck by Zalthir [ch 040 / 040.05].
+- The party subdued Udhask without destroying him, recognizing his fear, and followed him into a burrow where he vanished beside his skeletal remains [ch 040 / 040.05].
+- The party uncovered a hidden compartment beneath Udhask’s stone bed containing six gems worth 600 gp each and a potion of invisibility [ch 040 / 040.05].
+- The party collected Udhask’s bones to return to Burrow Warden Jadger, confirming he was one of the spirits Jadger sought to lay to rest [ch 040 / 040.05].
+- The party proceeded to a stream cavern with crystalline formations and a ledge occupied by two winged gargoyles; Glabbagool’s approach triggered their animation [ch 040 / 040.06].
+- Zalthir attacked one gargoyle with punches, reducing it to near destruction; Thorin finished it with darts despite its resistance to nonmagical piercing damage [ch 040 / 040.06].
+- Gyrgum attacked the second gargoyle with his crossbow, dealing reduced damage; the gargoyle retaliated with bite and claws, dealing ten points of damage to him [ch 040 / 040.06].
+- As the gargoyle battle continued, a crazed earth elemental erupted from the ground near the stream and prepared to attack, ending the session on a cliffhanger [ch 040 / 040.06].
+
+## Concluded
+- The ghost-hunting assignment in Blingdenstone’s catacombs was concluded with the party identifying Udhask’s remains and collecting them for burial [ch 040 / 040.05].
+- The long rest at the Foaming Mug Tavern concluded with the party securing barrels of spoiled booze and tactical insight into using alcohol against oozes [ch 040 / 040.02].
+- The excavation of the blocked route to the Rockblight through the Cultivation Cave concluded successfully with Glabbagool clearing the debris and the party entering the caverns [ch 040 / 040.03].
+- The discovery and identification of the protective crystals in the Rockblight concluded with the party collecting multiple colored specimens for defensive use [ch 040 / 040.04].
+- The encounter with Udhask’s ghost concluded with the party recovering his bones and treasure, fulfilling part of Burrow Warden Jadger’s request [ch 040 / 040.05].
+- The gargoyle ambush at the stream concluded with one gargoyle destroyed and the second engaged, but the battle was interrupted by the eruption of the earth elemental [ch 040 / 040.06].
+
+## Threads
+- [ADVANCED] **Ghost problem in Blingdenstone** — The party identified and recovered the remains of Udhask, one of the spirits Burrow Warden Jadger requested to be laid to rest, advancing the quest to rescue lost gnome ghosts [ch 040 / 040.05; ch 040 / npcs].
+- [OPENED] **Alcohol as weapon against oozes** — The party discovered that alcohol can intoxicate Glabbagool and now intends to use spoiled booze against the Pudding King’s ooze forces, establishing a new tactical avenue [ch 040 / 040.02; ch 040 / memorable moments].
+- [ADVANCED] **Ogrémoch’s Bane** — The party entered the Rockblight, confirmed its corrupting influence by encountering a crazed earth elemental, and began exploring its chambers, advancing toward cleansing the temple [ch 040 / 040.04; ch 040 / 040.06; ch 040 / locations].
+- [OPENED] **Dancing myconid parade** — The party learned of a procession of myconids announcing a wedding celebration, strongly implying Zuggtmoy’s influence and suggesting Neverlight Grove is either emptying or collapsing into madness [ch 040 / 040.02; ch 040 / npcs].
+- [ADVANCED] **Pudding King sightings** — The party heard reports of a crazed gnome skulking in unrecovered areas of Blingdenstone, reinforcing suspicion that the Pudding King is active and possibly connected to the Rockblight’s corruption [ch 040 / 040.02].
+- [OPENED] **Protective crystals against gaze attacks** — The party acquired crystals that function as magical sunglasses against gaze attacks, introducing a new defensive resource and potential tactical tool for future threats like Medusas or basilisks [ch 040 / 040.04; ch 040 / items].
+- [OPENED] **Maximilian’s Earthen Grasp on earth elementals** — The session ended with the party wondering what would happen if they cast Maximilian’s Earthen Grasp on the crazed earth elemental, leaving the interaction as an unresolved tactical question [ch 040 / 040.06; ch 040 / spells].
+- [ADVANCED] **Gracklstugh’s unrest** — The party received confirmation that Gracklstugh remains in controlled chaos, with summary executions of derro, an influx of surface coins, and rumors of the Assassin’s Guild’s return, validating their prior success in avoiding open war [ch 040 / 040.02; ch 040 / locations].
+- [OPENED] **Ghost cleaners identity** — Inspired by Udhask’s bones, the party began improvising a “Ghostbusters”-style chant, suggesting they may adopt a new informal identity or branding for ghost-rescue operations [ch 040 / 040.05; ch 040 / memorable moments].
+
+## NPC Status
+- Burrow Warden Jadger | Alive | Blingdenstone | Favorable toward party; tasked them with recovering lost spirits [ch 040 / 040.01; ch 040 / npcs].
+- Tappy Foamstrap | Alive | Foaming Mug Tavern | Cooperative with party; agreed to supply spoiled booze in exchange for official recognition [ch 040 / 040.02; ch 040 / npcs].
+- Gracklstugh Merchant | Alive | Foaming Mug Tavern | Informative; described duergar city’s tensions and carried a wanted poster [ch 040 / 040.02; ch 040 / npcs].
+- Deep Gnome Scout | Alive | Foaming Mug Tavern | Reported dancing myconids on their way to a wedding [ch 040 / 040.02; ch 040 / npcs].
+- Stoneheart Enclave Member | Alive | Cultivation Cave | Helpful; provided fresh fungi and accepted Glabbagool’s excavation [ch 040 / 040.03; ch 040 / npcs].
+- Udhask | Dead | Udhask’s Burrow, Rockblight | His skeletal remains were recovered by the party; his ghost fled after being frightened [ch 040 / 040.05; ch 040 / npcs].
+- Gargoyle (first) | Dead | Stream Cavern | Destroyed by Zalthir and Thorin [ch 040 / 040.06; ch 040 / npcs].
+- Gargoyle (second) | Alive | Stream Cavern | Engaged with Gyrgum when the earth elemental erupted; status unknown after session end [ch 040 / 040.06; ch 040 / npcs].
+- Crazed Earth Elemental | Alive | Stream Cavern | Erupted during battle; hostile and active, ending the session in combat [ch 040 / 040.06; ch 040 / npcs].
+
+## World
+- [LOCATION] **Blingdenstone** — The ghost problem is worsening, with spirits now haunting the catacombs; the Stoneheart Enclave is managing fungal cultivation and supporting expeditions; the wererat debate continues among citizens [ch 040 / 040.02; ch 040 / locations].
+- [LOCATION] **Foaming Mug Tavern** — A cavern inn built for larger visitors, serving Darklake Stout; its proprietor Tappy Foamstrap is eager for new stories and agreed to supply alcohol for weaponization under strict conditions [ch 040 / 040.02; ch 040 / locations].
+- [LOCATION] **Cultivation Cave** — A massive fungal garden managed by the Stoneheart Enclave; its fungi are used for cooking and crafting and lack magical growth properties; it provides an alternative entrance to the Rockblight [ch 040 / 040.03; ch 040 / locations].
+- [LOCATION] **Rockblight Caverns** — Dark, damp, and chill tunnels filled with rubble and shallow streams; bioluminescent fungi and protective crystals are present; earth elementals are being driven mad by Ogrémoch’s Bane [ch 040 / 040.04; ch 040 / 040.06; ch 040 / locations].
+- [LOCATION] **Udhask’s Burrow** — A small chamber in the abandoned residential section of the Rockblight; contains a stone bed, skeletal remains of Udhask, and a hidden compartment with six gems and a potion of invisibility [ch 040 / 040.05; ch 040 / locations].
+- [LOCATION] **Stream Cavern** — A cavern bisected by a swiftly flowing stream; features crystalline formations and a thirty-foot ledge with winged statues that animate as gargoyles; the earth elemental erupted here [ch 040 / 040.06; ch 040 / locations].
+- [LOCATION] **Gracklstugh** — A duergar city in controlled chaos; authorities blame the Ember Vanguard, derro are executed publicly, surface coins are appearing, and the Assassin’s Guild is rumored to have returned; the city remains operational despite unrest [ch 040 / 040.02; ch 040 / locations].
+- [ITEM] **Protective Crystals** — Semi-transparent crystals from the Rockblight that, when viewed through, protect against harmful gaze attacks; color does not alter this effect, but growth conditions may influence other magical properties [ch 040 / 040.04; ch 040 / items].
+- [ITEM] **Udhask’s Gems** — Six gems, each worth 600 gp, found in a hidden compartment beneath Udhask’s bed; now in the party’s possession [ch 040 / 040.05; ch 040 / items].
+- [ITEM] **Potion of Invisibility** — A magical potion recovered from Udhask’s hidden compartment; now in the party’s possession [ch 040 / 040.05; ch 040 / items].
+- [ITEM] **Spoiled Booze** — Barrels of old or spoiled alcohol obtained from Tappy Foamstrap; intended for use against oozes and puddings; delivery method under discussion [ch 040 / 040.02; ch 040 / items].
+- [THREAT] **Ogrémoch’s Bane** — A corrupting influence in the Rockblight that drives earth elementals mad, confirmed by the eruption of a crazed elemental; the party is now directly confronting its effects [ch 040 / 040.06; ch 040 / locations].
+- [THREAT] **Pudding King** — A crazed gnome from the early days of Blingdenstone’s reclamation is seen skulking in unrecovered areas; suspected to be connected to the Rockblight’s corruption [ch 040 / 040.02].
+- [THREAT] **Crazed Earth Elemental** — An earth elemental that erupted in the Stream Cavern and immediately attacked the party; its madness confirms the Rockblight’s corrupting influence [ch 040 / 040.06].
+- [NPC] **Glabbagool** — A sentient gelatinous cube who became intoxicated on tavern alcohol and sang sea shanties; now known to be vulnerable to alcohol, which the party intends to weaponize [ch 040 / 040.02; ch 040 / memorable moments].
+- [NPC] **Udhask** — A deep gnome ghost who attacked the party before becoming frightened and fleeing to his burrow; his remains were recovered; cause of death unknown [ch 040 / 040.05; ch 040 / npcs].
+
+## Party
+- The party is currently inside the Stream Cavern of the Rockblight, having just triggered a crazed earth elemental’s eruption [ch 040 / 040.06].
+- The party is known as a group of adventurers hired by Blingdenstone to deal with Ogrémoch’s Bane and the ghost problem; no formal group name is stated.
+- The party’s level is not stated, but their actions imply mid-to-high level capability (e.g., casting Maximilian’s Earthen Grasp, surviving gargoyle attacks).
+- Thorin has gained knowledge of crystal magic from a natural 20 Arcana check, understanding that crystals protect against gaze attacks when viewed through them [ch 040 / 040.04].
+- Daz has gained expertise in crystal magic through collaboration with Thorin, noting that crystal color may interact differently with spells [ch 040 / 040.04].
+- The party now possesses six gems worth 600 gp each and a potion of invisibility recovered from Udhask’s burrow [ch 040 / 040.05].
+- The party now possesses multiple protective crystals in various colors, usable as magical sunglasses against gaze attacks [ch 040 / 040.04].
+- The party now possesses barrels of spoiled booze obtained from Tappy Foamstrap, intended for use against oozes [ch 040 / 040.02].
+- The party has learned that alcohol can intoxicate gelatinous creatures, and they are considering delivery methods such as Shape Water, seltzer bottles, or mugs [ch 040 / 040.02].
+- Gyrgum was bitten and clawed by a gargoyle for ten points of damage; Lesser Restoration is available if needed [ch 040 / 040.06].
+- The party intends to continue exploring the Rockblight to cleanse the temple and deal with Ogrémoch’s Bane, now aware of the threat posed by crazed elementals and the potential use of alcohol against oozes [ch 040 / 040.06].
+- The party plans to return Udhask’s bones to Burrow Warden Jadger to fulfill his request [ch 040 / 040.05].
+
+## Audit
+- [A11] SHOWN — The party has reached Blingdenstone, as confirmed by their activities at the Foaming Mug Tavern, Cultivation Cave, and Rockblight, all within the settlement’s vicinity [ch 040 / 040.01; ch 040 / 040.02; ch 040 / 040.03].
+- [A32] BEGUN — The party has entered the Rockblight and begun exploring its caverns, but has not yet cleansed the Temple of the Steadfast Stone; the objective is underway [ch 040 / 040.04; ch 040 / 040.06].
+- [A35] ADVANCED — The party has recovered the bones of Udhask, one of the ghosts Burrow Warden Jadger tasked them with rescuing; other ghosts remain to be found [ch 040 / 040.05; ch 040 / npcs].
+- [A48] BEGUN — The party learned of dancing myconids heading to a wedding, strongly implying activity in or near Neverlight Grove; they have not yet traveled there [ch 040 / 040.02].
+- [A54] BEGUN — The party has not traveled to Mantol-Derith; they only received reports about it from the Gracklstugh merchant [ch 040 / 040.02].
+- [A69] BEGUN — The party has not entered the Wormwrithings; they only heard of duergar executions and surface coins, unrelated to purple worms [ch 040 / 040.02].
+- [A79] BEGUN — Udhask’s bones were recovered, but Pelek’s remains have not been mentioned or sought [ch 040 / 040.05].
+- [A80] BEGUN — Jimjar is present with the party, but this is not his first contact; it occurred earlier [ch 040 / 040.01].
+- [A87] BEGUN — The party has not encountered any kuo-toa archpriests; the dancing myconids are unrelated [ch 040 / 040.02].
+- [A99] BEGUN — Glabbagool’s first contact occurred before this chunk; this chunk only advances his role [ch 040 / 040.02].
+- [A100] BEGUN — The dancing myconids suggest Zuggtmoy’s influence, but Sovereign Phylo has not been encountered [ch 040 / 040.02].
+- [A109] BEGUN — Burrow Warden Jadger has been encountered and assigned tasks; this is a continuation, not first contact [ch 040 / 040.01].
+- [A110] BEGUN — The Pudding King is suspected from rumors, but has not been encountered [ch 040 / 040.02].
+- [A120] BEGUN — Yantha Coaxrock has not been mentioned or encountered [ch 040 / 040.02].
+- [A182] BEGUN — Ogrémoch’s Bane is being confronted in the Rockblight, but not yet banished [ch 040 / 040.06].
+- [A185] BEGUN — Entémoch’s Boon has not been located; the party is focused on the Rockblight [ch 040 / 040.06].
+- [A201] BEGUN — Xazax the Eyemonger has not been encountered [ch 040 / 040.02].
+- [A210] BEGUN — Velkynvelve has not been revisited; the party is in Blingdenstone [ch 040 / 040.01].
+- [A215] BEGUN — The party has not met Jarlaxle or House Do'Urden [ch 040 / 040.02].
+- [A219] BEGUN — No encounter with Yochlol occurred [ch 040 / 040.02].
+- [A220] BEGUN — Wand of Orcus has not been mentioned [ch 040 / 040.02].
+- [A221] BEGUN — No heroic sacrifice has occurred [ch 040 / 040.02].
+- [A222] BEGUN — No demon sortie has occurred [ch 040 / 040.02].
+- [A232] BEGUN — Zalthir’s brass shadow-puppet hand was acquired earlier [ch 040 / 040.02].
+- [A244] BEGUN — Mountain’s Mouth Inn was visited earlier [ch 040 / 040.02].
+- [A258] BEGUN — Eldeth’s farewell occurred earlier [ch 040 / 040.02].
+- [A260] BEGUN — Stroudite polemicist was met earlier [ch 040 / 040.02].
+- [A263] BEGUN — Kestler was met earlier [ch 040 / 040.02].
+- [A266] BEGUN — Stroudite half-orc pilgrims were met earlier [ch 040 / 040.02].
+- [A279] BEGUN — Thorin’s ooze-rights stand occurred earlier [ch 040 / 040.02].
+- [A281] BEGUN — Daz’s field-perception began earlier [ch 040 / 040.02].
+- [A286] BEGUN — Six-pointed star was first seen earlier [ch 040 / 040.02].
+- [A288] BEGUN — Endless Chant error was witnessed earlier [ch 040 / 040.02].
+- [A289] BEGUN — Endless Chant was first heard earlier [ch 040 / 040.02].
+- [A292] BEGUN — Drow refugee mention was earlier [ch 040 / 040.02].
+- [A293] BEGUN — Refugee family interaction was earlier [ch 040 / 040.02].
+- [A301] BEGUN — Gyrgum’s Vareth arc occurred earlier [ch 040 / 040.02].
+- [A302] BEGUN — Glabbagool’s question occurred earlier [ch 040 / 040.02].
+- [A304] BEGUN — Sylvira recruitment occurred earlier [ch 040 / 040.02].
+- [A309] BEGUN — Daz/Yvenne synthesis was earlier [ch 040 / 040.02].
+- [A313] BEGUN — Glabbagool’s Shadow Apprentice unlock occurred earlier [ch 040 / 040.02].
+- [A314] BEGUN — Candlekeep gates arrival was earlier [ch 040 / 040.02].
+- [A344] BEGUN — Daz/Yvenne field-perception expertise was confirmed earlier [ch 040 / 040.02].
+- [A354] BEGUN — Sylvira’s first contact was earlier [ch 040 / 040.02].
+- [A359] BEGUN — Daral’s first contact was earlier [ch 040 / 040.02].
+- [A366] BEGUN — A’lai’s first contact was earlier [ch 040 / 040.02].
+- [A370] BEGUN — Alkrist’s first contact was earlier [ch 040 / 040.02].
+- [A373] BEGUN — Fembris’s first contact was earlier [ch 040 / 040.02].
+- [A375] BEGUN — Tadric’s first contact was earlier [ch 040 / 040.02].
+- [A378] BEGUN — Hollypocket’s interview was earlier [ch 040 / 040.02].
+- [A379] BEGUN — Sprig Summerfoot’s interview was earlier [ch 040 / 040.02].
+- [A380] BEGUN — Leuwin’s interview was earlier [ch 040 / 040.02].
+- [A381] BEGUN — Teles sighting was earlier [ch 040 / 040.02].
+- [A382] BEGUN — Kazryn’s interview was earlier [ch 040 / 040.02].
+- [A383] BEGUN — Khell-Vire’s closing letter was earlier [ch 040 / 040.02].
+- [A384] BEGUN — Philemon’s letter delivery was earlier [ch 040 / 040.02].
+- [A385] BEGUN — Vareth’s final stations were earlier [ch 040 / 040.02].
+- [A386] BEGUN — Yvenne’s third sitting was earlier [ch 040 / 040.02].
+- [A387] BEGUN — Yvenne delivered Vaelissa’s name earlier [ch 040 / 040.02].
+- [A388] BEGUN — Yvenne’s synthesis scene was earlier [ch 040 / 040.02].
+- [A389] BEGUN — Inda emerged earlier [ch 040 / 040.02].
+- [A390] BEGUN — Spanner’s handoff was earlier [ch 040 / 040.02].
+- [A391] BEGUN — Moziqodo’s first encounter was earlier [ch 040 / 040.02].
+- [A392] BEGUN — Moziqodo’s binding break was earlier [ch 040 / 040.02].
+- [A393] BEGUN — Moziqodo’s fate was resolved earlier [ch 040 / 040.02].
+- [A394] BEGUN — Manshoon’s voice announcement was earlier [ch 040 / 040.02].
+- [A395] BEGUN — Manshoon’s confrontation was earlier [ch 040 / 040.02].
+- [A396] BEGUN — Manshoon’s escape was earlier [ch 040 / 040.02].
+- [A397] BEGUN — Glabbagool’s bad night was earlier [ch 040 / 040.02].
+- [A398] BEGUN — Glabbagool’s Shadow Apprentice status was confirmed earlier [ch 040 / 040.02].
+- [A399] BEGUN — Eldeth’s letter delivery was earlier [ch 040 / 040.02].
+- [A400] BEGUN — Brevin’s recitation was earlier [ch 040 / 040.02].
+- [A401] BEGUN — Brevin’s bedclothes incident was earlier [ch 040 / 040.02].
+- [A402] BEGUN — Marin’s quill incident was earlier [ch 040 / 040.02].
+- [A403] BEGUN — Jimjar/Callarduran prophecy activation was earlier [ch 040 / 040.02].
+- [A404] BEGUN — Five Books admission was earlier [ch 040 / 040.02].
+- [A405] BEGUN — Endless Chant fragment was heard earlier [ch 040 / 040.02].
+- [A406] BEGUN — Janussi murder was earlier [ch 040 / 040.02].
+- [A407] BEGUN — Two “Sylvira” revelation was earlier [ch 040 / 040.02].
+- [A408] BEGUN — Bookwyrm’s disguise was identified earlier [ch 040 / 040.02].
+- [A409] BEGUN — Alkrist identified as killer was earlier [ch 040 / 040.02].
+- [A410] BEGUN — Disguise rosetta cracked was earlier [ch 040 / 040.02].
+- [A411] BEGUN — Wards drop hallucinations occurred earlier [ch 040 / 040.02].
+- [A412] BEGUN — Cryptogram recovered was earlier [ch 040 / 040.02].
+- [A413] BEGUN — Manshoon’s arrival announced was earlier [ch 040 / 040.02].
+- [A414] BEGUN — Iron Owlbear found dead was earlier [ch 040 / 040.02].
+- [A415] BEGUN — Echo 1 activated was earlier [ch 040 / 040.02].
+- [A416] BEGUN — Echo 2 activated was earlier [ch 040 / 040.02].
+- [A417] BEGUN — Echo 3 activated was earlier [ch 040 / 040.02].
+- [A418] BEGUN — Echo 4 activated was earlier [ch 040 / 040.02].
+- [A419] BEGUN — Book of Vile Darkness fate was determined earlier [ch 040 / 040.02].
+- [A420] BEGUN — Vault tower lever was pulled or left earlier [ch 040 / 040.02].
+- [A421] BEGUN — Candlekeep restructuring was earlier [ch 040 / 040.02].
+- [A422] BEGUN — Party named guest seekers was earlier [ch 040 / 040.02].
+- [A423] BEGUN — Manshoon-pursuit thread was activated earlier [ch 040 / 040.02].
+- [A424] BEGUN — Gauntlgrym call confirmed was earlier [ch 040 / 040.02].
+- [A425] BEGUN — Daz’s first pressure moment was earlier [ch 040 / 040.02].
+- [A426] BEGUN — Yvenne named Daz’s sensitivity earlier [ch 040 / 040.02].
+- [A427] BEGUN — Marin’s quill incident was earlier [ch 040 / 040.02].
+- [A428] BEGUN — Brevin’s recitation was earlier [ch 040 / 040.02].
+- [A429] BEGUN — Brevin’s bedclothes incident was earlier [ch 040 / 040.02].
+- [A430] BEGUN — Endless Chant stoppage was earlier [ch 040 / 040.02].
+- [A431] BEGUN — Ward-drop visions were earlier [ch 040 / 040.02].
+- [A432] BEGUN — Glabbagool’s Juiblex contact was earlier [ch 040 / 040.02].
+- [A433] BEGUN — Echo 1 named surface contamination earlier [ch 040 / 040.02].
+- [A434] BEGUN — Daz/Yvenne field-perception confirmed earlier [ch 040 / 040.02].
+- [A435] BEGUN — Sylvira recruited was earlier [ch 040 / 040.02].
+- [A436] BEGUN — Yvenne trust ≥ 4 ticks was earlier [ch 040 / 040.02].
+- [A437] BEGUN — Vareth goodwill was earlier [ch 040 / 040.02].
+- [A438] BEGUN — Daral saved was earlier [ch 040 / 040.02].
+- [A439] BEGUN — Khell-Vire earned earlier [ch 040 / 040.02].
+- [A440] BEGUN — Glabbagool’s Whispering Dome visit was earlier [ch 040 / 040.02].
+- [A441] BEGUN — Polly Pocket released was earlier [ch 040 / 040.02].
+- [A442] BEGUN — Walking-permit medallions worn was earlier [ch 040 / 040.02].
+- [A443] BEGUN — Second High Tower key held was earlier [ch 040 / 040.02].
