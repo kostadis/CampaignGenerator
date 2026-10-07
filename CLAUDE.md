@@ -84,6 +84,8 @@ tests/test_prep.py          # Tests for campaignlib, prep, and session_doc logic
 | `docs/cli/quote_verification_howto.md` | Using quote verification: `sd_verify_quotes` / `sd_agent`, the five verdicts, why `near` ≠ safe, raw-vs-`.cleaned` VTT choice, every error message. Deterministic, zero-token, no backend — optional and auto-corrects nothing |
 | `docs/cli/state_projection_howto.md` | Using State Projection: `event_spine` → `thread_registry` → `grounding_sections` order, staleness states, every skip/refuse message, `projections.yaml`, the `/grounding/projections` page — **and the Threads page** (`/grounding/threads`): harvest → rule → build, the two candidate bands, why an accepted thread keeps resurfacing, every refusal decoded |
 | `docs/cli/summary_native_howto.md` | **Start here for summary-native grounding docs.** Task-oriented: the summary format, `validate` (every finding code), range choice, `build`, possible duplicates (fix the summaries; `canon.yaml` rulings), `synth` for all four docs, `compare`, promoting by hand, every refusal and exit code decoded, and an Out of the Abyss worked example |
+| `docs/cli/npc_dossiers_howto.md` | **Start here for NPC dossiers from summaries.** Task-oriented: `summary_native npc-link → npc-draft → npc-verify → npc-compose → npc-publish`, the authored file (manual edits numbered, Secrets never reach a model), ruling on generic name forms, reading `link_report.md` / `verify.md` / `drops.md` (incl. the "used, not meaning" caveat), the Spark/Claude A/B, `dgx` endpoint resolution, every refusal and exit code decoded, and an Out of the Abyss worked example |
+| `docs/cli/npc_dossiers_migration.md` | One-shot, two-step (`--propose` then `--apply`) move of loose `docs/npcs/*` into `distilled/` and `authored/`, the GM classifying every file the tool cannot prove is distilled. Readers refuse with this command until it is run |
 | `docs/cli/provenance_howto.md` | **Start here for `provenance`.** Task-oriented: trust a hit or don't, scope to canon, chapter horizons, resolve a name, cross-campaign, what to do when results look wrong |
 | `docs/cli/provenance_search.md` | The reference behind it — the two hand-authored files (`~/src/campaigns/provenance.yaml`, per-campaign `docs/corrections.yaml`): trust tiers, corrections matching, all ten `check` findings |
 | `docs/web/web_ui.md` | FastAPI/Vue UI: pages, Session Doc Editor, Quote Ledger, Connection Graph, `ui_config.yaml`, dev workflow |
@@ -337,6 +339,36 @@ Read-only, no LLM call, no writes — statically guarded (`tests/test_provenance
 It is **generated** (#250 R4). The raw `*.transcript.vtt` is the archive and is never written; `<session-dir>/transcript_corrections.yaml` is the hand-authored, cue-indexed record; `sd_corrections apply` turns one into the other. A hand-edit is discarded by the next `apply` and reported by `sd_corrections check` as an edit nobody wrote down.
 
 This rule exists because the previous arrangement — a chat-driven spell pass editing the tape directly — put 74 unrecorded substitutions into Phandalin ch46, three of which inserted a surname no player spoke. To fix a mishearing, add an entry (`cue`, `was`, `now`, `verified`, `note`) and re-apply. `was` is checked against the tape on every apply, so a stale entry fails loudly rather than pasting an old repair over new words. See `docs/cli/transcript_corrections_howto.md`.
+
+### `docs/npcs/` holds published dossiers; only `npc-publish` writes them
+
+`docs/npcs/<slug>.md` is what the gm-assistant skills read. It holds **only published dossiers**, plus
+three subdirectories: `authored/` (everything a person writes: `<slug>.authored.yaml` and hand-built
+dossiers such as `gm-npc-build` output), `distilled/` (the retired distilled pipeline's files, moved
+there by `server.migrate_npc_dossiers`) and `summary_native/` (generated range folders and
+`publish_log.json`). Four rules, enforced rather than documented:
+
+- **`authored/` is never written by a tool.** `npc-compose --init` creates an empty file only when none
+  exists; nothing else opens one for writing. `tests/test_no_writes_to_authored.py` fails the build if a
+  writer appears.
+- **Only `npc-publish` writes `docs/npcs/<slug>.md`**, and only for NPCs the GM names or an explicit
+  `--all` / `--authored-all`. It refuses a failed verification, a target it did not publish, and a target
+  whose sha256 differs from `publish_log.json` (a hand-edit). On an unmigrated campaign (loose
+  files directly in `docs/npcs/`), the readers (`planning --build-dossiers`, `registry check`) refuse with
+  the migration command instead of reading them as distilled dossiers.
+- **Secrets never enter a prompt.** Drafting reads an authored file through `load_manual()`, which
+  returns the numbered `manual` list and has no way to return `secrets`; compose copies Secrets
+  byte-for-byte into the GM dossier and nowhere else. A test asserts the text is in no draft and no
+  `runs/*/*.user.md`. The published dossier **does** include Secrets: it is GM-only.
+- **`npc_draft` is the only model step.** Every other `npc_*` module (`npc_link`, `npc_forms`,
+  `npc_check`, `npc_chunked`, `npc_verify`, `npc_compose`, `npc_authored`, `npc_publish`, `npc_slug`) is
+  AST-guarded no-LLM in `tests/test_summary_native_no_llm.py`, and chunked drafting puts a code check
+  between every model call and the next, so no model output feeds another model call unchecked.
+
+A draft is a leaf output (it removes only the prose decision from the GM); identity, order, attribution
+and scope come from the summaries, the registry and `players.yaml`. Player characters (named in
+`players.yaml` `plays`) are never drafted, and a name form that is ambiguous or generic is withheld from
+linking rather than guessed. See `docs/cli/npc_dossiers_howto.md`.
 
 ### LLM renders, humans decide
 
