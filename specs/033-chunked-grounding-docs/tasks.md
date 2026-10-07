@@ -342,17 +342,17 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ## Phase 10: Polish & Cross-Cutting Concerns
 
-- [ ] T055 [P] Update `docs/cli/summary_native_howto.md`: the four-step chunked build (extract → synth → annotate → audit), every refusal and exit code from `contracts/cli.md`, the missing-dossier ruling, and promotion (copying the drafts, the timeline and `reference/` into `docs/`).
-- [ ] T056 [P] Update `docs/core/architecture.md` (the `state/` layout and the four steps) and `docs/README.md` (index entry).
-- [ ] T057 [P] Add a short "Grounding docs are an index; summaries are the authority" rule to the Critical rules of `CLAUDE.md`, citing the annotation markers and `tests/test_annotate_never_rewrites.py`.
-- [ ] T058 [P] Create `tests/test_state_docs_no_live_writes.py` (FR-028; same idea as 032's `test_no_writes_to_authored.py`). On a copy of the fixture campaign, run `extract`, `synth world_state`, `synth campaign_state`, `annotate` (both docs) and `audit` with a fake model client. Assert that the whole live `docs/` tree (including `docs/npcs/`) and the 031 corpus files (`manifest.json`, `chronology.md`, `memorable_moments.md`, `dossiers/`) are byte-identical before and after, and that every new file is under `<range>/state/`.
-- [ ] T059 [P] Add Playwright coverage in `frontend/e2e/summary-native-state.spec.ts` (the plan's Testing section), with the routes mocked:
+- [X] T055 [P] Update `docs/cli/summary_native_howto.md`: the four-step chunked build (extract → synth → annotate → audit), every refusal and exit code from `contracts/cli.md`, the missing-dossier ruling, and promotion (copying the drafts, the timeline and `reference/` into `docs/`).
+- [X] T056 [P] Update `docs/core/architecture.md` (the `state/` layout and the four steps) and `docs/README.md` (index entry).
+- [X] T057 [P] Add a short "Grounding docs are an index; summaries are the authority" rule to the Critical rules of `CLAUDE.md`, citing the annotation markers and `tests/test_annotate_never_rewrites.py`.
+- [X] T058 [P] Create `tests/test_state_docs_no_live_writes.py` (FR-028; same idea as 032's `test_no_writes_to_authored.py`). On a copy of the fixture campaign, run `extract`, `synth world_state`, `synth campaign_state`, `annotate` (both docs) and `audit` with a fake model client. Assert that the whole live `docs/` tree (including `docs/npcs/`) and the 031 corpus files (`manifest.json`, `chronology.md`, `memorable_moments.md`, `dossiers/`) are byte-identical before and after, and that every new file is under `<range>/state/`.
+- [X] T059 [P] Add Playwright coverage in `frontend/e2e/summary-native-state.spec.ts` (the plan's Testing section), with the routes mocked:
   - the Extract, Audit and Annotate steps render and issue the documented route parameters (including repeated `endpoints` and `track_file`);
   - the "Write fallback lines" checkbox is unchecked on load and resets after a reload;
   - a missing-dossier refusal renders its list of NPCs and states with a link to the NPC dossiers page.
 
   Use the same browser-path workaround #504 needed if the installed headless shell's version differs.
-- [ ] T060 Run the full suite (`PYTHONPATH=$PWD python -m pytest tests/`). Any failures must be only the pre-existing ones on main.
+- [X] T060 Run the full suite (`PYTHONPATH=$PWD python -m pytest tests/`). Any failures must be only the pre-existing ones on main.
 - [ ] T061 Run quickstart S1–S7 on the OOTA copy and record the measured results against SC-001…SC-009 in `specs/033-chunked-grounding-docs/quickstart.md` under `## Validation`.
 - [ ] T062 After merge, reinstall the console script into the server venv (`uv pip install -e . --python ~/.venv/bin/python`) so the page's new routes find `summary_native`'s subcommands.
 

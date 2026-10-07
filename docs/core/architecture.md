@@ -283,7 +283,38 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 | [`campaign_state.py`](../../pipelines/grounding/campaign_state.py) | `docs/campaign_state.md` (what's done, active threads) | summaries.md |
 | [`make_tracking.py`](../../pipelines/grounding/make_tracking.py) | per-character/faction arc tracking files | adventure module |
 | [`arc_triggers.py`](../../pipelines/grounding/arc_triggers.py) | candidate trigger events from chronicle | mempalace |
-| [`summary_native`](../../pipelines/summary_native/cli.py) | the fourth rendering path: drafts of all four grounding docs under `docs/summary_native/ch<since>-<until>/drafts/` (never the live files) | reviewed structured summaries, parsed with no model; one render call per doc. See [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md) |
+| [`summary_native`](../../pipelines/summary_native/cli.py) | the fourth rendering path: drafts of all four grounding docs under `docs/summary_native/ch<since>-<until>/` (never the live files). `party` / `planning`: one render call per doc, under `drafts/`. `world_state` / `campaign_state`: the four-step chunked build below, under `state/` | reviewed structured summaries, parsed with no model. See [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md) |
+
+### Chunked state documents (summary-native, spec 033)
+
+`world_state` and `campaign_state` are built in four steps, each with its own subcommand. Code
+decides scope, order and attribution (chunking, routing, timeline order, Key NPCs selection, audit
+candidates); a model only reads one chunk at a time, writes prose, or judges one item, and code
+checks every model output before anything downstream reads it.
+
+| Step | Model? | What it does | Writes (under `<range>/state/`) |
+|---|---|---|---|
+| `extract` | yes (map) | per-chunk notes from whole chapters, then a code check (citations resolve in-chunk, quotations verbatim); multi-endpoint queue with a preflight | `notes/` (`manifest.json`, `chunkNN.*.{user,out}.md`, `*.checked.json`, `drops.md`), `runs/` |
+| `synth world_state \| campaign_state` | yes (prose, one call per section) | code builds the timeline, completed list, NPC status table, `reference/` files, Audit section and reading contract; Key NPCs come from published dossiers (missing one refuses; `--fallback-npc-lines` per run); then `annotate` runs | `drafts/`, `runs/` |
+| `annotate` | no | detectors append `⚠ later:` / `ℹ since:` / `⚠ unverified:` under a line; a line's text never changes | `drafts/annotations.md` (and the draft's annotations) |
+| `audit` | yes (judge, one item per call) | tracking items: code picks candidate chapters, model judges, code accepts SUPPORTED only for a resolving citation and a verbatim span | `audit/` (`items.json`, `audit.json`, `audit.md`), `runs/` |
+
+```text
+docs/summary_native/ch<since>-<until>/
+  manifest.json, chronology.md, dossiers/ …   ← 031 corpus (read-only to these steps)
+  state/
+    notes/  audit/  runs/<stamp>/
+    drafts/  world_state.draft.md  campaign_state.draft.md  canon_events_timeline.md
+             reference/{factions,npcs,locations,items,threads,threats}.md
+             annotations.md  npc_status_report.md  key_npcs_report.md  budget_report.json
+```
+
+Nothing outside `state/` is written (`tests/test_state_docs_no_live_writes.py`). Promotion is manual:
+the two drafts, the timeline and `reference/` are copied into the live `docs/`. The documents are an
+index for session prep and the summaries stay the authority (`CLAUDE.md`, "Grounding docs are an
+index"). `notes`, `state_sections`, `key_npcs`, `annotate` and `audit_select` are AST-guarded no-LLM
+(`tests/test_summary_native_no_llm.py`). Operator guide:
+[`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md), Step 5b.
 
 ### NPC dossiers (summary-native, spec 032)
 
@@ -464,7 +495,7 @@ A fast-orientation table for "I need to change X, where does it live?"
 | Touch the proposal-gate | [`proposal_loader.py`](../../pipelines/rlm/proposal_loader.py) — `require_approved_proposal` is the choke point |
 | Render a 5etools entity to prose | [`fivetools_render.py`](../../pipelines/content_ingest/fivetools_render.py) (`render_<type>` family); resolve `_copy` first via [`fivetools_copy.py`](../../pipelines/content_ingest/fivetools_copy.py) |
 | Convert a new RPG PDF | [`convert_book.py`](../../pipelines/content_ingest/convert_book.py) (wraps pdf-translators); then [`fivetools_ingest.py`](../../pipelines/content_ingest/fivetools_ingest.py) — keep the steps explicit |
-| Build grounding docs straight from reviewed session summaries | [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md); code in [`pipelines/summary_native/`](../../pipelines/summary_native/cli.py) |
+| Build grounding docs straight from reviewed session summaries (incl. the chunked `extract` → `synth` → `annotate` → `audit` build) | [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md); code in [`pipelines/summary_native/`](../../pipelines/summary_native/cli.py) |
 | Build, verify and publish NPC dossiers from reviewed summaries | [`docs/cli/npc_dossiers_howto.md`](../cli/npc_dossiers_howto.md); code in [`pipelines/summary_native/`](../../pipelines/summary_native/cli.py) (`npc_link`, `npc_draft`, `npc_verify`, `npc_compose`, `npc_publish`) |
 
 ## Detailed docs
