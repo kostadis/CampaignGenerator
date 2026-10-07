@@ -258,6 +258,19 @@ class TestMissing:
         _, _, err = cs.run_cli(synth_args(extracted))
         assert "Kalan:" not in err and "Sarith Kzekarit: not drafted" in err and "1 of 3" in err
 
+    def test_the_latest_attempts_missing_list_is_left_for_the_state_route(self, extracted):
+        """`GET /state` reads state/missing_dossiers.json: the refused attempt, then the fallback one."""
+        import json
+
+        path = cs.range_dir(extracted) / schema.STATE_DIR / schema.MISSING_DOSSIERS_FILE
+        assert cs.run_cli(synth_args(extracted))[0] == 2
+        got = json.loads(path.read_text())
+        assert got["refused"] is True
+        assert {n["name"]: n["state"] for n in got["npcs"]} == {"Kalan": "not drafted", "Sarith Kzekarit": "not drafted"}
+        assert cs.run_cli(synth_args(extracted, "--fallback-npc-lines"))[0] == 0
+        got = json.loads(path.read_text())
+        assert got["refused"] is False and len(got["npcs"]) == 2
+
     def test_npc_root_is_followed_and_echoed_in_the_commands(self, extracted):
         custom = extracted / "elsewhere"
         d = custom / RNG / "draft"

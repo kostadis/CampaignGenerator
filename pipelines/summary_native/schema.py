@@ -219,6 +219,8 @@ DEFAULT_AUDIT_CANDIDATES = 3
 #: Everything 033 writes lives under ``<range_dir>/state/``.
 STATE_DIR = "state"
 TIMELINE_FILE = "canon_events_timeline.md"
+#: Beside the notes: the NPCs the latest world_state build found without a usable dossier (read by `GET /state`).
+MISSING_DOSSIERS_FILE = "missing_dossiers.json"
 #: The two documents that build from the checked notes (FR-029); party and planning keep the one-shot path.
 STATE_DOCS: tuple[str, ...] = ("world_state", "campaign_state")
 #: Refusals shared by the CLI and the web routes (the routes answer 400 with the same words).

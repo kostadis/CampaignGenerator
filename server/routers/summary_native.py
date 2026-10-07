@@ -26,7 +26,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query, Request
 
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
-from pipelines.summary_native import freshness, notes, resolve, schema
+from pipelines.summary_native import annotate, freshness, notes, resolve, schema
 from server.grounding_config_shared import SummaryNativeRun
 from server.platform_config_service import resolve_selection, selection_cli_args
 from server.routers.grounding import (
@@ -183,6 +183,8 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
     reports = [
         ("drops", freshness.notes_dir(range_dir) / "drops.md"),
         ("npc_status_report", state_drafts / "npc_status_report.md"),
+        ("key_npcs_report", state_drafts / "key_npcs_report.md"),
+        ("annotations", state_drafts / annotate.REPORT_FILE),
         ("canon_events_timeline", state_drafts / schema.TIMELINE_FILE),
         ("budget_report", state_drafts / "budget_report.json"),
     ]
@@ -254,12 +256,21 @@ def get_state(request: Request, since: int | None = None, until: int | None = No
     """What is on disk for the range, per step (read-only; files only)."""
     run = _run_config(request)
     lo, hi = _require_range(run, since, until)
-    budgets = _read_json(schema.draft_dir(_range_dir(run, lo, hi), "world_state") / "budget_report.json")
+    range_dir = _range_dir(run, lo, hi)
+    drafts = schema.draft_dir(range_dir, "world_state")
+    budgets = _read_json(drafts / "budget_report.json")
+    missing = _read_json(range_dir / schema.STATE_DIR / schema.MISSING_DOSSIERS_FILE)
     return {
         "range": f"{lo}-{hi}",
         "extract": _extract_block(request, run, lo, hi),
         # {section: {budget, words, over}} from the last world_state build, or null
         "world_budgets": budgets if isinstance(budgets, dict) else None,
+        # {doc: {later, since, unverified, removed, lines}} from each document's last annotate step
+        "annotations": annotate.read_counts(drafts),
+        # [{name, state}]: the selected NPCs the latest world_state build found without a usable dossier
+        # ([] when none, null before any build); `missing_dossiers_refused` says whether that build stopped
+        "missing_dossiers": missing.get("npcs") if isinstance(missing, dict) else None,
+        "missing_dossiers_refused": bool(missing.get("refused")) if isinstance(missing, dict) else False,
     }
 
 
@@ -416,6 +427,30 @@ async def run_extract(
     cmd += selection_cli_args(resolve_selection(
         request, request_model=model, service=run.extract, service_name=f"{_SERVICE_NAME}.extract",
     ))
+    return _sse_response(cmd)
+
+
+@router.get("/run/annotate/{doc}")
+async def run_annotate(
+    request: Request,
+    doc: str,
+    summaries_dir: str = "",
+    since: int | None = None,
+    until: int | None = None,
+    dry_run: bool = False,
+):
+    _require_doc(doc)
+    if doc not in schema.STATE_DOCS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"annotate applies to {' and '.join(schema.STATE_DOCS)} only, not {doc}",
+        )
+    run = _run_config(request)
+    directory = _require_dir(run, summaries_dir)
+    lo, hi = _require_range(run, since, until)
+    cmd = _base_cmd("annotate", doc, directory, lo, hi)
+    if dry_run:
+        cmd.append("--dry-run")
     return _sse_response(cmd)
 
 

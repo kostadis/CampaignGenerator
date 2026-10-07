@@ -209,6 +209,10 @@ const extractState = ref<ExtractState | null>(null)
 // world_state's last build: words written against each prose section's budget.
 interface BudgetRow { budget: number; words: number; over: boolean }
 const worldBudgets = ref<Record<string, BudgetRow> | null>(null)
+// Each chunked document's last annotate step (written by synth, and again by Annotate).
+interface AnnotationCounts { later: number; since: number; unverified: number; removed: number; lines: number }
+const annotations = ref<Record<string, AnnotationCounts>>({})
+const docAnnotations = computed(() => annotations.value[doc.value] ?? null)
 const budgetRows = computed(() => Object.entries(worldBudgets.value ?? {}))
 const overBudget = computed(() => budgetRows.value.filter(([, r]) => r.over).length)
 
@@ -220,12 +224,20 @@ async function refreshOutputs() {
   drafts.value = []; draftsNote.value = ''
   extractState.value = null
   worldBudgets.value = null
+  annotations.value = {}
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
   try {
-    const state = await apiFetch<{ extract: ExtractState; world_budgets: Record<string, BudgetRow> | null }>(`${BASE}/state?${q}`)
+    const state = await apiFetch<{
+      extract: ExtractState; world_budgets: Record<string, BudgetRow> | null
+      annotations: Record<string, AnnotationCounts>
+      missing_dossiers: MissingNpc[] | null; missing_dossiers_refused: boolean
+    }>(`${BASE}/state?${q}`)
     extractState.value = state.extract
     worldBudgets.value = state.world_budgets
+    annotations.value = state.annotations ?? {}
+    // The latest world_state attempt's list, so a refusal is still shown after a reload.
+    missingNpcs.value = state.missing_dossiers_refused ? (state.missing_dossiers ?? []) : []
   } catch {
     extractState.value = null // the Extract panel simply stays empty; the other outputs still load
   }
@@ -267,7 +279,10 @@ function onSynthDone(rc: number, output = '') {
   refreshOutputs()
 }
 
-watch(doc, () => { fallbackNpcLines.value = false; missingNpcs.value = [] })
+watch(doc, () => { fallbackNpcLines.value = false })
+
+const annotateDryParams = computed(() => ({ ...baseParams.value, dry_run: true }))
+function onAnnotateDone() { refreshOutputs() }
 
 function onExtractDone() {
   forceExtract.value = false
@@ -527,9 +542,36 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- 4. Compare -->
+      <!-- 5. Annotate -->
+      <div v-if="isChunked" class="form-section">
+        <h3 class="step">5. Annotate the {{ doc }} draft</h3>
+        <span class="field-help">
+          Deterministic: no model is called and no line is reworded. Where a newer checked note, a mentioned NPC's later status,
+          another section, a non-verbatim quotation or an unresolved citation bears on a line, the evidence is appended under it
+          (<code>&#9888; later:</code>, <code>&#8505; since:</code>, <code>&#9888; unverified:</code>); a player character listed as a
+          companion is removed. Synthesize already does this; run it again after publishing a dossier or editing a summary.
+          Key NPCs and the code-built sections are never annotated.
+        </span>
+        <div v-if="docAnnotations" class="panel annotations">
+          <div class="counts">
+            <span>Last annotate step:</span>
+            <span>{{ docAnnotations.later }} later</span>
+            <span>{{ docAnnotations.since }} since</span>
+            <span :class="docAnnotations.unverified ? 'bad' : ''">{{ docAnnotations.unverified }} unverified</span>
+            <span>{{ docAnnotations.removed }} removed</span>
+            <span>on {{ docAnnotations.lines }} lines</span>
+          </div>
+          <span class="field-help">Every hit: <code>annotations.md</code> (listed under Drafts).</span>
+        </div>
+        <RunPanel :endpoint="`${BASE}/run/annotate/${doc}`" :params="annotateDryParams" :disabled="!ready"
+          :label="`Preview annotations for ${doc} (dry run)`" />
+        <RunPanel :endpoint="`${BASE}/run/annotate/${doc}`" :params="baseParams" :disabled="!ready"
+          :label="`Annotate ${doc}`" @done="onAnnotateDone" />
+      </div>
+
+      <!-- 6. Compare -->
       <div class="form-section">
-        <h3 class="step">5. Compare with the live document</h3>
+        <h3 class="step">6. Compare with the live document</h3>
         <span class="field-help">Diffs the {{ doc }} draft against docs/{{ doc }}.md. Read-only.</span>
         <RunPanel :endpoint="`${BASE}/run/compare/${doc}`" :params="baseParams" :disabled="!ready"
           :label="`Compare ${doc}`" />
@@ -588,7 +630,8 @@ onMounted(async () => {
         <span v-if="drafts.length" class="field-help">
           An incomplete draft failed its outline check and is not promotable. A report is read-only evidence
           (drops.md lists every dropped note; npc_status_report.md the merged, unresolved and player-character names;
-          canon_events_timeline.md every event in order; reference/*.md every checked note by subject, which each
+          canon_events_timeline.md every event in order; annotations.md every annotation and removal; key_npcs_report.md
+          who was selected for Key NPCs and what code replaced; reference/*.md every checked note by subject, which each
           world_state section and campaign_state's thread sections point to).
           Review a draft in your editor; promotion is manual.
         </span>
@@ -640,6 +683,6 @@ onMounted(async () => {
 .drafts { border-collapse: collapse; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 .drafts th, .drafts td { text-align: left; padding: 3px 14px 3px 0; }
 .drafts th { font-weight: 600; color: var(--text); }
-.extract-state, .budgets, .missing-npcs { margin-top: 10px; }
+.extract-state, .budgets, .missing-npcs, .annotations { margin-top: 10px; }
 .chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
 </style>

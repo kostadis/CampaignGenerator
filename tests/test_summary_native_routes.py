@@ -74,6 +74,7 @@ RANGE = {"summaries_dir": "docs/summaries", "since": 3, "until": 9}
     ("/run/build", ["build"]),
     ("/run/synth/world_state", ["synth", "world_state"]),
     ("/run/compare/campaign_state", ["compare", "campaign_state"]),
+    ("/run/annotate/world_state", ["annotate", "world_state"]),
 ])
 def test_every_run_route_uses_the_console_script(campaign, path, sub):
     _, _, captured = campaign
@@ -578,3 +579,67 @@ def test_drafts_lists_the_drops_and_status_reports(campaign):
     (rd / "state" / "drafts" / "npc_status_report.md").write_text("# NPC table identity report\n")
     rows = {(x["doc"], x["status"]) for x in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
     assert rows == {("drops", "report"), ("npc_status_report", "report")}
+
+
+# ── spec 033 US4: annotate, annotations and missing_dossiers ───────────────────
+
+@pytest.mark.parametrize("doc", ["world_state", "campaign_state"])
+def test_annotate_argv_and_dry_run(campaign, doc):
+    _, _, captured = campaign
+    assert _run(f"/run/annotate/{doc}", RANGE) == 200
+    cmd = captured["cmd"]
+    assert cmd[:3] == [console_script("summary_native"), "annotate", doc]
+    assert _flag(cmd, "--summaries-dir") == "docs/summaries" and _flag(cmd, "--since") == "3" and _flag(cmd, "--until") == "9"
+    assert "--dry-run" not in cmd
+    assert _run(f"/run/annotate/{doc}", {**RANGE, "dry_run": True}) == 200
+    assert "--dry-run" in captured["cmd"]
+
+
+@pytest.mark.parametrize("doc", ["party", "planning"])
+def test_annotate_is_a_400_for_the_one_shot_documents(campaign, doc):
+    _, _, captured = campaign
+    assert _run(f"/run/annotate/{doc}", RANGE) == 400
+    assert "cmd" not in captured
+
+
+def test_annotate_unset_range_or_directory_is_400(campaign):
+    assert _run("/run/annotate/world_state", {"summaries_dir": "docs/summaries"}) == 400
+    assert _run("/run/annotate/world_state", {"since": 3, "until": 9}) == 400
+
+
+def test_state_carries_each_documents_annotation_counts(campaign):
+    root, _, _ = campaign
+    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["annotations"] == {}
+    dd = root / "docs" / "summary_native" / "ch003-009" / "state" / "drafts"
+    dd.mkdir(parents=True)
+    counts = {"later": 8, "since": 7, "unverified": 2, "removed": 0, "lines": 14}
+    (dd / "annotations.json").write_text(json.dumps({"world_state": {"counts": counts, "annotated": [], "removed": []}}))
+    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["annotations"] == {"world_state": counts}
+
+
+def test_state_missing_dossiers_is_null_before_a_build_then_the_latest_attempts_list(campaign):
+    root, _, _ = campaign
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["missing_dossiers"] is None and body["missing_dossiers_refused"] is False
+    sd = root / "docs" / "summary_native" / "ch003-009" / "state"
+    sd.mkdir(parents=True)
+    npcs = [{"name": "Kalan", "state": "not drafted"}, {"name": "Sarith", "state": "failed verification (not-found 2)"}]
+    (sd / "missing_dossiers.json").write_text(json.dumps({"range": {"since": 3, "until": 9}, "refused": True, "npcs": npcs}))
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["missing_dossiers"] == npcs and body["missing_dossiers_refused"] is True
+    (sd / "missing_dossiers.json").write_text(json.dumps({"range": {"since": 3, "until": 9}, "refused": False, "npcs": []}))
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["missing_dossiers"] == [] and body["missing_dossiers_refused"] is False
+
+
+def test_drafts_lists_the_annotations_and_key_npcs_reports(campaign):
+    root, _, _ = campaign
+    dd = root / "docs" / "summary_native" / "ch003-009" / "state" / "drafts"
+    dd.mkdir(parents=True)
+    (dd / "annotations.md").write_text("# Annotations\n")
+    (dd / "annotations.json").write_text("{}")  # the machine copy is not a listed report
+    (dd / "key_npcs_report.md").write_text("# Key NPCs\n")
+    rows = {x["doc"]: x for x in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
+    assert set(rows) == {"annotations", "key_npcs_report"}
+    assert rows["annotations"]["status"] == "report" and rows["annotations"]["path"].endswith("state/drafts/annotations.md")
+    assert rows["key_npcs_report"]["path"].endswith("state/drafts/key_npcs_report.md")

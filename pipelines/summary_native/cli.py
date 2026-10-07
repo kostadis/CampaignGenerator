@@ -1,4 +1,4 @@
-"""summary_native CLI: validate | build | extract | synth | compare | npc-link | npc-draft | npc-compose | npc-verify | npc-publish.
+"""summary_native CLI: validate | build | extract | synth | annotate | compare | npc-link | npc-draft | npc-compose | npc-verify | npc-publish.
 
 Exit codes (contracts/cli.md): 0 ok, 1 blocking validation problems, 2 refusal,
 3 incomplete synthesis, 4 model call failed, 5 npc-verify found a failing draft.
@@ -20,13 +20,14 @@ from campaignlib.registry import load_registry
 from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
 from campaignlib.api.client import resolve_cli_model
+from pipelines.summary_native import annotate
 from pipelines.summary_native import compare as compare_mod
 from pipelines.summary_native import corpus, duplicates, extract, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
 from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
-SUBCOMMANDS = ("validate", "build", "extract", "synth", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish")
+SUBCOMMANDS = ("validate", "build", "extract", "synth", "annotate", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -39,6 +40,9 @@ def build_parser() -> argparse.ArgumentParser:
         p = sub.add_parser(name, help=name)
         if name in ("synth", "compare"):
             p.add_argument("doc", choices=schema.DOCS)
+        if name == "annotate":
+            p.add_argument("doc", choices=schema.STATE_DOCS)
+            p.add_argument("--dry-run", action="store_true", help="print the hits, write nothing")
         p.add_argument("--summaries-dir", default=None, help="directory of structured summaries (*.md)")
         p.add_argument("--since", type=int, default=None, help="first chapter (inclusive)")
         p.add_argument("--until", type=int, default=None, help="last chapter (inclusive)")
@@ -243,6 +247,11 @@ def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, 
         return _extract(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path)
     if args.command == "synth":
         return _synth(args, root, config_path, cfg, report, range_dir, registry_path, summaries_dir)
+    if args.command == "annotate":
+        return annotate.run_annotate(
+            args, range_dir=range_dir, summaries_dir=summaries_dir, registry_path=registry_path,
+            players_path=_players_path(config_path),
+        )
     if args.command == "compare":
         return _compare(args, root, range_dir)
     if args.command in ("npc-draft", "npc-compose", "npc-verify", "npc-publish"):

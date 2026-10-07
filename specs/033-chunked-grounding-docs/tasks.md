@@ -246,7 +246,7 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 ### Tests for User Story 4
 
-- [ ] T034 [P] [US4] `tests/test_summary_native_annotate.py`:
+- [X] T034 [P] [US4] `tests/test_summary_native_annotate.py`:
   - stale → `⚠ later:` with the later note verbatim;
   - a per-claim status change → `ℹ since:` (caught even when another claim on the line cites a later chapter);
   - **no** flag when the mentioned NPC has no earlier status row;
@@ -256,13 +256,13 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
   - Key NPCs and the code-owned sections (Completed, NPC Current States, Audit) produce no annotations, even when a later note exists for their subjects;
   - `annotations.md` lists every hit;
   - `--dry-run` writes nothing.
-- [ ] T035 [P] [US4] `tests/test_annotate_never_rewrites.py`: for every non-removed line, the annotated document's line text equals the pre-annotation line, and re-annotating replaces the old sub-bullets rather than stacking them.
+- [X] T035 [P] [US4] `tests/test_annotate_never_rewrites.py`: for every non-removed line, the annotated document's line text equals the pre-annotation line, and re-annotating replaces the old sub-bullets rather than stacking them.
 
 ### Implementation for User Story 4
 
-- [ ] T036 [US4] Implement `pipelines/summary_native/annotate.py` (deterministic). It ports the prototype's `fixpass.detect` and `annotate.annotations_for`, drops the reviewer and fixer, and provides `parse_entries`, `detect`, `apply_annotations` (replacing existing annotation sub-bullets) and `render_report`. **Skip list (FR-019):** `parse_entries` yields no entries from world_state's Key NPCs or from the code-owned sections (Canon Events Timeline pointer, Completed Encounters & Quests, NPC Current States, Audit: Tracking Claims). The player-character removal still applies to Party's Companions group.
-- [ ] T037 [US4] Call `annotate` at the end of the chunked `synth` in `pipelines/summary_native/synth.py`. Add the standalone `annotate world_state|campaign_state [--dry-run]` subcommand to `pipelines/summary_native/cli.py`.
-- [ ] T038 [US4] Add `GET /run/annotate/{doc}` to `server/routers/summary_native.py` (`dry_run`), plus `annotations` counts in `/state` and `annotations.md` in `/drafts`. Add an "Annotate" action with a dry-run preview to `frontend/src/views/grounding/SummaryNative.vue`.
+- [X] T036 [US4] Implement `pipelines/summary_native/annotate.py` (deterministic). It ports the prototype's `fixpass.detect` and `annotate.annotations_for`, drops the reviewer and fixer, and provides `parse_entries`, `detect`, `apply_annotations` (replacing existing annotation sub-bullets) and `render_report`. **Skip list (FR-019):** `parse_entries` yields no entries from world_state's Key NPCs or from the code-owned sections (Canon Events Timeline pointer, Completed Encounters & Quests, NPC Current States, Audit: Tracking Claims). The player-character removal still applies to Party's Companions group.
+- [X] T037 [US4] Call `annotate` at the end of the chunked `synth` in `pipelines/summary_native/synth.py`. Add the standalone `annotate world_state|campaign_state [--dry-run]` subcommand to `pipelines/summary_native/cli.py`.
+- [X] T038 [US4] Add `GET /run/annotate/{doc}` to `server/routers/summary_native.py` (`dry_run`), plus `annotations` counts in `/state` and `annotations.md` in `/drafts`. Add an "Annotate" action with a dry-run preview to `frontend/src/views/grounding/SummaryNative.vue`.
 
 **Checkpoint**: Drafts carry their own corrections as evidence.
 

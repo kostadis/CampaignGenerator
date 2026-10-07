@@ -21,7 +21,7 @@ import yaml
 from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import context, corpus, freshness, key_npcs, notes, npc_check, schema, select, state_sections, validate
+from pipelines.summary_native import annotate, context, corpus, freshness, key_npcs, notes, npc_check, schema, select, state_sections, validate
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
@@ -507,7 +507,15 @@ def run_state_synth(
         key_plan = key_npcs.plan_key_npcs(
             chosen, root, npc_root=npc_root or Path(root) / schema.DEFAULT_NPC_ROOT, rng=rng_name)
         refusal = key_npcs.refusal_message(key_plan, since, until, getattr(args, "npc_root", None))
-        if refusal and not getattr(args, "fallback_npc_lines", False):
+        refused = bool(refusal) and not getattr(args, "fallback_npc_lines", False)
+        # What `GET /state` reports as missing_dossiers: the NPCs the latest world_state attempt found
+        # without a usable dossier, whether it then refused or went on with fallback lines.
+        atomic_write_text(Path(range_dir) / schema.STATE_DIR / schema.MISSING_DOSSIERS_FILE, json.dumps({
+            "range": {"since": since, "until": until},
+            "refused": refused,
+            "npcs": [{"name": k.name, "state": k.missing} for k in key_plan if k.view is None],
+        }, indent=2, ensure_ascii=False) + "\n")
+        if refused:
             return _refuse(refusal)
 
     state_dir = Path(range_dir) / schema.STATE_DIR
@@ -746,11 +754,21 @@ def run_state_synth(
             m = re.search(r"record: runs/([^/\s]+)/record\.json", draft_path.read_text(encoding="utf-8").split("\n", 1)[0])
             print(f"previous draft kept: {_rel(draft_path, range_dir)} (from run {m.group(1) if m else 'unknown'})", file=sys.stderr)
         return EXIT_INCOMPLETE
-    atomic_write_text(
-        draft_path,
+    text = (
         f"<!-- summary_native draft | doc: {doc} | range: ch{since:03d}-{until:03d} "
-        f"| record: {record_ref} | notes manifest sha256: {record['inputs']['notes_manifest_sha256']} -->\n" + joined,
+        f"| record: {record_ref} | notes manifest sha256: {record['inputs']['notes_manifest_sha256']} -->\n" + joined
     )
+    if summaries_dir is not None:
+        # Later evidence goes under the line it bears on, verbatim; no line's text changes (FR-020).
+        # Code only: a model never rewrites a line after the sections are built.
+        ev = annotate.load_evidence(results, notes.load_chapters(Path(summaries_dir), since, until), registry_path, players_path)
+        annotated = annotate.annotate_text(text, ev)
+        text = annotated.text
+        annotate.write_report(drafts, doc, annotated)
+        record["annotations"] = annotated.counts()
+        save_record()
+        print(annotated.summary(), flush=True)
+    atomic_write_text(draft_path, text)
     (drafts / f"{doc}.incomplete.md").unlink(missing_ok=True)
     print(f"Wrote draft: {draft_path}")
     return 0
