@@ -20,6 +20,9 @@ GUARDED = [
     "freshness",
     # chunked drafting's deterministic half and the shared quote/citation primitives (T062)
     "npc_check", "npc_chunked", "npc_config",
+    # spec 033: the deterministic half of the chunked state documents. `extract`, `synth` and
+    # `audit` are the model steps (map, prose, judge) and are deliberately not listed.
+    "notes", "state_sections", "key_npcs", "annotate", "audit_select",
 ]
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")
@@ -35,6 +38,12 @@ def test_guard_covers_the_modules_that_exist():
     # Modules from spec 032 that exist are checked; those still to come are skipped by name.
     assert {"npc_slug", "npc_authored", "freshness", "npc_check", "npc_chunked", "npc_config", "npc_verify"} <= names
     assert "npc_draft" not in GUARDED  # the model step, deliberately not guarded
+    # Spec 033: `notes` exists as of Phase 2 and is checked; the other four are skipped by name
+    # until their phases land (and are asserted checked below once they exist).
+    assert "notes" in names
+    assert {"notes", "state_sections", "key_npcs", "annotate", "audit_select"} <= set(GUARDED)
+    # The model steps are not guarded: they are where the calls are made.
+    assert {"extract", "synth", "audit"}.isdisjoint(GUARDED)
 
 
 @pytest.mark.parametrize("name,path", _existing(), ids=lambda v: v if isinstance(v, str) else "")

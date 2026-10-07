@@ -40,17 +40,17 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 **Purpose**: Constants, prompts and fixtures every story uses.
 
-- [ ] T001 Add the 033 constants to `pipelines/summary_native/schema.py`:
+- [X] T001 Add the 033 constants to `pipelines/summary_native/schema.py`:
   - citation targets `SECTION_TARGETS` (heading → key: Memorable Moments→`moment`, NPCs→`npcs`, Locations→`locations`, Items→`items`, Spells→`spells`, Abilities→`abilities`, Session-End State→`end`) and `STATE_CITE_RE` (research R3);
   - note grammar `THREAD_TAGS`, `WORLD_TAGS`, `STATUSES`, `MAP_SECTIONS` (Events, Concluded, Threads, NPC Status, World, Party);
   - `DEFAULT_EXTRACT_PARALLEL = 6`, `DEFAULT_PROSE_BACKEND = "claude-code"`, `DEFAULT_PROSE_MODEL = "claude-sonnet-5-5"`, `DEFAULT_PROSE_EFFORT = "medium"`;
   - `DEFAULT_WORLD_BUDGETS` (Party 700, Factions and Powers 450, Key NPCs 900, Locations 450, Items and Artifacts 450, Active Threats and Open Pressures 600);
   - `DEFAULT_AUDIT_CANDIDATES = 3`, `STATE_DIR = "state"`, `TIMELINE_FILE = "canon_events_timeline.md"`;
   - the annotation markers `LATER = "⚠ later:"`, `SINCE = "ℹ since:"`, `UNVERIFIED = "⚠ unverified:"`.
-- [ ] T002 [P] Create `pipelines/summary_native/prompts/state.extract.system.md` from `experiments/20261007-chunked-state-docs/prompts/map.system.md`. **Remove the Audit section entirely** (research R11), and keep the citation-form and verbatim-quote rules.
-- [ ] T003 [P] Create `pipelines/summary_native/prompts/state.prose.system.md` and `state.prose_world.system.md` from the experiment's `reduce.system.md` / `reduce_world.system.md`. Add the quotation rule: "quotation marks only around words spoken or written in the summaries, never around note text" (research R8).
-- [ ] T004 [P] Create `pipelines/summary_native/prompts/state.npc_lines.system.md` (from the experiment) and `state.audit.system.md`. The audit prompt covers one item, its candidate chapters only, and a SHOWN/NOT SHOWN answer, where SHOWN requires `[ch NNN / target]` plus a verbatim quoted span.
-- [ ] T005 [P] Extend the fixtures under `tests/fixtures/summary_native/`:
+- [X] T002 [P] Create `pipelines/summary_native/prompts/state.extract.system.md` from `experiments/20261007-chunked-state-docs/prompts/map.system.md`. **Remove the Audit section entirely** (research R11), and keep the citation-form and verbatim-quote rules.
+- [X] T003 [P] Create `pipelines/summary_native/prompts/state.prose.system.md` and `state.prose_world.system.md` from the experiment's `reduce.system.md` / `reduce_world.system.md`. Add the quotation rule: "quotation marks only around words spoken or written in the summaries, never around note text" (research R8).
+- [X] T004 [P] Create `pipelines/summary_native/prompts/state.npc_lines.system.md` (from the experiment) and `state.audit.system.md`. The audit prompt covers one item, its candidate chapters only, and a SHOWN/NOT SHOWN answer, where SHOWN requires `[ch NNN / target]` plus a verbatim quoted span.
+- [X] T005 [P] Extend the fixtures under `tests/fixtures/summary_native/`:
   - a 4-chapter range where chapter 4 makes an NPC's chapter-2 status stale;
   - a mentioned NPC whose status changes after the citing claim;
   - a player character named in a fixture `players.yaml`;
@@ -66,8 +66,8 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T006 Generalise `make_chunks` in `pipelines/summary_native/npc_chunked.py` to accept any sequence of objects with `.number` and `.text`. Existing NPC callers must be unchanged: run `tests/test_summary_native_npc_chunked.py` and keep it green.
-- [ ] T007 Create `pipelines/summary_native/notes.py` (deterministic) with the shared primitives:
+- [X] T006 Generalise `make_chunks` in `pipelines/summary_native/npc_chunked.py` to accept any sequence of objects with `.number` and `.text`. Existing NPC callers must be unchanged: run `tests/test_summary_native_npc_chunked.py` and keep it green.
+- [X] T007 Create `pipelines/summary_native/notes.py` (deterministic) with the shared primitives:
   - `load_chapters(summaries_dir, since, until)`, giving `.number`, `.text` and `.targets` (scene ids plus section keys present);
   - `cites(text)`, with heading-text → key normalisation, any case, exact lookup, unknown headings invalid;
   - `cite_problem(text, allowed)`;
@@ -76,15 +76,15 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
   - `first_chapter(text)`.
 
   Port from the prototype's `chunked_state.py` and `fixpass.py`.
-- [ ] T008 [P] Add `extract` and `prose` blocks to `SummaryNativeRun` in `server/grounding_config_shared.py`:
+- [X] T008 [P] Add `extract` and `prose` blocks to `SummaryNativeRun` in `server/grounding_config_shared.py`:
   - `extract: {backend, model, chunk_chars}` and `prose: {backend, model, effort, budgets}`;
   - strict (`extra="forbid"`), with defaults from T001's constants;
   - **no `endpoints` and no `fallback_npc_lines` keys**.
 
   Expose them via `pipelines/summary_native/resolve.py`, with precedence flag > config > schema.
-- [ ] T009 [P] Extend `pipelines/summary_native/freshness.py` with `check_notes_fresh(range_dir, …)`. It compares `state/notes/manifest.json` against the corpus manifest, registry and `players.yaml` sha256, and returns a refusal message naming the command to re-run. Also add `check_audit_fresh(range_dir, track_files)`: `state/audit/items.json` against the track files' sha256 and the notes manifest. A changed track file makes `synth campaign_state` refuse to render a stale Audit section, naming `summary_native audit`. Dossiers are deliberately not hashed: `synth world_state` reads them live at build time, and the run record keeps their sha256 for comparison.
-- [ ] T010 [P] Add `notes`, `state_sections`, `key_npcs`, `annotate` and `audit_select` to `GUARDED` in `tests/test_summary_native_no_llm.py`, and assert `extract`, `synth` and `audit` are not guarded (they are the model steps).
-- [ ] T011 [P] Extend `tests/test_summary_native_config_defaults.py`:
+- [X] T009 [P] Extend `pipelines/summary_native/freshness.py` with `check_notes_fresh(range_dir, …)`. It compares `state/notes/manifest.json` against the corpus manifest, registry and `players.yaml` sha256, and returns a refusal message naming the command to re-run. Also add `check_audit_fresh(range_dir, track_files)`: `state/audit/items.json` against the track files' sha256 and the notes manifest. A changed track file makes `synth campaign_state` refuse to render a stale Audit section, naming `summary_native audit`. Dossiers are deliberately not hashed: `synth world_state` reads them live at build time, and the run record keeps their sha256 for comparison.
+- [X] T010 [P] Add `notes`, `state_sections`, `key_npcs`, `annotate` and `audit_select` to `GUARDED` in `tests/test_summary_native_no_llm.py`, and assert `extract`, `synth` and `audit` are not guarded (they are the model steps).
+- [X] T011 [P] Extend `tests/test_summary_native_config_defaults.py`:
   - the new blocks' defaults equal the `schema.py` constants;
   - `extract.endpoints` and `fallback_npc_lines` are refused as unknown keys;
   - the router contains no default literal for the new parameters.

@@ -11,7 +11,9 @@ Guarded by ``tests/test_summary_native_no_llm.py``.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
+from typing import Protocol, TypeVar
 
 from pipelines.summary_native import context, npc_check, schema
 
@@ -29,13 +31,25 @@ CITATION_MISMATCH = npc_check.CITATION_MISMATCH
 # ── Chunking ────────────────────────────────────────────────────────────────
 
 
-def make_chunks(chapters: list[npc_check.Chapter], limit: int) -> list[list[npc_check.Chapter]]:
+class _Chunkable(Protocol):
+    """Anything with a chapter ``number`` and its ``text``: the NPC evidence chapters and the
+    state-notes chapters (``notes.Chapter``) both qualify."""
+
+    number: int
+    text: str
+
+
+_C = TypeVar("_C", bound=_Chunkable)
+
+
+def make_chunks(chapters: Sequence[_C], limit: int) -> list[list[_C]]:
     """Whole chapters, in order, packed until the next would exceed ``limit`` characters.
 
-    A chapter larger than the limit is its own chunk. A chapter is never split.
+    A chapter larger than the limit is its own chunk. A chapter is never split. Works on any
+    sequence of objects with ``.number`` and ``.text``; the objects are returned as given.
     """
-    chunks: list[list[npc_check.Chapter]] = []
-    cur: list[npc_check.Chapter] = []
+    chunks: list[list[_C]] = []
+    cur: list[_C] = []
     size = 0
     for ch in chapters:
         if cur and size + len(ch.text) > limit:
@@ -48,11 +62,11 @@ def make_chunks(chapters: list[npc_check.Chapter], limit: int) -> list[list[npc_
     return chunks
 
 
-def chunk_text(chunk: list[npc_check.Chapter]) -> str:
+def chunk_text(chunk: Sequence[_Chunkable]) -> str:
     return "".join(c.text for c in chunk)
 
 
-def chunk_range(chunk: list[npc_check.Chapter]) -> str:
+def chunk_range(chunk: Sequence[_Chunkable]) -> str:
     return f"{chunk[0].number:03d}-{chunk[-1].number:03d}"
 
 

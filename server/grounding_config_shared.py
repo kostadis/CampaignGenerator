@@ -42,17 +42,24 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
-from campaignlib.selection import ModelSelection
-from pydantic import BaseModel, ConfigDict, Field
+from campaignlib.selection import Backend, ClaudeCodeEffort, ModelSelection
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native.schema import (
+    DEFAULT_CHUNK_CHARS,
+    DEFAULT_DRAFT_BACKEND,
+    DEFAULT_DRAFT_MODEL,
     DEFAULT_DUP_THRESHOLD,
     DISTILLED_DIR,
     DEFAULT_OUT_ROOT,
     DEFAULT_PARTS,
+    DEFAULT_PROSE_BACKEND,
+    DEFAULT_PROSE_EFFORT,
+    DEFAULT_PROSE_MODEL,
     DEFAULT_RECENT_CHAPTERS,
     DEFAULT_RECURRING_MIN,
+    DEFAULT_WORLD_BUDGETS,
 )
 from server.platform_config_shared import OptStr
 
@@ -154,6 +161,61 @@ class PlanningRun(GroundingRun):
     dossiers: DossierBuild = Field(default_factory=DossierBuild)
 
 
+class ExtractBlock(BaseModel):
+    """``summary_native.extract`` (spec 033): the map step that writes the checked notes.
+
+    Strict. Endpoints are machine wiring, not campaign state, so there is no ``endpoints`` key
+    (research R6); they come from ``--endpoints`` / ``DGX_ENDPOINT`` / the wiring.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    backend: Backend = DEFAULT_DRAFT_BACKEND  # type: ignore[assignment]
+    model: str = DEFAULT_DRAFT_MODEL
+    chunk_chars: int = Field(default=DEFAULT_CHUNK_CHARS, ge=1)
+
+    @field_validator("model")
+    @classmethod
+    def _model_not_blank(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("model must not be blank")
+        return v.strip()
+
+
+class ProseBlock(BaseModel):
+    """``summary_native.prose`` (spec 033): the per-section prose calls in ``synth``.
+
+    Strict. ``budgets`` names world_state's prose sections (a typo refuses rather than being
+    silently ignored). ``fallback_npc_lines`` is deliberately NOT a key: it is per run only
+    and never persisted (GM ruling 2026-10-07).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    backend: Backend = DEFAULT_PROSE_BACKEND  # type: ignore[assignment]
+    model: str = DEFAULT_PROSE_MODEL
+    effort: ClaudeCodeEffort = DEFAULT_PROSE_EFFORT  # type: ignore[assignment]
+    budgets: dict[str, int] = Field(default_factory=lambda: dict(DEFAULT_WORLD_BUDGETS))
+
+    @field_validator("model")
+    @classmethod
+    def _model_not_blank(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("model must not be blank")
+        return v.strip()
+
+    @field_validator("budgets")
+    @classmethod
+    def _budgets_known_and_positive(cls, v: dict[str, int]) -> dict[str, int]:
+        unknown = sorted(set(v) - set(DEFAULT_WORLD_BUDGETS))
+        if unknown:
+            raise ValueError(f"unknown world_state section(s) {unknown}; known: {sorted(DEFAULT_WORLD_BUDGETS)}")
+        bad = sorted(k for k, n in v.items() if n < 1)
+        if bad:
+            raise ValueError(f"budget for {bad} must be at least 1 word")
+        return v
+
+
 class SummaryNativeRun(BaseModel):
     """The summary_native pipeline (feature 031): grounding-doc drafts built
     straight from reviewed session summaries.
@@ -190,6 +252,8 @@ class SummaryNativeRun(BaseModel):
     recurring_min: int = DEFAULT_RECURRING_MIN
     dup_threshold: float = DEFAULT_DUP_THRESHOLD
     parts: int = DEFAULT_PARTS
+    extract: ExtractBlock = Field(default_factory=ExtractBlock)
+    prose: ProseBlock = Field(default_factory=ProseBlock)
 
 
 class GroundingConfig(BaseModel):

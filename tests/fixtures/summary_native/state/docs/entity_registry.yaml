@@ -1,0 +1,16 @@
+version: 1
+campaign: state-fixture
+entities:
+  - name: Ilvara Mizzrym
+    type: npc
+    aliases: [Ilvara]
+  - name: Sarith Kzekarit
+    type: npc
+    aliases: [Sarith]
+  - name: Kalan
+    type: npc
+  - name: Thorin
+    type: npc
+    aliases: [Thorin Giantfriend]
+  - name: Velkynvelve
+    type: location

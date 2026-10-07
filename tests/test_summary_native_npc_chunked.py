@@ -35,6 +35,24 @@ def test_an_oversize_chapter_is_its_own_chunk_and_chunking_is_deterministic():
     assert npc_chunked.make_chunks([], 100) == []
 
 
+def test_make_chunks_takes_any_sequence_with_number_and_text():
+    """Spec 033 T006: the state-notes chapters are chunked by the same function."""
+    from dataclasses import dataclass
+
+    @dataclass
+    class Other:
+        number: int
+        text: str
+        extra: str = "kept"
+
+    chs = (Other(2, "a" * 40), Other(3, "b" * 40), Other(4, "c" * 40))
+    chunks = npc_chunked.make_chunks(chs, 100)
+    assert [[c.number for c in k] for k in chunks] == [[2, 3], [4]]
+    assert chunks[0][0] is chs[0] and chunks[0][0].extra == "kept"
+    assert npc_chunked.chunk_range(chunks[0]) == "002-003"
+    assert npc_chunked.chunk_text(chunks[1]) == "c" * 40
+
+
 # ── attribution parsing: the four real lines ────────────────────────────────
 
 LINES = (
