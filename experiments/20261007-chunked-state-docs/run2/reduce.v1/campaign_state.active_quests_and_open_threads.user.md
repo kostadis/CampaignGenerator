@@ -1,0 +1,833 @@
+DOCUMENT: campaign_state
+SECTION: ## Active Quests & Open Threads
+BRIEF: Every thread OPENED or ADVANCED whose resolution the notes do not show. One bullet each with its latest state. If it is listed, it is unfinished.
+
+VERIFIED NOTES (425 bullets, chapter order, every one already checked by code):
+
+- [OPENED] **Escape from Velkynvelve** — The party begins planning a breakout: they study the lift, waterfall, pool, and spider-silk spools, scout the lower cavern layout, and receive Jorlan's offer to leave the slave-pen gate unlocked and create a distraction during the guard change, with his proposed route via the webs into the pool [ch 002 / 002.02; ch 002 / 002.03; ch 002 / 002.05; ch 002 / 002.06]
+- [OPENED] **Jorlan's Gambit** — Jorlan Duskryn, bitter at Ilvara and Shoor Vandree, offers the prisoners a means of escape—leaving the gate unlocked and creating a distraction—wanting only to ruin Ilvara and Shoor, not caring if the prisoners survive [ch 002 / 002.05]
+- [OPENED] **Buppido's divine plan** — Buppido announces a "divine plan" requiring everyone to escape, initially proposing the others distract the drow while he escapes alone through the waterfall, then after flattery accepting that the party must escape to protect him; he promises to reveal more "later this evening" [ch 002 / 002.04]
+- [OPENED] **Retrieving confiscated possessions** — The party concludes their confiscated equipment is probably in the chest Thorin saw in Ilvara's private quarters, since drow custom concentrates captured treasure in the highest-ranking leader and no guards have been seen using the prisoners' belongings [ch 002 / 002.05]
+- [OPENED] **Spider-silk spool sabotage** — The party identifies the drow's spider-silk spools as a primary tactical threat allowing rapid descent and plans to scout and burn those nearest the escape route with Zalthir's fire breath [ch 002 / 002.05; ch 002 / 002.06]
+- [OPENED] **The list of people** — Zalthir finds a mysterious list of people belonging to a nearby settlement among the rubbish in the lift basket; the group has not yet determined which settlement or what significance the names hold [ch 002 / 002.02]
+- [ADVANCED] **Destination choice** — The party discusses Underdark destinations, noting Shuushar knows how to travel west toward Darklake, Menzoberranzan to the north is ruled out, and Gracklstugh, a duergar city where Buppido's derro kin live, offers a possible route to the south [ch 002 / 002.05]
+- [ADVANCED] **Escape from Velkynvelve** — the family planned and executed the armed breakout from the slave pen and guard tower, defeating the drow guards and the Elite Warrior, and now stand armed and positioned to continue the escape [ch 003 / 003.01; ch 003 / 003.03]
+- [OPENED] **Recover confiscated belongings** — the party decided to obtain weapons first and later recover their property from Ilvara's quarters; Thorin specifically seeks his family's giant's-tooth pendant, and the party leaves the tower still without its original belongings [ch 003 / 003.01; ch 003 / 003.04]
+- [ADVANCED] **Sarith's vengeance against his captors** — Sarith killed one ordinary guard out of stored fury and then, calmed by Gyrgum's spiritual appeal, delivered the killing blow to Imbros [ch 003 / 003.02; ch 003 / 003.03]
+- [ADVANCED] **Befriending the other captives** — the party's befriending of the other prisoners prevented an "inglorious and brutal end," as those allies joined the fight, armed themselves, and fired on the drow from the armory [ch 003 / 003.02; ch 003 / 003.04]
+- [ADVANCED] **Escape from Velkynvelve** — The party looted the fallen drow guards, descended via the waterfall, fled into the Underdark, and left Velkynvelve behind. [ch 004 / 004.01; ch 004 / 004.03]
+- [OPENED] **Journey to Sloobludop** — The party chose Sloobludop, about eight days away, as its first destination and set out at a normal pace, later switching to fast pace during the flight from drow scouts. [ch 004 / 004.04; ch 005 / 005.06]
+- [OPENED] **Stool's protection and homecoming** — Stool chose Gyrgum as his "bestest friend" and protector, hoping to be taken home. [ch 004 / 004.04; ch 004 / npcs]
+- [ADVANCED] **Stool's return to Neverlight Grove** — Stool's desire to be taken home was reinforced as he attached himself to Gyrgum. [ch 004 / 004.04; ch 004 / npcs]
+- [ADVANCED] **Shuushar's return to Sloobludop** — Shuushar favored the Darklake route to his home at Sloobludop, which the party adopted as its destination. [ch 004 / 004.04; ch 004 / npcs]
+- [ADVANCED] **Drow pursuit** — The party discovered drow scouts from Velkynvelve trailing them, fled, and the scouts lost the scent, but the hunting party remains behind them in the dark. [ch 005 / 005.04; ch 005 / 005.06]
+- [OPENED] **Goblin guide contract** — Yuk Yuk and Spiderbait agreed to guide the party through the Silken Paths in exchange for a share of future gold, covering their fee plus the twenty gold Jimjar owed them; Thorin set terms that if the spiders attacked, the deal was off [ch 006 / 006.06].
+- [OPENED] **The lost tomb of Fargas Rumblefoot** — Fargas bargained for his rescue by promising to lead the party to a lost tomb filled with treasure: "I know the location of the tomb, and more importantly, I know the location of the treasure" [ch 006 / 006.07].
+- [ADVANCED] **Escape from Velkynvelve / Underdark trek** — The party pressed deeper into the Underdark over five days of travel and reached the Silken Paths chasm [ch 006 / 006.01; ch 006 / 006.04].
+- [ADVANCED] **Drow pursuit** — Eldeth covering the tracks with a roll of 21 dropped the pursuit level from four to three; the GM clarified the chase rules only kick in when pursuit reaches five and the hunt ends when it reaches zero [ch 006 / 006.02].
+- [ADVANCED] **Silken Paths traversal** — The party began crossing the 2,000-foot-wide, 500-foot-deep spider web chasm, tethering themselves with rope and traveling without light, and were mid-combat with giant spiders when the session paused [ch 006 / 006.06; ch 006 / 006.08].
+- [ADVANCED] **Fargas Rumblefoot rescue** — The party found Fargas cocooned in the Silken Paths, debated whether he could be infected with gnoll demon spawn, and Thorin cut him free just as giant spiders closed in [ch 006 / 006.07].
+- [OPENED] **Topsy and Turvy's secret** — Daz spotted the deep gnome twins huddled together whispering in the night, but his insight check revealed nothing about their intentions [ch 006 / 006.03].
+- [RESOLVED] **Escape from the Silken Paths** — The party reached the end of the Silken Paths and took a long rest, leaving the spider web network behind [ch 007 / 007.05].
+- [OPENED] **Lost Tomb of Khaem** — Fargas revealed the tomb's history and that its true treasure is hidden behind a secret passage from the servant's tomb; Sarith narrowed its location to three or four places on the northeastern edge of the Darklake [ch 007 / 007.02].
+- [OPENED] **Demons rising in the dark** — The spectator warned repeatedly that "the demons are coming," and Demogorgon rose from the Darklake within the same session, giving the warning a concrete referent [ch 007 / 007.03; ch 008 / 008.04].
+- [ADVANCED] **Buppido's divine plan** — Buppido cryptically invited the party to "discuss how you too can be part of my divine plan," and Zalthir voiced suspicion that he might be the demon [ch 007 / 007.05].
+- [ADVANCED] **Fargas the rescued halfling** — Fargas revealed the tomb secret but admitted he did not know its precise location; Gyrgum's Insight read him as "desperate to not die" [ch 007 / 007.02; ch 007 / 007.05].
+- [ADVANCED] **Drow pursuit** — The party noted their drow pursuit level at three midway through the Silken Paths [ch 007 / 007.02].
+- [RESOLVED] **Kuo-toan civil war** — The war between Sea Mother and Deep Father factions ended when Ploopploopeen struck down his daughter Bloppblippodd before the altar [ch 008 / 008.04].
+- [OPENED] **Escape from the Kuo-toa / the boat** — The party fled the sacrificial altar toward the northeastern docks, and the session ended with them deciding to get a boat as Demogorgon rose [ch 008 / 008.04].
+- [ADVANCED] **Demogorgon's rise at Sloobludop** — Demogorgon, the Prince of Demons, erupted from the Darklake and destroyed the kuo-toa village of Sloobludop, slaughtering his former worshippers [ch 009 / 009.01; ch 009 / npcs].
+- [OPENED] **Demons loose in the Underdark** — The party connected rumors of demons loose in the Underdark, the demons at Velkynvelve, and the demonic encounters since, concluding whoever caused it brought through an avatar rather than the whole being [ch 009 / 009.03; ch 009 / npcs].
+- [ADVANCED] **Destination: Gracklstugh** — The party decided to head for Gracklstugh to resupply and find better equipment, setting aside the lost tomb of Khaem [ch 009 / 009.03; ch 009 / locations].
+- [RESOLVED] **Shuushar's guide role** — Shuushar the Awakened left the party at his own request to lead kuo-toa refugees, leaving behind an imperfect map of the Darklake [ch 009 / 009.06; ch 010 / npcs].
+- [OPENED] **Guide to Gracklstugh** — The party captured a surviving duergar slaver alive specifically to interrogate him for the way to Gracklstugh [ch 010 / 010.03; ch 010 / 010.04].
+- [ADVANCED] **Journey to Gracklstugh** — Brannum Redmarch agreed to guide the party to Gracklstugh as a hostage; the voyage concluded with the party's arrival at the city [ch 011 / 011.01; ch 011 / 011.07].
+- [OPENED] **Fate of Brannum Redmarch** — The party discussed ransoming Brannum in Gracklstugh, and Thorin noted they never promised to release him [ch 011 / 011.07].
+- [OPENED] **Bone pyramid islet** — Brannum revealed this was a shortcut where two of his boats vanished; the party found the sunken wrecks and reanimated bodies but never set foot on the islet [ch 011 / 011.04; ch 011 / 011.05].
+- [RESOLVED] **Brannum's lost crew** — Brannum learned his crew had not abandoned him; Daz discovered their sunken boats and bodies walking as zombies beneath the islet [ch 011 / 011.04].
+- [ADVANCED] **Gracklstugh as sanctuary** — Buppido and Hemeth explained the city's strict laws and Duergar dislike of Drow make it a safe haven from Drow pursuit; the party plans to trade at the Blade Bazaar [ch 011 / 011.07].
+- [OPENED] **Blade Bazaar** — The party hopes to sell stolen gear, buy better equipment, and find traders or explorers heading to the surface world [ch 011 / 011.07].
+- [OPENED] **Potential ransom of Brannum** — Hemeth said he "knew a guy" for selling Brannum into slavery, and the party discussed ransonoming him for loot or assets [ch 011 / 011.01; ch 011 / 011.07].
+- [ADVANCED] **Gracklstugh stop** — The party arrived at the duergar city as a resupply detour, learning its laws and restrictions, and began shopping at the Blade Bazaar [ch 012 / 012.01].
+- [ADVANCED] **Route out of the Underdark** — The route was recapped as Gracklstugh, then the lost tomb from the dwarf's map, then Blingdenstone as a possible exit point [ch 012 / 012.01].
+- [ADVANCED] **The mysterious list of names** — Zalthir recalled the list found while cleaning, learning one name belongs to someone in Gracklstugh and that the individuals may have connections to the drow slave trade [ch 012 / 012.02].
+- [OPENED] **Brannum Redmarch's bargain** — The party offered Brannum his freedom and clearing of debts in exchange for procuring uncommon magical items through his underworld connections, including an Eldritch Claw tattoo for Zalthir [ch 012 / 012.02].
+- [OPENED] **Eldritch Claw tattoo acquisition** — Zalthir expressed interest in the uncommon magical tattoo to enhance his unarmed strikes, and Brannum claimed he may know a contact, requesting two days [ch 012 / 012.02; ch 012 / items].
+- [ADVANCED] **Buppido's fate** — The party weighed releasing, killing, or turning Buppido over, had him eat a Tongue of Madness mushroom revealing his insults and intentions, and decided they can cut him loose once done with the city, still aware he knows the tomb's location [ch 012 / 012.03].
+- [ADVANCED] **Margrawlow's map and the tomb** — Buppido was present when the party found the tomb information and could point the drow pursuers at the tomb [ch 012 / 012.03].
+- [ADVANCED] **The madness of the Underdark** — Gyrgum observed strange behaviors among duergar merchants and then a rampaging two-headed stone giant, signs the creeping madness that had haunted the party had seeped into Gracklstugh itself [ch 012 / 012.04; ch 012 / 012.05].
+- [OPENED] **Cairngorm Cavern visit** — Dorhun invited the party to visit Cairngorm Cavern before leaving Gracklstugh, and ordered the Stone Guard to escort them [ch 013 / 013.03].
+- [OPENED] **Keepers of the Flame job offer** — Gartokkar invited the party to his quarters by the following day for an unnamed task, offering city passes and limited legal protection [ch 013 / 013.04].
+- [OPENED] **Stone Guard job: Droki and the conspiracy** — Errde tasked the party with tracking/seizing/killing the derro Droki and investigating a conspiracy involving the Council of Savants and clan lairds, with equipment, safe passage, and drow protection as payment [ch 013 / 013.06].
+- [ADVANCED] **The madness in Gracklstugh** — The militia confirmed "significantly more incidents of chaotic behavior" city-wide; a halfling reported Deepking Horgar Steelshadow had themselves gone mad with paranoia and arbitrary laws; Rihuud's madness was traced to Cairngorm Cavern [ch 013 / 013.03; ch 013 / 013.05].
+- [ADVANCED] **Drow hunting the party** — Errde revealed she was already aware drow were hunting the party and offered her protection while they remained in Gracklstugh [ch 013 / 013.06].
+- [OPENED] **Stone Guard escort for the party** — Dorhun instructed the Stone Guard to escort the party to Cairngorm Cavern, to the guards' weary irritation [ch 013 / 013.03].
+- [OPENED] **The Keepers' dragon-replacement problem** — The halfling explained the Keepers must periodically replace their red dragon by raising a new one from an egg, keeping both happy in between [ch 013 / 013.05].
+- [ADVANCED] **Empty-Scabbard Killers investigation (Errde's quest)** — Errde tasked the party with investigating the mysterious deaths and pointed them to the Whorlstone Tunnels; no body is currently available to examine, though she'll bring one to their attention if one "pops up" [ch 014 / 014.02].
+- [OPENED] **Werz's reward at the Shattered Spire** — Werz, saved by the party, invited them to meet him at the Shattered Spire later that day or the next for a proper reward for saving his life [ch 014 / 014.04; ch 014 / locations].
+- [OPENED] **Themberchaud's agency** — Themberchaud declared the party his personal agents, gave each a golden badge, and ordered them to report to him first after doing whatever the Keepers ask [ch 014 / 014.06].
+- [OPENED] **Keepers' secret replacement of Themberchaud** — Gartokkar revealed the Keepers secretly control the dragon and are grooming a replacement from a stolen red dragon egg; the dragon has no idea [ch 014 / 014.07; ch 014 / moment].
+- [OPENED] **Recover the stolen red dragon egg** — The party was tasked with recovering the egg the Gray Ghosts stole; the party stayed non-committal on returning it to the Keepers, Thorin saying they'd decide when the time came [ch 014 / 014.07].
+- [OPENED] **Track Droki and the psionic disturbance** — The party was tasked with finding the derro messenger Droki and recovering whatever powerful magic caused the psionic disturbance, which Gartokkar believes the Gray Ghosts are responsible for [ch 014 / 014.07].
+- [ADVANCED] **Droki as shared target** — Droki is the same individual their patron Captain Errde of the Stone Guard is seeking, so the party now hunts him for both factions; Daz summed up the plan to "have everybody think we did the thing that they wanted and get rewarded for all of them" [ch 014 / 014.07].
+- [OPENED] **Passage beyond the Darklake District** — The party received the holy symbol of Laduguer and gold pins bearing Themberchaud's profile, granting them permission to travel beyond the Darklake District, though they remain limited in moving freely through the city [ch 014 / 014.07; ch 014 / items].
+- [RESOLVED] **Trip to see the Keepers of the Flame** — After Daz argued for gathering intelligence before leaving for Blingdenstone, the party completed its visit to the Keepers via Themberchaud's lair and received a formal mission from Gartokkar [ch 014 / 014.03; ch 014 / 014.06; ch 014 / 014.07].
+- [ADVANCED] **Whorlstone Tunnels quest** — Hgraam warned that the tunnels are filled with great evil and that the Deepking's crackdown has driven factions underground where they fester beyond his reach; Buppido then revealed the tunnel entrance hidden in the Derro slums and guided the party inside [ch 015 / 015.02; ch 015 / 015.04].
+- [ADVANCED] **Droki delivery interception** — The party entered the West Cleft District and spotted Droki moving with magical speed, muttering about being late, before he vanished into a fissure; the party followed him into the Whorlstone Tunnels, reasoning that following him might reveal all the people he works for [ch 015 / 015.05].
+- [RESOLVED] **Buppido's betrayal and madness** — Buppido, whom the party freed with a Stone Guard pass, built a shrine of bones in the tunnels, declared the party his faithful, and attacked; Daz's Magic Missile killed him, ending his divine delusions [ch 015 / 015.06; ch 015 / 015.07].
+- [ADVANCED] **Deepking's paranoia and Shal** — Hgraam revealed the Deepking has grown paranoid, erratic, and isolated since taking on a new advisor named Shal, who has never visited Hgraam; Gyrgum wants to meet Shal and the party deferred that for later [ch 015 / 015.02; ch 015 / 015.03].
+- [ADVANCED] **Route to the surface via the deep gnomes** — Hgraam confirmed Jimjar's statement that the best path back to the "Dreamlands" (the surface) runs through the town of the deep gnomes, though neither knows the way personally [ch 015 / 015.02].
+- [OPENED] **The eternal Gray Ghosts question** — The Deepking has asked Hgraam about the Gray Ghosts, but Hgraam knows nothing of them [ch 015 / 015.02].
+- [ADVANCED] **Return Pelek's bones to Blingdenstone** — The party agreed to carry Pelek's bones to his ancestral home in Blingdenstone for a proper burial, binding his spirit to them as a companion [ch 016 / 016.01].
+- [ADVANCED] **Journey to Blingdenstone** — Pelek advised the party on Blingdenstone's taboos (no eights, no Lolth association, drow from the Overbright) and said the deep gnomes know ways to the Overbright; the party has not yet departed for Blingdenstone [ch 016 / 016.01].
+- [OPENED] **The robe of the severed obsidian ring** — Pelek revealed his severed hand, animated by the strange magic of the tunnels, scuttled away into the crevices wearing his obsidian ring; he hinted it "does many powerful things" and that bringing it to Blingdenstone would earn help, but it was not recovered [ch 016 / 016.01; ch 016 / items].
+- [ADVANCED] **Droki pursuit** — The party followed Droki's trail through the Whorlstone Tunnels but abandoned the chase, returning to Gracklstugh for backup instead [ch 016 / 016.02; ch 017 / 017.05].
+- [OPENED] **The stolen red dragon egg** — The flumph revealed Plinki the derro is torturing the stolen red dragon egg to mutate it into a two-headed mount for Demogorgon; the party informed Gartokkar Xundorn [ch 017 / 017.04; ch 017 / 017.05].
+- [OPENED] **Recover the egg, statuette, and paperwork for the Keepers** — Gartokkar Xundorn tasked the party with retrieving the red dragon egg, a Demogorgon statuette, and incriminating paperwork from the Gray Ghost lair, paying 1,100 gold up front with the balance on delivery [ch 017 / 017.05].
+- [OPENED] **Keep the egg secret from Themberchaud** — The party negotiated a confidentiality rider that Themberchaud must not learn of the egg's existence; Gartokkar agreed for an extra 1,000 gold [ch 017 / 017.05].
+- [OPENED] **The Gray Ghost lair and obelisk** — The flumph revealed the Gray Ghost lair, obelisk chamber guarded by about ten derro, and the route to reach it; the party resolved to return later with backup rather than face the derro without a long rest [ch 017 / 017.04; ch 017 / 017.05].
+- [ADVANCED] **Retrieve the red dragon egg** — The party kept the egg secret from Errde, who noticed it in the flumph's visions but did not recognise it as the lost egg; Thorin's blurt save of 20 held his tongue [ch 018 / 018.03; ch 018 / items].
+- [ADVANCED] **Errde Blackskull's Stone Guard contract** — Errde demanded documented proof of the Gray Ghosts' and Council of Savants' conspiracy and evidence of the Assassin's Guild, agreeing to arm the party's allies, and directed them to visit Clan Ironhead and Clan Xardelvar as cover [ch 018 / 018.01; ch 018 / 018.03].
+- [ADVANCED] **Whorlstone Caverns investigation** — The party learned both the Keepers of the Flame and the Stone Guard knew Droki would lead them to the answers there, and Errde demanded the party return with documented evidence [ch 018 / 018.01; ch 018 / 018.03].
+- [OPENED] **Werz Saltbaron's assassin problem** — Werz hired the party to remove the Empty-Scabbard Killers targeting him, with him alive, in exchange for trade favors in Blingdenstone; the party's next goal is to get Werz removed from the assassins' list [ch 018 / 018.04; ch 018 / 018.06].
+- [OPENED] **The five empty spell gems** — Werz gave the party five spell gems valued at 100 GP each that Jimjar identified as being used in Blingdenstone's defenses, raising the question of how Werz obtained them; Jimjar suggested selling them to Kazook Pickshine [ch 018 / 018.05; ch 018 / 018.06; ch 018 / items].
+- [OPENED] **Rescue Rumpadump** — Stool recognised Rumpadump as his friend and urged the party to drop everything and save him; the party agreed to look for him on their way to deal with the assassins [ch 018 / 018.06].
+- [OPENED] **Clan Ironhead's regime-change offer** — Grinta Ironhead offered the party favorable trade terms if they helped facilitate the Deepking's departure, with Clan Ironhead becoming the premier clan [ch 018 / 018.07].
+- [ADVANCED] **Council of Savants investigation** — Errde concluded the Gray Ghosts and the Council of Savants were working in concert and demanded documented proof; the ghost recalled Buppido's view that the Council was "simply a mechanism of control by the duergar" [ch 018 / 018.02; ch 018 / 018.03].
+- [ADVANCED] **Empty-Scabbard Killers** — Werz revealed he is on their list and claimed ignorance of why, while Daz read that Werz "knows way too much about working with assassins" [ch 018 / 018.04].
+- [ADVANCED] **Droki as guide** — The party learned both factions knew Droki would lead them to the information they need in the Whorlstone Caverns [ch 018 / 018.01; ch 018 / npcs].
+- [OPENED] **Werz's Quest** — the party struck a deal with Eldgrim to eliminate the Demogorgon worshippers in exchange for removing Werz from the assassins' list of targets free of charge; the DM declared the Werz objective done assuming the party deals with the cultists [ch 019 / 019.02; ch 019 / 019.03].
+- [OPENED] **The Empty-Scabbard Killers' Deal** — the party agreed to eliminate the Demogorgon worshippers plaguing the caverns in exchange for Eldgrim wiping the slate for Werz; Eldgrim warned the party never to return or the assassins would deal with them [ch 019 / 019.02; ch 019 / 019.03].
+- [OPENED] **The Theft of the Royal Contract** — Daz stole a document bearing the royal seal of Gracklstugh and the Deepking's signature, proving a link between the crown and the assassins; the DM warned of a clock, as the assassins will eventually notice the missing contract [ch 019 / 019.03].
+- [OPENED] **The Corrupted Dragon Egg** — the party located the egg in the obelisk chamber, corrupted by Plinki's demonic ritual to hatch a two-headed servant of Demogorgon; the DM noted the party could destroy it and report that to Themberchaud [ch 019 / 019.05].
+- [ADVANCED] **The Keepers of the Flame's Quest** — Plinki revealed the egg was stolen from the Keepers of the Flame and was being infused with demonic energy in honor of Demogorgon [ch 019 / 019.05].
+- [ADVANCED] **The Battle at the Obelisk Chamber** — the party launched an ambush on Plinki in the magical darkness, grappling her and blasting her with necrotic energy, leaving her severely wounded as the session paused mid-combat [ch 019 / 019.07].
+- [ADVANCED] **The Party's Group Name** — Thorin proposed "Plausible deniability" as the group's name, and the DM again urged the party to pick a group name [ch 019 / 019.03].
+- [ADVANCED] **Protection of the Red Dragon Egg** — Gyrgum declared he wanted to protect the egg but was willing to steal it; Daz already had a plan to steal it, and in the battle's course he snatched the egg and concealed it beneath his robes, the session ending with the party in possession of it [ch 020 / 020.01; ch 020 / 020.02; ch 020 / 020.04].
+- [ADVANCED] **Pelek's ghost** — The ghost was bound to the party via Pelek's bones [ch 020 / npcs], acted on Gyrgum's turn, was resistant to non-magical attacks, dropped to 15 hit points, failed its first possession attempt on the Master Thief, and ultimately succeeded in possessing the enemy spy [ch 020 / 020.02; ch 020 / 020.04].
+- [OPENED] **The egg's leadership claim** — The crazed Derro shrieked that "Whoever has the eggs is in charge," a belief unknown to the party before this [ch 020 / 020.03].
+- [OPENED] **Sacrifice of the cleric of Bahamut** — The Derro cultists repeatedly screamed for the sacrifice of Gyrgum, demanding his heart be cut out and fed to a dark entity, with one shouting about feeding it to "Demogorgon" [ch 020 / 020.03].
+- [ADVANCED] **The Derro cult's claims on the egg** — The cultists believed the egg was the "egg of Demogorgon" and believed whoever held it held absolute power, though the party knows it as the red dragon egg stolen from the Keepers of the Flame [ch 020 / items].
+- [RESOLVED] **Dragon's Egg delivery** — The party decided to return the corrupted, demon-possessed dragon's egg to Gartokkar and the Keepers of the Flame, telling them there was "no evidence" of who was behind the theft, in exchange for safe passage and potential trade rights for the gnomes; this decision was settled in this chunk, though the actual delivery has not yet occurred [ch 021 / 021.02; ch 021 / 021.03].
+- [ADVANCED] **Assassin's List secret** — The party holds documentation proving the Deepking supports an illegal Assassin's Guild that the assassins believe was burned; they chose to keep it secret and "selectively respond" to Errde [ch 021 / 021.03].
+- [OPENED] **Baby rattle mystery** — The party found a heavy dragon baby rattle inscribed with the name of Clan Thrazgad in the Council lab and wondered who commissioned it and why, proposing it might sweeten a deal with Themberchaud, serve as a gift or distraction, or be held "in our back pocket" for leverage [ch 021 / 021.03].
+- [OPENED] **Ember Vanguard reputation** — The party declared itself the Ember Vanguard and let the Derro guards go alive so they would spread the legend of a 20th-level drow archmage leading "a marauding army of drow," potentially adding the drow to the factions that hate them [ch 021 / 021.04].
+- [OPENED] **Stool's Myconid friend** — Stool's plea to save his friend among the crazed Myconids was discussed but placed at the bottom of the priority list as the party left [ch 021 / 021.05].
+- [ADVANCED] **Egg hatching timeline** — Gyrgum determined the dragon's egg will hatch in approximately forty-four weeks of its own accord, giving the party "plenty of time" to pass it on; lesser restoration cannot lift the demonic corruption [ch 021 / 021.02].
+- [ADVANCED] **Get the egg out of Gracklstugh (Whorlstone Tunnels)** — the party continued through the Whorlstone Tunnels beneath Gracklstugh, reminded that the goal is to get out with the egg while facing as few encounters as possible [ch 022 / 022.03].
+- [ADVANCED] **Errde Blackskull's demonic conspiracy evidence** — the party discovered books made from trillimac mushroom caps in the brimstone cavern that they recognized as possible physical evidence of the demonic conspiracy involving the Council of Savants that Errde Blackskull is after [ch 022 / 022.06; ch 022 / npcs].
+- [ADVANCED] **Demonic conspiracy of the Cult of Demogorgon in Gracklstugh** — the party encountered and killed two cult members and a four-derro patrol, and came upon the cult leader Narrak conducting dark experiments with a ritual circle and trillimac cap books [ch 022 / 022.02; ch 022 / 022.05; ch 022 / 022.06].
+- [OPENED] **Ulnara's request to praise her to Plinki** — Ulnara asked the party to tell Plinki she was a wonderful ally in the machinations of the great cult; the party agreed to "convey all appropriate thoughts" [ch 022 / 022.02; ch 022 / npcs].
+- [OPENED] **Narrak's spell and the "parts"** — Narrak declared he had found "the spell we need" and that "All we need is parts," setting up an unknown plan the party may have to confront [ch 022 / 022.06].
+- [ADVANCED] **Stonespeaker Hgraam audience** — Gyrgum intuited that bringing a corrupted statue to Hgraam could allow him to reverse the curse on his people, and the party plans to do so [ch 023 / 023.01].
+- [OPENED] **The two-headed stone giant curse** — The party confirmed the cult's ritual creates the two-headed stone giants, and Narrak's dying words claimed "the ritual cannot be undone" and someone was "sacrificed", leaving an ominous unresolved mystery [ch 023 / 023.01; ch 024 / 024.03].
+- [ADVANCED] **Rumpadump — return to Neverlight Grove** — Stool persistently urged the party to rescue Rumpadump before the cult fight; after the battle he reminded Zalthir, "so are we going to go save my friend Rumpadump now," and the party has it "on the list" [ch 023 / 023.02; ch 024 / 024.04].
+- [ADVANCED] **The cult of Demogorgon in Gracklstugh** — The party killed Narrak, a member of the Council of Savants, ending the ritual; the heretical texts recovered could bring down the entire Council for all time [ch 023 / 023.01; ch 024 / 024.04].
+- [ADVANCED] **Pelek's possession** — Pelek slept peacefully tied up with silk rope, worried the original host might resurface; Daz chose not to share that the possession is stable unless the host is knocked unconscious [ch 023 / 023.02].
+- [OPENED] **Mystery of the "sacrificed" figure in the ritual chamber** — After the battle, a lone figure remained in the background, trying hard not to be noticed [ch 024 / 024.03].
+- [OPENED] **Evidence of the king's collusion with assassins** — The party discussed its evidence that "the king has been working with the assassins to kill members of her clan", and Jimjar bet they'd want to hold onto it [ch 024 / 024.04].
+- [ADVANCED] **Rumpadump — return to Neverlight Grove** — Stool's tantrum forced the party to visit Rumpadump; Rumpadump asked the party to help return to the Neverlight Grove and warned the infection might have spread to their kin [ch 025 / 025.02; ch 025 / 025.04].
+- [ADVANCED] **Stool — return to Neverlight Grove** — Stool was reunited with his friend Rumpadump and supported the plea to return to the Neverlight Grove [ch 025 / 025.03; ch 025 / 025.04].
+- [ADVANCED] **Sarith Kzekarit — demonic spore infection** — Sarith's agitation and talk of a "Dark Lady" revealed he was infected by Zuggtmoy's influence, likely before the party met him in prison [ch 025 / 025.04].
+- [OPENED] **Zuggtmoy's corrupted myconids** — Voosbur released spores that teleported the Neverlight Grove myconids to the Whorlstone Caverns and infected them; they departed through a spore network, and the party wonders if the infection spread back to the Grove [ch 025 / 025.04; ch 025 / 025.08].
+- [OPENED] **Zuggtmoy's presence in the Underdark** — The party concluded Zuggtmoy may be active in the Underdark alongside Demogorgon, possibly at the Neverlight Grove itself [ch 025 / 025.04].
+- [OPENED] **The Myconid Sovereign and the way out** — Rumpadump said the Sovereign in the Neverlight Grove "knows all" and might know a way out of the Underdark, making the Grove a potential destination after Gracklstugh [ch 025 / 025.04].
+- [OPENED] **Gorglak's inspection at the sealed gates** — Gorglak blocked the party at the sealed city gates and demanded to inspect all of their possessions for contraband, threatening their pile of evidence [ch 025 / 025.08].
+- [ADVANCED] **Political leverage over Gracklstugh factions** — The party reviewed their evidence against the derro, the Deepking, Themberchaud, and the Keepers of the Flame, and debated whether to hand it over or keep it for leverage [ch 025 / 025.01].
+- [ADVANCED] **Ember Vanguard reputation** — The party's self-given name had become the city's rumor; at the West Cleft gate, guards compared the party against wildly exaggerated descriptions of a band of shadowy assassins, and the rumors had inflated Daz into an old, wizened drow and Zalthir into a red dragonborn [ch 026 / 026.01].
+- [ADVANCED] **Ember Vanguard reputation** — Gartokkar repeated the rumor that the Deepking's agents were "shadowy assassins from Menzoberranzan with magic and blades that rend souls," so fierce the Stone Guard feared them [ch 026 / 026.06].
+- [ADVANCED] **Ember Vanguard reputation** — The derro Gray Ghosts were sent to exact revenge for the deaths of the derro High Council members, which the city blamed on the Ember Vanguard; the derro claimed to know the party's true identity [ch 026 / 026.07].
+- [RESOLVED] **Gray Ghosts / derro revenge** — The Derro Council's Gray Ghosts confronted the party in the passageway; all five assassins were killed, and the party recovered a letter from the Council of Savants ordering the strike [ch 026 / 026.07].
+- [OPENED] **Council of Savants conspiracy** — The letter from the Council of Savants revealed that the derro council ordered the Gray Ghosts to strike down the Duergar who brought the Ember Vanguard into the city, laying bare the political conspiracy beneath Gracklstugh [ch 026 / 026.07].
+- [OPENED] **Disposal of the Gray Ghosts' bodies** — Whether to leave the bodies in the street, hide them, or stage them to implicate the Ember Vanguard was left open [ch 026 / 026.07].
+- [ADVANCED] **Gartokkar / Keepers of the Flame egg contract** — The party delivered the egg and collected the final payment plus confidentiality fees, completing their arrangement; Gartokkar reminded them the deal was to remain between them alone [ch 026 / 026.06].
+- [ADVANCED] **Stone giants' curse** — The party delivered the two-headed statue to Hgraam, who began curing his afflicted kin, closed the cavern to outsiders, and advised them to be careful around the agitated Stone Guard [ch 026 / 026.04].
+- [OPENED] **The Overbright** — Thorin asked Hgraam about a way to the Overbright; Hgraam does not know where it is or whether it exists, though "little people" have told him it does [ch 026 / 026.04].
+- [RESOLVED] **Egg transportation** — The party delivered the corrupted red dragon egg to Gartokkar, ending their hazardous possession of it [ch 026 / 026.06; ch 026 / items].
+- [ADVANCED] **Themberchaud's agents** — The DM reminded the party that they are separately Themberchaud's agents, which is safe "as long as he doesn't notice you" [ch 026 / 026.06].
+- [OPENED] **Escalating Gracklstugh tensions** — Gorglak warned that the Deepking feared a drow raiding party while the derro believed the Deepking was behind the unrest; Gartokkar warned the derro were on edge after the assassination of their leaders and the Stone Guard were doubling their patrols [ch 026 / 026.02; ch 026 / 026.06].
+- [RESOLVED] **Escape from Gracklstugh** — The party bypassed the city gates entirely by riding Themberchaud, then bluffed a guard and seized a boat to flee into the Darklake [ch 027 / 027.03; ch 027 / 027.04].
+- [ADVANCED] **Ember Vanguard imposture** — The party was mistaken for the Ember Vanguard by the citizenry and the dock guard; they leaned into the deception, claiming to be undercover agents impersonating the Vanguard, and a guard now believes they were at the docks on a secret mission [ch 027 / 027.03; ch 027 / 027.04].
+- [OPENED] **Errde Blackskull pursuit** — The duergar guard ran off to inform Captain Errde that the party was at the docks, and Errde is expected to discover their deception and pursue them [ch 027 / npcs].
+- [ADVANCED] **Lost Tomb of Khaem expedition** — The party arrived at the hidden beach identified by Sarith and headed inland toward the tomb, having learned of it from Fargas Rumblefoot; the party decided to raid it first for treasure that might slay demons [ch 027 / 027.06; ch 027 / 027.05].
+- [ADVANCED] **Neverlight Grove return (Stool and Rumpadump)** — Stool and Rumpadump insist all is under control at their home, Sarith feels a compulsion to go there, and Jimjar wagered the "circle of joy" will prove to be a "circle of unwilling vows"; the party postponed the visit to raid the tomb first [ch 027 / 027.05].
+- [OPENED] **Jimjar's Neverlight Grove wager** — Jimjar bet an empty shell gem that the Grove's "circle of joy" will be a "circle of unwilling vows"; Gyrgum took the bet [ch 027 / 027.05].
+- [OPENED] **Themberchaud's trust** — Themberchaud remains convinced the party are his agents on a vital mission, and expects them to investigate the docks "far and wide" [ch 027 / 027.04; ch 027 / npcs].
+- [ADVANCED] **Demonic influence at Neverlight Grove** — Zalthir recalled the circle is under demonic influence, while Stool and Rumpadump insisted nothing bad could happen and Sarith felt a compulsion to go; the party expects to be "roped into the demonic problem" if they go [ch 027 / 027.05].
+- [ADVANCED] **Gray Ghosts enmity** — On the water, the DM reviewed that the Derro High Council and the Gray Ghosts probably want the party dead, and the party remains concerned about being tracked by the Gray Ghosts [ch 027 / 027.04; ch 027 / 027.06].
+- [ADVANCED] **Deepking's enmity** — The Deepking hates the Ember Vanguard, which the party only resembles, and the dock guard tried to halt them "in the name of the Deepking" [ch 027 / 027.04].
+- [ADVANCED] **Drow pursuit** — Eldeth masked the party's tracks twice (harvest site, fungus cavern, and again at the second crystal cluster), slowing the pursuit to level one; she is fairly confident she has almost shaken the Drow but isn't certain [ch 028 / 028.02; ch 028 / 028.03].
+- [OPENED] **Traveling companions Fuurm and Baedora** — the party took the two former Drow slaves in as traveling companions after Daz's 24 on Insight read them as desperate rather than plants; Zalthir urged everyone to keep an eye on them [ch 028 / 028.01].
+- [OPENED] **The Voice in the tomb** — a feminine telepathic voice pleaded for rescue at the tomb's entrance, cried "No, you must save me" during the specter fight, and later spoke from within the gilded sarcophagus, "in the sarcophagus, I can help you" [ch 028 / 028.04; ch 028 / 028.05; ch 028 / 028.06].
+- [OPENED] **Lost Tomb of Khaem exploration** — the party entered the Netherese tomb, identified it as Brysis of Khaem's with powerful magic within, and is mid-way through exploring, having fought specters and a wraith and found a gilded sarcophagus with a magical sword and unopened invisible stone chest [ch 028 / 028.04; ch 028 / 028.05; ch 028 / 028.06].
+- [ADVANCED] **Fargas Rumblefoot's secret tomb tip** — the party recalled the tip that the tomb holds a secret, false tomb, and noted Fargas didn't know where the secret room was; the GM noted Fargas was the last of his own adventuring group [ch 028 / 028.04].
+- [OPENED] **Jimjar and Gyrgum's crystal bet** — Gyrgum wagered the harvested crystals would come in handy; a startled Jimjar accepted, and his follow-up bet on whether anyone would agree drew no takers [ch 028 / 028.04].
+- [ADVANCED] **Faerzress/demon hypothesis** — the party's working hypothesis is that the Faerzress "blink" caused the demons to appear; the GM out of character ruled out the theory that Plinki caused it experimenting with the obelisk [ch 028 / 028.01].
+- [RESOLVED] **Gyrgum's Turn Undead attempt** — Gyrgum's Turn Undead failed against the specters (all resisted the DC 15 save), prompting Gyrgum to wonder if Bahamut was displeased about the dragon egg [ch 028 / 028.05].
+- [RESOLVED] **Brysis undead confrontation** — the cursed creature imprisoned for a millennium was destroyed by the party's combined assault, ending the threat from the tomb. [ch 029 / 029.01]
+- [ADVANCED] **Drow pursuit** — Eldeth's trail-obscuring checks broke the pursuit, dropping the pursuit rating to zero, though the GM warned the hunters would eventually find them again. [ch 029 / 029.04]
+- [RESOLVED] **Return Stool and Rumpadump to Neverlight Grove** — the two sprouts were joyfully returned home and credited the party to the sovereigns. [ch 029 / 029.05]
+- [OPENED] **Corruption of Neverlight Grove** — Basidia revealed Sarith carries unknown spores, fears Phylo is similarly infected, and suspects the Garden of Welcome holds the source; she tasked the party with investigating it. [ch 029 / 029.06]
+- [OPENED] **Investigate the Garden of Welcome** — Basidia hired the party to find the source of the infection, providing a scroll of protection against fiends and a potion-and-treasure reward. [ch 029 / 029.06]
+- [OPENED] **Grick alpha hunt** — Loobamub asked the party to kill the grick alpha in the fungal wilds and return its carcass intact so Basidia can reanimate it as an ally. [ch 029 / 029.07]
+- [OPENED] **Neverlight Grove corruption / Great Awakening** — Gasbide revealed that Sovereign Phylo promised a "great awakening" and a celebration involving Araumycos that "everything will be better after," with unsettling vagueness suggesting something far larger than a simple celebration is being planned in Neverlight Grove [ch 030 / 030.05; ch 030 / npcs].
+- [ADVANCED] **Basidia's promised reward for the Circle of Masters** — Basidia reminded the party she had promised magic and treasure in exchange for exploring the Circle of Masters, holding that out as a reason not to leave yet for Blingdenstone [ch 030 / 030.05; ch 030 / npcs].
+- [RESOLVED] **Grick Alpha hunt** — The party killed the Grick Alpha Loobamub had asked them to hunt and presented its remains to Basidia, who accepted them for reanimation [ch 030 / 030.03; ch 030 / 030.05; ch 030 / npcs].
+- [OPENED] **Shambling Mound vines trade in Blingdenstone** — The party harvested vine material for six enchanted ropes, with the GM suggesting they could be traded in Blingdenstone where Jimjar's crew was headed [ch 030 / 030.03; ch 030 / items].
+- [OPENED] **Gyrgum's line-of-sight problem / magic item quest** — The GM suggested that a magic item, and a quest to find it, could solve Gyrgum's inability to see into magical darkness; Zalthir pointed out there was a treasure-hoarding creature right here, and the GM confirmed Gricks accumulate treasure [ch 030 / 030.02; ch 030 / npcs].
+- [OPENED] **Araumycos** — Gasbide mentioned Araumycos as an aid for his tower dream and part of the coming celebration, though he had no understanding of what it actually was [ch 030 / 030.05].
+- [OPENED] **Zuggtmoy's fetid wedding** — the party witnessed Zuggtmoy herself leading a wedding procession toward a union with Araumycos, chanting "till death do part," and the session ended with her walking toward them [ch 031 / 031.06].
+- [ADVANCED] **Zuggtmoy's corruption of Neverlight Grove** — the party confirmed the infection has spread to circle leaders Hebopbe and Yrberop, and that the Garden of Welcome is a site of living victims being devoured by fungal growth [ch 031 / 031.02; ch 031 / 031.03].
+- [ADVANCED] **Phylo's leadership of the myconid colony** — the party concluded Phylo's promised Garden of Welcome visit likely involved a demonic sacrifice, with Yestabrod and the wedding rehearsal confirming the colony's trajectory [ch 031 / 031.02; ch 031 / 031.03].
+- [ADVANCED] **Madness infection of Daz and Zalthir** — both were afflicted by Yestabrod's spores with secret madnesses, detectable and curable only if the victims recognize something is wrong [ch 031 / 031.04; ch 031 / moment].
+- [ADVANCED] **Dawnbringer and Thorin's bond** — Thorin accepted the sentient sword's partnership, saying "I didn't ask for this marriage, but, you know, I'm going to make my vow," and consulted it before granting Xinaya mercy [ch 031 / 031.05; ch 031 / moment].
+- [ADVANCED] **Warning the Drow of Zuggtmoy** — Xinaya charged Daz, recognized as being from Menzoberranzan, to warn the other Drow that the Demon Queen of Fungi had entered the Underdark [ch 031 / 031.03; ch 031 / moment].
+- [ADVANCED] **Ilvara's pursuit of the party** — Xinaya revealed Ilvara had sent a patrol to search near the grove to capture the party, reserving the privilege of killing them for herself, and that patrol was destroyed in the garden [ch 031 / 031.03].
+- [OPENED] **Rumpadump's escape plans** — he offered the party the secret route into the Garden of Welcome and has prepared escape routes and hidden nutrient caches in the exit tunnels in case the colony must be abandoned [ch 031 / 031.02].
+- [ADVANCED] **Jimjar's strange behavior** — he hinted at a coming wedding, stopped gambling, and offered only that "anytime there's a wedding, you know, people get unhappy," while Basidia confirmed he is not infected [ch 031 / 031.02].
+- [ADVANCED] **Zuggtmoy's fetid wedding** — The party witnessed the rehearsal march and a vision of Zuggtmoy in her bridal tower, and learned she plans to ritually mate with and potentially possess Araumycos; the intended groom is not yet present, so the ceremony cannot begin [ch 032 / 032.01; ch 032 / 032.02; ch 032 / npcs].
+- [ADVANCED] **The drow pursuit (Ilvara)** — Rasharoo warned that Ilvara and her drow hunters remained at large, and the party speculated about diverting them toward Neverlight Grove, the Circle of Welcome, or Zuggtmoy's wedding [ch 032 / 032.04].
+- [ADVANCED] **Journey to Blingdenstone** — The party departed Neverlight Grove, traveled seven days with myconid scouts, and continued toward Blingdenstone; Jimjar claimed responsibility for guiding them the rest of the way [ch 032 / 032.04; ch 032 / 032.06].
+- [OPENED] **The lost tunnels** — A cave-in blocked the party's route and trapped them in an unfamiliar maze, with a passage open to the north that the party agreed to explore [ch 032 / 032.06].
+- [RESOLVED] **Stool and Rumpadump's return to Neverlight Grove** — Both were persuaded by Gyrgum to leave the corrupted grove, and departed with Basidia and the surviving myconids to be with their own kind [ch 032 / 032.03; ch 032 / 032.04].
+- [ADVANCED] **Sovereign Basidia's resistance** — Basidia confronted Phylo, was dragged away by Zalthir from a suicidal fight, and fled with the survivors; she rewarded the party and promised future potions [ch 032 / 032.03; ch 032 / npcs].
+- [OPENED] **Oozing Temple exploration** — A tremor cracked an underground reservoir or river into the temple, causing flooding that would eventually fill the entire complex; unless the party found an exit, they would drown [ch 034 / 034.02].
+- [ADVANCED] **Journey to Blingdenstone** — The party, en route to the deep gnome city, got lost via Jimjar's navigational error, then escaped the flooded Oozing Temple into a large cavern that Jimjar identified as conveniently on the route to Blingdenstone [ch 034 / 034.01; ch 034 / 034.08].
+- [OPENED] **Thorin/Jimjar "end in tears" wager** — Thorin bet Jimjar that the path would end in an unfortunate event before they got back on their way; the wager was repeated as the flood rose and was ultimately settled after the escape [ch 034 / 034.01; ch 034 / 034.08].
+- [OPENED] **Glabbagool's sentience** — The gelatinous cube gained sentience, sight, and speech inexplicably, and is curious about whether others experience awareness the same way; he joined the expedition but knows little about the world [ch 034 / 034.03; ch 034 / npcs].
+- [OPENED] **Gray ooze threat** — The party learned gray oozes can destroy nonmagical ammunition and progressively damage nonmagical metal weapons and armor, prompting Thorin to add magical armor to his list of desired equipment [ch 034 / 034.02].
+- [ADVANCED] **Juiblex ooze association** — An Arcana check linked the concentration of oozes in the temple to the demon lord Juiblex [ch 034 / 034.05].
+- [OPENED] **Treasure inside Glabbagool** — The party cannot access the absorbed 112 silver pieces, three gold pieces, drow dagger, and oil of slipperiness until the valuables pass through Glabbagool in several days [ch 034 / 034.06].
+- [OPENED] **Resurrection arrangement with Glabbagool** — Glabbagool agreed to wait long enough for surviving companions to attempt resurrection of any casualties before eating them [ch 034 / 034.08].
+- [ADVANCED] **Blingdenstone ooze problem** — Glabbagool reported "oozapalooza" agitation among oozes, Daz's Juiblex information resurfaced, Jimjar bet the party would equip an army with acid-resistant gear and recover ingredients from a fungal wedding, and Senni tasked the party with addressing the ooze infestation before the clan helps them [ch 035 / 035.04; ch 036 / 036.02; ch 036 / 036.04].
+- [ADVANCED] **Jimjar's hidden identity** — The party found Blingdenstone gnomes treat him with peculiar deference, a guard recognized him without remembering why, and the party concluded he was likely "some sort of VIP something" [ch 035 / 035.04].
+- [ADVANCED] **Eldeth's prejudice toward drow** — Eldeth told Daz she now believes the true enemy is the fanatical cult of Lolth rather than every individual drow, and accepted she should continue thinking about her culture's assumptions [ch 035 / 035.05].
+- [OPENED] **Emerald Vanguard identity confusion** — The party initially called themselves "the Emerald Vanguard," then realized one of the proposed names (Emerald Vanguard/Ember Vanguard/Emerald Enclave) belonged to a group blamed for destroying a capital city, and instead introduced themselves as adventurers seeking the Overbright [ch 036 / 036.04].
+- [ADVANCED] **Journey to the surface** — Meeting Dorbo might provide information about a route to the surface, and Senni tied the party's help with the ooze problem to her clan's assistance reaching the Overbright [ch 036 / 036.01; ch 036 / 036.04].
+- [RESOLVED] **Pelek's Bones / Interment** — Pelek's "Catholic relic-sized" bones were buried in the Blingdenstone catacombs with a dragon-themed ritual and a gold coin, and his ghost passed on [ch 037 / 037.03; ch 037 / 037.04].
+- [OPENED] **Burrow Warden Jadger's Tasks** — Jadger offered one truthful Underdark answer per ghost laid to rest; Pelek counted as first, and two more troubled ghosts remain to be helped [ch 037 / 037.04].
+- [OPENED] **Ooze Infestation Investigation** — Chief Dorbo volunteered the party to solve the ooze problem blocking mining and housing; Jadger advised searching for a proxy directing the oozes and consulting his young gnome trainee [ch 037 / 037.01; ch 037 / 037.04].
+- [ADVANCED] **Juiblex Connection** — The party suspected Juiblex; Jadger clarified that Juiblex probably empowered a proxy or intermediate agent directing the oozes rather than controlling them directly [ch 037 / 037.04].
+- [ADVANCED] **Goldwhisker Clan Relations** — Dorbo refused cooperation while Senni stayed open to reconciliation; the party joked about the clan's inefficient use of territory [ch 037 / 037.01].
+- [OPENED] **Party Name Change** — The party shifted from Ember Vanguard to "The Ash Enclave," then to "Ash Vanguard," with the name still under discussion [ch 037 / 037.01; ch 037 / 037.05].
+- [ADVANCED] **Blingdenstone ooze problem** — The party discovered the Pudding King controlling hundreds of oozes in a cavern beyond the Traders' Grotto, identified Juiblex's likely involvement through a proxy, and presented a capture plan to Blingdenstone's leadership [ch 038 / 038.04; ch 038 / 038.06].
+- [ADVANCED] **Clan Goldwhisker** — The dispute was explained as rooted in competing claims to territory abandoned after the drow occupation, and the party decided to recruit the clan into the war on oozes, seeing it as "an opportunity for reconciliation" [ch 038 / 038.02; ch 038 / 038.05].
+- [OPENED] **Juiblex / Faceless Lord** — The disembodied voice proclaimed the coming of the "Faceless Lord"; Gyrgum identified Juiblex as the Faceless Lord, and the party concluded Juiblex was working through a proxy, probably the Pudding King [ch 038 / 038.04].
+- [OPENED] **The Pudding King** — The party identified the Pudding King as the source of the ooze problem and the likely Juiblex proxy, with the goal to capture or kill him before the ooze army overruns Blingdenstone [ch 038 / 038.04; ch 038 / 038.06].
+- [OPENED] **Party command of the ooze operation** — Daz assumed operational command of the plan, with Blingdenstone's leaders accepting; the party's new objective is to recruit Clan Goldwhisker [ch 038 / 038.06].
+- [ADVANCED] **The party's escape from the Underdark** — The party confirmed their bargain: Blingdenstone would provide directions out of the Underdark once the ooze problem is dealt with [ch 038 / 038.02].
+- [ADVANCED] **Unite Blingdenstone's clans against the Pudding King** — Chief Chipgrin and Clan Goldwhisker agreed to join the fight, a moot was convened with all clan leaders, and a unified plan was approved [ch 039 / 039.05; ch 039 / 039.07].
+- [OPENED] **Cleanse the Rockblight / Temple of the Steadfast Stone** — The party committed to cleansing the Rockblight, placing Gurnik's Hallow gem in the menhir of the Steadfast Stone and defending it until three temple guardians awaken [ch 039 / 039.08; ch 039 / 039.10].
+- [OPENED] **Acquire the Stone of Controlling Earth Elementals** — Dorbo's committee offered the stone as payment for cleansing the Rockblight; the party accepted the mission but objected to the idea of enslaving the elemental [ch 039 / 039.09; ch 039 / 039.10].
+- [OPENED] **Neverlight Grove acid-protection ingredients** — The party chose to revisit Neverlight Grove to collect ingredients for Kazook's protective treatment against ooze acid [ch 039 / 039.09; ch 039 / 039.10].
+- [OPENED] **Burrow Warden ghosts' quest** — Uth-Jadger said other Burrow Warden spirits would join the fight if the party completed a quest for them; Glabbagool, Eldeth, and Jimjar were assigned to assist [ch 039 / 039.09; ch 039 / 039.10].
+- [ADVANCED] **Pudding King confrontation** — The plan to seize the Pudding King with magic while a distraction force draws his ooze army was formalized; the Pudding King was identified as the conclusion of the campaign's first major part [ch 039 / 039.07; ch 039 / 039.10].
+- [ABANDONED] **Gracklstugh weapon trade** — The party rejected the option of sending salt to Gracklstugh in exchange for weapons [ch 039 / 039.09; ch 039 / 039.10].
+- [OPENED] **Attack alongside Earth Elementals** — Cleansing the Steadfast Stone would allow the Stoneheart Enclave to protect summoned Earth Elementals against Ogrémoch's Bane during the battle [ch 039 / 039.08].
+- [ADVANCED] **Rockblight cleanse (Ogrémoch’s Bane / Steadfast Stone)** — The party departed for the Rockblight as its first expedition objective, having chosen it for its proximity; they entered the caverns and already discovered gaze-protecting crystals useful against whatever guards the temple [ch 040 / 040.01; ch 040 / 040.04].
+- [ADVANCED] **Burrow Warden Jadger’s ghost-rescue tasks** — The party confirmed Eldeth, Jimjar, and Spiderbait would handle the ghost problem in Blingdenstone; later the party found and collected the remains of Udhask, one of the specific spirits Jadger asked to be recovered [ch 040 / 040.01; ch 040 / 040.05; ch 040 / npcs].
+- [OPENED] **Alcohol against the Pudding King’s ooze forces** — The party discovered alcohol can intoxicate a gelatinous cube when Glabbagool got drunk cleaning the tavern floor, and obtained barrels of spoiled booze from Tappy Foamstrap to use against hostile oozes and puddings [ch 040 / 040.02; ch 040 / moments; ch 040 / items].
+- [ADVANCED] **Zuggtmoy’s fetid wedding** — The deep gnome scout’s report of dancing myconids heading to a “wedding celebration” was connected by the party to Zuggtmoy’s intended wedding, suggesting Neverlight Grove was emptying or its inhabitants had gone completely insane [ch 040 / 040.02; ch 040 / npcs].
+- [ADVANCED] **Ember Vanguard wanted status** — News from Gracklstugh confirmed the Ember Vanguard remains blamed for recent chaos; a wanted poster depicting them (“wanted dead or alive,” with “alive” misspelled) circulates, though its discrepancies reassured the merchant [ch 040 / 040.02; ch 040 / npcs].
+- [ADVANCED] **Gracklstugh aftermath** — The party learned Gracklstugh remained intact and operational after their departure, achieving their goal of leaving it in controlled chaos rather than outright collapse; the Assassin’s Guild was rumored to have returned and derro were subjected to brutal reprisals [ch 040 / 040.02; ch 040 / locations].
+- [OPENED] **Cursed or protective Rockblight crystals** — The party collected portable crystals in several colors, including teal, for protection against gaze attacks, and discussed how a crystal’s magic depended on where and how it grew and interactions with different spells [ch 040 / 040.04; ch 040 / items].
+- [OPENED] **Malevolent entity of the temple** — Daz deduced a malevolent entity animates the Drow statues (six at a time) and may be tied to the Earth Elemental's madness; the party decided to learn more before confronting it [ch 041 / 041.05].
+- [ADVANCED] **Cleanse the temple** — Daz stated the party's actual job: "Our job was to cleanse the temple," reframing the current exploration toward that goal [ch 041 / 041.05].
+- [ADVANCED] **Cursed elemental gem as a weapon** — The party kept the cursed yellow diamond gem, acknowledging it summons a maddened Earth Elemental usable as a "bomb," with a Remove Curse scroll available to cleanse it [ch 041 / 041.02].
+- [OPENED] **Dawnbringer's scabbard** — Thorin promised Dawnbringer a nicer scabbard for cooperating in darkness; the GM warned "this may be a bigger budget than you anticipated," and a craftsman must adapt something for a sword whose blade is light [ch 041 / 041.01; ch 041 / 041.06].
+- [ADVANCED] **Anti-Medusa preparation** — The party confirmed their Anti-Medusa sunglasses and planned a Shape Water ice mirror, built before entering the Medusa's lair [ch 041 / 041.02; ch 041 / 041.06].
+- [OPENED] **The Medusa fight** — The Medusa was knocked prone and wounded (15 from Fireball, 21 from Zalthir, 20 from Thorin's darts) but the battle remained unfinished at session end [ch 041 / 041.07].
+- [ADVANCED] **Cleanse the Steadfast Stone** — The party placed Gurnik Tapfinger's Ruby spell gem into the temple menhir to hallow it against Ogrémoch's Bane, which triggered hostile Earth Elementals; defeating them weakened Ogrémoch's control over the temple, and the Galeb Duhr revealed the temple cannot be cleansed until all elementals are freed [ch 042 / 042.02; ch 042 / 042.04; ch 042 / 042.06].
+- [RESOLVED] **Neheedra the medusa — Rockblight confrontation** — The party slew the Medusa at her lair, reflecting her own gaze back to restrain her before finishing her off [ch 042 / 042.01; ch 042 / npcs; ch 042 / items].
+- [ADVANCED] **Ogrémoch's Bane — elemental entity banishment** — Three Earth Elementals were defeated, weakening Ogrémoch's control over the temple; the guardian Galeb Duhr cannot act until all its brothers are freed [ch 042 / 042.04; ch 042 / 042.06; ch 042 / npcs].
+- [ADVANCED] **Find Entémoch's Boon** — The Galeb Duhr revealed the party still needed Entémoch's boon, the blessing of the good elemental prince; hallowing Ogrémoch's altar did not open the path to it, the tunnels to his throne shifted and sealed, and the party was tasked with investigating strange vibrations in Pickshine and Whiteshell to find the lost path. [ch 043 / 043.01; ch 043 / 043.04]
+- [ADVANCED] **Cleanse the Steadfast Stone (Ogrémoch's Bane)** — The party successfully hallowed the temple from the corrupting power of Ogrémoch, the evil elemental earth god; the Galeb Duhr acknowledged the success, and the temple cleansing was noted as already done. [ch 043 / 043.01; ch 043 / 043.03]
+- [RESOLVED] **Burrow Warden Jadger's tasks (ghost spirits)** — Jadger materialized as a friendly ghost, thanked the party for putting two tormented spirits to rest, and offered two boons (two questions) for their service to Blingdenstone. [ch 043 / 043.03]
+- [ADVANCED] **Vazuk's ghost laid to rest** — Jimjar and Eldeth destroyed Vazuk, the deep gnome ghost mad with grief, reported to the party on return to Diggermattock Hall. [ch 043 / 043.02]
+- [OPENED] **Jadger's two truths as boons** — Jadger offered the party two questions he would answer truthfully as boons, to be claimed at the Ruby in the Rough temple; the party discussed but did not ask them, with Thorin worrying "we're going to make the wrong choices." [ch 043 / 043.03]
+- [ADVANCED] **Zuggtmoy's corruption at Neverlight Grove (Lady of Rot)** — The infected scout Bimble raved about the 'Lady of Rot' feeding the soil in a garden of stone; the party recognized her as Zuggtmoy, the demoness who destroyed Neverlight Grove and nearly possessed Thorin, raising alarm among Blingdenstone's leaders. [ch 043 / 043.05]
+- [OPENED] **Investigate the Festering Fissure** — The party decided to investigate the Festering Fissure where Bimble found the Ghost Hold Lichen, choosing it on the basis of alliteration; they arrived and began a stealthy harvest and combat with the shambling mound and violet fungi. [ch 043 / 043.05; ch 043 / 043.07; ch 043 / 043.10]
+- [ADVANCED] **Ghost Hold Lichen harvest — Contra oozes (alchemical preparation)** — Bimble found the rare Ghost Hold Lichen below Blingdenstone, and the party began harvesting it from a dead giant in the Festering Fissure, but Zalthir's imperfect cut released poison, triggering combat; the harvest was incomplete at session end. [ch 043 / 043.05; ch 043 / 043.09]
+- [ADVANCED] **Kazook Pickshine's simpler solution (Contra oozes)** — Kazook believed he had a simpler solution to the acid problem than a trip to Neverlight Grove, using the Ghost Hold Lichen Bimble found; he awaited Bimble's investigation results. [ch 043 / 043.03; ch 043 / 043.05]
+- [ADVANCED] **Ooze spies and Juiblex threat (Battle for Blingdenstone)** — Chief Dorbo Diggermattock expressed ongoing concern about acid attacks from puddings threatening their troops and weapons; Nomi noted she summoned an earth elemental that went insane on her, and the party faced the shambling mound in the fissure while the Pudding King and Juiblex remained threats. [ch 043 / 043.03; ch 043 / 043.04]
+- [OPENED] **The dead giant in the Festering Fissure** — The bat discovered the corpse of a giant from which Ghost Hold Lichen grew, tended by a shambling mound; Thorin's knowledge of giants aided the harvest plan, and Gyrgum joked "I take away its sword." [ch 043 / 043.08]
+- [OPENED] **Find Entémoch's Boon** — The party followed the geode to Whiteshell Mine, breached a time-snagged wall, and discovered a summoning circle guarded by basilisks where freeing Entémoch requires three sacrifices (wealth, weapon, blood); the weapon sacrifice was made, leaving wealth and blood [ch 044 / 044.08]
+- [ADVANCED] **Zuggtmoy's plot on the outpost** — Zuggtmoy psychically contacted the party, addressing the Pudding King about using oozes to "soften the shell" so her garden may "take root in the flesh beneath," ending with "Digest them all. I will claim this outpost"; the party now knows they must deal with the Pudding King [ch 044 / 044.03; ch 044 / moments]
+- [ADVANCED] **Battle for Blingdenstone (ooze incursion)** — The party harvested lichen for Kazook Pickshine to brew the acid-resistant weapon coating, a quest the DM recapped is for the army's weapons, and Zuggtmoy's message revealed the ooze crisis is connected to her plan [ch 044 / 044.02; ch 044 / 044.03]
+- [OPENED] **Entémoch's boon as optional aid** — The DM stressed that pursuing Entémoch's boon (help summoning Earth Elementals for the coming battle) was optional; the party chose to continue [ch 044 / 044.03]
+- [RESOLVED] **Galeb Duhr blocking Pickshine Mine** — The four Galeb Duhr relaxed and opened the path once the party completed the 'handshake protocol' with resonant geodes, and Dasco Pickshine rewarded them with two rubies worth 500 gold [ch 044 / 044.04]
+- [RESOLVED] **Entémoch's Boon** — The party placed the two gems and completed the ritual, releasing Entémoch's boon and ending the curse on the elemental gem [ch 045 / 045.01; ch 045 / items].
+- [ADVANCED] **Battle for Blingdenstone / Pudding King** — Blingdenstone prepared for battle, with Kazook brewing weapon coatings, Nomi preparing summoning spells, Chief Dorbo commanding the Captain of the Wall ("For tomorrow we shall go"), and the Pudding King readying his oozes; the party shopped and took a long rest before the fight [ch 045 / 045.03; ch 045 / npcs].
+- [OPENED] **Earth Elemental labor ethics** — The party convinced Blingdenstone's leaders that Earth Elementals may be summoned for defense and warfare but not for building or mining, disrupting the city's economic model [ch 045 / 045.02].
+- [ADVANCED] **Ember Vanguard's reputation** — Tales of the Ember Vanguard's rampage in Gracklstugh had reached Blingdenstone's bars, with some attributing it to Menzoberranzan's expansion plans; the party kept incognito rather than invoking the name [ch 045 / 045.02; ch 045 / memorable].
+- [OPENED] **Dawnbringer's scabbard bling** — Thorin purchased the Vaultmaster locking scabbard for Dawnbringer, but the sword muttered about adding bling to it [ch 045 / 045.04; ch 045 / items].
+- [RESOLVED] **Alliance terms with the Blingdenstone forces** — the party settled terms with their allies: they would scout ahead and fetch the allies if needed, otherwise the allies would wait at area 22 enjoying tea, with Dorbo's forces by the Traders' Grotto, the wererats in the pudding warrens, the distraction to start only on the party's signal, and Daz naming Gyrgum, Zalthir, and Thorin as lieutenants for the chain of command [ch 046 / 046.01; ch 046 / 046.03; ch 046 / 046.06].
+- [RESOLVED] **Black pudding pit crossing** — Dasco Pickshine's miners bridged the pit with mithral braces and salt neutralizers, completing it in about twenty minutes, and Daz accepted the cost that the miners would stay behind and not back up the party at the Pudding King's doors [ch 046 / 046.04].
+- [RESOLVED] **The quiet path through the psychic slime corridor** — the party accepted Chipgrin's offer for the wererats to howl at a frequency drowning out the psychic song, at the cost of drawing all oozes onto the wererats and leaving the party without scouts or backup at the door [ch 046 / 046.06].
+- [ADVANCED] **Pudding King assault** — the party finalized their assault plan against the Pudding King, then executed it: the Earth Elemental threw Zalthir into the throne room, Zalthir grappled the King and dragged him away from his allies, and the King transformed into ooze form, with the fight ongoing as the session ended [ch 046 / 046.08; ch 046 / 046.09].
+- [OPENED] **Glabbagool's potential vulnerability to the Pudding King's control** — Glabbagool recalled hearing a voice calling him from the big pool of slimes early on, and the GM made clear that asking Glabbagool to attack the King directly meant "all bets are off" [ch 046 / 046.08].
+- [RESOLVED] **Pudding King confrontation** — The Pudding King was defeated and dissolved, ending his threat and his army's leadership [ch 047 / 047.08; ch 047 / npcs].
+- [RESOLVED] **Blingdenstone ooze incursion** — Prince Livid and Princess Ebonmire were killed, and the Pudding King's lieutenants fell with him [ch 047 / 047.09; ch 047 / npcs].
+- [ADVANCED] **Juiblex's influence** — The Pudding King was revealed to be one of Juiblex's minions; after his death, Juiblex's power receded from the area, but a demonic voice said he would be reborn and consume the banquet of the queen of the fungi [ch 047 / 047.01; ch 047 / 047.10].
+- [OPENED] **Zuggtmoy's power grab** — With the Pudding King dead, the fungi in the cavern became more twisted, suggesting Zuggtmoy was waiting to seize power in the vacuum left by his death [ch 047 / 047.10; ch 047 / npcs].
+- [OPENED] **Glabbagool's new ooze form and companionship** — Glabbagool expressed he could travel with the party in a jar or Bag of Holding, serve as a garbage disposal, and said he could control his viscosity so no lid would be needed; the party discussed his potential monk training [ch 047 / 047.10].
+- [OPENED] **Glabbagool's monk training** — Zalthir thought Glabbagool should develop the mental discipline to control his body and acidity, and the party discussed training him as a monk [ch 047 / 047.05; ch 047 / 047.10].
+- [ADVANCED] **Glabbagool's demonic corruption** — The DM reminded Zalthir that Glabbagool "was affected a little bit by the demonic power the last time you guys went around," and Glabbagool then swapped bodies with the Pudding King, leaving him in the Pudding King's ooze body [ch 047 / 047.05; ch 047 / 047.06].
+- [RESOLVED] **Blingdenstone ooze incursion** — The uncontrolled ooze army at the Traders' Grotto was pacified through Glabbagool by Jimjar's bone die, and the oozes dispersed into the stonework [ch 048 / 048.05].
+- [RESOLVED] **Blingdenstone political peace** — The council of Blingdenstone factions reached a peace arrangement: wage agreement, Goldwhisker control of the upper boroughs, and sustainable mining compromise [ch 048 / 048.06].
+- [ADVANCED] **Zuggtmoy's encroachment on Blingdenstone** — Fungi grew at an accelerated rate in the throne room after the Pudding King's defeat, and a pale white puffball mushroom grew at impossible speed from a crack in the wall at the departure tunnels; Jimjar warned "this sister, she prefers to move in while you're sleeping" [ch 048 / 048.01; ch 048 / 048.07].
+- [ADVANCED] **Jimjar's true nature** — Thorin's Know Your Enemy revealed Jimjar has divine-level immunities and resistances resembling an angel's stat block; Jimjar then winked and vanished entirely, leaving the sense that this was not the last they would see of him; the DM suggested sages on the surface might shed light on who he is [ch 048 / 048.07].
+- [RESOLVED] **Psychic static of the Hall of Melting Mirrors** — Thorin located the harmonic center, neutralizing the noise for good [ch 048 / 048.02].
+- [OPENED] **Blingdenstone reopening for trade** — Dorbo announced the party would be sent to the Overbright to proclaim Blingdenstone "open for business," not for tourism [ch 048 / 048.06].
+- [OPENED] **Ember Vanguard legends spreading** — Gnomes who visited Gracklstugh recount wildly exaggerated tales of the party as an evil drow strike force; Daz reasoned letting the legends spread may help talk their way out of fights later [ch 048 / 048.07].
+- [RESOLVED] **Mining wage dispute** — The party brokered a wage agreement between the miners guild and the working class, with details deferred to be discussed "underground" [ch 048 / 048.06].
+- [RESOLVED] **Upper boroughs defense** — The Goldwhisker wererats took control of the upper boroughs as a self-funded defense force, removing Diggermattock's need to pay for military protection [ch 048 / 048.06].
+- [RESOLVED] **Sanctum mining dispute** — A compromise on sustainable mining practices satisfied both the Miners Guild and the ghosts who considered the sanctum sacred ground [ch 048 / 048.06].
+- [ADVANCED] **Escape from the Underdark to the surface** — The party departed Blingdenstone for the surface, noting the escape route marked with a white hole, only to be intercepted by Ilvara's pursuit, leading them to delay their escape to strike preemptively at the Fungal Altar [ch 049 / 049.01; ch 049 / 049.04].
+- [ADVANCED] **Ilvara's pursuit of the party** — Ilvara's force has been reduced from twenty to eight, she has descended into madness communing with a fungal mass she believes is Lolth, and she now serves "the bride" (Zuggtmoy) who demands the party's death; she can track them through the pervasive fungi [ch 049 / 049.03; ch 049 / moment].
+- [OPENED] **Ilvara's fungal corruption and "the bride"** — Ilvara communes with a giant pulsing fungal mass she believes is Lolth and is fanatically devoted to an entity called "the bride," whom the party knows to be Zuggtmoy; she commands a massive heart fungus creature [ch 049 / 049.03; ch 049 / 049.05; ch 049 / moment].
+- [ADVANCED] **The Ember Vanguard reputation** — The Derro High Council recast the party as a powerful drow strike force led by a 19th-level wizard who "casts wishes as if they were going out of style," leading the Duergar of Gracklstugh to ambush Ilvara's party by mistake [ch 049 / 049.03].
+- [OPENED] **The schism in Ilvara's camp** — Asha Vandree accuses Ilvara of heresy and remains loyal to Lolth, while Jorlan Duskryn harbors homicidal resentment toward Ilvara, creating an opportunity the party plans to exploit [ch 049 / 049.03; ch 049 / npcs].
+- [OPENED] **Asha Vandree's manipulation** — Daz's Dancing Lights illusion convinced Asha that Lolth herself sent her a sign, apparently winning her over to the party's side; the outcome of that manipulation is not yet resolved [ch 049 / 049.05].
+- [ADVANCED] **Valen's recruitment and infection** — Valen, infected and terrified of becoming a spore servant, agreed to guide the party to the Fungal Altar in exchange for protection; his infection is delayed by about a week but only a greater restoration, perhaps findable on the surface, can cure him [ch 049 / 049.03].
+- [ADVANCED] **Jimjar's boon** — Zalthir expressed disappointment at receiving only "a damn used token" from Jimjar after weeks partying with the deity, and Gyrgum's Religion check clarified Jimjar's nature as a trickster god, "neither evil nor good" [ch 049 / 049.01; ch 049 / moment].
+- [ADVANCED] **Asha Vandree alliance** — Asha accepted the party as potential allies against Ilvara and agreed to join the fight, rushing in to defend them from other attackers [ch 050 / 050.02; ch 050 / 050.03].
+- [ADVANCED] **Ilvara's corruption by Zuggtmoy** — Asha revealed Ilvara was seduced by the "bride" heresy after visiting the Neverlight Grove, carries a corrupted mushroom artifact as a conduit, and commands a massive Heart Fungus [ch 050 / 050.02].
+- [ADVANCED] **Ilvara confrontation** — The party launched their coordinated assault on Ilvara and the Heart Fungus in the fungal altar cavern, with the battle mid-progress at session end [ch 050 / 050.04].
+- [ADVANCED] **Glabbagool passed off as Daz's familiar** — The party passed Glabbagool off as Daz's familiar to avoid alarming Asha, who was impressed by the notion of an ooze familiar [ch 050 / 050.03; ch 050 / npcs].
+- [OPENED] **Destruction of Ilvara's mushroom** — Asha made clear the corrupted mushroom artifact must be destroyed to break Zuggtmoy's influence; if it survives, someone else will pick it up and they are "back to where they started" [ch 050 / 050.02; ch 050 / items].
+- [RESOLVED] **Ilvara Mizzrym, final confrontation** — Ilvara was killed by Gyrgum's Guiding Bolt, exploiting her radiant vulnerability, in the battle at the Fungal Altar [ch 051 / 051.06].
+- [ADVANCED] **Zuggtmoy's influence** — Ilvara invoked Zuggtmoy during her final stand, muttering that "the bride" would come to spread chaos and mayhem, and the mysterious icon linked to Zuggtmoy remained near her position, deemed dangerous to those already touched by her power [ch 051 / 051.05].
+- [OPENED] **House T'sarran enmity** — The surviving elite warrior of House T'sarran retreated with the vow "We will meet again. Enjoy your victory for the moment," establishing future enmity between the house and the party [ch 051 / 051.06].
+- [RESOLVED] **Daz's protection contract** — Kaelira and Nym Duskryn, contracted to protect Daz, saw the battle through to its end; Kaelira pulled him clear of the insect plague and the contract's immediate threat passed with Ilvara's death [ch 051 / 051.06].
+- [ADVANCED] **The recovered spellbook** — Daz's selection of Fey Touched freed prepared-spell capacity, and his report that it "opened up the number of spells" he had available allowed him to take better advantage of the spellbook recovered in an earlier foray [ch 052 / 052.02; ch 052 / items].
+- [RESOLVED] **Nym and Kaelira's protection contract** — The contract protecting Daz from Ilvara of House Mizzrym and House T'sarran was fulfilled, and the mercenaries escorted Daz to the surface before departing [ch 053 / 053.01; ch 053 / 053.05].
+- [RESOLVED] **Asha Vandree** — Asha, delusionally asserting command, was killed by Zalthir after Gyrgum and Thorin subdued her [ch 053 / 053.02].
+- [OPENED] **Who wants Daz and why** — Daz proposed the party investigate why powerful factions wanted him protected or extracted, an open mystery with no clear answer [ch 053 / 053.05; ch 053 / 053.06].
+- [ADVANCED] **House T'sarran** — The signet ring and burned orders confirmed House T'sarran's force was paid to extract Daz alive, and the party plans to research the house at Candlekeep [ch 053 / 053.04; ch 053 / 053.06].
+- [ADVANCED] **House Mizzrym's missing agent** — Daz and Gyrgum inferred that House Mizzrym's inability to locate Ilvara had become known, prompting House T'sarran's dispatch of agents [ch 053 / 053.03].
+- [ADVANCED] **Zuggtmoy corruption** — Asha's theological text, Ilvara's prayer-book marginalia, and the ceremonial bundle of nested Lolth and Zuggtmoy sigils provide evidence that the syncretic corruption spread through the Underdark [ch 053 / 053.03; ch 053 / 053.04].
+- [OPENED] **Jimjar's true nature** — The party identified discovering who Jimjar really was as a major research question for Candlekeep [ch 053 / 053.06].
+- [ADVANCED] **Dawnbringer's therapy** — Thorin proposed finding a therapist for traumatized intelligent weapons at Candlekeep, which Dawnbringer dismissed as unnecessary [ch 053 / 053.06].
+- [ADVANCED] **Glabbagool's discovery of the surface** — Glabbagool emerged into the Overbright having not known it existed, now observing the new world from a bag of holding [ch 053 / 053.05; ch 053 / 053.06].
+- [RESOLVED] **Eldeth's departure and Thorin's clan oath** — Eldeth departed for Mithral Hall and Gauntlgrym, swearing on her honor to warn the lords of the Underdark dangers and to make it "a statement of purpose" that Thorin will be embraced by her clan; she asked Thorin to wait before following [ch 054 / 054.01].
+- [ADVANCED] **House T'sarran surveillance of Daz's protector** — The captured spy revealed House T'sarran is using Daz as bait to identify the unknown party who paid for his protection; the Matron Mother of House T'sarran (ruling 200 years) sent agents up to the Overbright to watch Daz surface and report on who approaches him [ch 054 / 054.04].
+- [OPENED] **The identity of Daz's protector** — The spy's revelation established that a powerful, unknown benefactor paid to have Daz protected; House T'sarran believes they will reveal themselves now that Daz has surfaced [ch 054 / 054.04; ch 054 / moment].
+- [ADVANCED] **Transport of the drow captive** — The defused spy was shrunk with a shrinking mushroom, nicknamed "Polly Pocket," placed in the bag of holding with Glabbagool as guard, and transported to Candlekeep; the party discussed escorting her to the guards and she implied she knows how to escape [ch 054 / 054.05; ch 054 / 054.06].
+- [ADVANCED] **Jimjar investigation** — Zalthir was assigned to learn about Jimjar from an un-named scholar, paired with Khell-Vire's interest in Gyrgum [ch 054 / 054.06].
+- [ADVANCED] **Dawnbringer's psychological care** — Thorin and Dawnbringer were assigned to Philemon, an avowed monk specializing in psychological preservation of ancient sentient artifacts; Thorin framed it as "couples counseling" [ch 054 / 054.06].
+- [ADVANCED] **The Stroud / Bahamut orc-conversion thread** — Vareth's obscure research field has exploded since the Stroud-Protanther events; he secured a record of the legendary chess game "Stroud's Gambit," confirmed Gyrgum's familiarity with it, and intends to interview Gyrgum as a "living data point" to benefit the field [ch 054 / 054.06].
+- [OPENED] **Glabbagool's question at Candlekeep** — The party donated all five books so Glabbagool could ask one question of his own, to feel like a full member of the group [ch 054 / 054.05].
+- [ADVANCED] **Eldeth farewell** — Eldeth bids the party farewell at the Blingdenstone surface exit and departs as the party heads south [ch 055 / 055.01; ch 055 / 055.02]
+- [OPENED] **Gorg'Bahamut temple lead** — Kestler at Triboar asks the party to deliver a note to a temple brother who stopped writing five years ago; the temple fire still burns, and Gyrgum agrees to deliver it, calling it an omen [ch 055 / 055.04; ch 055 / items]
+- [OPENED] **Surface-madness gradient** — The party witnesses Eldred, a dual-voiced courier in Triboar, whose broken, fractured speech matches the madness seen in the Underdark; the Field Ward preacher's looping rhythm later matches it too [ch 055 / 055.04; ch 055 / 055.07]
+- [OPENED] **Ardragon sightings** — The party hears consistent rumors of a black-hooded Kenku hovering a foot off the ground on the caravan trails north of Yartar who takes nothing and mimics a hawk; drovers note he never picks up the coins left for him [ch 055 / 055.04]
+- [OPENED] **Whistler's fate** — At Rishaal's Pageturners, the party finds a memorial sign declaring Whistler fallen at Glazhael's lair, though fans debate the account; Daz now owns Volume Three [ch 055 / 055.06]
+- [OPENED] **Zalthir's shadow monk training** — Zalthir obtains a letter of introduction to Khell-Vire at Candlekeep after Daz repairs the monastery roof with Mending [ch 055 / 055.07; ch 055 / items]
+- [OPENED] **Kraken under the keep** — A Field Ward street preacher chants that the chant will break and the kraken will rise; he warns Daz "You came up! You came up, you will go again. You will go down again. Do not—" [ch 055 / 055.07; ch 055 / 055.08]
+- [ADVANCED] **Ooze rights** — Thorin's public defense of Glabbagool during a city guard inspection in Waterdeep draws a mixed crowd and plants seeds of the idea in the city [ch 055 / 055.08; ch 055 / 055.09]
+- [OPENED] **The only question of the age** — Gyrgum's theological stance in Triboar, "Are we not all the playthings of fate?", wins over the Bahamutian faction as a third of the audience cries "Deist!" [ch 055 / 055.04; ch 055 / 055.05]
+- [OPENED] **Stroud School recruitment** — A Mirabar polemicist attempts to recruit Gyrgum to the human agency hypothesis and hands him a pamphlet; Gyrgum pockets it for later [ch 055 / 055.03]
+- [ADVANCED] **Thorin and Dawnbringer bond** — Thorin uses Dawnbringer's Lesser Restoration to heal orphans and the sick in Waterdeep's poorer quarters, a deliberate act to bond with the sword over helping others; Dawnbringer is very happy about it [ch 055 / 055.08; ch 055 / 055.09]
+- [OPENED] **Daz's true identity** — Daz began investigating his amnesia at Candlekeep, discovering that records of a drow noble house had been erased: the word "struck" appeared beside the fourth seat, an appendix in a heraldry book had been razored out, and a surviving footnote referenced "Daz'issin," a softening name mothers used for boys they wanted to live [ch 056 / 056.07].
+- [ADVANCED] **Surface-madness / Underdark contamination** — The party confirmed in Daggerford that the madness seen in the Underdark appears to be bleeding into the surface world, with Elin's condition interior rather than exterior and tenuously connected to the pressure in Daz's head [ch 056 / 056.02].
+- [OPENED] **The six-pointed shape** — Elin has been drawing the same shape on every flat surface for six days, with her only speech being "it is only the shape that holds" and "The wells are not wells anymore" [ch 056 / 056.02].
+- [OPENED] **The Endless Chant corruption** — Daz noticed a young scholar in Beregost reciting a chant almost right but wrong by a hair — the same syncopated wrongness seen in Eldred and the Field Ward Preacher — and quietly recorded it, planning to investigate at Candlekeep [ch 056 / 056.03].
+- [OPENED] **Dawnbringer's grief** — Philemon asked Dawnbringer whether the corpse she was found with was her wielder; the sword faltered and went silent, leading to a two-phase recovery — the work of light, then the work of mourning [ch 056 / 056.06].
+- [ADVANCED] **Glabbagool's monk training** — Zalthir confirmed that Glabbagool's prison-watching of the pocket drow spy is "absolutely pre-monk training," and Glabbagool recommitted with six pseudo-eyes fixed on her [ch 056 / 056.04].
+- [OPENED] **The Bone King note** — Khell-Vire's desk bears a note reading "Zalthir, the Underdark, until the Bone King sings," unexplained by both Zalthir and Khell-Vire [ch 056 / 056.05].
+- [OPENED] **The miniature drow spy** — The House T'sarran spy remains in the party's bag of holding under Glabbagool's watch after the party declined to hand her to Candlekeep; she demands restoration to normal size and formal imprisonment [ch 056 / 056.04].
+- [OPENED] **Daz's headache** — The pressure behind Daz's eyes grew sharper on approach to Candlekeep, and Gyrgum confirmed a tenuous connection to what afflicts Elin, though lacking knowledge to name it [ch 056 / 056.04].
+- [OPENED] **Investigation of Janussi's murder** — The party was appointed independent investigators of the Keeper of Tomes' death, with confidentiality papers required, a book-of-one's-choice reward for success, and the Gatewarden stripped of the case [ch 057 / 057.05].
+- [ADVANCED] **The Question of the Age / Stroudite controversy** — Gyrgum proposed a fourth school of thought (fixed points) that Vareth embraced as the "strong-weak hypothesis," and Gyrgum later introduced himself to the Council of Twelve as founder of the "Gyrgumite School," derailing the murder crisis into an academic tangent [ch 057 / 057.01; ch 057 / 057.05; ch 057 / moment].
+- [OPENED] **The gray cat of Candlekeep** — Bookwyrm stated nobody had proven whether the cat was some kind of power dwelling in Candlekeep or not, and Fembris's dismissal was undercut by Zalthir's quiet "Is it?" [ch 057 / 057.06; ch 057 / moment].
+- [OPENED] **The Janussi prophecy** — The Alaundo prophecy "On the longest night of winter's deepest cold, the keeper falls, the heart is sold" was heard at dinner the evening before the Keeper of Tomes was found dead with his heart removed [ch 057 / 057.02; ch 057 / moment].
+- [OPENED] **The missing heart and the safe** — Gyrgum theorized the heart was removed after death to prevent *Raise Dead*; blue gemstones and empty pouches scattered before the safe suggested the thief found what they took more valuable than the gems [ch 057 / 057.07; ch 057 / spells].
+- [OPENED] **Speak with Dead uncertainty** — The party wondered whether someone (possibly Kalan during his 11 a.m. inspection) had already cast *Speak with Dead*, which would block another attempt for ten days; Tadric did not know and the GM answered only "perhaps" [ch 057 / 057.07; ch 057 / spells].
+- [OPENED] **The Gatewarden's determination** — Tadric noted Kalan Strongbranch looked more determined on leaving his 11 a.m. inspection than on arriving, and the party wondered whether he had found or done something in the room [ch 057 / 057.06; ch 057 / moment].
+- [OPENED] **The hooded Avowed and the ink change** — The party flagged as open questions the identity of the hooded Avowed seen at dinner, the significance of The Golden Ass and the blue-to-purple ink change, and what was taken from the safe [ch 057 / 057.07; ch 057 / items].
+- [OPENED] **Janussi's request for Kalan's resignation** — Janussi had asked the Gatewarden to tender his resignation the morning before the murder over concerns about his mental faculties and negligence, a fact Bookwyrm declined to elaborate on [ch 057 / 057.05; ch 057 / 057.06].
+- [ADVANCED] **Janussi murder investigation** — The party examined the body and chamber, uncovering evidence of poison, magic missile damage, a stolen locket, a missing book, and a targeted theft from the safe; they identified multiple suspects including Daral Yashenti, Sylvira Savikas, Kalan Strongbranch, and Teles Ahvoste [ch 058 / 058.01; ch 058 / 058.02; ch 058 / 058.05].
+- [ADVANCED] **High Tower Library keys** — The party learned from Fembris that Janussi held one of the two keys to the High Tower Library, believed to be in the stolen locket, and that Kalan Strongbranch holds the other; the two keys may be required together [ch 058 / 058.06].
+- [OPENED] **The Golden Ass missing book** — Queenie saw Daral flee the chamber carrying the book; the party theorized it may contain a cipher or hidden arcane instructions within its jokes [ch 058 / 058.03; ch 058 / 058.06].
+- [OPENED] **The disguised Sylvira figure** — Queenie noted that the figure leaving the tower looked like Sylvira but did not smell like her, suggesting a magical disguise or shapeshifter impersonating her [ch 058 / 058.06].
+- [OPENED] **The blackened residue** — The party identified a mysterious dark substance on Janussi's finger, lip, and tongue, suspected to be poison, but Glabbagool could not identify its nature [ch 058 / 058.01].
+- [OPENED] **The stolen locket** — The party learned Janussi always wore a locket that was forcibly removed, believed to contain one of the High Tower Library keys [ch 058 / 058.02; ch 058 / 058.05].
+- [OPENED] **The missing sapphire and parchment** — The party found one sapphire and one parchment missing from the safe, suggesting someone was gathering components for a spell [ch 058 / 058.02; ch 058 / items].
+- [OPENED] **High Tower keys** — Kalan secretly pressed one of the two High Tower keys into Gyrgum's hand, said he feared being killed for it, and warned the party not to look for him at his post if he does not appear tomorrow [ch 059 / 059.03].
+- [OPENED] **Daral Yashenti's poison exposure** — Daral was found licking his fingers through the pages of *The Golden Ass*, the suspected midnight-tears delivery mechanism; he dropped the book in panic, and the party secured it as evidence and resolved to keep him close to test and treat him before midnight [ch 059 / 059.05].
+- [ADVANCED] **Janussi murder investigation** — The poison was identified as midnight tears from *Fey-mous Flowers & Fungi*; the stolen sapphire was linked to Drawmij's Instant Summons; the party developed the two-actor theory and Kalan conceded on his single-culprit assumption [ch 059 / 059.04; ch 059 / 059.03].
+- [ADVANCED] **Two "Sylvira" figures** — The party shared the detail of the Sylvira impersonation with Kalan, who had not known it and revised his assessment, saying "You are very good at this" [ch 059 / 059.03].
+- [ADVANCED] **Bookwyrm as cover-up suspicion** — Kalan voiced suspicion that Bookwyrm may have been manipulated into removing him from the case to protect the killer; Daral named Bookwyrm as a suspect; the party agreed any accusation would require strong evidence [ch 059 / 059.03; ch 059 / 059.05; ch 059 / 059.02].
+- [ADVANCED] **Glabbagool's Whispering Dome question** — Glabbagool asked his question, answered it, and formalized his sidekick bond with Zalthir, becoming an eighth-level sidekick [ch 059 / 059.06].
+- [OPENED] **Kalan's cooperation framework** — Kalan and the party agreed to pool findings that evening, dividing the investigation into five work streams and committing to "merge all the things" [ch 059 / 059.03].
+- [ADVANCED] **Janussi murder investigation** — The party established the poisoning window (between Daral's 11 a.m. placement and Kazryn's post-dinner distribution), found Janussi's severed heart and a meat cleaver in Milil's lead-lined chalice, identified a stolen toxin from the apothecary, and narrowed suspicion on Alkrist and A'lai [ch 060 / 060.05; ch 060 / 060.07; ch 060 / 060.08; ch 060 / 060.09].
+- [ADVANCED] **Kalan Strongbranch's key and the stolen sapphire** — Gyrgum handed the key to Daz, who confirmed via *Identify* it was not linked to the summoning spell; the party theorized the sapphire must stay with the caster and a dead person possesses nothing [ch 060 / 060.01; ch 060 / 060.02].
+- [ADVANCED] **Daral's poison exposure** — The party delayed curing Daral to retain his testimony and cooperation, with Thorin even weighing letting the poison progress for evidentiary value [ch 060 / 060.02; ch 060 / 060.03; ch 060 / moment].
+- [ADVANCED] **The disguised Sylvira figure** — The party concluded the 1 a.m. kitchen figure was likely a magically disguised intruder due to the unnecessary lantern and avoided voice [ch 060 / 060.06; ch 060 / moment].
+- [ADVANCED] **Alkrist as suspect** — Orrin's report of the burned note, the diseased rats, and the bookmarked *1001 Tashalian Nights* raised Alkrist prominently onto the suspect list [ch 060 / 060.07; ch 060 / 060.09].
+- [ADVANCED] **A'lai Aivenmore as suspect** — Daral named him as the likeliest framer, the apothecary visit established a diversion for a Dragonborn accomplice, and his dove cage suggested three dispatched messages [ch 060 / 060.04; ch 060 / 060.08; ch 060 / 060.09].
+- [RESOLVED] **Janussi's poisoning** — The murder method was fully exposed: Alkrist poisoned Daral's gift with Midnight Tears at the Deadwinter Tree, A'lai conspired and helped steal the poison, and Janussi died reading the book at midnight [ch 061 / 061.07; ch 061 / 061.08].
+- [ADVANCED] **The Sylvira doppelganger** — The party confirmed Alkrist's genuine shock at the heart's removal shifted suspicion toward Bookwyrm and others, and Sylvira denied being the double seen near the kitchen, while the Polymorph duration puzzle remained unresolved [ch 061 / 061.05; ch 061 / 061.07; ch 061 / 061.08].
+- [ADVANCED] **Janussi's heart and the thefts** — Alkrist's reaction proved he did not remove the heart; whoever hid it in the chalice understood its properties, and the sapphire-locket theft remained entangled with the larger conspiracy [ch 061 / 061.07; ch 061 / 061.08].
+- [ADVANCED] **Bookwyrm's role** — Bookwyrm knew shortly after midnight that Janussi had been poisoned but withheld that information from the investigators, making her a central suspect in the cover-up and possibly the post-mortem mutilation [ch 061 / 061.07; ch 061 / 061.08].
+- [ADVANCED] **Disposition of the evidence** — With Alkrist's confession secured, the party debated giving evidence to Kalan Strongbranch, blackmailing conspirators, seeking A'lai's Underdark information for Daz, and demanding rare books as payment; the political disposition remained undecided [ch 061 / 061.08].
+- [RESOLVED] **Daral's poisoning** — Daral was believed poisoned by licking his finger after handling the reclaimed book; Gyrgum confirmed he could cast Lesser Restoration and had time to save him before midnight [ch 061 / 061.01].
+- [ADVANCED] **Kalan Strongbranch's investigation methodology** — The recently fired Kalan's paper arguing magical evidence is adversarial was delivered by Elian; Janussi actively blocked Kalan's reforms, and Bookwyrm pushed hardest against them [ch 061 / 061.02; ch 061 / 061.04; ch 061 / 061.05].
+- [OPENED] **The unopened safe** — Alkrist's safe remained unopened, with the party noting Glabbagool could have eaten through it and Zalthir could have punched it open [ch 061 / 061.01].
+- [ADVANCED] **Candlekeep murder investigation** — The party handed credit for solving Janussi's murder to Kalan, who was reinstated, while keeping their suspicions about Bookwyrm's role quiet [ch 062 / 062.01; ch 062 / 062.03].
+- [ADVANCED] **Bookwyrm's role as accomplice** — The party withheld their suspicion from Bookwyrm and planned to use their reward to obtain a book capable of proving her role later [ch 062 / 062.02; ch 062 / 062.03].
+- [OPENED] **The delayed "one more thing" confrontation** — The party intends to return with proof of Bookwyrm's involvement after she believes the danger has passed [ch 062 / 062.02].
+- [ADVANCED] **The mysterious key and the missing sapphire** — The helmed horrors homed in on whoever carried the inert key, revealing that its location and bearer were known, and a Locate Object attempt found no sapphire on Bookwyrm [ch 062 / 062.04; ch 062 / 062.06].
+- [ADVANCED] **Dawnbringer's therapy with Candlekeep's scholars** — Dawnbringer lamented that the promised therapy had stalled after a productive first session, and no further sessions occurred in this chapter [ch 062 / 062.01].
+- [ADVANCED] **Alkrist's arrest and confession** — Alkrist was imprisoned and his safe opened, but the search produced no further evidence of accomplices [ch 062 / 062.03; ch 062 / 062.04].
+- [ADVANCED] **A'lai as mastermind** — The party retained Alkrist's claim that A'lai was the mastermind, withholding it from Bookwyrm and Fembris [ch 062 / 062.03].
+- [ADVANCED] **Candlekeep naming ceremony and the next Keeper of Tomes** — Kalan predicted suspicion would prevent both Bookwyrm and A'lai from being chosen, with Teles Ahvoste or Fheminor as likely candidates, and the ceremony was to occur the next morning [ch 062 / 062.02].
+- [OPENED] **Who sent the helmed horrors** — The constructs' master remains unknown, and the party considered whether a technique could trace the constructs back to their creator [ch 062 / 062.06].
+- [OPENED] **The missing key's counterpart** — The party wondered whether one of the ruined constructs could be used to locate the other key [ch 062 / 062.06].
+- [ADVANCED] **High tower keys** — The party's supposed key was exposed as a mundane fake; the real key was secured from Tadric, while A'lai is believed to hold Bookwyrm's key and wait at the high tower [ch 063 / 063.01; ch 063 / 063.06].
+- [ADVANCED] **Bookwyrm's cover-up of Janussi's murder** — Bookwyrm was found dead with her throat torn out, likely murdered for the high tower key she possessed; her half-finished note *He is using the beast to—* tied her death to a directing intelligence [ch 063 / 063.02; ch 063 / moment].
+- [ADVANCED] **A'lai Aivenmore's conspiracy** — Fembris admitted A'lai was present when he reported the key transfer to Bookwyrm, giving A'lai access to key-location information; this explained the coordinated attacks on Daz and Bookwyrm [ch 063 / 063.03].
+- [ADVANCED] **Moziqodo, Sylvira's abyssal son** — Moziqodo was revealed as the beast who killed Bookwyrm and was slain by the party at the North Galleries before he could take Tadric's key or flee [ch 063 / 063.04; ch 063 / 063.05].
+- [OPENED] **Assault on the high tower** — With one real key secured and the second believed held by A'lai waiting at the high tower for a demon spawn that would never arrive, the party resolved to head there to recover the second key [ch 063 / 063.06].
+- [ADVANCED] **Party deputized as Watchers of Candlekeep** — Kalan declared, "I hereby deputize you as Watchers of Candlekeep," offering a small badge and an honorarium [ch 063 / 063.03; ch 063 / moment].
+- [ADVANCED] **Candlekeep's protective ward** — The party confirmed the ward preventing teleportation and fire still held, with its source in the high tower room locked by the two keys; if an enemy obtained both keys the defenses could be disabled from within [ch 063 / 063.02].
+- [ADVANCED] **Deferred negotiations with Candlekeep's leadership** — The party resolved to finalize their deferred negotiations with Candlekeep's leadership after recovering the second key [ch 063 / 063.06].
+- [ADVANCED] **Confrontation with A'lai Aivenmore** — The party entered the High Tower lobby, fought A'lai and his Zhentarim raiders, restrained A'lai with Maximilian's Earthen Grasp, and stole the sapphire from him via Telekinesis; the confrontation remained unresolved at session's end with A'lai still active [ch 064 / 064.04].
+- [ADVANCED] **Manshoon's theft from Candlekeep** — A'lai confessed he served Manshoon for eleven years, removing books selected on lists delivered by a courier with a metal right hand; Manshoon wanted a single book triggered by the sapphire, which the party now holds [ch 064 / 064.04].
+- [OPENED] **Informing Sylvira of Moziqodo's death** — Tadric insisted someone must tell Sylvira her son is dead; the party deferred it as a later problem for the Ember Grapple [ch 064 / 064.01].
+- [OPENED] **The silence of Candlekeep's prophecy chant** — The endless chant fell suddenly silent, which never happens; significance remains unexplained [ch 064 / 064.01].
+- [ADVANCED] **Tadric's heroism** — Tadric, newly healed, insisted on accompanying the party despite Gyrgum's warning, citing his survival of Moziqodo [ch 064 / 064.01].
+- [ADVANCED] **The sealed High Tower door** — The door requires both High Tower keys; A'lai held key #1 and the party held key #2, and the door remained unopened at session's end [ch 064 / 064.03; ch 064 / npcs].
+- [ADVANCED] **A'lai's fate and the Avowed's judgment** — The party decided to turn A'lai over to the Avowed's council for imprisonment in Candlekeep's magic-nullifying prison, though the delivery and judgment will wait [ch 065 / 065.02; ch 065 / 065.03].
+- [ADVANCED] **The pursuit of Manshoon beneath Candlekeep** — Manshoon's simulacrum is already through the inner sanctum door pursuing something beneath Candlekeep while the party races to intercept him [ch 067 / 067.01]
+- [RESOLVED] **A'lai Aivenmore's bargain for safety** — A'lai traded vault secrets for placement in the null magic prison; Tadric agreed and marched him there [ch 067 / 067.02]
+- [OPENED] **House Baenre's funding of the forces around Daz** — A'lai deduced House Baenre is the only house in Menzoberranzan that could afford the patience behind the eleven-year operation, though he could not trace the payments [ch 067 / 067.02]
+- [ADVANCED] **The Vault of Secrets cryptogram** — the party, with Sylvira's answers, decoded the full instruction text revealing the steps for access [ch 067 / 067.03]
+- [ADVANCED] **Hidden passage beneath Candlekeep** — the party opened the passage, determined the ninety-seven steps, obtained the prophecy and modron tools, and began the descent, where a stair trap sent Thorin falling [ch 067 / 067.04; ch 067 / 067.05; ch 067 / 067.06]
+- [OPENED] **Thorin's fall into the vault well** — Thorin plummeted into a vast circular well when the staircase hinged open, still in free fall at session's end [ch 067 / 067.06]
+- [OPENED] **The study of Zalthir and Glabbagool by Spanner** — deferred until after the expedition, as agreed [ch 067 / 067.05]
+- [OPENED] **Suspicious figures in the Orrery of the Astronomicon** — Sylvira noticed three people inside the Orrery who did not work there, a possible warning of enemy activity [ch 067 / 067.03; ch 067 / locations]
+- [ADVANCED] **Manshoon-pursuit thread** — Manshoon is revealed to have entered Miirym's keep and is still inside; the party confronts him in the vault, and Daz opens combat with *Phantasmal Killer* [ch 068 / 068.04; ch 068 / 068.05].
+- [ADVANCED] **Miirym and the true name Vydykyq** — Miirym, the Sentinel Wyrm, appears, verifies Gyrgum as the Reader (closing riddle line 5), and grants the party a banked anti-magic-field boon [ch 068 / 068.04; ch 068 / npcs].
+- [ADVANCED] **The cryptogram race** — the party realizes Miirym is one of the verses of the cryptogram's poem; riddle line 5 is closed, while whether lines 3 and 6 are closed needs a GM call [ch 068 / 068.04].
+- [ADVANCED] **The Book of Vile Darkness / Manshoon's prize** — Manshoon is calmly reading one of the vault's forbidden tomes when the party arrives; Gyrgum persuades him to relocate the duel to protect the books, so the books remain on the shelves for now [ch 068 / 068.05].
+- [ADVANCED] **Mechanist Tools and the Dust of Mechanus** — the party uses the tools borrowed from Spanner to operate the bridge mechanism; whether the tools alone satisfy riddle line 4 or still must be used to make the dust is open, as the party never obtained the Dust of Mechanus [ch 068 / items].
+- [OPENED] **The second simulacrum** — a second simulacrum remains concealed in the vault, never revealed to the party this session; the first body is the one now standing on the lower level, with the second still in the library [ch 068 / npcs].
+- [ADVANCED] **The boon's cost** — the party dropped the teleport-denial and "what he took" boon options, so Manshoon can still escape [ch 068 / 068.04].
+- [ADVANCED] **Manshoon pursuit** — The party discovered the first duplicate was a simulacrum, killed him, and located a second, cheaper-robed simulacrum waiting in the upper tower chamber with a bargain to open the Obsidian Door; the riddle remained unsolved at session end [ch 069 / 069.02; ch 069 / 069.05; ch 069 / 069.07].
+- [ADVANCED] **Edvaldo's true identity** — Edvaldo survived damage that calculation suggested should have killed him, and the party suspected he might be the real Manshoon; he was bound in the anti-magic zone [ch 069 / 069.03; ch 069 / 069.05].
+- [ADVANCED] **Candlekeep murder investigation / cryptogram race** — The party had earlier decoded instructions that well-versed Candlekeep readers may fearlessly pass the Obsidian Door; the answer concerns what is consumed to make light and must be spoken in the dark once, as a gift, by the verified reader Gyrgum [ch 069 / 069.05; ch 069 / 069.06].
+- [ADVANCED] **Prophecy of the Hall of Stone (Echo 3, Gauntlgrym)** — A disembodied prophetic voice stated, “A dwarf will return to the Hall of Stone with the names of demons in her mouth," referencing the lords of the dwarves, an unlit forge, a giant-raised dwarf (Thorin), and a Shadow Walker (Zalthir), with the returning dwarf apparently Eldeth [ch 069 / 069.04; ch 069 / moment].
+- [ADVANCED] **Eldeth's letter and the forge (Gauntlgrym call)** — The prophecy's mention of a dwarf returning to the Hall of Stone with the names of demons in her mouth was interpreted as referring to Eldeth, connecting to the earlier Gauntlgrym call [ch 069 / 069.04].
+- [ADVANCED] **Daz's somatic field-perception / magical voice detection** — Daz recognized the disembodied prophecy voice as conjured rather than human by its timbre fluctuation and lack of breathing [ch 069 / 069.04].
+- [ADVANCED] **Glabbagool's hero-worship of Zalthir** — Glabbagool questioned why Manshoon was not dropped into lava, prompting Zalthir to establish a standing instruction to remind him of forgotten instant-death traps; Glabbagool was also impressed by Zalthir's binding of Edvaldo [ch 069 / 069.03; ch 069 / 069.04].
+- [ADVANCED] **Manshoon pursuit** — The second Manshoon simulacrum confronted the party in Candlekeep's depths, was thrown into a lava pit by Zalthir, promising the real Manshoon's vengeance forever as he fell [ch 070 / 070.02; ch 070 / npcs].
+- [RESOLVED] **Alaundo's last door and the Book of Vile Darkness** — Gyrgum solved the riddle and opened the door, revealing the Book of Vile Darkness, which Daz identified and began to read; the artifact's fate is unresolved [ch 070 / 070.03; ch 070 / 070.04; ch 070 / items].
+- [OPENED] **The Book of Vile Darkness's offer** — The sentient book offered Daz knowledge of himself or knowledge of how to defeat the demons; Daz chose the demons and received information about Underdark events, though the narrator cannot be trusted [ch 070 / 070.04].
+- [ADVANCED] **Alaundo's prophecies** — Edvaldo smashed two of the six remaining prophecy crystals, and Gyrgum secured the four survivors; the party cannot walk away from Candlekeep with such artifacts unnoticed [ch 070 / 070.03; ch 070 / items; ch 070 / 070.04].
+- [OPENED] **Edvaldo's mission** — The doppelganger served Manshoon, revealed as more than an ordinary Reader; he fled toward the anti-magic barrier after failing to get the book [ch 070 / 070.03; ch 070 / npcs].
+- [ADVANCED] **Candlekeep defense** — Manshoon breached Candlekeep with a Staff of Power, and the surviving Avowed Readers are expected to arrive and would not permit artifacts to disappear unnoticed [ch 070 / 070.01; ch 070 / 070.04].
+- [OPENED] **Destroyed prophecy implications** — Two of Alaundo's prophecies were destroyed by Edvaldo, and the remaining four crystals' prophecies may concern the party [ch 070 / 070.03; ch 070 / npcs].
+
+EVIDENCE OF THE LAST CHUNK ONLY (chapters 070-070), for the current state:
+
+
+======== CHAPTER 070 (070-session-untitled.md) ========
+
+# Chapter 70 
+
+Date: 2026-09-28
+
+## Scenes
+
+### 070.01 The Riddle of the Door
+
+Before play resumed, the GM supplied a missed piece of bookkeeping from the defeated simulacrum: Daz recovered a legendary black Robe of the Archmagi. He could wear it immediately for style, but its powers required attunement at the next long rest and might require replacing an existing attuned item.
+
+Manshoon explained that he had spent staggering amounts of magic and a Staff of Power breaching Candlekeep after the party disrupted his plans involving Alkrist. Instead of arriving at full strength and simply destroying them, he had been reduced to bargaining. Worse still for him, Alaundo had left what Manshoon called a practical joke: the final door could not be forced. Its inscription read, “To the last door, I gave no lock, for a lock is a promise that a thing can be stolen. I gave it a question instead.” The question was, “What is consumed to make light? Say the answer in the dark.” Opening it required a verified Reader to speak the correct answer once, in darkness, freely and with genuine intent. Manshoon passed the party a note on which he had written the disappointing solution: a candle.
+
+#### The party confronts a second Manshoon simulacrum in the depths of Candlekeep, who offers a deal involving ancient prophecies and a locked door.
+
+- Manshoon appears frustrated, tired, and angry but unnervingly patient, as though none of the complications truly surprise him.
+- The inscription upon the door reads:
+
+  > “To the last door, I gave no lock, for a lock is a promise that a thing can be stolen. I gave it a question instead.”
+  > — Alaundo's inscription
+
+- Manshoon presents the riddle: “What is consumed to make light? Say the answer in the dark,” explaining that a verified Reader must speak the correct answer once, in darkness, freely and with genuine intent.
+- He claims that opening the door depends upon two things he failed to anticipate: the presence of a Reader and that Reader's willingness to give him the gift of opening it.
+- The answer can only be spoken effectively when the Reader means it; merely saying the word without the necessary intent will not satisfy the enchantment.
+- Rather than risk speaking it himself, Manshoon writes the answer on a piece of paper and passes it to the party: a candle.
+- Zalthir and Gyrgum find the answer disappointingly obvious.
+- Manshoon explains that he used staggering amounts of magic and a Staff of Power to breach Candlekeep after the party disrupted his plans with Alkrist:
+
+  > “Instead of arriving here with all of my power, which with which I could have wiped you off, I would have been, I am stuck here negotiating with you.”
+  > — Manshoon
+
+- The party debates whether to trust a former leader of the Zhentarim who once made a bargain with Bane and attempted to conquer the world.
+
+### 070.02 Zalthir Grapples the Simulacrum
+
+The dragon's ten-minute anti-magic field had already been active for six minutes, so time was running short.
+
+Before any decision could be made, Zalthir had heard enough. Saying, “Before you say, before you say it, I want to punch him,” he struck Manshoon and seized the simulacrum in a powerful grapple. At that moment, the supposed Avowed Reader whom the party had left tied up appeared at the top of the stairs. He had escaped his bonds by changing shape and now stood revealed as Edvaldo, a featureless and deeply unsettling doppelganger.
+
+Edvaldo warned the group that the real Manshoon had installed a fail-safe in his magical duplicate. If the simulacrum died, he would explode; if that happened inside the warded chamber, the blast would trigger the numerous glyphs of warding and produce a catastrophic chain reaction. The simulacrum tried to discourage Zalthir by promising that killing him would earn the real Manshoon's vengeance forever. Zalthir observed that the party had already killed one copy and assumed Manshoon's enmity was a given.
+
+Undeterred, Zalthir made a split-second decision. Using his extraordinary speed, he hauled the screaming simulacrum out of the room, down the stairs, past Edvaldo and the bones of a dead owlbear, and across the bridge over the lava pit. Just before throwing Manshoon over the edge, Zalthir realized that he did not know whether the simulacrum's death might also trigger the destruction of the prophecy gems. He accepted the risk anyway: “Yeah, no, I let him go. I toss him over the edge.” Manshoon's promises of revenge echoed upward before he vanished into the molten rock below.
+
+#### Zalthir interrupts Manshoon's negotiation with a sudden physical attack, triggering a chaotic confrontation.
+
+- As Gyrgum examines Manshoon's written answer, Zalthir interrupts:
+
+  > “Before you say, before you say it, I want to punch him.”
+  > — Zalthir
+
+- Zalthir lands the blow and automatically converts the strike into a grapple, seizing the Manshoon simulacrum before he can complete his plan.
+- The individual previously exposed as more than an ordinary Reader appears at the top of the stairs despite having been securely tied up.
+- He reveals himself as a doppelganger in a pale, nearly featureless humanoid form. He escaped the ropes by changing into a smaller, thinner shape.
+- The doppelganger shouts, “Don't do anything stupid,” then warns:
+
+  > “If you kill him, this place will blow up.”
+  > — Edvaldo
+
+- Even Manshoon appears startled by the warning and asks what Edvaldo means.
+- Edvaldo explains that the real Manshoon expected his simulacrum either to succeed or die trying. The duplicate therefore carries a fail-safe that will make it explode when killed.
+- The explosion itself is not the greatest danger. The chamber is covered in glyphs of warding, and the simulacrum's detonation would trigger them in a catastrophic chain reaction.
+- The simulacrum warns Zalthir that killing him will earn the real Manshoon's vengeance forever and insists everyone would be happier if the party simply surrendered the book.
+- Zalthir is unmoved:
+
+  > “We already killed one of you. I figure it's a good given at this point.”
+  > — Zalthir
+
+- Zalthir decides to drag the grappled simulacrum out of the room toward the lava pit to prevent a localized catastrophe.
+- Using his exceptional monk speed, Zalthir dashes out of the room, past Edvaldo on the stairs and the remains of a dead owlbear, carrying the screaming simulacrum.
+- His movement is so extraordinary that he can carry Manshoon down the stairs, out of the tower, and to the lava within a single burst of action.
+- Zalthir deliberately carries the simulacrum into the dragon's anti-magic field before approaching the magma.
+- At the edge, Zalthir realizes that no one knows how Manshoon intended to destroy the prophecy crystals. Killing him might activate a dead-man switch and destroy the gems.
+- Manshoon screams that he wants only to pass through the door and has nothing personally against the party.
+- Zalthir accepts the uncertainty:
+
+  > “Yeah, no, I let him go. I toss him over the edge.”
+  > — Zalthir
+
+- The simulacrum had not anticipated that Zalthir would actually do it and has no effective reaction available. He promises that Manshoon will take revenge as he falls into the lava.
+
+### 070.03 Edvaldo's Desperate Gambit and the Opening of the Door
+
+With Manshoon gone, Edvaldo descended into panic. A decade of planning involving Alkrist, the breached wards, and an intended army had collapsed within sight of its goal. The doppelganger snatched up a piece of the dead owlbear's remains and smashed two of the prophecy crystals, threatening to destroy the rest unless someone opened the door for his master. Daz pointed out that destroying the very leverage Edvaldo needed was unlikely to motivate the party, but the terrified assassin was caught between the adventurers and a master who did not tolerate failure.
+
+Gyrgum, exhausted by the prolonged standoff and done waiting for a better moment, simply spoke the answer aloud with genuine intent: “A candle.” The ancient door swung open. It had never needed force, nor even a clever answer; it had required a verified Reader to speak the correct answer once, in darkness, freely and with genuine intent. Gyrgum was almost disappointed: “Oh, it worked. First of all, I'm surprised. I mean, that's the dumbest answer I can ever think of.”
+
+Beyond the door lay a dark, quiet room, and resting on a podium within it was a single book. Daz moved instantly to secure it before Edvaldo could reach it, using Misty Step to appear beside the podium. Recognizing the danger, he did not immediately touch the volume. Instead, he created a Minor Illusion in which his hand descended, the book sparkled, and the artifact collapsed into a large pile of ash. The false ashes concealed the real book, and Edvaldo believed the deception.
+
+Thorin stepped between Edvaldo and the remaining gems and used a Menacing Attack with Dawnbringer to frighten the doppelganger. Zalthir returned from the lava pit, punched and grappled Edvaldo, and dragged him back toward the stairs. Edvaldo changed into a halfling in an attempt to escape the hold, then fled along the only path that did not require him to approach Thorin. Gyrgum seized the four surviving prophecy crystals, declaring that enough people had threatened the party with them.
+
+#### With Zalthir gone, Edvaldo smashes prophecy crystals to force the party's hand, but Gyrgum ends the standoff by solving the riddle.
+
+- With Zalthir carrying Manshoon away, Edvaldo assesses his position: he cannot defeat the party, they are likely to kill him, and his master does not tolerate failure.
+- Edvaldo, panicked and desperate, smashes two of the prophecy crystals using a piece of debris from the dead owlbear, threatening to destroy the rest unless the party opens the door.
+- The crystals prove physically delicate enough to be shattered by thrown debris.
+- Edvaldo is trapped between two likely deaths: execution by the party or punishment by Manshoon. His only hope is to force the door open, obtain the book, and escape.
+- Daz points out that smashing the crystals is not persuasive:
+
+  > “Smashing the crystals isn't going to help. That's not going to motivate us to open the door.”
+  > — Daz
+
+- The party recognizes that Edvaldo is panicking after watching a dragonborn monk carry a powerful wizard away and dump him into lava.
+- Gyrgum, tired of the prolonged standoff, decides to end it:
+
+  > “I say slowly and clearly, a candle.”
+  > — Gyrgum
+
+- Gyrgum gives the answer sincerely. He is curious about whether the enchantment will work, curious about what is behind the door, and simply tired of waiting.
+- As Gyrgum summarizes the situation:
+
+  > “We just did our own murder. I mean, let's. Where's the payoff?”
+  > — Gyrgum
+
+- The door opens, not merely because of the word spoken, but because Gyrgum freely gave the answer as required by the enchantment.
+- Gyrgum reacts with surprise and disappointment at the simplicity of the solution:
+
+  > “Oh, it worked. First of all, I'm surprised. I mean, that's the dumbest answer I can ever think of.”
+  > — Gyrgum
+
+- Inside the dark room, a single book is revealed resting on a podium.
+- Edvaldo becomes ecstatic. With the door open, he believes he can still seize the book, redeem himself in Manshoon's eyes, and find some magical means of escape.
+- Daz uses Misty Step to instantly teleport to the book's side, reaching it before Edvaldo can.
+- Daz inspects the book's title, binding, age, and magical significance without immediately touching it.
+- Thorin stands between Edvaldo and the remaining crystals. Frustrated by the destruction of Alaundo's lost prophecies, he attacks with Dawnbringer.
+- One of Thorin's strikes lands, and Thorin's Menacing Attack leaves Edvaldo frightened. Thorin's position prevents the doppelganger from willingly approaching the remaining crystals.
+- Zalthir returns from the lava pit, punches and grapples Edvaldo, then drags him downstairs and away from both the chamber and the prophecy gems.
+- Edvaldo protests:
+
+  > “Do you have any idea what you have done?”
+  > — Edvaldo
+
+- Zalthir answers that the two simulacra made the scale of Manshoon's planning clear.
+- Edvaldo insists:
+
+  > “All you had to do was give us the damn book.”
+  > — Edvaldo
+
+- Zalthir refuses:
+
+  > “Right. Yeah, we're not doing that.”
+  > — Zalthir
+
+- Edvaldo uses his shapeshifting ability to become a halfling, making himself harder to hold, then disengages and runs.
+- Frightened of Thorin, Edvaldo cannot take the direct route back upstairs. His only available escape leads toward the anti-magic barrier.
+- Gyrgum secures the four surviving prophecy crystals to prevent further destruction, exasperated that multiple enemies have now used them as leverage.
+- Gyrgum prepares a Guiding Bolt to strike Edvaldo if he makes another move toward the gems.
+
+### 070.04 The Book of Vile Darkness
+
+Daz, standing before the concealed book, recognized it immediately. His knowledge of history and the arcane left no room for doubt: this was the Book of Vile Darkness, a sentient artifact of cosmic evil said to have been written by the Archlich Vecna himself, a being so profoundly wicked that even the Drow used his name to frighten their children. The book was a physical manifestation of cosmic wickedness and could not be permanently erased while evil continued to exist.
+
+Daz considered the danger carefully. He did not want newfound corruption to turn him against his friends, but his confidence, curiosity, and chaotic-neutral belief in maintaining balance pushed him onward. Unwilling to touch the book directly, he used a spectral hand to carefully turn its pages. His formidable willpower held firm against the corruption radiating from within, avoiding consequences that might otherwise have been dire.
+
+Then the book spoke. Its sentient voice offered Daz a choice: knowledge of himself, or knowledge of how to defeat the demons threatening the world. Daz believed that self-knowledge was something a person had to earn independently, while the demons were the urgent problem facing everyone. He chose the demons. The book began to reveal information connected to events in the Underdark—information that seemed genuinely useful but came from a narrator whose motives could not be trusted.
+
+The session ended with several consequences still unfolding. The last surviving Avowed Readers were expected to arrive within minutes, delighted that the hidden books had been found but unlikely to permit the party to carry away artifacts of extraordinary power unnoticed. The group reflected on the irrevocable choices they had made: Manshoon had been thrown into lava, two prophecies had been destroyed, Gyrgum had opened the last door, and Daz had begun reading one of the most evil books in existence.
+
+#### Daz investigates the legendary artifact found behind the secret door, narrowly avoiding its corrupting influence.
+
+- Daz initially refuses to touch the book, despite standing directly beside it:
+
+  > “I'm not going to touch it just yet because I kind of know how bad that is.”
+  > — Daz
+
+- Daz casts Minor Illusion to make it appear as though he reaches down and touches the artifact, causing it to sparkle and collapse into a large pile of ash.
+- The illusory ashes obscure the actual book from everyone looking through the doorway.
+- Edvaldo fails to recognize the illusion and believes the Book of Vile Darkness has been destroyed.
+- Daz identifies the artifact as the Book of Vile Darkness through his exceptional knowledge of both history and arcana.
+- He recognizes it as a physical manifestation of cosmic evil written, or purportedly written, by the Archlich Vecna.
+- Vecna is remembered as an Archlich who ascended to godhood and orchestrated multiple plots threatening the entire multiverse. He is so infamous that even Drow parents invoke his name to frighten children.
+- Daz recalls that the book cannot be permanently destroyed as long as the concept of evil exists.
+- Zalthir teasingly asks whether Daz is tempted to read it and embrace his evil side. Daz instead worries that corruption might cause him to harm his friends without fully considering the consequences.
+- Daz describes himself as chaotic neutral. He values balance rather than the absolute triumph of good or evil and wonders whether knowledge within the book might help prevent demonic power from overwhelming that balance.
+- His intelligence and arrogance also make him confident enough to believe he might extract useful information without being consumed by it.
+- Using a spectral Mage Hand to avoid physical contact, Daz begins to flip through the sentient book's pages while keeping his actions hidden behind the illusory ashes.
+- Daz resists the book's malevolent influence through sheer willpower. His avoidance of physical contact and his successful resistance spare him from several potentially severe outcomes.
+- Daz discovers that the book is not merely enchanted but self-aware. A sentient voice addresses him:
+
+  > “Do you want to know something about yourself or do you want to know something about how to defeat the demons?”
+  > — The Book of Vile Darkness
+
+- Daz chooses to seek information on the demons:
+
+  > “I think he would ask about the demons because I think Daz believes that knowing yourself is something that you have to do on your own.”
+  > — Daz
+
+- He also recognizes that personal revelation may not help solve the urgent demonic crisis.
+- The book begins revealing information about events in the Underdark. The knowledge appears useful, but Daz receives the distinct impression that its narrator cannot be trusted.
+- The exact prophecy and information learned are left to be resolved when the party reconvenes.
+- The surviving Avowed Readers are expected to arrive shortly, pleased that the hidden books have been found.
+- The party is warned that they will not be able to walk away with artifacts of such extraordinary power—especially the Book of Vile Darkness—without Candlekeep's remaining authorities noticing.
+- The session ends with Gyrgum observing:
+
+  > “We made a few irrevocable choices in this one.”
+  > — Gyrgum
+
+- He summarizes two of the most consequential:
+
+  > “Yes, we threw Manshoon into the pit, and I opened the door.”
+  > — Gyrgum
+
+## Memorable Moments
+
+**Zalthir interrupts Manshoon's monologue with a blunt declaration of intent.**
+
+> “Before you say, before you say it, I want to punch him.”
+> — Zalthir
+
+*The punch becomes a grapple, instantly turning Manshoon's carefully controlled negotiation into chaos.*
+
+**Zalthir uses his extraordinary monk speed to carry the screaming Manshoon simulacrum out of the tower and hurl him into the lava pit.**
+
+> “Yeah, no, I let him go. I toss him over the edge.”
+> — Zalthir
+
+*Even the possibility that Manshoon's death might destroy the prophecy crystals does not stop Zalthir from accepting the risk.*
+
+> “A candle.”
+> — Gyrgum
+
+*Gyrgum, exhausted by the prolonged standoff with two Manshoon simulacra and a doppelganger, flatly speaks the answer to Alaundo's grand riddle and opens the ancient door.*
+
+> “Oh, it worked. First of all, I'm surprised. I mean, that's the dumbest answer I can ever think of.”
+> — Gyrgum
+
+*The enchantment cared less about the cleverness of the answer than the sincerity with which a Reader gave it.*
+
+**Daz identifies the book in the inner chamber as the Book of Vile Darkness, a sentient artifact of cosmic evil written or purportedly written by the Archlich Vecna.**
+
+> “I'm not going to touch it just yet because I kind of know how bad that is.”
+> — Daz
+
+*The party fought through two Manshoon simulacra and a doppelganger to reach the room, only to find one of the most dangerous artifacts in existence.*
+
+**The sentient Book of Vile Darkness speaks to Daz, offering him a choice.**
+
+> “Do you want to know something about yourself or do you want to know something about how to defeat the demons?”
+> — The Book of Vile Darkness
+
+*Daz had used Mage Hand to avoid touching the book and resisted its corrupting influence before its sentience revealed itself.*
+
+**Daz chooses knowledge of the demons over knowledge of himself.**
+
+> “I think he would ask about the demons because I think Daz believes that knowing yourself is something that you have to do on your own.”
+> — Daz
+
+*Faced with an offer of personal revelation, Daz instead chooses information relevant to the demonic crisis, though he knows the book's narrator cannot be trusted.*
+
+**Edvaldo, already exposed as more than an ordinary Reader, dramatically reveals his doppelganger nature at the worst possible moment—just as Zalthir thinks he has the situation under control.**
+
+> “If you kill him, this place will blow up.”
+> — Edvaldo
+
+*The party had assumed the suspicious prisoner was secured, only for him to escape by changing shape and appear at the top of the stairs with a warning about Manshoon's explosive fail-safe.*
+
+**Edvaldo smashes two of Alaundo's prophecy crystals in a panic, threatening to destroy the rest unless the party opens the door for his master.**
+
+> “All you had to do was give us the damn book.”
+> — Edvaldo
+
+> “Right. Yeah, we're not doing that.”
+> — Zalthir
+
+*Desperate and terrified after watching Manshoon get thrown into lava, Edvaldo resorts to destroying irreplaceable prophecies as leverage, but the party remains unmoved.*
+
+**The party acknowledges just how many permanent choices they made in a single confrontation.**
+
+> “We made a few irrevocable choices in this one.”
+> — Gyrgum
+
+> “Yes, we threw Manshoon into the pit, and I opened the door.”
+> — Gyrgum
+
+*By the end of the session, one Manshoon was in the lava, two prophecies had been destroyed, the last door stood open, and Daz was reading the Book of Vile Darkness.*
+
+---
+
+*Exported from GMAssistant on 2026-09-30*
+
+## NPCs
+
+### Manshoon (Simulacrum)
+
+A magical duplicate of the infamous wizard Manshoon, dressed in shabbier clothes than his predecessor. Like all simulacra, he was fixed at the power and knowledge possessed at his creation and could never grow stronger or learn higher-level magic. Academic, theatrical, and given to evil-overlord exposition, he appeared frustrated, exhausted, and annoyed while remaining unnervingly patient.
+
+Manshoon had spent staggering magical resources and a Staff of Power breaching Candlekeep after the party disrupted his earlier plans with Alkrist. His objective was not Alaundo's prophecies but the Book of Vile Darkness behind the last door. He used the prophecy gems as leverage because the door required a willing Reader and could not be opened by force.
+
+Zalthir interrupted his negotiation, grappled him, and carried him into the dragon's anti-magic field. The simulacrum warned that killing him would bring the real Manshoon's vengeance, but Zalthir threw him into the lava pit anyway.
+
+### Edvaldo
+
+A doppelganger who had been posing as an Avowed Reader. The party had already exposed him as suspicious when he survived more damage than an ordinary low-level Avowed priest should have been able to endure. Although tied securely, he escaped by changing into a smaller or thinner form.
+
+The party learned his true nature when he appeared at the stairs in a pale, featureless doppelganger form. He served Manshoon and warned the party about the explosive fail-safe protecting the simulacrum. When Manshoon was carried away, Edvaldo found himself caught between a party likely to kill him and a master who would punish his failure.
+
+In a panic after Manshoon's disposal, he smashed two prophecy crystals with debris from a dead owlbear. He then tried to force the party to open the door, only to be deceived by Daz's illusion that the book had turned to ash. Thorin struck and frightened him, while Zalthir grappled and dragged him toward the stairs. Edvaldo shapeshifted into a halfling and fled toward the anti-magic barrier along the only route not blocked by Thorin.
+
+### Alaundo
+
+A legendary seer whose prophecies were stored in ten gems; four had already played, leaving the six unplayed stones Manshoon threatened to destroy. His prophecies consistently come true and tend to be clustered around related events, suggesting that several of the remaining stones might concern the party.
+
+One prophecy foretold Eldeth Feldrun's return to a hall of stone bearing the names of demons, followed by deep dwarves summoning Thorin, Zalthir, Daz, and Dawnbringer to an ancient forge. Alaundo also designed the last door's unusual protection, substituting a question and an act of freely given intent for a conventional lock.
+
+### Vecna
+
+An ancient and powerful Archlich who ascended to godhood, identified as the author or purported author of the Book of Vile Darkness. Described as profoundly evil even by the standards of evil people, Vecna has been behind several cosmic plots threatening the entire multiverse. His reputation is so terrible that even Drow use his name to frighten their children.
+
+## Locations
+
+### Candlekeep
+
+A great library fortress where the party has been following prophecies of doom and internal strife among the Readers. Four of its nine leading Readers had already been eliminated, weakening the institution and helping Manshoon justify expending enormous magical resources to breach its defenses.
+
+The party descended through a hidden stairway that had gone undiscovered for more than 150 years. Candlekeep's surviving Avowed Readers were expected to arrive shortly after the session's end and would not allow artifacts of extraordinary power to disappear unnoticed.
+
+### The Volcanic Cavern and Obsidian Tower
+
+A hidden underground chamber beneath Candlekeep featuring magma, obsidian, and basalt stone, containing a central tower. The setting resembles an exaggerated fantasy landscape, with a bridge spanning molten rock on the approach to the tower.
+
+The party made a bargain with a dragon here, gaining ten minutes of protection from an anti-magic field. Six minutes had elapsed by the start of this session. The party fought two Manshoon simulacra within the tower and discovered the inner book chamber at its summit.
+
+### The Lava Pit
+
+A cavernous drop filled with molten rock located just outside the tower. Zalthir carried the Manshoon simulacrum through the anti-magic barrier and disposed of him by tossing him over the edge.
+
+Immediately before releasing Manshoon, Zalthir considered whether killing the simulacrum might trigger the destruction of the prophecy crystals. He accepted the risk and threw him into the magma anyway.
+
+### The Inner Book Chamber
+
+A dark, hidden room behind a magically locked door deep within the tower beneath Candlekeep. The door could not be forced and opened only when a verified Reader spoke the correct answer once, in darkness, freely and with genuine intent.
+
+The chamber contained the Book of Vile Darkness on a podium. Numerous magical wards throughout the surrounding area meant that an explosion inside the room could trigger a catastrophic chain reaction.
+
+## Items
+
+### Robe of the Archmagi
+
+A legendary black robe recovered from the first defeated Manshoon simulacrum. It is a powerful garment intended for high-level magic users that requires attunement to function. Daz picked it up and wore it for style, though its full benefits await a long rest.
+
+The robe uses the newer form of the item and is not mechanically restricted by alignment or color. Daz will need to review his existing attuned equipment before gaining its powers, potentially giving up another item such as his Ring of Protection or spectacles.
+
+### Staff of Power
+
+A potent magical staff used by Manshoon to burn through the magical shields protecting Candlekeep. Combined with the expenditure of staggering amounts of his own magic, it allowed him to breach the library's defenses after the party disrupted his plans involving Alkrist.
+
+The cost left the simulacrum unable to confront the party at full strength and forced him into negotiation.
+
+### Prophecy Crystals
+
+Six delicate gems containing the lost prophecies of Alaundo. Manshoon used them as leverage to negotiate with the party, although he cared only about the book beyond the door.
+
+Edvaldo smashed two of them during the confrontation by throwing a piece of the dead owlbear's remains. Gyrgum secured the four surviving crystals to prevent further destruction. Their unrevealed prophecies may concern the party because Alaundo's related predictions tend to be grouped together.
+
+### Dawnbringer
+
+Thorin's sentient sword, referred to in Alaundo's prophecy as the “bright blade.” It was used to strike Edvaldo during the confrontation and is described as displeased with the chaotic events unfolding around it.
+
+Thorin's Menacing Attack with Dawnbringer frightened Edvaldo, allowing him to stand between the doppelganger and the remaining prophecy stones and restrict his movement.
+
+### Book of Vile Darkness
+
+A legendary and sentient artifact of pure cosmic evil, found in the inner book chamber behind the last door. Identified by Daz as having been written or purportedly written by the Archlich Vecna, it is a physical manifestation of cosmic wickedness that cannot be permanently destroyed as long as evil exists.
+
+Daz concealed it behind an illusion of ashes and manipulated its pages with Mage Hand rather than touching it. The book attempted to influence him, but he resisted. It then offered him a choice between personal knowledge and knowledge of how to defeat the demons.
+
+After Daz chose the demons, the artifact began communicating information concerning events in the Underdark. The information appeared useful, but the book's sentience and origin made its trustworthiness deeply suspect.
+
+## Spells
+
+### Misty Step
+
+Used by Daz as a bonus action to instantly teleport into the inner book chamber, reaching the Book of Vile Darkness before Edvaldo could get to it. The spell allowed him to bypass the contested doorway and position himself directly beside the podium.
+
+### Minor Illusion
+
+Cast by Daz to create a false image of his hand touching the Book of Vile Darkness, followed by the book sparkling and turning into a pile of ash. The illusory ashes concealed the real artifact from observers outside the room.
+
+Edvaldo failed to recognize the deception and believed the book had been destroyed, reducing his immediate incentive to rush the podium.
+
+### Mage Hand
+
+Used by Daz to manipulate and flip through the pages of the Book of Vile Darkness without physically touching the corrupting artifact. This precaution, born of his knowledge of its dangerous nature, helped him avoid potentially severe consequences while investigating it.
+
+### Guiding Bolt
+
+Prepared by Gyrgum as a readied action to strike Edvaldo if he made any move toward the remaining prophecy crystals. Gyrgum changed his initial plan to guard the book once he realized Edvaldo could still destroy the party's remaining sources of prophecy.
+
+### Glyph of Warding
+
+Numerous magical traps warding Candlekeep's dangerous tomes throughout the room. Edvaldo warned the party that if the simulacrum exploded inside the room, these glyphs would trigger a catastrophic chain reaction.
+
+The glyphs were not themselves tied directly to the simulacrum's death. Manshoon's fail-safe would cause the initial explosion, which would then activate the surrounding wards. This is why Zalthir dragged the simulacrum out of the room and into the anti-magic field before disposing of him.
+
+
+OUTLINE: write exactly this one `##` heading and its body, nothing else at that level:
+
+## Active Quests & Open Threads

@@ -1,0 +1,73 @@
+## Events
+- The party takes a short rest beside the newly healed Tadric; Daz restores himself from injuries using hit dice. [ch 064 / 064.01]
+- Tadric surrenders the genuine High Tower key (#2) but refuses to retire, citing his experience facing Moziqodo as motivation to continue. [ch 064 / 064.01]
+- Gyrgum permits Tadric to accompany the party, noting he possesses resurrection magic as a contingency. [ch 064 / 064.01]
+- The endless chant of prophecies in Candlekeep abruptly and completely stops, startling Tadric. [ch 064 / 064.01]
+- Tadric reminds the party that Sylvira must be informed of Moziqodo's death; the party defers this task to the Ember Grapple later. [ch 064 / 064.01]
+- The party moves toward the High Tower with Tadric guiding the way. [ch 064 / 064.01]
+- Gyrgum casts Bless on the party before departing. [ch 064 / 064.02]
+- The party discovers a Watcher’s corpse on an indoor walkway, killed within the last half hour by a crossbow bolt. [ch 064 / 064.02]
+- Daz identifies the bolt’s fletching as foreign, confirming outside attackers passed through the area and continued toward the tower. [ch 064 / 064.02]
+- The party enters the High Tower lobby to find two Zhentarim raiders looting specific books according to a manifest. [ch 064 / 064.03]
+- A'lai Aivenmore is spotted on a landing above, waiting for Moziqodo, unaware the demonspawn is dead. [ch 064 / 064.03]
+- Gyrgum attempts a surprise Guiding Bolt on A'lai, which fails to penetrate his Mage Armor. [ch 064 / 064.03; ch 064 / 064.04]
+- Zalthir and Glabbagool engage A'lai in melee, dealing damage. [ch 064 / 064.04]
+- Daz casts Maximilian's Earthen Grasp; A'lai counters the first casting. [ch 064 / 064.04]
+- Daz casts the spell again; A'lai risks the save, fails, takes damage, and is restrained. [ch 064 / 064.04]
+- A'lai uses Misty Step to escape restraint, forfeiting a higher-level spell slot. [ch 064 / 064.04]
+- A'lai unleashes Arcane Bursts, wounding Daz and Zalthir heavily. [ch 064 / 064.04]
+- A'lai pauses combat to compliment the party’s thoroughness and explain his motive: preserving his academic chair from Janussi’s ultimatum. [ch 064 / 064.04]
+- A'lai reveals he has been removing books for 11 years on lists delivered by a courier with a metal hand, serving Manshoon. [ch 064 / 064.04]
+- The party identifies Manshoon via history checks as a legendary Zhentarim wizard associated with the Moonsea. [ch 064 / 064.04]
+- A'lai attempts to smash the sapphire artifact to trigger an effect; Daz uses Telekinesis to seize it from A'lai’s hand. [ch 064 / 064.04]
+- Daz feigns retreat, secretly passing the sapphire to Gyrgum via sleight of hand; A'lai believes Daz fled with it. [ch 064 / 064.04]
+- Enraged, A'lai knocks Zalthir unconscious with four Arcane Burst attacks. [ch 064 / 064.04]
+- Glabbagool positions himself over Zalthir to protect and stabilize him. [ch 064 / 064.04]
+- Thorin engages a Zhentarim raider, dealing damage with Dawnbringer and a Menacing Attack (resisted). [ch 064 / 064.04]
+- Gyrgum casts Tasha's Caustic Brew, killing one raider with acid damage; the other survives coated in acid. [ch 064 / 064.04]
+- Gyrgum’s concentration on the acid spell ends the Bless effect. [ch 064 / 064.04]
+
+## Concluded
+- The short rest beside Tadric concluded with the party fully prepared for the confrontation. [ch 064 / 064.01]
+- The investigation of the dead Watcher concluded by identifying the attackers as outsiders moving toward the High Tower. [ch 064 / 064.02]
+- The looting action of the first Zhentarim raider concluded with his death via Tasha's Caustic Brew. [ch 064 / 064.04]
+
+## Threads
+- [ADVANCED] **Sylvira's Obligation** — The party acknowledged the need to inform Sylvira of Moziqodo's death but explicitly deferred the task to the Ember Grapple. [ch 064 / 064.01]
+- [ADVANCED] **Candlekeep Prophecies** — The Endless Chant fell completely silent, signaling a major magical or narrative shift to Tadric and the party. [ch 064 / 064.01]
+- [ADVANCED] **A'lai's Motive** — Revealed that A'lai's crimes stemmed from a desperate desire to keep his academic chair after Janussi threatened to remove him. [ch 064 / 064.04]
+- [OPENED] **Manshoon's Influence** — A'lai confessed to working for Manshoon for 11 years, with lists delivered by a courier with a metal right hand. [ch 064 / 064.04]
+- [ADVANCED] **Sapphire Artifact** — The party prevented A'lai from smashing the gem; Gyrgum now possesses it alongside the genuine key. [ch 064 / 064.04]
+
+## NPC Status
+- Tadric | Alive | With the party in the High Tower Lobby | Heroic and anxious, insisting on helping despite danger [ch 064 / 064.01; ch 064 / 064.03]
+- A'lai Aivenmore | Unknown | High Tower Landing (alive, combat ongoing) | Desperate, self-preserving, and furious at the theft of the sapphire [ch 064 / 064.04]
+- Zalthir | Alive | High Tower Lobby (unconscious) | Defeated, protected by Glabbagool [ch 064 / 064.04]
+- Zhentarim Raider 1 | Dead | High Tower Lobby | Killed by acid damage [ch 064 / 064.04]
+- Zhentarim Raider 2 | Alive | High Tower Lobby | Coated in acid, taking damage over time [ch 064 / 064.04]
+- Glabbagool | Alive | High Tower Lobby (over Zalthir) | Protective and tactical [ch 064 / 064.04]
+
+## World
+- [LOCATION] **High Tower Lobby** — Contains bookshelves and a landing; the sealed inner door requires both High Tower keys to open. [ch 064 / 064.03; ch 064 / locations]
+- [LOCATION] **Walkway to High Tower** — Scene of a Watcher's murder; evidence of foreign attackers passing through recently. [ch 064 / 064.02; ch 064 / locations]
+- [FACTION] **Zhentarim** — Operatives (raiders) are present in Candlekeep looting books according to a specific manifest; linked to Manshoon. [ch 064 / 064.03; ch 064 / 064.04]
+- [NPC] **Manshoon** — Identified as the hidden mastermind behind 11 years of book thefts from Candlekeep; associated with Zhentil Keep and the Moonsea; has died more than once. [ch 064 / 064.04; ch 064 / npcs]
+- [ITEM] **Real High Tower Key (#2)** — Genuine key held by Gyrgum; required with key #1 to open the inner door. [ch 064 / 064.01; ch 064 / items]
+- [ITEM] **Sapphire Artifact** — Magical gem held by Gyrgum; smashing it triggers an effect related to the High Tower keys. [ch 064 / 064.04; ch 064 / items]
+- [ITEM] **Written Manifest** — A list used by Zhentarim raiders to target specific books for removal, corroborating A'lai's confession. [ch 064 / 064.03; ch 064 / items]
+- [THREAT] **Silent Prophecies** — The Endless Chant has stopped completely, an event that has never happened before in Candlekeep's history. [ch 064 / 064.01; ch 064 / locations]
+
+## Party
+- **Party Name**: Ember Grapple (confirmed as current name). [ch 064 / 064.01]
+- **Location**: High Tower Lobby, inside Candlekeep. [ch 064 / 064.03]
+- **Gyrgum**: Holds the genuine High Tower Key #2, the Sapphire Artifact, and Kalan's fake decoy key. Concentrating on Tasha's Caustic Brew. [ch 064 / 064.04; ch 064 / items]
+- **Daz**: Possesses high investigation aptitude ("Sherlock Holmes"); used Telekinesis and sleight of hand; blamed himself for Zalthir's defeat. [ch 064 / 064.02; ch 064 / 064.04]
+- **Thorin**: Wields Dawnbringer (+10 attack bonus); engaged raiders in melee. [ch 064 / 064.04; ch 064 / items]
+- **Intention**: Neutralize A'lai and the remaining raider, then open the sealed High Tower inner door using the keys. [ch 064 / 064.03; ch 064 / 064.04]
+
+## Audit
+- [A430] SHOWN — The Endless Chant falls completely silent. [ch 064 / 064.01]
+- [A443] SHOWN — The party holds the second High Tower key (key #2) and approaches the sealed door. [ch 064 / 064.01; ch 064 / 064.03]
+- [A423] BEGUN — Manshoon is revealed as the mastermind, activating the pursuit thread. [ch 064 / 064.04]
+- [A346] BEGUN — Bookwyrm's name is mentioned in the context of the conspiracy's consequences, though the character is not present. [ch 064 / 064.04]
+- [A369] BEGUN — A'lai's fate is being resolved via combat, but is not yet concluded (dead/escaped). [ch 064 / 064.04]

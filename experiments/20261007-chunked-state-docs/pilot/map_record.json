@@ -1,0 +1,46 @@
+{
+  "wall_secs": 0.0,
+  "workers_per_endpoint": 6,
+  "calls_per_endpoint": {
+    "http://192.168.1.147:8001/v1": 0,
+    "http://192.168.1.121:8001/v1": 0
+  },
+  "chunks": [
+    {
+      "chunk": 1,
+      "chapters": "002-002",
+      "chars": 39304,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "http://192.168.1.147:8001/v1",
+      "kept": {
+        "## Events": 15,
+        "## Concluded": 1,
+        "## Threads": 4,
+        "## NPC Status": 13,
+        "## World": 10,
+        "## Party": 4,
+        "## Audit": 0
+      },
+      "dropped": 20
+    },
+    {
+      "chunk": 2,
+      "chapters": "003-003",
+      "chars": 32977,
+      "secs": 0.0,
+      "cached": true,
+      "endpoint": "http://192.168.1.147:8001/v1",
+      "kept": {
+        "## Events": 17,
+        "## Concluded": 1,
+        "## Threads": 4,
+        "## NPC Status": 9,
+        "## World": 6,
+        "## Party": 6,
+        "## Audit": 0
+      },
+      "dropped": 1
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+## Events
+- The party and a squad of duergar militia engaged a crazed, two-headed stone giant named Rihuud in the streets of Gracklstugh. [ch 013 / 013.01]
+- Two duergar guards enlarged themselves and two unleashed fire sprays, dealing 23 damage to the giant. [ch 013 / 013.01]
+- The giant swung his great club, hitting a duergar for 19 damage and narrowly missing Zalthir. [ch 013 / 013.01]
+- Gyrgum channeled divine energy through his holy symbol, Thorin crit with a short sword and used Action Surge, and Daz cast Magic Missile (6 damage). [ch 013 / 013.01]
+- Thorin made a check (16) and realized the giant had gone mad, not chosen violence, urging non-lethal force. [ch 013 / 013.01; ch 013 / 013.02]
+- The party wore the giant down to 8 hit points using non-lethal attacks, including Zalthir's focus point strike and Thorin's Action Surge. [ch 013 / 013.02]
+- Thorin attempted to intimidate the duergar militia into sparing the giant but failed. [ch 013 / 013.02]
+- The duergar militia, unable to see inside Zalthir's darkness, delivered the killing blow to Rihuud. [ch 013 / 013.02]
+- Thorin spoke funeral words over the body to protect against future giant reprisals. [ch 013 / 013.02]
+- The duergar militia confirmed an increase in chaotic behavior in the city but knew no cause, suggesting the party ask a clan leader. [ch 013 / 013.03]
+- Dorhun, a stone giant apprentice, arrived, identified Rihuud as a comrade who went mad in Cairngorm Cavern, and thanked the party for their attempt to spare him. [ch 013 / 013.03]
+- Dorhun invited the party to Cairngorm Cavern and ordered the reluctant Stone Guard to escort them. [ch 013 / 013.03]
+- Gartokkar Xundorn of the Keepers of the Flame materialized from invisibility, introduced himself, and offered city passes and legal immunity in exchange for future help. [ch 013 / 013.04]
+- Gartokkar explained the Keepers' duty to tend the red dragon Themberchaud, who lights the city's forges. [ch 013 / 013.04]
+- The party gathered information at the Darklake Brewery kiosk, learning from a halfling informant that Deepking Horgar Steelshadow has gone mad with paranoia. [ch 013 / 013.05]
+- The halfling warned that attending faction meetings would label the party as 'soldiers' rather than civilians to rival factions. [ch 013 / 013.05]
+- The party learned the Keepers replace their dragon periodically by raising new ones from eggs, which can be stolen. [ch 013 / 013.05]
+- Captain Errde Blackskull of the Stone Guard intercepted the party, commended their efficiency, and offered them a task to track a derro named Droki. [ch 013 / 013.06]
+- Errde promised 350 gp worth of equipment, safe passage, and protection from drow pursuers in exchange for capturing or killing Droki. [ch 013 / 013.06]
+- Daz rolled an 18 on persuasion, securing an immediate advance of 175 gp worth of equipment per party member. [ch 013 / 013.06]
+- Thorin purchased chain mail and twenty darts from the advance credit; others deferred their choices. [ch 013 / 013.06]
+
+## Concluded
+- The battle with the two-headed stone giant Rihuud ended with the giant's death at the hands of the duergar militia, despite the party's non-lethal efforts. [ch 013 / 013.02]
+- The party gathered intelligence on the political climate of Gracklstugh from the halfling informant at the Darklake Brewery. [ch 013 / 013.05]
+
+## Threads
+- [OPENED] **Stone Giant Conflict** — The party killed a maddened stone giant, Rihuud, but the duergar militia delivered the final blow. Thorin spoke funeral words to mitigate anger. [ch 013 / 013.02]
+- [OPENED] **Gracklstugh Madness** — The party learned that erratic, self-destructive behavior is increasing in the city, straining the clans' militias. [ch 013 / 013.03]
+- [OPENED] **Cairngorm Cavern Visit** — Dorhun invited the party to visit the stone giants' home in Cairngorm Cavern before leaving the city. [ch 013 / 013.03]
+- [OPENED] **Keepers of the Flame Task** — Gartokkar Xundorn offered the party city passes and legal immunity in exchange for attending a meeting by the next day to discuss an unspecified task. [ch 013 / 013.04]
+- [OPENED] **Deepking's Paranoia** — The party learned that Deepking Horgar Steelshadow is suspected of having descended into paranoid madness. [ch 013 / 013.05]
+- [OPENED] **Droki Hunt** — Captain Errde Blackskull tasked the party with tracking, capturing, or killing the elusive derro Droki in the West Cleft District. [ch 013 / 013.06]
+- [OPENED] **Stone Guard Conspiracy** — Errde revealed suspicions of a conspiracy involving the Council of Savants and corrupt clan lairds. [ch 013 / 013.06]
+- [OPENED] **Drow Pursuit** — Errde confirmed she knows drow are hunting the party and offered protection against them. [ch 013 / 013.06]
+- [ADVANCED] **Faction Recruitment** — The party is being courted by both the Stone Guard and the Keepers of the Flame, raising the risk of being marked as soldiers by rival factions. [ch 013 / 013.05; ch 013 / 013.06]
+
+## NPC Status
+- Rihuud | Dead | Gracklstugh streets | Hostile [ch 013 / 013.02]
+- Dorhun | Alive | Departed Gracklstugh streets | Friendly [ch 013 / 013.03]
+- Gartokkar Xundorn | Alive | Unknown (Invited to quarters) | Neutral/Transactional [ch 013 / 013.04]
+- Themberchaud | Alive | Gracklstugh | Indifferent [ch 013 / 013.05]
+- Horgar Steelshadow | Alive | Gracklstugh | Unknown (Mad/Paranoid) [ch 013 / 013.05]
+- Errde Blackskull | Alive | Overlake Hold | Friendly/Transactional [ch 013 / 013.06]
+- Droki | Alive | West Cleft District | Hostile (Target) [ch 013 / 013.06]
+
+## World
+- [LOCATION] **Gracklstugh** — A grim duergar city in the Underdark currently plagued by a wave of citizen madness and paranoid laws, with non-duergar treated as irrelevant civilians if uninvolved. [ch 013 / locations; ch 013 / 013.05]
+- [LOCATION] **Cairngorm Cavern** — The residence of the stone giants in Gracklstugh, where Rihuud went mad while communing with the stone. [ch 013 / locations; ch 013 / 013.03]
+- [LOCATION] **West Cleft District** — A volatile district where the Stone Guard enters only in force; home to the derro Droki. [ch 013 / locations; ch 013 / 013.06]
+- [LOCATION] **Overlake Hold** — The prison and Stone Guard front office where Errde Blackskull conducted her meeting with the party. [ch 013 / locations; ch 013 / 013.06]
+- [FACTION] **Keepers of the Flame** — A clerical order that tends the red dragon Themberchaud to light the city's forges; they claim to be the Deepking's most prized advisors. [ch 013 / 013.04]
+- [FACTION] **Stone Guard** — A militia faction led by Captain Errde Blackskull, currently investigating corruption in the Council of Savants and clan lairds. [ch 013 / 013.06]
+- [FACTION] **Gray Ghosts** — A faction in conflict with the Keepers of the Flame and the Crown, mentioned by the halfling informant. [ch 013 / 013.05]
+- [NPC] **Themberchaud** — A pampered red dragon kept by the Keepers; he is periodically replaced by a new dragon raised from an egg when he becomes too difficult to control. [ch 013 / npcs; ch 013 / 013.05]
+- [NPC] **Horgar Steelshadow** — The Deepking of Gracklstugh, rumored to be suffering from paranoid madness that results in arbitrary laws. [ch 013 / npcs; ch 013 / 013.05]
+
+## Party
+- The party is currently in Gracklstugh, having just finished fighting in the streets and speaking with faction leaders. [ch 013 / end]
+- Thorin purchased Chain Mail (75 gp) and twenty Darts (1 gp total) using his advance credit from the Stone Guard. [ch 013 / items; ch 013 / 013.06]
+- The party possesses a 'limited get-out of jail-free card' from the Keepers of the Flame and an advance of 175 gp worth of equipment credit from the Stone Guard. [ch 013 / 013.04; ch 013 / 013.06]
+- The party intends to decide between the invitations from the Keepers of the Flame and the Stone Guard, while also preparing to visit Cairngorm Cavern. [ch 013 / 013.04; ch 013 / 013.06]
+- Zalthir has an "I know a guy" list contact available for use in Gracklstugh. [ch 013 / 013.04]
+
+## Audit
+- [A9] SHOWN — The party is actively operating within the city of Gracklstugh. [ch 013 / 013.01]
+- [A65] BEGUN — The party has been invited to Cairngorm Cavern but has not yet arrived or met with the leadership. [ch 013 / 013.03]
+- [A91] BEGUN — Captain Errde Blackskull offered the party employment and equipment, but the deal is not yet finalized or fulfilled. [ch 013 / 013.06]
+- [A92] SHOWN — Themberchaud was observed flying over the city, establishing his presence. [ch 013 / 013.05]
+- [A93] BEGUN — Gartokkar Xundorn invited the party to a meeting to discuss a quest, but the meeting has not occurred. [ch 013 / 013.04]
+- [A95] BEGUN — The party accepted the task to hunt Droki but has not yet located or captured him. [ch 013 / 013.06]
+- [A173] SHOWN — The party fought the two-headed stone giant Rihuud, which ended in his death. [ch 013 / 013.01; ch 013 / 013.02]

@@ -1,0 +1,342 @@
+
+######## BASELINE SUPPORTED, CHUNKED NOT (42) — first 42
+
+ITEM: A'lai Aivenmore — first contact (Chapter House)
+  baseline: - "A'lai Aivenmore — first contact (Chapter House)" — `SUPPORTED (ch 57, 057.05)` A'lai pushes for an immediate vote at the council (ch 57, dossier: A'lai Aivenmore).
+  chunked:  - "A'lai Aivenmore — first contact (Chapter House)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Alkrist as killer — party identifies the poisoner
+  baseline: - "Alkrist as killer — party identifies the poisoner" — `SUPPORTED (ch 61, 061.07)` Alkrist confesses to poisoning the book.
+  chunked:  - "Alkrist as killer — party identifies the poisoner" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Alkrist — interview (Drakonoikos)
+  baseline: - "Alkrist — interview (Drakonoikos)" — `SUPPORTED (ch 61, 061.07)` Thorin and Zalthir interview Alkrist; the location is unnamed.
+  chunked:  - "Alkrist — interview (Drakonoikos)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Asha Vandree — junior priestess, potential betrayal of Ilvara
+  baseline: - "Asha Vandree — junior priestess, potential betrayal of Ilvara" — `SUPPORTED (ch 50, 050.03)` Asha negotiates with the party to attack Ilvara.
+  chunked:  - "Asha Vandree — junior priestess, potential betrayal of Ilvara" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Astronomicon Orrery — Limniz clue / Manshoon raiders
+  baseline: - "Astronomicon Orrery — Limniz clue / Manshoon raiders" — `SUPPORTED (ch 67, 067.03)` Sylvira supplies the Mystra's Mantle / Limniz answer and reports three suspicious individuals there; they are not identified as Manshoon's.
+  chunked:  - "Astronomicon Orrery — Limniz clue / Manshoon raiders" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Bell Tower — Polly Pocket cells
+  baseline: - "Bell Tower — Polly Pocket cells" — `SUPPORTED (ch 56, 056.04)` Kalan describes the Bell Tower anti-magic cells as an option; there is no record she was placed there.
+  chunked:  - "Bell Tower — Polly Pocket cells" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Bloppblippodd — kuo-toa archpriest of Deep Father, confrontation
+  baseline: - "Bloppblippodd — kuo-toa archpriest of Deep Father, confrontation" — `SUPPORTED (ch 8, 008.01)` Bloppblippodd accepts the party as sacrifices before her father strikes her down.
+  chunked:  - "Bloppblippodd — kuo-toa archpriest of Deep Father, confrontation" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Bookwyrm — first contact (Chapter House conscription)
+  baseline: - "Bookwyrm — first contact (Chapter House conscription)" — `SUPPORTED (ch 57, 057.05)` Bookwyrm presides over the council that engages the party.
+  chunked:  - "Bookwyrm — first contact (Chapter House conscription)" — `NOT FOUND IN SUMMARIES` - begun, not shown done: Bookwyrm's name is mentioned in the context of the conspiracy's consequences, though the character is not present. [ch 064 / 064.04]
+
+ITEM: Burning Wizard inn — Beregost
+  baseline: - "Burning Wizard inn — Beregost" — `SUPPORTED (ch 56, 056.03)` The party stops at the Burning Wizard Inn.
+  chunked:  - "Burning Wizard inn — Beregost" — `NOT FOUND IN SUMMARIES`
+
+ITEM: City Watch patrol — ooze-rights confrontation (Waterdeep Trades Ward)
+  baseline: - "City Watch patrol — ooze-rights confrontation (Waterdeep Trades Ward)" — `SUPPORTED (ch 55, 055.08)` A guard inspection turns into an ooze-rights debate.
+  chunked:  - "City Watch patrol — ooze-rights confrontation (Waterdeep Trades Ward)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Clan Goldwhisker truce negotiation — Blingdenstone
+  baseline: - "Clan Goldwhisker truce negotiation — Blingdenstone" — `SUPPORTED (ch 39, 039.05)` Daz secures Clan Goldwhisker's cooperation.
+  chunked:  - "Clan Goldwhisker truce negotiation — Blingdenstone" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party learned of the Goldwhisker Clan's exclusion and tensions with the mining coalition, establishing the context for potential negotiation [ch 037 / 037.01].
+
+ITEM: Daral — death or survival (player choice)
+  baseline: - "Daral — death or survival (player choice)" — `SUPPORTED (ch 62, 062.05)` Daral is cured and survives.
+  chunked:  - "Daral — death or survival (player choice)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Daral — first contact (Chapter House)
+  baseline: - "Daral — first contact (Chapter House)" — `SUPPORTED (ch 57, 057.05)` Daral challenges the party's qualifications at the council (ch 57, dossier: Dawnbringer).
+  chunked:  - "Daral — first contact (Chapter House)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Daral — poisoning discovery (Bath House)
+  baseline: - "Daral — poisoning discovery (Bath House)" — `SUPPORTED (ch 59, 059.05)` The party finds Daral reading the poisoned book at the Hearth, not a Bath House.
+  chunked:  - "Daral — poisoning discovery (Bath House)" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party discovers Daral Yashenti is exposed to the midnight tears poison via the book he is reading. [ch 059 / 059.05]
+
+ITEM: Daz / Yvenne scholar arc — Drow Material Culture research (multiple sittings)
+  baseline: - "Daz / Yvenne scholar arc — Drow Material Culture research (multiple sittings)" — `SUPPORTED (ch 56, 056.07)` Daz consults Sister Yvenne; only one sitting is recorded.
+  chunked:  - "Daz / Yvenne scholar arc — Drow Material Culture research (multiple sittings)" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The Daz/Yvenne scholar arc begins with Daz’s disclosure of his history and initial investigation into drow house politics. [ch 056 / 056.07]
+
+ITEM: Drow prisoners escape Velkynvelve — chapter 1
+  baseline: - "Drow prisoners escape Velkynvelve — chapter 1" — `SUPPORTED (ch 4, 004.03)` The party escapes the outpost.
+  chunked:  - "Drow prisoners escape Velkynvelve — chapter 1" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The drow prisoners are planning their escape from Velkynvelve, but it has not yet occurred [ch 002 / 002.05; ch 002 / 002.06]. - begun, not shown done: The drow prisoners' escape from Velkynvelve has begun with the guard tower skirmish [ch 003 / 003.01].
+
+ITEM: Eldeth farewell — Mithral Hall outskirts (Day 3)
+  baseline: - "Eldeth farewell — Mithral Hall outskirts (Day 3)" — `SUPPORTED (ch 54, 054.01)` Eldeth says farewell; the ch 55 dossier places it at Blingdenstone's surface exit, not "Mithral Hall outskirts".
+  chunked:  - "Eldeth farewell — Mithral Hall outskirts (Day 3)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: First Faction painting — party witnesses original above Rishaal's cash desk
+  baseline: - "First Faction painting — party witnesses original above Rishaal's cash desk" — `SUPPORTED (ch 55, 055.06)` Rishaal describes the framed painting of the war's heroes (ch 55, memorable); its placement is not stated.
+  chunked:  - "First Faction painting — party witnesses original above Rishaal's cash desk" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Glabbagool — Shadow Apprentice sidekick status confirmed
+  baseline: - "Glabbagool — Shadow Apprentice sidekick status confirmed" — `SUPPORTED (ch 59, 059.06)` Glabbagool's apprenticeship and sidekick bond with Zalthir are formalized.
+  chunked:  - "Glabbagool — Shadow Apprentice sidekick status confirmed" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Gorglak — corrupt duergar gate guard, bribe encounter
+  baseline: - "Gorglak — corrupt duergar gate guard, bribe encounter" — `SUPPORTED (ch 26, 026.02)` The party pays off a corrupt guard captain.
+  chunked:  - "Gorglak — corrupt duergar gate guard, bribe encounter" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10)
+  baseline: - "Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10)" — `SUPPORTED (ch 57, 057.01)` Gyrgum debates Brother Vareth; no "stations" appear.
+  chunked:  - "Gyrgum / Vareth scholar arc — Stroud Wake stations (Stations 1–10)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Hand of Tarvis monument — Daggerford village square
+  baseline: - "Hand of Tarvis monument — Daggerford village square" — `SUPPORTED (ch 56, 056.01)` The party finds a monument to a fallen paladin in Daggerford; "Hand of Tarvis" is not named.
+  chunked:  - "Hand of Tarvis monument — Daggerford village square" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Infernal Fortress — Sylvira interview and Abyssal Plague
+  baseline: - "Infernal Fortress — Sylvira interview and Abyssal Plague" — `SUPPORTED (ch 61, 061.05)` Daz interviews the bedridden Sylvira, who has an abyssal plague; the location is her quarters, not stated to be the Infernal Fortress.
+  chunked:  - "Infernal Fortress — Sylvira interview and Abyssal Plague" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party conducts the investigation at Janussi's chamber [ch 058 / 058.01].
+
+ITEM: Jorlan's Gambit — gate left unlocked
+  baseline: - "Jorlan's Gambit — gate left unlocked" — `SUPPORTED (ch 3, 003.01)` The party wakes to find the cell door open after Jorlan's offer (002.05).
+  chunked:  - "Jorlan's Gambit — gate left unlocked" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Kalan Strongbranch — first contact (private corridor after Chapter House)
+  baseline: - "Kalan Strongbranch — first contact (private corridor after Chapter House)" — `SUPPORTED (ch 59, 059.03)` Kalan meets the party in the corridor; earlier contact occurred at reception (ch 56, dossier: Kalan Strongbranch).
+  chunked:  - "Kalan Strongbranch — first contact (private corridor after Chapter House)" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Lost Tomb of Khaem — Netherese tomb
+  baseline: - "Lost Tomb of Khaem — Netherese tomb" — `SUPPORTED (ch 28, 028.04)` The party reaches the Lost Tomb of Khaem.
+  chunked:  - "Lost Tomb of Khaem — Netherese tomb" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party learns about the Lost Tomb of Khaem and its approximate location but has not yet found it. [ch 007 / 007.02]
+
+ITEM: Modrons encountered — March to Nowhere
+  baseline: - "Modrons encountered — March to Nowhere" — `SUPPORTED (ch 67, 067.05)` The party meets modrons at the House of Mechanus in Candlekeep, not on a "March to Nowhere".
+  chunked:  - "Modrons encountered — March to Nowhere" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Oozing Temple — flooded dungeon exploration
+  baseline: - "Oozing Temple — flooded dungeon exploration" — `SUPPORTED (ch 34, 034.08)` The party escapes the flooding complex.
+  chunked:  - "Oozing Temple — flooded dungeon exploration" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Pelek the deep gnome ghost — laid to rest
+  baseline: - "Pelek the deep gnome ghost — laid to rest" — `SUPPORTED (ch 37, 037.03)` Pelek is interred.
+  chunked:  - "Pelek the deep gnome ghost — laid to rest" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party collected Pelek's remains but has not yet laid them to rest in Blingdenstone [ch 016 / 016.01].
+
+ITEM: Ploopploopeen — kuo-toa archpriest, alliance offer
+  baseline: - "Ploopploopeen — kuo-toa archpriest, alliance offer" — `SUPPORTED (ch 8, 008.03)` Gyrgum notes Ploopploopeen promised them stuff for helping (ch 8, memorable).
+  chunked:  - "Ploopploopeen — kuo-toa archpriest, alliance offer" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The party is in Gracklstugh; the text notes they arrived with gnomes and may end up in Blingdenstone needing a favor, but does not show travel to or contact with Blingdenstone leaders [ch 018 / 018.04].
+
+ITEM: Polly Pocket disposition — kept / Bell Tower / messenger release
+  baseline: - "Polly Pocket disposition — kept / Bell Tower / messenger release" — `SUPPORTED (ch 56, 056.04)` The prisoner's fate is put to the party; she is still in the bag as of ch 59 (ch 59, dossier: Glabbagool).
+  chunked:  - "Polly Pocket disposition — kept / Bell Tower / messenger release" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Reader's Tower — Bookwyrm interview and death scene
+  baseline: - "Reader's Tower — Bookwyrm interview and death scene" — `SUPPORTED (ch 63, 063.02)` Bookwyrm is found dead in her office (meeting at ch 62, 062.03); "Reader's Tower" is not named.
+  chunked:  - "Reader's Tower — Bookwyrm interview and death scene" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Refectory — dinner with Janussi alive
+  baseline: - "Refectory — dinner with Janussi alive" — `SUPPORTED (ch 57, 057.02)` The party dines at the Refectory the night before the murder; Janussi's presence is not stated.
+  chunked:  - "Refectory — dinner with Janussi alive" — `NOT FOUND IN SUMMARIES`
+
+ITEM: River Shining Tavern — Daggerford
+  baseline: - "River Shining Tavern — Daggerford" — `SUPPORTED (ch 56, 056.02)` A mother approaches the party at the River Shining Tavern.
+  chunked:  - "River Shining Tavern — Daggerford" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Sea Warden's Tower — Kalan check-in and Trial of the Broken Mirror
+  baseline: - "Sea Warden's Tower — Kalan check-in and Trial of the Broken Mirror" — `SUPPORTED (ch 63, 063.03)` The party finds Kalan in the Sea Warden's Tower; the location of the Trial is not stated.
+  chunked:  - "Sea Warden's Tower — Kalan check-in and Trial of the Broken Mirror" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Sovereign Basidia — myconid sovereign, resistance leader
+  baseline: - "Sovereign Basidia — myconid sovereign, resistance leader" — `SUPPORTED (ch 32, 032.03)` Basidia opposes Phylo and is evacuated.
+  chunked:  - "Sovereign Basidia — myconid sovereign, resistance leader" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Sovereign Phylo — myconid sovereign, corrupted by Zuggtmoy
+  baseline: - "Sovereign Phylo — myconid sovereign, corrupted by Zuggtmoy" — `SUPPORTED (ch 32, 032.03)` The fully corrupted Phylo calls after the fleeing party (ch 32, memorable).
+  chunked:  - "Sovereign Phylo — myconid sovereign, corrupted by Zuggtmoy" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Sylvira recruitment — Path A / B / C choice
+  baseline: - "Sylvira recruitment — Path A / B / C choice" — `SUPPORTED (ch 67, 067.03)` Sylvira Savikas joins the party to solve the riddles.
+  chunked:  - "Sylvira recruitment — Path A / B / C choice" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C)
+  baseline: - "Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C)" — `SUPPORTED (ch 56, 056.06)` Dawnbringer's therapy begins; only the first session is recorded (ch 62, dossier: Dawnbringer).
+  chunked:  - "Thorin / Philemon scholar arc — therapy phases (Phase 1–3, Path A/B/C)" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The Thorin/Philemon scholar arc begins with the assessment of Dawnbringer and the start of therapeutic phases. [ch 056 / 056.06]
+
+ITEM: Vadimir Coaxrock cube incursion — Blingdenstone traders grotto
+  baseline: - "Vadimir Coaxrock cube incursion — Blingdenstone traders grotto" — `SUPPORTED (ch 37, 037.06)` Gelatinous cubes attack the Traders' Grotto; the name "Vadimir Coaxrock" does not appear in the summaries.
+  chunked:  - "Vadimir Coaxrock cube incursion — Blingdenstone traders grotto" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Yestabrod — Circle of Masters leader, confrontation
+  baseline: - "Yestabrod — Circle of Masters leader, confrontation" — `SUPPORTED (ch 31, 031.04)` The party fights Yestabrod; "Circle of Masters" does not appear in the summaries.
+  chunked:  - "Yestabrod — Circle of Masters leader, confrontation" — `NOT FOUND IN SUMMARIES`
+
+ITEM: Zalthir / Khell-Vire scholar arc — Watcher's Stillness / Severed Path (multiple sittings)
+  baseline: - "Zalthir / Khell-Vire scholar arc — Watcher's Stillness / Severed Path (multiple sittings)" — `SUPPORTED (ch 56, 056.05)` Zalthir undergoes the Trial of the Broken Mirror with Brother Khell-Vire; the named techniques and further sittings are not recorded.
+  chunked:  - "Zalthir / Khell-Vire scholar arc — Watcher's Stillness / Severed Path (multiple sittings)" — `NOT FOUND IN SUMMARIES` - begun, not shown done: The Zalthir/Khell-Vire scholar arc begins with Zalthir’s meeting and the Trial of the Broken Mirror. [ch 056 / 056.05]
+
+
+######## CHUNKED SUPPORTED, BASELINE NOT (42) — first 42
+
+ITEM: A'lai — fate resolution (dead / escaped)
+  baseline: - "A'lai — fate resolution (dead / escaped)" — `NOT FOUND IN SUMMARIES` He was captured and bargained for null-prison custody (ch 67, 067.02).
+  chunked:  - "A'lai — fate resolution (dead / escaped)" — `SUPPORTED` - A'lai's fate is resolved as he is imprisoned in the Null Magic Prison [ch 067 / 067.02].
+
+ITEM: Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)
+  baseline: - "Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)" — `NOT FOUND IN SUMMARIES` At the end of ch 70 Daz holds it under an illusion of ash; no final disposition is recorded (ch 70, 070.04).
+  chunked:  - "Book of Vile Darkness — fate determined (party / reshelved / destroyed / launched)" — `SUPPORTED` - The party obtained the Book of Vile Darkness; Daz is currently reading it, with its final disposition (keeping vs. returning) still being negotiated with arriving authorities [ch 070 / 070.04].
+
+ITEM: Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)
+  baseline: - "Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Bookwyrm — Teles sighting reveal (disguise / 2 am lantern near Keeper's tower)" — `SUPPORTED` - Bookwyrm's death was confirmed by the Avowed messenger and physical evidence [ch 063 / 063.01].
+
+ITEM: Cursed Tower — Moziqodo and rooftop incidents
+  baseline: - "Cursed Tower — Moziqodo and rooftop incidents" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Cursed Tower — Moziqodo and rooftop incidents" — `SUPPORTED` - Moziqodo is confirmed dead, as Sylvira remains unaware of his death, and A'lai's revelation confirms the party killed him [ch 067 / 067.03].
+
+ITEM: Daz somatic field-perception — pressure-headache begins (Beregost)
+  baseline: - "Daz somatic field-perception — pressure-headache begins (Beregost)" — `NOT FOUND IN SUMMARIES` Daz "notices something unsettling" at Beregost (ch 56, 056.03); no headache is recorded.
+  chunked:  - "Daz somatic field-perception — pressure-headache begins (Beregost)" — `SUPPORTED` - Daz’s pressure-headache is noted to have begun or been present in Beregost. [ch 056 / 056.03]
+
+ITEM: Daz somatic field-perception — pressure-headache sharpens on Way of the Lion
+  baseline: - "Daz somatic field-perception — pressure-headache sharpens on Way of the Lion" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Daz somatic field-perception — pressure-headache sharpens on Way of the Lion" — `SUPPORTED` - Daz’s pressure-headache sharpens noticeably on the Way of the Lion as they approach Candlekeep. [ch 056 / 056.04]
+
+ITEM: Defaced Tempus shrine — Silver Marches crossroads
+  baseline: - "Defaced Tempus shrine — Silver Marches crossroads" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Defaced Tempus shrine — Silver Marches crossroads" — `SUPPORTED` - The party encountered a defaced Tempus shrine in the Silver Marches [ch 055 / 055.02].
+
+ITEM: Deliver Werz Saltbaron's gems — Kazook Pickshine in Blingdenstone
+  baseline: - "Deliver Werz Saltbaron's gems — Kazook Pickshine in Blingdenstone" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Deliver Werz Saltbaron's gems — Kazook Pickshine in Blingdenstone" — `SUPPORTED` - The party received a reward (spell gem) from Gurnik Tapfinger and is engaging with Kazook Pickshine's work [ch 043 / 043.02; ch 043 / 043.05].
+
+ITEM: Disguise rosetta cracked — milestone event, level-up to 9
+  baseline: - "Disguise rosetta cracked — milestone event, level-up to 9" — `NOT FOUND IN SUMMARIES` The party remains level 8 (ch 52, 052.01).
+  chunked:  - "Disguise rosetta cracked — milestone event, level-up to 9" — `SUPPORTED` - The party leveled up to level 9 after the disguise/key deception was fully unraveled and the battle concluded [ch 063 / 063.06].
+
+ITEM: Droki — derro courier, capture objective
+  baseline: - "Droki — derro courier, capture objective" — `NOT FOUND IN SUMMARIES` The party tracks Droki (ch 15, 015.05; ch 16, 016.02), but no capture is recorded.
+  chunked:  - "Droki — derro courier, capture objective" — `SUPPORTED` - Droki is identified as the primary target for capture/interception [ch 014 / 014.07].
+
+ITEM: Echo 1 activated — surface contamination prophecy
+  baseline: - "Echo 1 activated — surface contamination prophecy" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Echo 1 activated — surface contamination prophecy" — `SUPPORTED` - Two prophecy crystals (Echoes) were explicitly destroyed by Edvaldo [ch 070 / 070.03].
+
+ITEM: Elin the silent child — Gyrgum healing attempt (Daggerford)
+  baseline: - "Elin the silent child — Gyrgum healing attempt (Daggerford)" — `NOT FOUND IN SUMMARIES` The healing attempt was Dawnbringer's lesser restoration, not Gyrgum's (ch 56, 056.02; ch 56, memorable).
+  chunked:  - "Elin the silent child — Gyrgum healing attempt (Daggerford)" — `SUPPORTED` - Gyrgum and the party attempt to heal the silent child Elin in Daggerford, concluding it is not a conventional disease. [ch 056 / 056.02]
+
+ITEM: Endless Chant error — verse substitution witnessed (Beregost)
+  baseline: - "Endless Chant error — verse substitution witnessed (Beregost)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Endless Chant error — verse substitution witnessed (Beregost)" — `SUPPORTED` - The Endless Chant error (verse substitution/breathing pattern) is witnessed and recorded by Daz in Beregost. [ch 056 / 056.03]
+
+ITEM: Festrum the gnome innkeeper — Burning Wizard history recounted
+  baseline: - "Festrum the gnome innkeeper — Burning Wizard history recounted" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Festrum the gnome innkeeper — Burning Wizard history recounted" — `SUPPORTED` - Festrum recounts the Burning Wizard history at the Burning Wizard Inn. [ch 056 / 056.03]
+
+ITEM: Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence
+  baseline: - "Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence" — `NOT FOUND IN SUMMARIES` **Surface-Madness Thread**
+  chunked:  - "Gauntlgrym call confirmed — Echo 3 + Eldeth's letter convergence" — `SUPPORTED` - Echo 3 / Prophecy elements (Hall of Stone, unlit forge) were activated/spoken. [ch 069 / 069.04]
+
+ITEM: Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)
+  baseline: - "Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)" — `NOT FOUND IN SUMMARIES` The visit occurred (ch 59, 059.06), but no boon is recorded.
+  chunked:  - "Glabbagool Whispering Dome visit — Echo re-coax boon (Session 8)" — `SUPPORTED` - Glabbagool completes the Whispering Dome trial, which is associated with the Echo re-coax boon. [ch 059 / 059.06]
+
+ITEM: Kalan — disappearance and presumed death (Pont de Paramours)
+  baseline: - "Kalan — disappearance and presumed death (Pont de Paramours)" — `NOT FOUND IN SUMMARIES` He fled in ch 65 (session-end) and is present again in ch 67 (067.03).
+  chunked:  - "Kalan — disappearance and presumed death (Pont de Paramours)" — `SUPPORTED` - Kalan Strongbranch is confirmed to have fled Candlekeep ("to the wind") [ch 065 / npcs; ch 065 / end].
+
+ITEM: Kestler meeting — Gorg'Bahamut temple lead received (Triboar)
+  baseline: - "Kestler meeting — Gorg'Bahamut temple lead received (Triboar)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Kestler meeting — Gorg'Bahamut temple lead received (Triboar)" — `SUPPORTED` - The party met Kestler in Triboar and received the temple lead (note) [ch 055 / 055.04].
+
+ITEM: Kestler the half-orc lay brother — first contact (Triboar)
+  baseline: - "Kestler the half-orc lay brother — first contact (Triboar)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Kestler the half-orc lay brother — first contact (Triboar)" — `SUPPORTED` - The party had first contact with Kestler in Triboar [ch 055 / 055.04].
+
+ITEM: Leuwin — witness interview (Oak Tree Apothecary)
+  baseline: - "Leuwin — witness interview (Oak Tree Apothecary)" — `NOT FOUND IN SUMMARIES` Only the squirrel Nibbles was interviewed (ch 60, 060.08).
+  chunked:  - "Leuwin — witness interview (Oak Tree Apothecary)" — `SUPPORTED` - Leuwin was interviewed at the apothecary and provided testimony via his squirrel assistant [ch 060 / 060.08]
+
+ITEM: Manshoon — escape (with or without Book of Vile Darkness)
+  baseline: - "Manshoon — escape (with or without Book of Vile Darkness)" — `NOT FOUND IN SUMMARIES` Both simulacra were destroyed (ch 69, 069.02; ch 70, 070.02).
+  chunked:  - "Manshoon — escape (with or without Book of Vile Darkness)" — `SUPPORTED` - Manshoon (simulacrum) did not escape; he was killed in the lava pit [ch 070 / 070.02].
+
+ITEM: Manshoon — voice-only arrival announcement (Session 6)
+  baseline: - "Manshoon — voice-only arrival announcement (Session 6)" — `NOT FOUND IN SUMMARIES` His simulacrum breached the keep physically (ch 65, 065.03).
+  chunked:  - "Manshoon — voice-only arrival announcement (Session 6)" — `SUPPORTED` - Manshoon (simulacrum) made his direct confrontation presence known in the vault/tower area. [ch 069 / 069.05] - Manshoon's voice/arrival was part of the negotiation phase preceding the final confrontation in this chunk [ch 070 / 070.01].
+
+ITEM: Mountain's Mouth Inn — Triboar
+  baseline: - "Mountain's Mouth Inn — Triboar" — `NOT FOUND IN SUMMARIES` A Triboar inn appears, but it is unnamed (ch 55, memorable).
+  chunked:  - "Mountain's Mouth Inn — Triboar" — `SUPPORTED` - The party visited the Mountain's Mouth Inn in Triboar [ch 055 / 055.04].
+
+ITEM: Moziqodo — binding break (Path B, High Tower fight)
+  baseline: - "Moziqodo — binding break (Path B, High Tower fight)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Moziqodo — binding break (Path B, High Tower fight)" — `SUPPORTED` - Moziqodo is dead (confirmed by Sylvira's ignorance of his death and A'lai's context) [ch 067 / 067.03].
+
+ITEM: Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford
+  baseline: - "Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Order of the Gauntlet pewter Tarvis-hand medallion — acquired at Daggerford" — `SUPPORTED` - Gyrgum acquires the Order of the Gauntlet pewter Travis-hand medallion in Daggerford. [ch 056 / 056.01]
+
+ITEM: Order of the Gauntlet shrine — Mirabar temples' quarter
+  baseline: - "Order of the Gauntlet shrine — Mirabar temples' quarter" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Order of the Gauntlet shrine — Mirabar temples' quarter" — `SUPPORTED` - The party visited the Order of the Gauntlet shrine in Mirabar [ch 055 / 055.03].
+
+ITEM: Overlake Hold — Dunglorrin Torune, Gracklstugh fortress
+  baseline: - "Overlake Hold — Dunglorrin Torune, Gracklstugh fortress" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Overlake Hold — Dunglorrin Torune, Gracklstugh fortress" — `SUPPORTED` - The party met with Errde Blackskull at her office in Overlake Hold (Stone Guard Headquarters) [ch 018 / 018.01].
+
+ITEM: Party named guest seekers of the Avowed — Inner Ward access ceremony
+  baseline: - "Party named guest seekers of the Avowed — Inner Ward access ceremony" — `NOT FOUND IN SUMMARIES` The party was deputized as Watchers instead (ch 63, dossier: Kalan Strongbranch).
+  chunked:  - "Party named guest seekers of the Avowed — Inner Ward access ceremony" — `SUPPORTED` - The party is identified as guest seekers/protectors by their deputization and record of service, which Gyrgum invokes [ch 067 / 067.02].
+
+ITEM: Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)
+  baseline: - "Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Pilgrim at corner table — Endless Chant verse error witnessed (Beregost)" — `SUPPORTED` - Daz witnesses the pilgrim (human scholar) reciting the Endless Chant verse error in Beregost. [ch 056 / 056.03]
+
+ITEM: Prince Derendil — quaggoth prisoner, delusion exposed
+  baseline: - "Prince Derendil — quaggoth prisoner, delusion exposed" — `NOT FOUND IN SUMMARIES` The summaries show only his death (ch 3, 003.03).
+  chunked:  - "Prince Derendil — quaggoth prisoner, delusion exposed" — `SUPPORTED` - Prince Derendil’s claim to be a cursed elf prince is noted, though his status as a quaggoth prisoner remains [ch 002 / 002.01; ch 002 / npcs]. - Prince Derendil is present and subsequently killed in the guard tower [ch 003 / npcs].
+
+ITEM: Refugee family from Episode 1 — party interaction (Silver Marches road)
+  baseline: - "Refugee family from Episode 1 — party interaction (Silver Marches road)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Refugee family from Episode 1 — party interaction (Silver Marches road)" — `SUPPORTED` - The party interacted with a refugee family on the Silver Marches road [ch 055 / 055.02].
+
+ITEM: School of Drama — Batbayar statue encounter
+  baseline: - "School of Drama — Batbayar statue encounter" — `NOT FOUND IN SUMMARIES` The Batbayar answer came from A'lai's past discovery (ch 67, dossier: School of the Drama Library); no party visit is recorded.
+  chunked:  - "School of Drama — Batbayar statue encounter" — `SUPPORTED` - The Batbayar statue encounter (the "Bow" clue) was recounted by A'lai as the answer to a riddle [ch 067 / 067.02].
+
+ITEM: Second High Tower key held — door opened from outside (Session 6)
+  baseline: - "Second High Tower key held — door opened from outside (Session 6)" — `NOT FOUND IN SUMMARIES` The party holds both real keys, kept apart (ch 65 session-end); no door opened from outside is recorded.
+  chunked:  - "Second High Tower key held — door opened from outside (Session 6)" — `SUPPORTED` - The party holds the second High Tower key (key #2) and approaches the sealed door. [ch 064 / 064.01; ch 064 / 064.03] - The party holds both real High Tower keys, though they are kept separate (one with Gyrgum, one in Glabbagool) [ch 065 / 065.03; ch 065 / end].
+
+ITEM: Shoor Vandree — Ilvara's lieutenant, antagonist
+  baseline: - "Shoor Vandree — Ilvara's lieutenant, antagonist" — `NOT FOUND IN SUMMARIES` "Shoor" is named only as someone Jorlan hates (ch 2, memorable).
+  chunked:  - "Shoor Vandree — Ilvara's lieutenant, antagonist" — `SUPPORTED` - Shoor Vandree, Ilvara’s lieutenant, has been observed and identified as an antagonist [ch 002 / 002.03; ch 002 / npcs].
+
+ITEM: Spanner — Mechanus dust handoff
+  baseline: - "Spanner — Mechanus dust handoff" — `NOT FOUND IN SUMMARIES` Spanner lent modron tools instead; the dust was never obtained (ch 67, 067.05; ch 68, dossier: Dust of Mechanus — NOT obtained).
+  chunked:  - "Spanner — Mechanus dust handoff" — `SUPPORTED` - Spanner handed off the modron tools as the alternative to Dust of Mechanus [ch 067 / 067.05].
+
+ITEM: Sprig Summerfoot — witness interview (Kitchens)
+  baseline: - "Sprig Summerfoot — witness interview (Kitchens)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Sprig Summerfoot — witness interview (Kitchens)" — `SUPPORTED` - Sprig Summerfoot was interviewed and revealed Teles’s advances on Irony [ch 060 / 060.07]
+
+ITEM: Stroudite polemicist — first contact and pamphlet handout (Mirabar)
+  baseline: - "Stroudite polemicist — first contact and pamphlet handout (Mirabar)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Stroudite polemicist — first contact and pamphlet handout (Mirabar)" — `SUPPORTED` - Gyrgum had first contact with the Stroudite polemicist and received the pamphlet [ch 055 / 055.03].
+
+ITEM: Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)
+  baseline: - "Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Sylvira — dispel of Moziqodo's binding (High Tower fight, Path B)" — `SUPPORTED` - The party used Sylvira's help (providing the Wyrm's name) to solve the cryptogram, acting as a shortcut [ch 067 / 067.03].
+
+ITEM: Sylvira — recruitment as battlefield ally (Path B choice point)
+  baseline: - "Sylvira — recruitment as battlefield ally (Path B choice point)" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Sylvira — recruitment as battlefield ally (Path B choice point)" — `SUPPORTED` - Sylvira is recruited and actively helping the party solve the riddles [ch 067 / 067.03].
+
+ITEM: Triboar memorial square — cairn of the Triboar dead
+  baseline: - "Triboar memorial square — cairn of the Triboar dead" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Triboar memorial square — cairn of the Triboar dead" — `SUPPORTED` - The party witnessed the Triboar memorial square [ch 055 / 055.04].
+
+ITEM: Vault tower rocket — last resort lever
+  baseline: - "Vault tower rocket — last resort lever" — `NOT FOUND IN SUMMARIES` Only "the means to destroy the collection" in the chamber above is recorded (ch 68, dossier: The Vault of Dangerous Secrets). **NPC Events**
+  chunked:  - "Vault tower rocket — last resort lever" — `SUPPORTED` - The party did not pull the rocket lever; they opened the door and dealt with the threats directly [ch 070 / 070.03].
+
+ITEM: Vault tower rocket — lever pulled or left
+  baseline: - "Vault tower rocket — lever pulled or left" — `NOT FOUND IN SUMMARIES`
+  chunked:  - "Vault tower rocket — lever pulled or left" — `SUPPORTED` - The vault tower rocket lever was not pulled [ch 070 / 070.03].
+

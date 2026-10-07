@@ -1,0 +1,32 @@
+{
+  "## Party": {
+    "budget": 700,
+    "words": 442,
+    "over": false
+  },
+  "## Factions and Powers": {
+    "budget": 450,
+    "words": 311,
+    "over": false
+  },
+  "## Key NPCs": {
+    "budget": 900,
+    "words": 340,
+    "over": false
+  },
+  "## Locations": {
+    "budget": 450,
+    "words": 279,
+    "over": false
+  },
+  "## Items and Artifacts": {
+    "budget": 450,
+    "words": 233,
+    "over": false
+  },
+  "## Active Threats and Open Pressures": {
+    "budget": 600,
+    "words": 544,
+    "over": false
+  }
+}
