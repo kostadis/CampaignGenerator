@@ -128,6 +128,20 @@ def test_a_verbatim_span_under_a_missing_target_is_cited_where_it_sits(camp, bad
     assert f"citation corrected from [ch 002 / {bad}]" in md
 
 
+@pytest.mark.parametrize("glue", ["\\n"])
+def test_a_heading_glued_to_its_paragraph_is_narrowed_to_the_verbatim_piece(camp, glue):
+    # GM ruling 2026-10-08: the judge quotes "Heading\nParagraph"; only the verbatim piece is kept.
+    v = sel.check_verdict(f'SHOWN\nCITE: [ch 002 / 002.02] "Prisoner Notes{glue}{SPAN}"', _cands(camp, 2, 3))
+    assert (v.verdict, v.citation, v.span) == (sel.SUPPORTED, "[ch 002 / 002.02]", SPAN)
+    assert "narrowed" in v.detail
+
+
+def test_narrowing_never_accepts_a_reworded_piece(camp):
+    v = sel.check_verdict('SHOWN\nCITE: [ch 002 / 002.02] "Prisoner Notes\\nIlvara Mizzrym came to the bars at midnight"',
+                          _cands(camp, 2, 3))
+    assert v.reason == sel.UNVERIFIED and "not verbatim" in v.detail
+
+
 def test_a_missing_target_with_a_span_from_elsewhere_is_still_unverified(camp):
     v = sel.check_verdict('SHOWN\nCITE: [ch 002 / 002.09] "She came to the bars at midnight"', _cands(camp, 2, 3))
     assert v.reason == sel.UNVERIFIED and "not verbatim" in v.detail

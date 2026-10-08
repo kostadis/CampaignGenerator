@@ -195,7 +195,9 @@ def check_verdict(answer: str, candidates: Mapping[int, object]) -> Verdict:
     of at least ``MIN_SPAN_CHARS`` characters that is verbatim in that chapter. When the span is
     verbatim in a cited candidate chapter but the cited scene or section does not exist there, code
     cites the scene or section that holds the span (:func:`section_of`) and ``detail`` records the
-    correction. Anything else is NOT FOUND (``unverified``) and ``detail`` says which check failed. NOT SHOWN is NOT FOUND
+    correction. When the whole span is not verbatim but it contains line breaks (``\n``), its
+    longest piece is tried instead, and ``detail`` says the span was narrowed. Anything else is
+    NOT FOUND (``unverified``) and ``detail`` says which check failed. NOT SHOWN is NOT FOUND
     (``not-shown``). An answer that starts with neither word claims nothing checkable and is
     ``unverified``.
     """
@@ -229,19 +231,28 @@ def check_verdict(answer: str, candidates: Mapping[int, object]) -> Verdict:
     span = npc_check.strip_quote_marks(spans[0])
     if len(span) < MIN_SPAN_CHARS:
         return reject(f"the span {spans[0]} is too short to be evidence")
+    # GM ruling 2026-10-08: a judge often quotes an entry as "Heading\nParagraph", gluing the
+    # heading onto its body with a newline. When the whole span is not verbatim, its longest
+    # newline-separated piece is tried, and only that piece is ever recorded as the span.
+    tries = [(span, None)]
+    pieces = [p.strip() for p in _SPAN_BREAK_RE.split(span)]
+    longest = max(pieces, key=len)
+    if len(pieces) > 1 and len(longest) >= MIN_SPAN_CHARS:
+        tries.append((longest, "span narrowed to its longest verbatim piece (the judge joined lines with a newline)"))
     unresolved = None
-    for bracket, ch, tgt in found:
-        if npc_check._contains(candidates[ch].text, span) is None:
-            continue
-        if tgt in allowed[ch] and not ("." in tgt and int(tgt[:3]) != ch):
-            return Verdict(SUPPORTED, citation=bracket, span=span)
-        # GM ruling 2026-10-07: the span is verbatim in a candidate chapter, but the cited
-        # scene or section does not exist there. Code cites the section that holds the span.
-        section = section_of(candidates[ch].text, span)
-        if section is not None:
-            return Verdict(SUPPORTED, citation=f"[ch {ch:03d} / {section}]", span=span,
-                           detail=f"citation corrected from {bracket}")
-        unresolved = bracket
+    for candidate, narrowed in tries:
+        for bracket, ch, tgt in found:
+            if npc_check._contains(candidates[ch].text, candidate) is None:
+                continue
+            if tgt in allowed[ch] and not ("." in tgt and int(tgt[:3]) != ch):
+                return Verdict(SUPPORTED, citation=bracket, span=candidate, detail=narrowed)
+            # GM ruling 2026-10-07: the span is verbatim in a candidate chapter, but the cited
+            # scene or section does not exist there. Code cites the section that holds the span.
+            section = section_of(candidates[ch].text, candidate)
+            if section is not None:
+                why = "; ".join(w for w in (f"citation corrected from {bracket}", narrowed) if w)
+                return Verdict(SUPPORTED, citation=f"[ch {ch:03d} / {section}]", span=candidate, detail=why)
+            unresolved = bracket
     if unresolved:
         return reject(f"the citation {unresolved} does not resolve to a scene or section of its chapter")
     return reject(f"the span {spans[0]} is not verbatim in the cited chapter")
@@ -263,6 +274,9 @@ def section_of(text: str, span: str) -> str | None:
         best = m.group(1) or schema.SECTION_TARGETS.get(m.group(2))
     return best
 
+
+#: A line break inside a quoted span: the two-character escape ``\n`` or a real newline.
+_SPAN_BREAK_RE = re.compile(r"\\n|\n")
 
 _TARGET_HEADING_RE = re.compile(r"^(?:### (\d{3}\.\d{2})\b|##(?!#)\s+(.+?)\s*$)", re.M)
 
