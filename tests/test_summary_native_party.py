@@ -359,7 +359,7 @@ class TestSynthParty:
         ov = next(c for c in fm.party_calls if c["heading"] == "## Party Overview")["user"]
         assert "**Party** — The party holds the gate of Brindol. [ch 002 / 002.01]" in ov and "[ch 004 / end]" in ov
         assert "Is wounded in the fight" in ov and "Carries Daz back from the gate" in ov
-        assert "Keeps watch from the wall" not in ov  # a companion's note is not the overview's
+        assert "Keeps watch from the wall" in ov  # companions are in the overview too (GM ruling 2026-10-08)
 
     def test_dynamics_also_see_the_companions(self, pcamp):
         # GM ruling 2026-10-08: bonds with companions belong in Party Dynamics.

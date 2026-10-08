@@ -287,7 +287,7 @@ The one-shot path for party and planning is removed. The options that only exist
 
 - **FR-005**: party MUST have one section per configured player character, in config order, named exactly as configured. Each section MUST be written by a model from only that character's checked notes, plus that character's sheet and backstory as authored reference.
 - **FR-006**: A claim from a sheet or backstory about a character's current state that no checked note supports MUST be shown as unsupported by the summaries, with its source, never as fact.
-- **FR-007**: The party overview and party dynamics MUST be written from the party-wide checked notes (party notes and the latest party location and intentions) only. Party dynamics MUST also see the latest checked notes about each companion (a non-player entity the registry names as a party note's subject), so bonds with companions are covered *(GM ruling, 2026-10-08)*.
+- **FR-007**: The party overview and party dynamics MUST be written from the party-wide checked notes (party notes and the latest party location and intentions) only. Both MUST also see the latest checked notes about each companion (a non-player entity the registry names as a party note's subject), so the companions travelling with the party, and the bonds with them, are covered *(GM rulings, 2026-10-08)*.
 
 **planning**
 

@@ -487,7 +487,7 @@ def _party_jobs(ctx: StateCtx) -> list[dict]:
     A character's prompt holds that character's attributed notes (level rows left out: code writes the
     level), the party-wide notes of the last chunk, and that character's sheet and backstory. It holds no
     other character's notes. The overview and the dynamics get every party-wide note plus the latest two
-    notes of each character; the dynamics also get the latest two notes of each companion (GM ruling 2026-10-08).
+    notes of each character and of each companion (GM rulings 2026-10-08).
     """
     attrs, names = ctx.attributions, [c.name for c in ctx.party]
     last = ctx.results[-1].chunk if ctx.results else None
@@ -516,21 +516,19 @@ def _party_jobs(ctx: StateCtx) -> list[dict]:
                        budget=budget, code_body=None)
         jobs.append(job)
     latest = party_notes.latest_per_character(attrs, names)
-    # Party Dynamics also sees the companions travelling with the party (GM ruling 2026-10-08).
+    # The overview and the dynamics also see the companions travelling with the party (GM rulings 2026-10-08).
     companions = party_notes.latest_per_companion(attrs)
     for heading, part, file in (("## Party Overview", "overview", "party_overview"),
                                 ("## Party Dynamics", "dynamics", "party_dynamics")):
-        extra = companions if part == "dynamics" else []
         job = {
             "heading": heading, "route": part, "part": part, "label": heading[3:], "file": file,
-            "notes": len(wide) + len(latest) + len(extra), "budget": None, "system": ctx.system,
+            "notes": len(wide) + len(latest) + len(companions), "budget": None, "system": ctx.system,
             "user": "", "code_body": party_notes.NOTHING_ABOUT_PARTY,
         }
-        if wide or latest or extra:
+        if wide or latest or companions:
             budget = ctx.budgets[heading[3:]]
-            blocks = [_note_block("PARTY-WIDE NOTES", wide), _note_block("THE LATEST TWO NOTES OF EACH CHARACTER", latest)]
-            if part == "dynamics":
-                blocks.append(_note_block("THE LATEST TWO NOTES OF EACH COMPANION", extra))
+            blocks = [_note_block("PARTY-WIDE NOTES", wide), _note_block("THE LATEST TWO NOTES OF EACH CHARACTER", latest),
+                      _note_block("THE LATEST TWO NOTES OF EACH COMPANION", companions)]
             job.update(user=_party_prompt(heading, state_sections.BRIEFS[heading], budget, blocks),
                        budget=budget, code_body=None)
         jobs.append(job)
