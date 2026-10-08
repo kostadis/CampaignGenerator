@@ -119,15 +119,15 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 ### Tests for User Story 1
 
-- [ ] T013 [P] [US1] `tests/test_summary_native_party.py` — `party_notes.attribute`:
+- [X] T013 [P] [US1] `tests/test_summary_native_party.py` — `party_notes.attribute`:
   - `Party` → party-wide; a PC subject → that PC; `Daz and Zalthir` (no such entity) → both PCs; a registry entity named `Topsy and Turvy` → one companion, not split;
   - a registry-known NPC → companion; an unknown subject → unattributed with a reason;
   - a subject claimed by two entities → unattributed ("claimed by more than one entity");
   - `party.yaml` names and `players.yaml` `plays` both count as player characters.
-- [ ] T014 [P] [US1] `tests/test_summary_native_party.py` — `level_line`:
+- [X] T014 [P] [US1] `tests/test_summary_native_party.py` — `level_line`:
   - the latest `[LEVEL]` row wins, and a character row beats a Party row in the same chapter;
   - with no row: `Level: not recorded in the summaries (sheet says N)`, or `sheet gives none`.
-- [ ] T015 [P] [US1] `tests/test_summary_native_party.py` — `synth party` end to end with the fake client:
+- [X] T015 [P] [US1] `tests/test_summary_native_party.py` — `synth party` end to end with the fake client:
   - section order and headings; the model's text appears under each code-built heading and level line;
   - the prompt for one character contains no other character's notes;
   - `reference/party.md` groups: each PC, Companions, Unattributed;
@@ -136,15 +136,15 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 ### Implementation for User Story 1
 
-- [ ] T016 [US1] Create `pipelines/summary_native/party_notes.py` (deterministic, no model):
+- [X] T016 [US1] Create `pipelines/summary_native/party_notes.py` (deterministic, no model):
   - `attribute(results, identity, party_names) -> list[Attribution]` (data-model "Party attribution");
   - `level_line(name, results, attributions, sheet_text) -> str`;
   - `reference_md(results, attributions) -> str` (`## <PC>` groups in `party.yaml` order, then `## Companions`, `## Unattributed`; notes verbatim, in chapter order);
   - `report_md(...)` (unattributed subjects with text and citation, companions by name, the level source per character).
 
   Add the module to `GUARDED` in `tests/test_summary_native_no_llm.py`.
-- [ ] T017 [US1] Add a structured party loader in `pipelines/summary_native/context.py`: `load_party(path, root) -> list[ResolvedCharacter]` with name, sheet text, backstory text, arc_score path and trackless flag. It keeps the existing `DocConfigError` messages and stops rendering a prompt block. Leave `party_config_block` in place until T048.
-- [ ] T018 [US1] Implement `_party_jobs` in `pipelines/summary_native/synth.py` (research R9):
+- [X] T017 [US1] Add a structured party loader in `pipelines/summary_native/context.py`: `load_party(path, root) -> list[ResolvedCharacter]` with name, sheet text, backstory text, arc_score path and trackless flag. It keeps the existing `DocConfigError` messages and stops rendering a prompt block. Leave `party_config_block` in place until T048.
+- [X] T018 [US1] Implement `_party_jobs` in `pipelines/summary_native/synth.py` (research R9):
   - one call per character: that character's attributed notes, plus the party-wide notes from the last chunk, sheet and backstory; brief from `state.party.system.md`; budget `party_budgets["Characters"]`;
   - one call each for Party Overview and Party Dynamics (party-wide notes plus the latest two notes per character), within budgets.
 
@@ -154,13 +154,13 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - a missing body makes the draft incomplete (exit 3).
 
   **Outputs:** write `reference/party.md` and `party_report.md`; record the budgets in the run record.
-- [ ] T019 [US1] Wire the `synth party` flags in `pipelines/summary_native/cli.py`:
+- [X] T019 [US1] Wire the `synth party` flags in `pipelines/summary_native/cli.py`:
   - `--party-config` (default `<config>/party.yaml`);
   - prose backend defaults as world_state (flag > `grounding.yaml summary_native.prose` > schema);
   - budgets from `party_budgets`.
 
   Refuse `--name`, `--recent-chapters`, `--recurring-min` and `--fallback-npc-lines` for party with the contracts/cli.md messages. Extend `tests/test_summary_native_cli.py`.
-- [ ] T020 [US1] Route parameters for party in `server/routers/summary_native.py` (`/run/synth/party`): prose model and effort via `resolve_selection(... service="summary_native.prose")`; a 400 with the CLI text for the party-refused params. Extend `tests/test_summary_native_routes.py`.
+- [X] T020 [US1] Route parameters for party in `server/routers/summary_native.py` (`/run/synth/party`): prose model and effort via `resolve_selection(... service="summary_native.prose")`; a 400 with the CLI text for the party-refused params. Extend `tests/test_summary_native_routes.py`.
 
 **Checkpoint**: party builds from checked notes on fixtures; US1's independent test passes.
 
@@ -297,7 +297,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   Each section gets its budget, the reference pointers and the outline order. Write `threads_report.md` and `planning_npcs_report.md`, and add the thread registry sha and config files to the run record.
 - [ ] T038 [US2] Wire the `synth planning` flags in `pipelines/summary_native/cli.py`: `--planning-config`, `--name`, `--recent-chapters`, `--recurring-min`, `--fallback-npc-lines` (now world_state and planning) and the prose defaults. A registry failing `check_registry` refuses (exit 2). Extend `tests/test_summary_native_cli.py`.
 - [ ] T039 [US2] Route and page:
-  - in `server/routers/summary_native.py`, accept `fallback_npc_lines` for planning; extend `/state` with the planning `missing_dossiers` and the `threads` counts from `state/threads/attach.json` and the proposals file; extend `/drafts` with the new reports;
+  - in `server/routers/summary_native.py`, accept `fallback_npc_lines` for planning; extend `/state` with the planning `missing_dossiers` and the `threads` counts from `state/threads/attach.json` and the proposals file; extend `/drafts` with the new reports (including party's `party_report.md` and `reference/party.md`);
   - in `frontend/src/views/grounding/SummaryNative.vue`, give the planning step the fallback checkbox (per run, never persisted), the thread counts and a link to the Threads page.
 
   Extend the route tests and add a Playwright test.

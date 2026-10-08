@@ -150,6 +150,21 @@ def fake_party_models(monkeypatch) -> cs.FakeModels:
     """Spec 033's fake models, with extraction answering from :data:`CANNED_PARTY`."""
 
     class PartyModels(cs.FakeModels):
+        def __init__(self) -> None:
+            super().__init__()
+            self.party_calls: list[dict] = []  # every party prose call: heading, character (or None), prompts
+            self.character_override: dict[str, str] = {}  # character -> the model's full output ("" = nothing)
+
+        def prose_render(self, client, system, user, model, max_tokens):
+            heading = re.search(r"^SECTION: (## .+)$", user, re.M).group(1)
+            m = re.search(r"^CHARACTER: (.+)$", user, re.M)
+            character = m.group(1) if m else None
+            self.party_calls.append({"heading": heading, "character": character, "system": system, "user": user})
+            self.prose_calls.append({"heading": heading, "system": system, "user": user, "model": model})
+            if character in self.character_override:
+                return self.character_override[character]
+            return f"Body for {character or heading[3:]} [ch 004 / 004.01].\n"
+
         def extract_render(self, client, system, user, model, max_tokens):
             rng = re.search(r"CHAPTERS IN THIS CHUNK: (\d{3}-\d{3})", user).group(1)
             self.extract_calls.append({"range": rng, "system": system, "user": user, "model": model})

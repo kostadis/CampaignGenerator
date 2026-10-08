@@ -801,6 +801,9 @@ class TestChunkedRefusals:
     @pytest.mark.parametrize("doc", ["party", "planning"])
     def test_party_and_planning_route_through_the_chunked_synth(self, extracted, fm, doc):
         """Spec 034 T012: no one-shot ``runs/<doc>/part-N.*``; the run lives in ``state/runs`` and the draft in ``state/drafts``."""
+        if doc == "party":  # party reads its roster: the 033 fixture has none, so give it one (US1 refuses without)
+            (extracted / "docs" / "sheet.md").write_text("# Daz\n\nLevel: 8\n")
+            (extracted / "config" / "party.yaml").write_text("characters:\n  - name: Daz\n    sheet: docs/sheet.md\n")
         rc, out, err = cs.run_cli(synth_args(extracted, doc, "--dump-only"))
         assert rc == 0, err
         (run,) = [p for p in (state_dir(extracted) / "runs").iterdir() if (p / f"{doc}.system.md").is_file()]
@@ -809,7 +812,7 @@ class TestChunkedRefusals:
         assert not (cs.range_dir(extracted) / "runs").exists() and not (cs.range_dir(extracted) / "drafts").exists()
         assert not fm.prose_calls
 
-    @pytest.mark.parametrize("doc", ["party", "planning"])
+    @pytest.mark.parametrize("doc", ["planning"])  # party's sections exist since US1: tests/test_summary_native_party.py
     def test_party_and_planning_open_with_their_reading_contract_and_are_incomplete_until_their_sections_exist(
             self, extracted, fm, doc):
         rc, _, err = cs.run_cli(synth_args(extracted, doc))

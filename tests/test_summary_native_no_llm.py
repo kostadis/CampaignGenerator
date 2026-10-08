@@ -23,6 +23,8 @@ GUARDED = [
     # spec 033: the deterministic half of the chunked state documents. `extract`, `synth` and
     # `audit` are the model steps (map, prose, judge) and are deliberately not listed.
     "notes", "state_sections", "key_npcs", "annotate", "audit_select", "pointers",
+    # spec 034: party attribution, the level line and the party reference files are code, not a model step.
+    "party_notes",
 ]
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")

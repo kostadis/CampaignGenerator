@@ -13,7 +13,7 @@ import json
 import re
 import sys
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,7 +22,7 @@ import yaml
 from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import annotate, context, corpus, freshness, key_npcs, notes, npc_check, schema, select, state_sections, validate
+from pipelines.summary_native import annotate, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, validate
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
@@ -168,9 +168,15 @@ def run_synth(
             return _refuse(schema.STATE_PARTS_REFUSAL.format(doc=doc))
         if args.audit:
             return _refuse(schema.STATE_AUDIT_REFUSAL)
-    for flag in ("fallback_npc_lines", "npc_root"):
-        if getattr(args, flag, None) and doc != "world_state":
-            return _refuse(f"--{flag.replace('_', '-')} applies to world_state only, not {doc}")
+    if getattr(args, "npc_root", None) and doc != "world_state":
+        return _refuse(f"--npc-root applies to world_state only, not {doc}")
+    if getattr(args, "fallback_npc_lines", None) and doc not in ("world_state", "planning"):
+        return _refuse(f"--fallback-npc-lines {schema.FALLBACK_NPC_LINES_REFUSAL}, not {doc}")
+    if doc == "party":
+        # party selects no NPCs: the flags that choose them belong to planning and world_state
+        for flag in ("name", "recent_chapters", "recurring_min"):
+            if getattr(args, flag, None) is not None:
+                return _refuse(f"--{flag.replace('_', '-')} does not apply to party: {schema.PARTY_SELECTION_REFUSAL}")
     if doc == "campaign_state":
         # the Key NPCs selection flags choose world_state's Key NPCs; this document has no such section
         for flag in ("name", "recent_chapters", "recurring_min"):
@@ -434,15 +440,145 @@ class StateCtx:
     system: str
     registry_path: Path | None = None
     players_path: Path | None = None
+    #: party only: the configured characters (``party.yaml`` order), every distinct party note's
+    #: attribution, and each character's code-built level (spec 034 US1).
+    party: list = field(default_factory=list)
+    attributions: list = field(default_factory=list)
+    levels: dict = field(default_factory=dict)
+
+
+_FENCE = "`````"
+_HEADING_LINE_RE = re.compile(r"^#{1,3}\s")  # h4 and below stay the model's (arc-score candidates, US4)
+_LEVEL_LINE_RE = re.compile(r"^\s*[*_]*level[*_]*\s*[:|]", re.I)
+
+
+def _party_prompt(heading: str, brief: str, budget: int, blocks: list[tuple[str, str]], character: str | None = None) -> str:
+    """One party call's user prompt: its identifying lines, then labelled blocks of evidence.
+
+    ``blocks`` is ``[(label, text)]`` in the order shown. ``CHARACTER:`` appears only for a character
+    call, so a reader of the run directory can tell the calls apart.
+    """
+    # PART names which of the system prompt's three parts this call is (a CHARACTER, the PARTY OVERVIEW or the PARTY DYNAMICS)
+    head = (f"DOCUMENT: party\nPART: {'CHARACTER' if character else heading[3:].upper()}\nSECTION: {heading}\n"
+            + (f"CHARACTER: {character}\n" if character else ""))
+    out = head + f"BRIEF: {brief}\nWORD BUDGET: {budget} words, hard limit.\n"
+    for label, text in blocks:
+        out += f"\n{label}\n\n{text}\n"
+    return out + "\nOUTPUT: write the body only. No heading of any level, and no level line: code writes both.\n"
+
+
+def _note_block(label: str, ns: list) -> tuple[str, str]:
+    return (f"{label} ({len(ns)} bullets, chapter order, every one already checked by code):",
+            "\n".join(n.text for n in ns) or "(none)")
+
+
+def _name_slug(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_") or "x"
 
 
 def _party_jobs(ctx: StateCtx) -> list[dict]:
-    """party's prose jobs: one per character, plus Party Overview and Party Dynamics (spec 034 US1).
+    """party's prose jobs: one per character, plus Party Overview and Party Dynamics (spec 034 US1, research R9).
 
-    Each job is ``{"heading", "route", "notes", "user", "budget", "system"}``, like world_state's. Not
-    built yet: until US1 fills this in, party has no model-written sections and its draft is incomplete.
+    Each job is ``{"heading", "route", "notes", "user", "budget", "system"}`` like world_state's, plus
+    ``part`` (``character`` / ``overview`` / ``dynamics``), ``label``, ``file`` (its prompt's stem) and,
+    for a character, ``name`` and the code-built ``level_line``. A job with nothing to write from has an
+    empty ``user`` and a ``code_body``: no call is made and code says so.
+
+    A character's prompt holds that character's attributed notes (level rows left out: code writes the
+    level), the party-wide notes of the last chunk, and that character's sheet and backstory. It holds no
+    other character's notes. The overview and the dynamics get every party-wide note plus the latest two
+    notes of each character.
     """
-    return []
+    attrs, names = ctx.attributions, [c.name for c in ctx.party]
+    last = ctx.results[-1].chunk if ctx.results else None
+    wide = party_notes.party_wide_notes(attrs)
+    wide_last = [n for n in wide if n.chunk == last]
+    jobs: list[dict] = []
+    for c in ctx.party:
+        own = party_notes.character_notes(attrs, c.name)
+        job = {
+            "heading": "## Characters", "route": "character", "part": "character", "name": c.name,
+            "label": f"Characters: {c.name}", "file": f"characters_{_name_slug(c.name)}",
+            "notes": len(own), "level_line": ctx.levels[c.name].line, "budget": None, "system": ctx.system,
+            "user": "", "code_body": party_notes.NOTHING_RECORDED.format(name=c.name),
+        }
+        if own:
+            blocks = [
+                _note_block(f"VERIFIED NOTES ABOUT {c.name}", own),
+                _note_block(f"PARTY-WIDE NOTES OF THE LAST CHUNK ({last})", wide_last),
+                (f"SHEET ({_rel(c.sheet, ctx.root)}), exactly as the GM authored it:", f"{_FENCE}text\n{c.sheet_text}\n{_FENCE}"),
+            ]
+            if c.backstory_text is not None:
+                blocks.append((f"BACKSTORY ({_rel(c.backstory, ctx.root)}), exactly as the GM authored it:",
+                               f"{_FENCE}text\n{c.backstory_text}\n{_FENCE}"))
+            budget = ctx.budgets["Characters"]
+            job.update(user=_party_prompt("## Characters", state_sections.BRIEFS["## Characters"], budget, blocks, c.name),
+                       budget=budget, code_body=None)
+        jobs.append(job)
+    latest = party_notes.latest_per_character(attrs, names)
+    for heading, part, file in (("## Party Overview", "overview", "party_overview"),
+                                ("## Party Dynamics", "dynamics", "party_dynamics")):
+        job = {
+            "heading": heading, "route": part, "part": part, "label": heading[3:], "file": file,
+            "notes": len(wide) + len(latest), "budget": None, "system": ctx.system,
+            "user": "", "code_body": party_notes.NOTHING_ABOUT_PARTY,
+        }
+        if wide or latest:
+            budget = ctx.budgets[heading[3:]]
+            blocks = [_note_block("PARTY-WIDE NOTES", wide), _note_block("THE LATEST TWO NOTES OF EACH CHARACTER", latest)]
+            job.update(user=_party_prompt(heading, state_sections.BRIEFS[heading], budget, blocks),
+                       budget=budget, code_body=None)
+        jobs.append(job)
+    return jobs
+
+
+def _job_key(j: dict) -> str:
+    """Where a job's body is kept: its heading, or (party characters, who share one) heading and name."""
+    return f"{j['heading']}|{j['name']}" if j.get("part") == "character" else j["heading"]
+
+
+def _party_body(out: str) -> str | None:
+    """The body a party call wrote: its text with any heading the model repeated at the top dropped."""
+    lines = out.strip().splitlines()
+    while lines and (not lines[0].strip() or _HEADING_LINE_RE.match(lines[0])):
+        lines.pop(0)
+    return "\n".join(lines).strip() or None
+
+
+def _party_body_problems(label: str, body: str) -> list[str]:
+    """What the model may not write in a party body: a heading or a level line (code writes both)."""
+    out = []
+    for ln in body.splitlines():
+        if _HEADING_LINE_RE.match(ln):
+            out.append(f"{label}: the model wrote a heading ({ln.strip()!r}); code writes the headings")
+        elif _LEVEL_LINE_RE.match(ln):
+            out.append(f"{label}: the model wrote a level line ({ln.strip()!r}); code writes the level")
+    return out
+
+
+def _party_sections(jobs: list[dict], bodies: dict) -> tuple[dict[str, str], list[str]]:
+    """``({heading: body}, problems)`` for party. ``## Characters`` is built by code: for each configured
+    character, ``### name``, the level line, the model's body (or the code line when there was nothing to
+    write from) and the pointer. A missing or malformed model body is a problem, so the draft is incomplete."""
+    sections: dict[str, str] = {}
+    problems: list[str] = []
+    blocks: list[str] = []
+    for j in jobs:
+        body = j["code_body"] if j["code_body"] is not None else bodies.get(_job_key(j))
+        if body is None:
+            problems.append(f"{j['label']}: the model wrote no body")
+        elif j["code_body"] is None:
+            problems += _party_body_problems(j["label"], body)
+        if j["part"] != "character":
+            if body is not None:
+                sections[j["heading"]] = body
+            continue
+        block = f"### {j['name']}\n\n{j['level_line']}\n"
+        if body is not None:
+            block += f"\n{body}\n"
+        blocks.append(block + f"\n{party_notes.FULL_NOTES_POINTER}\n")
+    sections["## Characters"] = "\n".join(blocks).rstrip("\n")
+    return sections, problems
 
 
 def _planning_jobs(ctx: StateCtx) -> list[dict]:
@@ -562,6 +698,16 @@ def run_state_synth(
         forms, pcs, ambiguous = state_sections.load_identity(registry_path, players_path)
     except (ValueError, OSError) as e:
         return _refuse(f"cannot read the entity registry or players.yaml: {e}")
+    party_chars: list[context.ResolvedCharacter] = []
+    party_path: Path | None = None
+    if doc == "party":
+        given = getattr(args, "party_config", None)
+        party_path = schema.resolve_under(root, given) if given else (
+            Path(config_dir) if config_dir is not None else Path(root) / "config") / "party.yaml"
+        try:
+            party_chars = context.load_party(party_path, root)
+        except context.DocConfigError as e:
+            return _refuse(str(e))
 
     rng_name = f"ch{since:03d}-{until:03d}"
     key_plan: list[key_npcs.KeyNpc] = []
@@ -595,13 +741,24 @@ def run_state_synth(
         return _refuse(f"{draft_path} exists; pass --force to overwrite it")
 
     # ── code-owned sections ──
-    table, status_report = state_sections.npc_status_table(results, forms, pcs, ambiguous)
     threads = notes.thread_ledger(results)
     code_body: dict[str, str] = {}
-    reference = state_sections.reference_files(results, forms)
+    attributions: list[party_notes.Attribution] = []
+    levels: dict[str, party_notes.Level] = {}
+    status_report = None
+    if doc == "party":
+        # party's code-built half: who each note is about, each character's level line, and the one
+        # reference file its sections point to. It owns no NPC table, timeline or other reference file.
+        names = [c.name for c in party_chars]
+        attributions = party_notes.attribute(results, (forms, pcs, ambiguous), names)
+        levels = {c.name: party_notes.level_for(c.name, results, attributions, c.sheet_text) for c in party_chars}
+        reference = {"party": party_notes.reference_md(results, attributions, names)}
+    else:
+        table, status_report = state_sections.npc_status_table(results, forms, pcs, ambiguous)
+        reference = state_sections.reference_files(results, forms)
     if doc == "world_state":
         code_body[_TIMELINE_HEADING] = state_sections.timeline_pointer(results, since, until)
-    else:
+    elif doc != "party":
         code_body["## Completed Encounters & Quests"] = state_sections.completed_md(results)
         code_body["## NPC Current States"] = table
         code_body["## Audit: Tracking Claims"] = state_sections.audit_md(range_dir)
@@ -621,6 +778,7 @@ def run_state_synth(
             since=since, until=until, results=results, forms=forms, pcs=pcs, ambiguous=ambiguous,
             last_chunk=last_chunk, budgets=budgets, system=system,
             registry_path=registry_path, players_path=players_path,
+            party=party_chars, attributions=attributions, levels=levels,
         )
         jobs.extend((_party_jobs if doc == "party" else _planning_jobs)(ctx))
     for heading, route, attach in state_sections.PROSE_SECTIONS.get(doc, ()):
@@ -651,7 +809,7 @@ def run_state_synth(
     atomic_write_text(run_dir / f"{doc}.system.md", system)
     for j in jobs:
         if j["user"]:  # a Key NPCs call with no published dossier behind it is never made
-            atomic_write_text(run_dir / f"{doc}.{_slug(j['heading'])}.user.md", j["user"])
+            atomic_write_text(run_dir / f"{doc}.{j.get('file') or _slug(j['heading'])}.user.md", j["user"])
     backend = resolve_cli_model(args, legacy_default=None).backend
     record = {
         "step": "synth",
@@ -668,6 +826,12 @@ def run_state_synth(
             "registry_sha256": freshness.sha_file(registry_path),
             "players_sha256": freshness.sha_file(players_path),
             "track_files": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in track_paths if p.is_file()],
+            # party: the roster file and every sheet, backstory and mechanic file it names, by content
+            **({"party_config": {
+                "path": _rel(party_path, root), "sha256": corpus.sha256_file(party_path),
+                "files": [{"role": role, "path": _rel(p, root), "sha256": corpus.sha256_file(p)}
+                          for c in party_chars for role, p in c.files],
+            }, "budgets": dict(sorted(budgets.items()))} if doc == "party" else {}),
         },
         "calls": [],
         "key_npcs": {
@@ -748,33 +912,39 @@ def run_state_synth(
             record["key_npcs"].update(from_model=a.from_model, substituted=a.substituted, fallbacks=a.fallbacks,
                                       report=a.report)
             continue
+        if j.get("code_body") is not None and not j["user"]:
+            # nothing to write from: code says so and no call is made (a party character with no notes)
+            print(f"{j['label']}: no notes, no call", flush=True)
+            continue
+        label = j.get("label") or j["heading"][3:]
         try:
             out = render_part(client, j["system"], j["user"], args.model, args.max_tokens)
         except Exception as e:
-            fail(f"{j['heading']}: {type(e).__name__}: {e}")
+            fail(f"{label}: {type(e).__name__}: {e}")
             print(
-                f"Error: model call failed in section {j['heading']}: {type(e).__name__}: {e} "
+                f"Error: model call failed in section {label}: {type(e).__name__}: {e} "
                 f"(see {schema.display_path(run_dir / 'record.json', root)})",
                 file=sys.stderr,
             )
             return EXIT_MODEL_FAILED
         secs = time.monotonic() - t0
-        atomic_write_text(run_dir / f"{doc}.{_slug(j['heading'])}.out.md", out)
-        bodies[j["heading"]] = _body_of(out, j["heading"])
+        atomic_write_text(run_dir / f"{doc}.{j.get('file') or _slug(j['heading'])}.out.md", out)
+        bodies[_job_key(j)] = _party_body(out) if doc == "party" else _body_of(out, j["heading"])
         record["calls"].append({
             "heading": j["heading"], "route": j["route"], "notes": j["notes"],
             "secs": round(secs, 1), "prompt_chars": len(j["user"]), "out_chars": len(out),
+            **({"character": j["name"]} if j.get("part") == "character" else {}),
         })
-        print(f"{j['heading'][3:]}: {j['notes']} notes, {secs:.0f}s", flush=True)
+        print(f"{label}: {j['notes']} notes, {secs:.0f}s", flush=True)
 
     # Budgets count the model's words only, before the pointer is appended. An overrun is reported,
     # never trimmed: cutting prose mid-sentence would be a worse defect than a long section (FR-012).
     budget_report: dict[str, dict] = {}
     for j in jobs:
-        body = bodies.get(j["heading"])
+        body = bodies.get(_job_key(j))
         if j["budget"] and body is not None:
             words = _budget_words(budget_text.get(j["heading"], body))
-            budget_report[j["heading"][3:]] = {"budget": j["budget"], "words": words, "over": words > j["budget"]}
+            budget_report[j.get("label") or j["heading"][3:]] = {"budget": j["budget"], "words": words, "over": words > j["budget"]}
     for name, r in budget_report.items():
         print(f"{name}: {r['words']}/{r['budget']} words" + ("  OVER" if r["over"] else ""), flush=True)
     if budget_report:
@@ -782,8 +952,12 @@ def run_state_synth(
 
     headings = load_outline(doc)
     parts: list[str] = []
+    party_problems: list[str] = []
+    party_sections: dict[str, str] = {}
+    if doc == "party":
+        party_sections, party_problems = _party_sections(jobs, bodies)
     for h in headings:
-        body = code_body[h] if h in code_body else bodies.get(h)
+        body = code_body[h] if h in code_body else party_sections.get(h) if doc == "party" else bodies.get(h)
         if body is not None and h in state_sections.REFERENCE_FOR and h not in code_body:
             kind = state_sections.REFERENCE_FOR[h]
             body = body.rstrip() + "\n\n" + state_sections.reference_pointer(kind, reference[kind])
@@ -799,13 +973,17 @@ def run_state_synth(
         }, doc)
         joined = contract + "\n" + joined
 
-    problems = check_outline(joined, headings)
+    problems = check_outline(joined, headings) + party_problems
     record["check"] = {"complete": not problems, "problems": problems}
     record["finished"] = now().isoformat(timespec="seconds")
     save_record()
 
     drafts.mkdir(parents=True, exist_ok=True)
-    atomic_write_text(drafts / "npc_status_report.md", status_report)
+    if status_report is not None:
+        atomic_write_text(drafts / "npc_status_report.md", status_report)
+    if doc == "party":
+        atomic_write_text(drafts / "party_report.md", party_notes.report_md(
+            results, attributions, [c.name for c in party_chars], levels, since=since, until=until, budgets=budget_report))
     if key_assembled is not None:
         kb = budget_report.get("Key NPCs", {})
         atomic_write_text(drafts / "key_npcs_report.md", key_npcs.report_md(
@@ -814,7 +992,8 @@ def run_state_synth(
     # built by code from the checked notes and do not depend on the model.
     for kind, md in reference.items():
         atomic_write_text(drafts / "reference" / f"{kind}.md", md)
-    atomic_write_text(drafts / schema.TIMELINE_FILE, state_sections.timeline_file_md(results))
+    if doc != "party":
+        atomic_write_text(drafts / schema.TIMELINE_FILE, state_sections.timeline_file_md(results))
     if budget_report:
         atomic_write_text(drafts / "budget_report.json", json.dumps(budget_report, indent=2, ensure_ascii=False) + "\n")
     record_ref = f"runs/{run_id}/record.json"

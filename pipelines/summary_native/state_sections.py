@@ -340,6 +340,10 @@ BRIEFS: dict[str, str] = {
     "## Resolved Plot Threads": "Every thread the notes show RESOLVED or ABANDONED: one bullet each, saying how it ended, citing the resolution.",
     "## Active Quests & Open Threads": "Every thread OPENED or ADVANCED whose resolution the notes do not show. One bullet each with its latest state. If it is listed, it is unfinished.",
     "## Party Current Situation": "Where the party is, what they just did, and what they are about to face, at the very end of the range.",
+    # party (spec 034): one call per character, one for the overview, one for the dynamics
+    "## Party Overview": "Where the party stands as a group at the END of the range: where they are, what they are doing, what presses on them, what they intend. Latest note wins where notes conflict. Do not state a level.",
+    "## Characters": "This one player character NOW: current situation, recent decisions, injuries, losses, acquisitions and relationships that changed. Use only this character's notes, sheet and backstory. Do not state a level.",
+    "## Party Dynamics": "How the player characters relate to one another NOW: alliances, tensions, who defers to whom, and what changed between them. Only what the notes show. Do not state a level.",
 }
 
 

@@ -376,8 +376,20 @@ async def run_synth(
     _require_doc(doc)
     run = _run_config(request)
     chunked = doc in schema.STATE_DOCS
-    if fallback_npc_lines and doc != "world_state":
-        raise HTTPException(status_code=400, detail=f"--fallback-npc-lines applies to world_state only, not {doc}")
+    if fallback_npc_lines and doc not in ("world_state", "planning"):
+        raise HTTPException(
+            status_code=400, detail=f"--fallback-npc-lines {schema.FALLBACK_NPC_LINES_REFUSAL}, not {doc}")
+    if doc == "party":
+        # party selects no NPCs, so the flags that choose them are refused here with the CLI's words
+        # (a party run carries neither a stored nor a schema-default value of them either).
+        for flag, given in (
+            ("--name", any(n.strip() for n in (name or []))),
+            ("--recent-chapters", recent_chapters is not None),
+            ("--recurring-min", recurring_min is not None),
+        ):
+            if given:
+                raise HTTPException(
+                    status_code=400, detail=f"{flag} does not apply to party: {schema.PARTY_SELECTION_REFUSAL}")
     if chunked:
         # world_state and campaign_state write one call per section from the checked notes; the CLI
         # refuses these flags and so does the route, with the CLI's words.
@@ -415,8 +427,8 @@ async def run_synth(
     if subjects:
         cmd += ["--name", *subjects]
 
-    # campaign_state has no Key NPCs section, so the CLI refuses the selection flags for it
-    if doc != "campaign_state":
+    # campaign_state has no Key NPCs section and party selects no NPCs, so the CLI refuses the selection flags for them
+    if doc not in ("campaign_state", "party"):
         cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
         cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
     if not chunked:

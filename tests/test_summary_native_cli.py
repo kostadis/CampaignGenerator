@@ -357,3 +357,36 @@ def test_compare_reads_the_chunked_drafts_from_state(camp):
     (camp / "live.md").write_text("## A\n\nold\n")
     assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
     assert (drafts / "world_state.vs-live.diff").is_file()
+
+
+# ── spec 034 US1: the party flags ───────────────────────────────────────────
+
+
+def _built(camp):
+    _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+
+
+@pytest.mark.parametrize("flag,value", [("--name", "Kalan"), ("--recent-chapters", "2"), ("--recurring-min", "2")])
+def test_party_refuses_the_npc_selection_flags(camp, capsys, flag, value):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", "party", "--summaries-dir", "summaries", flag, value]) == 2
+    err = capsys.readouterr().err
+    assert f"{flag} does not apply to party" in err
+    assert "party selects no NPCs; these apply to planning and world_state" in err
+
+
+@pytest.mark.parametrize("doc", ["party", "campaign_state"])
+def test_fallback_npc_lines_is_refused_outside_world_state_and_planning(camp, capsys, doc):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", doc, "--summaries-dir", "summaries", "--fallback-npc-lines"]) == 2
+    assert f"--fallback-npc-lines applies to world_state and planning only, not {doc}" in capsys.readouterr().err
+
+
+def test_party_prose_backend_defaults_come_from_the_prose_block_not_the_parser():
+    from pipelines.summary_native.cli import build_parser
+
+    ns = build_parser().parse_args(["synth", "party", "--party-config", "x.yaml"])
+    assert ns.party_config == "x.yaml" and ns.backend is None and ns.model is None

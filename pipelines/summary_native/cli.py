@@ -143,15 +143,15 @@ def build_parser() -> argparse.ArgumentParser:
                                 "refused for every document")
             p.add_argument("--recent-chapters", type=int, default=None,
                            help=f"chapters counted back from the range end (default {schema.DEFAULT_RECENT_CHAPTERS}; 0 = all); "
-                                "party, planning and world_state's Key NPCs; refused for campaign_state")
+                                "planning and world_state's Key NPCs; refused for party and campaign_state")
             p.add_argument("--recurring-min", type=int, default=None,
                            help=f"observations that make an entity recurring (default {schema.DEFAULT_RECURRING_MIN}); "
-                                "party, planning and world_state's Key NPCs; refused for campaign_state")
+                                "planning and world_state's Key NPCs; refused for party and campaign_state")
             p.add_argument("--name", nargs="+", default=None, metavar="SUBJECT",
-                           help="force-include dossiers by subject (party, planning; world_state: force-include "
-                                "these global NPCs in Key NPCs); refused for campaign_state")
+                           help="force-include dossiers by subject (planning; world_state: force-include "
+                                "these global NPCs in Key NPCs); refused for party and campaign_state")
             p.add_argument("--fallback-npc-lines", action="store_true",
-                           help="world_state only: when a selected NPC has no published, verified dossier, write a "
+                           help="world_state and planning: when a selected NPC has no published, verified dossier, write a "
                                 f"code-built line {schema.KEY_NPC_FALLBACK_MARK} instead of refusing "
                                 "(per run; never read from config)")
             p.add_argument("--parts", type=int, default=None,

@@ -76,6 +76,59 @@ def party_config_block(path: Path, root: Path) -> DocConfig:
     return DocConfig("\n\n".join(out), path, 0, tuple(files))
 
 
+@dataclass(frozen=True)
+class ResolvedCharacter:
+    """One configured player character with the files the party build reads (spec 034 T017).
+
+    ``sheet_text`` and ``backstory_text`` are the GM's own words, verbatim; ``arc_score`` is the mechanic
+    file's path (its text is read only where candidate arc-score events are built). Not to be confused
+    with ``campaignlib.party_config.ResolvedCharacter``, which this is built from.
+    """
+
+    name: str
+    sheet: Path
+    sheet_text: str
+    backstory: Path | None
+    backstory_text: str | None
+    arc_score: Path | None
+    trackless: bool
+
+    @property
+    def files(self) -> tuple[tuple[str, Path], ...]:
+        """``(role, path)`` of every file this character reads, in a fixed order."""
+        found = (("sheet", self.sheet), ("backstory", self.backstory), ("arc_score", self.arc_score))
+        return tuple((f"{role}:{self.name}", p) for role, p in found if p is not None)
+
+
+def load_party(path: Path, root: Path) -> list[ResolvedCharacter]:
+    """The configured characters in ``party.yaml`` order, with sheet and backstory text read.
+
+    Raises ``DocConfigError`` with the messages ``party_config_block`` has always used: the file is
+    missing, unreadable, declares no characters, or a character's sheet, backstory or arc-score file is
+    missing. It renders no prompt block.
+    """
+    path = Path(path).expanduser()
+    if not path.is_file():
+        raise DocConfigError(f"--party-config {_shown(path, root)}: not found")
+    try:
+        resolved = resolve_party_config(load_party_config(path), Path(root), require_files=False)
+    except ValueError as e:
+        raise DocConfigError(f"--party-config {_shown(path, root)}: unreadable ({e})") from e
+    if not resolved.characters:
+        raise DocConfigError(f"--party-config {_shown(path, root)}: no characters declared")
+    out: list[ResolvedCharacter] = []
+    for pc in resolved.characters:
+        for label, p in (("sheet", pc.sheet), ("backstory", pc.backstory), ("arc score mechanic", pc.arc_score)):
+            if p is not None and not p.is_file():
+                raise DocConfigError(f"party config: {pc.name} {label} file missing: {_shown(p, root)}")
+        out.append(ResolvedCharacter(
+            name=pc.name, sheet=pc.sheet, sheet_text=_read(pc.sheet),
+            backstory=pc.backstory, backstory_text=_read(pc.backstory) if pc.backstory else None,
+            arc_score=pc.arc_score, trackless=pc.trackless,
+        ))
+    return out
+
+
 def planning_config_block(path: Path | None, root: Path, *, explicit: bool) -> DocConfig:
     """Tracked NPCs/factions and their arc scores. An absent default file means none configured."""
     cfg = None

@@ -1,8 +1,8 @@
 characters:
   - name: Daz
-    sheet: ../docs/sheets/daz.md
-    backstory: ../docs/sheets/daz-backstory.md
-    arc_score: ../docs/mechanics/daz-arc.md
+    sheet: docs/sheets/daz.md
+    backstory: docs/sheets/daz-backstory.md
+    arc_score: docs/mechanics/daz-arc.md
   - name: Zalthir
-    sheet: ../docs/sheets/zalthir.md
+    sheet: docs/sheets/zalthir.md
     arc_score: null

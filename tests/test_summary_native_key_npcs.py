@@ -394,13 +394,19 @@ class TestFlags:
         rc, _, err = cs.run_cli(["synth", "campaign_state", *cs.common(extracted), flag, value])
         assert rc == 2 and f"{flag} does not apply to campaign_state" in err
 
-    @pytest.mark.parametrize("flag", [["--fallback-npc-lines"], ["--npc-root", "x"]])
-    def test_the_dossier_flags_apply_to_world_state_only(self, extracted, flag):
-        rc, _, err = cs.run_cli(["synth", "campaign_state", *cs.common(extracted), *flag])
+    def test_npc_root_applies_to_world_state_only(self, extracted):
+        rc, _, err = cs.run_cli(["synth", "campaign_state", *cs.common(extracted), "--npc-root", "x"])
         assert rc == 2 and "applies to world_state only" in err
 
-    def test_party_and_planning_keep_their_selection_flags(self, extracted):
-        # the flags are the one-shot path's too; only campaign_state refuses them
+    @pytest.mark.parametrize("doc", ["campaign_state", "party"])
+    def test_fallback_npc_lines_applies_to_world_state_and_planning_only(self, extracted, doc):
+        # spec 034 (contracts/cli.md): planning writes Key-NPC-style lines too, so the flag is no longer world_state's alone
+        rc, _, err = cs.run_cli(["synth", doc, *cs.common(extracted), "--fallback-npc-lines"])
+        assert rc == 2 and "applies to world_state and planning only" in err
+
+    def test_party_refuses_the_npc_selection_flags_and_planning_keeps_them(self, extracted):
         assert synth.run_synth is not None
-        rc, _, err = cs.run_cli(["synth", "party", *cs.common(extracted), "--fallback-npc-lines"])
-        assert rc == 2 and "applies to world_state only" in err
+        rc, _, err = cs.run_cli(["synth", "party", *cs.common(extracted), "--name", "Kalan"])
+        assert rc == 2 and "party selects no NPCs; these apply to planning and world_state" in err
+        rc, _, err = cs.run_cli(["synth", "planning", *cs.common(extracted), "--fallback-npc-lines", "--dump-only"])
+        assert "does not apply" not in err and "applies to" not in err

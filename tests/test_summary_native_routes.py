@@ -92,7 +92,7 @@ def test_stored_config_reaches_the_command(campaign):
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
         "recent_chapters": 7, "recurring_min": 6, "parts": 3, "dup_threshold": 0.7,
     }})
-    assert _run("/run/synth/party") == 200
+    assert _run("/run/synth/planning") == 200  # planning, not party: party selects no NPCs (spec 034)
     cmd = captured["cmd"]
     assert _flag(cmd, "--summaries-dir") == "docs/stored"
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("1", "5")
@@ -109,7 +109,7 @@ def test_explicit_request_beats_stored(campaign):
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
         "recent_chapters": 7, "parts": 3, "dup_threshold": 0.7,
     }})
-    assert _run("/run/synth/party", {
+    assert _run("/run/synth/planning", {
         **RANGE, "recent_chapters": 2, "parts": 0,
     }) == 200
     cmd = captured["cmd"]
@@ -126,7 +126,7 @@ def test_explicit_request_beats_stored(campaign):
 def test_unconfigured_defaults_come_from_the_schema(campaign):
     from pipelines.summary_native import schema
     _, _, captured = campaign
-    assert _run("/run/synth/party", RANGE) == 200
+    assert _run("/run/synth/planning", RANGE) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--recent-chapters") == str(schema.DEFAULT_RECENT_CHAPTERS)
     assert _flag(cmd, "--recurring-min") == str(schema.DEFAULT_RECURRING_MIN)
@@ -136,7 +136,7 @@ def test_unconfigured_defaults_come_from_the_schema(campaign):
 def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
     _, svc, captured = campaign
     svc.update_config({"summary_native": {"out_root": "elsewhere"}})
-    assert _run("/run/synth/party", {
+    assert _run("/run/synth/planning", {
         **RANGE,
         "name": ["Brewbarry", "Vukradin"],
         "dump_only": True,
@@ -153,7 +153,7 @@ def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
     assert _flag(cmd, "--max-tokens") == "9000"
     assert _flag(cmd, "--recent-chapters") == "5"
     assert _flag(cmd, "--recurring-min") == "8"
-    assert _flag(cmd, "--world-state") == "docs/ws.draft.md"  # the CLI refuses it for party; the route just carries it
+    assert _flag(cmd, "--world-state") == "docs/ws.draft.md"  # the CLI refuses it for planning; the route just carries it
     for banned in ("--registry", "--canon", "--out-root"):
         assert banned not in cmd
 
@@ -498,8 +498,10 @@ def test_fallback_npc_lines_is_per_run_and_world_state_only(campaign):
     captured.clear()
     for doc in ("campaign_state", "party"):
         r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, "fallback_npc_lines": True})
-        assert r.status_code == 400 and "world_state only" in r.json()["detail"]
+        assert r.status_code == 400 and "applies to world_state and planning only" in r.json()["detail"]
     assert "cmd" not in captured
+    assert _run("/run/synth/planning", {**RANGE, "fallback_npc_lines": True}) == 200  # spec 034: planning takes it too
+    assert "--fallback-npc-lines" in captured["cmd"]
 
 
 def test_the_key_npcs_selection_flags_go_to_world_state_but_not_campaign_state(campaign):
@@ -814,3 +816,35 @@ def test_drafts_lists_the_audit_report(campaign):
     _audit_files(root)
     rows = {r["doc"]: r for r in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
     assert rows["audit"]["status"] == "report" and rows["audit"]["path"].endswith("state/audit/audit.md")
+
+
+# ── spec 034 US1: party's parameters ───────────────────────────────────────
+
+
+@pytest.mark.parametrize("param,flag,value", [
+    ("name", "--name", ["Kalan"]), ("recent_chapters", "--recent-chapters", 2), ("recurring_min", "--recurring-min", 2),
+])
+def test_party_selection_params_are_a_400_with_the_cli_text(campaign, param, flag, value):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/synth/party", params={**RANGE, param: value})
+    assert r.status_code == 400
+    assert r.json()["detail"] == f"{flag} does not apply to party: {_schema.PARTY_SELECTION_REFUSAL}"
+    assert "cmd" not in captured
+
+
+def test_a_party_run_sends_no_selection_flags_not_even_stored_ones(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"recent_chapters": 7, "recurring_min": 6}})
+    assert _run("/run/synth/party", RANGE) == 200
+    cmd = captured["cmd"]
+    for banned in ("--recent-chapters", "--recurring-min", "--name", "--parts", "--fallback-npc-lines"):
+        assert banned not in cmd
+
+
+def test_party_takes_the_prose_selection_and_its_roster(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"prose": {"backend": "claude-code", "model": "claude-opus-5-5"}}})
+    assert _run("/run/synth/party", {**RANGE, "party_config": "config/alt_party.yaml", "claude_code_effort": "low"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--model") == "claude-opus-5-5" and _flag(cmd, "--party-config") == "config/alt_party.yaml"
+    assert _flag(cmd, "--claude-code-effort") == "low"

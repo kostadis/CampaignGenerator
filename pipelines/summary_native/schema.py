@@ -253,6 +253,10 @@ UPSTREAM_REFUSAL = (
     "upstream drafts are no longer prompt context: party and planning build from the checked notes; "
     "review those documents on their own"
 )
+#: ``--name`` / ``--recent-chapters`` / ``--recurring-min`` on party (spec 034, contracts/cli.md); the CLI prefixes the flag.
+PARTY_SELECTION_REFUSAL = "party selects no NPCs; these apply to planning and world_state"
+#: ``--fallback-npc-lines`` on party or campaign_state (spec 034, contracts/cli.md); the CLI prefixes the flag.
+FALLBACK_NPC_LINES_REFUSAL = "applies to world_state and planning only"
 STATE_AUDIT_REFUSAL ="--audit does not apply to campaign_state: the audit is its own step: summary_native audit"
 #: Ends a Key NPCs line built by code for an NPC with no published dossier (``--fallback-npc-lines``).
 KEY_NPC_FALLBACK_MARK = "(no published dossier — from checked notes)"
