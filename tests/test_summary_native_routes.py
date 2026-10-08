@@ -98,7 +98,7 @@ def test_stored_config_reaches_the_command(campaign):
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("1", "5")
     assert _flag(cmd, "--recent-chapters") == "7"
     assert _flag(cmd, "--recurring-min") == "6"
-    assert _flag(cmd, "--parts") == "3"
+    assert "--parts" not in cmd  # spec 034: every document is chunked, so a stored parts value is never sent
     assert _run("/run/validate") == 200
     assert _flag(captured["cmd"], "--dup-threshold") == "0.7"
 
@@ -116,8 +116,7 @@ def test_explicit_request_beats_stored(campaign):
     assert _flag(cmd, "--summaries-dir") == "docs/summaries"
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("3", "9")
     assert _flag(cmd, "--recent-chapters") == "2"
-    # An explicit zero is an answer ("one call"), not "unset".
-    assert _flag(cmd, "--parts") == "0"
+    assert "--parts" not in cmd  # spec 034: --parts is retired for every document, so an explicit zero is dropped too
     assert _run("/run/build", {**RANGE, "dup_threshold": 0.5, "force": True}) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--dup-threshold") == "0.5"
@@ -131,7 +130,7 @@ def test_unconfigured_defaults_come_from_the_schema(campaign):
     cmd = captured["cmd"]
     assert _flag(cmd, "--recent-chapters") == str(schema.DEFAULT_RECENT_CHAPTERS)
     assert _flag(cmd, "--recurring-min") == str(schema.DEFAULT_RECURRING_MIN)
-    assert _flag(cmd, "--parts") == str(schema.DEFAULT_PARTS)
+    assert "--parts" not in cmd  # spec 034: retired for every document
 
 
 def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
@@ -145,7 +144,6 @@ def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
         "recent_chapters": 5,
         "recurring_min": 8,
         "world_state": "docs/ws.draft.md",
-        "audit": ["notes/track.txt", "notes/other.txt"],
         "force": True,
     }) == 200
     cmd = captured["cmd"]
@@ -155,9 +153,7 @@ def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
     assert _flag(cmd, "--max-tokens") == "9000"
     assert _flag(cmd, "--recent-chapters") == "5"
     assert _flag(cmd, "--recurring-min") == "8"
-    assert _flag(cmd, "--world-state") == "docs/ws.draft.md"
-    j = cmd.index("--audit")
-    assert cmd[j + 1:j + 3] == ["notes/track.txt", "notes/other.txt"]
+    assert _flag(cmd, "--world-state") == "docs/ws.draft.md"  # the CLI refuses it for party; the route just carries it
     for banned in ("--registry", "--canon", "--out-root"):
         assert banned not in cmd
 
@@ -185,6 +181,9 @@ def test_compare_passes_the_live_document(campaign):
     assert _flag(captured["cmd"], "--live") == "docs/world_state.md"
 
 
+@pytest.mark.skip(reason="spec 034 T012: the per-service selection seam served only the one-shot documents "
+                         "(party, planning); every document now takes summary_native.prose. Deleted with the "
+                         "one-shot path at T048.")
 def test_backend_and_model_come_from_the_selection_seam(campaign):
     _, svc, captured = campaign
     svc.update_config({"selection": {"backend": "anthropic", "model": "claude-test-model"}})
@@ -293,16 +292,15 @@ def test_drafts_lists_draft_and_incomplete_files(campaign):
     (dd / "world_state.draft.md").write_text("abc")
     (dd / "campaign_state.incomplete.md").write_text("abcdef")
     (dd / "world_state.vs-live.diff").write_text("ignored")
-    # party and planning keep the one-shot path and its drafts/ directory
-    (rd / "drafts").mkdir()
-    (rd / "drafts" / "party.draft.md").write_text("pp")
+    # spec 034: party and planning also build from the checked notes, so their drafts live in state/drafts/ too
+    (dd / "party.draft.md").write_text("pp")
     r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
     assert r.status_code == 200
     rows = {(x["doc"], x["status"]): x for x in r.json()}
     assert set(rows) == {("world_state", "draft"), ("campaign_state", "incomplete"), ("party", "draft")}
     assert rows[("world_state", "draft")]["bytes"] == 3
     assert rows[("world_state", "draft")]["path"].endswith("state/drafts/world_state.draft.md")
-    assert rows[("party", "draft")]["path"].endswith("drafts/party.draft.md")
+    assert rows[("party", "draft")]["path"].endswith("state/drafts/party.draft.md")
 
 
 def test_drafts_lists_the_timeline_reference_files_and_budget_report(campaign):
@@ -391,7 +389,7 @@ def test_party_planning_config_paths_only_when_supplied(campaign):
 
 from pipelines.summary_native import schema as _schema  # noqa: E402
 
-STATE_DOCS = ["world_state", "campaign_state"]
+STATE_DOCS = list(_schema.STATE_DOCS)  # spec 034: all four documents build from the checked notes
 
 
 def test_extract_argv(campaign):
@@ -469,8 +467,8 @@ def test_a_stored_parts_value_is_not_sent_for_the_chunked_documents(campaign):
     svc.update_config({"summary_native": {"parts": 3}})
     assert _run("/run/synth/world_state", RANGE) == 200
     assert "--parts" not in captured["cmd"]
-    assert _run("/run/synth/party", RANGE) == 200  # the one-shot documents still get it
-    assert _flag(captured["cmd"], "--parts") == "3"
+    assert _run("/run/synth/party", RANGE) == 200  # spec 034: party and planning are chunked too
+    assert "--parts" not in captured["cmd"]
 
 
 @pytest.mark.parametrize("doc", STATE_DOCS)
@@ -593,13 +591,6 @@ def test_annotate_argv_and_dry_run(campaign, doc):
     assert "--dry-run" not in cmd
     assert _run(f"/run/annotate/{doc}", {**RANGE, "dry_run": True}) == 200
     assert "--dry-run" in captured["cmd"]
-
-
-@pytest.mark.parametrize("doc", ["party", "planning"])
-def test_annotate_is_a_400_for_the_one_shot_documents(campaign, doc):
-    _, _, captured = campaign
-    assert _run(f"/run/annotate/{doc}", RANGE) == 400
-    assert "cmd" not in captured
 
 
 def test_annotate_unset_range_or_directory_is_400(campaign):

@@ -216,18 +216,44 @@ DEFAULT_WORLD_BUDGETS: dict[str, int] = {
     "Active Threats and Open Pressures": 600,
 }
 DEFAULT_AUDIT_CANDIDATES = 3
+
+# ── Chunked party and planning (spec 034) ───────────────────────────────────
+
+#: Word budgets for party's prose sections; ``Characters`` is per character (research R12).
+DEFAULT_PARTY_BUDGETS: dict[str, int] = {"Party Overview": 300, "Characters": 500, "Party Dynamics": 300}
+#: Word budgets for planning's prose sections (research R12).
+DEFAULT_PLANNING_BUDGETS: dict[str, int] = {
+    "NPC Dossiers": 1500, "Faction States": 600, "Active Plots": 1200, "DM Notes": 400,
+}
+#: Faction States writes at most this many factions; the rest are listed by name (research R9).
+DEFAULT_MAX_FACTIONS = 20
+#: ``thread-propose`` sends notes in batches no larger than this many characters (research R5).
+DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS = 150000
+#: The subject of a party-wide note: ``- **Party** — fact [cite]``.
+PARTY_SUBJECT = "Party"
+#: The tag of a level row: ``- [LEVEL] **Subject** — N [cite]``.
+LEVEL_TAG = "LEVEL"
+#: Active Plots, when no ratified thread has notes in the range.
+NO_RATIFIED_THREADS = "_No ratified thread has notes in this range._"
+DORMANT_HEADING = "### Dormant threads"
+UNRATIFIED_HEADING = "### Unratified thread notes (not yet ruled on)"
+#: Printed under DM Notes by code, so the section cannot be read as events.
+DM_NOTES_LABEL = "_Suggestions for the GM, not events._"
 #: Everything 033 writes lives under ``<range_dir>/state/``.
 STATE_DIR = "state"
 TIMELINE_FILE = "canon_events_timeline.md"
 #: Beside the notes: the NPCs the latest world_state build found without a usable dossier (read by `GET /state`).
 MISSING_DOSSIERS_FILE = "missing_dossiers.json"
-#: The two documents that build from the checked notes (FR-029); party and planning keep the one-shot path.
-STATE_DOCS: tuple[str, ...] = ("world_state", "campaign_state")
 #: Refusals shared by the CLI and the web routes (the routes answer 400 with the same words).
 STATE_PARTS_REFUSAL = (
     "--parts does not apply to {doc}: it is built with one call per section from the checked notes"
 )
-STATE_AUDIT_REFUSAL = "--audit does not apply to campaign_state: the audit is its own step: summary_native audit"
+#: ``--world-state`` / ``--campaign-state`` on party or planning (spec 034, contracts/cli.md).
+UPSTREAM_REFUSAL = (
+    "upstream drafts are no longer prompt context: party and planning build from the checked notes; "
+    "review those documents on their own"
+)
+STATE_AUDIT_REFUSAL ="--audit does not apply to campaign_state: the audit is its own step: summary_native audit"
 #: Ends a Key NPCs line built by code for an NPC with no published dossier (``--fallback-npc-lines``).
 KEY_NPC_FALLBACK_MARK = "(no published dossier — from checked notes)"
 #: Shown in the Audit section until ``summary_native audit`` has run for the range.
@@ -235,11 +261,10 @@ AUDIT_NOT_RUN = "Audit not run for this range."
 
 
 def draft_dir(range_dir, doc: str):
-    """Where ``doc``'s draft lives: ``state/drafts`` for the chunked documents, ``drafts`` otherwise."""
+    """Where ``doc``'s draft lives: ``state/drafts``, for every document (spec 034 retired the one-shot ``drafts/``)."""
     from pathlib import Path
 
-    base = Path(range_dir)
-    return base / STATE_DIR / "drafts" if doc in STATE_DOCS else base / "drafts"
+    return Path(range_dir) / STATE_DIR / "drafts"
 
 #: Annotation markers (research R10). Annotations are appended under a line; the line is never changed.
 LATER = "⚠ later:"
@@ -252,6 +277,8 @@ UNVERIFIED = "⚠ unverified:"
 DOCS: tuple[str, ...] = ("world_state", "campaign_state", "party", "planning")
 #: The documents `synth` can draft.
 SYNTH_DOCS: tuple[str, ...] = DOCS
+#: The documents built from the checked notes, one call per section (FR-029). Since spec 034, all four.
+STATE_DOCS: tuple[str, ...] = DOCS
 
 
 def resolve_under(root, value):

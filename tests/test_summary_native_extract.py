@@ -124,6 +124,22 @@ def test_a_cached_run_makes_zero_calls(camp, fm):
     assert after == before  # the notes (and the manifest) are byte-identical
 
 
+def test_a_changed_extraction_prompt_is_never_served_from_cache(camp, fm, monkeypatch):
+    """Spec 034 FR-002: the system prompt (here: its ``## Party`` grammar) is part of the cache key,
+    so editing it re-extracts every chunk rather than reusing notes written under the old grammar."""
+    run_cli(extract_args(camp))
+    n = len(fm.extract_calls)
+    keys = [c["cache_key"] for c in json.loads((notes_dir(camp) / "manifest.json").read_text())["chunks"]]
+    real = extract.load_system()
+    assert "- **Subject** — fact [cite]" in real and "- [LEVEL] **Subject** — N [cite]" in real
+    monkeypatch.setattr(extract, "load_system", lambda: real.replace("**Subject**", "**Name**", 1))
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    assert len(fm.extract_calls) == n + 4  # every chunk re-extracted: nothing reused
+    new_keys = [c["cache_key"] for c in json.loads((notes_dir(camp) / "manifest.json").read_text())["chunks"]]
+    assert set(keys).isdisjoint(new_keys)
+
+
 def test_a_failed_chunk_exits_3_and_the_next_run_extracts_only_it(camp, fm):
     fm.fail_chunks["004-004"] = 2  # the call and its one retry both fail
     rc, out, err = run_cli(extract_args(camp))

@@ -41,7 +41,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 **Purpose**: Constants, the thread-registry seam, prompts and fixtures.
 
-- [ ] T001 Add the new constants to `pipelines/summary_native/schema.py` (data-model "Defaults"):
+- [X] T001 Add the new constants to `pipelines/summary_native/schema.py` (data-model "Defaults"):
   - `DEFAULT_PARTY_BUDGETS = {"Party Overview": 300, "Characters": 500, "Party Dynamics": 300}` (Characters is per character);
   - `DEFAULT_PLANNING_BUDGETS = {"NPC Dossiers": 1500, "Faction States": 600, "Active Plots": 1200, "DM Notes": 400}`;
   - `DEFAULT_MAX_FACTIONS = 20`, `DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS = 150000`;
@@ -52,8 +52,8 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - `DM_NOTES_LABEL = "_Suggestions for the GM, not events._"`.
 
   Do **not** change `STATE_DOCS` yet; T012 does that.
-- [ ] T002 [P] Create `campaignlib/thread_registry.py` holding `norm_title`, `match_thread`, `find_thread`, `load_registry`, `check_registry`, `STATUSES` and `CHANGES`, **moved** from `pipelines/grounding/thread_registry.py`. Make the CLI module import them from there (no copies), and keep `tests/test_thread_registry.py` green. Add `match_threads(data, title) -> list[dict]`, which returns every thread a title or alias matches, so callers can detect ambiguity (research R4).
-- [ ] T003 [P] Create the prompts in `pipelines/summary_native/prompts/`:
+- [X] T002 [P] Create `campaignlib/thread_registry.py` holding `norm_title`, `match_thread`, `find_thread`, `load_registry`, `check_registry`, `STATUSES` and `CHANGES`, **moved** from `pipelines/grounding/thread_registry.py`. Make the CLI module import them from there (no copies), and keep `tests/test_thread_registry.py` green. Add `match_threads(data, title) -> list[dict]`, which returns every thread a title or alias matches, so callers can detect ambiguity (research R4).
+- [X] T003 [P] Create the prompts in `pipelines/summary_native/prompts/`:
   - `state.party.system.md`: character, overview and dynamics sections; the model writes the body only, with no `###` heading and no level line; sheet claims the notes don't support go under `Unsupported by the summaries:`; the quotation rule; the citation rule.
   - `state.planning.system.md`: faction blocks (`### Name` per faction, in the given order), active-plot entries (one `### Title` per given thread, in the given order) and DM Notes (each line cited, framed as suggestions).
   - `state.planning_npcs.system.md`: one `### Name` block per NPC with `Status and location:`, `Goals:` and `Relationships:` lines, citing only that NPC's dossier.
@@ -61,7 +61,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - `state.thread_propose.system.md`: JSON output `{"groups":[{"kind":"new","title":…,"members":[ids]},{"kind":"continues","thread":id,"members":[ids]}]}`; group only notes about the same thread; leave a note out rather than guess.
 
   Mirror `state.prose_world.system.md`'s evidence rules.
-- [ ] T004 [P] Extend `tests/fixtures/summary_native/` (research R16):
+- [X] T004 [P] Extend `tests/fixtures/summary_native/` (research R16):
   - **checked-note set:** party notes for two player characters, one companion (`Ront`), one unattributed (`Dazz`), `**Party**` notes, `[LEVEL] **Party** — 9` whose cited scene says "the party reaches 9th level", and a `[LEVEL]` row citing only "a 4th-level slot";
   - **thread notes:** two that name one thread differently, plus a resolved one;
   - **`docs/thread_registry.yaml`:** two ratified threads, one with an alias, and one thread GM-set to `resolved`;
@@ -75,14 +75,14 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 **Purpose**: The party grammar, note ids, the per-document contract, and routing party/planning into the chunked synth. Every story needs these.
 
-- [ ] T005 Write failing tests in `tests/test_summary_native_notes.py`:
+- [X] T005 Write failing tests in `tests/test_summary_native_notes.py`:
   - a party bullet without a leading `**Subject**` drops with `missing-party-subject`;
   - `- **Daz** — …` keeps with `subject == "Daz"`;
   - `- [LEVEL] **Party** — 9 [cite]` keeps with `level == 9` when the cited text has "9th level", "level 9", "ninth level" or "level nine";
   - it also keeps when the cited text has "Party levels to 9" or "the party levels up to 9";
   - the same row drops `level-not-in-cited-text` when the cited text only has "4th-level slot" or "9th-level spell";
   - `note_id` is stable for identical (first_chapter, kind, text) and differs otherwise.
-- [ ] T006 Implement in `pipelines/summary_native/notes.py`:
+- [X] T006 Implement in `pipelines/summary_native/notes.py`:
   - party-subject parsing (reuse `_SUBJECT_RE`'s shape: optional `[LEVEL]` tag, then `**Subject**`);
   - `Note.subject` / `Note.tag` / `Note.level` for party notes;
   - the level confirmation: digit, word or ordinal forms of N, in `level N` / `Nth level` / `Nth-level` / `levels? (?:up )?to N` / `reach(?:es|ed)? (?:level )?N`, not followed by `spell`, `spells` or `slot`, searched within the cited sections' text;
@@ -90,17 +90,17 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - `note_id(note) = "n-" + sha1(f"{first_chapter:03d}|{kind}|{text}")[:10]`, exposed on `Note` (research R6).
 
   Keep `stitched("party")` returning the same text form, so world_state and campaign_state are unchanged.
-- [ ] T007 Rewrite the `## Party` section of `pipelines/summary_native/prompts/state.extract.system.md` to the R1 grammar: `- **Subject** — fact [cite]`, where Subject is one character's name or exactly `Party`, and level as `- [LEVEL] **Subject** — N [cite]`. Then add a test in `tests/test_summary_native_extract.py` that the cache key changes when this prompt changes (no stale reuse, FR-002).
-- [ ] T008 [P] Add `freshness.check_party_grammar(range_dir)` in `pipelines/summary_native/freshness.py`. It compares the notes manifest's extraction-prompt sha with the current prompt and returns the contracts/cli.md refusal text ("the party notes predate the subject grammar; run `summary_native extract …`"). Test it in `tests/test_summary_native_notes.py`.
-- [ ] T009 Generalise `state_sections.reading_contract(rng, paths, doc)` in `pipelines/summary_native/state_sections.py` (research R13):
+- [X] T007 Rewrite the `## Party` section of `pipelines/summary_native/prompts/state.extract.system.md` to the R1 grammar: `- **Subject** — fact [cite]`, where Subject is one character's name or exactly `Party`, and level as `- [LEVEL] **Subject** — N [cite]`. Then add a test in `tests/test_summary_native_extract.py` that the cache key changes when this prompt changes (no stale reuse, FR-002).
+- [X] T008 [P] Add `freshness.check_party_grammar(range_dir)` in `pipelines/summary_native/freshness.py`. It compares the notes manifest's extraction-prompt sha with the current prompt and returns the contracts/cli.md refusal text ("the party notes predate the subject grammar; run `summary_native extract …`"). Test it in `tests/test_summary_native_notes.py`.
+- [X] T009 Generalise `state_sections.reading_contract(rng, paths, doc)` in `pipelines/summary_native/state_sections.py` (research R13):
   - the dossier paragraph names `## Key NPCs` (world_state) or `## NPC Dossiers` (planning), and is omitted for party and campaign_state;
   - a planning-only paragraph covers the ratified and unratified layers of Active Plots and where the proposals queue lives;
   - the reference list names only that document's files: party → `reference/party.md`; planning → `reference/{factions,npcs,threads}.md`; world_state → as today.
 
   Update the existing callers. Extend `tests/test_summary_native_state_sections.py`: world_state's contract is byte-identical to before, and the party/planning contracts are as specified.
-- [ ] T010 [P] Add `party_budgets` and `planning_budgets` to `SummaryNativeProse` in `server/grounding_config_shared.py`. Both are strict: keys must come from the schema defaults, values must be ≥ 1, and the defaults come from `schema`. Extend `tests/test_summary_native_config_defaults.py`.
-- [ ] T011 [P] Add `key_npcs.planning_view(path)` in `pipelines/summary_native/key_npcs.py`. It uses the same one-pass held-heading parser as `published_view`, with the take-set `("## Identity", "## Personality and Motivations", "## Last Observed State", "## Relationships")`, and raises `NotPublished` likewise. Extend `tests/test_state_docs_no_secrets.py`: `planning_view` of the canary dossier contains no `SECRET-CANARY-034`, and `## Secrets` is absent from every take-set.
-- [ ] T012 Route party and planning through `run_state_synth` in `pipelines/summary_native/synth.py`:
+- [X] T010 [P] Add `party_budgets` and `planning_budgets` to `SummaryNativeProse` in `server/grounding_config_shared.py`. Both are strict: keys must come from the schema defaults, values must be ≥ 1, and the defaults come from `schema`. Extend `tests/test_summary_native_config_defaults.py`.
+- [X] T011 [P] Add `key_npcs.planning_view(path)` in `pipelines/summary_native/key_npcs.py`. It uses the same one-pass held-heading parser as `published_view`, with the take-set `("## Identity", "## Personality and Motivations", "## Last Observed State", "## Relationships")`, and raises `NotPublished` likewise. Extend `tests/test_state_docs_no_secrets.py`: `planning_view` of the canary dossier contains no `SECRET-CANARY-034`, and `## Secrets` is absent from every take-set.
+- [X] T012 Route party and planning through `run_state_synth` in `pipelines/summary_native/synth.py`:
   - in `schema.py`, set `STATE_DOCS = DOCS`, and make `draft_dir` return `state/drafts` for every document;
   - in `run_state_synth`, dispatch to per-document section builders (`_party_jobs`, `_planning_jobs`, to be filled in by US1/US2) and pass the doc to `reading_contract`;
   - call `check_party_grammar` before building party or planning.
@@ -362,6 +362,10 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - in `schema.py`, `DEFAULT_PARTS` and the `STATE_PARTS_REFUSAL` wording, replaced by the retired-flag refusals.
 
   Then add the contracts/cli.md refusals in `pipelines/summary_native/cli.py`. Run `rg` for the removed names across `pipelines/ server/ frontend/ tests/ docs/` and fix every reference.
+
+  Two more follow-ups came out of the Phase 2 review:
+  - **Delete the skipped tests.** Remove the `RETIRED_ONE_SHOT` set and its skip fixture from `tests/test_summary_native_synth.py`, along with every test it skips. Rewrite the generic behaviours on the chunked path (run-id suffixing, the record written on failure, the previous draft kept on an incomplete build) instead of deleting them, unless 033's tests already cover them. Do the same for the skipped seam test in `tests/test_summary_native_routes.py`.
+  - **`check-pointers`.** `pointers.check_paths` expects all six reference files plus the timeline. Make it check only the files a document's reading contract names (its `summary_native pointers:` comment), so it works on promoted party and planning bundles, and add a test.
 - [ ] T049 [US6] Router and page cleanup:
   - `server/routers/summary_native.py`: remove the `parts`, `world_state` and `campaign_state` params (a request carrying them gets a 400 with the CLI text);
   - `frontend/src/views/grounding/SummaryNative.vue`: party and planning use the same step component as world_state/campaign_state, and the Parts control and upstream-draft pickers are removed.

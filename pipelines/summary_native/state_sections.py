@@ -107,7 +107,7 @@ def reference_pointer(kind: str, md: str) -> str:
 
 # ── The reading contract (FR-015, research R10) ─────────────────────────────
 
-_CONTRACT = """\
+_HEAD = """\
 > **How to read this document.** It is the long-range memory of the campaign (ch {since:03d}-{until:03d}), generated
 > from the session summaries and checked by code. The last two session summaries outrank it for recent events.
 > - `{later}` under a line is newer information about the **same subject**: where the two conflict, the
@@ -118,30 +118,72 @@ _CONTRACT = """\
 >   not resolve: read it as a paraphrase, not as words anyone said.
 > - `[ch NNN / target]` cites `{summaries}/NNN-*.md`. The target is a scene id (`NNN.SS`), or that chapter's
 >   `npcs`, `locations`, `items`, `spells`, `moment` (Memorable Moments) or `end` (Session-End State) section.
-> - Each line under `## Key NPCs` ends with `→ docs/npcs/<slug>.md`, the NPC's published dossier (open it for
+"""
+
+#: The published-dossier paragraph: world_state's ``## Key NPCs`` and planning's ``## NPC Dossiers``.
+_DOSSIERS = """\
+> - Each line under `{section}` ends with `→ docs/npcs/<slug>.md`, the NPC's published dossier (open it for
 >   the full account), or with `{fallback}`: that NPC has no published dossier, and the line is its latest
 >   status and checked notes, verbatim.
-> - Every checked note, by subject: {files}.
->   Every event, in order: `{timeline}`.
-> - Reference and timeline paths are relative to this document. Summary and dossier paths are
+"""
+
+#: planning only: the two layers of ``## Active Plots`` and where the proposals queue is.
+_THREADS = """\
+> - `## Active Plots` lists the threads the GM has ratified in `docs/thread_registry.yaml`, newest activity first,
+>   each written from its checked notes. `{dormant}` lists the ones the GM marked dormant, as their latest note,
+>   verbatim. `{unratified}` lists checked thread notes that no ratified thread owns, verbatim: evidence, not
+>   plots. Rule on them at `/grounding/threads` (the proposals queue is `docs/ensemble/thread_proposals.yaml`).
+"""
+
+_FILES = "> - Every checked note, by subject: {files}.\n"
+_TIMELINE = ">   Every event, in order: `{timeline}`.\n"
+
+_TAIL = """\
+> - {paths_are} relative to this document. Summary and dossier paths are
 >   relative to the campaign root unless absolute. After copying, run `summary_native check-pointers FILE`.
 > - Anything this document does not settle is a decision for the GM, not something to fill in.
 """
 
+#: The reference files each document's contract lists, in order (research R13). world_state lists
+#: all six kinds; the other documents name only the files they point to.
+CONTRACT_REFERENCES: dict[str, tuple[str, ...]] = {
+    "world_state": tuple(REFERENCE_KINDS),
+    "campaign_state": ("threads",),
+    "party": ("party",),
+    "planning": ("factions", "npcs", "threads"),
+}
+#: The section whose lines point to a published dossier, for the documents that have one.
+_DOSSIER_SECTION = {"world_state": "## Key NPCs", "planning": "## NPC Dossiers"}
 
-def reading_contract(rng: tuple[int, int], paths: dict[str, str]) -> str:
-    """The blockquote world_state opens with: the markers, what a citation points to, where the
-    reference files and the timeline are. ``rng`` is ``(since, until)``; ``paths`` holds the
-    ``summaries`` and ``reference`` directories and the ``timeline`` file as the reader will find
-    them once promoted. References and timeline are document-relative; summaries are
-    campaign-relative or absolute when outside the campaign."""
+
+def reading_contract(rng: tuple[int, int], paths: dict[str, str], doc: str = "world_state") -> str:
+    """The blockquote a document opens with: the markers, what a citation points to, where the
+    reference files are. ``rng`` is ``(since, until)``; ``paths`` holds the ``summaries`` and
+    ``reference`` directories and the ``timeline`` file as the reader will find them once promoted.
+    References and timeline are document-relative; summaries are campaign-relative or absolute when
+    outside the campaign.
+
+    ``doc`` selects the paragraphs (research R13): the dossier paragraph names ``## Key NPCs``
+    (world_state) or ``## NPC Dossiers`` (planning) and is omitted for party and campaign_state; the
+    thread paragraph is planning's; the reference list names only that document's files, and only
+    world_state names the timeline.
+    """
+    if doc not in CONTRACT_REFERENCES:
+        raise ValueError(f"no reading contract for {doc!r}")
     ref = str(paths["reference"]).rstrip("/")
-    contract = _CONTRACT.format(
+    text = _HEAD.format(
         since=rng[0], until=rng[1], later=schema.LATER, since_=schema.SINCE, unverified=schema.UNVERIFIED,
-        summaries=str(paths["summaries"]).rstrip("/"), timeline=paths["timeline"],
-        files=", ".join(f"`{ref}/{kind}.md`" for kind in REFERENCE_KINDS), fallback=schema.KEY_NPC_FALLBACK_MARK,
+        summaries=str(paths["summaries"]).rstrip("/"),
     )
-    return contract + "> <!-- summary_native pointers: " + json.dumps(paths, sort_keys=True) + " -->\n"
+    if doc in _DOSSIER_SECTION:
+        text += _DOSSIERS.format(section=_DOSSIER_SECTION[doc], fallback=schema.KEY_NPC_FALLBACK_MARK)
+    if doc == "planning":
+        text += _THREADS.format(dormant=schema.DORMANT_HEADING, unratified=schema.UNRATIFIED_HEADING)
+    text += _FILES.format(files=", ".join(f"`{ref}/{kind}.md`" for kind in CONTRACT_REFERENCES[doc]))
+    if doc == "world_state":
+        text += _TIMELINE.format(timeline=paths["timeline"])
+    text += _TAIL.format(paths_are="Reference and timeline paths are" if doc == "world_state" else "Reference paths are")
+    return text + "> <!-- summary_native pointers: " + json.dumps(paths, sort_keys=True) + " -->\n"
 
 
 # ── Identity ────────────────────────────────────────────────────────────────

@@ -70,13 +70,19 @@ import yaml
 from campaignlib.util import atomic_write_text
 
 from campaignlib.constants import config_path
+from campaignlib.thread_registry import (  # noqa: F401  (re-exported: the CLI's tests import them from here)
+    CHANGES,
+    STATUSES,
+    check_registry,
+    find_thread,
+    load_registry,
+    match_thread,
+    norm_title,
+)
 from campaignlib.projection_config import (
     PROJECTION_CONFIG_FILENAME,
     load_projection_config,
 )
-
-STATUSES = ("open", "dormant", "resolved", "abandoned")
-CHANGES = ("opened", "advanced", "resolved", "reopened", "abandoned")
 
 CHAP = re.compile(r"(?:chapter|session|ch|gen-ch)[_-]?0*(\d+)", re.I)
 
@@ -89,22 +95,9 @@ def chapter_of(path: str) -> int | None:
     return None
 
 
-def norm_title(title: str) -> str:
-    """'Aletra's Boss' -> 'aletras-boss'. Exact-match key; never similarity."""
-    t = title.lower().replace("'", "").replace("’", "")
-    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
-
-
 # ── registry io ──────────────────────────────────────────────────────────
-
-def load_registry(path: Path) -> dict:
-    if not path.exists():
-        return {"version": 1, "threads": []}
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    data.setdefault("version", 1)
-    data.setdefault("threads", [])
-    return data
-
+# The read side (norm_title, load_registry, find_thread, match_thread, check_registry,
+# STATUSES, CHANGES) lives in campaignlib/thread_registry.py (spec 034 T002).
 
 def save_registry(path: Path, data: dict) -> None:
     # Atomic (research D12). The web surface turns hand-typed invocations into
@@ -112,56 +105,6 @@ def save_registry(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     atomic_write_text(path, yaml.safe_dump(data, sort_keys=False,
                                            allow_unicode=True))
-
-
-def find_thread(data: dict, thread_id: str) -> dict | None:
-    for t in data["threads"]:
-        if t.get("id") == thread_id:
-            return t
-    return None
-
-
-def match_thread(data: dict, title: str) -> dict | None:
-    """Exact normalised title/alias match against the registry."""
-    key = norm_title(title)
-    for t in data["threads"]:
-        names = [t.get("title", "")] + list(t.get("aliases") or [])
-        if any(norm_title(n) == key for n in names if n):
-            return t
-    return None
-
-
-def check_registry(data: dict) -> list[str]:
-    errors: list[str] = []
-    seen_ids: set[str] = set()
-    seen_norms: dict[str, str] = {}
-    for t in data["threads"]:
-        tid = t.get("id") or ""
-        if not tid:
-            errors.append(f"thread with no id (title {t.get('title')!r})")
-        elif tid in seen_ids:
-            errors.append(f"duplicate thread id {tid!r}")
-        seen_ids.add(tid)
-        if t.get("status") not in STATUSES:
-            errors.append(f"{tid}: bad status {t.get('status')!r} "
-                          f"(allowed: {', '.join(STATUSES)})")
-        if t.get("status") in ("resolved", "abandoned") and not t.get("resolved"):
-            errors.append(f"{tid}: status {t['status']} but no `resolved:` chapter")
-        for name in [t.get("title", "")] + list(t.get("aliases") or []):
-            if not name:
-                continue
-            key = norm_title(name)
-            if key in seen_norms and seen_norms[key] != tid:
-                errors.append(f"{tid}: title/alias {name!r} collides with "
-                              f"thread {seen_norms[key]!r}")
-            seen_norms[key] = tid
-        for row in t.get("log") or []:
-            if row.get("change") not in CHANGES:
-                errors.append(f"{tid}: bad log change {row.get('change')!r}")
-            if not isinstance(row.get("chapter"), int) or row["chapter"] < 1:
-                errors.append(f"{tid}: log row without a real chapter number "
-                              f"({row.get('chapter')!r})")
-    return errors
 
 
 # ── propose (deterministic harvest of thread facts) ──────────────────────

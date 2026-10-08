@@ -248,8 +248,8 @@ def test_compare_writes_diff_and_reads_inputs_only(camp, capsys):
     _corpus(camp)
     assert main(["build", "--summaries-dir", "summaries"]) == 0
     rd = camp / "docs/summary_native/ch002-005"
-    (rd / "drafts").mkdir()
-    draft = rd / "drafts/party.draft.md"
+    (rd / "state/drafts").mkdir(parents=True)
+    draft = rd / "state/drafts/party.draft.md"
     draft.write_text("## A\n\nSee ch 7 and Chapter 12.\nnew line\n")
     live = camp / "live.md"
     live.write_text("## A\n\nSee ch 3.\n")
@@ -257,7 +257,7 @@ def test_compare_writes_diff_and_reads_inputs_only(camp, capsys):
     assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
     out = capsys.readouterr().out
     assert "heuristic" in out and "12" in out
-    diff = (rd / "drafts/party.vs-live.diff").read_text()
+    diff = (rd / "state/drafts/party.vs-live.diff").read_text()
     assert "--- a/" in diff and "+++ b/" in diff and "+new line" in diff
     assert (draft.read_bytes(), live.read_bytes()) == before
 
@@ -268,8 +268,8 @@ def test_compare_errors_when_draft_or_live_missing(camp):
     (camp / "live.md").write_text("x\n")
     assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "live.md"]) == 2
     rd = camp / "docs/summary_native/ch002-005"
-    (rd / "drafts").mkdir()
-    (rd / "drafts/party.draft.md").write_text("x\n")
+    (rd / "state/drafts").mkdir(parents=True)
+    (rd / "state/drafts/party.draft.md").write_text("x\n")
     assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "nope.md"]) == 2
 
 

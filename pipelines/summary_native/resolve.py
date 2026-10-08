@@ -8,7 +8,7 @@ so synth's registry-staleness hash) all call these, so a registry configured in
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from campaignlib.registry import find_registry
@@ -88,6 +88,9 @@ class ProseSettings:
     model: str | None
     effort: str | None  # None unless the backend is claude-code (or a flag asked for one)
     budgets: dict[str, int]
+    #: party's and planning's section budgets (spec 034); merged over their schema defaults the same way.
+    party_budgets: dict[str, int] = field(default_factory=lambda: dict(schema.DEFAULT_PARTY_BUDGETS))
+    planning_budgets: dict[str, int] = field(default_factory=lambda: dict(schema.DEFAULT_PLANNING_BUDGETS))
 
 
 def _block(cfg, name: str) -> dict:
@@ -137,6 +140,22 @@ def resolve_extract(cfg, *, backend=None, model=None, chunk_chars=None) -> Extra
     return ExtractSettings(eff_backend, eff_model, chars)
 
 
+def _merge_budgets(block: dict, key: str, defaults: dict[str, int]) -> dict[str, int]:
+    """``block[key]`` merged over ``defaults``; an unknown section name or a non-positive value refuses."""
+    out = dict(defaults)
+    given = block.get(key) or {}
+    if not isinstance(given, dict):
+        raise ConfigRefusal(f"grounding.yaml summary_native.prose.{key} must be a mapping, got {given!r}")
+    unknown = sorted(set(given) - set(out))
+    if unknown:
+        raise ConfigRefusal(
+            f"grounding.yaml summary_native.prose.{key}: unknown section(s) {unknown}; known: {sorted(out)}"
+        )
+    for k, v in given.items():
+        out[k] = _positive_int(v, f"summary_native.prose.{key}[{k!r}]")
+    return out
+
+
 def resolve_prose(cfg, *, backend=None, model=None, effort=None) -> ProseSettings:
     """``--backend/--model/--claude-code-effort`` > ``summary_native.prose`` > ``schema.py``.
 
@@ -151,15 +170,7 @@ def resolve_prose(cfg, *, backend=None, model=None, effort=None) -> ProseSetting
         eff_effort = block.get("effort") or schema.DEFAULT_PROSE_EFFORT
     else:
         eff_effort = None
-    budgets = dict(schema.DEFAULT_WORLD_BUDGETS)
-    given = block.get("budgets") or {}
-    if not isinstance(given, dict):
-        raise ConfigRefusal(f"grounding.yaml summary_native.prose.budgets must be a mapping, got {given!r}")
-    unknown = sorted(set(given) - set(budgets))
-    if unknown:
-        raise ConfigRefusal(
-            f"grounding.yaml summary_native.prose.budgets: unknown section(s) {unknown}; known: {sorted(budgets)}"
-        )
-    for k, v in given.items():
-        budgets[k] = _positive_int(v, f"summary_native.prose.budgets[{k!r}]")
-    return ProseSettings(eff_backend, eff_model, eff_effort, budgets)
+    budgets = _merge_budgets(block, "budgets", schema.DEFAULT_WORLD_BUDGETS)
+    party_budgets = _merge_budgets(block, "party_budgets", schema.DEFAULT_PARTY_BUDGETS)
+    planning_budgets = _merge_budgets(block, "planning_budgets", schema.DEFAULT_PLANNING_BUDGETS)
+    return ProseSettings(eff_backend, eff_model, eff_effort, budgets, party_budgets, planning_budgets)

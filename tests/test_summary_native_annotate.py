@@ -345,8 +345,9 @@ def test_refuses_when_the_notes_are_stale(built):
     assert rc == 2 and "stale" in err and "summary_native extract" in err
 
 
-def test_party_and_planning_are_not_annotatable():
+def test_every_document_is_annotatable():
+    """Spec 034 T012: party and planning build from the checked notes, so ``annotate`` accepts them."""
     from pipelines.summary_native.cli import build_parser
 
-    with pytest.raises(SystemExit):
-        build_parser().parse_args(["annotate", "party"])
+    for doc in ("world_state", "campaign_state", "party", "planning"):
+        assert build_parser().parse_args(["annotate", doc]).doc == doc

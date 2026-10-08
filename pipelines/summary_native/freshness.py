@@ -123,6 +123,32 @@ def check_notes_fresh(
     return None
 
 
+def check_party_grammar(range_dir: Path) -> str | None:
+    """A refusal message when the checked notes were extracted under an older ``## Party`` grammar, else ``None``.
+
+    ``extract`` records the sha256 of its system prompt in the notes manifest. Party notes written
+    before the subject grammar (spec 034, research R1) carry no subject, so ``party`` and ``planning``
+    cannot attribute them. A missing or unreadable manifest is ``check_notes_fresh``'s report, not this one.
+    """
+    from pipelines.summary_native import context, extract  # lazy: both import this module
+
+    mp = notes_dir(range_dir) / NOTES_MANIFEST
+    try:
+        m = json.loads(mp.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(m, dict):
+        return None
+    if m.get("system_sha256") == sha_file(context.PROMPT_DIR / extract.SYSTEM_PROMPT):
+        return None
+    rng = m.get("range") or {}
+    span = f" --since {rng['since']} --until {rng['until']}" if "since" in rng and "until" in rng else ""
+    return (
+        "the party notes predate the subject grammar; "
+        f"run `summary_native extract{span}` (it re-extracts every chunk)"
+    )
+
+
 def track_files_facts(track_files) -> list[list[str]]:
     """``[[file name, sha256], ...]`` sorted, so it is independent of argument order and holds no
     absolute path. A missing file digests as the empty string."""

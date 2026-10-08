@@ -13,6 +13,7 @@ import json
 import re
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -161,8 +162,8 @@ def run_synth(
     if args.audit and doc != "campaign_state":
         return _refuse(f"--audit applies to campaign_state only, not {doc}")
     if doc in schema.STATE_DOCS:
-        # world_state and campaign_state build from the checked notes; the one-shot path remains for
-        # party and planning (FR-029). The retired flags are refused, never silently ignored.
+        # Every document builds from the checked notes, one call per section (spec 034 retired the
+        # one-shot path). The retired flags are refused, never silently ignored.
         if args.parts:
             return _refuse(schema.STATE_PARTS_REFUSAL.format(doc=doc))
         if args.audit:
@@ -175,8 +176,10 @@ def run_synth(
         for flag in ("name", "recent_chapters", "recurring_min"):
             if getattr(args, flag, None) is not None:
                 return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}: it has no Key NPCs section")
-    for flag, owners in (("world_state", ("party", "planning")), ("campaign_state", ("party", "planning"))):
-        if getattr(args, flag, None) and doc not in owners:
+    for flag in ("world_state", "campaign_state"):
+        if getattr(args, flag, None):
+            if doc in ("party", "planning"):
+                return _refuse(schema.UPSTREAM_REFUSAL)
             return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}")
     for flag, owner in (("party_config", "party"), ("planning_config", "planning")):
         if getattr(args, flag, None) and doc != owner:
@@ -186,9 +189,11 @@ def run_synth(
             args, root=root, range_dir=range_dir, report=report, summaries_dir=summaries_dir,
             registry_path=registry_path, players_path=players_path, track_files=audit_default,
             budgets=budgets, recent_chapters=recent_chapters, recurring_min=recurring_min,
-            npc_root=npc_root, now=now,
+            npc_root=npc_root, now=now, config_dir=config_dir,
         )
 
+    # ── The one-shot path (retired). Unreachable since spec 034 T012: ``schema.STATE_DOCS`` is every
+    # document, so the branch above always returns. Spec 034 T048 deletes the rest of this function.
     if report.blocking_count:
         # Same outcome as validate/build: the summaries need fixing, not the flags.
         print(report.to_markdown(), end="")
@@ -390,7 +395,62 @@ def run_synth(
 # ── world_state and campaign_state from checked notes (spec 033 T019) ───────
 
 #: world_state's sections are written within word budgets; campaign_state's are not.
-STATE_SYSTEM = {"world_state": "state.prose_world.system.md", "campaign_state": "state.prose.system.md"}
+STATE_SYSTEM = {
+    "world_state": "state.prose_world.system.md",
+    "campaign_state": "state.prose.system.md",
+    "party": "state.party.system.md",
+    "planning": "state.planning.system.md",
+}
+#: The documents that open with a reading contract (campaign_state, as before, does not).
+CONTRACT_DOCS = ("world_state", "party", "planning")
+
+
+def _default_budgets(doc: str) -> dict[str, int]:
+    """The schema's word budgets for ``doc``'s sections (campaign_state has none)."""
+    return {
+        "world_state": schema.DEFAULT_WORLD_BUDGETS,
+        "party": schema.DEFAULT_PARTY_BUDGETS,
+        "planning": schema.DEFAULT_PLANNING_BUDGETS,
+    }.get(doc, schema.DEFAULT_WORLD_BUDGETS)
+
+
+@dataclass
+class StateCtx:
+    """What a per-document job builder may read (spec 034). Nothing here is mutable state of the run."""
+
+    doc: str
+    args: object
+    root: Path
+    range_dir: Path
+    config_dir: Path
+    since: int
+    until: int
+    results: list
+    forms: dict
+    pcs: set
+    ambiguous: dict
+    last_chunk: list
+    budgets: dict
+    system: str
+    registry_path: Path | None = None
+    players_path: Path | None = None
+
+
+def _party_jobs(ctx: StateCtx) -> list[dict]:
+    """party's prose jobs: one per character, plus Party Overview and Party Dynamics (spec 034 US1).
+
+    Each job is ``{"heading", "route", "notes", "user", "budget", "system"}``, like world_state's. Not
+    built yet: until US1 fills this in, party has no model-written sections and its draft is incomplete.
+    """
+    return []
+
+
+def _planning_jobs(ctx: StateCtx) -> list[dict]:
+    """planning's prose jobs: NPC Dossiers, Faction States, Active Plots, DM Notes (spec 034 US2/US3).
+
+    Not built yet: until US2 fills this in, planning has no model-written sections and its draft is incomplete.
+    """
+    return []
 _TIMELINE_HEADING = "## Canon Events Timeline"
 _PROMOTED_SUMMARIES = "docs/summaries"  # the reading contract's fallback when the summaries sit outside the campaign
 
@@ -446,8 +506,13 @@ def run_state_synth(
     recurring_min: int = schema.DEFAULT_RECURRING_MIN,
     npc_root: Path | None = None,
     now=None,
+    config_dir: Path | None = None,
 ) -> int:
-    """Build ``world_state`` or ``campaign_state`` from the checked notes ``extract`` wrote.
+    """Build a document from the checked notes ``extract`` wrote (party and planning: spec 034).
+
+    ``party`` and ``planning`` are dispatched to ``_party_jobs`` / ``_planning_jobs`` and refuse notes
+    extracted before the party subject grammar; the description below is world_state's and campaign_state's.
+
 
     Code builds the timeline (its own file), the reference files, the completed list, the NPC
     status table, the audit section and world_state's reading contract; a model writes each
@@ -459,7 +524,7 @@ def run_state_synth(
     """
     now = now or _utcnow
     doc = args.doc
-    budgets = {**schema.DEFAULT_WORLD_BUDGETS, **(budgets or {})}
+    budgets = {**_default_budgets(doc), **(budgets or {})}
     if report.blocking_count:
         print(report.to_markdown(), end="")
         print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
@@ -476,6 +541,10 @@ def run_state_synth(
     problem = freshness.check_notes_fresh(range_dir, registry_path, players_path, extract_cmd=extract_cmd)
     if problem:
         return _refuse(problem)
+    if doc in ("party", "planning"):
+        problem = freshness.check_party_grammar(range_dir)
+        if problem:
+            return _refuse(problem)
     try:
         notes_manifest, results = notes.load_checked(range_dir)
     except notes.NotesIncomplete as e:
@@ -545,7 +614,16 @@ def run_state_synth(
         last_chunk = [c for c in notes.load_chapters(Path(summaries_dir), min(last_numbers), max(last_numbers))
                       if c.number in last_numbers]
     jobs = []
-    for heading, route, attach in state_sections.PROSE_SECTIONS[doc]:
+    if doc in ("party", "planning"):
+        ctx = StateCtx(
+            doc=doc, args=args, root=Path(root), range_dir=Path(range_dir),
+            config_dir=Path(config_dir) if config_dir is not None else Path(root) / "config",
+            since=since, until=until, results=results, forms=forms, pcs=pcs, ambiguous=ambiguous,
+            last_chunk=last_chunk, budgets=budgets, system=system,
+            registry_path=registry_path, players_path=players_path,
+        )
+        jobs.extend((_party_jobs if doc == "party" else _planning_jobs)(ctx))
+    for heading, route, attach in state_sections.PROSE_SECTIONS.get(doc, ()):
         routed = state_sections.route_notes(route, results)
         extra = ""
         if heading == "## Active Threats and Open Pressures":
@@ -712,13 +790,13 @@ def run_state_synth(
         if body is not None:
             parts.append(f"{h}\n{body}\n")
     joined = "\n".join(parts)
-    if doc == "world_state":
+    if doc in CONTRACT_DOCS:
         # The reading contract travels with its reference bundle; external summaries keep their path.
         shown = _rel(Path(summaries_dir), root) if summaries_dir is not None else _PROMOTED_SUMMARIES
         contract = state_sections.reading_contract((since, until), {
             "summaries": shown,
             "reference": "reference", "timeline": schema.TIMELINE_FILE,
-        })
+        }, doc)
         joined = contract + "\n" + joined
 
     problems = check_outline(joined, headings)

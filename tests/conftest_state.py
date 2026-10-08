@@ -48,7 +48,7 @@ CANNED = {
 - [THREAT] **The gate guards** — Sarith watches the party through the bars. [ch 002 / 002.01]
 
 ## Party
-- The party is held in the pens of Velkynvelve. [ch 002 / 002.01]
+- **Party** — The party is held in the pens of Velkynvelve. [ch 002 / 002.01]
 """,
     3: """\
 ## Events
@@ -72,7 +72,7 @@ CANNED = {
 - [NPC] **Ilvara** — She said "the web is a lie" and nothing else. [ch 003 / 003.01]
 
 ## Party
-- The party stands at the foot of the long stair. [ch 003 / end]
+- **Party** — The party stands at the foot of the long stair. [ch 003 / end]
 """,
     4: """\
 ## Events
@@ -95,7 +95,7 @@ CANNED = {
 - [THREAT] **Kalan at the gate** — Kalan holds the gate of Velkynvelve. [ch 004 / 004.01]
 
 ## Party
-- The party holds the gate of Velkynvelve. [ch 004 / end]
+- **Party** — The party holds the gate of Velkynvelve. [ch 004 / end]
 """,
     5: """\
 ## Events
@@ -114,7 +114,7 @@ CANNED = {
 - [LOCATION] **Velkynvelve** — The party rests at its gate. [ch 005 / end]
 
 ## Party
-- The party rests at the gate of Velkynvelve. [ch 005 / end]
+- **Party** — The party rests at the gate of Velkynvelve. [ch 005 / end]
 """,
 }
 

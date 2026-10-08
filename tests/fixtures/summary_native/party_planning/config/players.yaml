@@ -1,0 +1,10 @@
+version: 1
+players:
+- id: joe
+  name: Joe
+  plays:
+  - Daz
+- id: amy
+  name: Amy
+  plays:
+  - Zalthir

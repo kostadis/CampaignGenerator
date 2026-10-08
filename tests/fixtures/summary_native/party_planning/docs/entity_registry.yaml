@@ -1,0 +1,12 @@
+version: 1
+campaign: party-planning-fixture
+entities:
+  - name: Ilvara Mizzrym
+    type: npc
+    aliases: [Ilvara]
+  - name: Ront
+    type: npc
+  - name: House Mizzrym
+    type: faction
+  - name: Brindol
+    type: location

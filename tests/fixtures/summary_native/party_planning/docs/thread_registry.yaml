@@ -1,0 +1,25 @@
+version: 1
+threads:
+- id: carver-march
+  title: The Carver's march
+  aliases:
+  - Carver march
+  status: open
+  opened: 2
+  log:
+  - chapter: 2
+    change: opened
+    summary: A horde is spoken of in whispers.
+- id: signet-ring
+  title: The signet ring
+  aliases: []
+  status: resolved
+  opened: 2
+  resolved: 4
+  log:
+  - chapter: 2
+    change: opened
+    summary: Ilvara leaves a signet ring on the floor.
+  - chapter: 4
+    change: resolved
+    summary: Nobody could say what became of the ring.

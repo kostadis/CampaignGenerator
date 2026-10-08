@@ -89,28 +89,72 @@ def _norm(text: str) -> str:
     return _ENTRY_CITE_RE.sub(r"\1npcs", text)
 
 
-def published_view(path: Path) -> PublishedView:
-    """The view of one published dossier. Raises ``NotPublished`` for any other file.
+def _read_sections(path: Path, take: Sequence[str]) -> tuple["re.Match[str]", dict[str, str]]:
+    """``(header match, {heading: normalised body})`` for the ``take`` sections of one published dossier.
 
-    One pass over the lines: a line is kept only while a ``TAKE`` heading is current, so no other
-    section is ever held, parsed or returned.
+    One pass over the lines: a line is kept only while a ``take`` heading is current, so no other
+    section is ever held, parsed or returned. Raises ``NotPublished`` for any other file.
     """
-    p = Path(path)
-    text = p.read_text(encoding="utf-8")
+    text = Path(path).read_text(encoding="utf-8")
     m = _PUBLISHED_RE.match(text.split("\n", 1)[0])
     if m is None:
         raise NotPublished("not a summary_native publication")
-    kept: dict[str, list[str]] = {h: [] for h in TAKE}
+    kept: dict[str, list[str]] = {h: [] for h in take}
     current = None
     for line in text.splitlines()[1:]:
         if line.startswith("## "):
             current = line.rstrip() if line.rstrip() in kept else None
         elif current is not None:
             kept[current].append(line)
-    ident, state = (_norm("\n".join(kept[h]).strip("\n")) for h in TAKE)
+    return m, {h: _norm("\n".join(kept[h]).strip("\n")) for h in take}
+
+
+def published_view(path: Path) -> PublishedView:
+    """The view of one published dossier. Raises ``NotPublished`` for any other file.
+
+    Reads only the ``TAKE`` sections (see :func:`_read_sections`).
+    """
+    m, got = _read_sections(path, TAKE)
+    ident, state = (got[h] for h in TAKE)
     if not state:
         raise NotPublished("no Last Observed State")
-    return PublishedView(m.group("npc"), p.stem, m.group("range"), m.group("verify"), ident, state)
+    return PublishedView(m.group("npc"), Path(path).stem, m.group("range"), m.group("verify"), ident, state)
+
+
+#: planning's NPC Dossiers read four sections: the two above plus the NPC's motives and relationships.
+PLANNING_TAKE: tuple[str, str, str, str] = (
+    "## Identity", "## Personality and Motivations", "## Last Observed State", "## Relationships")
+
+
+@dataclass(frozen=True)
+class PlanningView:
+    """What planning may know of a published dossier: its name, header facts and four sections."""
+
+    name: str
+    slug: str
+    range: str
+    verify: str
+    identity: str
+    personality: str
+    state: str
+    relationships: str
+
+    @property
+    def source(self) -> str:
+        """Everything the NPC's block may be written from, and every quotation checked against."""
+        return "\n".join(s for s in (self.identity, self.personality, self.state, self.relationships) if s)
+
+
+def planning_view(path: Path) -> PlanningView:
+    """The planning view of one published dossier. Raises ``NotPublished`` like :func:`published_view`.
+
+    The same one-pass, held-heading-only reader, with ``PLANNING_TAKE`` as its take-set.
+    """
+    m, got = _read_sections(path, PLANNING_TAKE)
+    ident, pers, state, rels = (got[h] for h in PLANNING_TAKE)
+    if not state:
+        raise NotPublished("no Last Observed State")
+    return PlanningView(m.group("npc"), Path(path).stem, m.group("range"), m.group("verify"), ident, pers, state, rels)
 
 
 def _range_numbers(rng: str) -> tuple[int, int]:

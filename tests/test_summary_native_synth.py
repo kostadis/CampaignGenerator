@@ -11,9 +11,40 @@ import yaml
 
 from pipelines.summary_native import synth
 from pipelines.summary_native.cli import main
+from pipelines.summary_native.schema import UPSTREAM_REFUSAL
 
 FIX = Path(__file__).parent / "fixtures" / "summary_native"
 RD = "docs/summary_native/ch002-005"
+
+#: Spec 034 T012 routed party and planning through the chunked synth, so the one-shot harness these tests
+#: drove (``camp`` + ``fake``: one model call per outline, ``runs/<doc>/part-N.*``, ``<range>/drafts/``) is
+#: unreachable. Each is superseded by the party/planning tests of US1/US2 or deleted with the one-shot body
+#: at T048; they stay visible here, skipped, so that work has the list of behaviours to re-cover.
+RETIRED_ONE_SHOT = frozenset({
+    "test_dump_only_writes_prompts_no_call", "test_dump_only_creates_no_client",
+    "test_draft_written_when_outline_complete", "test_incomplete_when_heading_missing_exit3",
+    "test_parts_one_call_per_part_joined_in_order", "test_world_state_input_only_from_explicit_flag",
+    "test_never_writes_live_docs", "test_existing_draft_needs_force", "test_existing_incomplete_never_blocks",
+    "test_record_json_fields", "test_prompts_are_deterministic", "test_run_ids_are_utc_timestamps",
+    "test_run_id_collision_gets_suffix", "test_dump_only_leaves_earlier_run_and_draft_record_intact",
+    "test_parts_run_then_single_part_run_keep_separate_dirs", "test_incomplete_keeps_previous_draft",
+    "test_chatty_part_preamble_makes_run_incomplete", "test_extra_h2_makes_run_incomplete",
+    "test_part_with_foreign_heading_incomplete", "test_record_backend_is_effective_backend",
+    "test_failed_client_setup_still_writes_record", "test_failed_model_call_still_writes_record",
+    "test_party_reads_party_config_and_sheets", "test_party_config_missing_or_invalid_exits_2",
+    "test_party_config_failure_prints_one_error_line", "test_planning_no_arc_scores_prompt_states_empty",
+    "test_planning_selection_is_npc_only_with_reasons", "test_planning_threat_tracker_score_line_fails",
+    "test_planning_sentinel_only_threat_tracker_passes", "test_planning_with_arc_scores_needs_no_extra_check",
+    "test_planning_without_any_config_means_no_arc_scores", "test_party_planning_require_explicit_upstream_flags",
+    "test_planning_empty_threat_tracker_fails", "test_canon_change_does_not_make_corpus_stale",
+    "test_configured_registry_not_stale_after_build_then_stale_on_change",
+})
+
+
+@pytest.fixture(autouse=True)
+def _skip_retired_one_shot(request):
+    if request.node.originalname in RETIRED_ONE_SHOT:
+        pytest.skip("spec 034 T012: party/planning no longer use the one-shot path; superseded in US1/US2, deleted at T048")
 
 
 @pytest.fixture
@@ -606,10 +637,11 @@ def test_planning_empty_threat_tracker_fails(camp, fake):
         ("world_state", "--campaign-state", False),
         ("campaign_state", "--world-state", False),  # one-shot upstream context: party and planning only
         ("campaign_state", "--campaign-state", False),
-        ("party", "--world-state", True),
-        ("party", "--campaign-state", True),
-        ("planning", "--world-state", True),
-        ("planning", "--campaign-state", True),
+        # spec 034 T012: party and planning no longer take upstream drafts as prompt context either
+        ("party", "--world-state", False),
+        ("party", "--campaign-state", False),
+        ("planning", "--world-state", False),
+        ("planning", "--campaign-state", False),
     ],
 )
 def test_upstream_flag_applicability(camp, capsys, doc, flag, ok):
@@ -617,11 +649,12 @@ def test_upstream_flag_applicability(camp, capsys, doc, flag, ok):
     write_planning(camp)
     src = "docs/world_state.md" if flag == "--world-state" else "docs/campaign_state.md"
     rc = main(["synth", doc, *ARGS, "--dump-only", "--force", flag, src])
-    if ok:
-        assert rc == 0
+    assert rc == 2 and not ok
+    err = capsys.readouterr().err
+    if doc in ("party", "planning"):
+        assert UPSTREAM_REFUSAL in err
     else:
-        assert rc == 2
-        assert f"{flag} does not apply to {doc}" in capsys.readouterr().err
+        assert f"{flag} does not apply to {doc}" in err
 
 
 def test_registry_change_makes_corpus_stale(camp, fake, capsys):
@@ -765,19 +798,63 @@ class TestChunkedRefusals:
         rc, _, err = cs.run_cli(synth_args(extracted, "campaign_state"))
         assert rc == 2 and "summary_native audit" in err and not fm.prose_calls
 
-    def test_party_and_planning_keep_the_one_shot_path(self, extracted, fm):
-        (extracted / "docs" / "Daz.md").write_text("A fighter.\n")
-        (extracted / "config" / "party.yaml").write_text(
-            yaml.safe_dump({"characters": [{"name": "Daz", "sheet": "docs/Daz.md"}]}))
-        rc, out, err = cs.run_cli(synth_args(extracted, "party", "--dump-only"))
+    @pytest.mark.parametrize("doc", ["party", "planning"])
+    def test_party_and_planning_route_through_the_chunked_synth(self, extracted, fm, doc):
+        """Spec 034 T012: no one-shot ``runs/<doc>/part-N.*``; the run lives in ``state/runs`` and the draft in ``state/drafts``."""
+        rc, out, err = cs.run_cli(synth_args(extracted, doc, "--dump-only"))
         assert rc == 0, err
-        (run,) = (cs.range_dir(extracted) / "runs" / "party").iterdir()
-        assert (run / "part-1.system.md").is_file() and (run / "part-1.user.md").is_file()
-        rc, _, err = cs.run_cli(synth_args(extracted, "planning", "--dump-only"))
-        assert rc == 0, err
-        assert (next((cs.range_dir(extracted) / "runs" / "planning").iterdir()) / "part-1.user.md").is_file()
-        # the one-shot path never reads the checked notes
+        (run,) = [p for p in (state_dir(extracted) / "runs").iterdir() if (p / f"{doc}.system.md").is_file()]
+        assert (run / f"{doc}.system.md").is_file() and (run / "record.json").is_file()
+        assert json.loads((run / "record.json").read_text())["doc"] == doc
+        assert not (cs.range_dir(extracted) / "runs").exists() and not (cs.range_dir(extracted) / "drafts").exists()
         assert not fm.prose_calls
+
+    @pytest.mark.parametrize("doc", ["party", "planning"])
+    def test_party_and_planning_open_with_their_reading_contract_and_are_incomplete_until_their_sections_exist(
+            self, extracted, fm, doc):
+        rc, _, err = cs.run_cli(synth_args(extracted, doc))
+        assert rc == 3, err  # the per-document job builders are stubs: no model-written section yet
+        inc = (state_dir(extracted) / "drafts" / f"{doc}.incomplete.md").read_text()
+        assert "How to read this document" in inc and "summary_native pointers:" in inc
+        assert not (state_dir(extracted) / "drafts" / f"{doc}.draft.md").exists()
+        assert not (cs.range_dir(extracted) / "drafts").exists()
+        assert not fm.prose_calls
+
+    @pytest.mark.parametrize("doc", ["party", "planning"])
+    @pytest.mark.parametrize("flag", ["--world-state", "--campaign-state"])
+    def test_party_and_planning_refuse_the_retired_upstream_flags(self, extracted, fm, doc, flag):
+        rc, _, err = cs.run_cli(synth_args(extracted, doc, flag, "docs/npcs/ilvara-mizzrym.md"))
+        assert rc == 2 and UPSTREAM_REFUSAL in err
+        assert not fm.prose_calls
+
+    @pytest.mark.parametrize("doc", ["party", "planning"])
+    def test_parts_is_retired_for_party_and_planning_too(self, extracted, fm, doc):
+        rc, _, err = cs.run_cli(synth_args(extracted, doc, "--parts", "2"))
+        assert rc == 2 and "--parts" in err and "one call per section" in err
+
+    @pytest.mark.parametrize("doc", ["party", "planning"])
+    def test_notes_extracted_under_the_old_party_grammar_refuse_naming_extract(self, extracted, fm, doc):
+        nm = cs.notes_dir(extracted) / "manifest.json"
+        m = json.loads(nm.read_text())
+        m["system_sha256"] = "0" * 64
+        nm.write_text(json.dumps(m))
+        rc, _, err = cs.run_cli(synth_args(extracted, doc))
+        assert rc == 2
+        assert "the party notes predate the subject grammar" in err
+        assert "summary_native extract --since 2 --until 5" in err
+        # world_state is untouched by the party grammar
+        rc, _, err = cs.run_cli(synth_args(extracted, "world_state", "--dump-only"))
+        assert rc == 0, err
+
+    def test_budgets_default_per_document(self):
+        assert synth._default_budgets("party") == schema.DEFAULT_PARTY_BUDGETS
+        assert synth._default_budgets("planning") == schema.DEFAULT_PLANNING_BUDGETS
+        assert synth._default_budgets("world_state") == schema.DEFAULT_WORLD_BUDGETS
+
+    def test_every_document_drafts_under_state_drafts(self, tmp_path):
+        for doc in schema.DOCS:
+            assert schema.draft_dir(tmp_path, doc) == tmp_path / "state" / "drafts"
+        assert schema.STATE_DOCS == schema.DOCS
 
 
 class TestWorldState:

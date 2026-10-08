@@ -634,11 +634,11 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
     budgets = None
     try:
         if args.doc in schema.STATE_DOCS:
-            # world_state and campaign_state: flag > grounding.yaml summary_native.prose > schema.
+            # every document: flag > grounding.yaml summary_native.prose > schema.
             prose = resolve.resolve_prose(
                 cfg, backend=args.backend, model=args.model, effort=getattr(args, "claude_code_effort", None))
             args.backend, args.model, args.claude_code_effort = prose.backend, prose.model, prose.effort
-            budgets = prose.budgets
+            budgets = {"party": prose.party_budgets, "planning": prose.planning_budgets}.get(args.doc, prose.budgets)
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
     except ValueError as e:
         return _err(str(e))

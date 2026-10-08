@@ -6,7 +6,9 @@ cache keys and routing (T016) extend this file.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -153,7 +155,7 @@ class TestCheckChunk:
                 Threads="- [OPENED] **The ring** — a ring is left. [ch 002 / 002.02]",
                 Status="- Sarith | Alive | the gate | Hostile [ch 002 / 002.01]",
                 World="- [LOCATION] **Velkynvelve** — an outpost. [ch 002 / locations]",
-                Party="- The party is in the pens. [ch 002 / 002.01]",
+                Party="- **Party** — The party is in the pens. [ch 002 / 002.01]",
             ),
             _chunk(),
         )
@@ -332,3 +334,202 @@ class TestRouting:
             "- [OPENED] **The ring** — o [ch 002 / 002.02]",
             "- [RESOLVED] **The ring** — r [ch 004 / 004.02]",
         ]
+
+
+# ── Spec 034 T005: party subjects, checked levels and note ids ───────────────
+
+
+def _lvl_chapter(*scene_texts: str, number: int = 2) -> notes.Chapter:
+    """A chapter whose scene ``NNN.0k`` holds ``scene_texts[k-1]`` (and nothing else is citable)."""
+    body = "".join(f"### {number:03d}.{k:02d} Scene {k}\n\n{t}\n\n" for k, t in enumerate(scene_texts, 1))
+    text = f"# Chapter {number}\n\nDate: 2026-03-01\n\n## Scenes\n\n{body}"
+    return notes.Chapter(
+        number, Path(f"{number:03d}-x.md"), text, {f"{number:03d}.{k:02d}" for k in range(1, len(scene_texts) + 1)})
+
+
+def _party_check(party: str, *scene_texts: str):
+    return notes.check_chunk(_raw(Party=party), [_lvl_chapter(*scene_texts)])
+
+
+def _party_reasons(cc):
+    return [d.reason.split(" ")[0] for d in cc.drops]
+
+
+class TestPartySubject:
+    def test_a_party_bullet_without_a_leading_subject_is_dropped(self):
+        cc = _party_check("- The party is in the pens. [ch 002 / 002.01]\n- Daz: rests [ch 002 / 002.01]", "text")
+        assert _party_reasons(cc) == ["missing-party-subject", "missing-party-subject"]
+        assert cc.kept("party") == []
+        assert cc.drops[0].kind == "party" and cc.drops[0].text.startswith("- The party")
+
+    def test_a_character_subject_is_kept(self):
+        cc = _party_check("- **Daz** — Casts Glyph of Warding. [ch 002 / 002.01]", "text")
+        (n,) = cc.kept("party")
+        assert (n.subject, n.tag, n.level) == ("Daz", None, None)
+        assert n.text == "- **Daz** — Casts Glyph of Warding. [ch 002 / 002.01]"
+
+    def test_the_party_subject_and_a_joined_subject_are_kept_as_written(self):
+        cc = _party_check(
+            "- **Party** — Holds the gate. [ch 002 / 002.01]\n- **Daz and Zalthir** — Scout. [ch 002 / 002.01]", "x")
+        assert [n.subject for n in cc.kept("party")] == ["Party", "Daz and Zalthir"]
+
+    def test_a_level_row_without_a_subject_is_dropped_as_missing_subject(self):
+        cc = _party_check("- [LEVEL] 9 [ch 002 / 002.01]", "the party reaches 9th level")
+        assert _party_reasons(cc) == ["missing-party-subject"]
+
+    def test_other_sections_are_unaffected(self):
+        cc = notes.check_chunk(_raw(Events="- A thing happens. [ch 002 / 002.01]"), [_lvl_chapter("x")])
+        assert cc.drops == [] and len(cc.kept("event")) == 1
+
+
+class TestPartyLevelRows:
+    ROW = "- [LEVEL] **Party** — 9 [ch 002 / 002.01]"
+
+    @pytest.mark.parametrize("cited", [
+        "By dawn the party reaches 9th level.",
+        "Everyone is now level 9.",
+        "They are ninth level now.",
+        "The party is level nine.",
+        "A 9th-level party at last.",
+        "Party levels to 9 after the fight.",
+        "The party levels up to 9 at dawn.",
+        "The party reached level 9.",
+        "Three nights later the party reaches ninth level.",
+    ])
+    def test_a_level_phrase_in_the_cited_text_confirms_the_level(self, cited):
+        cc = _party_check(self.ROW, cited)
+        assert cc.drops == [], cited
+        (n,) = cc.kept("party")
+        assert (n.subject, n.tag, n.level) == ("Party", "LEVEL", 9)
+
+    @pytest.mark.parametrize("cited", [
+        "She spends a 4th-level slot.",
+        "A 9th-level spell, cast at dawn.",
+        "Level 9 spells are out of reach.",
+        "Using a level nine slot costs her.",
+        "Nothing about levels here, but 9 goblins attack.",
+    ])
+    def test_a_spell_level_or_a_bare_number_does_not_confirm_it(self, cited):
+        cc = _party_check(self.ROW, cited)
+        assert _party_reasons(cc) == ["level-not-in-cited-text"], cited
+        assert cc.kept("party") == []
+
+    def test_the_level_row_of_a_character(self):
+        cc = _party_check("- [LEVEL] **Daz** — 5 [ch 002 / 002.01]", "Daz is now a 5th-level wizard.")
+        (n,) = cc.kept("party")
+        assert (n.subject, n.tag, n.level) == ("Daz", "LEVEL", 5)
+
+    def test_the_phrase_must_be_in_a_cited_section_not_just_the_chunk(self):
+        ch = _lvl_chapter("quiet", "The party reaches 9th level.")
+        cc = notes.check_chunk(_raw(Party="- [LEVEL] **Party** — 9 [ch 002 / 002.01]"), [ch])
+        assert _party_reasons(cc) == ["level-not-in-cited-text"]
+        cc = notes.check_chunk(_raw(Party="- [LEVEL] **Party** — 9 [ch 002 / 002.01; ch 002 / 002.02]"), [ch])
+        assert cc.drops == [] and cc.kept("party")[0].level == 9
+
+    def test_a_section_key_citation_reads_that_sections_text(self):
+        text = "# Chapter 2\n\n## Scenes\n\n### 002.01 One\n\nquiet\n\n## NPCs\n\n### Daz\n\nDaz reaches level 6 today.\n"
+        ch = notes.Chapter(2, Path("002-x.md"), text, {"002.01", "npcs"})
+        cc = notes.check_chunk(_raw(Party="- [LEVEL] **Daz** — 6 [ch 002 / npcs]"), [ch])
+        assert cc.drops == [] and cc.kept("party")[0].level == 6
+
+    def test_a_level_row_with_no_number_is_dropped(self):
+        cc = _party_check("- [LEVEL] **Party** — high [ch 002 / 002.01]", "the party reaches 9th level")
+        assert _party_reasons(cc) == ["malformed-level-row"]
+
+    def test_the_new_fields_survive_a_json_round_trip(self):
+        cc = _party_check(self.ROW, "the party reaches 9th level")
+        again = notes.CheckedChunk.from_dict(json.loads(json.dumps(cc.to_dict(), sort_keys=True)))
+        assert again == cc and again.kept("party")[0].level == 9
+
+    def test_stitched_party_is_still_the_note_text(self):
+        cc = _party_check(f"{self.ROW}\n- **Daz** — Rests. [ch 002 / 002.01]", "the party reaches 9th level")
+        assert notes.stitched([cc], "party") == [self.ROW, "- **Daz** — Rests. [ch 002 / 002.01]"]
+
+
+class TestNoteId:
+    def _note(self, **kw):
+        base = dict(kind="thread", text="- [OPENED] **The ring** — a ring. [ch 002 / 002.02]", first_chapter=2, chunk="002-003")
+        return notes.Note(**{**base, **kw})
+
+    def test_stable_for_identical_chapter_kind_and_text(self):
+        a, b = self._note(), self._note(chunk="002-005", tag="OPENED", subject="The ring")
+        assert a.note_id == b.note_id == notes.note_id(a)
+        assert re.fullmatch(r"n-[0-9a-f]{10}", a.note_id)
+
+    def test_differs_when_chapter_kind_or_text_differs(self):
+        base = self._note().note_id
+        assert self._note(first_chapter=3).note_id != base
+        assert self._note(kind="world").note_id != base
+        assert self._note(text="- [OPENED] **The ring** — a different ring. [ch 002 / 002.02]").note_id != base
+
+    def test_the_id_is_the_documented_digest(self):
+        n = self._note()
+        want = "n-" + hashlib.sha1(f"002|thread|{n.text}".encode("utf-8")).hexdigest()[:10]
+        assert n.note_id == want
+
+
+class TestPartyPlanningFixture:
+    """T004: the checked-note set the party/planning tests share, run through the real code check."""
+
+    def test_the_party_notes_that_survive_and_the_ones_that_do_not(self):
+        from tests import conftest_party as cp
+
+        results = cp.checked_results()
+        kept = [(n.first_chapter, n.subject, n.tag, n.level) for r in results for n in r.kept("party")]
+        assert (2, "Party", "LEVEL", 9) in kept                      # "the party reaches 9th level"
+        assert (2, "Dazz", None, None) in kept and (2, "Ront", None, None) in kept
+        assert (2, "Daz and Zalthir", None, None) in kept
+        assert not [k for k in kept if k[2] == "LEVEL" and k[1] == "Zalthir"]   # spell levels only
+        reasons = sorted(d.reason.split(" ")[0] for r in results for d in r.drops)
+        assert reasons == ["level-not-in-cited-text", "level-not-in-cited-text", "missing-party-subject"]
+
+    def test_the_thread_notes_name_one_thread_two_ways_and_one_is_resolved(self):
+        from tests import conftest_party as cp
+
+        subjects = {(n.tag, n.subject) for r in cp.checked_results() for n in r.kept("thread")}
+        assert ("OPENED", "The Carver's march") in subjects and ("ADVANCED", "Carver march") in subjects
+        assert ("RESOLVED", "The signet ring") in subjects
+
+    def test_the_published_dossier_reads_through_the_planning_take_set(self):
+        from pipelines.summary_native import key_npcs
+        from tests import conftest_party as cp
+
+        v = key_npcs.planning_view(cp.PARTY_FIXTURE / "docs" / "npcs" / "ilvara-mizzrym.md")
+        assert v.name == "Ilvara Mizzrym" and v.personality and v.relationships and v.state
+        assert cp.CANARY not in repr(v)
+
+
+class TestPartyGrammarFreshness:
+    """T008: notes extracted under the pre-034 prompt are refused by party/planning."""
+
+    def _write(self, range_dir, **manifest):
+        nd = range_dir / "state" / "notes"
+        nd.mkdir(parents=True)
+        (nd / "manifest.json").write_text(json.dumps({"kind": "state_notes", **manifest}), encoding="utf-8")
+
+    def test_a_manifest_from_the_current_prompt_is_fine(self, tmp_path):
+        from pipelines.summary_native import context, extract, freshness
+
+        sha = freshness.sha_file(context.PROMPT_DIR / extract.SYSTEM_PROMPT)
+        self._write(tmp_path, system_sha256=sha, range={"since": 2, "until": 70})
+        assert freshness.check_party_grammar(tmp_path) is None
+
+    def test_an_older_prompt_is_refused_with_the_extract_command(self, tmp_path):
+        from pipelines.summary_native import freshness
+
+        self._write(tmp_path, system_sha256="0" * 64, range={"since": 2, "until": 70})
+        assert freshness.check_party_grammar(tmp_path) == (
+            "the party notes predate the subject grammar; "
+            "run `summary_native extract --since 2 --until 70` (it re-extracts every chunk)"
+        )
+
+    def test_a_manifest_with_no_prompt_sha_is_also_old(self, tmp_path):
+        from pipelines.summary_native import freshness
+
+        self._write(tmp_path, range={"since": 2, "until": 5})
+        assert "predate the subject grammar" in freshness.check_party_grammar(tmp_path)
+
+    def test_no_manifest_is_not_this_checks_report(self, tmp_path):
+        from pipelines.summary_native import freshness
+
+        assert freshness.check_party_grammar(tmp_path) is None
