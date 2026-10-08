@@ -195,6 +195,22 @@ def latest_per_character(attributions: Sequence[Attribution], names: Sequence[st
     return sorted(keep.values(), key=lambda n: n.first_chapter)  # stable: dict order is the attribution order
 
 
+def latest_per_companion(attributions: Sequence[Attribution], k: int = 2) -> list[notes.Note]:
+    """The latest ``k`` notes about each companion (a note naming one counts for it, a mixed subject
+    included), once each, in chapter order. Companions are named by the registry; nothing is guessed."""
+    by_companion: dict[str, list[notes.Note]] = {}
+    for a in attributions:
+        if a.is_level:
+            continue
+        for name in a.companions:
+            by_companion.setdefault(name, []).append(a.note)
+    keep: dict[str, notes.Note] = {}
+    for name in sorted(by_companion, key=lambda s: (s.casefold(), s)):
+        for n in by_companion[name][-k:]:
+            keep[n.note_id] = n
+    return sorted(keep.values(), key=lambda n: n.first_chapter)  # stable: attribution order within a chapter
+
+
 # ── The level line (research R3) ────────────────────────────────────────────
 
 _NO_LEVEL = "Level: not recorded in the summaries (sheet {what})"

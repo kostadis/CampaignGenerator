@@ -361,6 +361,15 @@ class TestSynthParty:
         assert "Is wounded in the fight" in ov and "Carries Daz back from the gate" in ov
         assert "Keeps watch from the wall" not in ov  # a companion's note is not the overview's
 
+    def test_dynamics_also_see_the_companions(self, pcamp):
+        # GM ruling 2026-10-08: bonds with companions belong in Party Dynamics.
+        root, fm = pcamp
+        synth_party(root)
+        dyn = next(c for c in fm.party_calls if c["heading"] == "## Party Dynamics")["user"]
+        assert "THE LATEST TWO NOTES OF EACH COMPANION" in dyn
+        assert "Keeps watch from the wall" in dyn  # Ront's (a companion's) note
+        assert "Is wounded in the fight" in dyn  # still the characters' latest notes too
+
     def test_a_character_with_no_notes_says_so_and_makes_no_call(self, pcamp):
         root, fm = pcamp
         # Zalthir has notes in the fixture; give party.yaml a third character nobody wrote about.
