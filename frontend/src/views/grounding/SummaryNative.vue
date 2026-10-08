@@ -16,6 +16,9 @@ const BASE = '/api/grounding/summary-native'
 const SYNTH_ENDPOINT = '/api/grounding/summary-native/run/synth'
 const DOCS = ['world_state', 'campaign_state', 'party', 'planning'] as const
 type Doc = (typeof DOCS)[number]
+// world_state and campaign_state are built from the checked notes (spec 033): Extract first, one prose
+// call per section, no --parts and no --audit. party and planning keep the one-shot path.
+const CHUNKED: readonly Doc[] = ['world_state', 'campaign_state']
 
 const config = useConfigStore()
 
@@ -63,6 +66,32 @@ const dumpOnly = ref(false)
 const forceBuild = ref(false)
 // Per-run, never persisted: replacing a reviewed draft must be a deliberate act each time.
 const forceSynth = ref(false)
+// Per run, never persisted and unchecked on every load (spec 033 FR-018b): write a code-built Key NPCs line
+// for an NPC with no published dossier instead of refusing. world_state only.
+const fallbackNpcLines = ref(false)
+// Extract (per run, never persisted): a blank chunk size uses grounding.yaml summary_native.extract.chunk_chars.
+const extractChunkChars = ref<Num>('')
+const extractMaxTokens = ref<Num>('')
+const extractDumpOnly = ref(false)
+const forceExtract = ref(false)
+// Per run, never persisted (endpoints are machine wiring, not campaign state): one URL per line, all serving the
+// same model; blank uses the single endpoint the backend resolves. Workers = in-flight calls per endpoint.
+const extractEndpointsText = ref('')
+const extractParallel = ref<Num>('')
+// Audit (per run, never persisted): track files are prefilled from grounding.yaml campaign_state.track_files and
+// editable here; the judge uses the extraction backend, so a blank model uses summary_native.extract.model.
+const auditTrackText = ref('')
+const auditCandidates = ref<Num>('')
+const auditMaxTokens = ref<Num>('')
+const auditDumpOnly = ref(false)
+const forceAudit = ref(false)
+const auditModel = ref('')
+const auditEndpointsText = ref('')
+const auditParallel = ref<Num>('')
+// Prose step (world_state / campaign_state): blank uses grounding.yaml summary_native.prose.
+const proseModel = ref('')
+const proseEffort = ref('')
+const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'] as const
 
 const lines = (t: string) => t.split('\n').map(l => l.trim()).filter(Boolean)
 const num = (n: Num) => (typeof n === 'number' ? n : undefined)
@@ -125,22 +154,63 @@ const validateParams = computed(() => ({
 const buildParams = computed(() => ({
   ...baseParams.value, dup_threshold: num(dupThreshold.value), force: forceBuild.value,
 }))
-const synthParams = computed(() => ({
+const isChunked = computed(() => CHUNKED.includes(doc.value))
+const extractParams = computed(() => ({
   ...baseParams.value,
-  world_state: worldStatePath.value.trim(),
-  campaign_state: campaignStatePath.value.trim(),
-  party_config: doc.value === 'party' ? partyConfigPath.value.trim() : '',
-  planning_config: doc.value === 'planning' ? planningConfigPath.value.trim() : '',
-  audit: lines(auditText.value),
-  name: lines(namesText.value),
-  recent_chapters: num(recentChapters.value),
-  recurring_min: num(recurringMin.value),
-  parts: num(parts.value),
-  max_tokens: num(maxTokens.value),
-  dump_only: dumpOnly.value,
-  force: forceSynth.value,
-  model: config.model || undefined,
+  chunk_chars: num(extractChunkChars.value),
+  max_tokens: num(extractMaxTokens.value),
+  dump_only: extractDumpOnly.value,
+  force: forceExtract.value,
+  endpoints: lines(extractEndpointsText.value),
+  parallel: num(extractParallel.value),
 }))
+const auditParams = computed(() => ({
+  ...baseParams.value,
+  track_file: lines(auditTrackText.value),
+  candidates: num(auditCandidates.value),
+  max_tokens: num(auditMaxTokens.value),
+  dump_only: auditDumpOnly.value,
+  force: forceAudit.value,
+  model: auditModel.value.trim() || undefined,
+  endpoints: lines(auditEndpointsText.value),
+  parallel: num(auditParallel.value),
+}))
+const synthParams = computed(() => isChunked.value
+  ? {
+      // The prose step takes its backend and model from grounding.yaml summary_native.prose, so the
+      // page does not send the app-wide model for these two documents.
+      ...baseParams.value,
+      // world_state's Key NPCs selection (campaign_state has no such section and the server refuses these)
+      ...(doc.value === 'world_state'
+        ? {
+            name: lines(namesText.value),
+            recent_chapters: num(recentChapters.value),
+            recurring_min: num(recurringMin.value),
+            fallback_npc_lines: fallbackNpcLines.value,
+          }
+        : {}),
+      max_tokens: num(maxTokens.value),
+      dump_only: dumpOnly.value,
+      force: forceSynth.value,
+      model: proseModel.value.trim() || undefined,
+      claude_code_effort: proseEffort.value || undefined,
+    }
+  : {
+      ...baseParams.value,
+      world_state: worldStatePath.value.trim(),
+      campaign_state: campaignStatePath.value.trim(),
+      party_config: doc.value === 'party' ? partyConfigPath.value.trim() : '',
+      planning_config: doc.value === 'planning' ? planningConfigPath.value.trim() : '',
+      audit: lines(auditText.value),
+      name: lines(namesText.value),
+      recent_chapters: num(recentChapters.value),
+      recurring_min: num(recurringMin.value),
+      parts: num(parts.value),
+      max_tokens: num(maxTokens.value),
+      dump_only: dumpOnly.value,
+      force: forceSynth.value,
+      model: config.model || undefined,
+    })
 
 // ── Report and drafts ───────────────────────────────────────────────────────
 interface Finding {
@@ -154,12 +224,40 @@ interface Report {
   findings: Finding[]
   existing_corpus?: { state: string; [k: string]: unknown }
 }
-interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete'; bytes: number }
+interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete' | 'report'; bytes: number }
+interface ExtractChunk { index: number; chapters: string; status: string; kept: number; dropped: number; outlier: boolean }
+interface ExtractState {
+  present: boolean; complete: boolean; stale: boolean; stale_reason: string | null
+  backend?: string; model?: string; chunk_chars?: number; absent_chapters?: number[]
+  chunks: ExtractChunk[]
+  totals: { chunks: number; checked: number; kept: number; dropped: number }
+  outliers: string[]; drops_file: string | null
+}
 
 const report = ref<Report | null>(null)
 const reportNote = ref('')
 const drafts = ref<DraftRow[]>([])
 const draftsNote = ref('')
+interface AuditCounts {
+  items: number; supported: number; not_found: number; no_candidates: number
+  not_shown: number; unverified: number; not_judged: number
+}
+interface AuditState {
+  present: boolean; complete: boolean; stale: boolean; stale_reason: string | null
+  counts: AuditCounts | null; summary?: string; backend?: string | null; model?: string | null
+  candidates?: number | null; audit_file: string | null; track_files: string[]
+}
+const extractState = ref<ExtractState | null>(null)
+const auditState = ref<AuditState | null>(null)
+// world_state's last build: words written against each prose section's budget.
+interface BudgetRow { budget: number; words: number; over: boolean }
+const worldBudgets = ref<Record<string, BudgetRow> | null>(null)
+// Each chunked document's last annotate step (written by synth, and again by Annotate).
+interface AnnotationCounts { later: number; since: number; unverified: number; removed: number; lines: number }
+const annotations = ref<Record<string, AnnotationCounts>>({})
+const docAnnotations = computed(() => annotations.value[doc.value] ?? null)
+const budgetRows = computed(() => Object.entries(worldBudgets.value ?? {}))
+const overBudget = computed(() => budgetRows.value.filter(([, r]) => r.over).length)
 
 const duplicates = computed(() => report.value?.findings.filter(f => f.code === 'possible-duplicate') ?? [])
 const otherFindings = computed(() => report.value?.findings.filter(f => f.code !== 'possible-duplicate') ?? [])
@@ -167,8 +265,31 @@ const otherFindings = computed(() => report.value?.findings.filter(f => f.code !
 async function refreshOutputs() {
   report.value = null; reportNote.value = ''
   drafts.value = []; draftsNote.value = ''
+  extractState.value = null
+  auditState.value = null
+  worldBudgets.value = null
+  annotations.value = {}
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
+  try {
+    const state = await apiFetch<{
+      extract: ExtractState; audit: AuditState; world_budgets: Record<string, BudgetRow> | null
+      annotations: Record<string, AnnotationCounts>
+      missing_dossiers: MissingNpc[] | null; missing_dossiers_refused: boolean
+    }>(`${BASE}/state?${q}`)
+    extractState.value = state.extract
+    auditState.value = state.audit
+    // Prefill the track files from the configured list, once; after that the box is the GM's.
+    if (!auditTrackText.value.trim() && state.audit?.track_files?.length) {
+      auditTrackText.value = state.audit.track_files.join('\n')
+    }
+    worldBudgets.value = state.world_budgets
+    annotations.value = state.annotations ?? {}
+    // The latest world_state attempt's list, so a refusal is still shown after a reload.
+    missingNpcs.value = state.missing_dossiers_refused ? (state.missing_dossiers ?? []) : []
+  } catch {
+    extractState.value = null // the Extract panel simply stays empty; the other outputs still load
+  }
   try {
     report.value = await apiFetch<Report>(`${BASE}/report?${q}`)
   } catch (e) {
@@ -186,8 +307,39 @@ async function refreshOutputs() {
   }
 }
 
-function onSynthDone() {
+// The NPCs a refused world_state build named, parsed from the CLI's own message (one `  Name: state` line each).
+interface MissingNpc { name: string; state: string }
+const missingNpcs = ref<MissingNpc[]>([])
+const MISSING_HEADER = /need a published, verified dossier/
+const MISSING_LINE = /^ {2}(?!summary_native )(.+?): (not drafted|drafted, not verified|drafted, not published|failed verification.*|published for .+)$/
+function parseMissingNpcs(output: string): MissingNpc[] {
+  if (!MISSING_HEADER.test(output)) return []
+  const out: MissingNpc[] = []
+  for (const raw of output.split('\n')) {
+    const m = MISSING_LINE.exec(raw.trimEnd())
+    if (m) out.push({ name: m[1], state: m[2] })
+  }
+  return out
+}
+
+function onSynthDone(rc: number, output = '') {
   forceSynth.value = false
+  missingNpcs.value = rc === 2 && doc.value === 'world_state' ? parseMissingNpcs(output) : []
+  refreshOutputs()
+}
+
+watch(doc, () => { fallbackNpcLines.value = false })
+
+const annotateDryParams = computed(() => ({ ...baseParams.value, dry_run: true }))
+function onAnnotateDone() { refreshOutputs() }
+
+function onAuditDone() {
+  forceAudit.value = false
+  refreshOutputs()
+}
+
+function onExtractDone() {
+  forceExtract.value = false
   refreshOutputs()
 }
 
@@ -267,46 +419,211 @@ onMounted(async () => {
           label="Build" @done="refreshOutputs" />
       </div>
 
-      <!-- 3. Synth -->
+      <!-- 3. Extract -->
       <div class="form-section">
-        <h3 class="step">3. Synthesize a draft</h3>
+        <h3 class="step">3. Extract notes</h3>
+        <span class="field-help">
+          Reads the full summaries a few chapters at a time and writes notes, which code then checks:
+          every citation must resolve inside its chunk, every quotation must be verbatim, every note must carry its tag.
+          world_state and campaign_state are built from these notes. Notes that fail are dropped and listed in drops.md.
+        </span>
+        <div class="num-grid">
+          <div class="field">
+            <label class="field-label">Chunk size (characters)</label>
+            <input type="number" min="1" class="field-input" v-model.number="extractChunkChars" />
+            <span class="field-help">Whole chapters per call, up to this size. Blank uses the stored default.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Max tokens</label>
+            <input type="number" min="1" class="field-input" v-model.number="extractMaxTokens" />
+            <span class="field-help">Per call. Blank uses the CLI default.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Workers per endpoint</label>
+            <input type="number" min="1" class="field-input" v-model.number="extractParallel" />
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 6.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Endpoints</label>
+          <textarea class="field-textarea" v-model="extractEndpointsText" rows="2"
+            placeholder="One URL per line, e.g. http://spark:8001/v1 &mdash; blank uses the single configured endpoint" />
+          <span class="field-help">
+            Several endpoints share one queue of chunks, so a slower box takes fewer (<code>--endpoints</code>, dgx backend only).
+            Each is checked before any call: it must answer and serve the model. Not saved.
+          </span>
+        </div>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="extractDumpOnly" /> Dump only &mdash; write the prompts and the manifest, make no model call
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="forceExtract" /> Re-extract every chunk (--force)
+        </label>
+        <RunPanel :endpoint="`${BASE}/run/extract`" :params="extractParams" :disabled="!ready"
+          label="Extract notes" @done="onExtractDone" />
+        <div v-if="extractState && extractState.present" class="panel extract-state">
+          <div class="counts">
+            <span :class="extractState.complete ? 'ok' : 'bad'">
+              {{ extractState.complete ? 'complete' : 'incomplete' }}
+              ({{ extractState.totals.checked }} of {{ extractState.totals.chunks }} chunks checked)
+            </span>
+            <span>{{ extractState.totals.kept }} notes kept</span>
+            <span>{{ extractState.totals.dropped }} dropped</span>
+            <span v-if="extractState.model">{{ extractState.backend }} / {{ extractState.model }}</span>
+            <span v-if="extractState.absent_chapters?.length">absent chapters: {{ extractState.absent_chapters.join(', ') }}</span>
+          </div>
+          <p v-if="extractState.stale" class="field-error">
+            The notes are stale: {{ extractState.stale_reason }}
+          </p>
+          <p v-if="!extractState.complete" class="field-error">
+            Some chunks have no checked notes. Run Extract again: only the missing chunks are extracted.
+          </p>
+          <table class="drafts chunks">
+            <thead><tr><th>Chunk</th><th>Chapters</th><th>Status</th><th>Kept</th><th>Dropped</th><th></th></tr></thead>
+            <tbody>
+              <tr v-for="c in extractState.chunks" :key="c.index" :class="{ outlier: c.outlier }">
+                <td>{{ c.index }}</td>
+                <td>{{ c.chapters }}</td>
+                <td :class="c.status === 'checked' ? 'ok' : 'bad'">{{ c.status }}</td>
+                <td>{{ c.kept }}</td>
+                <td>{{ c.dropped }}</td>
+                <td><span v-if="c.outlier" class="bad">outlier: possible runaway call</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <span v-if="extractState.drops_file" class="field-help">
+            Every dropped note and its reason: <code>{{ extractState.drops_file }}</code>
+          </span>
+        </div>
+      </div>
+
+      <!-- 4. Audit -->
+      <div class="form-section">
+        <h3 class="step">4. Audit the tracking files</h3>
+        <span class="field-help">
+          campaign_state's &ldquo;Audit: Tracking Claims&rdquo;, as its own step. For each <code>- </code> line of the tracking files,
+          code picks up to N candidate chapters by the item's names, a model judges that one item against only those chapters,
+          and code accepts SUPPORTED only when the answer cites a candidate chapter and quotes a span that is verbatim there.
+          Anything else is NOT FOUND (and says why). Verdicts are cached per item, so re-running judges only what changed.
+          Needs no extracted notes; run it before Synthesize campaign_state, which renders its Audit section from the result.
+        </span>
+        <div class="field">
+          <label class="field-label">Track files</label>
+          <textarea class="field-textarea" v-model="auditTrackText" rows="3"
+            placeholder="One path per line &mdash; blank uses grounding.yaml campaign_state.track_files" />
+          <span class="field-help">
+            Prefilled from the Campaign State page's list; edit for this run only. Synthesize compares the audit with the
+            configured list, so an audit of other files reads as stale there.
+          </span>
+        </div>
+        <div class="num-grid">
+          <div class="field">
+            <label class="field-label">Candidate chapters per item</label>
+            <input type="number" min="1" class="field-input" v-model.number="auditCandidates" />
+            <span class="field-help">At most this many chapters are shown to the judge. Blank uses the CLI default.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Max tokens</label>
+            <input type="number" min="1" class="field-input" v-model.number="auditMaxTokens" />
+            <span class="field-help">Per call. Blank uses the CLI default.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Workers per endpoint</label>
+            <input type="number" min="1" class="field-input" v-model.number="auditParallel" />
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 6.</span>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Model</label>
+          <input class="field-input" v-model="auditModel" placeholder="blank uses summary_native.extract.model" />
+          <span class="field-help">The judge runs on the extraction backend.</span>
+        </div>
+        <div class="field">
+          <label class="field-label">Endpoints</label>
+          <textarea class="field-textarea" v-model="auditEndpointsText" rows="2"
+            placeholder="One URL per line &mdash; blank uses the single configured endpoint" />
+          <span class="field-help">
+            Several endpoints share one queue of items (<code>--endpoints</code>, dgx backend only); each is checked before any call. Not saved.
+          </span>
+        </div>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="auditDumpOnly" /> Dump only &mdash; write the prompts, make no model call
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" v-model="forceAudit" /> Re-judge every item (--force)
+        </label>
+        <RunPanel :endpoint="`${BASE}/run/audit`" :params="auditParams" :disabled="!ready"
+          label="Run audit" @done="onAuditDone" />
+        <div v-if="auditState && auditState.present && auditState.counts" class="panel audit-state">
+          <div class="counts">
+            <span :class="auditState.complete ? 'ok' : 'bad'">{{ auditState.complete ? 'complete' : 'incomplete' }}</span>
+            <span>{{ auditState.counts.items }} items</span>
+            <span class="ok">{{ auditState.counts.supported }} supported</span>
+            <span>{{ auditState.counts.not_found }} not found</span>
+            <span>({{ auditState.counts.no_candidates }} no candidate chapters,
+              {{ auditState.counts.not_shown }} not shown,
+              <span :class="auditState.counts.unverified ? 'bad' : ''">{{ auditState.counts.unverified }} unverified</span>)</span>
+            <span v-if="auditState.counts.not_judged" class="bad">{{ auditState.counts.not_judged }} not judged</span>
+            <span v-if="auditState.model">{{ auditState.backend }} / {{ auditState.model }}</span>
+          </div>
+          <p v-if="auditState.stale" class="field-error">The audit is stale: {{ auditState.stale_reason }}</p>
+          <p v-if="!auditState.complete" class="field-error">
+            Some items have no verdict (their call failed). Run the audit again: only those are judged.
+          </p>
+          <span v-if="auditState.audit_file" class="field-help">
+            Every verdict, with its citation and span or the reason it was not accepted: <code>{{ auditState.audit_file }}</code>
+          </span>
+        </div>
+      </div>
+
+      <!-- 5. Synth -->
+      <div class="form-section">
+        <h3 class="step">5. Synthesize a draft</h3>
         <div class="field">
           <label class="field-label">Document</label>
           <select class="field-input narrow" v-model="doc">
             <option v-for="d in DOCS" :key="d" :value="d">{{ d }}</option>
           </select>
         </div>
-        <PathField v-model="worldStatePath" label="World-state draft (context)" resolve-base="campaign"
+        <span v-if="isChunked" class="field-help">
+          Built from the checked notes: run Extract first. Code builds the timeline, completed list and NPC status table;
+          the model writes each remaining section from the notes routed to it. The tracking audit is its own step.
+          <template v-if="doc === 'world_state'">
+            Key NPCs are rendered from the published NPC dossiers: the build refuses when a selected NPC has none.
+          </template>
+        </span>
+        <PathField v-if="!isChunked" v-model="worldStatePath" label="World-state draft (context)" resolve-base="campaign"
           help="A GM-reviewed world_state draft to use as upstream context. Optional." />
-        <PathField v-model="campaignStatePath" label="Campaign-state draft (context)" resolve-base="campaign"
+        <PathField v-if="!isChunked" v-model="campaignStatePath" label="Campaign-state draft (context)" resolve-base="campaign"
           help="A GM-reviewed campaign_state draft to use as upstream context. Optional." />
         <PathField v-if="doc === 'party'" v-model="partyConfigPath" label="Party config" resolve-base="campaign"
           help="The party roster (sheets and backstories). Blank uses config/party.yaml." />
         <PathField v-if="doc === 'planning'" v-model="planningConfigPath" label="Planning config" resolve-base="campaign"
           help="Tracked NPCs, factions and arc scores. Blank uses config/planning.yaml; none means no arc scores." />
-        <div class="field">
-          <label class="field-label">Audit files (campaign_state)</label>
+        <div v-if="!isChunked" class="field">
+          <label class="field-label">Audit files</label>
           <textarea class="field-textarea" v-model="auditText" rows="3"
             placeholder="One path per line. Blank uses the Campaign State page's tracking lists." />
           <span class="field-help">Tracking, planning or module files treated as questions to answer from the summaries.</span>
         </div>
-        <div class="field">
+        <div v-if="!isChunked || doc === 'world_state'" class="field">
           <label class="field-label">Named subjects</label>
           <textarea class="field-textarea" v-model="namesText" rows="2"
             placeholder="One subject per line &mdash; force-includes these dossiers" />
+          <span v-if="doc === 'world_state'" class="field-help">Force-includes these global NPCs in Key NPCs.</span>
         </div>
         <div class="num-grid">
-          <div class="field">
+          <div v-if="!isChunked || doc === 'world_state'" class="field">
             <label class="field-label">Recent chapters</label>
             <input type="number" min="0" class="field-input" v-model.number="recentChapters" />
-            <span class="field-help">Counted back from the range end; 0 = all.</span>
+            <span class="field-help">Counted back from the range end; 0 = all.<template v-if="doc === 'world_state'"> Picks the Key NPCs.</template></span>
           </div>
-          <div class="field">
+          <div v-if="!isChunked || doc === 'world_state'" class="field">
             <label class="field-label">Recurring minimum</label>
             <input type="number" min="0" class="field-input" v-model.number="recurringMin" />
             <span class="field-help">Observations that make an entity recurring.</span>
           </div>
-          <div class="field">
+          <div v-if="!isChunked" class="field">
             <label class="field-label">Parts</label>
             <input type="number" min="0" class="field-input" v-model.number="parts" />
             <span class="field-help">Split the outline into N calls; 0 = one call.</span>
@@ -317,20 +634,106 @@ onMounted(async () => {
             <span class="field-help">Per call. Blank uses the CLI default.</span>
           </div>
         </div>
+        <div v-if="isChunked" class="num-grid">
+          <div class="field">
+            <label class="field-label">Prose model</label>
+            <input type="text" class="field-input" v-model="proseModel" />
+            <span class="field-help">Blank uses <code>summary_native.prose.model</code> from grounding.yaml.</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Effort (claude-code)</label>
+            <select class="field-input narrow" v-model="proseEffort" aria-label="Prose effort">
+              <option value="">stored default</option>
+              <option v-for="e in EFFORTS" :key="e" :value="e">{{ e }}</option>
+            </select>
+            <span class="field-help">Applies only when the prose backend is claude-code.</span>
+          </div>
+        </div>
         <label class="checkbox-label">
           <input type="checkbox" v-model="dumpOnly" /> Dump only &mdash; write the prompts and run record, make no model call
         </label>
         <label class="checkbox-label">
           <input type="checkbox" v-model="forceSynth" /> Replace existing reviewed draft (--force)
         </label>
+        <label v-if="doc === 'world_state'" class="checkbox-label">
+          <input type="checkbox" v-model="fallbackNpcLines" /> Write fallback lines for NPCs without a published dossier
+        </label>
+        <span v-if="doc === 'world_state' && fallbackNpcLines" class="field-help">
+          This run only. Each such NPC gets a line built by code from its checked notes and marked
+          &ldquo;(no published dossier &mdash; from checked notes)&rdquo;. Not saved.
+        </span>
         <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
-          :label="`Synthesize ${doc}`" selection-service="grounding" selection-doc="summary_native"
-          :selection-can-override="true" @done="onSynthDone" />
+          :label="`Synthesize ${doc}`" :selection-service="isChunked ? undefined : 'grounding'"
+          selection-doc="summary_native" :selection-can-override="true" @done="onSynthDone" />
+        <div v-if="doc === 'world_state' && missingNpcs.length" class="panel missing-npcs">
+          <div class="counts">
+            <span class="bad">Build refused: {{ missingNpcs.length }} selected NPC(s) have no published, verified dossier</span>
+          </div>
+          <table class="drafts">
+            <thead><tr><th>NPC</th><th>Dossier state</th></tr></thead>
+            <tbody>
+              <tr v-for="n in missingNpcs" :key="n.name">
+                <td>{{ n.name }}</td>
+                <td class="bad">{{ n.state }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <span class="field-help">
+            Draft, verify and publish them on the <RouterLink to="/npcs/dossiers">NPC dossiers page</RouterLink>,
+            then build again &mdash; or tick &ldquo;Write fallback lines&rdquo; above for this run.
+          </span>
+        </div>
+        <div v-if="doc === 'world_state' && budgetRows.length" class="panel budgets">
+          <div class="counts">
+            <span>Word budgets (last world_state build; citations not counted)</span>
+            <span :class="overBudget ? 'bad' : 'ok'">
+              {{ overBudget ? `${overBudget} over budget` : 'all within budget' }}
+            </span>
+          </div>
+          <table class="drafts">
+            <thead><tr><th>Section</th><th>Words</th><th>Budget</th><th></th></tr></thead>
+            <tbody>
+              <tr v-for="[name, r] in budgetRows" :key="name">
+                <td>{{ name }}</td>
+                <td>{{ r.words }}</td>
+                <td>{{ r.budget }}</td>
+                <td :class="r.over ? 'bad' : 'ok'">{{ r.over ? 'OVER (kept whole, not truncated)' : 'ok' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- 4. Compare -->
+      <!-- 6. Annotate -->
+      <div v-if="isChunked" class="form-section">
+        <h3 class="step">6. Annotate the {{ doc }} draft</h3>
+        <span class="field-help">
+          Deterministic: no model is called and no line is reworded. Where a newer checked note, a mentioned NPC's later status,
+          another section, a non-verbatim quotation or an unresolved citation bears on a line, the evidence is appended under it
+          (<code>&#9888; later:</code>, <code>&#8505; since:</code>, <code>&#9888; unverified:</code>); a player character listed as a
+          companion is removed. Synthesize already does this; run it again after publishing a dossier or editing a summary.
+          Key NPCs and the code-built sections are never annotated.
+        </span>
+        <div v-if="docAnnotations" class="panel annotations">
+          <div class="counts">
+            <span>Last annotate step:</span>
+            <span>{{ docAnnotations.later }} later</span>
+            <span>{{ docAnnotations.since }} since</span>
+            <span :class="docAnnotations.unverified ? 'bad' : ''">{{ docAnnotations.unverified }} unverified</span>
+            <span>{{ docAnnotations.removed }} removed</span>
+            <span>on {{ docAnnotations.lines }} lines</span>
+          </div>
+          <span class="field-help">Every hit: <code>annotations.md</code> (listed under Drafts).</span>
+        </div>
+        <RunPanel :endpoint="`${BASE}/run/annotate/${doc}`" :params="annotateDryParams" :disabled="!ready"
+          :label="`Preview annotations for ${doc} (dry run)`" />
+        <RunPanel :endpoint="`${BASE}/run/annotate/${doc}`" :params="baseParams" :disabled="!ready"
+          :label="`Annotate ${doc}`" @done="onAnnotateDone" />
+      </div>
+
+      <!-- 7. Compare -->
       <div class="form-section">
-        <h3 class="step">4. Compare with the live document</h3>
+        <h3 class="step">7. Compare with the live document</h3>
         <span class="field-help">Diffs the {{ doc }} draft against docs/{{ doc }}.md. Read-only.</span>
         <RunPanel :endpoint="`${BASE}/run/compare/${doc}`" :params="baseParams" :disabled="!ready"
           :label="`Compare ${doc}`" />
@@ -380,14 +783,19 @@ onMounted(async () => {
           <tbody>
             <tr v-for="d in drafts" :key="d.path">
               <td>{{ d.doc }}</td>
-              <td :class="d.status === 'incomplete' ? 'bad' : 'ok'">{{ d.status }}</td>
+              <td :class="d.status === 'incomplete' ? 'bad' : d.status === 'draft' ? 'ok' : ''">{{ d.status }}</td>
               <td>{{ d.bytes }} B</td>
               <td><code>{{ d.path }}</code></td>
             </tr>
           </tbody>
         </table>
         <span v-if="drafts.length" class="field-help">
-          An incomplete draft failed its outline check and is not promotable. Review a draft in your editor; promotion is manual.
+          An incomplete draft failed its outline check and is not promotable. A report is read-only evidence
+          (drops.md lists every dropped note; npc_status_report.md the merged, unresolved and player-character names;
+          canon_events_timeline.md every event in order; audit.md every tracking-item verdict; annotations.md every annotation and removal; key_npcs_report.md
+          who was selected for Key NPCs and what code replaced; reference/*.md every checked note by subject, which each
+          world_state section and campaign_state's thread sections point to).
+          Review a draft in your editor; promotion is manual.
         </span>
       </div>
     </div>
@@ -437,4 +845,6 @@ onMounted(async () => {
 .drafts { border-collapse: collapse; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 .drafts th, .drafts td { text-align: left; padding: 3px 14px 3px 0; }
 .drafts th { font-weight: 600; color: var(--text); }
+.extract-state, .audit-state, .budgets, .missing-npcs, .annotations { margin-top: 10px; }
+.chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
 </style>

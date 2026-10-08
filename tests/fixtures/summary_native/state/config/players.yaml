@@ -1,0 +1,5 @@
+players:
+- id: joe
+  name: Joe
+  plays:
+  - Thorin Giantfriend

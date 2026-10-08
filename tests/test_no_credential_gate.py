@@ -316,3 +316,56 @@ def test_a_test_can_still_pin_its_own_credential(monkeypatch):
     them."""
     monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-something-else")
     assert os.environ["ANTHROPIC_API_KEY"] == "sk-ant-something-else"
+
+
+# =========================================================================
+# Spec 033 (T041) — the chunked grounding steps hold no credential gate
+#
+# `extract`, `synth` and `audit` each choose their own backend (a Spark for
+# extraction, a subscription or hosted model for prose). Neither may ask
+# whether an Anthropic key exists: each backend refuses for itself, at the call.
+# =========================================================================
+
+SUMMARY_NATIVE_MODEL_STEPS = ("extract", "synth", "audit")
+
+
+@pytest.mark.parametrize("module", SUMMARY_NATIVE_MODEL_STEPS)
+def test_summary_native_model_steps_check_no_credential_and_import_no_sdk(module) -> None:
+    path = REPO_ROOT / "pipelines" / "summary_native" / f"{module}.py"
+    assert path.exists(), f"{path.name}: a model step the list names must exist"
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            assert not any(a.name.split(".")[0] == "anthropic" for a in node.names), path.name
+        if isinstance(node, ast.ImportFrom):
+            assert (node.module or "").split(".")[0] != "anthropic", path.name
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            assert "ANTHROPIC_API_KEY" not in node.value, f"{path.name} names the credential: {node.value[:60]!r}"
+        if isinstance(node, ast.Attribute):
+            assert node.attr != "_require_anthropic_credential", path.name
+        if isinstance(node, ast.Name):
+            assert node.id not in BANNED_IDENTIFIERS, path.name
+
+
+def test_extract_and_synth_run_with_no_anthropic_key(monkeypatch, tmp_path) -> None:
+    from tests.conftest_state import extract_args, fake_models, run_cli, state_campaign
+
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    camp = state_campaign(tmp_path)
+    fake_models(monkeypatch)
+    rc, _, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    rc, _, err = run_cli(["synth", "campaign_state", "--config", str(camp / "config" / "config.yaml"),
+                          "--summaries-dir", str(camp / "docs" / "summaries"), "--since", "2", "--until", "5"])
+    assert rc == 0, err
+
+
+def test_audit_runs_with_no_anthropic_key(monkeypatch, tmp_path) -> None:
+    from tests.conftest_state import audit_args, fake_models, run_cli, state_campaign
+
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    camp = state_campaign(tmp_path)
+    fake_models(monkeypatch)
+    rc, out, err = run_cli(audit_args(camp))
+    assert rc == 0, err
+    assert "audit: 2 items" in out

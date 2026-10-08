@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from pipelines.summary_native import schema
 from pipelines.summary_native.cli import main
 
 FIX = Path(__file__).parent / "fixtures" / "summary_native"
@@ -248,15 +249,15 @@ def test_compare_writes_diff_and_reads_inputs_only(camp, capsys):
     assert main(["build", "--summaries-dir", "summaries"]) == 0
     rd = camp / "docs/summary_native/ch002-005"
     (rd / "drafts").mkdir()
-    draft = rd / "drafts/world_state.draft.md"
+    draft = rd / "drafts/party.draft.md"
     draft.write_text("## A\n\nSee ch 7 and Chapter 12.\nnew line\n")
     live = camp / "live.md"
     live.write_text("## A\n\nSee ch 3.\n")
     before = (draft.read_bytes(), live.read_bytes())
-    assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
+    assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
     out = capsys.readouterr().out
     assert "heuristic" in out and "12" in out
-    diff = (rd / "drafts/world_state.vs-live.diff").read_text()
+    diff = (rd / "drafts/party.vs-live.diff").read_text()
     assert "--- a/" in diff and "+++ b/" in diff and "+new line" in diff
     assert (draft.read_bytes(), live.read_bytes()) == before
 
@@ -265,11 +266,11 @@ def test_compare_errors_when_draft_or_live_missing(camp):
     _corpus(camp)
     assert main(["build", "--summaries-dir", "summaries"]) == 0
     (camp / "live.md").write_text("x\n")
-    assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "live.md"]) == 2
+    assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "live.md"]) == 2
     rd = camp / "docs/summary_native/ch002-005"
     (rd / "drafts").mkdir()
-    (rd / "drafts/world_state.draft.md").write_text("x\n")
-    assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "nope.md"]) == 2
+    (rd / "drafts/party.draft.md").write_text("x\n")
+    assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "nope.md"]) == 2
 
 
 def test_synth_incompatible_backend_model_exits_2_without_traceback(camp, capsys):
@@ -312,3 +313,47 @@ def test_default_registry_resolved_from_config_root_not_cwd(camp, tmp_path, monk
     assert main(["build", "--config", cfg, "--summaries-dir", str(camp / "summaries")]) == 0
     m = json.loads((camp / "docs/summary_native/ch002-005/manifest.json").read_text())
     assert m["canon"]["registry_sha256"] == hashlib.sha256(reg.read_bytes()).hexdigest()
+
+
+# ── spec 033 US1: extract and the chunked synth documents (T015) ─────────────
+
+
+def test_extract_is_a_subcommand_with_the_backend_family_and_no_default_backend():
+    from pipelines.summary_native.cli import build_parser
+
+    ns = build_parser().parse_args(["extract", "--chunk-chars", "5", "--max-tokens", "9", "--dump-only", "--force",
+                                    "--backend", "dgx", "--endpoint", "http://x", "--model", "m",
+                                    "--claude-code-effort", "low"])
+    assert (ns.command, ns.chunk_chars, ns.max_tokens, ns.dump_only, ns.force) == ("extract", 5, 9, True, True)
+    assert (ns.backend, ns.endpoint, ns.model, ns.claude_code_effort) == ("dgx", "http://x", "m", "low")
+    bare = build_parser().parse_args(["extract"])
+    # flag > grounding.yaml > schema needs the flag to be absent, not defaulted
+    assert bare.backend is None and bare.model is None and bare.chunk_chars is None
+    assert bare.max_tokens == schema.DEFAULT_MAX_TOKENS
+
+
+def test_synth_backend_is_not_defaulted_so_the_prose_config_can_apply():
+    from pipelines.summary_native.cli import build_parser
+
+    assert build_parser().parse_args(["synth", "party"]).backend is None
+
+
+def test_extract_refuses_a_bad_config_block_cleanly(camp, capsys):
+    _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+    (camp / "config" / "grounding.yaml").write_text("summary_native:\n  extract:\n    chunk_chars: 0\n")
+    capsys.readouterr()
+    assert main(["extract", "--summaries-dir", "summaries", "--dump-only"]) == 2
+    err = capsys.readouterr().err
+    assert "chunk_chars" in err and "Traceback" not in err
+
+
+def test_compare_reads_the_chunked_drafts_from_state(camp):
+    _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+    drafts = camp / "docs/summary_native/ch002-005/state/drafts"
+    drafts.mkdir(parents=True)
+    (drafts / "world_state.draft.md").write_text("## A\n\nnew\n")
+    (camp / "live.md").write_text("## A\n\nold\n")
+    assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
+    assert (drafts / "world_state.vs-live.diff").is_file()

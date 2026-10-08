@@ -467,7 +467,10 @@ it. Staleness is judged against every summary, not just the range, because
 ## Step 5 — synthesise a draft
 
 `synth <doc>` renders one document from the built corpus. `<doc>` is one of
-`world_state`, `campaign_state`, `party`, `planning`. It makes exactly the
+`world_state`, `campaign_state`, `party`, `planning`. **For `world_state` and
+`campaign_state` read [Step 5b](#step-5b--world_state-and-campaign_state-are-a-four-step-chunked-build)
+instead of this step:** they are built from extracted notes, and this step
+describes `party` and `planning`. It makes exactly the
 model calls you ask for (one, or `--parts` many), and nothing else.
 
 **Order matters, and the human checkpoint is between the calls.** A later
@@ -652,6 +655,229 @@ that change validation findings only, never the corpus. A registry set in `groun
 
 ---
 
+## Step 5b — `world_state` and `campaign_state` are a four-step chunked build
+
+> Everything in Step 5 about one call per document, `--parts` and
+> `drafts/` describes `party` and `planning` only. `world_state` and
+> `campaign_state` no longer take the one-shot path: `--parts` and `--audit`
+> are refused for them (exit 2, with the replacement named), and their drafts
+> live under `state/drafts/`. Design: `specs/033-chunked-grounding-docs/`
+> (`contracts/cli.md` and `contracts/http.md`).
+
+The long chapter range is cut into chapter groups, each group is read by its own
+model call, **code** checks what came back, and only the checked notes reach the
+prose step. The model never decides scope, order or attribution: code does.
+
+```text
+extract  →  synth world_state  →  synth campaign_state  →  (annotate)  →  audit
+ map         (build + annotate)    (build + annotate)       re-run only      its own
+ step                                                       when needed      step
+```
+
+Run them from the campaign root, with the same `--since/--until` as `build`:
+
+```bash
+summary_native extract --since 2 --until 70 --endpoints http://spark:8001/v1 http://spark2:8001/v1
+summary_native synth world_state    --since 2 --until 70      # Key NPCs need published dossiers (below)
+summary_native audit --since 2 --until 70                     # needs --track-file, or campaign_state.track_files
+summary_native synth campaign_state --since 2 --until 70      # renders the audit it finds
+summary_native annotate world_state --since 2 --until 70 --dry-run
+```
+
+### `extract` — the map step
+
+One call per chapter group, a code check, then `state/notes/`. A note survives
+only if its citation `[ch NNN / target]` resolves inside its own chunk and any
+quotation is verbatim; everything else is a **drop**, listed with its reason in
+`state/notes/drops.md`. Read it before you synthesise. Each line of output is
+one chunk (`chunk 07/60 ch 009-010 @spark2:8001 214s kept 61 dropped 2`;
+`cached` for a reused chunk), then totals and any **outlier chunks** (a runaway
+call).
+
+| Flag | Meaning |
+|---|---|
+| `--backend --model --endpoint` | As elsewhere. Default: `summary_native.extract.*` in `grounding.yaml`, else `dgx` / `qwen3.8-flash-next`. |
+| `--endpoints URL…` | Several dgx endpoints sharing **one** chunk queue; a slower box simply takes fewer chunks. Refused with `--endpoint`, and for a non-dgx backend. Wiring, never stored in config. |
+| `--parallel N` | In-flight calls **per endpoint**; default **6** (`--endpoints A B --parallel 4` is 8 calls). |
+| `--chunk-chars N` | Chunk size; a chapter is never split. |
+| `--max-tokens N` | Per call. |
+| `--dump-only` | Write prompts, chunks and the manifest; no model call. |
+| `--force` | Re-extract every chunk, ignoring cache keys. |
+
+Chunks are cached by a key over the chapter texts, prompts, backend, model and
+limits, so a second run extracts only what changed or failed.
+
+**A bad endpoint stops the run.** Before the first chunk is sent, every endpoint
+is asked for `/models`; one that does not answer, or does not serve `--model`,
+refuses the whole run (exit 2) naming the endpoint and what it serves. No chunk
+is sent, and the run record keeps the refusal. Fix the endpoint or drop it from
+`--endpoints`; there is no silent fall-back to the others.
+
+### `synth world_state | campaign_state` — build from the checked notes
+
+Code builds the timeline (its own file), the completed list, the NPC status
+table, the six `reference/` files, the Audit section and `world_state`'s reading
+contract. The model writes each remaining section (one call per section) from
+only the notes code routed to it, inside word budgets that are reported
+(`Locations: 279/450 words`) and never trimmed. Code checks the output
+(each heading present; Key NPCs lines pass their checks), runs `annotate`
+automatically, and writes the drafts. The prose backend is separate from the
+extraction one: `summary_native.prose.*`, default `claude-code` /
+`claude-sonnet-5-5` / effort `medium`.
+
+**Key NPCs come from published dossiers, and a missing one refuses the build.**
+`world_state`'s Key NPCs are rendered from the NPC dossiers `npc-publish`
+wrote (never from `## Secrets`). If any selected NPC has no published, verified
+dossier **for exactly this build's range**, `synth world_state` refuses (exit 2)
+and lists each one:
+
+```text
+world_state's Key NPCs need a published, verified dossier for each selected NPC; 2 of 30 have none:
+  Ilvara Mizzrym: not drafted
+  Kalan: failed verification (not-found 2)
+Draft, verify and publish them, then build again:
+  summary_native npc-draft --since 2 --until 70 --name "Ilvara Mizzrym" "Kalan"
+  ...
+or pass --fallback-npc-lines to write a code-built line (no published dossier — from checked notes) for each of them.
+```
+
+The state of each NPC is `not drafted`, `drafted, not verified`, `failed
+verification (<checks>)`, `drafted, not published` or `published for <range>,
+not <range>`. A dossier published for a *different* range does not count. Carrying
+a dossier over to a longer range is the incremental-rebuild follow-up (#512), not
+something this build does. Two ways out: do the `npc-*` steps
+([NPC dossiers how-to](npc_dossiers_howto.md)), or pass
+**`--fallback-npc-lines` for this run only**. It is never read from config and the
+web page's checkbox is unchecked on every load, so the choice is yours each time.
+A fallback line is the NPC's latest checked status and ends in
+`(no published dossier — from checked notes)`; it has no dossier to open.
+
+`--recent-chapters`, `--recurring-min` and `--name` choose Key NPCs and are
+refused for `campaign_state`, which has no such section, as are
+`--fallback-npc-lines` and `--npc-root`.
+
+### `annotate` — evidence under a line, never a changed line
+
+Deterministic, no model. It re-runs the detectors over an existing draft and
+rewrites only the annotation sub-bullets under lines: `⚠ later:` (newer
+information about the same subject), `ℹ since:` (the later status of someone the
+line mentions) and `⚠ unverified:` (a quotation not verbatim in the chapter it
+cites, or a citation that does not resolve). A player character listed as a
+companion is the one thing it removes. Use it after publishing a dossier or
+editing a summary when you do not want a full rebuild; `--dry-run` prints the hits
+and writes nothing. It prints `annotations: 8 later, 7 since, 2 unverified; 0
+removed` and writes `annotations.md`.
+
+### `audit` — the tracking files, checked item by item
+
+Its own step, and it needs the built corpus but **not** the extracted notes. Code
+numbers each `- ` line of the track files (`A1`…) and picks, for each, the few
+chapters that could show it; the model judges that one item against only those
+chapters; code accepts **SUPPORTED** only for a citation inside the candidates
+and a verbatim span of at least 8 characters. An item with no candidate chapter is
+`NOT FOUND (no-candidates)` and costs no call; a `SHOWN` answer that fails a check
+becomes `NOT FOUND (unverified)`, with the failed check named in `audit.md`.
+Track files come from `--track-file` (repeatable, same spelling as
+`campaign_state --track-file`) or `grounding.yaml campaign_state.track_files`.
+`--candidates N` (default 3), `--backend --model --endpoint --endpoints
+--parallel --max-tokens --dump-only --force` are as for `extract`. Output:
+`audit: 443 items — 171 SUPPORTED, 249 NOT FOUND (31 no candidates, 18 unverified)`.
+
+`synth campaign_state` renders its Audit section from `audit.json`. With no audit
+run it says "Audit not run for this range."; with a stale one (a track file
+added, removed or changed, or the notes re-extracted) it **refuses**, naming
+`summary_native audit`. Rerun the audit, then rebuild.
+
+### Where everything goes
+
+```text
+docs/summary_native/ch002-070/
+  manifest.json, chronology.md, dossiers/ …     ← the 031 corpus, read-only here
+  state/
+    notes/    manifest.json, chunkNN.*.{user,out}.md, chunkNN.*.checked.json, drops.md
+    runs/<stamp>/record.json                     ← one per extract / synth / audit run, with the prompts
+    audit/    items.json, audit.json, audit.md
+    drafts/
+      world_state.draft.md  campaign_state.draft.md   (*.incomplete.md if a section is missing)
+      canon_events_timeline.md
+      reference/{factions,npcs,locations,items,threads,threats}.md
+      annotations.md, npc_status_report.md, key_npcs_report.md, budget_report.json
+```
+
+Everything this build writes is under `state/`. `docs/`, `docs/npcs/` and the 031
+corpus are never written (`tests/test_state_docs_no_live_writes.py`).
+
+### Drafts are regenerated: fix at the source
+
+A draft is output, not a document you maintain. The next `synth --force`
+replaces it. So an error found in a draft is fixed where it comes from:
+
+| The draft is wrong because… | Fix |
+|---|---|
+| a summary says the wrong thing | the summary, then `build --force`, `extract`, `synth --force` |
+| a name is split or merged wrongly | the entity registry, then the same |
+| a Key NPC line is wrong | the NPC's authored file / dossier, `npc-*` again, `synth world_state --force` |
+| a note was dropped that should not have been | `drops.md` says why; usually the summary's wording |
+
+**Prose edits are made only after promotion**, in `docs/`, where the next build
+cannot overwrite them. Editing a draft first only to have it regenerated is the
+mistake this rule exists to prevent.
+
+### Refusals and exit codes of the new steps
+
+Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
+`2` refusal, `3` incomplete, `4` model call failed.
+
+| Message (abridged) | Command | What to do |
+|---|---|---|
+| `no checked notes for this range; run summary_native extract --since A --until B` | synth, annotate | Run `extract`. |
+| `checked notes are stale (corpus manifest / entity registry / players changed); run …` | synth, annotate | Rerun `extract`. |
+| `state/notes/manifest.json is unreadable` / `is not a state-notes manifest; run … --force` | synth, annotate | `extract --force`. |
+| `<notes error>; run summary_native extract …` | synth, annotate | Some chunk has no checked notes; rerun `extract` (it does only the missing ones). |
+| `world_state's Key NPCs need a published, verified dossier …` | synth world_state | See above: publish dossiers, or `--fallback-npc-lines` for this run. |
+| `--parts does not apply to <doc>: it is built with one call per section …` | synth | Drop it; these docs are built per section. |
+| `--audit does not apply to campaign_state: the audit is its own step: summary_native audit` (world_state: `--audit applies to campaign_state only`) | synth | Run `audit`; `synth campaign_state` picks it up. |
+| `--fallback-npc-lines applies to world_state only` / `--npc-root applies to world_state only` | synth | Drop it. |
+| `--name / --recent-chapters / --recurring-min does not apply to campaign_state: it has no Key NPCs section` | synth | Drop it. |
+| `the audit is stale (track file(s) changed: …); run summary_native audit` / `(the checked notes changed)` | synth campaign_state | Rerun `audit`. |
+| `state/audit/items.json is unreadable; run summary_native audit --force` | synth campaign_state | As said. |
+| `…/state/drafts/<doc>.draft.md exists; pass --force to overwrite it` | synth | `--force` only if you do not mind losing that draft (it is output; see above). |
+| `no draft for <doc> at …; run summary_native synth <doc>` (also: `only <doc>.incomplete.md exists`) | annotate | Build the draft first. A draft is annotated only once complete. |
+| `endpoint X is not answering (…); no chunk was sent` / `endpoint X serves […], not <model>; every endpoint must serve the same model; no chunk was sent` | extract, audit | Fix or drop the endpoint. (`audit` says `no item was sent`.) |
+| `--endpoints applies to --backend dgx only, not <backend>` | extract, audit | Use dgx, or `--endpoint`. |
+| `give --endpoint or --endpoints, not both` | extract, audit | Pick one. |
+| `--parallel must be at least 1` / `--candidates must be at least 1` / `--chunk-chars must be a whole number of at least 1` | extract, audit | Fix the value. |
+| `no track files: pass --track-file FILE, or set grounding.yaml campaign_state.track_files` | audit | Name one. |
+| `track file X: no such file` | audit | Check the path (relative paths resolve against the campaign root). |
+| `the track files hold no items (lines starting with `- `)` | audit | Items are `- ` lines. |
+| `no summaries for chapters A-B in <dir>` / corpus missing or stale (`run summary_native build`) | extract, audit | Build the corpus for this range. |
+| exit 3: `N chunk(s) failed after one retry: …` | extract | Rerun; only those chunks are redone. |
+| exit 3: `N item(s) failed after one retry: …` | audit | Rerun; they are recorded `NOT JUDGED` until then. |
+| exit 3: `Incomplete: …/state/drafts/<doc>.incomplete.md` | synth | A section is missing; the file is never promotable. An earlier complete draft is kept. |
+| exit 4: `no chunk could be extracted: the backend could not be reached …` / `no item could be judged …` | extract, audit | The backend is unreachable; see `state/runs/<stamp>/record.json`. |
+| exit 4: `model call failed in section <heading> …` | synth | See `record.json`; no draft written. |
+
+### Promotion
+
+The tool never writes `docs/`. To promote a chunked build, copy by hand, and
+note the **timeline and `reference/` files are part of the promotion**, because
+the reading contract at the top of `world_state` points at them:
+
+| From `state/drafts/` | To |
+|---|---|
+| `world_state.draft.md` | `docs/world_state.md` |
+| `campaign_state.draft.md` | `docs/campaign_state.md` |
+| `canon_events_timeline.md` | `docs/canon_events_timeline.md` |
+| `reference/` | `docs/reference/` |
+
+The contract's paths assume exactly that layout. Delete the first-line HTML
+provenance comment only if you do not want it. Prose edits, if any, happen now,
+in `docs/`. `annotations.md`, `npc_status_report.md` and the two Key NPCs reports
+are for your review and are not promoted. `summary_native compare` works on these
+documents too (it reads `state/drafts/`).
+
+---
+
 ## Step 6 — the other two documents
 
 ```bash
@@ -697,7 +923,9 @@ exist.
 
 ## Step 8 — review and promote by hand
 
-The tool never writes `docs/<doc>.md`. To promote:
+The tool never writes `docs/<doc>.md`. (For `world_state` and `campaign_state`,
+promotion also carries the timeline and `reference/`; see
+[Promotion](#promotion) in Step 5b.) To promote:
 
 1. Read `drafts/<doc>.draft.md` against the diff.
 2. Fix what is wrong, in the draft. (Fix a *summary* error in the summary, then
@@ -708,12 +936,96 @@ The tool never writes `docs/<doc>.md`. To promote:
 
 ---
 
+## What session prep may rely on — the documents are an index
+
+The chunked state documents (`campaign_state.md`, `world_state.md`, built by
+`extract` → `synth` → `annotate` → `audit`) are designed to be read by session
+prep as an **index**, not as proof. The summaries stay the authority. The
+agreement is written down in
+[`specs/033-chunked-grounding-docs/contracts/session-prep.md`](../../specs/033-chunked-grounding-docs/contracts/session-prep.md);
+this section is what it means for you at the keyboard. The consumer is the
+gm-assistant `gm-session-prep` skill, which lives in another repository and
+has not adopted the contract yet. The draft skill text is
+[`experiments/20261007-chunked-state-docs/skills_variant/gm-session-prep-pointer/SKILL.md`](../../experiments/20261007-chunked-state-docs/skills_variant/gm-session-prep-pointer/SKILL.md);
+nothing in this repo installs it.
+
+### What the documents promise
+
+Four things, each checked by `tests/test_summary_native_state_sections.py`
+(`TestSessionPrepContract`) on the fixture campaign:
+
+1. **Every content line carries a citation** `[ch NNN / target]` that resolves
+   to a scene id (`NNN.SS`) or a named section (`npcs`, `locations`, `items`,
+   `spells`, `moment`, `end`) of `docs/summaries/NNN-*.md`. A table row cites in
+   its last column. Not counted: headings, the reading-contract blockquote, the
+   italic pointer lines (`_Full notes: ..._`, `_Source: ..._`), annotation
+   sub-bullets, the Timeline section (a pointer to the timeline file) and an
+   "Audit not run" notice.
+2. **`world_state.md` opens with a reading contract.** A blockquote that names
+   the three markers (`⚠ later:`, `ℹ since:`, `⚠ unverified:`), the citation
+   grammar, the six `docs/reference/*.md` files, `docs/canon_events_timeline.md`,
+   and says that anything the document does not settle is a decision for the GM.
+3. **Every Key NPCs line ends in `→ docs/npcs/<slug>.md`**, or in
+   `(no published dossier — from checked notes)`. The second form means there is
+   no dossier to open: the line is the NPC's latest status and checked notes.
+4. **No model rewrote a line after the code check.** After drafting, a line
+   changes only by an annotation under it, or by removal of a player-character
+   line from an NPC group. `annotations.md` in the drafts folder lists each one.
+
+The markers mean: `⚠ later:` is newer information about the same subject (where
+they conflict, the later one wins); `ℹ since:` is the later status of someone the
+line mentions (context, not a correction); `⚠ unverified:` is a quotation that is
+not verbatim in the chapter it cites, or a citation that does not resolve (read
+it as a paraphrase).
+
+### What the contract asks of session prep
+
+The skill, not this tool, does these. They are listed so you know what a prep
+run should have done, and what to check if it did not:
+
+1. **Index pass.** Read the state documents, following `world_state`'s reading
+   contract, to decide what the session puts on stage.
+2. **Read the last two summaries in full.**
+3. **Verify pass.** For each NPC, item, faction or thread the prep *uses*,
+   follow its citation (or its dossier pointer, or a search of the summaries) to
+   the latest mention and confirm the state there. Background mentions are not
+   verified.
+4. **The summary wins** when it disagrees with a document.
+5. **Tag provenance.** `[TABLE chNN NNN.SS]` for a verified state claim,
+   `[DOC unverified: <doc>]` for one taken from a generated document unchecked.
+6. **End with "Doc errors found".** One entry per disagreement: the document and
+   line, what it says, what the summary says (with its citation), which the prep
+   used. "none" when everything agreed.
+
+### What to do with "Doc errors found"
+
+That list is your fix-at-source queue. It is never patched in the generated
+document. Fix the **summary** (then `build --force` and `synth --force` again),
+the **entity registry**, a dossier's **authored file**, or rebuild, whichever the
+entry points at. A citation that does not lead to the claim is itself a document
+error: guarantee 1 says a citation *resolves*, not that it *supports* the line.
+`audit` and `annotate` narrow that gap; they do not close it.
+
+### What is not promised
+
+- That a line is **true**. Only that it is cited, so it can be checked. The
+  experiment that motivated this (round 5 in `experiments/20261007-chunked-state-docs/`)
+  found a stale fact marked "verified" when the documents were the old,
+  uncited ones; verification is only as good as the citation it follows.
+- That the documents are current. The reading contract states the range they
+  cover and that the last two summaries outrank them.
+- That the skill has adopted any of this. Until the gm-assistant follow-up
+  lands, prep behaves as it did before; the documents are still safe to read.
+
+---
+
 ## The web page
 
 Sidebar **Grounding Docs → Summary-native** (`/grounding/summary-native`). The
-page invokes the CLI and reimplements none of it. Four numbered steps —
-Validate, Build corpus, Synthesize a draft, Compare with the live document —
-then the validation report (possible duplicates listed separately) and a draft
+page invokes the CLI and reimplements none of it. Numbered steps —
+Validate, Build corpus, Extract, Synthesize a draft, Audit, Compare with the live
+document — an Annotate action per draft (with a dry-run preview), links to the
+timeline, reference files and reports, then the validation report (possible duplicates listed separately) and a draft
 list marking each `draft` or `incomplete`.
 
 What it exposes per run: the summaries directory, the range (with **All
@@ -878,6 +1190,6 @@ files.
 
 It does not write or repair a summary, merge two headings, record a
 misspelling as an alias, read a draft you did not name, write a live grounding
-document, or call a model outside `synth`. Each absence is a requirement with a
+document, or call a model outside `synth`, `extract` and `audit`. Each absence is a requirement with a
 test behind it (`tests/test_summary_native_no_llm.py`, the retrieve/render
 isolation test), not a missing feature.

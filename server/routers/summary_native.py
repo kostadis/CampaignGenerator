@@ -22,10 +22,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 from fastapi import APIRouter, HTTPException, Query, Request
 
-from pipelines.summary_native import schema
+from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
+from pipelines.summary_native import annotate, audit_select, freshness, notes, resolve, schema
 from server.grounding_config_shared import SummaryNativeRun
 from server.platform_config_service import resolve_selection, selection_cli_args
 from server.routers.grounding import (
@@ -35,6 +37,8 @@ from server.routers.grounding import (
     _sse_response,
 )
 from server.subprocess_runner import console_script
+
+_ENDPOINT_BACKENDS = frozenset({"dgx"})  # the only backend that takes --endpoints
 
 router = APIRouter()
 
@@ -164,13 +168,12 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
     run = _run_config(request)
     lo, hi = _require_range(run, since, until)
     range_dir = _range_dir(run, lo, hi)
-    drafts = range_dir / "drafts"
     if not range_dir.is_dir():
         raise HTTPException(status_code=404, detail="no output for this range yet: run Build")
     out = []
     for doc in schema.DOCS:
         for status, suffix in (("draft", "draft"), ("incomplete", "incomplete")):
-            p = drafts / f"{doc}.{suffix}.md"
+            p = schema.draft_dir(range_dir, doc) / f"{doc}.{suffix}.md"
             if p.is_file():
                 out.append({
                     "doc": doc,
@@ -178,7 +181,136 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
                     "status": status,
                     "bytes": p.stat().st_size,
                 })
+    # Reports the chunked build writes beside its notes and drafts (spec 033).
+    state_drafts = schema.draft_dir(range_dir, "world_state")
+    reports = [
+        ("drops", freshness.notes_dir(range_dir) / "drops.md"),
+        ("npc_status_report", state_drafts / "npc_status_report.md"),
+        ("key_npcs_report", state_drafts / "key_npcs_report.md"),
+        ("annotations", state_drafts / annotate.REPORT_FILE),
+        ("canon_events_timeline", state_drafts / schema.TIMELINE_FILE),
+        ("budget_report", state_drafts / "budget_report.json"),
+        ("audit", freshness.audit_dir(range_dir) / "audit.md"),
+    ]
+    reports += [(f"reference/{p.stem}", p) for p in sorted((state_drafts / "reference").glob("*.md"))]
+    for name, p in reports:
+        if p.is_file():
+            out.append({"doc": name, "path": schema.display_path(p, Path.cwd()), "status": "report", "bytes": p.stat().st_size})
     return out
+
+
+def _read_json(path: Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def _extract_block(request: Request, run: SummaryNativeRun, lo: int, hi: int) -> dict:
+    """The checked notes' state, read from ``state/notes/`` only: no model, no CLI, no summary parsing."""
+    root = Path.cwd()
+    range_dir = _range_dir(run, lo, hi)
+    mp = freshness.notes_dir(range_dir) / freshness.NOTES_MANIFEST
+    m = _read_json(mp)
+    block: dict = {"present": False, "complete": False, "stale": False, "stale_reason": None,
+                   "chunks": [], "totals": {"chunks": 0, "checked": 0, "kept": 0, "dropped": 0},
+                   "outliers": [], "drops_file": None}
+    if not (isinstance(m, dict) and m.get("kind") == "state_notes"):
+        return block
+    chunks = [c for c in m.get("chunks", []) if isinstance(c, dict)]
+    outliers = notes.outliers_of([(c["chapters"], int(c.get("dropped", 0))) for c in chunks])
+    block.update({
+        "present": True,
+        "complete": bool(m.get("complete")),
+        "backend": m.get("backend"),
+        "model": m.get("model"),
+        "chunk_chars": m.get("chunk_chars"),
+        "absent_chapters": m.get("absent_chapters", []),
+        "chunks": [
+            {"index": c["index"], "chapters": c["chapters"], "status": c.get("status"),
+             "kept": int(c.get("kept", 0)), "dropped": int(c.get("dropped", 0)),
+             "outlier": c["chapters"] in outliers}
+            for c in chunks
+        ],
+        "totals": {
+            "chunks": len(chunks),
+            "checked": sum(1 for c in chunks if c.get("status") == "checked"),
+            "kept": sum(int(c.get("kept", 0)) for c in chunks),
+            "dropped": sum(int(c.get("dropped", 0)) for c in chunks),
+        },
+        "outliers": outliers,
+    })
+    drops = freshness.notes_dir(range_dir) / "drops.md"
+    if drops.is_file():
+        block["drops_file"] = schema.display_path(drops, root)
+    # Freshness is the CLI's own check (corpus manifest, registry, players.yaml).
+    try:
+        registry = resolve.resolve_registry_path(root, None, run.model_dump(mode="json"))
+    except resolve.PathRefusal as e:
+        block.update(stale=True, stale_reason=str(e))
+        return block
+    players = _service(request).config_path_base / PLAYERS_CONFIG_FILENAME
+    reason = freshness.check_notes_fresh(range_dir, registry, players)
+    block.update(stale=reason is not None, stale_reason=reason)
+    return block
+
+
+def _audit_block(request: Request, run: SummaryNativeRun, lo: int, hi: int) -> dict:
+    """The tracking audit's state, read from ``state/audit/`` only: counts from ``audit.json``, and
+    freshness from the CLI's own check against the track files the audit was run with."""
+    root = Path.cwd()
+    range_dir = _range_dir(run, lo, hi)
+    defaults = _default_track_files(request)
+    block: dict = {"present": False, "complete": False, "stale": False, "stale_reason": None,
+                   "counts": None, "audit_file": None, "track_files": defaults}
+    if not freshness.audit_exists(range_dir):
+        return block
+    ad = freshness.audit_dir(range_dir)
+    data = _read_json(ad / "audit.json")
+    items = _read_json(ad / "items.json")
+    if not (isinstance(data, dict) and data.get("kind") == "audit"):
+        return block
+    counts = data.get("counts") or audit_select.counts_of(data.get("verdicts") or [])
+    block.update({
+        "present": True,
+        "complete": not counts.get("not_judged"),
+        "counts": counts,
+        "summary": audit_select.summary_line(counts),
+        "backend": items.get("backend") if isinstance(items, dict) else None,
+        "model": items.get("model") if isinstance(items, dict) else None,
+        "candidates": items.get("candidates") if isinstance(items, dict) else None,
+        "audit_file": schema.display_path(ad / "audit.md", root) if (ad / "audit.md").is_file() else None,
+        # the files the audit was run with (names), which campaign_state's freshness check compares
+        "track_files_run": [n for n, _ in (items.get("track_files_sha256") or [])] if isinstance(items, dict) else [],
+    })
+    # Stale against the configured track files, the same comparison `synth campaign_state` makes.
+    reason = freshness.check_audit_fresh(range_dir, [root / t for t in defaults])
+    block.update(stale=reason is not None, stale_reason=reason)
+    return block
+
+
+@router.get("/state")
+def get_state(request: Request, since: int | None = None, until: int | None = None):
+    """What is on disk for the range, per step (read-only; files only)."""
+    run = _run_config(request)
+    lo, hi = _require_range(run, since, until)
+    range_dir = _range_dir(run, lo, hi)
+    drafts = schema.draft_dir(range_dir, "world_state")
+    budgets = _read_json(drafts / "budget_report.json")
+    missing = _read_json(range_dir / schema.STATE_DIR / schema.MISSING_DOSSIERS_FILE)
+    return {
+        "range": f"{lo}-{hi}",
+        "extract": _extract_block(request, run, lo, hi),
+        "audit": _audit_block(request, run, lo, hi),
+        # {section: {budget, words, over}} from the last world_state build, or null
+        "world_budgets": budgets if isinstance(budgets, dict) else None,
+        # {doc: {later, since, unverified, removed, lines}} from each document's last annotate step
+        "annotations": annotate.read_counts(drafts),
+        # [{name, state}]: the selected NPCs the latest world_state build found without a usable dossier
+        # ([] when none, null before any build); `missing_dossiers_refused` says whether that build stopped
+        "missing_dossiers": missing.get("npcs") if isinstance(missing, dict) else None,
+        "missing_dossiers_refused": bool(missing.get("refused")) if isinstance(missing, dict) else False,
+    }
 
 
 # ── Runs (SSE) ──────────────────────────────────────────────────────────────
@@ -238,9 +370,28 @@ async def run_synth(
     dump_only: bool = False,
     force: bool = False,
     model: str | None = None,
+    claude_code_effort: str | None = None,
+    fallback_npc_lines: bool = False,
 ):
     _require_doc(doc)
     run = _run_config(request)
+    chunked = doc in schema.STATE_DOCS
+    if fallback_npc_lines and doc != "world_state":
+        raise HTTPException(status_code=400, detail=f"--fallback-npc-lines applies to world_state only, not {doc}")
+    if chunked:
+        # world_state and campaign_state write one call per section from the checked notes; the CLI
+        # refuses these flags and so does the route, with the CLI's words.
+        if parts:
+            raise HTTPException(status_code=400, detail=schema.STATE_PARTS_REFUSAL.format(doc=doc))
+        if any(a.strip() for a in (audit or [])):
+            raise HTTPException(
+                status_code=400,
+                detail=schema.STATE_AUDIT_REFUSAL if doc == "campaign_state"
+                else f"--audit applies to campaign_state only, not {doc}",
+            )
+        if doc == "campaign_state" and any(n.strip() for n in (name or [])):
+            raise HTTPException(
+                status_code=400, detail="--name does not apply to campaign_state: it has no Key NPCs section")
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     cmd = _base_cmd("synth", doc, directory, lo, hi)
@@ -264,20 +415,160 @@ async def run_synth(
     if subjects:
         cmd += ["--name", *subjects]
 
-    cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
-    cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
-    cmd += ["--parts", str(_pick_num(parts, run.parts))]
+    # campaign_state has no Key NPCs section, so the CLI refuses the selection flags for it
+    if doc != "campaign_state":
+        cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
+        cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
+    if not chunked:
+        cmd += ["--parts", str(_pick_num(parts, run.parts))]
     if max_tokens is not None:
         cmd += ["--max-tokens", str(max_tokens)]
     if dump_only:
         cmd.append("--dump-only")
     if force:
         cmd.append("--force")
+    if fallback_npc_lines:  # per run, never from config
+        cmd.append("--fallback-npc-lines")
 
+    if chunked:
+        # The prose step has its own backend/model block (grounding.yaml summary_native.prose).
+        service, service_name = run.prose, f"{_SERVICE_NAME}.prose"
+    else:
+        service, service_name = _selection_for(request, _SERVICE_NAME), _SERVICE_NAME
     cmd += selection_cli_args(resolve_selection(
-        request, request_model=model,
-        service=_selection_for(request, _SERVICE_NAME), service_name=_SERVICE_NAME,
+        request, request_model=model, service=service, service_name=service_name,
+        request_claude_code_effort=(claude_code_effort or "").strip() or None,
     ))
+    return _sse_response(cmd)
+
+
+@router.get("/run/extract")
+async def run_extract(
+    request: Request,
+    summaries_dir: str = "",
+    since: int | None = None,
+    until: int | None = None,
+    chunk_chars: int | None = None,
+    max_tokens: int | None = None,
+    dump_only: bool = False,
+    force: bool = False,
+    model: str | None = None,
+    endpoints: list[str] | None = Query(default=None),
+    parallel: int | None = None,
+):
+    run = _run_config(request)
+    directory = _require_dir(run, summaries_dir)
+    lo, hi = _require_range(run, since, until)
+    urls = [e.strip() for e in (endpoints or []) if e.strip()]
+    if parallel is not None and parallel < 1:
+        raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
+    cmd = _base_cmd("extract", None, directory, lo, hi)
+    cmd += ["--chunk-chars", str(_pick_num(chunk_chars, run.extract.chunk_chars))]
+    if max_tokens is not None:
+        cmd += ["--max-tokens", str(max_tokens)]
+    if dump_only:
+        cmd.append("--dump-only")
+    if force:
+        cmd.append("--force")
+    # Endpoints are machine wiring, never stored in grounding.yaml: a request value rides on top of
+    # the stored backend/model and reaches the command as `--endpoints A B` (the CLI's own spelling).
+    service = run.extract
+    if urls:
+        service = SimpleNamespace(backend=run.extract.backend, model=run.extract.model, endpoints=tuple(urls))
+    resolved = resolve_selection(
+        request, request_model=model, service=service, service_name=f"{_SERVICE_NAME}.extract",
+    )
+    if urls and resolved.backend not in _ENDPOINT_BACKENDS:
+        raise HTTPException(status_code=400, detail=f"--endpoints applies to --backend dgx only, not {resolved.backend}")
+    cmd += selection_cli_args(resolved)
+    if parallel is not None:
+        cmd += ["--parallel", str(parallel)]
+    return _sse_response(cmd)
+
+
+@router.get("/run/audit")
+async def run_audit(
+    request: Request,
+    summaries_dir: str = "",
+    since: int | None = None,
+    until: int | None = None,
+    track_file: list[str] | None = Query(default=None),
+    candidates: int | None = None,
+    max_tokens: int | None = None,
+    dump_only: bool = False,
+    force: bool = False,
+    model: str | None = None,
+    endpoints: list[str] | None = Query(default=None),
+    parallel: int | None = None,
+):
+    """The tracking audit. Its judge uses the extraction backend family (``summary_native.extract``) and
+    the same endpoint wiring as ``/run/extract``; ``track_file`` repeats ``--track-file`` and, when
+    absent, the CLI reads ``grounding.yaml campaign_state.track_files`` itself."""
+    run = _run_config(request)
+    directory = _require_dir(run, summaries_dir)
+    lo, hi = _require_range(run, since, until)
+    urls = [e.strip() for e in (endpoints or []) if e.strip()]
+    files = [t.strip() for t in (track_file or []) if t.strip()]
+    if parallel is not None and parallel < 1:
+        raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
+    if candidates is not None and candidates < 1:
+        raise HTTPException(status_code=400, detail=f"candidates must be at least 1, got {candidates}")
+    if not files and not _default_track_files(request):
+        raise HTTPException(
+            status_code=400,
+            detail="no track files: pass ?track_file= or set grounding.yaml campaign_state.track_files",
+        )
+    cmd = _base_cmd("audit", None, directory, lo, hi)
+    for f in files:
+        cmd += ["--track-file", f]
+    if candidates is not None:
+        cmd += ["--candidates", str(candidates)]
+    if max_tokens is not None:
+        cmd += ["--max-tokens", str(max_tokens)]
+    if dump_only:
+        cmd.append("--dump-only")
+    if force:
+        cmd.append("--force")
+    service = run.extract
+    if urls:
+        service = SimpleNamespace(backend=run.extract.backend, model=run.extract.model, endpoints=tuple(urls))
+    resolved = resolve_selection(
+        request, request_model=model, service=service, service_name=f"{_SERVICE_NAME}.extract",
+    )
+    if urls and resolved.backend not in _ENDPOINT_BACKENDS:
+        raise HTTPException(status_code=400, detail=f"--endpoints applies to --backend dgx only, not {resolved.backend}")
+    cmd += selection_cli_args(resolved)
+    if parallel is not None:
+        cmd += ["--parallel", str(parallel)]
+    return _sse_response(cmd)
+
+
+def _default_track_files(request: Request) -> list[str]:
+    """``grounding.yaml campaign_state.track_files``: the audit's default."""
+    return list(_service(request).resolved().campaign_state.track_files)
+
+
+@router.get("/run/annotate/{doc}")
+async def run_annotate(
+    request: Request,
+    doc: str,
+    summaries_dir: str = "",
+    since: int | None = None,
+    until: int | None = None,
+    dry_run: bool = False,
+):
+    _require_doc(doc)
+    if doc not in schema.STATE_DOCS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"annotate applies to {' and '.join(schema.STATE_DOCS)} only, not {doc}",
+        )
+    run = _run_config(request)
+    directory = _require_dir(run, summaries_dir)
+    lo, hi = _require_range(run, since, until)
+    cmd = _base_cmd("annotate", doc, directory, lo, hi)
+    if dry_run:
+        cmd.append("--dry-run")
     return _sse_response(cmd)
 
 

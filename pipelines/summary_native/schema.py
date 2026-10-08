@@ -172,6 +172,80 @@ PLACEHOLDER_SPEAKERS = ("speaker", "unknown", "unnamed", "narrator", "someone", 
 #: Written by code in place of a map section whose every item failed the map check.
 NONE_VERIFIED = "_(none verified)_"
 
+# ── Chunked, code-checked grounding documents (spec 033) ────────────────────
+
+#: Section heading text -> citation target key (research R3). A section's own heading, in any
+#: case, is accepted as its key; any other heading is an invalid citation target.
+SECTION_TARGETS: dict[str, str] = {
+    "Memorable Moments": "moment",
+    "NPCs": "npcs",
+    "Locations": "locations",
+    "Items": "items",
+    "Spells": "spells",
+    "Abilities": "abilities",
+    "Session-End State": "end",
+}
+#: Extra spellings of a section heading that map exactly to its key.
+SECTION_TARGET_ALIASES: dict[str, str] = {"memorable moment": "moment", "moments": "moment"}
+#: One bracket of a state-note citation: ``[ch NNN / target]`` parts joined by "; ". The target is
+#: a scene id or a section key (before heading-text normalisation).
+STATE_CITE_RE = re.compile(r"\[ch [^\[\]]*\]")
+STATE_CITE_PART_RE = re.compile(
+    r"ch (\d{3}) / (\d{3}\.\d{2}|moment|npcs|locations|items|spells|abilities|end)"
+)
+
+#: The note grammar an extract call writes.
+THREAD_TAGS = ("OPENED", "ADVANCED", "RESOLVED", "ABANDONED")
+WORLD_TAGS = ("FACTION", "NPC", "LOCATION", "ITEM", "THREAT")
+STATUSES = ("Alive", "Dead", "Missing", "Imprisoned", "Departed", "Unknown")
+#: The six ``##`` sections of an extract call, in order. (``MAP_SECTIONS`` above is the NPC
+#: dossier map's; this one is the state notes'.)
+STATE_MAP_SECTIONS = ("## Events", "## Concluded", "## Threads", "## NPC Status", "## World", "## Party")
+
+DEFAULT_EXTRACT_PARALLEL = 6
+DEFAULT_PROSE_BACKEND = "claude-code"
+DEFAULT_PROSE_MODEL = "claude-sonnet-5-5"
+DEFAULT_PROSE_EFFORT = "medium"
+#: Word budgets for world_state's prose sections (research R8, round 3).
+DEFAULT_WORLD_BUDGETS: dict[str, int] = {
+    "Party": 700,
+    "Factions and Powers": 450,
+    "Key NPCs": 900,
+    "Locations": 450,
+    "Items and Artifacts": 450,
+    "Active Threats and Open Pressures": 600,
+}
+DEFAULT_AUDIT_CANDIDATES = 3
+#: Everything 033 writes lives under ``<range_dir>/state/``.
+STATE_DIR = "state"
+TIMELINE_FILE = "canon_events_timeline.md"
+#: Beside the notes: the NPCs the latest world_state build found without a usable dossier (read by `GET /state`).
+MISSING_DOSSIERS_FILE = "missing_dossiers.json"
+#: The two documents that build from the checked notes (FR-029); party and planning keep the one-shot path.
+STATE_DOCS: tuple[str, ...] = ("world_state", "campaign_state")
+#: Refusals shared by the CLI and the web routes (the routes answer 400 with the same words).
+STATE_PARTS_REFUSAL = (
+    "--parts does not apply to {doc}: it is built with one call per section from the checked notes"
+)
+STATE_AUDIT_REFUSAL = "--audit does not apply to campaign_state: the audit is its own step: summary_native audit"
+#: Ends a Key NPCs line built by code for an NPC with no published dossier (``--fallback-npc-lines``).
+KEY_NPC_FALLBACK_MARK = "(no published dossier — from checked notes)"
+#: Shown in the Audit section until ``summary_native audit`` has run for the range.
+AUDIT_NOT_RUN = "Audit not run for this range."
+
+
+def draft_dir(range_dir, doc: str):
+    """Where ``doc``'s draft lives: ``state/drafts`` for the chunked documents, ``drafts`` otherwise."""
+    from pathlib import Path
+
+    base = Path(range_dir)
+    return base / STATE_DIR / "drafts" if doc in STATE_DOCS else base / "drafts"
+
+#: Annotation markers (research R10). Annotations are appended under a line; the line is never changed.
+LATER = "⚠ later:"
+SINCE = "ℹ since:"
+UNVERIFIED = "⚠ unverified:"
+
 # ── Documents ───────────────────────────────────────────────────────────────
 
 #: Every document the pipeline will eventually draft (FR-018).
