@@ -102,7 +102,6 @@ def test_supported_needs_a_citation_in_the_candidates_and_a_verbatim_span(camp):
 
 @pytest.mark.parametrize("answer,why", [
     (f'SHOWN\nCITE: [ch 004 / 004.02] "Ilvara Mizzrym was struck down in the doorway"', "outside the candidate chapters"),
-    (f'SHOWN\nCITE: [ch 002 / 002.09] "{SPAN}"', "does not resolve"),
     (f'SHOWN\nCITE: [ch 002 / 002.02] "She came to the bars at midnight"', "not verbatim"),
     (f'SHOWN\nCITE: [ch 002 / 002.02] "dusk"', "too short"),
     (f'SHOWN\nCITE: [ch 002 / 002.02]', "without a quoted span"),
@@ -116,6 +115,32 @@ def test_a_shown_without_a_checkable_citation_and_span_is_unverified(camp, answe
     assert (v.verdict, v.reason) == (sel.NOT_FOUND, sel.UNVERIFIED)
     assert why in v.detail
     assert v.citation is None and v.span is None
+
+
+@pytest.mark.parametrize("bad", ["002.09", "end"])
+def test_a_verbatim_span_under_a_missing_target_is_cited_where_it_sits(camp, bad):
+    # GM ruling 2026-10-07: the model named a scene or section the chapter does not have, but the
+    # span is verbatim in that chapter. Code cites the scene that holds it and records the change.
+    v = sel.check_verdict(f'SHOWN\nCITE: [ch 002 / {bad}] "{SPAN}"', _cands(camp, 2, 3))
+    assert (v.verdict, v.citation, v.span) == (sel.SUPPORTED, "[ch 002 / 002.02]", SPAN)
+    assert v.detail == f"citation corrected from [ch 002 / {bad}]"
+    md = sel.render_audit_md({"verdicts": [{"id": "A1", "file": "t.txt", "text": "x", **v.to_dict()}]})
+    assert f"citation corrected from [ch 002 / {bad}]" in md
+
+
+def test_a_missing_target_with_a_span_from_elsewhere_is_still_unverified(camp):
+    v = sel.check_verdict('SHOWN\nCITE: [ch 002 / 002.09] "She came to the bars at midnight"', _cands(camp, 2, 3))
+    assert v.reason == sel.UNVERIFIED and "not verbatim" in v.detail
+
+
+def test_section_of_names_the_nearest_citable_heading_and_never_inherits_across_an_uncitable_one():
+    text = ("# S\n\n## Scenes\n\nlead-in words here\n\n### 002.01 One\n\nfirst scene words\n\n"
+            "## Spells\n\nspell words\n\n## Unlisted Heading\n\nloose words\n")
+    assert sel.section_of(text, "first scene words") == "002.01"
+    assert sel.section_of(text, "spell words") == "spells"
+    assert sel.section_of(text, "loose words") is None
+    assert sel.section_of(text, "lead-in words here") is None
+    assert sel.section_of(text, "absent words entirely") is None
 
 
 def test_the_span_must_be_in_the_cited_chapter_not_just_a_candidate(camp):

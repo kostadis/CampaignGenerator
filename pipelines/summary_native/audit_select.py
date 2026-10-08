@@ -22,6 +22,7 @@ from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from campaignlib.textproc import locate_quote
 from pipelines.summary_native import notes, npc_check, npc_forms, schema
 
 SUPPORTED = "SUPPORTED"
@@ -191,8 +192,10 @@ def check_verdict(answer: str, candidates: Mapping[int, object]) -> Verdict:
 
     The first line is SHOWN or NOT SHOWN. SHOWN is accepted (SUPPORTED) only when a ``CITE:`` line
     gives a citation that resolves to a scene or section of a candidate chapter and a quoted span
-    of at least ``MIN_SPAN_CHARS`` characters that is verbatim in that chapter. Anything else is
-    NOT FOUND (``unverified``) and ``detail`` says which check failed. NOT SHOWN is NOT FOUND
+    of at least ``MIN_SPAN_CHARS`` characters that is verbatim in that chapter. When the span is
+    verbatim in a cited candidate chapter but the cited scene or section does not exist there, code
+    cites the scene or section that holds the span (:func:`section_of`) and ``detail`` records the
+    correction. Anything else is NOT FOUND (``unverified``) and ``detail`` says which check failed. NOT SHOWN is NOT FOUND
     (``not-shown``). An answer that starts with neither word claims nothing checkable and is
     ``unverified``.
     """
@@ -220,18 +223,48 @@ def check_verdict(answer: str, candidates: Mapping[int, object]) -> Verdict:
         if ch not in candidates:
             return reject(f"the citation {bracket} is outside the candidate chapters "
                           f"({', '.join(f'{n:03d}' for n in sorted(candidates))})")
-        if tgt not in allowed[ch] or ("." in tgt and int(tgt[:3]) != ch):
-            return reject(f"the citation {bracket} does not resolve to a scene or section of chapter {ch:03d}")
     spans = npc_check.SPAN_RE.findall(cite_line)
     if not spans:
         return reject("SHOWN without a quoted span")
     span = npc_check.strip_quote_marks(spans[0])
     if len(span) < MIN_SPAN_CHARS:
         return reject(f"the span {spans[0]} is too short to be evidence")
-    for bracket, ch, _ in found:
-        if npc_check._contains(candidates[ch].text, span) is not None:
+    unresolved = None
+    for bracket, ch, tgt in found:
+        if npc_check._contains(candidates[ch].text, span) is None:
+            continue
+        if tgt in allowed[ch] and not ("." in tgt and int(tgt[:3]) != ch):
             return Verdict(SUPPORTED, citation=bracket, span=span)
+        # GM ruling 2026-10-07: the span is verbatim in a candidate chapter, but the cited
+        # scene or section does not exist there. Code cites the section that holds the span.
+        section = section_of(candidates[ch].text, span)
+        if section is not None:
+            return Verdict(SUPPORTED, citation=f"[ch {ch:03d} / {section}]", span=span,
+                           detail=f"citation corrected from {bracket}")
+        unresolved = bracket
+    if unresolved:
+        return reject(f"the citation {unresolved} does not resolve to a scene or section of its chapter")
     return reject(f"the span {spans[0]} is not verbatim in the cited chapter")
+
+
+def section_of(text: str, span: str) -> str | None:
+    """The citation target (scene id or section key) whose heading most closely precedes the first
+    occurrence of ``span`` in ``text``, or None when the span is not found or precedes every heading.
+    Quote marks are folded one-for-one, so offsets in the folded text are offsets in ``text``."""
+    at = locate_quote(span, text)
+    if at is None:
+        at = locate_quote(npc_check.fold_typography(span), npc_check.fold_typography(text))
+    if at is None:
+        return None
+    best = None
+    for m in _TARGET_HEADING_RE.finditer(text[:at]):
+        # A scene heading names its scene; a ## heading names its section, or nothing (## Scenes),
+        # so a span under an uncitable ## heading never inherits the scene or section before it.
+        best = m.group(1) or schema.SECTION_TARGETS.get(m.group(2))
+    return best
+
+
+_TARGET_HEADING_RE = re.compile(r"^(?:### (\d{3}\.\d{2})\b|##(?!#)\s+(.+?)\s*$)", re.M)
 
 
 # ── Rendering ───────────────────────────────────────────────────────────────
@@ -283,6 +316,8 @@ def render_audit_md(data: Mapping) -> str:
         head = f'- [{v["id"]}] "{v["text"]}" — '
         if v["verdict"] == SUPPORTED:
             out += [head + f"`{SUPPORTED}`", f'  - {v["citation"]} "{v["span"]}"']
+            if v.get("detail"):
+                out.append(f"  - {v['detail']}")
         elif v["verdict"] == NOT_JUDGED:
             out.append(head + f"`{NOT_JUDGED}` (the model call failed; run `summary_native audit` again)")
         else:
