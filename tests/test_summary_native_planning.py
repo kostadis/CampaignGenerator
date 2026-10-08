@@ -93,7 +93,10 @@ class PlanningModels:
         heading = re.search(r"^SECTION: (## .+)$", user, re.M).group(1)
         self.calls.append({"heading": heading, "system": system, "user": user})
         self.base.prose_calls.append({"heading": heading, "system": system, "user": user, "model": model})
-        out = self.override.get(heading)
+        key = heading
+        if heading == "## Candidate Arc Score Events":  # one call per scored subject (spec 034 US4)
+            key = f"arc:{re.search(r'^SUBJECT: (.+)$', user, re.M).group(1)}"
+        out = self.override.get(key, self.override.get(heading))
         if callable(out):
             return out(user)
         if out is not None:
@@ -121,6 +124,7 @@ DEFAULT = {
     "## Active Plots": lambda u: "\n".join(
         f"### {n}\nProse for {n}. [ch 004 / 004.01]\n" for n in _names(u, "THREAD")),
     "## DM Notes": lambda u: "- Consider what the gate cost the party. [ch 004 / 004.01]\n",
+    "## Candidate Arc Score Events": lambda u: "- (none)\n",
 }
 
 
@@ -740,7 +744,9 @@ class TestSynthPlanning:
         assert {f["path"] for f in pc["files"]} == {"docs/mechanics/ilvara-arc.md"}
         assert rec["inputs"]["budgets"] == schema.DEFAULT_PLANNING_BUDGETS
         assert {"NPC Dossiers", "Faction States", "Active Plots", "DM Notes"} <= set(rec["budgets"])
-        assert [c["heading"] for c in rec["calls"]] == ["## NPC Dossiers", "## Faction States", "## Active Plots", "## DM Notes"]
+        # the prose calls, then one arc call for the one scored subject (Ilvara; House Mizzrym is trackless)
+        assert [c["heading"] for c in rec["calls"]] == [
+            "## NPC Dossiers", "## Faction States", "## Active Plots", "## DM Notes", schema.ARC_HEADING]
 
     def test_the_prompts_are_recorded_beside_the_run(self, pcamp):
         root, _ = pcamp
@@ -792,6 +798,230 @@ class TestSynthPlanning:
         rc, out, err = synth_planning(root)
         assert rc == 3 and "DM Notes" in err
         assert (drafts(root) / "planning.incomplete.md").is_file()
+
+
+# ── US4 (T042): candidate arc-score events in the Threat Tracker ─────────────
+
+ILVARA_TRIGGER = "The party refuses a bargain Ilvara offers"
+GOOD_ILVARA = f'- Ilvara\'s offer is refused [ch 003 / 003.02] — trigger: "{ILVARA_TRIGGER}"'
+HOUSE_TRIGGER = "House Mizzrym stands aside"
+
+
+def score_house(root):
+    """Give the (trackless by default) faction an arc score and a mechanic file."""
+    (root / "docs" / "mechanics" / "house-arc.md").write_text(
+        f'# House Mizzrym — Neutrality arc\n\nTrigger: "{HOUSE_TRIGGER}".\n', encoding="utf-8")
+    cfg = root / "config" / "planning.yaml"
+    cfg.write_text(cfg.read_text(encoding="utf-8").replace("    arc_score: null\n", "    arc_score: docs/mechanics/house-arc.md\n"),
+                   encoding="utf-8")
+
+
+def tracker_rows(root) -> list[list[str]]:
+    rows = section(draft_text(root), "## Threat Tracker").strip().splitlines()[2:]
+    return [[c.strip() for c in r.strip("|").split("|")] for r in rows]
+
+
+class TestArcCandidates:
+    def test_a_checked_candidate_fills_the_trackers_cell(self, pcamp):
+        root, pm = pcamp
+        pm.override["arc:Ilvara Mizzrym"] = GOOD_ILVARA + "\n"
+        rc, out, err = synth_planning(root)
+        assert rc == 0, out + err
+        (row,) = tracker_rows(root)
+        assert row == ["ilvara-arc", "Ilvara Mizzrym", GOOD_ILVARA[2:], "docs/mechanics/ilvara-arc.md"]
+
+    def test_several_candidates_share_the_cell_and_none_leaves_a_dash(self, pcamp):
+        root, pm = pcamp
+        second = f'- A second refusal [ch 002 / 002.02] — trigger: "{ILVARA_TRIGGER}"'
+        pm.override["arc:Ilvara Mizzrym"] = GOOD_ILVARA + "\n" + second + "\n"
+        assert synth_planning(root)[0] == 0
+        assert tracker_rows(root)[0][2] == f"{GOOD_ILVARA[2:]}<br>{second[2:]}"
+        pm.override["arc:Ilvara Mizzrym"] = "- (none)\n"
+        assert synth_planning(root, "--force")[0] == 0
+        assert tracker_rows(root)[0][2] == "—"
+
+    def test_the_arc_prompt_holds_the_subjects_notes_and_the_mechanic_only(self, pcamp):
+        root, pm = pcamp
+        assert synth_planning(root)[0] == 0
+        arc = [c for c in pm.calls if c["heading"] == "## Candidate Arc Score Events"]
+        assert len(arc) == 1  # House Mizzrym is trackless: no call
+        user = arc[0]["user"]
+        assert "SUBJECT: Ilvara Mizzrym" in user and "KIND: npc" in user
+        assert "A drow priestess of House Mizzrym who left a signet ring. [ch 002 / npcs]" in user
+        assert "Ilvara Mizzrym | Alive | the parley | Smiling [ch 003 / 003.02]" in user
+        assert ILVARA_TRIGGER in user and "docs/mechanics/ilvara-arc.md" in user
+        for foreign in ("It will stand aside while the horde passes", "The horde", "Patient and transactional", cp.CANARY):
+            assert foreign not in user  # no faction note, no threat note, nothing of the dossier
+
+    def test_drops_are_listed_with_reasons_and_never_reach_the_tracker(self, pcamp):
+        root, pm = pcamp
+        pm.override["arc:Ilvara Mizzrym"] = "\n".join([
+            GOOD_ILVARA,
+            '- She is refused again [ch 003 / 003.02] — trigger: "The party refuses a bargain she offers"',
+            f'- The score is now 3 [ch 003 / 003.02] — trigger: "{ILVARA_TRIGGER}"',
+            f'- A foreign note [ch 004 / 004.01] — trigger: "{ILVARA_TRIGGER}"',
+            "",
+        ])
+        assert synth_planning(root)[0] == 0
+        (row,) = tracker_rows(root)
+        assert row[2] == GOOD_ILVARA[2:]
+        rep = (drafts(root) / "arc_report.md").read_text(encoding="utf-8")
+        assert "trigger not verbatim" in rep and "states a value" in rep and "cite-not-in-notes" in rep
+        assert "Kept (1)" in rep and "Dropped (3)" in rep
+        assert "House Mizzrym" in rep and "trackless" in rep.split("## House Mizzrym")[1]
+
+    def test_a_scored_faction_gets_its_own_call_and_row_after_the_npcs(self, pcamp):
+        root, pm = pcamp
+        score_house(root)
+        pm.override["arc:House Mizzrym"] = f'- It stands aside [ch 003 / 003.02] — trigger: "{HOUSE_TRIGGER}"\n'
+        assert synth_planning(root)[0] == 0
+        arc = [c for c in pm.calls if c["heading"] == "## Candidate Arc Score Events"]
+        assert [re.search(r"^SUBJECT: (.+)$", c["user"], re.M).group(1) for c in arc] == ["Ilvara Mizzrym", "House Mizzrym"]
+        assert "KIND: faction" in arc[1]["user"] and "It will stand aside while the horde passes" in arc[1]["user"]
+        notes_block = arc[1]["user"].split("VERIFIED NOTES ABOUT")[1].split("\n\nMECHANIC FILE (")[0]
+        assert "**Ilvara Mizzrym**" not in notes_block and "| Alive |" not in notes_block  # the NPC's notes stay in its call
+        rows = tracker_rows(root)
+        assert [r[1] for r in rows] == ["Ilvara Mizzrym", "House Mizzrym"]
+        assert rows[0][2] == "—" and rows[1][2] == f"It stands aside [ch 003 / 003.02] — trigger: \"{HOUSE_TRIGGER}\""
+
+    def test_no_arc_score_configured_means_no_call_and_no_report(self, pcamp):
+        root, pm = pcamp
+        assert synth_planning(root)[0] == 0 and (drafts(root) / "arc_report.md").is_file()
+        (root / "config" / "planning.yaml").unlink()
+        pm.calls.clear()
+        assert synth_planning(root, "--force")[0] == 0
+        assert not pm.called("## Candidate Arc Score Events")
+        assert not (drafts(root) / "arc_report.md").exists()
+        assert section(draft_text(root), "## Threat Tracker").strip() == context.NO_ARC_SENTINEL
+
+    def test_a_scored_subject_with_no_notes_gets_no_call(self, pcamp):
+        root, pm = pcamp
+        cfg = root / "config" / "planning.yaml"
+        cfg.write_text(cfg.read_text(encoding="utf-8").replace("factions:\n", "factions:\n  - name: Nobody\n    arc_score: docs/mechanics/ilvara-arc.md\n"),
+                       encoding="utf-8")
+        assert synth_planning(root)[0] == 0
+        assert len([c for c in pm.calls if c["heading"] == "## Candidate Arc Score Events"]) == 1
+        assert [r[1] for r in tracker_rows(root)] == ["Ilvara Mizzrym", "Nobody"]
+        assert "no checked notes about Nobody" in (drafts(root) / "arc_report.md").read_text(encoding="utf-8")
+
+    def test_a_model_failure_in_an_arc_call_is_exit_4(self, pcamp):
+        root, pm = pcamp
+
+        def boom(user):
+            raise RuntimeError("upstream down")
+
+        pm.override["arc:Ilvara Mizzrym"] = boom
+        rc, out, err = synth_planning(root)
+        assert rc == 4 and "Arc score: Ilvara Mizzrym" in err and "upstream down" in err
+        assert not (drafts(root) / "planning.draft.md").exists()
+
+    def test_the_call_prompt_and_output_are_recorded(self, pcamp):
+        root, pm = pcamp
+        pm.override["arc:Ilvara Mizzrym"] = GOOD_ILVARA + "\n"
+        assert synth_planning(root)[0] == 0
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        assert (run / "planning.arc_ilvara_mizzrym.user.md").is_file()
+        assert (run / "planning.arc_ilvara_mizzrym.out.md").read_text(encoding="utf-8") == GOOD_ILVARA + "\n"
+        assert (run / "planning.arc.system.md").is_file()
+        rec = json.loads((run / "record.json").read_text(encoding="utf-8"))
+        (call,) = [c for c in rec["calls"] if c["route"] == "arc"]
+        assert call["subject"] == "Ilvara Mizzrym" and call["notes"] > 0
+        assert rec["arc"]["Ilvara Mizzrym"]["kept"] == 1 and rec["arc"]["House Mizzrym"]["trackless"] is True
+
+    def test_dump_only_writes_the_arc_prompt_and_makes_no_call(self, pcamp):
+        root, pm = pcamp
+        rc, out, err = synth_planning(root, "--dump-only")
+        assert rc == 0 and pm.calls == []
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        assert (run / "planning.arc_ilvara_mizzrym.user.md").is_file()
+
+    def test_the_tracker_and_the_report_are_byte_identical_across_rebuilds(self, pcamp):
+        root, pm = pcamp
+        pm.override["arc:Ilvara Mizzrym"] = GOOD_ILVARA + "\n"
+        assert synth_planning(root)[0] == 0
+        first = (section(draft_text(root), "## Threat Tracker"), (drafts(root) / "arc_report.md").read_bytes())
+        assert synth_planning(root, "--force")[0] == 0
+        assert (section(draft_text(root), "## Threat Tracker"), (drafts(root) / "arc_report.md").read_bytes()) == first
+
+
+# ── US5 (T045): annotation runs at the end of synth planning ─────────────────
+
+STALE_FACTION = "### House Mizzrym\nIlvara speaks for it. [ch 002 / npcs]\n"
+
+
+class TestAnnotation:
+    def _built(self, pcamp, faction=STALE_FACTION):
+        root, pm = pcamp
+        pm.override["## Faction States"] = faction
+        rc, out, err = synth_planning(root)
+        assert rc == 0, out + err
+        return root, out, draft_text(root)
+
+    def test_a_faction_block_with_a_later_note_gets_a_later_and_keeps_its_text(self, pcamp):
+        root, out, text = self._built(pcamp)
+        assert ("Ilvara speaks for it. [ch 002 / npcs]\n"
+                f"  - {schema.LATER} **House Mizzrym** — It will stand aside while the horde passes. [ch 003 / 003.02]\n") in text
+
+    def test_a_real_factions_line_naming_a_player_character_is_kept(self, pcamp):
+        # A PC named inside a real faction's block is a claim about the faction, never a removal; only a
+        # block NAMED for a PC is removed (tests/test_summary_native_annotate.py covers that case).
+        root, out, text = self._built(pcamp, STALE_FACTION + "- **Daz** — Joined the house. [ch 003 / 003.01]\n")
+        assert "- **Daz** — Joined the house. [ch 003 / 003.01]" in text
+        assert "0 removed" in out
+
+    def test_the_tracker_the_npc_dossiers_and_the_thread_blocks_carry_no_annotation(self, pcamp):
+        root, out, text = self._built(pcamp)
+        for heading in ("## Threat Tracker", "## NPC Dossiers"):
+            sec = section(text, heading)
+            assert not any(m in sec for m in (schema.LATER, schema.SINCE, schema.UNVERIFIED)), heading
+        plots_text = section(text, "## Active Plots")
+        for block in (schema.DORMANT_HEADING, schema.UNRATIFIED_HEADING):
+            if block in plots_text:
+                tail = plots_text.split(block)[1]
+                assert not any(m in tail for m in (schema.LATER, schema.SINCE, schema.UNVERIFIED))
+
+    def test_an_active_plot_entry_with_a_bad_citation_is_unverified(self, pcamp):
+        root, pm = pcamp
+        pm.override["## Active Plots"] = "### The Carver's march\nThe march gathers. [ch 004 / 004.77]\n"
+        rc, out, err = synth_planning(root)
+        assert rc == 0, out + err
+        line = "The march gathers. [ch 004 / 004.77]"
+        assert f"{line}\n  - {schema.UNVERIFIED} citation [ch 004 / 004.77] does not resolve\n" in draft_text(root)
+
+    def test_the_counts_are_recorded_and_the_report_written(self, pcamp):
+        root, out, text = self._built(pcamp)
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        counts = json.loads((run / "record.json").read_text(encoding="utf-8"))["annotations"]
+        assert counts["later"] >= 1
+        assert f"annotations: {counts['later']} later, {counts['since']} since, {counts['unverified']} unverified; {counts['removed']} removed" in out
+        assert "## planning" in (drafts(root) / "annotations.md").read_text(encoding="utf-8")
+        assert annotate.read_counts(drafts(root))["planning"] == counts
+
+    def test_every_difference_from_the_built_sections_is_an_annotation_or_a_removal(self, pcamp):
+        # SC-008: annotating the finished draft again changes nothing, and stripping the annotations leaves the assembly
+        root, out, text = self._built(pcamp, STALE_FACTION + "- **Daz** — Joined the house. [ch 003 / 003.01]\n")
+        plain = [ln for ln in text.split("\n") if not annotate.ANNOTATION_RE.match(ln)]
+        raw = (sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1] / "planning.faction_states.out.md").read_text(encoding="utf-8")
+        want = iter(plain)
+        # every line the model wrote is in the draft, in order: annotation only adds lines
+        assert all(ln in want for ln in raw.splitlines() if ln.strip())
+        rc, o, e = cs.run_cli(["annotate", "planning", *cp.common(root)])
+        assert rc == 0, e
+        assert draft_text(root) == text
+
+    def test_annotate_planning_dry_run_writes_nothing(self, pcamp):
+        root, out, text = self._built(pcamp)
+        before = {q: q.read_bytes() for q in drafts(root).rglob("*") if q.is_file()}
+        rc, o, e = cs.run_cli(["annotate", "planning", *cp.common(root), "--dry-run"])
+        assert rc == 0 and "nothing written" in o and "House Mizzrym" in o
+        assert {q: q.read_bytes() for q in drafts(root).rglob("*") if q.is_file()} == before
+
+    def test_an_incomplete_planning_draft_is_not_annotated(self, pcamp):
+        root, pm = pcamp
+        pm.override["## DM Notes"] = ""
+        rc, out, err = synth_planning(root)
+        assert rc == 3
+        assert not (drafts(root) / "annotations.md").exists()
 
 
 # ── Annotation: the code-built blocks are never scanned ──────────────────────

@@ -239,6 +239,11 @@ NO_RATIFIED_THREADS = "_No ratified thread has notes in this range._"
 NO_OPEN_THREADS = "_No ratified thread is open in this range._"
 #: Faction States, when no faction is configured and none has notes in the range.
 NO_FACTIONS = "_No faction is configured or has notes in this range._"
+#: Where a party character's checked arc-score candidates go, inside that character's section. Code places
+#: it; the model never writes it, and the annotators skip everything under it (spec 034 US4).
+ARC_HEADING = "#### Candidate Arc Score Events"
+#: The ``SECTION:`` line of an arc-score call's prompt, so a reader of a run directory can tell it apart.
+ARC_CALL_SECTION = "## Candidate Arc Score Events"
 DORMANT_HEADING = "### Dormant threads"
 UNRATIFIED_HEADING = "### Unratified thread notes (not yet ruled on)"
 #: Printed under DM Notes by code, so the section cannot be read as events.

@@ -312,9 +312,9 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 **Independent Test**: on fixtures, the PC score's candidates appear under the character's `#### Candidate Arc Score Events`, and the NPC score's in the Threat Tracker cell. Paraphrased triggers, value statements and foreign citations are dropped with reasons in `arc_report.md`. The trackless character has none.
 
-- [ ] T040 [P] [US4] `tests/test_summary_native_arc.py`: `arc_check.check_candidates`. Its reasons are `cite-not-in-notes`, `trigger not verbatim` and `states a value` (the R10 pattern). Include near-misses that are not values, e.g. "level 3 spell" in the event text with no score words.
-- [ ] T041 [US4] Create `pipelines/summary_native/arc_check.py` (deterministic, R10): `check_candidates(text, subject_cites, mechanic_text) -> (kept, drops)` and `arc_report_md(...)`. Add it to `GUARDED`.
-- [ ] T042 [US4] In `pipelines/summary_native/synth.py`, add one arc call per configured non-trackless score, through `state.arc.system.md`:
+- [X] T040 [P] [US4] `tests/test_summary_native_arc.py`: `arc_check.check_candidates`. Its reasons are `cite-not-in-notes`, `trigger not verbatim` and `states a value` (the R10 pattern). Include near-misses that are not values, e.g. "level 3 spell" in the event text with no score words.
+- [X] T041 [US4] Create `pipelines/summary_native/arc_check.py` (deterministic, R10): `check_candidates(text, subject_cites, mechanic_text) -> (kept, drops)` and `arc_report_md(...)`. Add it to `GUARDED`.
+- [X] T042 [US4] In `pipelines/summary_native/synth.py`, add one arc call per configured non-trackless score, through `state.arc.system.md`:
   - the subject's checked notes are the PC's attributed party notes, or an NPC/faction's notes by canonical subject;
   - the mechanic file text is attached;
   - the result is checked, then placed into the party character section (`#### Candidate Arc Score Events`) or the planning Threat Tracker cell;
@@ -332,13 +332,13 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 **Independent Test**: on fixtures, a party line mentioning a companion whose status changed later gains `ℹ since:`. A non-verbatim quote gains `⚠ unverified:`. The planning NPC blocks, Threat Tracker and unratified block are not scanned. The never-rewrites test passes for both documents.
 
-- [ ] T043 [P] [US5] Extend `tests/test_annotate_never_rewrites.py` and `tests/test_summary_native_annotate.py` to party and planning drafts. Cover the skip list, and confirm the PC-in-NPC removal fires in `## Faction States` but never inside party's `## Characters`.
-- [ ] T044 [US5] In `pipelines/summary_native/annotate.py`:
+- [X] T043 [P] [US5] Extend `tests/test_annotate_never_rewrites.py` and `tests/test_summary_native_annotate.py` to party and planning drafts. Cover the skip list, and confirm the PC-in-NPC removal fires in `## Faction States` but never inside party's `## Characters`.
+- [X] T044 [US5] In `pipelines/summary_native/annotate.py`:
   - add `## Threat Tracker` and `## NPC Dossiers` to `SKIP_SECTIONS`;
   - skip the lines under `DORMANT_HEADING` and `UNRATIFIED_HEADING` inside `## Active Plots`;
   - make sure `parse_entries` handles the `###` sub-entries of Characters, Faction States and Active Plots, giving each entry its `###` name as subject;
   - make `run_annotate` (the `annotate <doc>` command) accept party and planning.
-- [ ] T045 [US5] Run annotation at the end of `synth party|planning` in `pipelines/summary_native/synth.py` (the same block as for world_state), and write `annotations.md` / the counts. Add the annotation counts to the run record.
+- [X] T045 [US5] Run annotation at the end of `synth party|planning` in `pipelines/summary_native/synth.py` (the same block as for world_state), and write `annotations.md` / the counts. Add the annotation counts to the run record.
 
 **Checkpoint**: both documents annotate; the guards are green.
 
@@ -384,6 +384,9 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - replace "Step 6 — the other two documents" with the chunked party and planning builds;
   - document the party grammar and the re-extract, the level rows, attribution and `party_report.md`;
   - add planning's sections and the two Active Plots layers, and the thread proposal workflow (`thread-propose` → Threads page → ratify, split, reject);
+  - document arc-score candidates: the `#### Candidate Arc Score Events` subsection, the Threat Tracker cell, `arc_report.md` and the three drop reasons;
+  - document the annotation scope for party and planning: prose lines are scanned too; the Threat Tracker, NPC Dossiers, dormant and unratified blocks and the candidates subsection are skipped; a Faction States block named for a player character is removed;
+  - document the planning companions and the companion notes in Party Overview and Dynamics;
   - list every new refusal and exit code;
   - state the session-prep contract for all four documents (FR-025).
 - [ ] T051 [P] `docs/cli/state_projection_howto.md`: group proposals on the Threads page, ratifying a group (edit, split), rejection persistence, and where summary-native proposals come from.

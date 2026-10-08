@@ -28,6 +28,8 @@ GUARDED = [
     # spec 034 US3: attaching thread notes to ratified threads and checking a model's groupings are code.
     # `thread_propose` is the model step around them and is deliberately not listed.
     "thread_attach", "thread_check",
+    # spec 034 US4: checking a model's arc-score candidates is code; the calls are made in `synth`.
+    "arc_check",
 ]
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")
@@ -47,7 +49,7 @@ def test_guard_covers_the_modules_that_exist():
     assert {"notes", "state_sections", "key_npcs", "annotate", "audit_select"} <= names
     # The model steps are not guarded: they are where the calls are made.
     assert {"extract", "synth", "audit", "thread_propose"}.isdisjoint(GUARDED)
-    assert {"party_notes", "thread_attach", "thread_check"} <= names
+    assert {"party_notes", "thread_attach", "thread_check", "arc_check"} <= names
 
 
 @pytest.mark.parametrize("name,path", _existing(), ids=lambda v: v if isinstance(v, str) else "")

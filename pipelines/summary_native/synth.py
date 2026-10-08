@@ -23,7 +23,7 @@ from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.thread_registry import check_registry, load_registry
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import annotate, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, validate
+from pipelines.summary_native import annotate, arc_check, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, validate
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
@@ -562,15 +562,19 @@ def _party_body_problems(label: str, body: str) -> list[str]:
     for ln in body.splitlines():
         if _HEADING_LINE_RE.match(ln):
             out.append(f"{label}: the model wrote a heading ({ln.strip()!r}); code writes the headings")
+        elif ln.strip() == schema.ARC_HEADING:
+            out.append(f"{label}: the model wrote {schema.ARC_HEADING!r}; code places the checked candidates there")
         elif _LEVEL_LINE_RE.match(ln):
             out.append(f"{label}: the model wrote a level line ({ln.strip()!r}); code writes the level")
     return out
 
 
-def _party_sections(jobs: list[dict], bodies: dict) -> tuple[dict[str, str], list[str]]:
+def _party_sections(jobs: list[dict], bodies: dict, arc: dict | None = None) -> tuple[dict[str, str], list[str]]:
     """``({heading: body}, problems)`` for party. ``## Characters`` is built by code: for each configured
     character, ``### name``, the level line, the model's body (or the code line when there was nothing to
-    write from) and the pointer. A missing or malformed model body is a problem, so the draft is incomplete."""
+    write from), the character's checked arc-score candidates (``arc``: name -> kept lines; the subsection
+    is omitted when none survived) and the pointer. A missing or malformed model body is a problem, so the
+    draft is incomplete."""
     sections: dict[str, str] = {}
     problems: list[str] = []
     blocks: list[str] = []
@@ -587,6 +591,8 @@ def _party_sections(jobs: list[dict], bodies: dict) -> tuple[dict[str, str], lis
         block = f"### {j['name']}\n\n{j['level_line']}\n"
         if body is not None:
             block += f"\n{body}\n"
+        if (arc or {}).get(j["name"]):
+            block += f"\n{schema.ARC_HEADING}\n\n" + "\n".join(arc[j["name"]]) + "\n"
         blocks.append(block + f"\n{party_notes.FULL_NOTES_POINTER}\n")
     sections["## Characters"] = "\n".join(blocks).rstrip("\n")
     return sections, problems
@@ -736,6 +742,65 @@ def _planning_jobs(ctx: StateCtx) -> list[dict]:
     made and ``finish`` builds the section from what code knows.
     """
     return [_npc_dossiers_job(ctx), _faction_states_job(ctx), _active_plots_job(ctx), _dm_notes_job(ctx)]
+
+
+# ── arc-score candidates (spec 034 US4, research R10) ───────────────────────
+
+_ARC_BRIEF = ("List the events in these notes that a rule in the MECHANIC FILE might count toward the arc score. "
+              "You are not tracking the score: never state a value, a total or a threshold.")
+
+
+def _arc_prompt(doc: str, subject: str, kind: str, ns: list, mechanic: str, mechanic_text: str) -> str:
+    """One arc call's user prompt: the subject's checked notes and the mechanic file's text, nothing else.
+
+    ``SECTION:`` is the call's own marker (never a real heading), so a reader of a run directory can tell it
+    from the prose calls. Notes are the subject's alone: a PC's attributed party notes, or an NPC or faction's
+    notes by canonical subject.
+    """
+    return (
+        f"DOCUMENT: {doc}\nSECTION: {schema.ARC_CALL_SECTION}\nSUBJECT: {subject}\nKIND: {kind}\nBRIEF: {_ARC_BRIEF}\n\n"
+        f"VERIFIED NOTES ABOUT {subject} ({len(ns)} bullets, chapter order, every one already checked by code):\n\n"
+        + "\n".join(n.text for n in ns)
+        + f"\n\nMECHANIC FILE ({mechanic}), exactly as the GM authored it:\n\n{_FENCE}text\n{mechanic_text}\n{_FENCE}\n\n"
+        "OUTPUT: candidate lines only, in the form `- <event> [citation] — trigger: \"<trigger text>\"`; "
+        "or `- (none)`. No heading, no preamble, no closing remarks.\n"
+    )
+
+
+def _arc_jobs(ctx: StateCtx) -> tuple[list[dict], list[arc_check.ArcSubject]]:
+    """``(jobs, subjects)`` for the arc step: one job per configured, non-trackless score with notes behind it.
+
+    ``subjects`` lists every tracked subject in config order (party: the characters; planning: the NPCs then
+    the factions) for ``arc_report.md``. A trackless subject, or one with no checked notes, has no job: no
+    call is made and no candidate can appear. A job is ``{"subject", "kind", "file", "user", "system",
+    "notes", "cites", "mechanic", "mechanic_text"}``.
+    """
+    if ctx.doc == "party":
+        subjects = [(c.name, "character", c.arc_score, party_notes.character_notes(ctx.attributions, c.name)) for c in ctx.party]
+    else:
+        kinds = [(e, "npc") for e in ctx.planning.npcs] + [(e, "faction") for e in ctx.planning.factions]
+        subjects = [(e.name, k, e.arc_score, arc_check.entity_notes(ctx.results, ctx.forms, e.name)) for e, k in kinds]
+    system = (context.PROMPT_DIR / "state.arc.system.md").read_text(encoding="utf-8")
+    jobs: list[dict] = []
+    report: list[arc_check.ArcSubject] = []
+    for name, kind, path, ns in subjects:
+        if path is None:  # trackless (or none declared): no call, no candidate, no suggestion (FR-015)
+            report.append(arc_check.ArcSubject(name, kind, None, trackless=True))
+            continue
+        shown = _rel(path, ctx.root)
+        report.append(arc_check.ArcSubject(name, kind, shown, len(ns)))
+        if not ns:
+            continue
+        text = Path(path).read_text(encoding="utf-8")
+        stem = f"arc_{_name_slug(name)}"
+        while any(j["file"] == stem for j in jobs):  # two subjects can slug alike (an NPC and a faction)
+            stem += "_"
+        jobs.append({
+            "subject": name, "kind": kind, "file": stem, "system": system, "notes": len(ns),
+            "user": _arc_prompt(ctx.doc, name, kind, ns, shown, text), "cites": arc_check.cites_of(ns),
+            "mechanic": shown, "mechanic_text": text,
+        })
+    return jobs, report
 
 
 _TIMELINE_HEADING = "## Canon Events Timeline"
@@ -964,6 +1029,8 @@ def run_state_synth(
         last_chunk = [c for c in notes.load_chapters(Path(summaries_dir), min(last_numbers), max(last_numbers))
                       if c.number in last_numbers]
     jobs = []
+    arc_jobs: list[dict] = []
+    arc_subjects: list[arc_check.ArcSubject] = []
     if doc in ("party", "planning"):
         ctx = StateCtx(
             doc=doc, args=args, root=Path(root), range_dir=Path(range_dir),
@@ -975,6 +1042,7 @@ def run_state_synth(
             planning=planning, npc_plan=npc_plan, attachment=attachment, status_table=table if doc == "planning" else "",
         )
         jobs.extend((_party_jobs if doc == "party" else _planning_jobs)(ctx))
+        arc_jobs, arc_subjects = _arc_jobs(ctx)
     for heading, route, attach in state_sections.PROSE_SECTIONS.get(doc, ()):
         routed = state_sections.route_notes(route, results)
         extra = ""
@@ -1006,6 +1074,10 @@ def run_state_synth(
             atomic_write_text(run_dir / f"{doc}.{j.get('file') or _slug(j['heading'])}.user.md", j["user"])
             if j["system"] != system:  # planning's NPC Dossiers call has a prompt of its own
                 atomic_write_text(run_dir / f"{doc}.{j.get('file') or _slug(j['heading'])}.system.md", j["system"])
+    for aj in arc_jobs:
+        atomic_write_text(run_dir / f"{doc}.{aj['file']}.user.md", aj["user"])
+    if arc_jobs:
+        atomic_write_text(run_dir / f"{doc}.arc.system.md", arc_jobs[0]["system"])
     backend = resolve_cli_model(args, legacy_default=None).backend
     record = {
         "step": "synth",
@@ -1174,6 +1246,39 @@ def run_state_synth(
         })
         print(f"{label}: {j['notes']} notes, {secs:.0f}s", flush=True)
 
+    # ── arc-score candidates: one call per configured, non-trackless score, each checked by code before
+    # it is placed (party: under the character's section; planning: in the Threat Tracker's cell).
+    arc_by_name = {s.name: s for s in arc_subjects}
+    for aj in arc_jobs:
+        t0 = time.monotonic()
+        label = f"Arc score: {aj['subject']}"
+        try:
+            out = render_part(client, aj["system"], aj["user"], args.model, args.max_tokens)
+        except Exception as e:
+            fail(f"{label}: {type(e).__name__}: {e}")
+            print(
+                f"Error: model call failed in {label}: {type(e).__name__}: {e} "
+                f"(see {schema.display_path(run_dir / 'record.json', root)})",
+                file=sys.stderr,
+            )
+            return EXIT_MODEL_FAILED
+        secs = time.monotonic() - t0
+        atomic_write_text(run_dir / f"{doc}.{aj['file']}.out.md", out)
+        kept, drops = arc_check.check_candidates(out, aj["cites"], aj["mechanic_text"])
+        arc_by_name[aj["subject"]].kept, arc_by_name[aj["subject"]].drops = kept, drops
+        record["calls"].append({
+            "heading": schema.ARC_HEADING, "route": "arc", "subject": aj["subject"], "notes": aj["notes"],
+            "secs": round(secs, 1), "prompt_chars": len(aj["user"]), "out_chars": len(out),
+        })
+        print(f"{label}: {aj['notes']} notes, {len(kept)} kept, {len(drops)} dropped, {secs:.0f}s", flush=True)
+    if any(not s.trackless for s in arc_subjects):
+        record["arc"] = {s.name: {"kind": s.kind, "mechanic": s.mechanic, "trackless": s.trackless, "notes": s.notes,
+                                  "kept": len(s.kept), "dropped": len(s.drops)} for s in arc_subjects}
+    arc_kept = {s.name: s.kept for s in arc_subjects if s.kept}
+    if doc == "planning":
+        code_body["## Threat Tracker"] = state_sections.threat_tracker_md(
+            planning.entries, {n: arc_check.candidate_cell(k) for n, k in arc_kept.items()}, root=root)
+
     # Budgets count the model's words only, before the pointer is appended. An overrun is reported,
     # never trimmed: cutting prose mid-sentence would be a worse defect than a long section (FR-012).
     budget_report: dict[str, dict] = {}
@@ -1203,7 +1308,7 @@ def run_state_synth(
     party_problems: list[str] = []
     party_sections: dict[str, str] = {}
     if doc == "party":
-        party_sections, party_problems = _party_sections(jobs, bodies)
+        party_sections, party_problems = _party_sections(jobs, bodies, arc_kept)
     for h in headings:
         body = code_body[h] if h in code_body else party_sections.get(h) if doc == "party" else bodies.get(h)
         if body is not None and h in state_sections.REFERENCE_FOR and h not in code_body:
@@ -1233,6 +1338,10 @@ def run_state_synth(
     if doc == "party":
         atomic_write_text(drafts / "party_report.md", party_notes.report_md(
             results, attributions, [c.name for c in party_chars], levels, since=since, until=until, budgets=budget_report))
+    if any(not s.trackless for s in arc_subjects):
+        atomic_write_text(drafts / "arc_report.md", arc_check.arc_report_md(arc_subjects))
+    else:  # no score configured: no report, and none left over from a run that had one
+        (drafts / "arc_report.md").unlink(missing_ok=True)
     if key_assembled is not None:
         kb = budget_report.get("Key NPCs", {})
         atomic_write_text(drafts / "key_npcs_report.md", key_npcs.report_md(

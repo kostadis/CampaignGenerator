@@ -154,9 +154,17 @@ def fake_party_models(monkeypatch) -> cs.FakeModels:
             super().__init__()
             self.party_calls: list[dict] = []  # every party prose call: heading, character (or None), prompts
             self.character_override: dict[str, str] = {}  # character -> the model's full output ("" = nothing)
+            self.arc_calls: list[dict] = []  # every arc-score call (spec 034 US4): subject, prompts
+            self.arc_override: dict[str, object] = {}  # subject -> the model's output (str, or callable(user) -> str)
 
         def prose_render(self, client, system, user, model, max_tokens):
             heading = re.search(r"^SECTION: (## .+)$", user, re.M).group(1)
+            if heading == "## Candidate Arc Score Events":
+                subject = re.search(r"^SUBJECT: (.+)$", user, re.M).group(1)
+                self.arc_calls.append({"subject": subject, "system": system, "user": user})
+                self.prose_calls.append({"heading": heading, "system": system, "user": user, "model": model})
+                out = self.arc_override.get(subject, "- (none)\n")
+                return out(user) if callable(out) else out
             m = re.search(r"^CHARACTER: (.+)$", user, re.M)
             character = m.group(1) if m else None
             self.party_calls.append({"heading": heading, "character": character, "system": system, "user": user})

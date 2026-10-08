@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from pipelines.summary_native import notes, party_notes, schema, state_sections
+from pipelines.summary_native import annotate, notes, party_notes, schema, state_sections
 from tests import conftest_party as cp
 from tests import conftest_state as cs
 
@@ -487,3 +487,240 @@ class TestSynthParty:
         root, _ = pcamp
         assert synth_party(root)[0] == 0
         assert not (drafts(root) / "world_state.draft.md").exists()
+
+
+# ── US4 (T042): candidate arc-score events in the character section ─────────
+
+DAZ_TRIGGER = "Daz leaves his post to follow a lead on the spellbook"
+GOOD_DAZ = f'- Daz chases the lead [ch 003 / 003.01] — trigger: "{DAZ_TRIGGER}"'
+
+
+class TestArcCandidates:
+    def _daz(self, root) -> str:
+        text = (drafts(root) / "party.draft.md").read_text(encoding="utf-8")
+        return text.split("### Daz\n")[1].split("\n### ")[0]
+
+    def test_a_checked_candidate_sits_under_the_heading_before_the_pointer(self, pcamp):
+        root, fm = pcamp
+        fm.arc_override["Daz"] = GOOD_DAZ + "\n"
+        rc, out, err = synth_party(root)
+        assert rc == 0, out + err
+        daz = self._daz(root)
+        assert f"{schema.ARC_HEADING}\n\n{GOOD_DAZ}\n" in daz
+        assert daz.index("Body for Daz") < daz.index(schema.ARC_HEADING) < daz.index("_Full notes: reference/party.md_")
+
+    def test_the_candidate_is_not_annotated(self, pcamp):
+        # its trigger is quoted from the mechanic file, not from a chapter: the quote check must not flag it
+        root, fm = pcamp
+        fm.arc_override["Daz"] = GOOD_DAZ + "\n"
+        assert synth_party(root)[0] == 0
+        daz = self._daz(root)
+        after = daz.split(GOOD_DAZ)[1].lstrip("\n")
+        assert not after.startswith("  - ") and schema.UNVERIFIED not in daz
+
+    def test_a_trackless_character_gets_no_call_and_no_heading(self, pcamp):
+        root, fm = pcamp
+        fm.arc_override["Daz"] = GOOD_DAZ + "\n"
+        assert synth_party(root)[0] == 0
+        assert [c["subject"] for c in fm.arc_calls] == ["Daz"]  # Zalthir is trackless: no call at all
+        text = (drafts(root) / "party.draft.md").read_text(encoding="utf-8")
+        zal = text.split("### Zalthir\n")[1].split("\n## ")[0]
+        assert schema.ARC_HEADING not in zal
+        report = (drafts(root) / "arc_report.md").read_text(encoding="utf-8")
+        assert "trackless" in report.split("## Zalthir")[1]
+
+    def test_the_arc_prompt_holds_that_characters_notes_and_the_mechanic_only(self, pcamp):
+        root, fm = pcamp
+        assert synth_party(root)[0] == 0
+        (call,) = fm.arc_calls
+        user = call["user"]
+        assert "Counts the march's banners" in user and "Is wounded in the fight" in user
+        assert DAZ_TRIGGER in user and "docs/mechanics/daz-arc.md" in user
+        for foreign in ("Wards the camp", "Keeps watch from the wall", "quarterstaff", "Collegium of Brindol"):
+            assert foreign not in user  # no other character's note, no sheet, no backstory
+        assert "[LEVEL]" not in user
+        assert "NEVER state a current value" in call["system"]
+
+    def test_drops_are_listed_with_reasons_and_never_reach_the_draft(self, pcamp):
+        root, fm = pcamp
+        fm.arc_override["Daz"] = "\n".join([
+            GOOD_DAZ,
+            '- Daz runs after a rumour [ch 003 / 003.01] — trigger: "Daz leaves his post to chase a rumour"',
+            f'- The score is now 3 [ch 003 / 003.01] — trigger: "{DAZ_TRIGGER}"',
+            f'- Daz studies the camp [ch 002 / 002.02] — trigger: "{DAZ_TRIGGER}"',  # a real note, but Zalthir's
+            "",
+        ])
+        assert synth_party(root)[0] == 0
+        daz = self._daz(root)
+        assert GOOD_DAZ in daz
+        for dropped in ("chase a rumour", "score is now 3", "Daz studies the camp"):
+            assert dropped not in daz
+        rep = (drafts(root) / "arc_report.md").read_text(encoding="utf-8")
+        assert "trigger not verbatim" in rep and "states a value" in rep and "cite-not-in-notes" in rep
+        assert "Kept (1)" in rep and "Dropped (3)" in rep
+
+    def test_when_nothing_survives_the_subsection_is_omitted_and_the_report_says_so(self, pcamp):
+        root, fm = pcamp
+        fm.arc_override["Daz"] = f'- The score is now 3 [ch 003 / 003.01] — trigger: "{DAZ_TRIGGER}"\n'
+        assert synth_party(root)[0] == 0
+        assert schema.ARC_HEADING not in (drafts(root) / "party.draft.md").read_text(encoding="utf-8")
+        assert "No candidate survived" in (drafts(root) / "arc_report.md").read_text(encoding="utf-8")
+
+    def test_the_model_writing_the_heading_itself_makes_the_draft_incomplete(self, pcamp):
+        root, fm = pcamp
+        fm.character_override["Daz"] = f"A body [ch 004 / 004.01].\n\n{schema.ARC_HEADING}\n\n- An invented candidate.\n"
+        rc, out, err = synth_party(root)
+        assert rc == 3 and "Candidate Arc Score Events" in err
+
+    def test_no_arc_score_configured_means_no_call_and_no_report(self, pcamp):
+        root, fm = pcamp
+        assert synth_party(root)[0] == 0 and (drafts(root) / "arc_report.md").is_file()
+        cfg = root / "config" / "party.yaml"
+        cfg.write_text(cfg.read_text(encoding="utf-8").replace("    arc_score: docs/mechanics/daz-arc.md\n", ""), encoding="utf-8")
+        fm.arc_calls.clear()
+        assert synth_party(root, "--force")[0] == 0
+        assert fm.arc_calls == []
+        assert not (drafts(root) / "arc_report.md").exists()  # the earlier run's report is not left to mislead
+        assert schema.ARC_HEADING not in (drafts(root) / "party.draft.md").read_text(encoding="utf-8")
+
+    def test_a_character_with_no_notes_gets_no_arc_call(self, pcamp):
+        root, fm = pcamp
+        cfg = root / "config" / "party.yaml"
+        cfg.write_text(cfg.read_text(encoding="utf-8") + "  - name: Nobody\n    sheet: docs/sheets/zalthir.md\n"
+                       "    arc_score: docs/mechanics/daz-arc.md\n", encoding="utf-8")
+        assert synth_party(root)[0] == 0
+        assert [c["subject"] for c in fm.arc_calls] == ["Daz"]
+        rep = (drafts(root) / "arc_report.md").read_text(encoding="utf-8")
+        assert "no checked notes about Nobody" in rep
+
+    def test_a_model_failure_in_an_arc_call_is_exit_4(self, pcamp):
+        root, fm = pcamp
+
+        def boom(user):
+            raise RuntimeError("backend down")
+
+        fm.arc_override["Daz"] = boom
+        rc, out, err = synth_party(root)
+        assert rc == 4 and "Arc score: Daz" in err and "backend down" in err
+        assert not (drafts(root) / "party.draft.md").exists()
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        assert json.loads((run / "record.json").read_text(encoding="utf-8"))["check"]["complete"] is False
+
+    def test_the_prompt_and_output_are_recorded_and_the_call_is_in_the_run_record(self, pcamp):
+        root, fm = pcamp
+        fm.arc_override["Daz"] = GOOD_DAZ + "\n"
+        assert synth_party(root)[0] == 0
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        assert (run / "party.arc_daz.user.md").read_text(encoding="utf-8") == fm.arc_calls[0]["user"]
+        assert (run / "party.arc_daz.out.md").read_text(encoding="utf-8") == GOOD_DAZ + "\n"
+        assert (run / "party.arc.system.md").is_file()
+        rec = json.loads((run / "record.json").read_text(encoding="utf-8"))
+        (call,) = [c for c in rec["calls"] if c["route"] == "arc"]
+        assert call["subject"] == "Daz" and call["heading"] == schema.ARC_HEADING and call["notes"] > 0
+        assert rec["arc"]["Daz"]["kept"] == 1 and rec["arc"]["Daz"]["dropped"] == 0
+        assert rec["arc"]["Zalthir"]["trackless"] is True
+
+    def test_dump_only_writes_the_arc_prompt_and_makes_no_call(self, pcamp):
+        root, fm = pcamp
+        rc, out, err = synth_party(root, "--dump-only")
+        assert rc == 0 and fm.arc_calls == []
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        assert (run / "party.arc_daz.user.md").is_file()
+
+    def test_rebuilding_from_the_same_output_is_byte_identical(self, pcamp):
+        root, fm = pcamp
+        fm.arc_override["Daz"] = GOOD_DAZ + "\n"
+        assert synth_party(root)[0] == 0
+        report = (drafts(root) / "arc_report.md").read_bytes()
+        strip = lambda b: re.sub(rb"record: runs/[^ ]+ ", b"record: runs/X ", b)  # noqa: E731
+        draft = strip((drafts(root) / "party.draft.md").read_bytes())
+        assert synth_party(root, "--force")[0] == 0
+        assert (drafts(root) / "arc_report.md").read_bytes() == report
+        assert strip((drafts(root) / "party.draft.md").read_bytes()) == draft
+
+
+# ── US5 (T045): annotation runs at the end of synth party ───────────────────
+
+RONT_DEAD = "- Ront | Dead | the gate | Gone [ch 004 / 004.01]"
+DAZ_BODY = 'Daz scouted ahead with Ront. [ch 003 / 003.01]\nHe told Zalthir "no retreat". [ch 003 / 003.01]\n'
+
+
+@pytest.fixture
+def acamp(tmp_path, monkeypatch):
+    """The party fixture where Ront, a companion, is recorded dead at ch 4 (his last status row was Unknown)."""
+    monkeypatch.setitem(cp.CANNED_PARTY, 4, cp.CANNED_PARTY[4].replace("- Ront | Unknown | — | — [ch 004 / 004.01]", RONT_DEAD))
+    root = cp.party_campaign(tmp_path)
+    fm = cp.fake_party_models(monkeypatch)
+    rc, out, err = cs.run_cli(cp.extract_args(root))
+    assert rc == 0, out + err
+    return root, fm
+
+
+class TestAnnotation:
+    def _built(self, acamp):
+        root, fm = acamp
+        fm.character_override["Daz"] = DAZ_BODY
+        fm.arc_override["Daz"] = GOOD_DAZ + "\n"
+        rc, out, err = synth_party(root)
+        assert rc == 0, out + err
+        return root, out, (drafts(root) / "party.draft.md").read_text(encoding="utf-8")
+
+    def test_a_companion_whose_status_changed_later_gets_a_since_and_the_line_keeps_its_text(self, acamp):
+        root, out, text = self._built(acamp)
+        line = "Daz scouted ahead with Ront. [ch 003 / 003.01]"
+        assert f"{line}\n  - {schema.SINCE} **Ront** — Dead; the gate; Gone [ch 004 / 004.01]\n" in text
+
+    def test_a_quote_not_in_the_cited_chapter_gets_an_unverified(self, acamp):
+        root, out, text = self._built(acamp)
+        line = 'He told Zalthir "no retreat". [ch 003 / 003.01]'
+        assert f'{line}\n  - {schema.UNVERIFIED} quotation "no retreat" is not verbatim in the chapter it cites\n' in text
+
+    def test_the_level_line_the_candidates_and_the_pointer_carry_no_annotation(self, acamp):
+        root, out, text = self._built(acamp)
+        daz = text.split("### Daz\n")[1].split("\n### ")[0]
+        assert daz.lstrip().startswith("Level: 9 [ch 002 / 002.01]\n\n")
+        assert f"{schema.ARC_HEADING}\n\n{GOOD_DAZ}\n\n_Full notes: reference/party.md_" in daz
+
+    def test_the_counts_are_printed_recorded_and_reported(self, acamp):
+        root, out, text = self._built(acamp)
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        counts = json.loads((run / "record.json").read_text(encoding="utf-8"))["annotations"]
+        assert counts["since"] >= 1 and counts["unverified"] >= 1 and counts["removed"] == 0
+        assert (f"annotations: {counts['later']} later, {counts['since']} since, {counts['unverified']} unverified; "
+                f"{counts['removed']} removed") in out
+        report = (drafts(root) / "annotations.md").read_text(encoding="utf-8")
+        assert "## party" in report and "Ront" in report and "no retreat" in report
+        assert json.loads((drafts(root) / "annotations.json").read_text(encoding="utf-8"))["party"]["counts"] == counts
+
+    def test_every_difference_from_the_built_sections_is_an_annotation(self, acamp):
+        # SC-008: the draft less its annotation sub-bullets is exactly what the run assembled
+        root, out, text = self._built(acamp)
+        run = sorted((cp.range_dir(root) / "state" / "runs").iterdir())[-1]
+        plain = [ln for ln in text.split("\n") if not annotate.ANNOTATION_RE.match(ln)]
+        body = (run / "party.characters_daz.out.md").read_text(encoding="utf-8")
+        assert all(ln in plain for ln in body.strip().split("\n"))
+        assert len(plain) < len(text.split("\n"))
+
+    def test_annotate_party_is_idempotent_and_dry_run_writes_nothing(self, acamp):
+        root, out, text = self._built(acamp)
+        p = drafts(root) / "party.draft.md"
+        rc, o, e = cs.run_cli(["annotate", "party", *cp.common(root)])
+        assert rc == 0, e
+        assert p.read_text(encoding="utf-8") == text
+        before = {q: q.read_bytes() for q in drafts(root).rglob("*") if q.is_file()}
+        rc, o, e = cs.run_cli(["annotate", "party", *cp.common(root), "--dry-run"])
+        assert rc == 0 and "nothing written" in o
+        assert {q: q.read_bytes() for q in drafts(root).rglob("*") if q.is_file()} == before
+
+    def test_an_incomplete_draft_is_not_annotated(self, acamp):
+        root, fm = acamp
+        fm.character_override["Zalthir"] = ""
+        rc, out, err = synth_party(root)
+        assert rc == 3
+        assert not (drafts(root) / "annotations.md").exists()
+        rc, out, err = cs.run_cli(["annotate", "party", *cp.common(root)])
+        assert rc == 2 and "only party.incomplete.md exists" in err
+
+    def test_a_players_character_section_survives_annotation(self, acamp):
+        root, out, text = self._built(acamp)
+        assert re.findall(r"^### (.+)$", text, re.M) == ["Daz", "Zalthir"]
