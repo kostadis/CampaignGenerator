@@ -5,7 +5,7 @@ by code, from the checked notes, the entity registry and ``players.yaml``. A mod
 who an NPC is, which row is the latest, or whether a player character belongs in the table; those
 are identity and ordering decisions (Principle II).
 
-Every function is a pure function of its inputs and emits no timestamp and no absolute path, so
+Every function is a pure function of its inputs and emits no timestamp, so
 the output is byte-identical across rebuilds from the same notes, registry and roster (FR-010).
 Guarded by ``tests/test_summary_native_no_llm.py``.
 """
@@ -65,7 +65,7 @@ _NO_SUBJECT = "(no subject)"
 _COUNTS_RE = re.compile(r"^(\d+) checked notes, (\d+) subjects", re.M)
 
 
-def _reference_md(kind: str, results: Sequence[notes.CheckedChunk]) -> str:
+def _reference_md(kind: str, results: Sequence[notes.CheckedChunk], forms: dict[str, str]) -> str:
     tag = REFERENCE_KINDS[kind]
     seen: set[str] = set()
     found: list[notes.Note] = []
@@ -77,7 +77,8 @@ def _reference_md(kind: str, results: Sequence[notes.CheckedChunk]) -> str:
             found.append(n)
     groups: dict[str, list[notes.Note]] = {}
     for n in sorted(found, key=lambda n: n.first_chapter):  # stable: extraction order within a chapter
-        groups.setdefault(n.subject or _NO_SUBJECT, []).append(n)
+        subject = n.subject or _NO_SUBJECT
+        groups.setdefault(forms.get(subject.strip().casefold(), subject), []).append(n)
     lines = [
         f"# Reference: {kind.title()}", "",
         f"{len(found)} checked notes, {len(groups)} subjects, chapter order within each. "
@@ -90,10 +91,11 @@ def _reference_md(kind: str, results: Sequence[notes.CheckedChunk]) -> str:
     return "\n".join(lines)
 
 
-def reference_files(results: Sequence[notes.CheckedChunk]) -> dict[str, str]:
+def reference_files(results: Sequence[notes.CheckedChunk], forms: dict[str, str] | None = None) -> dict[str, str]:
     """``{kind: markdown}`` for the six reference files: every kept note of the kind, verbatim,
-    under one ``## Subject`` heading per subject (sorted case-insensitively), chapter order within."""
-    return {kind: _reference_md(kind, results) for kind in REFERENCE_KINDS}
+    under canonical registry headings when known, otherwise the original subject. Exact matches only;
+    note text stays verbatim and notes stay in chapter order within each heading."""
+    return {kind: _reference_md(kind, results, forms or {}) for kind in REFERENCE_KINDS}
 
 
 def reference_pointer(kind: str, md: str) -> str:
@@ -121,6 +123,8 @@ _CONTRACT = """\
 >   status and checked notes, verbatim.
 > - Every checked note, by subject: {files}.
 >   Every event, in order: `{timeline}`.
+> - Reference and timeline paths are relative to this document. Summary and dossier paths are
+>   relative to the campaign root unless absolute. After copying, run `summary_native check-pointers FILE`.
 > - Anything this document does not settle is a decision for the GM, not something to fill in.
 """
 
@@ -129,13 +133,15 @@ def reading_contract(rng: tuple[int, int], paths: dict[str, str]) -> str:
     """The blockquote world_state opens with: the markers, what a citation points to, where the
     reference files and the timeline are. ``rng`` is ``(since, until)``; ``paths`` holds the
     ``summaries`` and ``reference`` directories and the ``timeline`` file as the reader will find
-    them once promoted (the layout in data-model.md)."""
+    them once promoted. References and timeline are document-relative; summaries are
+    campaign-relative or absolute when outside the campaign."""
     ref = str(paths["reference"]).rstrip("/")
-    return _CONTRACT.format(
+    contract = _CONTRACT.format(
         since=rng[0], until=rng[1], later=schema.LATER, since_=schema.SINCE, unverified=schema.UNVERIFIED,
         summaries=str(paths["summaries"]).rstrip("/"), timeline=paths["timeline"],
         files=", ".join(f"`{ref}/{kind}.md`" for kind in REFERENCE_KINDS), fallback=schema.KEY_NPC_FALLBACK_MARK,
     )
+    return contract + "> <!-- summary_native pointers: " + json.dumps(paths, sort_keys=True) + " -->\n"
 
 
 # ── Identity ────────────────────────────────────────────────────────────────

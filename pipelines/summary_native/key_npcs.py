@@ -78,6 +78,7 @@ class KeyNpc:
     last_seen: int = 0
     view: PublishedView | None = None
     missing: str | None = None  # why there is no usable dossier
+    carried_from: str | None = None
 
 
 # ── Reading a published dossier ─────────────────────────────────────────────
@@ -112,12 +113,44 @@ def published_view(path: Path) -> PublishedView:
     return PublishedView(m.group("npc"), p.stem, m.group("range"), m.group("verify"), ident, state)
 
 
-def published_dossiers(campaign: Path, rng: str) -> tuple[dict[str, PublishedView], dict[str, str]]:
-    """``(usable, unusable)`` for ``docs/npcs/*.md``, both keyed by the casefolded NPC name.
+def _range_numbers(rng: str) -> tuple[int, int]:
+    match = re.fullmatch(r"ch(\d{3})-(\d{3})", rng)
+    if match is None:
+        raise ValueError(f"invalid chapter range: {rng}")
+    return int(match[1]), int(match[2])
 
-    Usable means ``source: summary_native``, this range, and ``verify: pass``. A summary_native
-    publication that is not usable is explained in ``unusable``; any other file is skipped.
+
+def _touched(name: str, after: int, until: int, results: Sequence[notes.CheckedChunk], forms: dict[str, str]) -> bool:
+    """Any checked note citing new chapters that names this NPC, including prose mentions.
+
+    Match whole registry names/aliases only, casefolded as in the status table. Similar spellings
+    and ambiguous registry forms are never inferred. Inspect every citation, not just the first.
     """
+    canon = forms.get(name.casefold(), name).casefold()
+    aliases = {f for f, n in forms.items() if n.casefold() == canon} | {canon}
+    pattern = re.compile(r"(?<!\w)(?:" + "|".join(re.escape(f) for f in sorted(aliases, key=len, reverse=True)) + r")(?!\w)")
+    for chunk in results:
+        for note in chunk.notes:
+            if not any(after < chapter <= until for _, chapter, _ in notes.cites(note.text)):
+                continue
+            subject = note.subject or ""
+            if forms.get(subject.casefold(), subject).casefold() == canon or pattern.search(note.text.casefold()):
+                return True
+    return False
+
+
+def published_dossiers(
+    campaign: Path, rng: str, *, results: Sequence[notes.CheckedChunk] | None = None,
+    forms: dict[str, str] | None = None,
+) -> tuple[dict[str, PublishedView], dict[str, str]]:
+    """Usable/unusable publications keyed by canonical casefolded name.
+
+    Same-range publications pass as before. An earlier end with the same start is safe only
+    when checked notes were supplied and none in the added chapters names this NPC. Different
+    starts stay refused: their evidence coverage differs. Future end chapters always refuse.
+    """
+    forms = forms or {}
+    since, until = _range_numbers(rng)
     usable: dict[str, PublishedView] = {}
     unusable: dict[str, str] = {}
     for p in sorted((Path(campaign) / schema.NPCS_DIR).glob("*.md")):
@@ -125,11 +158,20 @@ def published_dossiers(campaign: Path, rng: str) -> tuple[dict[str, PublishedVie
             v = published_view(p)
         except (NotPublished, OSError, UnicodeDecodeError):
             continue
-        key = v.name.casefold()
+        key = forms.get(v.name.casefold(), v.name).casefold()
+        previous_since, previous_until = _range_numbers(v.range)
+        why = None
         if v.range != rng:
-            unusable[key] = f"published for {v.range}, not {rng}"
-        elif v.verify != "pass":
-            unusable[key] = f"failed verification (published with verify: {v.verify})"
+            why = f"published for {v.range}, not {rng}"
+            if previous_since == since and previous_until < until and results is not None:
+                if _touched(v.name, previous_until, until, results, forms):
+                    why += "; checked notes name this NPC in the added chapters"
+                else:
+                    why = None
+        if v.verify != "pass":
+            why = f"failed verification (published with verify: {v.verify}; published for {v.range}, build {rng})"
+        if why:
+            unusable[key] = why
         else:
             usable[key] = v
     return usable, unusable
@@ -213,9 +255,10 @@ def missing_dossier_state(
 
 def plan_key_npcs(
     chosen: Sequence[tuple[select.Dossier, str]], campaign: Path, *, npc_root: Path, rng: str,
+    results: Sequence[notes.CheckedChunk] | None = None, forms: dict[str, str] | None = None,
 ) -> list[KeyNpc]:
     """Attach to each selected NPC its usable dossier, or the reason it has none."""
-    usable, unusable = published_dossiers(campaign, rng)
+    usable, unusable = published_dossiers(campaign, rng, results=results, forms=forms)
     try:
         log = npc_publish.read_publish_log(Path(campaign), Path(npc_root))
     except npc_publish.PublishRefusal:
@@ -226,7 +269,8 @@ def plan_key_npcs(
         view = usable.get(d.subject.casefold())
         missing = None if view else missing_dossier_state(
             d.subject, d.stem, slug, npc_root=npc_root, rng=rng, unusable=unusable, log=log)
-        out.append(KeyNpc(d.subject, d.stem, view.slug if view else slug, reason, d.last_chapter, view, missing))
+        out.append(KeyNpc(d.subject, d.stem, view.slug if view else slug, reason, d.last_chapter, view, missing,
+                          view.range if view is not None and view.range != rng else None))
     return out
 
 
@@ -425,5 +469,6 @@ def report_md(plan: Sequence[KeyNpc], a: Assembled, per: int, words: int, budget
         f"{per} words per model line.", "", "## Selected (order)", "",
     ]
     out += [f"- {k.name} ({k.reason}) — " + (f"docs/npcs/{k.slug}.md" if k.view else f"no dossier: {k.missing}") for k in plan]
+    out += [f"- {k.name}: carried over from {k.carried_from}" for k in plan if k.carried_from]
     out += ["", "## Substitutions, fallbacks and discards", ""] + (a.report or ["(none)"])
     return "\n".join(out) + "\n"

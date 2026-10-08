@@ -122,19 +122,47 @@ def _write_if_changed(path: Path, text: str) -> None:
     atomic_write_text(path, text)
 
 
-def _read_cached(nd: Path, plan: _Plan) -> notes.CheckedChunk | None:
-    """The checked result of an earlier extraction of exactly this chunk (same cache key), re-checked
-    from the raw output so a change to the check applies without a new model call."""
-    try:
-        data = json.loads((nd / f"{plan.stem}.checked.json").read_text(encoding="utf-8"))
-        raw = (nd / f"{plan.stem}.out.md").read_text(encoding="utf-8")
-    except (OSError, ValueError):
-        return None
-    if not isinstance(data, dict) or data.get("cache_key") != plan.key:
-        return None
-    cc = notes.check_chunk(raw, plan.chunk, plan.chapters)
-    _write_checked(nd, plan, cc)
-    return cc
+def _range_cache(range_dir: Path) -> dict[str, list[Path]]:
+    """Index raw extractions in sibling ranges by content key, including pre-existing builds.
+
+    The configured output root belongs to this campaign. No global cache or directory outside
+    that root is searched. The raw response is always checked again against the current chunk.
+    """
+    found: dict[str, list[Path]] = {}
+    for path in sorted(Path(range_dir).parent.glob("ch*-*/state/notes/*.checked.json")):
+        if path.parent == freshness.notes_dir(range_dir):
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        key = data.get("cache_key") if isinstance(data, dict) else None
+        if isinstance(key, str):
+            found.setdefault(key, []).append(path)
+    return found
+
+
+def _read_cached(nd: Path, plan: _Plan, shared: dict[str, list[Path]] | None = None) -> notes.CheckedChunk | None:
+    """Reuse an exact content-key match, re-checking raw output with today's checker.
+
+    Prefer this range. A sibling hit is copied into this range's notes so it is self-contained;
+    source files and their checked results are never rewritten.
+    """
+    local = nd / f"{plan.stem}.checked.json"
+    for path in [local, *(shared or {}).get(plan.key, [])]:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(data, dict) or data.get("cache_key") != plan.key:
+                continue
+            raw_path = path.with_name(path.name.removesuffix(".checked.json") + ".out.md")
+            raw = raw_path.read_text(encoding="utf-8")
+        except (OSError, ValueError):
+            continue
+        cc = notes.check_chunk(raw, plan.chunk, plan.chapters)
+        _write_if_changed(nd / f"{plan.stem}.out.md", raw)
+        _write_checked(nd, plan, cc)
+        return cc
+    return None
 
 
 def _write_checked(nd: Path, plan: _Plan, cc: notes.CheckedChunk) -> None:
@@ -323,10 +351,11 @@ def run_extract(
         record["finished"] = now().isoformat(timespec="seconds")
         atomic_write_text(run_dir / "record.json", _dumps(record))
 
+    shared = {} if args.force else _range_cache(range_dir)
     outcomes: dict[int, _Outcome] = {}
     todo: list[_Plan] = []
     for p in plans:
-        cc = None if args.force else _read_cached(nd, p)
+        cc = None if args.force else _read_cached(nd, p, shared)
         if cc is not None:
             outcomes[p.index] = _Outcome("cached", checked=cc)
         else:

@@ -59,7 +59,8 @@ def check_outline(text: str, headings: list[str]) -> list[str]:
             at[line.rstrip()] = n
     first = min(at.values()) if at else len(lines)
     pre = "\n".join(lines[:first]).strip()
-    if pre and not re.fullmatch(r"(<!--.*?-->\s*)+", pre, re.S):
+    pre = re.sub(r"\A(?:<!--.*?-->\s*)+", "", pre, flags=re.S).strip()
+    if pre and not re.fullmatch(r"(?:>[^\n]*(?:\n|$))+", pre):
         problems.append("text before the first heading (no preamble allowed)")
     for h in headings:
         if h not in at:
@@ -505,7 +506,7 @@ def run_state_synth(
         except select.SelectionError as e:
             return _refuse(f"{e} (Key NPCs select the global NPCs only)")
         key_plan = key_npcs.plan_key_npcs(
-            chosen, root, npc_root=npc_root or Path(root) / schema.DEFAULT_NPC_ROOT, rng=rng_name)
+            chosen, root, npc_root=npc_root or Path(root) / schema.DEFAULT_NPC_ROOT, rng=rng_name, results=results, forms=forms)
         refusal = key_npcs.refusal_message(key_plan, since, until, getattr(args, "npc_root", None))
         refused = bool(refusal) and not getattr(args, "fallback_npc_lines", False)
         # What `GET /state` reports as missing_dossiers: the NPCs the latest world_state attempt found
@@ -528,7 +529,7 @@ def run_state_synth(
     table, status_report = state_sections.npc_status_table(results, forms, pcs, ambiguous)
     threads = notes.thread_ledger(results)
     code_body: dict[str, str] = {}
-    reference = state_sections.reference_files(results)
+    reference = state_sections.reference_files(results, forms)
     if doc == "world_state":
         code_body[_TIMELINE_HEADING] = state_sections.timeline_pointer(results, since, until)
     else:
@@ -711,20 +712,19 @@ def run_state_synth(
         if body is not None:
             parts.append(f"{h}\n{body}\n")
     joined = "\n".join(parts)
+    if doc == "world_state":
+        # The reading contract travels with its reference bundle; external summaries keep their path.
+        shown = _rel(Path(summaries_dir), root) if summaries_dir is not None else _PROMOTED_SUMMARIES
+        contract = state_sections.reading_contract((since, until), {
+            "summaries": shown,
+            "reference": "reference", "timeline": schema.TIMELINE_FILE,
+        })
+        joined = contract + "\n" + joined
+
     problems = check_outline(joined, headings)
     record["check"] = {"complete": not problems, "problems": problems}
     record["finished"] = now().isoformat(timespec="seconds")
     save_record()
-
-    if doc == "world_state":
-        # The reading contract is the document's first block. It sits outside `joined` because the
-        # outline check allows no text before the first heading; the check ran on the sections alone.
-        shown = _rel(Path(summaries_dir), root) if summaries_dir is not None else _PROMOTED_SUMMARIES
-        contract = state_sections.reading_contract((since, until), {
-            "summaries": _PROMOTED_SUMMARIES if shown.startswith("/") else shown,
-            "reference": "docs/reference", "timeline": f"docs/{schema.TIMELINE_FILE}",
-        })
-        joined = contract + "\n" + joined
 
     drafts.mkdir(parents=True, exist_ok=True)
     atomic_write_text(drafts / "npc_status_report.md", status_report)

@@ -27,7 +27,7 @@ from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, sc
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
-SUBCOMMANDS = ("validate", "build", "extract", "audit", "synth", "annotate", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish")
+SUBCOMMANDS = ("validate", "build", "extract", "audit", "synth", "annotate", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish", "check-pointers")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -38,6 +38,10 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
     for name in SUBCOMMANDS:
         p = sub.add_parser(name, help=name)
+        if name == "check-pointers":
+            p.add_argument("document", help="promoted world_state file (or its draft)")
+            p.add_argument("--config", default=None)
+            continue
         if name in ("synth", "compare"):
             p.add_argument("doc", choices=schema.DOCS)
         if name == "annotate":
@@ -202,6 +206,14 @@ def main(argv: list[str] | None = None) -> int:
         root = campaign_root_for_config(config_path)
     except ConfigLocationError as e:
         return _err(str(e))
+    if args.command == "check-pointers":
+        from pipelines.summary_native.pointers import check_paths
+        document = _under(root, args.document)
+        problems = check_paths(document, root)
+        if problems:
+            return _err("\n".join(problems))
+        print(f"All reading-contract pointers resolve: {document}")
+        return 0
     cfg = _grounding_section(config_path.expanduser().resolve())
 
     summaries = args.summaries_dir or cfg.get("summaries_dir")
