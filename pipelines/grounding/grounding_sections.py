@@ -256,10 +256,11 @@ def render_emerging(sec: Section, args) -> str:
     """
     import yaml
     data = yaml.safe_load(args.source_paths[sec.source].read_text(encoding="utf-8")) or {}
-    pending = [p for p in data.get("proposals") or []
-               if isinstance(p, dict) and p.get("status") == "pending"]
-    ruled = len([p for p in data.get("proposals") or []
-                 if isinstance(p, dict) and p.get("status") != "pending"])
+    # Harvested (name-keyed) proposals only: group entries (`key`, spec 034) belong to the chunked planning
+    # document's Active Plots, which has no use for this digest and no title to print for them.
+    harvested = [p for p in data.get("proposals") or [] if isinstance(p, dict) and p.get("norm")]
+    pending = [p for p in harvested if p.get("status") == "pending"]
+    ruled = len([p for p in harvested if p.get("status") != "pending"])
 
     def latest(p):
         return max(p.get("chapters") or [0])

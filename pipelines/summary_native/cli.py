@@ -1,4 +1,4 @@
-"""summary_native CLI: validate | build | extract | audit | synth | annotate | compare | npc-link | npc-draft | npc-compose | npc-verify | npc-publish.
+"""summary_native CLI: validate | build | extract | audit | synth | annotate | compare | thread-propose | npc-link | npc-draft | npc-compose | npc-verify | npc-publish.
 
 Exit codes (contracts/cli.md): 0 ok, 1 blocking validation problems, 2 refusal,
 3 incomplete synthesis, 4 model call failed, 5 npc-verify found a failing draft.
@@ -16,6 +16,7 @@ import yaml
 
 from campaignlib.config import ConfigLocationError, campaign_root_for_config, find_default_config
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME, load_players_config
+from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
 from campaignlib.registry import load_registry
 from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
@@ -23,11 +24,11 @@ from campaignlib.api.client import resolve_cli_model
 from pipelines.summary_native import annotate, audit
 from pipelines.summary_native import compare as compare_mod
 from pipelines.summary_native import corpus, duplicates, extract, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
-from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth
+from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth, thread_propose
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
-SUBCOMMANDS = ("validate", "build", "extract", "audit", "synth", "annotate", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish", "check-pointers")
+SUBCOMMANDS = ("validate", "build", "extract", "audit", "synth", "annotate", "compare", "thread-propose", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish", "check-pointers")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -63,6 +64,19 @@ def build_parser() -> argparse.ArgumentParser:
                                 "default: grounding.yaml campaign_state.track_files)")
             p.add_argument("--candidates", type=_positive_int, default=schema.DEFAULT_AUDIT_CANDIDATES, metavar="N",
                            help=f"max candidate chapters per item (default {schema.DEFAULT_AUDIT_CANDIDATES})")
+        if name == "thread-propose":
+            p.add_argument("--max-input-chars", type=_positive_int, default=None, metavar="N",
+                           help="split the thread notes into chapter-ordered batches of at most N characters "
+                                f"(default {schema.DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS}); every batch sees only "
+                                "the checked notes and the ratified threads, never another batch's output")
+            p.add_argument("--max-tokens", type=int, default=schema.DEFAULT_MAX_TOKENS,
+                           help=f"max_tokens per call (default {schema.DEFAULT_MAX_TOKENS})")
+            p.add_argument("--dump-only", action="store_true", help="write the prompts and the run record; make no model call")
+            p.add_argument("--model", default=None,
+                           help="model id (default: grounding.yaml summary_native.prose.model, "
+                                f"else {schema.DEFAULT_PROSE_MODEL})")
+            # no parser default: precedence is flag > grounding.yaml summary_native.prose > schema
+            add_backend_args(p, default_backend=None)
         if name == "extract":
             p.add_argument("--chunk-chars", type=int, default=None,
                            help="chunk size limit in characters "
@@ -201,6 +215,8 @@ def _sha_if_file(path: Path | None) -> str | None:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "thread-propose" and (args.since is None or args.until is None):
+        return _err("thread-propose needs --since and --until: the thread notes of a chapter range, never all chapters")
     try:
         config_path = Path(args.config) if args.config else Path(find_default_config())
         root = campaign_root_for_config(config_path)
@@ -277,6 +293,8 @@ def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, 
         return _audit(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path)
     if args.command == "synth":
         return _synth(args, root, config_path, cfg, report, range_dir, registry_path, summaries_dir)
+    if args.command == "thread-propose":
+        return _thread_propose(args, root, config_path, cfg, report, range_dir, registry_path)
     if args.command == "annotate":
         return annotate.run_annotate(
             args, range_dir=range_dir, summaries_dir=summaries_dir, registry_path=registry_path,
@@ -664,6 +682,30 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         players_path=_players_path(config_path),
         budgets=budgets,
         npc_root=npc_root,
+    )
+
+
+def _thread_propose(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, registry_path) -> int:
+    """thread-propose: prose backend defaults (flag > grounding.yaml summary_native.prose > schema); the thread
+    registry and the proposals file come from ``projections.yaml`` ``stores`` (contracts/cli.md)."""
+    try:
+        prose = resolve.resolve_prose(
+            cfg, backend=args.backend, model=args.model, effort=getattr(args, "claude_code_effort", None))
+        args.backend, args.model, args.claude_code_effort = prose.backend, prose.model, prose.effort
+        args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
+        stores = load_projection_config(config_path.expanduser().resolve().parent / PROJECTION_CONFIG_FILENAME).stores
+    except ValueError as e:  # ConfigRefusal, malformed YAML and pydantic's ValidationError are ValueErrors
+        return _err(str(e))
+    return thread_propose.run_thread_propose(
+        args,
+        root=root,
+        range_dir=range_dir,
+        report=report,
+        entity_registry_path=registry_path,
+        players_path=_players_path(config_path),
+        thread_registry_path=_under(root, stores.thread_registry),
+        proposals_path=_under(root, stores.thread_proposals),
+        max_input_chars=args.max_input_chars or schema.DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS,
     )
 
 

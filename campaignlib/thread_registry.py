@@ -10,6 +10,7 @@ Never similarity. No model call.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 
@@ -23,6 +24,16 @@ def norm_title(title: str) -> str:
     """'Aletra's Boss' -> 'aletras-boss'. Exact-match key; never similarity."""
     t = title.lower().replace("'", "").replace("’", "")
     return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
+
+
+def group_key(member_ids) -> str:
+    """The key of a group proposal: ``g-`` + the first 12 hex of the sha1 of its sorted member ids (spec 034, R5).
+
+    Stable for an identical grouping, so a ruling recorded against it persists across runs. Declared here
+    because the proposal step (``summary_native thread-propose``) and the ratify verb (``thread_registry``,
+    which names the remainder of a split) must agree on it.
+    """
+    return "g-" + hashlib.sha1("|".join(sorted(member_ids)).encode("utf-8")).hexdigest()[:12]
 
 
 def load_registry(path: Path) -> dict:

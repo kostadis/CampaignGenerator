@@ -178,54 +178,54 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 ### Tests for User Story 3
 
-- [ ] T021 [P] [US3] `tests/test_summary_native_threads.py` — `thread_attach.attach`:
+- [X] T021 [P] [US3] `tests/test_summary_native_threads.py` — `thread_attach.attach`:
   - exact title or alias match attaches; a name matching two threads → ambiguous, unattached, reported;
   - open/closed: a GM status other than `open` wins, otherwise the latest attached tag decides;
   - Active Plots order is newest activity first;
   - an empty or absent registry means everything is unattached.
-- [ ] T022 [P] [US3] `tests/test_summary_native_threads.py` — `thread_check.check_groups`:
+- [X] T022 [P] [US3] `tests/test_summary_native_threads.py` — `thread_check.check_groups`:
   - unknown member removed; attached member removed; a note in two groups is removed from both;
   - a `continues` with a missing thread is dropped; a group left empty is dropped;
   - every leftover unattached note becomes `single`;
   - keys are `g-` + sha of sorted member ids;
   - existing rulings are preserved on merge; rejected members are excluded from model input and re-offered as `single`.
-- [ ] T023 [P] [US3] `tests/test_thread_registry_groups.py`:
+- [X] T023 [P] [US3] `tests/test_thread_registry_groups.py`:
   - `ratify --key --emit-plan` returns `derive_plan` from the members (log rows in chapter order, change from tag, `cite`, `aliases_add`);
   - `ratify --key --plan` writes the thread or log rows plus aliases in one write;
   - a subset plan leaves the remainder as a new pending group;
   - `rule --key --status rejected` persists;
   - an alias colliding with another thread's title is refused;
   - an AST/grep guard: only the `thread_registry` verbs open the registry for writing, and `thread_propose` never does.
-- [ ] T024 [P] [US3] `tests/test_summary_native_threads.py` — `thread-propose` end to end with the fake client:
+- [X] T024 [P] [US3] `tests/test_summary_native_threads.py` — `thread-propose` end to end with the fake client:
   - batching splits at `--max-input-chars` in chapter order, and no batch prompt contains another batch's output (only checked notes and ratified threads);
   - prompts and outputs land in `state/threads/`; the record is written;
   - `--dump-only` makes no call; the registry is untouched.
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Create `pipelines/summary_native/thread_attach.py` (deterministic):
+- [X] T025 [US3] Create `pipelines/summary_native/thread_attach.py` (deterministic):
   - `attach(results, registry) -> Attachment`, which holds per-note thread id, ambiguous names, per-thread latest note and open flag, and the unattached notes;
   - `threads_report_md(att, rng)`;
   - writes `state/threads/attach.json`.
 
   Use `campaignlib.thread_registry.match_threads`. Add the module to `GUARDED`.
-- [ ] T026 [US3] Create `pipelines/summary_native/thread_check.py` (deterministic): `check_groups(raw_json, unattached, registry, prior_proposals) -> (groups, report_lines)` and `merge_proposals(path, groups, source)` (data-model "Thread proposal"). It preserves rulings by `key`, writes the new entry shape beside the name-keyed entries, and writes atomically. Add the module to `GUARDED`.
-- [ ] T027 [US3] Create `pipelines/summary_native/thread_propose.py` (the model step, research R5):
+- [X] T026 [US3] Create `pipelines/summary_native/thread_check.py` (deterministic): `check_groups(raw_json, unattached, registry, prior_proposals) -> (groups, report_lines)` and `merge_proposals(path, groups, source)` (data-model "Thread proposal"). It preserves rulings by `key`, writes the new entry shape beside the name-keyed entries, and writes atomically. Add the module to `GUARDED`.
+- [X] T027 [US3] Create `pipelines/summary_native/thread_propose.py` (the model step, research R5):
   - builds `id | ch | tag | name | text` lines for the unattached, non-rejected notes, plus the ratified threads (id, title, aliases, latest note);
   - batches by `--max-input-chars`; every batch sees only ratified threads (no model output is fed to a later call);
   - calls through `render_part`, parses the JSON (a parse failure means that batch's notes all become `single`, reported), and checks via `thread_check`;
   - writes `state/threads/propose.{user,out}.md` per batch, `propose_report.md` and `runs/<stamp>/record.json`;
   - prints the contracts/cli.md summary line;
   - never writes the registry.
-- [ ] T028 [US3] Add the `thread-propose` subcommand to `pipelines/summary_native/cli.py`: `--since --until --max-input-chars --max-tokens --dump-only` plus the backend flags, with prose defaults. It resolves the registry and proposals paths from `projections.yaml` (`campaignlib.projection_config`), and exits with the contracts/cli.md codes. Extend `tests/test_summary_native_cli.py`.
-- [ ] T029 [US3] Extend `pipelines/grounding/thread_registry.py` (research R7):
+- [X] T028 [US3] Add the `thread-propose` subcommand to `pipelines/summary_native/cli.py`: `--since --until --max-input-chars --max-tokens --dump-only` plus the backend flags, with prose defaults. It resolves the registry and proposals paths from `projections.yaml` (`campaignlib.projection_config`), and exits with the contracts/cli.md codes. Extend `tests/test_summary_native_cli.py`.
+- [X] T029 [US3] Extend `pipelines/grounding/thread_registry.py` (research R7):
   - `ratify --key` with `--emit-plan` / `--plan`, a group `derive_plan`, split by member subset, and `continues` appending log rows and aliases to an existing thread;
   - `rule --key`;
   - the validation from contracts/cli.md before the single write;
   - an optional `cite` on log rows, accepted by `check_registry`.
 
   `--norm` behaviour stays unchanged, and `tests/test_thread_registry.py` stays green.
-- [ ] T030 [US3] Routes in `server/routers/projections.py`:
+- [X] T030 [US3] Routes in `server/routers/projections.py`:
   - `GET /threads/run/group-propose` streams `summary_native thread-propose`; `since` and `until` are required (400 without); backend/model/effort via `resolve_selection(... service="summary_native.prose")`;
   - `GET /threads/plan?key=` returns `--emit-plan`;
   - `POST /threads/ratify` accepts `key` plus a plan, with route-edge validation that `members` is non-empty and a subset, and that the log chapters are integers ≥ 1;
@@ -233,7 +233,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - `GET /threads/proposals` returns group entries.
 
   Extend the Threads route tests.
-- [ ] T031 [US3] Extend `frontend/src/views/grounding/Threads.vue`:
+- [X] T031 [US3] Extend `frontend/src/views/grounding/Threads.vue`:
   - a "Propose groupings" step: range prefilled from the summary-native page's current range, model/effort, Run / Dump-only, the SSE log, and a refresh;
   - group proposal cards showing kind, title or target thread, and members (chapter, tag, name, text, citation);
   - a ratify editor seeded from `/threads/plan`: editable title, status, member checkboxes (an unticked member means a split) and aliases. There is no one-click accept;

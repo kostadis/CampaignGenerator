@@ -390,3 +390,29 @@ def test_party_prose_backend_defaults_come_from_the_prose_block_not_the_parser()
 
     ns = build_parser().parse_args(["synth", "party", "--party-config", "x.yaml"])
     assert ns.party_config == "x.yaml" and ns.backend is None and ns.model is None
+
+
+# ── spec 034 US3: thread-propose ────────────────────────────────────────────
+
+
+def test_thread_propose_is_a_subcommand_with_its_own_flags_and_no_parser_defaults_for_the_prose_backend():
+    from pipelines.summary_native.cli import SUBCOMMANDS, build_parser
+
+    assert "thread-propose" in SUBCOMMANDS
+    ns = build_parser().parse_args(["thread-propose", "--since", "2", "--until", "9"])
+    assert (ns.since, ns.until) == (2, 9)
+    assert ns.max_input_chars is None  # resolved to schema.DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS in the CLI
+    assert ns.max_tokens == schema.DEFAULT_MAX_TOKENS and ns.dump_only is False
+    assert ns.backend is None and ns.model is None
+    ns = build_parser().parse_args(["thread-propose", "--since", "2", "--until", "9", "--max-input-chars", "5000", "--dump-only"])
+    assert ns.max_input_chars == 5000 and ns.dump_only is True
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["thread-propose", "--max-input-chars", "0"])
+
+
+@pytest.mark.parametrize("given", [["--since", "2"], ["--until", "9"], []])
+def test_thread_propose_refuses_a_missing_range_before_anything_else(camp, capsys, given):
+    _corpus(camp)
+    assert main(["thread-propose", "--summaries-dir", "summaries", *given]) == 2
+    err = capsys.readouterr().err
+    assert "--since" in err and "--until" in err

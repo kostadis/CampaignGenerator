@@ -401,3 +401,190 @@ def test_write_routes_do_not_block_the_event_loop():
         if "subprocess.run" in body and "run_in_threadpool" not in body:
             offenders.append(fn.name)
     assert not offenders, f"blocking subprocess.run in async route(s): {offenders}"
+
+
+# ── spec 034 US3: group proposals (T030) ─────────────────────────────────
+
+GROUP_BASE = "/api/projections/threads"
+GRANGE = {"summaries_dir": "docs/summaries", "since": 3, "until": 9}
+
+
+def _flag(cmd: list[str], flag: str) -> str | None:
+    return cmd[cmd.index(flag) + 1] if flag in cmd else None
+
+
+def _sse(path: str, params: dict) -> int:
+    r = client.get(f"{GROUP_BASE}{path}", params=params)
+    _ = r.text  # drain the SSE generator so the fake subprocess runs
+    return r.status_code
+
+
+def test_group_propose_requires_both_ends_of_the_range_and_spawns_nothing(campaign, captured_sse):
+    for params in ({"summaries_dir": "docs/summaries"}, {"summaries_dir": "docs/summaries", "since": 3},
+                   {"summaries_dir": "docs/summaries", "until": 9}):
+        r = client.get(f"{GROUP_BASE}/run/group-propose", params=params)
+        assert r.status_code == 400 and "since and until are required" in r.json()["detail"]
+    assert captured_sse == []
+
+
+def test_group_propose_needs_a_summaries_directory(campaign, captured_sse):
+    r = client.get(f"{GROUP_BASE}/run/group-propose", params={"since": 3, "until": 9})
+    assert r.status_code == 400 and "summaries directory" in r.json()["detail"] and captured_sse == []
+
+
+@pytest.mark.parametrize("bad", [{"max_input_chars": 0}, {"max_tokens": 0}])
+def test_group_propose_refuses_a_non_positive_limit(campaign, captured_sse, bad):
+    r = client.get(f"{GROUP_BASE}/run/group-propose", params={**GRANGE, **bad})
+    assert r.status_code == 400 and captured_sse == []
+
+
+def test_group_propose_streams_thread_propose_with_the_prose_selection(campaign, captured_sse):
+    from pipelines.summary_native import schema
+
+    assert _sse("/run/group-propose", GRANGE) == 200
+    cmd = captured_sse[0]
+    assert cmd[1] == "thread-propose"
+    assert _flag(cmd, "--since") == "3" and _flag(cmd, "--until") == "9"
+    assert _flag(cmd, "--summaries-dir") == "docs/summaries"
+    assert _flag(cmd, "--backend") == schema.DEFAULT_PROSE_BACKEND and _flag(cmd, "--model") == schema.DEFAULT_PROSE_MODEL
+    for flag in ("--max-input-chars", "--max-tokens", "--dump-only", "--registry", "--out-root"):
+        assert flag not in cmd, f"{flag} is not sent unless asked for"
+
+
+def test_group_propose_carries_the_per_run_flags_and_the_effort(campaign, captured_sse):
+    assert _sse("/run/group-propose", {**GRANGE, "max_input_chars": 5000, "max_tokens": 4000, "dump_only": True,
+                                       "model": "claude-opus-5-5", "claude_code_effort": "high"}) == 200
+    cmd = captured_sse[0]
+    assert _flag(cmd, "--max-input-chars") == "5000" and _flag(cmd, "--max-tokens") == "4000"
+    assert "--dump-only" in cmd and _flag(cmd, "--model") == "claude-opus-5-5"
+    assert _flag(cmd, "--claude-code-effort") == "high"
+
+
+def test_group_propose_reads_the_prose_block_of_grounding_yaml(campaign, captured_sse):
+    from server.grounding_config_service import GroundingConfigService
+
+    GroundingConfigService(campaign / "config").update_config(
+        {"summary_native": {"prose": {"backend": "claude-code", "model": "claude-opus-5-5"}}})
+    assert _sse("/run/group-propose", GRANGE) == 200
+    assert _flag(captured_sse[0], "--model") == "claude-opus-5-5"
+
+
+def test_plan_route_is_the_emit_plan_verb_and_read_only(campaign, fake_cli):
+    calls, outcome = fake_cli
+    outcome["stdout"] = json.dumps({"id": "x", "title": "X", "members": ["n-1"], "log": []})
+    r = client.get(f"{GROUP_BASE}/plan", params={"key": "g-0123456789ab"})
+    assert r.status_code == 200 and r.json()["title"] == "X"
+    assert len(calls) == 1 and calls[0]["cmd"][1:] == ["ratify", "--key", "g-0123456789ab", "--emit-plan"]
+    assert calls[0]["input"] is None
+    assert client.get(f"{GROUP_BASE}/plan").status_code == 400
+    assert client.get(f"{GROUP_BASE}/plan", params={"key": "  "}).status_code == 400
+    assert len(calls) == 1
+
+
+def test_plan_route_carries_the_cli_refusal_verbatim(campaign, fake_cli):
+    calls, outcome = fake_cli
+    outcome.update(rc=1, stdout="", stderr="error: no group proposal with key 'g-nope'")
+    r = client.get(f"{GROUP_BASE}/plan", params={"key": "g-nope"})
+    assert r.status_code == 400 and r.json()["detail"] == "error: no group proposal with key 'g-nope'"
+
+
+@pytest.fixture
+def group_cli(monkeypatch):
+    """subprocess.run that answers `proposals --json` from a fixed queue and records every call."""
+    calls: list[dict] = []
+    state = {"rc": 0, "stderr": ""}
+    queue = {"proposals": [{"key": "g-aaaaaaaaaaaa", "kind": "new", "status": "pending",
+                            "members": [{"id": "n-1"}, {"id": "n-2"}, {"id": "n-3"}]},
+                           {"norm": "a-thing", "title": "A thing", "status": "pending"}], "counts": {"pending": 2}}
+
+    def fake_run(cmd, **kw):
+        calls.append({"cmd": cmd, "input": kw.get("input")})
+        if cmd[1] == "proposals":
+            return subprocess.CompletedProcess(cmd, 0, json.dumps(queue), "")
+        return subprocess.CompletedProcess(cmd, state["rc"], "ok: ratified" if not state["rc"] else "", state["stderr"])
+
+    monkeypatch.setattr("server.routers.projections.subprocess.run", fake_run)
+    return calls, state
+
+
+GPLAN = {"key": "g-aaaaaaaaaaaa", "id": "x", "title": "X", "status": "open", "members": ["n-1", "n-2"],
+         "aliases_add": ["Ex"], "log": [{"chapter": 3, "change": "opened", "summary": "s", "cite": "[ch 003 / 003.01]"}]}
+
+
+def test_ratify_a_group_forwards_the_plan_without_the_key_in_one_write(campaign, group_cli):
+    calls, _ = group_cli
+    r = client.post(f"{GROUP_BASE}/ratify", json=GPLAN)
+    assert r.status_code == 200 and r.json()["ok"] is True
+    writes = [c for c in calls if c["cmd"][1] == "ratify"]
+    assert len(writes) == 1 and writes[0]["cmd"][1:] == ["ratify", "--key", "g-aaaaaaaaaaaa", "--plan", "-"]
+    sent = json.loads(writes[0]["input"])
+    assert "key" not in sent and sent == {k: v for k, v in GPLAN.items() if k != "key"}
+
+
+@pytest.mark.parametrize("edit,needle", [
+    ({"members": []}, "members is required"),
+    ({"members": None}, "members is required"),
+    ({"members": ["n-1", "n-9"]}, "n-9"),
+    ({"log": []}, "log is required"),
+    ({"log": [{"chapter": 0, "change": "opened", "summary": "s"}]}, "log row 1: chapter"),
+    ({"log": [{"chapter": "3", "change": "opened", "summary": "s"}]}, "log row 1: chapter"),
+    ({"log": [{"chapter": 3, "change": "opened"}, {"chapter": None, "change": "advanced"}]}, "log row 2: chapter"),
+])
+def test_ratify_a_group_refuses_form_problems_at_the_edge_and_writes_nothing(campaign, group_cli, edit, needle):
+    calls, _ = group_cli
+    r = client.post(f"{GROUP_BASE}/ratify", json={**GPLAN, **edit})
+    assert r.status_code == 400 and needle in r.json()["detail"]
+    assert [c for c in calls if c["cmd"][1] == "ratify"] == []
+
+
+def test_ratify_a_group_with_an_unknown_key_is_400(campaign, group_cli):
+    r = client.post(f"{GROUP_BASE}/ratify", json={**GPLAN, "key": "g-bbbbbbbbbbbb"})
+    assert r.status_code == 400 and "g-bbbbbbbbbbbb" in r.json()["detail"]
+
+
+def test_ratify_a_group_carries_the_cli_refusal_verbatim(campaign, group_cli):
+    _, state = group_cli
+    state.update(rc=1, stderr="error: alias 'Ex' collides with thread 'old' (its title or an alias) — a name belongs to one thread")
+    r = client.post(f"{GROUP_BASE}/ratify", json=GPLAN)
+    assert r.status_code == 400 and r.json()["detail"].startswith("error: alias 'Ex' collides")
+
+
+def test_ratify_takes_a_norm_or_a_key_never_both_or_neither(campaign, group_cli):
+    calls, _ = group_cli
+    assert client.post(f"{GROUP_BASE}/ratify", json={**GPLAN, "norm": "a-thing"}).status_code == 400
+    assert client.post(f"{GROUP_BASE}/ratify", json={k: v for k, v in GPLAN.items() if k != "key"}).status_code == 400
+    assert calls == []
+
+
+def test_rule_a_group_by_key(campaign, fake_cli):
+    calls, outcome = fake_cli
+    outcome["stdout"] = "ok"
+    r = client.post(f"{GROUP_BASE}/rule", json={"key": "g-aaaaaaaaaaaa", "status": "rejected", "note": "no"})
+    assert r.status_code == 200
+    assert calls[0]["cmd"][1:] == ["rule", "--key", "g-aaaaaaaaaaaa", "--status", "rejected", "--note", "no"]
+    # the old form is unchanged
+    client.post(f"{GROUP_BASE}/rule", json={"norm": "a-thing", "status": "deferred"})
+    assert calls[1]["cmd"][1:] == ["rule", "--norm", "a-thing", "--status", "deferred"]
+
+
+def test_rule_takes_a_norm_or_a_key_never_both_or_neither(campaign, fake_cli):
+    calls, _ = fake_cli
+    assert client.post(f"{GROUP_BASE}/rule", json={"status": "rejected"}).status_code == 400
+    assert client.post(f"{GROUP_BASE}/rule", json={"key": "g-a", "norm": "n", "status": "rejected"}).status_code == 400
+    assert calls == []
+
+
+def test_proposals_route_returns_group_entries_beside_name_keyed_ones(campaign, group_cli):
+    r = client.get(f"{GROUP_BASE}/proposals")
+    assert r.status_code == 200
+    body = r.json()
+    assert [p.get("key") or p.get("norm") for p in body["proposals"]] == ["g-aaaaaaaaaaaa", "a-thing"]
+    assert body["proposals"][0]["members"][0]["id"] == "n-1"
+
+
+def test_no_group_route_accepts_a_list_of_keys():
+    tree = ast.parse(ROUTER_SRC.read_text(encoding="utf-8"))
+    for fn in ast.walk(tree):
+        if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            for arg in fn.args.args + fn.args.kwonlyargs:
+                assert arg.arg not in ("keys", "key_list"), f"{fn.name} accepts a bulk argument {arg.arg!r}"

@@ -21,10 +21,23 @@
  * The harvest run control is this page's own, NOT the shared `RunPanel`
  * (GM ruling, research D19): the harvest is deterministic and spends zero
  * tokens, so a model/backend picker would be meaningless noise above it.
+ *
+ * Group proposals (specs/034-chunked-party-planning, US3). "Propose groupings"
+ * runs `summary_native thread-propose`: a model groups the thread notes no
+ * ratified thread claims, code checks the grouping, and each group lands here
+ * as a card. The model proposes; the GM rules, one group at a time:
+ *
+ *  - **There is no one-click accept.** "Ratify…" opens an editor seeded from
+ *    `GET /threads/plan?key=` and the GM posts the plan they edited. Nothing is
+ *    written until Confirm, and what is written is the posted plan.
+ *  - Unticking a note in the editor splits it off: it stays behind as a new
+ *    pending group with its own key.
+ *  - Reject and Defer are by `key`, one group per act.
  */
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { apiFetch, apiPost } from '../../api/client'
 import { connectSSE } from '../../api/sse'
+import { useConfigStore } from '../../stores/config'
 
 // ── shapes (mirror contracts/cli.md's --json payloads exactly) ────────────
 
@@ -63,8 +76,62 @@ interface Thread {
   log: LogRow[]
 }
 
+/** One checked thread note inside a group proposal (034 data-model "Thread proposal"). */
+interface GroupMember {
+  id: string
+  chapter: number | null
+  tag: string
+  name: string
+  text: string
+  cite: string
+}
+interface GroupProposal {
+  key: string
+  kind: 'new' | 'continues' | 'single'
+  title?: string
+  thread?: string
+  members: GroupMember[]
+  status: string
+  source?: string
+  note?: string
+  ruled_thread?: string
+}
+/** `GET /threads/plan` — what `thread_registry ratify --key K --emit-plan` prints. */
+interface GroupPlan {
+  thread?: string
+  id?: string
+  title?: string
+  status?: string
+  opened?: number | null
+  aliases_add: string[]
+  members: string[]
+  log: { chapter: number | null; change: string; summary: string; cite?: string }[]
+}
+/** A log row of the editor; `member` ties it to a ticked note ('' for a row the GM added). */
+interface EditRow {
+  member: string
+  chapter: number | null
+  change: string
+  summary: string
+  cite: string
+}
+interface GroupEdit {
+  key: string
+  /** The ratified thread this continues, or '' for a new thread. */
+  continues: string
+  id: string
+  title: string
+  status: string
+  resolved: number | null
+  aliases: string
+  rows: EditRow[]
+  /** The member ids ticked: unticked ones are split off. */
+  ticked: Record<string, boolean>
+}
+
 const CHANGES = ['opened', 'advanced', 'resolved', 'reopened', 'abandoned']
 const STATUSES = ['open', 'dormant', 'resolved', 'abandoned']
+const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max']
 
 // ── state ────────────────────────────────────────────────────────────────
 
@@ -102,6 +169,28 @@ const ruleNote = ref('')
 const maint = ref<Record<string, any>>({})
 const maintError = ref<Record<string, string>>({})
 
+// group proposals (034): the proposals file holds name-keyed harvest candidates (`norm`) and group
+// proposals (`key`); the page splits them on load and nothing else tells them apart.
+const groups = ref<GroupProposal[]>([])
+const groupFilter = ref('pending')
+const proposeSince = ref<number | ''>('')
+const proposeUntil = ref<number | ''>('')
+const proposeModel = ref('')
+const proposeEffort = ref('')
+const proposeMaxChars = ref<number | ''>('')
+const proposeOutput = ref('')
+const proposeStatus = ref<'idle' | 'running' | 'done' | 'error'>('idle')
+let proposeES: EventSource | null = null
+const proposeError = ref('')
+
+/** Which group has a form open, and which kind. One at a time, by construction. */
+const groupForm = ref<{ key: string; kind: 'ratify' | 'reject' | 'defer' } | null>(null)
+const groupError = ref('')
+const groupNote = ref('')
+const edit = ref<GroupEdit | null>(null)
+
+const config = useConfigStore()
+
 // ── loading (FR-023: everything re-derived from disk) ────────────────────
 
 async function loadAll() {
@@ -110,11 +199,13 @@ async function loadAll() {
   try {
     const [reg, props, chk] = await Promise.all([
       apiFetch<{ threads: Thread[] }>('/api/projections/threads/registry'),
-      apiFetch<{ proposals: Proposal[] }>('/api/projections/threads/proposals'),
+      apiFetch<{ proposals: any[] }>('/api/projections/threads/proposals'),
       apiFetch<{ threads: number; problems: string[] }>('/api/projections/threads/check'),
     ])
     threads.value = reg.threads || []
-    proposals.value = props.proposals || []
+    const all = props.proposals || []
+    proposals.value = all.filter((p) => !p.key) as Proposal[]
+    groups.value = all.filter((p) => !!p.key) as GroupProposal[]
     problems.value = chk.problems || []
   } catch (e: any) {
     loadError.value = e?.message || 'Failed to load the thread registry'
@@ -122,13 +213,32 @@ async function loadAll() {
     loading.value = false
   }
 }
-onMounted(loadAll)
+
+/** The range the Summary-native page is working on (grounding.yaml summary_native), so a GM who just
+ *  extracted chapters 2–70 proposes over the same chapters. Prefilled, always editable, never assumed. */
+async function prefillRange() {
+  try {
+    const cfg = config.groundingConfig ?? (await config.refreshGrounding())
+    const sn = ((cfg as any)?.summary_native ?? {}) as Record<string, any>
+    if (typeof sn.range_since === 'number') proposeSince.value = sn.range_since
+    if (typeof sn.range_until === 'number') proposeUntil.value = sn.range_until
+  } catch {
+    // No stored range: the GM types one.
+  }
+}
+
+onMounted(() => {
+  loadAll()
+  prefillRange()
+})
 
 // A harvest that outlives the page keeps streaming and then calls loadAll()
 // against a component that no longer exists.
 onBeforeUnmount(() => {
   harvestES?.close()
   harvestES = null
+  proposeES?.close()
+  proposeES = null
 })
 
 // ── registry region (T025) ───────────────────────────────────────────────
@@ -441,6 +551,191 @@ async function confirmRule(p: Proposal, status: 'rejected' | 'deferred') {
   }
 }
 
+// ── propose groupings (034 US3) ──────────────────────────────────────────
+
+const proposeRangeError = computed(() => {
+  if (proposeSince.value === '' || proposeUntil.value === '') {
+    return 'Choose the first and last chapter first: the proposal covers a range, never every chapter.'
+  }
+  if (Number(proposeSince.value) > Number(proposeUntil.value)) return 'The first chapter is after the last.'
+  return ''
+})
+
+function runPropose(dump: boolean) {
+  if (proposeStatus.value === 'running') return
+  proposeError.value = proposeRangeError.value
+  if (proposeError.value) return
+  proposeStatus.value = 'running'
+  proposeOutput.value = ''
+  const q = new URLSearchParams()
+  q.set('since', String(proposeSince.value))
+  q.set('until', String(proposeUntil.value))
+  if (proposeModel.value.trim()) q.set('model', proposeModel.value.trim())
+  if (proposeEffort.value) q.set('claude_code_effort', proposeEffort.value)
+  if (proposeMaxChars.value !== '') q.set('max_input_chars', String(proposeMaxChars.value))
+  if (dump) q.set('dump_only', 'true')
+  proposeES = connectSSE(`/api/projections/threads/run/group-propose?${q.toString()}`, {
+    onData: (t) => { proposeOutput.value += t },
+    onDone: (rc, error) => {
+      proposeES = null
+      proposeStatus.value = rc === 0 ? 'done' : 'error'
+      if (error && !proposeOutput.value.includes(error)) {
+        proposeOutput.value += `\nError: ${error}\n`
+      }
+      loadAll()
+    },
+    onError: () => {
+      proposeES?.close()
+      proposeES = null
+      proposeStatus.value = 'error'
+      proposeOutput.value += '\n[connection lost — the proposal run stopped]\n'
+    },
+  })
+}
+
+const visibleGroups = computed(() =>
+  groups.value.filter((g) => !groupFilter.value || (g.status || 'pending') === groupFilter.value),
+)
+
+/** Counts per ruling, derived from the loaded set (never a literal). */
+const groupCounts = computed(() => {
+  const out: Record<string, number> = {}
+  for (const g of groups.value) {
+    const s = g.status || 'pending'
+    out[s] = (out[s] || 0) + 1
+  }
+  return out
+})
+
+function threadTitle(id?: string): string {
+  return threads.value.find((t) => t.id === id)?.title || id || ''
+}
+
+function groupHeading(g: GroupProposal): string {
+  if (g.kind === 'continues') return `Continues: ${threadTitle(g.thread)}`
+  return g.title || g.members[0]?.name || g.key
+}
+
+function startGroupRatify(g: GroupProposal) {
+  groupError.value = ''
+  edit.value = null
+  groupForm.value = { key: g.key, kind: 'ratify' }
+  busy.value = g.key
+  // The editor starts from the engine's own derivation of this group, never from the card: what the GM
+  // edits is what `ratify --key --emit-plan` printed.
+  apiFetch<GroupPlan>(`/api/projections/threads/plan?key=${encodeURIComponent(g.key)}`)
+    .then((plan) => {
+      const members = plan.members || []
+      const log = plan.log || []
+      const aligned = members.length === log.length
+      const ticked: Record<string, boolean> = {}
+      for (const id of members) ticked[id] = true
+      edit.value = {
+        key: g.key,
+        continues: plan.thread || '',
+        id: plan.id || '',
+        title: plan.title ?? g.title ?? g.members[0]?.name ?? '',
+        status: plan.status || 'open',
+        resolved: null,
+        aliases: (plan.aliases_add || []).join('\n'),
+        rows: log.map((r, i) => ({
+          member: aligned ? members[i] : '',
+          chapter: r.chapter,
+          change: r.change,
+          summary: r.summary,
+          cite: r.cite || '',
+        })),
+        ticked,
+      }
+    })
+    .catch((e: any) => { groupError.value = e?.message || 'Could not derive a plan for this group' })
+    .finally(() => { busy.value = '' })
+}
+
+function startGroupRule(g: GroupProposal, kind: 'reject' | 'defer') {
+  groupError.value = ''
+  groupNote.value = ''
+  edit.value = null
+  groupForm.value = { key: g.key, kind }
+}
+
+function cancelGroupForm() {
+  groupForm.value = null
+  edit.value = null
+  groupError.value = ''
+}
+
+/** A log row is posted when it is the GM's own, or its note is still ticked. */
+function rowShown(r: EditRow): boolean {
+  return !r.member || !!edit.value?.ticked[r.member]
+}
+
+function addEditRow() {
+  edit.value?.rows.push({ member: '', chapter: null, change: 'advanced', summary: '', cite: '' })
+}
+function removeEditRow(i: number) {
+  edit.value?.rows.splice(i, 1)
+}
+
+const tickedCount = computed(() => Object.values(edit.value?.ticked || {}).filter(Boolean).length)
+
+function groupBody(g: GroupProposal): Record<string, any> {
+  const e = edit.value as GroupEdit
+  const members = g.members.filter((m) => e.ticked[m.id]).map((m) => m.id)
+  const log = e.rows.filter(rowShown).map((r) => ({
+    chapter: r.chapter === null || (r.chapter as any) === '' ? null : Number(r.chapter),
+    change: r.change,
+    summary: r.summary,
+    ...(r.cite ? { cite: r.cite } : {}),
+  }))
+  const body: Record<string, any> = {
+    key: g.key,
+    members,
+    aliases_add: e.aliases.split('\n').map((s) => s.trim()).filter(Boolean),
+    log,
+  }
+  if (e.continues) {
+    body.thread = e.continues
+  } else {
+    const chapters = log.map((r) => r.chapter).filter((c): c is number => typeof c === 'number')
+    body.id = e.id.trim() || undefined
+    body.title = e.title
+    body.status = e.status
+    body.opened = chapters.length ? Math.min(...chapters) : null
+    if ((e.status === 'resolved' || e.status === 'abandoned') && e.resolved) body.resolved = Number(e.resolved)
+  }
+  return body
+}
+
+async function confirmGroupRatify(g: GroupProposal) {
+  groupError.value = ''
+  busy.value = g.key
+  try {
+    await apiPost('/api/projections/threads/ratify', groupBody(g))
+    cancelGroupForm()
+    await loadAll()
+  } catch (e: any) {
+    // Verbatim — the engine's own wording, never a paraphrase (FR-021).
+    groupError.value = e?.message || 'Ratification failed'
+  } finally {
+    busy.value = ''
+  }
+}
+
+async function confirmGroupRule(g: GroupProposal, status: 'rejected' | 'deferred') {
+  groupError.value = ''
+  busy.value = g.key
+  try {
+    await apiPost('/api/projections/threads/rule', { key: g.key, status, note: groupNote.value || undefined })
+    cancelGroupForm()
+    await loadAll()
+  } catch (e: any) {
+    groupError.value = e?.message || 'Ruling failed'
+  } finally {
+    busy.value = ''
+  }
+}
+
 // ── maintenance (T051) ───────────────────────────────────────────────────
 
 function blankMaint() {
@@ -502,8 +797,9 @@ const addAlias = (t: Thread) => {
     <div class="page-header">
       <h2>Threads</h2>
       <p class="subtitle">
-        Harvest narrative threads from the extraction corpus, rule on them one
-        at a time, and maintain the registry the Planning document reads.
+        Group the checked thread notes into proposals (or harvest candidates
+        from the extraction corpus), rule on them one at a time, and maintain
+        the registry the Planning document reads.
       </p>
     </div>
 
@@ -563,6 +859,169 @@ const addAlias = (t: Thread) => {
         </ul>
       </div>
       <pre v-if="harvestOutput" class="output">{{ harvestOutput }}</pre>
+    </section>
+
+    <!-- ── propose groupings (034 US3): the model step ──────────────── -->
+    <section class="card">
+      <h2>Propose groupings</h2>
+      <p class="muted">
+        A model groups the checked thread notes that no ratified thread claims, and code checks every
+        group before you see it. This spends model tokens. Nothing here enters the registry: you rule on
+        each group below.
+      </p>
+      <div class="grid">
+        <label><span>First chapter</span>
+          <input v-model.number="proposeSince" type="number" min="1" class="field-input" aria-label="First chapter" /></label>
+        <label><span>Last chapter</span>
+          <input v-model.number="proposeUntil" type="number" min="1" class="field-input" aria-label="Last chapter" /></label>
+        <label><span>Model (blank uses grounding.yaml summary_native.prose)</span>
+          <input v-model="proposeModel" class="field-input" spellcheck="false" aria-label="Model" /></label>
+        <label><span>Effort</span>
+          <select v-model="proposeEffort" class="field-input" aria-label="Effort">
+            <option value="">Default</option>
+            <option v-for="e in EFFORTS" :key="e" :value="e">{{ e }}</option>
+          </select></label>
+        <label><span>Max input characters per call (blank uses the default)</span>
+          <input v-model.number="proposeMaxChars" type="number" min="1" class="field-input" aria-label="Max input characters" /></label>
+      </div>
+      <div class="row">
+        <button class="btn-primary btn-sm" :disabled="proposeStatus === 'running'" @click="runPropose(false)">
+          {{ proposeStatus === 'running' ? 'Proposing…' : 'Run' }}
+        </button>
+        <button class="btn-neutral btn-sm" :disabled="proposeStatus === 'running'" @click="runPropose(true)">
+          Dump prompts only
+        </button>
+        <button class="btn-neutral btn-sm" :disabled="loading" @click="loadAll">Refresh</button>
+        <span class="status-badge" :class="`status-${proposeStatus}`">Proposal: {{ proposeStatus }}</span>
+      </div>
+      <p v-if="proposeError" class="error-box">{{ proposeError }}</p>
+      <pre v-if="proposeOutput" class="output">{{ proposeOutput }}</pre>
+    </section>
+
+    <!-- ── group proposals (034 US3): one card, one ruling ──────────── -->
+    <section class="card">
+      <h2>Group proposals</h2>
+      <div class="filters">
+        <select v-model="groupFilter" class="field-input" aria-label="Show groups">
+          <option value="pending">Pending</option>
+          <option value="deferred">Deferred</option>
+          <option value="ratified">Ratified</option>
+          <option value="rejected">Rejected</option>
+          <option value="">Any ruling</option>
+        </select>
+      </div>
+      <p class="muted">
+        <span v-for="(n, s) in groupCounts" :key="s" class="group-count">{{ n }} {{ s }} </span>
+        <span v-if="!groups.length">No group proposals yet — run a proposal above.</span>
+      </p>
+      <p v-if="groups.length && !visibleGroups.length" class="muted">None with that ruling.</p>
+
+      <div v-for="g in visibleGroups" :key="g.key" class="candidate group-card" :data-key="g.key">
+        <div class="cand-head">
+          <strong>{{ groupHeading(g) }}</strong>
+          <span class="badge">{{ g.kind }}</span>
+          <span class="status-badge" :class="`status-${g.status || 'pending'}`">{{ g.status || 'pending' }}</span>
+          <code>{{ g.key }}</code>
+        </div>
+        <p v-if="g.ruled_thread" class="muted small">ratified as thread <code>{{ g.ruled_thread }}</code></p>
+        <ul class="evidence">
+          <li v-for="m in g.members" :key="m.id">
+            <span class="ev-ch">ch{{ m.chapter ?? '—' }}</span>
+            <span class="badge">{{ m.tag }}</span>
+            <strong>{{ m.name }}</strong>
+            <span class="ev-fact">{{ m.text }}</span>
+            <span class="ev-src">{{ m.cite }}</span>
+          </li>
+        </ul>
+        <div v-if="g.status === 'pending' || g.status === 'deferred'" class="actions">
+          <button class="btn-success btn-sm" @click="startGroupRatify(g)">Ratify…</button>
+          <button class="btn-neutral btn-sm" @click="startGroupRule(g, 'reject')">Reject</button>
+          <button v-if="g.status === 'pending'" class="btn-neutral btn-sm" @click="startGroupRule(g, 'defer')">Defer</button>
+        </div>
+
+        <div v-if="groupForm && groupForm.key === g.key" class="form">
+          <template v-if="groupForm.kind === 'ratify'">
+            <p v-if="!edit && !groupError" class="muted small">Deriving the plan…</p>
+            <template v-if="edit">
+              <p class="muted small">
+                This starts from the plan the engine derived from the notes. Edit it; nothing is written
+                until you confirm, and what is written is what you post.
+              </p>
+              <label class="field"><span>Continues a ratified thread</span>
+                <select v-model="edit.continues" class="field-input" aria-label="Continues thread">
+                  <option value="">(a new thread)</option>
+                  <option v-for="t in threads" :key="t.id" :value="t.id">{{ t.title }} ({{ t.id }})</option>
+                </select></label>
+              <div v-if="!edit.continues" class="grid">
+                <label><span>title</span>
+                  <input v-model="edit.title" class="field-input" aria-label="Thread title" /></label>
+                <label><span>id</span>
+                  <input v-model="edit.id" class="field-input" aria-label="Thread id" /></label>
+                <label><span>status</span>
+                  <select v-model="edit.status" class="field-input" aria-label="Thread status">
+                    <option v-for="s in STATUSES" :key="s" :value="s">{{ s }}</option>
+                  </select></label>
+                <label v-if="edit.status === 'resolved' || edit.status === 'abandoned'"><span>closing chapter</span>
+                  <input v-model.number="edit.resolved" type="number" min="1" class="field-input" aria-label="Closing chapter" /></label>
+              </div>
+              <h4>Notes this ratification covers (untick one to split it off)</h4>
+              <div v-for="m in g.members" :key="m.id" class="logrow">
+                <input v-model="edit.ticked[m.id]" type="checkbox" class="field-input check" :aria-label="`Include ${m.name} ch${m.chapter}`" />
+                <span class="ev-ch">ch{{ m.chapter ?? '—' }}</span>
+                <span class="badge">{{ m.tag }}</span>
+                <strong>{{ m.name }}</strong>
+                <span>{{ m.text }}</span>
+              </div>
+              <p v-if="g.members.length > tickedCount" class="muted small">
+                {{ g.members.length - tickedCount }} note(s) stay behind as a new pending group.
+              </p>
+              <label class="field"><span>Names to record as aliases (one per line): later notes using them attach by exact match</span>
+                <textarea v-model="edit.aliases" class="field-input" rows="3" aria-label="Aliases"></textarea></label>
+              <h4>Log rows</h4>
+              <template v-for="(row, i) in edit.rows" :key="i">
+                <div v-if="rowShown(row)" class="logrow">
+                  <input v-model.number="row.chapter" type="number" placeholder="ch" class="field-input narrow" aria-label="Log chapter" />
+                  <select v-model="row.change" class="field-input" aria-label="Log change">
+                    <option v-for="c in CHANGES" :key="c" :value="c">{{ c }}</option>
+                  </select>
+                  <input v-model="row.summary" class="field-input" placeholder="summary" aria-label="Log summary" />
+                  <input v-model="row.cite" class="field-input" placeholder="citation" aria-label="Log citation" />
+                  <button class="btn-neutral btn-sm" @click="removeEditRow(i)">remove</button>
+                </div>
+              </template>
+              <button class="btn-neutral btn-sm" @click="addEditRow">+ add row</button>
+            </template>
+            <p v-if="groupError" class="error-box">{{ groupError }}</p>
+            <div class="row">
+              <button v-if="edit" class="btn-primary btn-sm" :disabled="busy === g.key || tickedCount === 0"
+                      @click="confirmGroupRatify(g)">
+                {{ busy === g.key ? 'Writing…' : 'Confirm' }}
+              </button>
+              <button class="btn-neutral btn-sm" @click="cancelGroupForm">Cancel</button>
+            </div>
+          </template>
+
+          <template v-else>
+            <label class="field">
+              <span>Note (optional)</span>
+              <input v-model="groupNote" class="field-input" aria-label="Note" />
+            </label>
+            <p v-if="groupForm.kind === 'reject'" class="muted small">
+              A rejected group is not proposed again; its notes come back one at a time.
+            </p>
+            <p v-else class="muted small">
+              Deferring appends this group and its notes to the adjudication bundle, which you can hand to a
+              conversation whole. The card stays here and can be ruled on again.
+            </p>
+            <p v-if="groupError" class="error-box">{{ groupError }}</p>
+            <div class="row">
+              <button class="btn-primary btn-sm" :disabled="busy === g.key"
+                      @click="confirmGroupRule(g, groupForm.kind === 'reject' ? 'rejected' : 'deferred')">Confirm</button>
+              <button class="btn-neutral btn-sm" @click="cancelGroupForm">Cancel</button>
+            </div>
+          </template>
+        </div>
+      </div>
     </section>
 
     <!-- ── the queue (T028-T031, T042-T046) ─────────────────────────── -->
@@ -863,6 +1322,8 @@ h4 { margin: 12px 0 6px; color: var(--text-sub); font-size: 11px; }
 .filters input { flex: 1; }
 .filters select { width: auto; min-width: 120px; }
 .narrow { width: 6rem; flex: none !important; }
+.field-input.check { width: auto; flex: none !important; }
+.group-count { margin-right: 10px; }
 
 .threads .btn-primary { background: var(--mauve); color: var(--bg-base); }
 .threads .btn-success { background: var(--green); color: var(--bg-base); }
