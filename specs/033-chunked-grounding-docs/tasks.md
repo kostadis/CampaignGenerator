@@ -353,7 +353,7 @@ Port behaviour, not structure: the prototype's shortcuts (module globals, hard-c
 
   Use the same browser-path workaround #504 needed if the installed headless shell's version differs.
 - [X] T060 Run the full suite (`PYTHONPATH=$PWD python -m pytest tests/`). Any failures must be only the pre-existing ones on main.
-- [ ] T061 Run quickstart S1–S7 on the OOTA copy and record the measured results against SC-001…SC-009 in `specs/033-chunked-grounding-docs/quickstart.md` under `## Validation`.
+- [X] T061 Run quickstart S1–S7 on the OOTA copy and record the measured results against SC-001…SC-009 in `specs/033-chunked-grounding-docs/quickstart.md` under `## Validation`.
 - [ ] T062 After merge, reinstall the console script into the server venv (`uv pip install -e . --python ~/.venv/bin/python`) so the page's new routes find `summary_native`'s subcommands.
 
 ---
