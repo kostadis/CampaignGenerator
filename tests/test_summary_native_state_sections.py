@@ -437,9 +437,9 @@ class TestSessionPrepContract:
         assert "[ch NNN / target]" in md and "docs/summaries/NNN-*.md" in md
         for target in ("npcs", "locations", "items", "spells", "moment", "end"):
             assert target in md
-        assert f"docs/{schema.TIMELINE_FILE}" in md
+        assert f"`{schema.TIMELINE_FILE}`" in md
         for kind in state_sections.REFERENCE_KINDS:
-            assert f"docs/reference/{kind}.md" in md
+            assert f"`reference/{kind}.md`" in md
         assert "decision for the GM" in md and "outrank" in md
         # ... and the files it names exist beside the drafts, ready to promote.
         assert (drafts / schema.TIMELINE_FILE).is_file()

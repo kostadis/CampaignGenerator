@@ -705,7 +705,12 @@ call).
 | `--force` | Re-extract every chunk, ignoring cache keys. |
 
 Chunks are cached by a key over the chapter texts, prompts, backend, model and
-limits, so a second run extracts only what changed or failed.
+limits, so a second run extracts only what changed or failed. The cache also searches
+sibling `chNNN-NNN/state/notes/` folders under the configured output root. Extending
+ch002-070 to ch002-071 reuses unchanged chunks from the earlier build; only a new
+or changed final chunk makes a model call. A hit reports `cached`, copies the raw
+response into the new range, and runs the current checker again. `--force` ignores
+both local and sibling caches. Older builds require no cache migration.
 
 **A bad endpoint stops the run.** Before the first chunk is sent, every endpoint
 is asked for `/models`; one that does not answer, or does not serve `--model`,
@@ -717,7 +722,9 @@ is sent, and the run record keeps the refusal. Fix the endpoint or drop it from
 
 Code builds the timeline (its own file), the completed list, the NPC status
 table, the six `reference/` files, the Audit section and `world_state`'s reading
-contract. The model writes each remaining section (one call per section) from
+contract. Reference headings group exact registry names and aliases under the
+canonical name. Unknown or ambiguous subjects keep their own headings; every note
+retains its original subject spelling and verbatim text. The model writes each remaining section (one call per section) from
 only the notes code routed to it, inside word budgets that are reported
 (`Locations: 279/450 words`) and never trimmed. Code checks the output
 (each heading present; Key NPCs lines pass their checks), runs `annotate`
@@ -728,7 +735,7 @@ extraction one: `summary_native.prose.*`, default `claude-code` /
 **Key NPCs come from published dossiers, and a missing one refuses the build.**
 `world_state`'s Key NPCs are rendered from the NPC dossiers `npc-publish`
 wrote (never from `## Secrets`). If any selected NPC has no published, verified
-dossier **for exactly this build's range**, `synth world_state` refuses (exit 2)
+dossier **eligible for this build's range**, `synth world_state` refuses (exit 2)
 and lists each one:
 
 ```text
@@ -743,9 +750,16 @@ or pass --fallback-npc-lines to write a code-built line (no published dossier �
 
 The state of each NPC is `not drafted`, `drafted, not verified`, `failed
 verification (<checks>)`, `drafted, not published` or `published for <range>,
-not <range>`. A dossier published for a *different* range does not count. Carrying
-a dossier over to a longer range is the incremental-rebuild follow-up (#512), not
-something this build does. Two ways out: do the `npc-*` steps
+not <range>`. A dossier for the same range is eligible. One with the same start
+and an earlier end is also eligible when no checked note in the added chapters
+names that NPC by an exact registry name or alias. This includes mentions in event
+and thread notes, and every citation on a note is considered. The report records
+`carried over from ch002-070`; the line keeps its published-dossier pointer.
+A touched NPC must be republished for the new range. The refusal names both ranges
+and supplies the four `npc-* --name` commands for the affected NPCs. Future-ending
+and different-start dossiers are refused. Unknown spellings must be fixed in the
+summaries or registry; the carry-over check never guesses by similarity.
+Two ways out: do the `npc-*` steps
 ([NPC dossiers how-to](npc_dossiers_howto.md)), or pass
 **`--fallback-npc-lines` for this run only**. It is never read from config and the
 web page's checkbox is unchecked on every load, so the choice is yours each time.
@@ -870,8 +884,22 @@ the reading contract at the top of `world_state` points at them:
 | `canon_events_timeline.md` | `docs/canon_events_timeline.md` |
 | `reference/` | `docs/reference/` |
 
-The contract's paths assume exactly that layout. Delete the first-line HTML
-provenance comment only if you do not want it. Prose edits, if any, happen now,
+The timeline and `reference/` paths are relative to `world_state`, so the whole
+bundle can instead be copied to another directory. Summaries and NPC dossiers
+remain relative to the campaign root; a summaries directory outside that root
+keeps its absolute path. After copying, verify the actual destination:
+
+```bash
+summary_native check-pointers docs/world_state.md
+# Or: summary_native check-pointers reviewed/grounding/world_state.md
+```
+
+The check makes no model call and writes nothing. It exits 2 and names each missing
+file, summaries directory or cited chapter. Copying just `world_state` therefore
+reports the missing companions. Keep the hidden path record in the reading
+contract so the checker can resolve it; regenerate older drafts without one.
+The first-line HTML provenance comment is optional for this check.
+Prose edits, if any, happen now,
 in `docs/`. `annotations.md`, `npc_status_report.md` and the two Key NPCs reports
 are for your review and are not promoted. `summary_native compare` works on these
 documents too (it reads `state/drafts/`).
@@ -963,7 +991,7 @@ Four things, each checked by `tests/test_summary_native_state_sections.py`
    "Audit not run" notice.
 2. **`world_state.md` opens with a reading contract.** A blockquote that names
    the three markers (`⚠ later:`, `ℹ since:`, `⚠ unverified:`), the citation
-   grammar, the six `docs/reference/*.md` files, `docs/canon_events_timeline.md`,
+   grammar, the six `reference/*.md` files and `canon_events_timeline.md` beside it,
    and says that anything the document does not settle is a decision for the GM.
 3. **Every Key NPCs line ends in `→ docs/npcs/<slug>.md`**, or in
    `(no published dossier — from checked notes)`. The second form means there is

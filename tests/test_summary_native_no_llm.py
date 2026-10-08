@@ -22,7 +22,7 @@ GUARDED = [
     "npc_check", "npc_chunked", "npc_config",
     # spec 033: the deterministic half of the chunked state documents. `extract`, `synth` and
     # `audit` are the model steps (map, prose, judge) and are deliberately not listed.
-    "notes", "state_sections", "key_npcs", "annotate", "audit_select",
+    "notes", "state_sections", "key_npcs", "annotate", "audit_select", "pointers",
 ]
 FORBIDDEN_MODULES = ("anthropic", "campaignlib.api", "openai", "pipelines.ensemble")
 FORBIDDEN_CALLS = ("make_client", "stream_api", "call_api", "client_from_args")

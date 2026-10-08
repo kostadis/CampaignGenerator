@@ -706,11 +706,6 @@ def draft_of(root, doc):
     return (state_dir(root) / "drafts" / f"{doc}.draft.md").read_text()
 
 
-def without_contract(text):
-    """world_state opens with the reading contract, a blockquote the outline check does not allow."""
-    return "\n".join(ln for ln in text.splitlines() if not ln.startswith(">")) + "\n"
-
-
 def section(text, heading):
     secs = notes_mod.npc_check.parse_sections(text)
     return notes_mod.npc_check.section_text(secs, heading)
@@ -791,7 +786,7 @@ class TestWorldState:
         assert rc == 0, err
         assert [c["heading"] for c in fm.prose_calls] == WORLD_PROSE
         text = draft_of(extracted, "world_state")
-        assert synth.check_outline(without_contract(text), synth.load_outline("world_state")) == []
+        assert synth.check_outline(text, synth.load_outline("world_state")) == []
         assert "Prose for Locations" in section(text, "## Locations")
         first = text.splitlines()[0]
         assert first.startswith("<!-- summary_native draft | doc: world_state | range: ch002-005 | record: runs/")
@@ -1021,7 +1016,7 @@ class TestWorldStateBudgetsAndReferences:
     def test_the_outline_check_runs_on_the_sections_and_the_contract_adds_nothing_else(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "world_state"))[0] == 0
         text = draft_of(extracted, "world_state")
-        assert synth.check_outline(without_contract(text), synth.load_outline("world_state")) == []
+        assert synth.check_outline(text, synth.load_outline("world_state")) == []
         assert [ln for ln in text.splitlines() if ln.startswith("## ")] == synth.load_outline("world_state")
 
     def test_each_reference_section_points_to_its_file(self, extracted, fm):
