@@ -12,5 +12,5 @@ Rules:
 - Lead with the current state. If a passage says the status is not established, say so rather than guessing. If a passage gives nothing for a line, write `not established in the dossier` for that line and cite nothing.
 - Cite with citations copied exactly from that NPC's passages, in the form `[ch NNN / target]`. One or two citations per line. Cite only chapters and targets that appear in that NPC's passages.
 - Anything inside double quotation marks must be copied character-for-character from the passages. Prefer no quotation.
-- Stay within the word limit you are given for the whole section.
+- Stay within the word limit you are given for each block.
 - Write only the blocks: no `##` heading, no preamble, no closing remarks, no pointer line (code writes it). Do not skip, merge, add or reorder NPCs.

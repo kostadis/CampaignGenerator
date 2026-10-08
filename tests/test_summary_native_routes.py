@@ -848,3 +848,74 @@ def test_party_takes_the_prose_selection_and_its_roster(campaign):
     cmd = captured["cmd"]
     assert _flag(cmd, "--model") == "claude-opus-5-5" and _flag(cmd, "--party-config") == "config/alt_party.yaml"
     assert _flag(cmd, "--claude-code-effort") == "low"
+
+
+# ── spec 034 US2: planning's missing dossiers, the thread counts and the new reports ───────────────
+
+
+def _state_dir(root: Path) -> Path:
+    sd = root / "docs" / "summary_native" / "ch003-009" / "state"
+    sd.mkdir(parents=True, exist_ok=True)
+    return sd
+
+
+def test_state_planning_missing_dossiers_have_their_own_file_and_leave_world_states_alone(campaign):
+    root, _, _ = campaign
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["planning_missing_dossiers"] is None and body["planning_missing_dossiers_refused"] is False
+    sd = _state_dir(root)
+    npcs = [{"name": "Ront", "state": "not drafted"}]
+    (sd / "missing_dossiers.planning.json").write_text(json.dumps({"range": {"since": 3, "until": 9}, "refused": True, "npcs": npcs}))
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["planning_missing_dossiers"] == npcs and body["planning_missing_dossiers_refused"] is True
+    assert body["missing_dossiers"] is None and body["missing_dossiers_refused"] is False  # world_state's file is another file
+
+
+def test_state_threads_block_is_absent_before_a_planning_build(campaign):
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["threads"] == {"present": False, "ratified_in_range": None, "open": None, "dormant": None,
+                               "unattached": None, "ambiguous": None, "pending_groups": 0}
+
+
+def test_state_threads_block_reads_attach_json_and_the_proposals_file(campaign):
+    root, _, _ = campaign
+    (_state_dir(root) / "threads").mkdir()
+    (_state_dir(root) / "threads" / "attach.json").write_text(json.dumps({
+        "kind": "thread_attach", "schema": 1, "range": {"since": 3, "until": 9},
+        "counts": {"notes": 9, "attached": 6, "ambiguous": 1, "unattached": 4, "threads": 3},
+        "notes": {}, "ambiguous": {"Ring": ["a", "b"]},
+        "threads": {
+            "a": {"status": "open", "open": True, "dormant": False, "latest": "x", "notes": ["x"]},
+            "b": {"status": "dormant", "open": False, "dormant": True, "latest": "y", "notes": ["y"]},
+            "c": {"status": "resolved", "open": False, "dormant": False, "latest": "z", "notes": ["z"]},
+        },
+    }))
+    (root / "docs" / "ensemble").mkdir(parents=True)
+    (root / "docs" / "ensemble" / "thread_proposals.yaml").write_text(
+        "proposals:\n- {key: g-1, status: pending}\n- {key: g-2, status: ratified}\n- {key: g-3, status: pending}\n"
+        "- {norm: old, status: pending}\n")
+    got = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["threads"]
+    assert got == {"present": True, "ratified_in_range": 3, "open": 1, "dormant": 1, "unattached": 4,
+                   "ambiguous": 1, "pending_groups": 2}
+
+
+def test_drafts_lists_the_party_and_planning_reports(campaign):
+    root, _, _ = campaign
+    dd = _state_dir(root) / "drafts"
+    (dd / "reference").mkdir(parents=True)
+    for name in ("party_report.md", "planning_npcs_report.md", "threads_report.md", "arc_report.md"):
+        (dd / name).write_text("r")
+    (dd / "reference" / "party.md").write_text("r")
+    (dd / "budget_report.planning.json").write_text("{}")
+    rows = {x["doc"]: x for x in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
+    assert set(rows) == {"party_report", "planning_npcs_report", "threads_report", "arc_report", "reference/party",
+                         "budget_report_planning"}
+    assert rows["reference/party"]["path"].endswith("state/drafts/reference/party.md")
+
+
+def test_planning_fallback_flag_reaches_the_command_and_is_never_stored(campaign):
+    _, _, captured = campaign
+    assert _run("/run/synth/planning", {**RANGE, "fallback_npc_lines": True}) == 200
+    assert "--fallback-npc-lines" in captured["cmd"]
+    assert _run("/run/synth/planning", RANGE) == 200
+    assert "--fallback-npc-lines" not in captured["cmd"]

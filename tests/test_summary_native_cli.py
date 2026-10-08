@@ -416,3 +416,24 @@ def test_thread_propose_refuses_a_missing_range_before_anything_else(camp, capsy
     assert main(["thread-propose", "--summaries-dir", "summaries", *given]) == 2
     err = capsys.readouterr().err
     assert "--since" in err and "--until" in err
+
+
+# ── spec 034 US2: the planning flags ────────────────────────────────────────
+
+
+def test_planning_takes_the_selection_flags_the_config_flag_and_the_fallback_flag():
+    from pipelines.summary_native.cli import build_parser
+
+    ns = build_parser().parse_args([
+        "synth", "planning", "--planning-config", "p.yaml", "--name", "Kalan", "Ront", "--recent-chapters", "3",
+        "--recurring-min", "5", "--fallback-npc-lines"])
+    assert ns.planning_config == "p.yaml" and ns.name == ["Kalan", "Ront"]
+    assert (ns.recent_chapters, ns.recurring_min, ns.fallback_npc_lines) == (3, 5, True)
+    assert ns.backend is None and ns.model is None  # the prose block resolves them
+
+
+def test_planning_config_applies_to_planning_only(camp, capsys):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", "world_state", "--summaries-dir", "summaries", "--planning-config", "p.yaml"]) == 2
+    assert "--planning-config applies to planning only, not world_state" in capsys.readouterr().err

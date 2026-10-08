@@ -260,12 +260,12 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 ### Tests for User Story 2
 
-- [ ] T032 [P] [US2] `tests/test_summary_native_planning.py` — sections:
+- [X] T032 [P] [US2] `tests/test_summary_native_planning.py` — sections:
   - **Threat Tracker:** one row per configured non-trackless score, or the sentinel when none;
   - **factions:** selection (config ∪ `[FACTION]` subjects, canonical by `forms`), newest first, capped at `DEFAULT_MAX_FACTIONS` with the rest named;
   - **Active Plots:** a model output that drops, adds or reorders a thread is replaced by the latest attached note verbatim and reported; a thread the GM set to `dormant` appears only under `DORMANT_HEADING` as its title plus latest attached note, verbatim, with no model call; a registry status of `open` defers to the latest note's tag; the unratified block holds every unattached note verbatim, in chapter order, with its count; an empty registry gives `NO_RATIFIED_THREADS`;
   - **DM Notes:** begins with `DM_NOTES_LABEL`.
-- [ ] T033 [P] [US2] `tests/test_summary_native_planning.py` — NPC Dossiers:
+- [X] T033 [P] [US2] `tests/test_summary_native_planning.py` — NPC Dossiers:
   - selection is the tracked NPCs ∪ recent/recurring ∪ `--name`;
   - a block citing another dossier, or quoting non-verbatim, is replaced by the dossier's first Last Observed State sentence and reported;
   - the pointer `→ docs/npcs/<slug>.md` is present;
@@ -274,12 +274,12 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 ### Implementation for User Story 2
 
-- [ ] T034 [US2] Add a structured planning loader to `pipelines/summary_native/context.py`: `load_planning(path, root, explicit)` returning tracked NPCs and factions with arc_score path and trackless flag. An absent default file means none configured; an explicit missing file refuses. The existing `DocConfigError` messages are kept.
-- [ ] T035 [US2] In `pipelines/summary_native/state_sections.py`, add:
+- [X] T034 [US2] Add a structured planning loader to `pipelines/summary_native/context.py`: `load_planning(path, root, explicit)` returning tracked NPCs and factions with arc_score path and trackless flag. An absent default file means none configured; an explicit missing file refuses. The existing `DocConfigError` messages are kept.
+- [X] T035 [US2] In `pipelines/summary_native/state_sections.py`, add:
   - `threat_tracker_md(entries, candidates_by_subject)` (code table, or `NO_ARC_SENTINEL`);
   - `select_factions(results, forms, configured, cap)`;
   - `active_plots_md(attachment, bodies)`, which assembles the ratified entries (model bodies, or replacements), then the code-built dormant block, then the unratified block (data-model "Active Plots section").
-- [ ] T036 [US2] In `pipelines/summary_native/key_npcs.py`, add the planning entries:
+- [X] T036 [US2] In `pipelines/summary_native/key_npcs.py`, add the planning entries:
   - `plan_planning_npcs(...)`, reusing `select_key_npcs` and `plan_key_npcs` with the tracked NPCs added as named;
   - `planning_prompt(plan, per_npc_words)`;
   - `verify_planning_block(block, view, hay)` (heading, three labelled lines, citations only from that dossier, verbatim quotes);
@@ -287,7 +287,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - `planning_report_md(...)` → `planning_npcs_report.md`.
 
   The refusal and `missing_dossiers.json` follow world_state's shape, with `doc: planning`.
-- [ ] T037 [US2] Implement `_planning_jobs` in `pipelines/summary_native/synth.py`:
+- [X] T037 [US2] Implement `_planning_jobs` in `pipelines/summary_native/synth.py`:
   - **Threat Tracker:** code only.
   - **NPC Dossiers:** one call through `state.planning_npcs.system.md`.
   - **Faction States:** one call with per-faction note groups in code order; the heading set and order are checked, and a failure substitutes the latest note.
@@ -295,8 +295,8 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - **DM Notes:** one call with the open threads' latest notes, the NPC status table and the last chunk.
 
   Each section gets its budget, the reference pointers and the outline order. Write `threads_report.md` and `planning_npcs_report.md`, and add the thread registry sha and config files to the run record.
-- [ ] T038 [US2] Wire the `synth planning` flags in `pipelines/summary_native/cli.py`: `--planning-config`, `--name`, `--recent-chapters`, `--recurring-min`, `--fallback-npc-lines` (now world_state and planning) and the prose defaults. A registry failing `check_registry` refuses (exit 2). Extend `tests/test_summary_native_cli.py`.
-- [ ] T039 [US2] Route and page:
+- [X] T038 [US2] Wire the `synth planning` flags in `pipelines/summary_native/cli.py`: `--planning-config`, `--name`, `--recent-chapters`, `--recurring-min`, `--fallback-npc-lines` (now world_state and planning) and the prose defaults. A registry failing `check_registry` refuses (exit 2). Extend `tests/test_summary_native_cli.py`.
+- [X] T039 [US2] Route and page:
   - in `server/routers/summary_native.py`, accept `fallback_npc_lines` for planning; extend `/state` with the planning `missing_dossiers` and the `threads` counts from `state/threads/attach.json` and the proposals file; extend `/drafts` with the new reports (including party's `party_report.md` and `reference/party.md`);
   - in `frontend/src/views/grounding/SummaryNative.vue`, give the planning step the fallback checkbox (per run, never persisted), the thread counts and a link to the Threads page.
 
@@ -365,6 +365,8 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
   Two more follow-ups came out of the Phase 2 review:
   - **Delete the skipped tests.** Remove the `RETIRED_ONE_SHOT` set and its skip fixture from `tests/test_summary_native_synth.py`, along with every test it skips. Rewrite the generic behaviours on the chunked path (run-id suffixing, the record written on failure, the previous draft kept on an incomplete build) instead of deleting them, unless 033's tests already cover them. Do the same for the skipped seam test in `tests/test_summary_native_routes.py`.
+  - **`--npc-root` for planning.** Accept `--npc-root` for `synth planning`, as for world_state; today it is refused for planning. Found in the Phase 5 review.
+  - **Faction substitutions.** Write them to a report file on disk (e.g. a "Faction States" section in `planning_npcs_report.md`, renamed `planning_report.md` if that reads better), not only to stdout and the run record. Found in the Phase 5 review.
   - **`check-pointers`.** `pointers.check_paths` expects all six reference files plus the timeline. Make it check only the files a document's reading contract names (its `summary_native pointers:` comment), so it works on promoted party and planning bundles, and add a test.
 - [ ] T049 [US6] Router and page cleanup:
   - `server/routers/summary_native.py`: remove the `parts`, `world_state` and `campaign_state` params (a request carrying them gets a 400 with the CLI text);

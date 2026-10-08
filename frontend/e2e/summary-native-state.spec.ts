@@ -27,6 +27,13 @@ const stateBody = {
   annotations: {},
   missing_dossiers: null,
   missing_dossiers_refused: false,
+  // spec 034: planning has its own missing-dossier list and the ratified-thread counts of its last build
+  planning_missing_dossiers: null,
+  planning_missing_dossiers_refused: false,
+  threads: {
+    present: false, ratified_in_range: null, open: null, dormant: null,
+    unattached: null, ambiguous: null, pending_groups: 0,
+  },
 }
 
 /** An SSE body: one data frame per text, then the `done` event with the return code. */
@@ -165,13 +172,100 @@ test('the fallback-lines box is unchecked on load, is sent when checked, and res
     .getByLabel('Write fallback lines for NPCs without a published dossier')).not.toBeChecked()
 })
 
-test('the fallback-lines box exists for world_state only', async ({ page }) => {
+test('the fallback-lines box exists for world_state and planning only', async ({ page }) => {
   await openPage(page)
   const box = section(page, /5\. Synthesize a draft/)
   const label = 'Write fallback lines for NPCs without a published dossier'
   await expect(box.getByLabel(label)).toBeVisible()
+  await box.locator('select').first().selectOption('planning')
+  await expect(box.getByLabel(label)).toBeVisible()
   await box.locator('select').first().selectOption('campaign_state')
   await expect(box.getByLabel(label)).toHaveCount(0)
+})
+
+// ── spec 034 US2: planning ──────────────────────────────────────────────────
+
+test('planning sends the fallback flag only when checked, plus its selection and config, and never the retired parts', async ({ page }) => {
+  await openPage(page)
+  const seen = await mockRun(page, 'synth/planning', 'Wrote draft: state/drafts/planning.draft.md\n')
+  const box = section(page, /5\. Synthesize a draft/)
+  await box.locator('select').first().selectOption('planning')
+  await box.locator('textarea').first().fill('Ront')
+  const fallback = box.getByLabel('Write fallback lines for NPCs without a published dossier')
+  await expect(fallback).not.toBeChecked()
+
+  await box.getByRole('button', { name: 'Synthesize planning' }).click()
+  await expect(box.getByText('Success')).toBeVisible()
+  expect(seen[0].searchParams.has('fallback_npc_lines')).toBe(false)
+  expect(seen[0].searchParams.getAll('name')).toEqual(['Ront'])
+  expect(seen[0].searchParams.has('parts')).toBe(false)
+  expect(seen[0].searchParams.has('world_state')).toBe(false)
+
+  await fallback.check()
+  await box.getByRole('button', { name: 'Synthesize planning' }).click()
+  await expect.poll(() => seen.length).toBe(2)
+  expect(seen[1].searchParams.get('fallback_npc_lines')).toBe('true')
+
+  // Never persisted: a reload starts unchecked again.
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Summary-native' })).toBeVisible()
+  await section(page, /5\. Synthesize a draft/).locator('select').first().selectOption('planning')
+  await expect(section(page, /5\. Synthesize a draft/)
+    .getByLabel('Write fallback lines for NPCs without a published dossier')).not.toBeChecked()
+})
+
+test('planning shows the ratified-thread counts of the last build and links to the Threads page', async ({ page }) => {
+  await openPage(page)
+  await page.route(url => url.pathname === `${BASE}/state`, route => route.fulfill({
+    json: {
+      ...stateBody,
+      threads: {
+        present: true, ratified_in_range: 3, open: 2, dormant: 1, unattached: 7, ambiguous: 1, pending_groups: 4,
+      },
+    },
+  }))
+  await page.reload()
+  const box = section(page, /5\. Synthesize a draft/)
+  await expect(box.locator('.threads')).toHaveCount(0) // only planning has the panel
+  await box.locator('select').first().selectOption('planning')
+  const panel = box.locator('.threads')
+  await expect(panel.getByText('3 with notes in range')).toBeVisible()
+  await expect(panel.getByText('2 open')).toBeVisible()
+  await expect(panel.getByText('1 dormant')).toBeVisible()
+  await expect(panel.getByText('7 unratified notes')).toBeVisible()
+  await expect(panel.getByText('1 ambiguous name(s)')).toBeVisible()
+  await expect(panel.getByText('4 proposal group(s) awaiting a ruling')).toBeVisible()
+  await expect(panel.getByRole('link', { name: 'Threads page' })).toHaveAttribute('href', '/grounding/threads')
+})
+
+test('planning says so before any build, and a planning refusal lists its NPCs', async ({ page }) => {
+  await openPage(page)
+  const box = section(page, /5\. Synthesize a draft/)
+  await box.locator('select').first().selectOption('planning')
+  await expect(box.locator('.threads').getByText('not built yet')).toBeVisible()
+
+  const refusal = [
+    "Error: planning's NPC Dossiers need a published, verified dossier for each selected NPC; 1 of 2 have none:",
+    '  Ront: not drafted',
+    'Draft, verify and publish them, then build again:',
+    '  summary_native npc-draft --since 2 --until 5 --name "Ront"',
+    '',
+  ].join('\n')
+  await mockRun(page, 'synth/planning', refusal, 2)
+  await page.route(url => url.pathname === `${BASE}/state`, route => route.fulfill({
+    json: {
+      ...stateBody,
+      planning_missing_dossiers: [{ name: 'Ront', state: 'not drafted' }],
+      planning_missing_dossiers_refused: true,
+    },
+  }))
+  await box.getByRole('button', { name: 'Synthesize planning' }).click()
+  const panel = box.locator('.missing-npcs')
+  await expect(panel.getByText('Build refused: 1 selected NPC(s) have no published, verified dossier')).toBeVisible()
+  await expect(panel.getByRole('row', { name: /Ront\s+not drafted/ })).toBeVisible()
+  // world_state's own list is another file: switching documents does not show planning's refusal there.
+  await box.locator('select').first().selectOption('world_state')
+  await expect(box.locator('.missing-npcs')).toHaveCount(0)
 })
 
 test('a missing-dossier refusal lists each NPC with its state and links to the NPC dossiers page', async ({ page }) => {

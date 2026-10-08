@@ -801,10 +801,13 @@ class TestChunkedRefusals:
     @pytest.mark.parametrize("doc", ["party", "planning"])
     def test_party_and_planning_route_through_the_chunked_synth(self, extracted, fm, doc):
         """Spec 034 T012: no one-shot ``runs/<doc>/part-N.*``; the run lives in ``state/runs`` and the draft in ``state/drafts``."""
+        extra = []
         if doc == "party":  # party reads its roster: the 033 fixture has none, so give it one (US1 refuses without)
             (extracted / "docs" / "sheet.md").write_text("# Daz\n\nLevel: 8\n")
             (extracted / "config" / "party.yaml").write_text("characters:\n  - name: Daz\n    sheet: docs/sheet.md\n")
-        rc, out, err = cs.run_cli(synth_args(extracted, doc, "--dump-only"))
+        else:  # planning refuses an NPC with no published dossier, and this fixture publishes one of three
+            extra = ["--fallback-npc-lines"]
+        rc, out, err = cs.run_cli(synth_args(extracted, doc, "--dump-only", *extra))
         assert rc == 0, err
         (run,) = [p for p in (state_dir(extracted) / "runs").iterdir() if (p / f"{doc}.system.md").is_file()]
         assert (run / f"{doc}.system.md").is_file() and (run / "record.json").is_file()
@@ -812,15 +815,18 @@ class TestChunkedRefusals:
         assert not (cs.range_dir(extracted) / "runs").exists() and not (cs.range_dir(extracted) / "drafts").exists()
         assert not fm.prose_calls
 
-    @pytest.mark.parametrize("doc", ["planning"])  # party's sections exist since US1: tests/test_summary_native_party.py
-    def test_party_and_planning_open_with_their_reading_contract_and_are_incomplete_until_their_sections_exist(
-            self, extracted, fm, doc):
-        rc, _, err = cs.run_cli(synth_args(extracted, doc))
-        assert rc == 3, err  # the per-document job builders are stubs: no model-written section yet
-        inc = (state_dir(extracted) / "drafts" / f"{doc}.incomplete.md").read_text()
-        assert "How to read this document" in inc and "summary_native pointers:" in inc
-        assert not (state_dir(extracted) / "drafts" / f"{doc}.draft.md").exists()
+    def test_planning_opens_with_its_reading_contract_and_builds_with_fallback_lines(self, extracted, fm):
+        """Spec 034 US2: planning's sections exist (party's: tests/test_summary_native_party.py; planning's in depth: tests/test_summary_native_planning.py)."""
+        rc, _, err = cs.run_cli(synth_args(extracted, "planning", "--fallback-npc-lines"))
+        assert rc == 0, err
+        text = (state_dir(extracted) / "drafts" / "planning.draft.md").read_text()
+        assert "How to read this document" in text and "summary_native pointers:" in text
+        assert not (state_dir(extracted) / "drafts" / "planning.incomplete.md").exists()
         assert not (cs.range_dir(extracted) / "drafts").exists()
+
+    def test_planning_refuses_an_npc_with_no_published_dossier_before_any_call(self, extracted, fm):
+        rc, _, err = cs.run_cli(synth_args(extracted, "planning"))
+        assert rc == 2 and "planning's NPC Dossiers need a published, verified dossier" in err
         assert not fm.prose_calls
 
     @pytest.mark.parametrize("doc", ["party", "planning"])

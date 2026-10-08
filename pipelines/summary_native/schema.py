@@ -235,6 +235,10 @@ PARTY_SUBJECT = "Party"
 LEVEL_TAG = "LEVEL"
 #: Active Plots, when no ratified thread has notes in the range.
 NO_RATIFIED_THREADS = "_No ratified thread has notes in this range._"
+#: Active Plots, when ratified threads have notes in the range but none of them is open.
+NO_OPEN_THREADS = "_No ratified thread is open in this range._"
+#: Faction States, when no faction is configured and none has notes in the range.
+NO_FACTIONS = "_No faction is configured or has notes in this range._"
 DORMANT_HEADING = "### Dormant threads"
 UNRATIFIED_HEADING = "### Unratified thread notes (not yet ruled on)"
 #: Printed under DM Notes by code, so the section cannot be read as events.
@@ -244,6 +248,8 @@ STATE_DIR = "state"
 TIMELINE_FILE = "canon_events_timeline.md"
 #: Beside the notes: the NPCs the latest world_state build found without a usable dossier (read by `GET /state`).
 MISSING_DOSSIERS_FILE = "missing_dossiers.json"
+#: planning's own file of the same shape, so one document's refusal is never shown as the other's.
+MISSING_DOSSIERS_PLANNING_FILE = "missing_dossiers.planning.json"
 #: Refusals shared by the CLI and the web routes (the routes answer 400 with the same words).
 STATE_PARTS_REFUSAL = (
     "--parts does not apply to {doc}: it is built with one call per section from the checked notes"
@@ -262,6 +268,17 @@ STATE_AUDIT_REFUSAL ="--audit does not apply to campaign_state: the audit is its
 KEY_NPC_FALLBACK_MARK = "(no published dossier — from checked notes)"
 #: Shown in the Audit section until ``summary_native audit`` has run for the range.
 AUDIT_NOT_RUN = "Audit not run for this range."
+
+
+def missing_dossiers_file(doc: str) -> str:
+    """The file (under ``state/``) holding the NPCs ``doc``'s latest build found without a usable dossier."""
+    return MISSING_DOSSIERS_PLANNING_FILE if doc == "planning" else MISSING_DOSSIERS_FILE
+
+
+def budget_report_file(doc: str) -> str:
+    """The word-budget report beside ``doc``'s draft. world_state's keeps its name (``GET /state`` reads it);
+    party and planning write their own, so one document's budgets never replace another's."""
+    return f"budget_report.{doc}.json" if doc in ("party", "planning") else "budget_report.json"
 
 
 def draft_dir(range_dir, doc: str):

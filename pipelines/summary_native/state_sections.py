@@ -14,12 +14,13 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from campaignlib.players_config import load_players_config
 from campaignlib.registry import load_registry
-from pipelines.summary_native import audit_select, freshness, notes, schema
+from pipelines.summary_native import audit_select, freshness, notes, schema, thread_attach
 
 # ── Timeline and completed encounters ───────────────────────────────────────
 
@@ -324,6 +325,9 @@ PROSE_SECTIONS: dict[str, tuple[tuple[str, str, bool], ...]] = {
 REFERENCE_FOR: dict[str, str] = {
     "## Factions and Powers": "factions",
     "## Key NPCs": "npcs",
+    "## NPC Dossiers": "npcs",
+    "## Faction States": "factions",
+    "## Active Plots": "threads",
     "## Locations": "locations",
     "## Items and Artifacts": "items",
     "## Active Threats and Open Pressures": "threats",
@@ -340,6 +344,10 @@ BRIEFS: dict[str, str] = {
     "## Resolved Plot Threads": "Every thread the notes show RESOLVED or ABANDONED: one bullet each, saying how it ended, citing the resolution.",
     "## Active Quests & Open Threads": "Every thread OPENED or ADVANCED whose resolution the notes do not show. One bullet each with its latest state. If it is listed, it is unfinished.",
     "## Party Current Situation": "Where the party is, what they just did, and what they are about to face, at the very end of the range.",
+    # planning (spec 034): one call each; NPC Dossiers has its own system prompt and prompt builder (key_npcs)
+    "## Faction States": "Each faction's entry as it stands NOW: goals, leaders, relationship to the party, last known move. Use only that faction's own notes.",
+    "## Active Plots": "Each thread's entry as it stands NOW: where it stands, what the party did, what is unresolved. Use only that thread's own notes.",
+    "## DM Notes": "Suggestions for the GM: what to prepare or consider next, each line cited to the notes that prompted it. A suggestion is not an event.",
     # party (spec 034): one call per character, one for the overview, one for the dynamics
     "## Party Overview": "Where the party stands as a group at the END of the range, including the companions travelling with them: where they are, what they are doing, what presses on them, what they intend. Latest note wins where notes conflict. Do not state a level.",
     "## Characters": "This one player character NOW: current situation, recent decisions, injuries, losses, acquisitions and relationships that changed. Use only this character's notes, sheet and backstory. Do not state a level.",
@@ -372,3 +380,272 @@ def audit_md(range_dir: Path) -> str:
         if isinstance(data, dict) and data.get("kind") == "audit" and data.get("verdicts"):
             return audit_select.render_audit_md(data).strip()
     return schema.AUDIT_NOT_RUN
+
+
+# ── planning: the Threat Tracker, factions and Active Plots (spec 034 US2) ──────
+
+_THREAT_HEADER = ["| Score | Subject | Candidate events | Trigger text |", "|---|---|---|---|"]
+
+
+def _shown(path, root) -> str:
+    p = Path(path)
+    if root is not None and p.is_absolute():
+        try:
+            return p.resolve().relative_to(Path(root).resolve()).as_posix()
+        except ValueError:
+            pass
+    return p.as_posix()
+
+
+def threat_tracker_md(entries, candidates_by_subject: Mapping[str, Sequence[str]] | None = None, *, root=None) -> str:
+    """planning's ``## Threat Tracker`` body: one row per configured, non-trackless arc score (FR-008).
+
+    ``entries`` are the config's NPCs then factions (``.name``, ``.arc_score``); an entry with no
+    ``arc_score`` (trackless, or none declared) has no row. With no row at all the body is exactly the
+    sentinel line. The score is the mechanic file's name and the trigger cell is its path: the file is
+    the GM's, and nothing here quotes or paraphrases it. ``candidates_by_subject`` is where the arc-score
+    candidate events go (spec 034 US4); a subject with none shows ``—``.
+    """
+    rows = []
+    for e in entries:
+        if e.arc_score is None:
+            continue
+        shown = _shown(e.arc_score, root)
+        cands = list((candidates_by_subject or {}).get(e.name) or [])
+        rows.append(
+            f"| {_cell(Path(shown).stem)} | {_cell(e.name)} | {_cell('<br>'.join(cands)) if cands else '—'} | {_cell(shown)} |")
+    if not rows:
+        from pipelines.summary_native import context  # declared once in context, where the prompt and the check read it
+
+        return context.NO_ARC_SENTINEL
+    return "\n".join([*_THREAT_HEADER, *rows])
+
+
+@dataclass
+class FactionEntry:
+    name: str
+    notes: list = field(default_factory=list)
+    configured: bool = False
+
+    @property
+    def latest_chapter(self) -> int:
+        return max((n.first_chapter for n in self.notes), default=-1)
+
+    @property
+    def latest(self):
+        """The note with the highest ``first_chapter``, the last extracted among equals."""
+        out = None
+        for n in self.notes:
+            if out is None or n.first_chapter >= out.first_chapter:
+                out = n
+        return out
+
+
+@dataclass
+class FactionSelection:
+    #: The factions to write, newest latest-note first (those with no note last, in config order).
+    selected: list
+    #: The names left out by the cap, in the same order.
+    overflow: list
+
+
+def select_factions(
+    results: Sequence[notes.CheckedChunk], forms: dict[str, str], configured: Sequence[str], cap: int,
+) -> FactionSelection:
+    """The factions Faction States covers, chosen by code (FR-012, research R9).
+
+    The config's factions plus every ``[FACTION]`` subject in the checked notes, each canonicalised by
+    ``forms`` (exact casefolded name or alias); a subject the registry does not know keys on itself.
+    Ordered by the chapter of the latest note, newest first; ties go to the config's order, then the
+    name. At most ``cap`` are written: the rest are named in ``overflow``.
+    """
+
+    def canon(name: str) -> str:
+        return forms.get(name.strip().casefold(), name.strip())
+
+    groups: dict[str, FactionEntry] = {}
+    rank: dict[str, int] = {}
+    for i, name in enumerate(configured):
+        key = canon(name).casefold()
+        if key not in groups:
+            groups[key] = FactionEntry(canon(name), [], True)
+            rank[key] = i
+    seen: set[str] = set()
+    found = []
+    for r in results:
+        for n in r.notes:
+            if n.kind == "world" and n.tag == "FACTION" and n.subject and n.note_id not in seen:
+                seen.add(n.note_id)
+                found.append(n)
+    for n in sorted(found, key=lambda n: n.first_chapter):  # stable: extraction order within a chapter
+        key = canon(n.subject).casefold()
+        groups.setdefault(key, FactionEntry(canon(n.subject))).notes.append(n)
+    ordered = sorted(
+        groups, key=lambda k: (-groups[k].latest_chapter, rank.get(k, len(rank)), groups[k].name.casefold(), groups[k].name))
+    cap = max(cap, 1)
+    return FactionSelection([groups[k] for k in ordered[:cap]], [groups[k].name for k in ordered[cap:]])
+
+
+@dataclass
+class EntryCheck:
+    #: ``{expected name: body}`` for each entry the model wrote cleanly.
+    bodies: dict
+    #: ``{expected name: why}`` for each one it dropped, misplaced or left empty.
+    bad: dict
+    #: Headings the model added or repeated; their text is ignored.
+    extras: list
+
+
+_ENTRY_HEAD_RE = re.compile(r"^###(?!#)\s+(.+?)\s*$")
+
+
+def check_entries(out: str | None, expected: Sequence[str]) -> EntryCheck:
+    """Check a model's ``### Name`` blocks against the names code gave it, in the order code gave them.
+
+    A block belongs to an expected name only by exact heading text. A block that is missing, empty or out
+    of place (not where the expected order puts it among the blocks that were written) is ``bad``; a
+    heading that was not asked for, or that repeats, is an ``extra`` and its text goes nowhere. Code
+    decides what replaces a bad block; this decides nothing about it.
+    """
+    blocks: list[tuple[str, list[str]]] = []
+    cur = None
+    for ln in (out or "").splitlines():
+        m = _ENTRY_HEAD_RE.match(ln)
+        if m:
+            cur = (m.group(1), [])
+            blocks.append(cur)
+        elif ln.startswith("# ") or ln.startswith("## "):
+            cur = None  # a higher heading ends the block; its own text belongs to nobody
+        elif cur is not None:
+            cur[1].append(ln)
+    wanted = set(expected)
+    first: dict[str, str] = {}
+    extras: list[str] = []
+    seq: list[str] = []
+    for name, body in blocks:
+        if name not in wanted or name in first:
+            extras.append(name)
+            continue
+        first[name] = "\n".join(body).strip()
+        seq.append(name)
+    present = [n for n in expected if n in first]
+    bodies: dict[str, str] = {}
+    bad: dict[str, str] = {}
+    for n in expected:
+        if n not in first:
+            bad[n] = "missing from the model's output"
+        elif seq.index(n) != present.index(n):
+            bad[n] = "out of order"
+        elif not first[n]:
+            bad[n] = "empty body"
+        else:
+            bodies[n] = first[n]
+    return EntryCheck(bodies, bad, extras)
+
+
+def faction_states_md(
+    sel: FactionSelection, bodies: Mapping[str, str | None], reasons: Mapping[str, str] | None = None,
+) -> tuple[str, list[str]]:
+    """``(Faction States body, report lines)``.
+
+    One ``### name`` block per selected faction, in the selection's order. A faction with no note gets the
+    code line and never reaches the model; one whose model block is missing or bad gets its latest note,
+    verbatim, and a report line. The cap's overflow is named in one closing line with a pointer.
+    """
+    reasons = reasons or {}
+    blocks: list[str] = []
+    report: list[str] = []
+    for f in sel.selected:
+        if not f.notes:
+            body = f"The summaries in this range record nothing for {f.name}."
+        elif bodies.get(f.name) and bodies[f.name].strip():
+            body = bodies[f.name].strip()
+        else:
+            body = f.latest.text
+            report.append(f"- {f.name}: the latest note replaces the model's block ({reasons.get(f.name, 'no usable block')})")
+        blocks.append(f"### {f.name}\n{body}\n")
+    if sel.overflow:
+        n = len(sel.overflow)
+        blocks.append(
+            f"_{n} more faction{'s' if n != 1 else ''} not written here (the least recently active): "
+            f"{', '.join(sel.overflow)}. Their notes are in reference/factions.md._\n")
+    if not blocks:
+        return schema.NO_FACTIONS, report
+    return "\n".join(blocks).rstrip("\n"), report
+
+
+# ── Active Plots ────────────────────────────────────────────────────────────
+
+_TAIL_RE = re.compile(r"^- (?:\[[A-Z]+\]\s+)?\*\*.+?\*\*\s+—\s+(.*)$", re.S)
+
+
+def note_tail(note) -> str:
+    """A thread note's own sentence and citation, verbatim: its text without the bullet, the tag and the bold name."""
+    m = _TAIL_RE.match(note.text)
+    return (m.group(1) if m else note.text.removeprefix("- ")).strip()
+
+
+@dataclass
+class ActivePlots:
+    text: str
+    #: One line per entry replaced by code.
+    report: list
+    replaced: int
+    from_model: int
+    #: The model-written bodies that were kept, for the word budget.
+    model_text: str
+
+
+def active_plots_md(
+    att: "thread_attach.Attachment", bodies: Mapping[str, str | None], reasons: Mapping[str, str] | None = None,
+) -> ActivePlots:
+    """``## Active Plots`` as its three layers (data-model "Active Plots section"), assembled by code.
+
+    ``bodies`` maps a thread id to the body the model wrote for it (``None`` or empty: it wrote none).
+    Entries are the *open* ratified threads, newest activity first, as ``att`` orders them; an entry whose
+    body is missing is the thread's latest attached note, verbatim. Then ``### Dormant threads`` (only if
+    a thread is dormant), each as its title and latest note, verbatim, built without a model; then the
+    unratified notes, verbatim in chapter order, with their count. With no open thread the ratified part is
+    one code line: ``NO_RATIFIED_THREADS`` when no ratified thread has notes at all, ``NO_OPEN_THREADS``
+    when some have but none is open.
+    """
+    reasons = reasons or {}
+    parts: list[str] = []
+    report: list[str] = []
+    kept: list[str] = []
+    open_threads = att.open_threads
+    if open_threads:
+        entries = []
+        for s in open_threads:
+            body = bodies.get(s.id)
+            if body is None or not body.strip():
+                body = s.latest.text
+                report.append(
+                    f"- {s.title}: the latest attached note replaces the model's entry ({reasons.get(s.id, 'no usable entry')})")
+            else:
+                body = body.strip()
+                kept.append(body)
+            entries.append(f"### {s.title}\n{body}\n")
+        parts.append("\n".join(entries).rstrip("\n"))
+    else:
+        parts.append(schema.NO_RATIFIED_THREADS if not att.threads else schema.NO_OPEN_THREADS)
+    dormant = att.dormant_threads
+    if dormant:
+        parts.append("\n".join([schema.DORMANT_HEADING, *(f"- **{s.title}** — {note_tail(s.latest)}" for s in dormant)]))
+    n = len(att.unattached)
+    head = [
+        schema.UNRATIFIED_HEADING,
+        f"_{n} checked thread note{'s' if n != 1 else ''} {'are' if n != 1 else 'is'} not in the thread registry. "
+        "They are evidence, not plots: rule on them at /grounding/threads "
+        "(or `summary_native thread-propose`, then `thread_registry ratify`)._",
+    ]
+    if att.ambiguous:
+        k = len(att.ambiguous)
+        head.append(
+            f"_{k} thread name{'s' if k != 1 else ''} below {'are' if k != 1 else 'is'} claimed by more than one "
+            f"ratified thread and stay unattached: {', '.join(sorted(att.ambiguous))}._")
+    block = "\n".join(head)
+    if att.unattached:
+        block += "\n\n" + "\n".join(x.text for x in att.unattached)
+    parts.append(block)
+    return ActivePlots("\n\n".join(parts), report, len(report), len(kept), "\n".join(kept))

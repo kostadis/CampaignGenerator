@@ -662,11 +662,19 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         return _err(str(e))
     track = _grounding_group(config_path.expanduser().resolve(), "campaign_state").get("track_files") or []
     npc_root = None
-    if args.doc == "world_state":
+    thread_registry_path = None
+    if args.doc in ("world_state", "planning"):
         try:
             npc_root = _npc_root(args, root, config_path)
         except ValueError as e:  # a malformed npc_dossiers.yaml
             return _err(str(e))
+    if args.doc == "planning":
+        # Thread identity is the GM's registry; where it lives is projections.yaml's `stores` (as thread-propose reads it).
+        try:
+            stores = load_projection_config(config_path.expanduser().resolve().parent / PROJECTION_CONFIG_FILENAME).stores
+        except ValueError as e:  # ConfigRefusal, malformed YAML and pydantic's ValidationError are ValueErrors
+            return _err(str(e))
+        thread_registry_path = _under(root, stores.thread_registry)
     return synth.run_synth(
         args,
         root=root,
@@ -682,6 +690,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         players_path=_players_path(config_path),
         budgets=budgets,
         npc_root=npc_root,
+        thread_registry_path=thread_registry_path,
     )
 
 

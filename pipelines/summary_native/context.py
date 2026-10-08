@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from campaignlib.party_config import load_party_config, resolve_party_config
-from campaignlib.planning_config import load_planning_config, resolve_entries
+from campaignlib.planning_config import ResolvedEntry, load_planning_config, resolve_entries
 from pipelines.summary_native.select import Selection
 
 PROMPT_DIR = Path(__file__).parent / "prompts"
@@ -183,6 +183,52 @@ def planning_config_block(path: Path | None, root: Path, *, explicit: bool) -> D
             f"{NO_ARC_SENTINEL}"
         )
     return DocConfig("\n\n".join(body), Path(path) if cfg is not None else None, len(scored), tuple(files))
+
+
+@dataclass(frozen=True)
+class ResolvedPlanning:
+    """The tracked NPCs and factions of ``planning.yaml``, in file order, with their arc-score files resolved (spec 034 T034).
+
+    ``path`` is ``None`` when no config file exists (none configured). An entry's ``arc_score`` is the
+    mechanic file, or ``None`` when it is ``trackless`` (``arc_score: null`` by design) or declares none.
+    """
+
+    path: Path | None
+    npcs: list[ResolvedEntry] = field(default_factory=list)
+    factions: list[ResolvedEntry] = field(default_factory=list)
+
+    @property
+    def entries(self) -> list[ResolvedEntry]:
+        """NPCs then factions, each in config order: the Threat Tracker's row order."""
+        return [*self.npcs, *self.factions]
+
+    @property
+    def scored(self) -> list[ResolvedEntry]:
+        return [e for e in self.entries if e.arc_score is not None]
+
+    @property
+    def files(self) -> tuple[Path, ...]:
+        """The config file, then each mechanic file, in row order: what the run record hashes."""
+        return (*([self.path] if self.path is not None else []), *(e.arc_score for e in self.scored))
+
+
+def load_planning(path: Path | None, root: Path, *, explicit: bool) -> ResolvedPlanning:
+    """The structured planning config. An absent default file means none configured; an explicit missing
+    file refuses. Raises ``DocConfigError`` with the messages ``planning_config_block`` has always used."""
+    if path is None or not Path(path).is_file():
+        if explicit:
+            raise DocConfigError(f"--planning-config {path}: no such file")
+        return ResolvedPlanning(None)
+    try:
+        cfg = load_planning_config(Path(path))
+        npcs = resolve_entries(cfg.npcs, Path(root), require_files=False)
+        factions = resolve_entries(cfg.factions, Path(root), require_files=False)
+    except ValueError as e:
+        raise DocConfigError(f"--planning-config {_shown(path, root)}: {e}") from e
+    for e in [*npcs, *factions]:
+        if e.arc_score is not None and not e.arc_score.is_file():
+            raise DocConfigError(f"planning config: {e.name} arc score file missing: {_shown(e.arc_score, root)}")
+    return ResolvedPlanning(Path(path), npcs, factions)
 
 
 def load_system_prompt(doc: str) -> str:

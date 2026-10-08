@@ -40,11 +40,17 @@ ANNOTATION_RE = re.compile(r"^\s+- (?:" + "|".join(re.escape(m) for m in MARKERS
 #: built by code from the checked notes.
 SKIP_SECTIONS = frozenset({
     "## Key NPCs",
+    "## Threat Tracker",
+    "## NPC Dossiers",
     "## Canon Events Timeline",
     "## Completed Encounters & Quests",
     "## NPC Current States",
     "## Audit: Tracking Claims",
 })
+
+#: ``###`` blocks of planning's Active Plots that code builds from the notes verbatim (the dormant threads
+#: and the unratified thread notes): evidence, not claims, so never annotated (spec 034 FR-019).
+SKIP_GROUPS = frozenset({schema.DORMANT_HEADING[4:], schema.UNRATIFIED_HEADING[4:]})
 
 REPORT_FILE = "annotations.md"
 COUNTS_FILE = "annotations.json"
@@ -192,7 +198,7 @@ def parse_entries(lines: Sequence[str], ev: Evidence) -> list[Entry]:
             group = ln[4:].strip()
         elif re.fullmatch(r"\*\*[^*]+\*\*\s*", ln.strip()):
             group = ln.strip().strip("*").strip()
-        elif ln.startswith("- ") and section not in SKIP_SECTIONS:
+        elif ln.startswith("- ") and section not in SKIP_SECTIONS and group not in SKIP_GROUPS:
             m = _BOLD_RE.search(ln)
             out.append(Entry(n, section, group, ln, ev.canon(m.group(1) if m else group)))
     return out

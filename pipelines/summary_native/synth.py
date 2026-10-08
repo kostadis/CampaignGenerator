@@ -21,8 +21,9 @@ import yaml
 
 from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
+from campaignlib.thread_registry import check_registry, load_registry
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import annotate, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, validate
+from pipelines.summary_native import annotate, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, validate
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
@@ -153,6 +154,7 @@ def run_synth(
     players_path: Path | None = None,
     budgets: dict[str, int] | None = None,
     npc_root: Path | None = None,
+    thread_registry_path: Path | None = None,
     now=None,
 ) -> int:
     now = now or _utcnow
@@ -195,7 +197,7 @@ def run_synth(
             args, root=root, range_dir=range_dir, report=report, summaries_dir=summaries_dir,
             registry_path=registry_path, players_path=players_path, track_files=audit_default,
             budgets=budgets, recent_chapters=recent_chapters, recurring_min=recurring_min,
-            npc_root=npc_root, now=now, config_dir=config_dir,
+            npc_root=npc_root, now=now, config_dir=config_dir, thread_registry_path=thread_registry_path,
         )
 
     # ── The one-shot path (retired). Unreachable since spec 034 T012: ``schema.STATE_DOCS`` is every
@@ -445,6 +447,12 @@ class StateCtx:
     party: list = field(default_factory=list)
     attributions: list = field(default_factory=list)
     levels: dict = field(default_factory=dict)
+    #: planning only: the tracked NPCs and factions, the selected NPCs with their dossier views, the ratified
+    #: threads attached to the range's thread notes, and the code-built NPC status table (spec 034 US2).
+    planning: object = None
+    npc_plan: object = None
+    attachment: object = None
+    status_table: str = ""
 
 
 _FENCE = "`````"
@@ -584,12 +592,152 @@ def _party_sections(jobs: list[dict], bodies: dict) -> tuple[dict[str, str], lis
     return sections, problems
 
 
-def _planning_jobs(ctx: StateCtx) -> list[dict]:
-    """planning's prose jobs: NPC Dossiers, Faction States, Active Plots, DM Notes (spec 034 US2/US3).
+@dataclass
+class PlanningPart:
+    """What one planning job's ``finish`` hands back: the section body (``None``: the model wrote none), the
+    model-written words the budget counts, one line per entry code replaced, and any extras to record."""
 
-    Not built yet: until US2 fills this in, planning has no model-written sections and its draft is incomplete.
+    body: str | None
+    model_text: str = ""
+    report: list = field(default_factory=list)
+    record: dict = field(default_factory=dict)
+    payload: object = None
+
+
+def _planning_prompt(heading: str, brief: str, budget: int, names_label: str, names: list[str], blocks: str) -> str:
+    """One planning call's user prompt: its identifying lines, the names to write about in the order to write
+    them, then each name's notes. ``SECTION:`` is the heading the call writes for, so a reader of the run
+    directory can tell the calls apart."""
+    listing = "\n".join(f"{i}. {n}" for i, n in enumerate(names, 1))
+    return (
+        f"DOCUMENT: planning\nSECTION: {heading}\nBRIEF: {brief}\nWORD BUDGET: {budget} words, hard limit, for the whole section.\n\n"
+        f"{names_label}, in this order (write exactly one `### <name exactly as given>` block for each, in this order, and no other block):\n"
+        f"{listing}\n\n{blocks}\n\n"
+        "OUTPUT: the `###` blocks only. No `##` heading, no preamble, no closing remarks.\n"
+    )
+
+
+def _note_lines(ns: list) -> str:
+    return "\n".join(n.text for n in ns)
+
+
+def _npc_dossiers_job(ctx: StateCtx) -> dict:
+    """NPC Dossiers: one call for the NPCs that have a published dossier; code checks every block and builds the rest."""
+    plan = ctx.npc_plan
+    published = [k for k in plan.npcs if plan.view_of(k) is not None]
+    per = key_npcs.planning_words_per_block(ctx.budgets["NPC Dossiers"], len(published))
+
+    def finish(out: str | None) -> PlanningPart:
+        a = key_npcs.assemble_planning(plan, out, per, ctx.results, ctx.forms)
+        body = key_npcs.planning_section_body(a, len(published), len(plan.npcs)) if plan.npcs else key_npcs.NO_NPCS_SELECTED
+        return PlanningPart(body, a.model_text, a.report, {
+            "from_model": a.from_model, "substituted": a.substituted, "fallbacks": a.fallbacks}, payload=(a, per))
+
+    return {
+        "heading": "## NPC Dossiers", "route": "planning_npcs", "file": "npc_dossiers", "notes": len(published),
+        "user": key_npcs.planning_prompt(plan, per) if published else "", "budget": ctx.budgets["NPC Dossiers"],
+        "system": (context.PROMPT_DIR / "state.planning_npcs.system.md").read_text(encoding="utf-8"), "finish": finish,
+    }
+
+
+def _faction_states_job(ctx: StateCtx) -> dict:
+    """Faction States: the factions are chosen by code; one call writes a block per faction that has notes."""
+    sel = state_sections.select_factions(
+        ctx.results, ctx.forms, [e.name for e in ctx.planning.factions], schema.DEFAULT_MAX_FACTIONS)
+    writing = [f for f in sel.selected if f.notes]
+    budget = ctx.budgets["Faction States"]
+    blocks = "\n\n".join(
+        f"=== FACTION: {f.name} ({len(f.notes)} notes, chapter order, every one already checked by code) ===\n{_note_lines(f.notes)}"
+        for f in writing)
+
+    def finish(out: str | None) -> PlanningPart:
+        check = state_sections.check_entries(out, [f.name for f in writing])
+        body, report = state_sections.faction_states_md(sel, check.bodies, check.bad)
+        report += [f"- discarded (not a selected faction, or repeated): ### {x}" for x in check.extras]
+        return PlanningPart(body, "\n".join(check.bodies.values()), report, {
+            "selected": [f.name for f in sel.selected], "overflow": sel.overflow,
+            "replaced": sum(1 for f in writing if f.name not in check.bodies)})
+
+    return {
+        "heading": "## Faction States", "route": "FACTION", "file": "faction_states", "notes": sum(len(f.notes) for f in writing),
+        "user": _planning_prompt("## Faction States", state_sections.BRIEFS["## Faction States"], budget,
+                                 "FACTIONS", [f.name for f in writing], blocks) if writing else "",
+        "budget": budget, "system": ctx.system, "finish": finish,
+    }
+
+
+def _active_plots_job(ctx: StateCtx) -> dict:
+    """Active Plots: the open ratified threads, newest activity first, are written by one call; code checks the
+    entries and builds the dormant and unratified blocks."""
+    att = ctx.attachment
+    open_threads = att.open_threads
+    budget = ctx.budgets["Active Plots"]
+    blocks = "\n\n".join(
+        f"=== THREAD: {s.title} ({len(s.notes)} notes, chapter order, every one already checked by code) ===\n{_note_lines(s.notes)}"
+        for s in open_threads)
+
+    def finish(out: str | None) -> PlanningPart:
+        check = state_sections.check_entries(out, [s.title for s in open_threads])
+        ap = state_sections.active_plots_md(
+            att, {s.id: check.bodies.get(s.title) for s in open_threads}, {s.id: check.bad.get(s.title, "") for s in open_threads})
+        report = ap.report + [f"- discarded (not an open ratified thread, or repeated): ### {x}" for x in check.extras]
+        return PlanningPart(ap.text, ap.model_text, report, {
+            "open": [s.title for s in open_threads], "dormant": [s.title for s in att.dormant_threads],
+            "unratified": len(att.unattached), "replaced": ap.replaced})
+
+    return {
+        "heading": "## Active Plots", "route": "threads", "file": "active_plots", "notes": sum(len(s.notes) for s in open_threads),
+        "user": _planning_prompt("## Active Plots", state_sections.BRIEFS["## Active Plots"], budget,
+                                 "THREADS", [s.title for s in open_threads], blocks) if open_threads else "",
+        "budget": budget, "system": ctx.system, "finish": finish,
+    }
+
+
+def _dm_notes_job(ctx: StateCtx) -> dict:
+    """DM Notes: one call, from the open threads' latest notes, the NPC status table and the last chunk."""
+    budget = ctx.budgets["DM Notes"]
+    latest = [s.latest.text for s in ctx.attachment.open_threads]
+    has_input = bool(latest or ctx.status_table.count("\n") > 1 or ctx.last_chunk)
+    user = ""
+    if has_input:
+        user = (
+            f"DOCUMENT: planning\nSECTION: ## DM Notes\nBRIEF: {state_sections.BRIEFS['## DM Notes']}\n"
+            f"WORD BUDGET: {budget} words, hard limit.\n\n"
+            f"THE LATEST NOTE OF EACH OPEN THREAD ({len(latest)} bullets, every one already checked by code):\n\n"
+            + ("\n".join(latest) if latest else "(none)")
+            + "\n\nNPC CURRENT STATES (built by code from the checked notes):\n\n" + ctx.status_table
+            + (
+                f"\n\nEVIDENCE OF THE LAST CHUNK ONLY (chapters {ctx.last_chunk[0].number:03d}-{ctx.last_chunk[-1].number:03d}), "
+                "for the current state:\n" + "".join(notes.chapter_block(c) for c in ctx.last_chunk)
+                if ctx.last_chunk else "")
+            + "\n\nOUTPUT: bullets only, each cited. No heading, no preamble, and not the label that opens the section: code writes it.\n"
+        )
+
+    def finish(out: str | None) -> PlanningPart:
+        if not user:
+            return PlanningPart(f"{schema.DM_NOTES_LABEL}\n\n_No open thread, NPC status or recent evidence in this range to suggest from._")
+        body = _party_body(out) if out else None
+        if body is None:
+            return PlanningPart(None, report=["- DM Notes: the model wrote no body"])
+        return PlanningPart(f"{schema.DM_NOTES_LABEL}\n\n{body}", body)
+
+    return {
+        "heading": "## DM Notes", "route": "dm_notes", "file": "dm_notes", "notes": len(latest),
+        "user": user, "budget": budget, "system": ctx.system, "finish": finish,
+    }
+
+
+def _planning_jobs(ctx: StateCtx) -> list[dict]:
+    """planning's prose jobs: NPC Dossiers, Faction States, Active Plots, DM Notes (spec 034 US2, research R8/R9).
+
+    The Threat Tracker is code only. Each job is ``{"heading", "route", "file", "notes", "user", "budget",
+    "system", "finish"}``; ``finish(out)`` is the code that checks the call's output (``None`` when no call
+    was made) and builds the section. A job with nothing to write from has an empty ``user``: no call is
+    made and ``finish`` builds the section from what code knows.
     """
-    return []
+    return [_npc_dossiers_job(ctx), _faction_states_job(ctx), _active_plots_job(ctx), _dm_notes_job(ctx)]
+
+
 _TIMELINE_HEADING = "## Canon Events Timeline"
 _PROMOTED_SUMMARIES = "docs/summaries"  # the reading contract's fallback when the summaries sit outside the campaign
 
@@ -646,6 +794,7 @@ def run_state_synth(
     npc_root: Path | None = None,
     now=None,
     config_dir: Path | None = None,
+    thread_registry_path: Path | None = None,
 ) -> int:
     """Build a document from the checked notes ``extract`` wrote (party and planning: spec 034).
 
@@ -712,24 +861,59 @@ def run_state_synth(
         except context.DocConfigError as e:
             return _refuse(str(e))
 
+    planning: context.ResolvedPlanning | None = None
+    planning_path: Path | None = None
+    attachment: thread_attach.Attachment | None = None
+    if doc == "planning":
+        given = getattr(args, "planning_config", None)
+        planning_path = schema.resolve_under(root, given) if given else (
+            Path(config_dir) if config_dir is not None else Path(root) / "config") / "planning.yaml"
+        try:
+            planning = context.load_planning(planning_path, root, explicit=bool(given))
+        except context.DocConfigError as e:
+            return _refuse(str(e))
+        # Thread identity is the GM's registry; a registry that fails its own check is not read (spec 034 R4).
+        try:
+            thread_registry = load_registry(thread_registry_path) if thread_registry_path is not None else {"version": 1, "threads": []}
+            thread_registry["threads"] = list(thread_registry.get("threads") or [])
+            findings = check_registry(thread_registry)
+        except (OSError, ValueError, AttributeError, TypeError) as e:  # YAML errors are ValueErrors
+            return _refuse(f"cannot read the thread registry: {e}")
+        if findings:
+            return _refuse(
+                f"the thread registry {schema.display_path(thread_registry_path, root)} fails `thread_registry check`; "
+                "fix it first:\n  " + "\n  ".join(findings))
+        attachment = thread_attach.attach(results, thread_registry)
+
     rng_name = f"ch{since:03d}-{until:03d}"
     key_plan: list[key_npcs.KeyNpc] = []
-    if doc == "world_state":
+    npc_plan: key_npcs.PlanningPlan | None = None
+    if doc in ("world_state", "planning"):
+        named = [forms.get(n.strip().casefold(), n.strip()) for n in args.name or ()]
+        npc_dir = npc_root or Path(root) / schema.DEFAULT_NPC_ROOT
+        scopes = key_npcs.registry_npc_scopes(registry_path)
         try:
-            chosen = key_npcs.select_key_npcs(
-                select.read_corpus_dossiers(range_dir), key_npcs.registry_npc_scopes(registry_path), pcs,
-                range_until=until, recent_chapters=recent_chapters, recurring_min=recurring_min,
-                named=[forms.get(n.strip().casefold(), n.strip()) for n in args.name or ()],
-            )
+            if doc == "world_state":
+                chosen = key_npcs.select_key_npcs(
+                    select.read_corpus_dossiers(range_dir), scopes, pcs,
+                    range_until=until, recent_chapters=recent_chapters, recurring_min=recurring_min, named=named,
+                )
+                key_plan = key_npcs.plan_key_npcs(
+                    chosen, root, npc_root=npc_dir, rng=rng_name, results=results, forms=forms)
+            else:
+                npc_plan = key_npcs.plan_planning_npcs(
+                    select.read_corpus_dossiers(range_dir), scopes, pcs, forms, [e.name for e in planning.npcs],
+                    range_until=until, recent_chapters=recent_chapters, recurring_min=recurring_min, named=named,
+                    campaign=Path(root), npc_root=npc_dir, rng=rng_name, results=results,
+                )
+                key_plan = npc_plan.npcs
         except select.SelectionError as e:
-            return _refuse(f"{e} (Key NPCs select the global NPCs only)")
-        key_plan = key_npcs.plan_key_npcs(
-            chosen, root, npc_root=npc_root or Path(root) / schema.DEFAULT_NPC_ROOT, rng=rng_name, results=results, forms=forms)
-        refusal = key_npcs.refusal_message(key_plan, since, until, getattr(args, "npc_root", None))
+            return _refuse(f"{e} ({'Key NPCs' if doc == 'world_state' else 'NPC Dossiers'} select the global NPCs only)")
+        refusal = key_npcs.refusal_message(key_plan, since, until, getattr(args, "npc_root", None), doc=doc)
         refused = bool(refusal) and not getattr(args, "fallback_npc_lines", False)
-        # What `GET /state` reports as missing_dossiers: the NPCs the latest world_state attempt found
+        # What `GET /state` reports as missing_dossiers: the NPCs the latest attempt of this document found
         # without a usable dossier, whether it then refused or went on with fallback lines.
-        atomic_write_text(Path(range_dir) / schema.STATE_DIR / schema.MISSING_DOSSIERS_FILE, json.dumps({
+        atomic_write_text(Path(range_dir) / schema.STATE_DIR / schema.missing_dossiers_file(doc), json.dumps({
             "range": {"since": since, "until": until},
             "refused": refused,
             "npcs": [{"name": k.name, "state": k.missing} for k in key_plan if k.view is None],
@@ -759,7 +943,13 @@ def run_state_synth(
     else:
         table, status_report = state_sections.npc_status_table(results, forms, pcs, ambiguous)
         reference = state_sections.reference_files(results, forms)
-    if doc == "world_state":
+    if doc == "planning":
+        # planning points at three reference files only (its reading contract lists them), and builds its
+        # Threat Tracker, the pointers and the thread layers by code; thread identity is the GM's registry.
+        reference = {k: v for k, v in reference.items() if k in state_sections.CONTRACT_REFERENCES["planning"]}
+        code_body["## Threat Tracker"] = state_sections.threat_tracker_md(planning.entries, None, root=root)
+        thread_attach.write_attach(range_dir, attachment, (since, until))
+    elif doc == "world_state":
         code_body[_TIMELINE_HEADING] = state_sections.timeline_pointer(results, since, until)
     elif doc != "party":
         code_body["## Completed Encounters & Quests"] = state_sections.completed_md(results)
@@ -782,6 +972,7 @@ def run_state_synth(
             last_chunk=last_chunk, budgets=budgets, system=system,
             registry_path=registry_path, players_path=players_path,
             party=party_chars, attributions=attributions, levels=levels,
+            planning=planning, npc_plan=npc_plan, attachment=attachment, status_table=table if doc == "planning" else "",
         )
         jobs.extend((_party_jobs if doc == "party" else _planning_jobs)(ctx))
     for heading, route, attach in state_sections.PROSE_SECTIONS.get(doc, ()):
@@ -813,6 +1004,8 @@ def run_state_synth(
     for j in jobs:
         if j["user"]:  # a Key NPCs call with no published dossier behind it is never made
             atomic_write_text(run_dir / f"{doc}.{j.get('file') or _slug(j['heading'])}.user.md", j["user"])
+            if j["system"] != system:  # planning's NPC Dossiers call has a prompt of its own
+                atomic_write_text(run_dir / f"{doc}.{j.get('file') or _slug(j['heading'])}.system.md", j["system"])
     backend = resolve_cli_model(args, legacy_default=None).backend
     record = {
         "step": "synth",
@@ -835,6 +1028,14 @@ def run_state_synth(
                 "files": [{"role": role, "path": _rel(p, root), "sha256": corpus.sha256_file(p)}
                           for c in party_chars for role, p in c.files],
             }, "budgets": dict(sorted(budgets.items()))} if doc == "party" else {}),
+            # planning: the config and every mechanic file it names, the GM's thread registry, and the budgets
+            **({"planning_config": {
+                "path": _rel(planning_path, root) if planning.path is not None else None,
+                "sha256": corpus.sha256_file(planning.path) if planning.path is not None else None,
+                "files": [{"role": f"arc_score:{e.name}", "path": _rel(e.arc_score, root), "sha256": corpus.sha256_file(e.arc_score)}
+                          for e in planning.scored],
+            }, "thread_registry_sha256": freshness.sha_file(thread_registry_path),
+                "budgets": dict(sorted(budgets.items()))} if doc == "planning" else {}),
         },
         "calls": [],
         "key_npcs": {
@@ -845,7 +1046,7 @@ def run_state_synth(
                  "missing": k.missing}
                 for k in key_plan
             ],
-        } if doc == "world_state" else None,
+        } if doc in ("world_state", "planning") else None,
         "check": "not run",
         "started": started.isoformat(timespec="seconds"),
         "finished": None,
@@ -877,11 +1078,44 @@ def run_state_synth(
     bodies: dict[str, str | None] = {}
     budget_text: dict[str, str] = {}  # what a section's word budget counts, where that is not the whole body
     key_assembled: key_npcs.Assembled | None = None
+    planning_parts: dict[str, PlanningPart] = {}
     hay = ""
     if doc == "world_state" and summaries_dir is not None:
         hay = "\n".join(c.text for c in notes.load_chapters(Path(summaries_dir), since, until))
     for j in jobs:
         t0 = time.monotonic()
+        if j.get("finish"):
+            # planning's sections: a call when there is something to write from, then code checks the output
+            # and builds the section (a block that fails its check is replaced by the source text).
+            out = None
+            label = j["heading"][3:]
+            if j["user"]:
+                try:
+                    out = render_part(client, j["system"], j["user"], args.model, args.max_tokens)
+                except Exception as e:
+                    fail(f"{label}: {type(e).__name__}: {e}")
+                    print(
+                        f"Error: model call failed in section {label}: {type(e).__name__}: {e} "
+                        f"(see {schema.display_path(run_dir / 'record.json', root)})",
+                        file=sys.stderr,
+                    )
+                    return EXIT_MODEL_FAILED
+                secs = time.monotonic() - t0
+                atomic_write_text(run_dir / f"{doc}.{j['file']}.out.md", out)
+                record["calls"].append({
+                    "heading": j["heading"], "route": j["route"], "notes": j["notes"],
+                    "secs": round(secs, 1), "prompt_chars": len(j["user"]), "out_chars": len(out),
+                })
+                print(f"{label}: {j['notes']} notes, {secs:.0f}s", flush=True)
+            else:
+                print(f"{label}: nothing to write from, no call", flush=True)
+            part = j["finish"](out)
+            planning_parts[j["heading"]] = part
+            bodies[j["heading"]] = part.body
+            budget_text[j["heading"]] = part.model_text
+            for line in part.report:
+                print(f"  {line}", flush=True)
+            continue
         if j["route"] == "dossiers":
             # world_state's Key NPCs: one call for the NPCs that have a published dossier (none if none do),
             # then code checks every line and builds the rest.
@@ -953,6 +1187,17 @@ def run_state_synth(
     if budget_report:
         record["budgets"] = budget_report
 
+    if doc == "planning":
+        record["planning"] = {h[3:]: p.record for h, p in sorted(planning_parts.items()) if p.record}
+        if "## NPC Dossiers" in planning_parts:
+            record["key_npcs"].update(planning_parts["## NPC Dossiers"].record)
+            record["key_npcs"]["report"] = planning_parts["## NPC Dossiers"].report
+        record["planning"]["Active Plots"] = {
+            **record["planning"].get("Active Plots", {}),
+            "report": planning_parts["## Active Plots"].report if "## Active Plots" in planning_parts else []}
+        record["planning"]["Faction States"] = {
+            **record["planning"].get("Faction States", {}),
+            "report": planning_parts["## Faction States"].report if "## Faction States" in planning_parts else []}
     headings = load_outline(doc)
     parts: list[str] = []
     party_problems: list[str] = []
@@ -976,7 +1221,8 @@ def run_state_synth(
         }, doc)
         joined = contract + "\n" + joined
 
-    problems = check_outline(joined, headings) + party_problems
+    planning_problems = [f"{h[3:]}: the model wrote no body" for h, part in planning_parts.items() if part.body is None]
+    problems = check_outline(joined, headings) + party_problems + planning_problems
     record["check"] = {"complete": not problems, "problems": problems}
     record["finished"] = now().isoformat(timespec="seconds")
     save_record()
@@ -991,14 +1237,26 @@ def run_state_synth(
         kb = budget_report.get("Key NPCs", {})
         atomic_write_text(drafts / "key_npcs_report.md", key_npcs.report_md(
             key_plan, key_assembled, key_per, kb.get("words", 0), kb.get("budget", 0)))
+    if doc == "planning":
+        # What code replaced in planning, and the thread layers it built (the attach map itself is state/threads/attach.json).
+        nb = budget_report.get("NPC Dossiers", {})
+        npc_part = planning_parts.get("## NPC Dossiers")
+        if npc_part is not None and npc_part.payload is not None:
+            a, per = npc_part.payload
+            atomic_write_text(drafts / "planning_npcs_report.md", key_npcs.planning_report_md(
+                npc_plan, a, per, nb.get("words", 0), nb.get("budget", 0)))
+        plots_part = planning_parts.get("## Active Plots")
+        atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(attachment, (since, until)) + "\n".join([
+            "", "## Active Plots entries replaced by code", "", *((plots_part.report if plots_part else []) or ["- (none)"]), ""]))
     # The files the sections point to. Written whether or not the draft is complete: they are
     # built by code from the checked notes and do not depend on the model.
     for kind, md in reference.items():
         atomic_write_text(drafts / "reference" / f"{kind}.md", md)
-    if doc != "party":
+    if doc not in ("party", "planning"):
         atomic_write_text(drafts / schema.TIMELINE_FILE, state_sections.timeline_file_md(results))
     if budget_report:
-        atomic_write_text(drafts / "budget_report.json", json.dumps(budget_report, indent=2, ensure_ascii=False) + "\n")
+        # one file per document: planning's and party's budgets must not replace world_state's
+        atomic_write_text(drafts / schema.budget_report_file(doc), json.dumps(budget_report, indent=2, ensure_ascii=False) + "\n")
     record_ref = f"runs/{run_id}/record.json"
     if problems:
         target = drafts / f"{doc}.incomplete.md"
