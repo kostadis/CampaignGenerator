@@ -266,7 +266,7 @@ def check_groups(
 def _single(member: dict, title: str) -> dict:
     return {
         "key": group_key([member["id"]]), "kind": "single",
-        "title": title or member["name"] or member["text"][:60], "members": [member],
+        "title": title or member.get("name") or (member.get("text") or "")[:60] or member["id"], "members": [member],
     }
 
 
@@ -319,16 +319,29 @@ def load_proposals(path: Path) -> list:
     return list(_load(path).get("proposals") or [])
 
 
-def merge_proposals(path: Path, groups: Sequence[dict], source: str, scope_ids=None) -> dict:
+def merge_proposals(
+    path: Path, groups: Sequence[dict], source: str, scope_ids=None, known_ids=None,
+) -> dict:
     """Merge ``groups`` into the proposals file at ``path`` and write it atomically.
 
     * name-keyed (``norm``) entries and every ruled group entry (by ``key``) are kept exactly as they are;
     * a pending group entry is replaced when it shares a note with this run (``scope_ids``, default the
       members of ``groups``): the run regenerates its notes' proposals;
+    * a member of a replaced group that lies outside this run's scope (an earlier run covered a wider range)
+      is never orphaned: unless another entry already holds it, it is kept as a pending ``single`` proposal
+      that keeps the group's ``source``;
+    * ``known_ids`` is every thread-note id of every range's checked notes (``None``: not known, nothing is
+      judged gone). An id is per extraction, so only an id in *no* range's notes names a note that no longer
+      exists: such a member of a replaced group is dropped and reported in full (``gone``), so it can be
+      recovered from the report; a pending entry none of whose members is in any range's notes is **kept
+      untouched** and reported (``stale``) — the GM re-extracts that range or rejects the entry;
     * a new group whose key is already a ruled entry is not added again (the ruling stands);
     * every other new group is added ``pending`` with ``source``.
 
-    Returns counts: ``pending`` (group entries pending after the merge), ``added``, ``replaced``, ``ruled``.
+    Returns counts: ``pending`` (group entries pending after the merge), ``added``, ``replaced``, ``ruled``;
+    ``kept_out_of_range`` (one ``{key, title, members}`` per replaced group that left members as singles) and
+    ``gone`` (one ``{key, title, members}`` per replaced group, ``members`` the dropped member dicts in full)
+    and ``stale`` (one ``{key, title, ids}`` per kept pending entry no member of which is in any range's notes).
     """
     doc = _load(path)
     existing = list(doc.get("proposals") or [])
@@ -336,22 +349,61 @@ def merge_proposals(path: Path, groups: Sequence[dict], source: str, scope_ids=N
     ruled_keys = {
         p["key"] for p in existing if isinstance(p, dict) and p.get("key") and p.get("status") in RULED
     }
-    kept: list = []
-    replaced = 0
-    for p in existing:
+    living = None if known_ids is None else set(known_ids) | scope
+    replaced_at: dict[int, dict] = {}
+    stale_at: dict[int, dict] = {}
+    for i, p in enumerate(existing):
         if isinstance(p, dict) and p.get("key") and p.get("status", "pending") == "pending":
-            if scope & set(_member_ids(p)):
-                replaced += 1
-                continue
-        kept.append(p)
+            ids = _member_ids(p)
+            if scope & set(ids):
+                replaced_at[i] = p
+            elif living is not None and ids and not living & set(ids):
+                stale_at[i] = p
+    kept = [p for i, p in enumerate(existing) if i not in replaced_at]
     added = [{**g, "status": "pending", "source": source} for g in groups if g["key"] not in ruled_keys]
-    merged = kept + added
+    held = {i for e in [*kept, *added] if isinstance(e, dict) and e.get("key") for i in _member_ids(e)}
+
+    # The singles take the place of the group they came from, so a second identical run is a fixed point.
+    saved_at: dict[int, list[dict]] = {}
+    kept_report: list[dict] = []
+    gone_report: list[dict] = []
+    for idx, p in replaced_at.items():
+        title = p.get("title") or p.get("thread") or p["key"]
+        saved: list[dict] = []
+        gone: list[dict] = []
+        for m in p.get("members") or ():
+            if not isinstance(m, Mapping) or not m.get("id") or m["id"] in scope or m["id"] in held:
+                continue
+            if living is not None and m["id"] not in living:
+                gone.append(dict(m))
+                continue
+            held.add(m["id"])
+            saved.append(m)
+        if saved:
+            saved_at[idx] = [
+                {**_single(dict(m), ""), "status": "pending", "source": p.get("source") or source} for m in saved]
+            kept_report.append({"key": p["key"], "title": title, "members": saved})
+        if gone:
+            gone_report.append({"key": p["key"], "title": title, "members": gone})
+    stale_report = [
+        {"key": p["key"], "title": p.get("title") or p.get("thread") or p["key"], "ids": _member_ids(p)}
+        for p in stale_at.values()]
+    merged: list = []
+    for i, p in enumerate(existing):
+        if i in replaced_at:
+            merged.extend(saved_at.get(i, ()))
+        else:
+            merged.append(p)
+    merged.extend(added)
     out = dict(doc) if doc else {"note": PROPOSALS_NOTE}
     out["proposals"] = merged
     atomic_write_text(path, yaml.safe_dump(out, sort_keys=False, allow_unicode=True, width=100))
     return {
         "pending": sum(1 for p in merged if isinstance(p, dict) and p.get("key") and p.get("status", "pending") == "pending"),
         "added": len(added),
-        "replaced": replaced,
+        "replaced": len(replaced_at),
         "ruled": len(ruled_keys),
+        "kept_out_of_range": kept_report,
+        "gone": gone_report,
+        "stale": stale_report,
     }

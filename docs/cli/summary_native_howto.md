@@ -1150,23 +1150,33 @@ What it does, in order:
    output is not the JSON asked for becomes single-note proposals.
 4. The groups are merged into the proposals file (`projections.yaml`
    `thread_proposals`, default `docs/ensemble/thread_proposals.yaml`), keeping
-   every ruling by `key` (`g-` plus a hash of the member ids). It never writes the
-   registry.
+   every ruling by `key` (`g-` plus a hash of the member ids). A pending group the
+   run replaces keeps its out-of-range members: a member outside `--since`..`--until`
+   that no other proposal holds stays as a pending `single`, and the report and the
+   terminal name the replaced group and those singles. A kept single may name a note a
+   ratified thread now attaches (an alias added since the wide run); the next run whose
+   range covers it resolves that. A member whose id is in no range's checked notes on
+   disk is dropped from a replaced group and written out in full in the report; a
+   pending proposal none of whose notes is on disk is kept untouched and named in the
+   report and output every run (re-extract that range or reject it on the Threads
+   page); rulings are never touched. If a checked-notes file is unreadable the run
+   warns and judges nothing missing. It never writes the registry.
 
 It prints `threads: 120 notes — 40 attached to 12 ratified threads, 80 unattached
 → 21 group proposals (9 single), 3 dropped (see propose_report.md)` and writes
 `state/threads/propose.NN.{user,out}.md`, `propose_report.md` (what was dropped and
-why, stale rulings, ambiguous names) and a run record.
+why, replaced groups with notes outside the range, pending proposals with no note on
+disk, stale
+rulings, ambiguous names) and a run record.
 
 **A proposal is a candidate the GM ratifies.** Grouping notes under one thread name
 is an identity assertion, and it is yours. On the [Threads page](state_projection_howto.md#grouping-proposals-from-summary-native)
 you edit the title, status, members and aliases before anything is written;
 there is no one-click accept. Ratifying adds the thread (or log rows on an existing
 one), and **every member's name becomes an alias**, so the next build attaches those
-notes by exact match. Reject, Defer and splitting are covered there. Two known
-gaps: a pending group that spans the edge of the range loses its out-of-range
-notes on the next run (#524), and notes left unattached after you remove an alias
-are neither re-proposed nor flagged (#525).
+notes by exact match. Reject, Defer and splitting are covered there. One known
+gap: notes left unattached after you remove an alias are neither re-proposed nor
+flagged (#525).
 
 ### Arc-score candidates
 

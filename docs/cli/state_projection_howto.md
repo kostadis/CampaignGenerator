@@ -499,9 +499,27 @@ The name-keyed harvest and the group proposals share one proposals file
 (`stores.thread_proposals`, default `docs/ensemble/thread_proposals.yaml`); group
 entries carry a `key`, harvest entries a `norm`, and neither touches the other.
 A re-run of `thread-propose` replaces pending groups that share a note with the run
-and keeps every ruling by `key`. Two known gaps: a pending group that spans the
-edge of the range loses its out-of-range notes (#524), and notes left unattached
-after you remove an alias are neither re-proposed nor flagged (#525).
+and keeps every ruling by `key`. A replaced group may hold notes from outside the
+run's range (an earlier, wider run proposed it): those members are never dropped
+from the queue. Each one that no other proposal holds stays as a pending
+one-note `single` proposal, and `propose_report.md` (and the run's output) names the
+replaced group and the notes it kept — "replaced pending group g-… (title): kept N
+member(s) outside the run's range as single proposals". Run the wider range again
+and the singles are regrouped with everything else. A kept single may name a note
+that a ratified thread now attaches (an alias added since the wide run): the next
+run whose range covers it resolves that. Note ids belong to one extraction, so a
+member counts as missing only when its id is in **no** range's checked notes
+(`ch*-*/state/notes/`); a note merely re-extracted in this range under a new id
+while the wider range still has it is kept. A member of a replaced group whose note
+is in no range's notes on disk is dropped, and `propose_report.md` writes it out in
+full (id, chapter, tag, name, text, citation) so you can recover it. A pending
+proposal none of whose notes is on disk (its range was re-extracted with `--force`,
+moved or deleted) is **kept untouched** and named in the report and the output on
+every run — "none of its notes is in any range's notes on disk … re-extract that
+range or reject it on the Threads page". If any checked-notes file cannot be read,
+the run warns, names the file in the report, and judges nothing missing.
+Known gap: notes left unattached after you remove an alias are
+neither re-proposed nor flagged (#525).
 
 ### A thread you accepted keeps coming back — on purpose
 
