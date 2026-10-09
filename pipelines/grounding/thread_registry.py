@@ -699,9 +699,13 @@ def derive_group_plan(pr: dict, data: dict | None = None) -> dict:
     """The starting point the GM edits for a group proposal — never what gets written unreviewed.
 
     Log rows follow the members in chapter order: ``change`` from the member's tag, ``summary`` the note's
-    text, ``cite`` its citation. ``aliases_add`` is the distinct member names (by ``norm_title``) that are not
-    already the thread's title or alias. A ``continues`` proposal names its ``thread`` and has no title.
-    ``--plan`` stays required for a write, so this cannot become an "accept as proposed" button (SC-004).
+    text, ``cite`` its citation. ``aliases_add`` is every distinct member name (by ``norm_title``): the
+    ratification below skips one that is already the target's title or alias, so listing it is harmless, and
+    omitting it is not (a note that names the thread only by its title-like name would stay unattached once
+    the GM retitles or redirects the proposal; #525). A ``continues`` proposal names its ``thread`` and has
+    no title; so does a ``single`` that ``thread-propose`` re-offered (``reoffer.thread``) while that thread
+    still exists. ``--plan`` stays required for a write, so this cannot become an "accept as proposed"
+    button (SC-004).
     """
     ms = _members_in_order(pr)
     log = []
@@ -711,14 +715,12 @@ def derive_group_plan(pr: dict, data: dict | None = None) -> dict:
         if m.get("cite"):
             row["cite"] = m["cite"]
         log.append(row)
+    continues = pr.get("thread") if pr.get("kind") == "continues" else None
+    if not continues:
+        back = (pr.get("reoffer") or {}).get("thread") if isinstance(pr.get("reoffer"), dict) else None
+        if back and data and find_thread(data, back):
+            continues = back
     known: set[str] = set()
-    target = None
-    if pr.get("kind") == "continues" and pr.get("thread"):
-        target = find_thread(data, pr["thread"]) if data else None
-        for name in [(target or {}).get("title") or ""] + list((target or {}).get("aliases") or []):
-            known.add(norm_title(name))
-    else:
-        known.add(norm_title(pr.get("title") or ""))
     aliases: list[str] = []
     for m in ms:
         name = (m.get("name") or "").strip()
@@ -726,8 +728,8 @@ def derive_group_plan(pr: dict, data: dict | None = None) -> dict:
             known.add(norm_title(name))
             aliases.append(name)
     first = next((m["chapter"] for m in ms if isinstance(m.get("chapter"), int)), None)
-    if pr.get("kind") == "continues" and pr.get("thread"):
-        return {"thread": pr["thread"], "aliases_add": aliases, "members": [m.get("id") for m in ms], "log": log}
+    if continues:
+        return {"thread": continues, "aliases_add": aliases, "members": [m.get("id") for m in ms], "log": log}
     title = (pr.get("title") or (ms[0].get("name") if ms else "") or "").strip()
     return {"id": norm_title(title) or pr.get("key"), "title": title, "status": "open", "opened": first,
             "aliases_add": aliases, "members": [m.get("id") for m in ms], "log": log}

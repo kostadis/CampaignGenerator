@@ -67,7 +67,7 @@ summary_native thread-propose --since A --until B          # both required: refu
 ```
 
 - **Reads:** the checked thread notes for the range, `docs/thread_registry.yaml`, and the proposals file (path from `projections.yaml thread_proposals`, default `docs/ensemble/thread_proposals.yaml`).
-- **Attaches first** (code, R4). Only unattached notes, minus members of rejected groups, are sent.
+- **Attaches first** (code, R4). Only unattached notes, minus members of rejected, deferred and ratified groups, are sent. A ratified member that is unattached (its alias was removed) is offered again by code as a pending `single` and listed under "Ratified but no longer attached (alias removed?)" in `propose_report.md` (#525).
 - **Writes:**
   - group proposals merged into the proposals file, with existing rulings preserved by `key`; a replaced pending group's members outside the run's range stay as pending `single` proposals (#524) and are named in the report and on stdout (`note: replaced pending group g-… (…): kept N member(s) outside the run's range as single proposals: …`);
   - `state/threads/propose.{user,out}.md`;

@@ -93,11 +93,12 @@ class TestEmitPlan:
         assert plan["status"] == "open" and plan["opened"] == 2
         assert "thread" not in plan
 
-    def test_members_are_listed_and_aliases_are_the_distinct_names_minus_the_title(self, tmp_path):
+    def test_members_are_listed_and_aliases_are_every_distinct_member_name(self, tmp_path):
         c = seed(tmp_path, NEW)
         plan = emit(c, NEW["key"])
         assert plan["members"] == [M1["id"], M2["id"], M3["id"]]
-        assert plan["aliases_add"] == ["Carver march"]  # "The Carver's march" is the title; it appears twice
+        # The title's own spelling is listed too (#525): ratifying skips it, but a retitled plan needs it.
+        assert plan["aliases_add"] == ["The Carver's march", "Carver march"]
 
     def test_every_tag_maps_to_its_change(self, tmp_path):
         ms = [member(10, 2, "OPENED", "X", "a"), member(11, 3, "ADVANCED", "X", "b"),
@@ -118,7 +119,16 @@ class TestEmitPlan:
         g = group("single", [M2], title="Carver march")
         c = seed(tmp_path, g)
         plan = emit(c, g["key"])
-        assert plan["title"] == "Carver march" and plan["aliases_add"] == [] and len(plan["log"]) == 1
+        assert plan["title"] == "Carver march" and plan["aliases_add"] == ["Carver march"] and len(plan["log"]) == 1
+
+    def test_a_reoffered_single_defaults_to_continuing_the_thread_it_came_from(self, tmp_path):
+        g = group("single", [M2], title="Carver march", reoffer={"from_group": "g-aaaaaaaaaaaa", "thread": "old"})
+        c = seed(tmp_path, g, threads=[OLD])
+        plan = emit(c, g["key"])
+        assert plan["thread"] == "old" and "title" not in plan and plan["aliases_add"] == ["Carver march"]
+        # the thread is gone from the registry: it is an ordinary single again
+        c2 = seed(tmp_path / "x", g, threads=[])
+        assert "thread" not in emit(c2, g["key"]) and emit(c2, g["key"])["title"] == "Carver march"
 
     def test_emit_plan_writes_nothing(self, tmp_path):
         c = seed(tmp_path, NEW)

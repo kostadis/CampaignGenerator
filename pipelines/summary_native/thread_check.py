@@ -9,6 +9,7 @@ proposal. Deterministic, no model call; guarded by ``tests/test_summary_native_n
 A proposal is a *group entry* in the proposals file::
 
     key: g-<12 hex>      # campaignlib.thread_registry.group_key of the sorted member ids
+    reoffer: {from_group, thread}   # single only, optional: a ratified member whose alias was removed (#525)
     kind: new | continues | single
     title: ...           # new and single: a suggestion the GM edits
     thread: <id>         # continues only
@@ -130,10 +131,21 @@ def excluded_ids(prior: Sequence | None) -> tuple[set[str], set[str]]:
     return rejected, deferred
 
 
+def ratified_ids(prior: Sequence | None) -> set[str]:
+    """Member ids of the groups the GM ratified."""
+    return {i for p in group_entries(prior) if p.get("status") == "ratified" for i in _member_ids(p)}
+
+
 def offered(unattached: Sequence[notes.Note], prior: Sequence | None) -> list[notes.Note]:
-    """The unattached notes a model may group: not the members of a rejected or a deferred group."""
+    """The unattached notes a model may group: not the members of a rejected, a deferred or a ratified group.
+
+    A ratified member that is *unattached* lost its alias after the ratification (see :func:`detached`); it is
+    offered again as a single-note proposal by code, not regrouped by the model.
+    """
     rejected, deferred = excluded_ids(prior)
-    return [n for n in unattached if n.note_id not in rejected and n.note_id not in deferred]
+    ratified = ratified_ids(prior)
+    excluded = rejected | deferred | ratified
+    return [n for n in unattached if n.note_id not in excluded]
 
 
 # ── The check ───────────────────────────────────────────────────────────────
@@ -157,7 +169,8 @@ def check_groups(
 
     * a group of an unknown kind, or whose members are not a list of ids;
     * a ``continues`` group whose thread is not in the registry;
-    * a member that is not an offered, unattached checked note (unknown, attached, or excluded by a ruling);
+    * a member that is not an offered, unattached checked note (unknown, attached, or excluded by a ruling,
+      a ratified group's members included: those are :func:`detached` and offered on their own);
     * a member claimed by two groups, which leaves **both**;
     * a group left with no members.
 
@@ -169,6 +182,16 @@ def check_groups(
     position = {n.note_id: i for i, n in enumerate(ordered)}
     by_id = {n.note_id: n for n in ordered}
     rejected, deferred = excluded_ids(prior)
+    ratified = ratified_ids(prior)
+    # A ratified single's key is the key of the same note offered again, and a key must name one entry.
+    taken = {p["key"] for p in group_entries(prior) if p.get("status") == "ratified"}
+    # Where a detached note came from (the latest ratification wins): the Threads page defaults its card to
+    # "continues <thread>" and says why the note is back. Additive: an older reader ignores the field.
+    came_from = {}
+    for p in group_entries(prior):
+        if p.get("status") == "ratified":
+            for i in _member_ids(p):
+                came_from[i] = {"from_group": p["key"], **({"thread": p["ruled_thread"]} if p.get("ruled_thread") else {})}
     can_group = {n.note_id for n in offered(ordered, prior)}
     registry_ids = {t.get("id") for t in (registry or {}).get("threads") or ()}
     attached = attached or {}
@@ -211,6 +234,9 @@ def check_groups(
                 lines.append(f"{DROPPED} {label} member {mid}: it was in a group the GM rejected, so it was not offered")
             elif mid in deferred:
                 lines.append(f"{DROPPED} {label} member {mid}: it is in a group the GM deferred, so it was not offered")
+            elif mid in ratified:
+                lines.append(f"{DROPPED} {label} member {mid}: it is in a ratified group but no longer attached "
+                             "(alias removed?), so it was not offered to the model; it is offered on its own")
             elif mid in attached:
                 lines.append(f"{DROPPED} {label} member {mid}: already attached to thread {attached[mid]!r}")
             else:
@@ -257,17 +283,24 @@ def check_groups(
     for n in ordered:
         if n.note_id in used or n.note_id in deferred:
             continue
-        groups.append(_single(member_of(n), ""))
+        groups.append(_single(member_of(n), "", taken, came_from.get(n.note_id)))
 
     groups.sort(key=lambda g: (position[g["members"][0]["id"]], g["key"]))
     return groups, lines
 
 
-def _single(member: dict, title: str) -> dict:
-    return {
-        "key": group_key([member["id"]]), "kind": "single",
+def _single(member: dict, title: str, taken=(), reoffer: dict | None = None) -> dict:
+    """A single-note proposal; its key is ``group_key([id])`` unless ``taken`` already holds that key."""
+    key, n = group_key([member["id"]]), 1
+    while key in taken:
+        key, n = group_key([member["id"], f"re-offered-{n}"]), n + 1
+    out = {
+        "key": key, "kind": "single",
         "title": title or member.get("name") or (member.get("text") or "")[:60] or member["id"], "members": [member],
     }
+    if reoffer:
+        out["reoffer"] = reoffer
+    return out
 
 
 def stale_ratified(prior: Sequence | None, note_ids: set[str], since: int, until: int) -> list[str]:
@@ -291,6 +324,60 @@ def stale_ratified(prior: Sequence | None, note_ids: set[str], since: int, until
                 f"member(s) {', '.join(gone)} no longer exist after re-extraction; the thread's aliases still "
                 "attach any note that repeats a name"
             )
+    return out
+
+
+def detached(prior: Sequence | None, unattached: Sequence[notes.Note]) -> list[dict]:
+    """Ratified members that exist in this run's notes but attach to no thread: ``[{note, groups}]``.
+
+    Ratifying adds every member's name as an alias, so such a member was attached once and lost its alias
+    since (removed by hand or by ``thread_registry alias``). Only a note of this run can be judged: its
+    attachment is known. A member outside the run's range (or gone from disk) is left alone here.
+    """
+    holders: dict[str, list[dict]] = {}
+    for p in group_entries(prior):
+        if p.get("status") == "ratified":
+            for i in _member_ids(p):
+                holders.setdefault(i, []).append(p)
+    return [{"note": n, "groups": holders[n.note_id]}
+            for n in sorted(unattached, key=lambda n: n.first_chapter) if n.note_id in holders]
+
+
+def detached_lines(prior: Sequence | None, found: Sequence[dict]) -> list[str]:
+    """One report line per :func:`detached` note, saying what became of it in ``prior`` (the current file)."""
+    out = []
+    for d in found:
+        n = d["note"]
+        was = " and ".join(
+            f"{p['key']} ({p.get('title') or p.get('ruled_thread') or 'untitled'}"
+            + (f" → thread {p['ruled_thread']}" if p.get("ruled_thread") else "") + ")"
+            for p in d["groups"])
+        holding = [p for p in group_entries(prior) if p.get("status") != "ratified" and n.note_id in _member_ids(p)]
+        pending = next((p for p in holding if p.get("status", "pending") == "pending"), None)
+        if pending:
+            fate = f"offered again as pending proposal {pending['key']}"
+        elif holding:
+            fate = f"its proposal {holding[0]['key']} is {holding[0].get('status')}, so it is not offered again"
+        else:
+            fate = "run `summary_native thread-propose` to offer it again"
+        out.append(f"ch {n.first_chapter} {n.note_id} ({note_name(n) or 'no name'}): ratified but no longer attached "
+                   f"(alias removed?) — a member of ratified group {was}; {fate}")
+    return out
+
+
+def now_attached_lines(prior: Sequence | None, attached: Mapping[str, str], titles: Mapping[str, str]) -> list[str]:
+    """Report lines for pending proposals every note of which now attaches to a ratified thread.
+
+    The merge drops such a proposal (its notes are in the run and attached); this says so. ``attached`` is
+    ``{note id: thread id}`` for this run's notes.
+    """
+    out = []
+    for p in group_entries(prior):
+        ids = _member_ids(p)
+        if p.get("status", "pending") == "pending" and ids and all(i in attached for i in ids):
+            names = ", ".join(sorted({titles.get(attached[i]) or attached[i] for i in ids}))
+            out.append(f"pending proposal {p['key']} ({p.get('title') or p.get('thread') or 'untitled'}): now attached "
+                       f"to {names}; dropped from the queue")
     return out
 
 

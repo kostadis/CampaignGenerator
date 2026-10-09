@@ -23,7 +23,7 @@ from campaignlib import client_from_args, stream_api
 from campaignlib.api.client import resolve_cli_model
 from campaignlib.thread_registry import check_registry, load_registry
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import annotate, arc_check, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, validate
+from pipelines.summary_native import annotate, arc_check, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, thread_check, validate
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
@@ -129,6 +129,7 @@ def run_synth(
     budgets: dict[str, int] | None = None,
     npc_root: Path | None = None,
     thread_registry_path: Path | None = None,
+    thread_proposals_path: Path | None = None,
     now=None,
 ) -> int:
     """Refuse what does not apply to ``args.doc`` (exit 2, before any read of the corpus), then build it.
@@ -169,7 +170,20 @@ def run_synth(
         registry_path=registry_path, players_path=players_path, track_files=audit_default,
         budgets=budgets, recent_chapters=recent_chapters, recurring_min=recurring_min,
         npc_root=npc_root, now=now, config_dir=config_dir, thread_registry_path=thread_registry_path,
+        thread_proposals_path=thread_proposals_path,
     )
+
+
+def _detached_lines(proposals_path: Path | None, att: thread_attach.Attachment) -> list[str]:
+    """Ratified proposal members that no longer attach, for ``threads_report.md`` (read-only; a build never
+    refuses over the proposals file)."""
+    if proposals_path is None:
+        return []
+    try:
+        entries = thread_check.load_proposals(proposals_path)
+    except (OSError, ValueError) as e:  # a directory, permissions, or YAML: a warning, never a failed build
+        return [f"warning: cannot read the proposals file, so no ratified member was checked: {e}"]
+    return thread_check.detached_lines(entries, thread_check.detached(entries, att.unattached))
 
 
 # ── world_state and campaign_state from checked notes (spec 033 T019) ───────
@@ -632,6 +646,7 @@ def run_state_synth(
     now=None,
     config_dir: Path | None = None,
     thread_registry_path: Path | None = None,
+    thread_proposals_path: Path | None = None,
 ) -> int:
     """Build a document from the checked notes ``extract`` wrote (party and planning: spec 034).
 
@@ -1140,7 +1155,9 @@ def run_state_synth(
             atomic_write_text(drafts / "planning_npcs_report.md", key_npcs.planning_report_md(
                 npc_plan, a, per, nb.get("words", 0), nb.get("budget", 0), faction_lines))
         plots_part = planning_parts.get("## Active Plots")
-        atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(attachment, (since, until)) + "\n".join([
+        detached_lines = _detached_lines(thread_proposals_path, attachment)
+        atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(
+            attachment, (since, until), detached_lines) + "\n".join([
             "", "## Active Plots entries replaced by code", "", *((plots_part.report if plots_part else []) or ["- (none)"]), ""]))
     # The files the sections point to. Written whether or not the draft is complete: they are
     # built by code from the checked notes and do not depend on the model.

@@ -207,9 +207,10 @@ def write_attach(range_dir: Path, att: Attachment, rng) -> Path:
     return path
 
 
-def threads_report_md(att: Attachment, rng) -> str:
+def threads_report_md(att: Attachment, rng, detached: Sequence[str] = ()) -> str:
     """``threads_report.md``: the ratified threads with notes in the range (open or not, and why), the
-    names two threads claim, and how many notes no thread claims. Deterministic."""
+    names two threads claim, the ratified proposal members no thread claims any more (``detached``: lines
+    from ``thread_check.detached_lines``) and how many notes no thread claims. Deterministic."""
     since, until = _range_of(rng)
     lines = [
         "# Threads report", "",
@@ -229,5 +230,7 @@ def threads_report_md(att: Attachment, rng) -> str:
         lines += [f"- {name}: {', '.join(f'`{t}`' for t in ids)}" for name, ids in sorted(att.ambiguous.items())]
     else:
         lines.append("- (none)")
+    lines += ["", "## Ratified but no longer attached (alias removed?)", ""]
+    lines += [f"- {ln}" for ln in detached] or ["- (none)"]
     lines += ["", "## Unattached", "", f"{len(att.unattached)} unattached thread note(s).", ""]
     return "\n".join(lines)

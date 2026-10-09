@@ -662,6 +662,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
     track = _grounding_group(config_path.expanduser().resolve(), "campaign_state").get("track_files") or []
     npc_root = None
     thread_registry_path = None
+    thread_proposals_path = None
     if args.doc in ("world_state", "planning"):
         try:
             npc_root = _npc_root(args, root, config_path)
@@ -674,6 +675,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         except ValueError as e:  # ConfigRefusal, malformed YAML and pydantic's ValidationError are ValueErrors
             return _err(str(e))
         thread_registry_path = _under(root, stores.thread_registry)
+        thread_proposals_path = _under(root, stores.thread_proposals)
     return synth.run_synth(
         args,
         root=root,
@@ -689,6 +691,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         budgets=budgets,
         npc_root=npc_root,
         thread_registry_path=thread_registry_path,
+        thread_proposals_path=thread_proposals_path,
     )
 
 
