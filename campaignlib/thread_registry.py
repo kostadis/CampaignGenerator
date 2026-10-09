@@ -133,4 +133,11 @@ def check_registry(data: dict) -> list[str]:
             if not isinstance(row.get("chapter"), int) or row["chapter"] < 1:
                 errors.append(f"{tid}: log row without a real chapter number "
                               f"({row.get('chapter')!r})")
+    pinned: dict[str, list[str]] = {}
+    for t in data["threads"]:
+        for nid in dict.fromkeys(included_notes(t)):
+            pinned.setdefault(nid, []).append(t.get("id") or "")
+    for nid, tids in sorted(pinned.items()):
+        if len(tids) > 1:
+            errors.append(f"note {nid} is pinned to threads {' and '.join(tids)} (included_notes): a note belongs to one thread")
     return errors

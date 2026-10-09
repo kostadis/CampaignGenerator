@@ -1432,6 +1432,13 @@ class TestThreadPropose:
         assert any("both in excluded_notes and included_notes" in e for e in check_registry(reg(t)))
         assert any("included_notes must be a list" in e for e in check_registry(reg({**thr("x", "X"), "included_notes": "n-1"})))
 
+    def test_a_note_pinned_on_two_threads_is_a_check_finding(self):
+        from campaignlib.thread_registry import check_registry
+        two = reg({**thr("a", "A"), "included_notes": ["n-1", "n-2"]}, {**thr("b", "B"), "included_notes": ["n-1"]})
+        errors = check_registry(two)
+        assert [e for e in errors if "pinned to threads a and b" in e and "n-1" in e] and not any("n-2" in e for e in errors)
+        assert not any("pinned to" in e for e in check_registry(reg({**thr("a", "A"), "included_notes": ["n-1", "n-1"]})))
+
     def test_a_re_extracted_pinned_note_is_reported_never_removed(self, tcamp):
         root, tm = tcamp
         group = self.split_carver(root)
@@ -1482,7 +1489,7 @@ class TestThreadPropose:
         assert off["name"] == "Carver march"
         r = self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Carver march")
         assert r.returncode == 0, r.stderr
-        assert off["id"] in r.stdout and "does not attach it" in r.stdout and "ok: alias" in r.stdout
+        assert off["id"] in r.stdout and "which carries the name" in r.stdout and "does not attach it" in r.stdout and "ok: alias" in r.stdout
         assert propose(root)[0] == 0
         assert self.attach_map(root)["notes"][off["id"]] is None  # still out, and now the report says why
         report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")

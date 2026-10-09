@@ -331,7 +331,7 @@ def _note_exclusions_for(t: dict, alias: str, proposals: Path | None) -> None:
         names = {}
     carrying = [i for i in excluded if norm_title(names.get(i, "")) == norm_title(alias)]
     if carrying:
-        print(f"note: thread {t['id']!r} excludes {', '.join(carrying)}, which carry{'' if len(carrying) > 1 else 's'} "
+        print(f"note: thread {t['id']!r} excludes {', '.join(carrying)}, which {'carry' if len(carrying) > 1 else 'carries'} "
               f"the name {alias!r}: the alias does not attach {'them' if len(carrying) > 1 else 'it'} "
               "(ratify it into the thread to lift the exclusion)")
     elif any(i not in names for i in excluded):
