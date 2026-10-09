@@ -16,7 +16,9 @@ Two optional registry fields rule on a note by id, and both are checked before a
 
 Whether an attached thread is open is code's decision too (FR-009a). A registry status the GM set to
 ``dormant``, ``resolved`` or ``abandoned`` wins; a status of ``open`` (the default) defers to the latest
-attached note, open meaning its tag is ``OPENED`` or ``ADVANCED``. The latest note is the one with the
+attached note, open meaning its tag is ``OPENED`` or ``ADVANCED``. A build describes the campaign as of its last
+chapter, so a thread the GM resolved or abandoned *after* that chapter (the registry's ``resolved:``) is decided
+as if its status were ``open`` (GM ruling, #530); one with no recorded chapter stays closed. The latest note is the one with the
 highest ``first_chapter``, and the last extracted among equals, so Active Plots orders by it.
 
 Guarded by ``tests/test_summary_native_no_llm.py``. The registry is read here and written nowhere in this
@@ -115,22 +117,41 @@ def thread_notes(results: Sequence[notes.CheckedChunk]) -> list[notes.Note]:
     return sorted(out, key=lambda n: n.first_chapter)
 
 
-def _decide(status: str, latest: notes.Note) -> tuple[bool, bool, str]:
-    """``(open, dormant, why)`` for a thread with this registry status and latest attached note."""
+def _chapter(value) -> int | None:
+    """The chapter a registry ``resolved:`` field records, or ``None`` when it is not a real chapter number."""
+    return value if isinstance(value, int) and not isinstance(value, bool) else None
+
+
+def _decide(status: str, latest: notes.Note, resolved=None, until: int | None = None) -> tuple[bool, bool, str]:
+    """``(open, dormant, why)`` for a thread with this registry status and latest attached note.
+
+    ``resolved`` is the chapter the registry records for a ``resolved`` or ``abandoned`` status and ``until`` the
+    last chapter of the build. A build describes the campaign as of ``until``, so a thread the GM closed *after*
+    it is decided as if its status were ``open`` (the latest note's tag). Without ``until`` or without a recorded
+    chapter, a closed status is closed.
+    """
     if status == "dormant":
         return False, True, "the GM set it dormant"
+    after = ""
     if status in ("resolved", "abandoned"):
-        return False, False, f"the GM set it {status}"
+        chapter = _chapter(resolved)
+        if chapter is None or until is None:
+            return False, False, f"the GM set it {status}" + ("" if chapter is None else f" at ch {chapter}")
+        if chapter <= until:
+            return False, False, f"the GM set it {status} at ch {chapter}"
+        after = f"the GM set it {status} at ch {chapter}, after this range (ch {until})"
     where = f"its latest note (ch {latest.first_chapter}) is {latest.tag}"
     if latest.tag in OPEN_TAGS:
-        return True, False, where
-    return False, False, where
+        return True, False, f"{after}: open here, {where}" if after else where
+    return False, False, f"{after}, so only its notes decide: {where}" if after else where
 
 
-def attach(results: Sequence[notes.CheckedChunk], registry: dict | None) -> Attachment:
+def attach(results: Sequence[notes.CheckedChunk], registry: dict | None, until: int | None = None) -> Attachment:
     """Attach the thread notes of ``results`` to the threads of ``registry`` (a loaded registry document).
 
-    An empty, absent (``None``) or thread-less registry attaches nothing: every note is unattached.
+    An empty, absent (``None``) or thread-less registry attaches nothing: every note is unattached. ``until`` is
+    the last chapter of the build; a thread the GM resolved or abandoned after it is open in this range (see
+    ``_decide``). A caller with no range leaves it ``None`` and keeps the status as the GM set it.
     """
     registry_threads = list((registry or {}).get("threads") or [])
     data = {"threads": registry_threads}
@@ -180,7 +201,7 @@ def attach(results: Sequence[notes.CheckedChunk], registry: dict | None) -> Atta
             if n.first_chapter >= latest.first_chapter:
                 latest = n  # ``>=``: among equals the last extracted wins
         status = t.get("status") or "open"
-        is_open, is_dormant, why = _decide(status, latest)
+        is_open, is_dormant, why = _decide(status, latest, t.get("resolved"), until)
         threads[tid] = ThreadState(
             id=tid, title=t.get("title") or tid, status=status, notes=ns, latest=latest,
             open=is_open, dormant=is_dormant, why=why, order=index.get(tid, 0),

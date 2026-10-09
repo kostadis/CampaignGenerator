@@ -128,6 +128,49 @@ class TestAttach:
         assert st.open is False and st.dormant is False
         assert att.open_threads == [] and att.dormant_threads == []
 
+    # a thread the GM closed after the build's last chapter is open in that build (#530)
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    def test_a_thread_closed_after_the_range_is_decided_by_its_latest_note(self, status):
+        t = {**thr("t", "T", status=status), "resolved": 50}
+        att = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30)
+        st = att.threads["t"]
+        assert st.open is True and st.dormant is False and [s.id for s in att.open_threads] == ["t"]
+        assert st.why == f"the GM set it {status} at ch 50, after this range (ch 30): open here, its latest note (ch 3) is ADVANCED"
+        closed = thread_attach.attach(chunks(tn(3, "RESOLVED", "T")), reg(t), until=30)
+        assert closed.threads["t"].open is False and closed.threads["t"].dormant is False
+        assert "after this range (ch 30)" in closed.threads["t"].why
+
+    @pytest.mark.parametrize("chapter", [3, 30])
+    def test_a_thread_closed_at_or_before_the_range_end_stays_closed(self, chapter):
+        t = {**thr("t", "T", status="resolved"), "resolved": chapter}
+        st = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"]
+        assert st.open is False and st.why == f"the GM set it resolved at ch {chapter}"
+
+    @pytest.mark.parametrize("recorded", [None, 0, "50", True])
+    def test_a_closed_status_without_a_real_chapter_stays_closed(self, recorded):
+        t = {**thr("t", "T", status="resolved"), "resolved": recorded}
+        assert thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"].open is False
+
+    def test_without_a_range_a_closed_status_is_closed_whatever_its_chapter(self):
+        t = {**thr("t", "T", status="resolved"), "resolved": 50}
+        assert thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t)).threads["t"].open is False
+
+    def test_a_dormant_status_is_not_read_against_the_range(self):
+        t = {**thr("t", "T", status="dormant"), "resolved": 50}
+        st = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"]
+        assert st.dormant is True and st.open is False
+
+    def test_an_open_status_ignores_a_stray_chapter(self):
+        t = {**thr("t", "T"), "resolved": 50}
+        assert thread_attach.attach(chunks(tn(3, "RESOLVED", "T")), reg(t), until=30).threads["t"].open is False
+
+    def test_decide_directly(self):
+        latest = tn(3, "OPENED", "T")
+        assert thread_attach._decide("resolved", latest, 31, 30)[:2] == (True, False)
+        assert thread_attach._decide("resolved", latest, 30, 30)[:2] == (False, False)
+        assert thread_attach._decide("resolved", latest)[:2] == (False, False)
+
     def test_a_dormant_thread_is_in_the_dormant_set_not_the_open_one(self):
         att = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(thr("t", "T", status="dormant")))
         assert att.threads["t"].open is False and att.threads["t"].dormant is True

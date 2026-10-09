@@ -526,11 +526,40 @@ class TestEndingNotShown:
         assert "Never infer, guess or invent an ending" in system
         assert "only if a note in its block shows the ending" in system
 
-    def test_a_thread_resolved_after_the_range_is_told_so(self, ccamp):
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    def test_a_thread_closed_after_the_range_is_open_in_it_and_not_in_resolved(self, ccamp, status):
+        """GM ruling (#530): a build describes the campaign as of its last chapter (ch 4 here)."""
         root, cm = ccamp
-        write_registry(root, registry(thread("carver-march", "The Carver's march", status="resolved", aliases=["Carver march"], resolved=50)))
+        write_registry(root, registry(
+            thread("carver-march", "The Carver's march", status=status, aliases=["Carver march"], resolved=50),
+            thread("gate-oath", "The Gate Oath", status=status, resolved=50)))
         assert build(root)[0] == 0
-        assert "the GM set it resolved at ch 50, after the last chapter of this range (ch 4)" in cm.user_of(HEADINGS[0])
+        text = draft(root)
+        active = entries(section(text, "## Active Quests & Open Threads"))
+        assert active[:2] == ["The Carver's march", "The Gate Oath"]  # both latest notes are ch 4, ADVANCED / OPENED: registry order
+        assert "Carver" not in section(text, "## Resolved Plot Threads")
+        assert not cm.called(HEADINGS[0])  # nothing is closed, so Resolved is one code line and no call
+        report = (drafts(root) / "campaign_threads_report.md").read_text(encoding="utf-8")
+        assert f"the GM set it {status} at ch 50, after this range (ch 4): open here" in report
+
+    def test_a_thread_closed_after_the_range_is_closed_when_its_latest_note_says_so(self, ccamp):
+        root, cm = ccamp
+        write_registry(root, registry(
+            thread("signet-ring", "The signet ring", status="resolved", resolved=50)))  # latest note RESOLVED
+        assert build(root)[0] == 0
+        assert entries(section(draft(root), "## Resolved Plot Threads")) == ["The signet ring"]
+        assert "closed because the GM set it resolved at ch 50, after this range (ch 4)" in cm.user_of(HEADINGS[0])
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    def test_a_thread_closed_at_or_before_the_range_end_stays_closed(self, ccamp, status):
+        root, cm = ccamp
+        write_registry(root, registry(
+            thread("carver-march", "The Carver's march", status=status, aliases=["Carver march"], resolved=3),
+            thread("gate-oath", "The Gate Oath", status=status, resolved=4)))
+        assert build(root)[0] == 0
+        assert entries(section(draft(root), "## Resolved Plot Threads")) == ["The Carver's march", "The Gate Oath"]
+        assert "The Carver's march" not in entries(section(draft(root), "## Active Quests & Open Threads"))
+        assert f"closed because the GM set it {status} at ch 3)" in cm.user_of(HEADINGS[0])
 
     def test_the_brief_carries_the_rule(self, ccamp):
         root, cm = ccamp
