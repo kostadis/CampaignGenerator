@@ -25,6 +25,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import JSONResponse
 
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
 from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
@@ -36,9 +37,10 @@ from server.routers.grounding import (
     _service,
     _sse_response,
 )
-from server.subprocess_runner import console_script
+from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json
 
 _ENDPOINT_BACKENDS = frozenset({"dgx"})  # the only backend that takes --endpoints
+AUTHORITY_JSON_TIMEOUT_SECONDS = 10
 
 router = APIRouter()
 
@@ -111,6 +113,271 @@ def _base_cmd(command: str, doc: str | None, summaries_dir: str, since: int, unt
 
 def _range_dir(run: SummaryNativeRun, since: int, until: int) -> Path:
     return schema.resolve_under(Path.cwd(), run.out_root) / f"ch{since:03d}-{until:03d}"
+
+
+# ── Authority command boundary ─────────────────────────────────────────────
+
+def _authority_campaign_dir(request: Request, requested: str | None = None) -> Path:
+    """Return the campaign already selected by the local server.
+
+    Authority commands are campaign-local.  The page may repeat the selected
+    campaign directory for ``init`` but cannot retarget the server at another
+    directory.  The authority CLI remains the owner of all policy checks.
+    """
+    platform = getattr(request.app.state, "platform", None)
+    configured = getattr(platform, "campaign_dir", None)
+    root = Path(configured or Path.cwd()).expanduser().resolve()
+    if requested and requested.strip():
+        candidate = Path(requested).expanduser().resolve()
+        if candidate != root:
+            raise HTTPException(status_code=400, detail="campaign_dir must match the active campaign")
+    return root
+
+
+def _authority_path(root: Path, value: object, field: str) -> str:
+    """Accept a non-empty campaign-contained path without interpreting it."""
+    if not isinstance(value, str) or not value.strip():
+        raise HTTPException(status_code=400, detail=f"{field} is required")
+    raw = Path(value.strip()).expanduser()
+    candidate = raw.resolve() if raw.is_absolute() else (root / raw).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=f"{field} must stay inside the active campaign") from exc
+    # SSE commands run from the server process' current working directory,
+    # which is not guaranteed to be the configured platform campaign in tests
+    # or embedded deployments.  Pass the validated resolved path to the CLI.
+    return str(candidate)
+
+
+def _authority_value(payload: dict, field: str) -> str:
+    value = payload.get(field)
+    if not isinstance(value, str) or not value.strip():
+        raise HTTPException(status_code=400, detail=f"{field} is required")
+    return value.strip()
+
+
+def _authority_command(root: Path, *args: str) -> list[str]:
+    return [console_script("summary_native"), "authority", *args, "--campaign-dir", str(root), "--json"]
+
+
+def _authority_error(exc: BoundedJSONError):
+    """Keep the CLI's stable exit classes visible at the HTTP boundary."""
+    payload = exc.payload if isinstance(exc.payload, dict) else None
+    if payload is not None:
+        code = str(payload.get("code") or "")
+        status = {
+            "AUTH_VALIDATION": 422,
+            "AUTH_STALE": 409,
+            "AUTH_RECOVERY": 423,
+            "AUTH_CONFLICT": 409,
+        }.get(code.split("_", 2)[0] + "_" + code.split("_", 2)[1] if code.startswith("AUTH_") and code.count("_") >= 1 else code)
+        # Authority codes may be refined (for example AUTH_STALE_PROPOSAL),
+        # while their documented class remains the first two components.
+        if status is None:
+            if code.startswith("AUTH_VALIDATION"):
+                status = 422
+            elif code.startswith("AUTH_STALE"):
+                status = 409
+            elif code.startswith("AUTH_RECOVERY"):
+                status = 423
+            elif code.startswith("AUTH_CONFLICT"):
+                status = 409
+            else:
+                status = 500
+        return JSONResponse(payload, status_code=status)
+    status = 504 if exc.category in {"timeout", "output_limit"} else 500
+    return JSONResponse({"detail": str(exc), "code": exc.category}, status_code=status)
+
+
+async def _authority_json(request: Request, *args: str):
+    root = _authority_campaign_dir(request)
+    try:
+        return await run_bounded_json(
+            _authority_command(root, *args),
+            cwd=str(root),
+            timeout_seconds=AUTHORITY_JSON_TIMEOUT_SECONDS,
+            max_output_bytes=1_048_576,
+            save_run_log=False,
+        )
+    except BoundedJSONError as exc:
+        return _authority_error(exc)
+
+
+def _authority_stream(request: Request, *args: str):
+    root = _authority_campaign_dir(request)
+    # `_sse_response` is the established Summary Native command runner.  The
+    # command itself emits the JSON envelope, so its full digest/receipt data
+    # remains visible to the caller rather than being reconstructed by a route.
+    return _sse_response(_authority_command(root, *args))
+
+
+# ── Authority ledger (CLI-backed JSON / SSE) ───────────────────────────────
+
+@router.get("/authority/status")
+async def authority_status(request: Request):
+    return await _authority_json(request, "status")
+
+
+@router.get("/authority/records")
+async def authority_records(request: Request, status: str | None = None):
+    args = ["list"]
+    if status and status.strip():
+        args += ["--status", status.strip()]
+    return await _authority_json(request, *args)
+
+
+@router.get("/authority/records/{record_id}")
+async def authority_record(request: Request, record_id: str):
+    return await _authority_json(request, "show", record_id)
+
+
+@router.get("/authority/records/{record_id}/history")
+async def authority_record_history(request: Request, record_id: str):
+    return await _authority_json(request, "history", record_id)
+
+
+@router.get("/authority/conflicts")
+async def authority_conflicts(request: Request, status: str | None = None):
+    args = ["conflicts"]
+    if status and status.strip():
+        args += ["--status", status.strip()]
+    return await _authority_json(request, *args)
+
+
+@router.get("/authority/conflicts/{conflict_id}/history")
+async def authority_conflict_history(request: Request, conflict_id: str):
+    return await _authority_json(request, "conflict", "history", conflict_id)
+
+
+@router.post("/authority/validate")
+async def authority_validate(request: Request):
+    return await _authority_json(request, "validate")
+
+
+@router.post("/authority/notes/preview")
+async def authority_notes_preview(request: Request, payload: dict):
+    """Materialize the exact planning-note set through the authority CLI.
+
+    Selectors are persisted by the planning owner.  The browser supplies only
+    the audience target, so the preview and subsequent synthesis resolve the
+    same campaign configuration and the CLI remains the policy owner for
+    external locations and membership drift.
+    """
+    audience = payload.get("audience", "gm")
+    if not isinstance(audience, str) or not audience.strip():
+        raise HTTPException(status_code=400, detail="audience is required")
+    args = ["notes", "preview", "--audience", audience.strip()]
+    planning_config = payload.get("planning_config")
+    if planning_config is not None:
+        root = _authority_campaign_dir(request)
+        args += ["--planning-config", _authority_path(root, planning_config, "planning_config")]
+    return await _authority_json(request, *args)
+
+
+@router.post("/authority/init")
+async def authority_init(request: Request, payload: dict):
+    root = _authority_campaign_dir(request, payload.get("campaign_dir"))
+    args = ["init"]
+    campaign = payload.get("campaign")
+    if campaign is not None:
+        if not isinstance(campaign, str) or not campaign.strip():
+            raise HTTPException(status_code=400, detail="campaign must be a non-empty string")
+        args += ["--campaign", campaign.strip()]
+    return _sse_response(_authority_command(root, *args))
+
+
+@router.post("/authority/records/stage")
+async def authority_record_stage(request: Request, payload: dict):
+    root = _authority_campaign_dir(request)
+    record_file = _authority_path(root, payload.get("record_file"), "record_file")
+    return _authority_stream(request, "record", "stage", record_file)
+
+
+@router.post("/authority/records/stages/{stage_id}/apply")
+async def authority_record_apply(request: Request, stage_id: str, payload: dict):
+    return _authority_stream(
+        request, "record", "apply", stage_id,
+        "--stage-sha256", _authority_value(payload, "stage_sha256"),
+        "--expected-ledger-sha256", _authority_value(payload, "expected_ledger_sha256"),
+    )
+
+
+@router.post("/authority/records/{record_id}/retire")
+async def authority_record_retire(request: Request, record_id: str, payload: dict):
+    expected_revision = payload.get("expected_revision")
+    if not isinstance(expected_revision, int) or expected_revision < 1:
+        raise HTTPException(status_code=400, detail="expected_revision must be a positive integer")
+    return _authority_stream(
+        request, "record", "retire", record_id,
+        "--reason", _authority_value(payload, "reason"),
+        "--expected-revision", str(expected_revision),
+        "--expected-ledger-sha256", _authority_value(payload, "expected_ledger_sha256"),
+    )
+
+
+@router.post("/authority/records/{record_id}/propose")
+async def authority_propose(request: Request, record_id: str, payload: dict):
+    root = _authority_campaign_dir(request)
+    configured = _require_dir(_run_config(request), str(payload.get("summaries_dir") or ""))
+    summaries_dir = _authority_path(root, configured, "summaries_dir")
+    return _authority_stream(request, "propose", record_id, "--summaries-dir", summaries_dir)
+
+
+@router.post("/authority/records/{record_id}/apply")
+async def authority_apply(request: Request, record_id: str, payload: dict):
+    return _authority_stream(
+        request, "apply", record_id,
+        "--proposal-sha256", _authority_value(payload, "proposal_sha256"),
+    )
+
+
+@router.post("/authority/records/{record_id}/withdraw")
+async def authority_withdraw(request: Request, record_id: str, payload: dict):
+    return _authority_stream(request, "withdraw", record_id, "--reason", _authority_value(payload, "reason"))
+
+
+@router.post("/authority/conflicts/{conflict_id}/resolve")
+async def authority_conflict_resolve(request: Request, conflict_id: str, payload: dict):
+    root = _authority_campaign_dir(request)
+    return _authority_stream(
+        request, "conflict", "resolve", conflict_id,
+        "--resolution-record", _authority_path(root, payload.get("resolution_record_file"), "resolution_record_file"),
+        "--expected-ledger-sha256", _authority_value(payload, "expected_ledger_sha256"),
+    )
+
+
+@router.post("/authority/conflicts/{conflict_id}/dismiss")
+async def authority_conflict_dismiss(request: Request, conflict_id: str, payload: dict):
+    return _authority_stream(
+        request, "conflict", "dismiss", conflict_id,
+        "--reason", _authority_value(payload, "reason"),
+        "--expected-ledger-sha256", _authority_value(payload, "expected_ledger_sha256"),
+    )
+
+
+@router.post("/authority/conflicts/identify")
+async def authority_conflict_identify(request: Request, payload: dict):
+    identifier = _authority_value(payload, "id")
+    record_ids = payload.get("record_ids")
+    if not isinstance(record_ids, list) or len(record_ids) < 2 or not all(isinstance(item, str) and item.strip() for item in record_ids):
+        raise HTTPException(status_code=400, detail="record_ids must contain at least two non-empty identifiers")
+    basis = payload.get("basis", "human_identified")
+    if basis not in {"human_identified", "prose_candidate"}:
+        raise HTTPException(status_code=400, detail="basis must be human_identified or prose_candidate")
+    args = ["conflict", "identify", identifier, "--basis", basis,
+            "--reason", _authority_value(payload, "reason"),
+            "--expected-ledger-sha256", _authority_value(payload, "expected_ledger_sha256")]
+    for record_id in record_ids:
+        args += ["--record", record_id.strip()]
+    return _authority_stream(request, *args)
+
+
+@router.post("/authority/transactions/{transaction_id}/recover")
+async def authority_recover(request: Request, transaction_id: str, payload: dict):
+    # The empty body is intentional: recovery resumes only the immutable
+    # transaction already named by its id; the route supplies no new bytes.
+    return _authority_stream(request, "recover", transaction_id)
 
 
 # ── Read-only ───────────────────────────────────────────────────────────────
@@ -422,6 +689,8 @@ async def run_synth(
     model: str | None = None,
     claude_code_effort: str | None = None,
     fallback_npc_lines: bool = False,
+    authority_selection: list[str] | None = Query(default=None),
+    audience: str | None = None,
 ):
     _require_doc(doc)
     # The retired parameters are not declared (FastAPI would ignore an undeclared one), so a request carrying
@@ -455,6 +724,9 @@ async def run_synth(
     if doc == "campaign_state" and any(n.strip() for n in (name or [])):
         raise HTTPException(
             status_code=400, detail="--name does not apply to campaign_state: it has no Key NPCs section")
+    selections = [selection.strip() for selection in (authority_selection or []) if selection.strip()]
+    if doc != "planning" and (selections or (audience or "").strip()):
+        raise HTTPException(status_code=400, detail="authority_selection and audience apply to planning only")
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     cmd = _base_cmd("synth", doc, directory, lo, hi)
@@ -465,6 +737,11 @@ async def run_synth(
         cmd += ["--party-config", party_config.strip()]
     if planning_config.strip():
         cmd += ["--planning-config", planning_config.strip()]
+    if selections:
+        for selection in selections:
+            cmd += ["--authority-selection", selection]
+    if audience and audience.strip():
+        cmd += ["--audience", audience.strip()]
     # --audit defaults to campaign_state.track_files inside the CLI; the route
     # passes it only when the request names files.
     files = [a.strip() for a in (audit or []) if a.strip()]

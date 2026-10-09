@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+import tempfile
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -217,18 +218,32 @@ def build_identity(entities, plays) -> Identity:
     return forms, pcs, ambiguous
 
 
-def load_identity(registry_path: Path | None, players_path: Path | None) -> Identity:
+def load_identity(registry_path: Path | None, players_path: Path | None, *, source_bytes=None) -> Identity:
     """:func:`build_identity` from the entity registry and ``players.yaml`` files.
 
     Raises ``ValueError`` for a registry or roster that does not load (``load_registry`` itself
     refuses a name or alias claimed by two entities). A missing file is an empty one.
     """
     entities = []
-    if registry_path is not None and Path(registry_path).is_file():
-        entities = [(e.name, list(e.aliases)) for e in load_registry(registry_path).entities]
+    if registry_path is not None and (source_bytes is not None or Path(registry_path).is_file()):
+        if source_bytes is None:
+            registry = load_registry(registry_path)
+        else:
+            with tempfile.NamedTemporaryFile(suffix=".yaml") as handle:
+                handle.write(source_bytes(Path(registry_path)))
+                handle.flush()
+                registry = load_registry(handle.name)
+        entities = [(e.name, list(e.aliases)) for e in registry.entities]
     plays: list[str] = []
-    if players_path is not None and Path(players_path).is_file():
-        plays = [n for p in load_players_config(Path(players_path)).players for n in p.plays]
+    if players_path is not None and (source_bytes is not None or Path(players_path).is_file()):
+        if source_bytes is None:
+            players = load_players_config(Path(players_path))
+        else:
+            with tempfile.NamedTemporaryFile(suffix=".yaml") as handle:
+                handle.write(source_bytes(Path(players_path)))
+                handle.flush()
+                players = load_players_config(Path(handle.name))
+        plays = [n for p in players.players for n in p.plays]
     return build_identity(entities, plays)
 
 

@@ -1,0 +1,4 @@
+notes:
+  - id: earthstone-plan
+    path: notes/*.md
+    record_ids: [earthstone-plan]

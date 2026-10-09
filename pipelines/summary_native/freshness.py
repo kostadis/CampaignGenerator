@@ -8,9 +8,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from pipelines.summary_native import corpus, npc_forms, npc_link, schema
+from pipelines.summary_native.authority import POLICY_VERSION, SCHEMA_VERSION
 
 
 def check_fresh(report, range_dir: Path, root: Path, manifest: dict, registry_path: Path | None) -> str | None:
@@ -33,6 +35,109 @@ def check_fresh(report, range_dir: Path, root: Path, manifest: dict, registry_pa
 
 def sha_file(path: Path | None) -> str | None:
     return corpus.sha256_file(path) if path is not None and Path(path).is_file() else None
+
+
+def authority_manifest_sha256(manifest: dict | None) -> str | None:
+    """Stable identity for the exact authority input consumed by a derived run."""
+    if manifest is None:
+        return None
+    return hashlib.sha256(
+        json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _authority_manifest_version_problem(
+    recorded: object,
+    current: dict | None,
+    *,
+    artifact: str,
+    regenerate_command: str,
+) -> str | None:
+    """Refuse retired authority-aware artifacts instead of guessing their shape.
+
+    Summary-only artifacts have no authority manifest and remain compatible while
+    authority is disabled.  Once a caller supplies a current authority manifest,
+    every reused artifact must declare the exact schema and policy versions that
+    formed its cache/run identity.  There is deliberately no legacy fallback or
+    read-time rewrite: regeneration creates the supported shape.
+    """
+    if current is None or "authority_schema" not in current or "authority_policy" not in current:
+        return None
+    if not isinstance(recorded, dict):
+        return (
+            f"authority inputs changed since this output: {artifact} predates authority inputs; rerun `{regenerate_command} --force` "
+            "to regenerate it with the current authority manifest"
+        )
+    schema_version = recorded.get("authority_schema")
+    policy_version = recorded.get("authority_policy")
+    if schema_version is None or policy_version is None:
+        return (
+            f"{artifact} uses a retired authority manifest schema; rerun "
+            f"`{regenerate_command} --force` to regenerate it"
+        )
+    if schema_version != SCHEMA_VERSION or policy_version != POLICY_VERSION:
+        return (
+            f"{artifact} uses unsupported authority manifest version "
+            f"schema={schema_version!r}, policy={policy_version!r}; rerun "
+            f"`{regenerate_command} --force` to regenerate it"
+        )
+    return None
+
+
+def check_authority_output_fresh(run_record: dict, current_manifest: dict | None) -> str | None:
+    """Refuse publishing a derived output whose reviewed authority input moved."""
+    recorded = (run_record.get("inputs") or {}).get("authority_manifest")
+    version_problem = _authority_manifest_version_problem(
+        recorded,
+        current_manifest,
+        artifact="existing run record",
+        regenerate_command="summary_native synth",
+    )
+    if version_problem:
+        return version_problem
+    if authority_manifest_sha256(recorded) != authority_manifest_sha256(current_manifest):
+        return "authority inputs changed since this output — rerun synthesis with --force"
+    return None
+
+
+def check_authority_cache_fresh(cache_entry: dict, current_manifest: dict | None) -> str | None:
+    """Return a regeneration refusal for a retired authority-aware cache entry.
+
+    Cache readers use exact cache keys for normal admission.  This shared guard
+    makes the schema boundary explicit for callers that persist an authority
+    manifest next to a reusable result, and avoids silently accepting a retired
+    authority cache shape during future cache routing changes.
+    """
+    recorded = cache_entry.get("authority_manifest") if isinstance(cache_entry, dict) else None
+    return _authority_manifest_version_problem(
+        recorded,
+        current_manifest,
+        artifact="cached authority output",
+        regenerate_command="summary_native extract",
+    )
+
+
+_DRAFT_RECORD_RE = re.compile(r"\brecord:\s+runs/([^/\s]+)/record\.json\b")
+
+
+def check_authority_draft_fresh(draft_path: Path, current_manifest: dict | None) -> str | None:
+    """Return an authority-staleness refusal for an existing generated draft.
+
+    A draft carries the run-record reference in its generated header.  Resolve it
+    relative to the range directory, then compare the recorded snapshot with the
+    one the caller just built under the authority read lock.  A missing or broken
+    reference is deliberately stale: an old draft cannot silently look current.
+    """
+    try:
+        header = Path(draft_path).read_text(encoding="utf-8").split("\n", 1)[0]
+        match = _DRAFT_RECORD_RE.search(header)
+        if match is None:
+            return "existing draft has no authority run record — rerun synthesis with --force"
+        record_path = Path(draft_path).parent.parent / "runs" / match.group(1) / "record.json"
+        run_record = json.loads(record_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return "existing draft authority run record is unreadable — rerun synthesis with --force"
+    return check_authority_output_fresh(run_record, current_manifest)
 
 
 def manual_sha(manual: list[str]) -> str:
@@ -77,8 +182,26 @@ EXTRACT_CMD = "`summary_native extract`"
 AUDIT_CMD = "`summary_native audit`"
 
 
-def notes_dir(range_dir: Path) -> Path:
-    return Path(range_dir) / schema.STATE_DIR / "notes"
+def audience_slug(audience: str) -> str:
+    """Filesystem-safe stable namespace for one audience's derived artifacts."""
+    if audience == "gm":
+        return "gm"
+    if audience in {"players", "characters"}:
+        return audience
+    readable = re.sub(r"[^a-z0-9]+", "-", audience.lower()).strip("-") or "audience"
+    # The readable portion helps operators inspect state, while the exact
+    # target digest prevents case/space/punctuation normalization collisions.
+    return f"{readable}-{hashlib.sha256(audience.encode('utf-8')).hexdigest()[:12]}"
+
+
+def audience_state_dir(range_dir: Path, audience: str = "gm") -> Path:
+    """GM keeps the historic state location; every other audience is isolated."""
+    base = Path(range_dir) / schema.STATE_DIR
+    return base if audience == "gm" else base / "audiences" / audience_slug(audience)
+
+
+def notes_dir(range_dir: Path, audience: str = "gm") -> Path:
+    return audience_state_dir(range_dir, audience) / "notes"
 
 
 def audit_dir(range_dir: Path) -> Path:
@@ -100,7 +223,8 @@ def notes_manifest_facts(range_dir: Path, registry_path: Path | None, players_pa
 
 
 def check_notes_fresh(
-    range_dir: Path, registry_path: Path | None, players_path: Path | None, *, extract_cmd: str = "summary_native extract"
+    range_dir: Path, registry_path: Path | None, players_path: Path | None, *, extract_cmd: str = "summary_native extract",
+    audience: str = "gm",
 ) -> str | None:
     """A refusal message when the checked notes are missing or stale, else ``None``.
 
@@ -108,7 +232,7 @@ def check_notes_fresh(
     ``extract`` recorded. The message names the command to re-run; ``extract_cmd`` lets the caller
     spell it with the range (``summary_native extract --since 2 --until 70``).
     """
-    mp = notes_dir(range_dir) / NOTES_MANIFEST
+    mp = notes_dir(range_dir, audience) / NOTES_MANIFEST
     if not mp.is_file():
         return f"no checked notes for this range; run `{extract_cmd}`"
     try:
@@ -120,6 +244,8 @@ def check_notes_fresh(
     for k, v in notes_manifest_facts(range_dir, registry_path, players_path).items():
         if m.get(k) != v:
             return f"checked notes are stale ({k.removesuffix('_sha256').replace('_', ' ')} changed); run `{extract_cmd}`"
+    if m.get("audience", "gm") != audience:
+        return f"checked notes belong to a different audience; run `{extract_cmd}`"
     return None
 
 

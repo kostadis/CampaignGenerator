@@ -22,6 +22,7 @@ from server.planning_config_service import PlanningConfigService  # noqa: E402
 from campaignlib.planning_config import (  # noqa: E402
     PlanningConfig,
     PlanningEntry,
+    PlanningNoteSelector,
     load_planning_config,
     save_planning_config,
 )
@@ -58,6 +59,20 @@ def test_empty_campaign_returns_empty_lists(tmp_path):
     svc = _service(tmp_path)
     assert svc.get_npcs() == []
     assert svc.get_factions() == []
+
+
+def test_authority_note_selector_crud_round_trip_and_legacy_empty_state(tmp_path):
+    svc = _service(tmp_path)
+    current = PlanningNoteSelector(id="current", path="notes/current.md", record_ids={"commission"})
+    assert svc.create_note(current).id == "current"
+    assert svc.get_note("current").record_ids == {"commission"}
+    updated = PlanningNoteSelector(id="current", path="notes/*.md", record_ids={"commission", "earthstone"})
+    assert svc.update_note("current", updated).path == "notes/*.md"
+    with pytest.raises(HTTPException) as duplicate:
+        svc.create_note(updated)
+    assert duplicate.value.status_code == 409
+    svc.delete_note("current")
+    assert svc.get_notes() == []
 
 
 # ── NPC CRUD ──────────────────────────────────────────────────────────────

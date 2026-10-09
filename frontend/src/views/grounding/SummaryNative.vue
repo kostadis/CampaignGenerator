@@ -89,6 +89,357 @@ const proseModel = ref('')
 const proseEffort = ref('')
 const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'] as const
 
+// ── Reviewed authority (all state is reconstructed from CLI-backed routes) ──
+// These fields deliberately stay per-page.  Records, proposals, receipts and
+// recovery journals live in the campaign authority store; the browser only
+// holds an explicit command the GM is about to send.
+interface AuthorityEnvelope<T = Record<string, unknown>> {
+  ok: boolean; code: string; message: string; artifacts: string[]; data: T
+}
+interface AuthorityStatus {
+  state?: 'absent' | 'initialized' | 'pending'; campaign?: string; revision?: number; sha256?: string; records?: number
+  conflicts?: number; pending_transaction?: string | { id?: string } | null
+  stale_projections?: Array<string | { doc: string; draft?: string; reason: string }>
+}
+interface AuthorityRecord {
+  id: string; revision?: number; status?: string; subject?: { id?: string } | string
+  proposal_id?: string; applied_receipt?: string; replacement_fact?: string
+  classification?: string; audience?: string | string[]
+}
+interface AuthorityConflict {
+  id: string; basis: string; status: string; record_ids: string[]; projections: string[]
+  resolution_record?: string
+  records?: Array<{ id: string; source: string; anchor: string; normalized_value?: string | number | boolean; effective: Record<string, unknown>; projections: string[] }>
+}
+
+const authorityStatus = ref<AuthorityStatus | null>(null)
+const authorityRecords = ref<AuthorityRecord[]>([])
+const authorityConflicts = ref<AuthorityConflict[]>([])
+const authorityHistory = ref<Record<string, unknown> | null>(null)
+const authorityMessage = ref('')
+const authorityError = ref('')
+const authorityBusy = ref(false)
+const authorityRecordFile = ref('')
+const authorityStageId = ref('')
+const authorityStageSha = ref('')
+const authorityProposalId = ref('')
+const authorityProposalSha = ref('')
+const authorityProposalArtifacts = ref<string[]>([])
+const authorityDiff = ref('')
+const authorityProposalRecordId = ref('')
+const authoritySelectedId = ref('')
+const authorityReason = ref('')
+const authorityResolutionRecordFile = ref('')
+const authorityConflictId = ref('')
+const authorityConflictRecordIds = ref('')
+const authorityConflictBasis = ref<'human_identified' | 'prose_candidate'>('human_identified')
+
+interface PlanningNoteSelector { id: string; path: string; record_ids?: string[] }
+interface AuthorityNoteRecord {
+  id: string; classification: string; audience: string[]; effective: Record<string, unknown>
+  status: string; anchor: string; section_sha256: string
+}
+interface AuthorityNoteMember {
+  selector_id?: string; path?: string; resolved_path?: string; external?: boolean
+  record_ids?: string[]; reason?: string; sha256?: string
+  records?: AuthorityNoteRecord[]
+}
+interface AuthorityNotePreview {
+  audience?: string; members: AuthorityNoteMember[]; selection_sha256?: string; selection_digest?: string; membership_digest: string; warnings: string[]
+}
+const planningNoteSelectors = ref<PlanningNoteSelector[]>([])
+const planningNoteId = ref('')
+const planningNotePath = ref('')
+const planningNoteRecordIds = ref('')
+const planningNoteError = ref('')
+const authorityAudience = ref('gm')
+const authorityCharacterId = ref('')
+const authorityAudienceTarget = computed(() => authorityAudience.value === 'character'
+  ? `character:${authorityCharacterId.value.trim()}` : authorityAudience.value)
+// Non-GM synthesis requires a successful, current audience-specific preview.
+const audienceExecutionEnabled = ref(true)
+const authorityNotePreview = ref<AuthorityNotePreview | null>(null)
+const authorityPreviewKey = ref('')
+const audiencePreviewApproved = computed(() => authorityAudienceTarget.value === 'gm' || (
+  authorityNotePreview.value?.audience === authorityAudienceTarget.value
+  && authorityPreviewKey.value === selectorKey()
+  && authorityNotePreview.value.members.length > 0
+))
+const audienceCoverageRefusal = computed(() => authorityAudienceTarget.value !== 'gm' && (!audienceExecutionEnabled.value || !audiencePreviewApproved.value)
+  ? (audienceExecutionEnabled.value
+      ? 'Preview complete authorized support for this audience before planning synthesis.'
+      : 'This audience has no enabled end-to-end coverage yet; planning synthesis remains unavailable.') : '')
+
+function selectorKey(selectors = planningNoteSelectors.value) {
+  return selectors.map(({ id, path, record_ids }) => `${id}=${path}#${(record_ids ?? []).join(',')}`).join('\n')
+}
+
+function clearPlanningPreview() {
+  authorityNotePreview.value = null
+  authorityPreviewKey.value = ''
+}
+
+async function refreshPlanningNoteSelectors() {
+  planningNoteError.value = ''
+  try {
+    planningNoteSelectors.value = await apiFetch<PlanningNoteSelector[]>('/api/planning/notes')
+    if (authorityPreviewKey.value !== selectorKey()) clearPlanningPreview()
+  } catch (e) {
+    planningNoteSelectors.value = []
+    planningNoteError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
+async function createPlanningNoteSelector() {
+  planningNoteError.value = ''
+  clearPlanningPreview()
+  const record_ids = lines(planningNoteRecordIds.value)
+  try {
+    const response = await fetch('/api/planning/notes', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: planningNoteId.value.trim(), path: planningNotePath.value.trim(),
+        ...(record_ids.length ? { record_ids } : {}) }),
+    })
+    if (!response.ok) throw new Error(await response.text())
+    planningNoteId.value = ''; planningNotePath.value = ''; planningNoteRecordIds.value = ''
+    await refreshPlanningNoteSelectors()
+  } catch (e) {
+    planningNoteError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
+async function deletePlanningNoteSelector(selector: PlanningNoteSelector) {
+  planningNoteError.value = ''
+  clearPlanningPreview()
+  try {
+    const response = await fetch(`/api/planning/notes/${encodeURIComponent(selector.id)}`, { method: 'DELETE' })
+    if (!response.ok) throw new Error(await response.text())
+    await refreshPlanningNoteSelectors()
+  } catch (e) {
+    planningNoteError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
+async function updatePlanningNoteSelector(selector: PlanningNoteSelector) {
+  planningNoteError.value = ''
+  clearPlanningPreview()
+  try {
+    const response = await fetch(`/api/planning/notes/${encodeURIComponent(selector.id)}`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(selector),
+    })
+    if (!response.ok) throw new Error(await response.text())
+    await refreshPlanningNoteSelectors()
+  } catch (e) {
+    planningNoteError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
+async function previewPlanningNotes() {
+  planningNoteError.value = ''
+  clearPlanningPreview()
+  try {
+    // Preview the saved planning configuration, never the browser's editable
+    // table. This makes its digest bind the same selector set the CLI will run.
+    await refreshPlanningNoteSelectors()
+    const response = await fetch(`${BASE}/authority/notes/preview`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audience: authorityAudienceTarget.value,
+        ...(planningConfigPath.value.trim() ? { planning_config: planningConfigPath.value.trim() } : {}) }),
+    })
+    const body = await response.json() as AuthorityEnvelope<AuthorityNotePreview>
+    if (!response.ok || !body.ok) throw new Error(body.message || `API ${response.status}`)
+    authorityNotePreview.value = body.data
+    authorityPreviewKey.value = selectorKey()
+  } catch (e) {
+    planningNoteError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
+const reviewedAuthoritySelections = computed(() => {
+  if (!authorityNotePreview.value || authorityPreviewKey.value !== selectorKey()) return []
+  // The SHA is the reviewed immutable snapshot named by the current CLI.
+  // Keep the legacy selector tuple fallback only for the pre-US3 response
+  // shape used by older campaigns and route mocks.
+  if (authorityNotePreview.value.selection_sha256) return [authorityNotePreview.value.selection_sha256]
+  return planningNoteSelectors.value.map(selector => `${selector.id}=${selector.path}`)
+})
+
+const reviewedSelectionDigest = computed(() => authorityNotePreview.value?.selection_sha256 ?? authorityNotePreview.value?.selection_digest ?? '')
+
+function memberClassification(member: AuthorityNoteMember) {
+  return [...new Set((member.records ?? []).map(record => record.classification))].join(', ') || 'withheld'
+}
+
+function memberAudience(member: AuthorityNoteMember) {
+  return [...new Set((member.records ?? []).flatMap(record => record.audience))].join(', ') || 'withheld'
+}
+
+function memberRecordScope(member: AuthorityNoteMember) {
+  if (member.records?.length) return member.records.map(record => record.id).join(', ')
+  return member.record_ids?.join(', ') || 'withheld'
+}
+
+function authorityData(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' ? value as Record<string, unknown> : {}
+}
+
+function authorityEnvelopeFromSse(body: string): AuthorityEnvelope | null {
+  // The shared subprocess runner streams stdout in JSON-encoded SSE data
+  // chunks.  Authority CLI stdout itself is one JSON envelope; locate that
+  // envelope without assigning any policy meaning to its fields.
+  const chunks: string[] = []
+  for (const frame of body.split('\n\n')) {
+    if (frame.startsWith('event: command') || frame.startsWith('event: done')) continue
+    for (const line of frame.split('\n')) {
+      if (!line.startsWith('data: ')) continue
+      try {
+        const value = JSON.parse(line.slice(6))
+        if (typeof value === 'string' && !value.startsWith('$')) chunks.push(value)
+      } catch { /* a malformed progress frame remains ordinary command output */ }
+    }
+  }
+  const joined = chunks.join('')
+  for (const candidate of [joined, ...chunks.slice().reverse()]) {
+    try {
+      const value = JSON.parse(candidate)
+      if (value && typeof value === 'object' && 'ok' in value && 'code' in value) {
+        return value as AuthorityEnvelope
+      }
+    } catch { /* keep looking through chunk boundaries */ }
+  }
+  return null
+}
+
+async function refreshAuthority() {
+  authorityError.value = ''
+  try {
+    const status = await apiFetch<AuthorityEnvelope<AuthorityStatus>>(`${BASE}/authority/status`)
+    if (status.data.state === 'absent') {
+      authorityStatus.value = null
+      authorityRecords.value = []
+      return
+    }
+    authorityStatus.value = status.data
+    try {
+      const records = await apiFetch<AuthorityEnvelope<{ records?: AuthorityRecord[] }>>(`${BASE}/authority/records`)
+      authorityRecords.value = Array.isArray(records.data.records) ? records.data.records : []
+    } catch (e) {
+      // Recovery status remains actionable even if the separate list command
+      // refuses because the same transaction blocks it.
+      authorityRecords.value = []
+      authorityError.value = e instanceof Error ? e.message : String(e)
+    }
+    try {
+      const conflicts = await apiFetch<AuthorityEnvelope<{ conflicts?: AuthorityConflict[] }>>(`${BASE}/authority/conflicts`)
+      authorityConflicts.value = Array.isArray(conflicts.data.conflicts) ? conflicts.data.conflicts : []
+    } catch (e) {
+      authorityConflicts.value = []
+      authorityError.value = e instanceof Error ? e.message : String(e)
+    }
+  } catch (e) {
+    authorityStatus.value = null
+    authorityRecords.value = []
+    authorityConflicts.value = []
+    authorityError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
+async function loadConflictHistory(conflictId: string) {
+  authorityError.value = ''
+  try {
+    const result = await apiFetch<AuthorityEnvelope<Record<string, unknown>>>(`${BASE}/authority/conflicts/${encodeURIComponent(conflictId)}/history`)
+    authorityHistory.value = result.data
+  } catch (e) {
+    authorityHistory.value = null
+    authorityError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
+async function runAuthority(path: string, payload: Record<string, unknown> = {}) {
+  authorityBusy.value = true
+  authorityError.value = ''
+  authorityMessage.value = ''
+  try {
+    const response = await fetch(`${BASE}/authority/${path}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+    })
+    const body = await response.text()
+    const result = authorityEnvelopeFromSse(body)
+    if (!response.ok) throw new Error(result?.message || body || `API ${response.status}`)
+    if (!result) throw new Error('authority command did not return its JSON result')
+    if (!result.ok) throw new Error(result.message)
+    authorityMessage.value = result.message
+    const data = authorityData(result.data)
+    if (path === 'records/stage') {
+      authorityStageId.value = String(data.id ?? '')
+      authorityStageSha.value = String(data.sha256 ?? '')
+    }
+    if (path.startsWith('records/stages/') && path.endsWith('/apply')) {
+      // The real envelope names the revised record and its newly committed
+      // revision.  Discard the one-time stage binding after it is consumed so
+      // the page cannot offer a stale second apply.
+      authorityStageId.value = ''
+      authorityStageSha.value = ''
+      authoritySelectedId.value = typeof data.id === 'string' ? data.id : authoritySelectedId.value
+    }
+    if (path.endsWith('/propose')) {
+      authorityProposalRecordId.value = authoritySelectedId.value
+      authorityProposalId.value = String(data.id ?? data.proposal_id ?? '')
+      authorityProposalSha.value = String(data.proposal_sha256 ?? '')
+      authorityDiff.value = typeof data.diff === 'string' ? data.diff : ''
+    }
+    authorityProposalArtifacts.value = Array.isArray(result.artifacts) ? result.artifacts : []
+    await refreshAuthority()
+  } catch (e) {
+    authorityError.value = e instanceof Error ? e.message : String(e)
+  } finally {
+    authorityBusy.value = false
+  }
+}
+
+function selectAuthorityRecord(recordId: string) {
+  authoritySelectedId.value = recordId
+  if (authorityProposalRecordId.value !== recordId) {
+    authorityProposalId.value = ''
+    authorityProposalSha.value = ''
+    authorityProposalArtifacts.value = []
+    authorityProposalRecordId.value = ''
+    authorityDiff.value = ''
+  }
+}
+
+function proposeAuthority(recordId: string) {
+  selectAuthorityRecord(recordId)
+  authorityProposalId.value = ''
+  authorityProposalSha.value = ''
+  authorityProposalArtifacts.value = []
+  authorityProposalRecordId.value = ''
+  authorityDiff.value = ''
+  return runAuthority(`records/${encodeURIComponent(recordId)}/propose`, { summaries_dir: summariesDir.value })
+}
+
+function pendingAuthorityTransactionId() {
+  const pending = authorityStatus.value?.pending_transaction
+  return typeof pending === 'string' ? pending : pending?.id ?? ''
+}
+
+function staleProjectionLabel(stale: string | { doc: string; draft?: string; reason: string }) {
+  if (typeof stale === 'string') return stale
+  return `${stale.doc}: ${stale.reason}`
+}
+
+async function loadAuthorityHistory(recordId: string) {
+  authoritySelectedId.value = recordId
+  authorityError.value = ''
+  try {
+    const result = await apiFetch<AuthorityEnvelope<Record<string, unknown>>>(`${BASE}/authority/records/${encodeURIComponent(recordId)}/history`)
+    authorityHistory.value = result.data
+  } catch (e) {
+    authorityHistory.value = null
+    authorityError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
 const lines = (t: string) => t.split('\n').map(l => l.trim()).filter(Boolean)
 const num = (n: Num) => (typeof n === 'number' ? n : undefined)
 
@@ -187,6 +538,9 @@ const synthParams = computed(() => ({
     : {}),
   ...(doc.value === 'party' ? { party_config: partyConfigPath.value.trim() } : {}),
   ...(doc.value === 'planning' ? { planning_config: planningConfigPath.value.trim() } : {}),
+  ...(doc.value === 'planning' && reviewedAuthoritySelections.value.length
+    ? { authority_selection: reviewedAuthoritySelections.value, audience: authorityAudienceTarget.value }
+    : {}),
   max_tokens: num(maxTokens.value),
   dump_only: dumpOnly.value,
   force: forceSynth.value,
@@ -344,7 +698,7 @@ watch([rangeSince, rangeUntil], refreshOutputs)
 onMounted(async () => {
   // useGroundingRun hydrates the refs on mount; give it a tick before reading.
   await (config.groundingConfig ?? config.refreshGrounding())
-  setTimeout(() => { loadChapters(); refreshOutputs() }, 50)
+  setTimeout(() => { loadChapters(); refreshOutputs(); refreshAuthority(); refreshPlanningNoteSelectors() }, 50)
 })
 </script>
 
@@ -359,6 +713,117 @@ onMounted(async () => {
     </div>
 
     <div class="form-grid">
+      <!-- Authority: the CLI owns every decision and mutation.  This panel only
+           displays its envelopes and makes the GM provide the approval digest. -->
+      <div class="form-section authority" data-test="authority-panel">
+        <h3 class="step">Reviewed authority</h3>
+        <div v-if="authorityStatus" class="counts">
+          <span>ledger revision {{ authorityStatus.revision }}</span>
+          <span><code>{{ authorityStatus.sha256 }}</code></span>
+          <span>{{ authorityStatus.records ?? 0 }} record(s)</span>
+          <span v-if="authorityStatus.pending_transaction" class="bad">recovery required</span>
+        </div>
+        <span v-else class="field-help">No authority ledger is initialized for this campaign.</span>
+        <button v-if="!authorityStatus" class="btn-neutral btn-sm" :disabled="authorityBusy"
+          @click="runAuthority('init')">Initialize authority ledger</button>
+        <button v-else class="btn-neutral btn-sm" :disabled="authorityBusy" @click="refreshAuthority">Refresh authority</button>
+
+        <div v-if="authorityStatus" class="authority-actions">
+          <div class="field">
+            <label class="field-label">Reviewed record file</label>
+            <input class="field-input" v-model="authorityRecordFile" placeholder="docs/authority/records/earthstone.yaml" />
+            <button class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityRecordFile.trim()"
+              @click="runAuthority('records/stage', { record_file: authorityRecordFile })">Stage record revision</button>
+          </div>
+          <div v-if="authorityStageId && authorityStageSha" class="panel authority-approval">
+            <span>Staged <code>{{ authorityStageId }}</code> with digest <code>{{ authorityStageSha }}</code>.</span>
+            <button class="btn-neutral btn-sm" :disabled="authorityBusy"
+              @click="runAuthority(`records/stages/${encodeURIComponent(authorityStageId)}/apply`, {
+                stage_sha256: authorityStageSha, expected_ledger_sha256: authorityStatus?.sha256,
+              })">Apply staged revision</button>
+          </div>
+
+          <div v-if="authorityStatus.pending_transaction" class="panel authority-recovery">
+            <span class="bad">A transaction is incomplete. Recovery only resumes its already-approved bytes.</span>
+            <button class="btn-neutral btn-sm" :disabled="authorityBusy"
+              @click="runAuthority(`transactions/${encodeURIComponent(pendingAuthorityTransactionId())}/recover`)">Recover transaction</button>
+          </div>
+
+          <table v-if="authorityRecords.length" class="drafts authority-records">
+            <thead><tr><th>Record</th><th>Status</th><th>Revision</th><th></th></tr></thead>
+            <tbody>
+              <tr v-for="record in authorityRecords" :key="record.id">
+                <td><code>{{ record.id }}</code></td>
+                <td>{{ record.status }}</td><td>{{ record.revision }}</td>
+                <td class="authority-buttons">
+                  <button class="btn-neutral btn-sm" :disabled="authorityBusy" @click="loadAuthorityHistory(record.id)">History</button>
+                  <button class="btn-neutral btn-sm" :disabled="authorityBusy"
+                    @click="proposeAuthority(record.id)">Propose source correction</button>
+                  <button class="btn-neutral btn-sm" :disabled="authorityBusy"
+                    @click="selectAuthorityRecord(record.id)">Select</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div v-if="authorityProposalSha && authorityDiff && authoritySelectedId === authorityProposalRecordId" class="panel authority-approval">
+            <span>Proposal <code>{{ authorityProposalId }}</code> is bound to digest <code>{{ authorityProposalSha }}</code>.</span>
+            <label class="field-label">Proposal digest to approve</label>
+            <input class="field-input" :value="authorityProposalSha" readonly aria-label="Proposal digest to approve" />
+            <button class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityDiff"
+              @click="runAuthority(`records/${encodeURIComponent(authoritySelectedId)}/apply`, { proposal_sha256: authorityProposalSha })">Apply displayed correction</button>
+          </div>
+          <pre v-if="authorityDiff" class="authority-diff" aria-label="Exact proposed source diff">{{ authorityDiff }}</pre>
+          <span v-if="authorityProposalArtifacts.length" class="field-help">Proposal artifacts: {{ authorityProposalArtifacts.join(', ') }}</span>
+
+          <div v-if="authoritySelectedId" class="field authority-withdraw">
+            <label class="field-label">Withdrawal reason for {{ authoritySelectedId }}</label>
+            <input class="field-input" v-model="authorityReason" placeholder="Reason for requesting a safe reversal" />
+            <button class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityReason.trim()"
+              @click="runAuthority(`records/${encodeURIComponent(authoritySelectedId)}/withdraw`, { reason: authorityReason })">Request withdrawal</button>
+            <button class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityReason.trim() || !authorityStatus?.sha256"
+              @click="runAuthority(`records/${encodeURIComponent(authoritySelectedId)}/retire`, {
+                reason: authorityReason, expected_revision: authorityRecords.find(r => r.id === authoritySelectedId)?.revision,
+                expected_ledger_sha256: authorityStatus?.sha256,
+              })">Retire record</button>
+          </div>
+          <div class="authority-conflicts">
+            <h4>Authority conflicts</h4>
+            <span v-if="!authorityConflicts.length" class="field-help">No unresolved or historical conflicts are recorded.</span>
+            <table v-else class="drafts authority-records">
+              <thead><tr><th>Finding</th><th>Compared source, value, scope</th><th>Projection</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr v-for="conflict in authorityConflicts" :key="conflict.id">
+                  <td><code>{{ conflict.id }}</code><br /><span>{{ conflict.basis }}</span></td>
+                  <td><template v-if="conflict.records?.length"><div v-for="record in conflict.records" :key="record.id"><code>{{ record.id }}</code> {{ record.source }}#{{ record.anchor }} = {{ record.normalized_value ?? 'unstructured' }} ({{ JSON.stringify(record.effective) }})</div></template><template v-else>{{ conflict.record_ids.join(', ') }}</template></td><td>{{ conflict.projections.join(', ') }}</td><td>{{ conflict.status }}</td>
+                  <td class="authority-buttons">
+                    <button class="btn-neutral btn-sm" :disabled="authorityBusy" @click="loadConflictHistory(conflict.id)">History</button>
+                    <button v-if="conflict.status === 'open'" class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityResolutionRecordFile.trim() || !authorityStatus?.sha256"
+                      @click="runAuthority(`conflicts/${encodeURIComponent(conflict.id)}/resolve`, { resolution_record_file: authorityResolutionRecordFile, expected_ledger_sha256: authorityStatus?.sha256 })">Resolve with ruling</button>
+                    <button v-if="conflict.status === 'open'" class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityReason.trim() || !authorityStatus?.sha256"
+                      @click="runAuthority(`conflicts/${encodeURIComponent(conflict.id)}/dismiss`, { reason: authorityReason, expected_ledger_sha256: authorityStatus?.sha256 })">Dismiss conflict</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <label class="field-label">Applied resolution ruling file</label>
+            <input class="field-input" v-model="authorityResolutionRecordFile" placeholder="docs/authority/records/gate-resolution.yaml" />
+            <div class="field">
+              <label class="field-label">Record a human finding</label>
+              <input class="field-input" v-model="authorityConflictId" placeholder="contradictory-gate-account" />
+              <textarea class="field-input" v-model="authorityConflictRecordIds" placeholder="record IDs, one per line"></textarea>
+              <select class="field-input" v-model="authorityConflictBasis"><option value="human_identified">Human identified</option><option value="prose_candidate">Prose candidate</option></select>
+              <button class="btn-neutral btn-sm" :disabled="authorityBusy || !authorityConflictId.trim() || lines(authorityConflictRecordIds).length < 2 || !authorityReason.trim() || !authorityStatus?.sha256"
+                @click="runAuthority('conflicts/identify', { id: authorityConflictId, record_ids: lines(authorityConflictRecordIds), basis: authorityConflictBasis, reason: authorityReason, expected_ledger_sha256: authorityStatus?.sha256 })">Record conflict</button>
+            </div>
+          </div>
+          <pre v-if="authorityHistory" class="authority-history">{{ JSON.stringify(authorityHistory, null, 2) }}</pre>
+          <span v-if="authorityStatus.stale_projections?.length" class="field-error">Stale projections: {{ authorityStatus.stale_projections.map(staleProjectionLabel).join(', ') }}</span>
+        </div>
+        <span v-if="authorityMessage" class="field-help ok">{{ authorityMessage }}</span>
+        <span v-if="authorityError" class="field-error">{{ authorityError }}</span>
+      </div>
+
       <!-- Input -->
       <div class="form-section">
         <PathField v-model="summariesDir" label="Summaries directory" required resolve-base="campaign"
@@ -607,6 +1072,65 @@ onMounted(async () => {
           help="The party roster (sheets and backstories). Blank uses config/party.yaml." />
         <PathField v-if="doc === 'planning'" v-model="planningConfigPath" label="Planning config" resolve-base="campaign"
           help="Tracked NPCs, factions and arc scores. Blank uses config/planning.yaml; none means no arc scores." />
+        <div v-if="doc === 'planning'" class="panel planning-notes">
+          <div class="counts">
+            <span>Authority note selectors</span>
+            <button class="btn-neutral btn-sm" @click="refreshPlanningNoteSelectors">Refresh</button>
+          </div>
+          <table v-if="planningNoteSelectors.length" class="drafts">
+            <thead><tr><th>Selector</th><th>Path</th><th>Record scope</th><th></th></tr></thead>
+            <tbody>
+              <tr v-for="selector in planningNoteSelectors" :key="selector.id">
+                <td><code>{{ selector.id }}</code></td><td><input class="field-input" v-model="selector.path" @input="clearPlanningPreview" :aria-label="`Path for ${selector.id}`" /></td>
+                <td>{{ selector.record_ids?.join(', ') || 'all matching records' }}</td>
+                <td><button class="btn-neutral btn-sm" @click="updatePlanningNoteSelector(selector)">Save</button><button class="btn-neutral btn-sm" @click="deletePlanningNoteSelector(selector)">Remove</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="num-grid">
+            <div class="field"><label class="field-label">Selector id</label><input class="field-input" v-model="planningNoteId" placeholder="gm-notes" /></div>
+            <div class="field"><label class="field-label">Path or scoped glob</label><input class="field-input" v-model="planningNotePath" placeholder="notes/gm/*.md" /></div>
+            <div class="field"><label class="field-label">Record ids, one per line (optional)</label><textarea class="field-textarea" v-model="planningNoteRecordIds" rows="2" /></div>
+          </div>
+          <button class="btn-neutral btn-sm" :disabled="!planningNoteId.trim() || !planningNotePath.trim()" @click="createPlanningNoteSelector">Add selector</button>
+          <span v-if="planningNoteError" class="field-error">{{ planningNoteError }}</span>
+          <div class="field authority-selection" data-test="authority-note-selection">
+            <label class="field-label">Audience</label>
+            <select class="field-input narrow" v-model="authorityAudience" @change="clearPlanningPreview">
+              <option value="gm">GM</option><option value="players">Players</option><option value="characters">All characters</option><option value="character">Named character</option>
+            </select>
+            <input v-if="authorityAudience === 'character'" class="field-input" v-model="authorityCharacterId" @input="clearPlanningPreview" placeholder="Stable character id" aria-label="Stable character id" />
+            <button class="btn-neutral btn-sm" :disabled="!planningNoteSelectors.length || (authorityAudience === 'character' && !authorityCharacterId.trim())" @click="previewPlanningNotes">Preview configured note selection</button>
+            <span class="field-help">A configured note selection is forwarded to planning only after its concrete preview has been reviewed.</span>
+            <span v-if="audienceCoverageRefusal" class="field-error">{{ audienceCoverageRefusal }}</span>
+          </div>
+          <div v-if="authorityNotePreview" class="panel authority-selection-preview" data-test="authority-note-preview">
+            <div class="counts">
+              <span>{{ authorityNotePreview.members.length }} resolved note(s)</span>
+              <span>selection digest <code>{{ reviewedSelectionDigest }}</code></span>
+              <span>membership digest <code>{{ authorityNotePreview.membership_digest }}</code></span>
+            </div>
+            <label class="field-label">Reviewed selection digest</label>
+            <input class="field-input" :value="reviewedSelectionDigest" readonly aria-label="Reviewed selection digest" />
+            <table v-if="authorityNotePreview.members.length" class="drafts authority-note-members">
+              <thead><tr><th>Selector</th><th>Resolved note</th><th>Record scope</th><th>Classification</th><th>Audience</th><th>Reason</th><th>Digest</th></tr></thead>
+              <tbody>
+                <tr v-for="member in authorityNotePreview.members" :key="`${member.selector_id ?? 'restricted'}:${member.resolved_path ?? member.sha256 ?? member.reason}`">
+                  <td><code>{{ member.selector_id ?? 'restricted' }}</code></td>
+                  <td><code>{{ member.resolved_path ?? member.path ?? 'restricted member' }}</code><span v-if="member.external" class="bad"> external</span></td>
+                  <td><code>{{ memberRecordScope(member) }}</code></td>
+                  <td>{{ memberClassification(member) }}</td>
+                  <td>{{ memberAudience(member) }}</td>
+                  <td>{{ member.reason ?? 'authorized selection' }}</td>
+                  <td><code>{{ member.sha256 ?? 'withheld' }}</code></td>
+                </tr>
+              </tbody>
+            </table>
+            <ul v-if="authorityNotePreview.warnings.length" class="field-error authority-selection-warnings">
+              <li v-for="warning in authorityNotePreview.warnings" :key="warning">{{ warning }}</li>
+            </ul>
+          </div>
+        </div>
         <div v-if="usesKeyNpcs" class="field">
           <label class="field-label">Named subjects</label>
           <textarea class="field-textarea" v-model="namesText" rows="2"
@@ -660,7 +1184,7 @@ onMounted(async () => {
           This run only. Each such NPC gets a line built by code from its checked notes and marked
           &ldquo;(no published dossier &mdash; from checked notes)&rdquo;. Not saved.
         </span>
-        <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
+        <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready || (doc === 'planning' && !!audienceCoverageRefusal)"
           :label="`Synthesize ${doc}`" @done="onSynthDone" />
         <div v-if="usesKeyNpcs && missingNpcs.length" class="panel missing-npcs">
           <div class="counts">
@@ -864,4 +1388,9 @@ onMounted(async () => {
 .drafts th { font-weight: 600; color: var(--text); }
 .extract-state, .audit-state, .budgets, .missing-npcs, .annotations { margin-top: 10px; }
 .chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
+.authority-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.authority-actions .field { margin-bottom: 0; }
+.authority-actions .btn-neutral { margin: 6px 6px 0 0; }
+.authority-buttons { white-space: nowrap; }
+.authority-diff, .authority-history { max-height: 260px; overflow: auto; white-space: pre-wrap; padding: 8px; background: var(--bg-base); border: 1px solid var(--bg-surface1); border-radius: 4px; color: var(--text-sub); font: 10px var(--mono); }
 </style>

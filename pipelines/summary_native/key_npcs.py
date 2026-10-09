@@ -20,6 +20,7 @@ else the file holds can reach a prompt or an output. Guarded by ``tests/test_sum
 from __future__ import annotations
 
 import re
+import tempfile
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -89,13 +90,13 @@ def _norm(text: str) -> str:
     return _ENTRY_CITE_RE.sub(r"\1npcs", text)
 
 
-def _read_sections(path: Path, take: Sequence[str]) -> tuple["re.Match[str]", dict[str, str]]:
+def _read_sections(path: Path, take: Sequence[str], reader=None) -> tuple["re.Match[str]", dict[str, str]]:
     """``(header match, {heading: normalised body})`` for the ``take`` sections of one published dossier.
 
     One pass over the lines: a line is kept only while a ``take`` heading is current, so no other
     section is ever held, parsed or returned. Raises ``NotPublished`` for any other file.
     """
-    text = Path(path).read_text(encoding="utf-8")
+    text = reader(Path(path)).decode("utf-8") if reader is not None else Path(path).read_text(encoding="utf-8")
     m = _PUBLISHED_RE.match(text.split("\n", 1)[0])
     if m is None:
         raise NotPublished("not a summary_native publication")
@@ -109,12 +110,12 @@ def _read_sections(path: Path, take: Sequence[str]) -> tuple["re.Match[str]", di
     return m, {h: _norm("\n".join(kept[h]).strip("\n")) for h in take}
 
 
-def published_view(path: Path) -> PublishedView:
+def published_view(path: Path, *, reader=None) -> PublishedView:
     """The view of one published dossier. Raises ``NotPublished`` for any other file.
 
     Reads only the ``TAKE`` sections (see :func:`_read_sections`).
     """
-    m, got = _read_sections(path, TAKE)
+    m, got = _read_sections(path, TAKE, reader)
     ident, state = (got[h] for h in TAKE)
     if not state:
         raise NotPublished("no Last Observed State")
@@ -145,12 +146,12 @@ class PlanningView:
         return "\n".join(s for s in (self.identity, self.personality, self.state, self.relationships) if s)
 
 
-def planning_view(path: Path) -> PlanningView:
+def planning_view(path: Path, *, reader=None) -> PlanningView:
     """The planning view of one published dossier. Raises ``NotPublished`` like :func:`published_view`.
 
     The same one-pass, held-heading-only reader, with ``PLANNING_TAKE`` as its take-set.
     """
-    m, got = _read_sections(path, PLANNING_TAKE)
+    m, got = _read_sections(path, PLANNING_TAKE, reader)
     ident, pers, state, rels = (got[h] for h in PLANNING_TAKE)
     if not state:
         raise NotPublished("no Last Observed State")
@@ -185,7 +186,7 @@ def _touched(name: str, after: int, until: int, results: Sequence[notes.CheckedC
 
 def published_dossiers(
     campaign: Path, rng: str, *, results: Sequence[notes.CheckedChunk] | None = None,
-    forms: dict[str, str] | None = None,
+    forms: dict[str, str] | None = None, paths: Sequence[Path] | None = None, reader=None,
 ) -> tuple[dict[str, PublishedView], dict[str, str]]:
     """Usable/unusable publications keyed by canonical casefolded name.
 
@@ -197,9 +198,10 @@ def published_dossiers(
     since, until = _range_numbers(rng)
     usable: dict[str, PublishedView] = {}
     unusable: dict[str, str] = {}
-    for p in sorted((Path(campaign) / schema.NPCS_DIR).glob("*.md")):
+    candidates = sorted(paths) if paths is not None else sorted((Path(campaign) / schema.NPCS_DIR).glob("*.md"))
+    for p in candidates:
         try:
-            v = published_view(p)
+            v = published_view(p, reader=reader)
         except (NotPublished, OSError, UnicodeDecodeError):
             continue
         key = forms.get(v.name.casefold(), v.name).casefold()
@@ -224,11 +226,18 @@ def published_dossiers(
 # ── Selection ───────────────────────────────────────────────────────────────
 
 
-def registry_npc_scopes(registry_path: Path | None) -> dict[str, str]:
+def registry_npc_scopes(registry_path: Path | None, *, reader=None) -> dict[str, str]:
     """``{canonical name: scope}`` for the registry's NPCs; empty when there is no registry."""
-    if registry_path is None or not Path(registry_path).is_file():
+    if registry_path is None or (reader is None and not Path(registry_path).is_file()):
         return {}
-    return {e.name: e.scope for e in load_registry(registry_path).entities if e.type == "npc"}
+    if reader is None:
+        registry = load_registry(registry_path)
+    else:
+        with tempfile.NamedTemporaryFile(suffix=".yaml") as handle:
+            handle.write(reader(Path(registry_path)))
+            handle.flush()
+            registry = load_registry(handle.name)
+    return {e.name: e.scope for e in registry.entities if e.type == "npc"}
 
 
 def select_key_npcs(
@@ -300,9 +309,10 @@ def missing_dossier_state(
 def plan_key_npcs(
     chosen: Sequence[tuple[select.Dossier, str]], campaign: Path, *, npc_root: Path, rng: str,
     results: Sequence[notes.CheckedChunk] | None = None, forms: dict[str, str] | None = None,
+    dossier_paths: Sequence[Path] | None = None, reader=None,
 ) -> list[KeyNpc]:
     """Attach to each selected NPC its usable dossier, or the reason it has none."""
-    usable, unusable = published_dossiers(campaign, rng, results=results, forms=forms)
+    usable, unusable = published_dossiers(campaign, rng, results=results, forms=forms, paths=dossier_paths, reader=reader)
     try:
         log = npc_publish.read_publish_log(Path(campaign), Path(npc_root))
     except npc_publish.PublishRefusal:
@@ -565,7 +575,7 @@ def plan_planning_npcs(
     campaign: Path,
     npc_root: Path,
     rng: str,
-    results: Sequence[notes.CheckedChunk] | None = None,
+    results: Sequence[notes.CheckedChunk] | None = None, dossier_paths: Sequence[Path] | None = None, reader=None,
 ) -> PlanningPlan:
     """planning's NPCs, chosen by code (FR-011): the NPCs the planning config tracks, in config order and
     canonicalised by ``forms``, then the ones ``--name`` forces, then the recent and recurring ones.
@@ -599,8 +609,10 @@ def plan_planning_npcs(
         if d.subject.casefold() not in taken:
             taken.add(d.subject.casefold())
             ordered.append((d, reason))
-    plan = plan_key_npcs(ordered, campaign, npc_root=npc_root, rng=rng, results=results, forms=forms)
-    views = {k.view.slug: planning_view(Path(campaign) / schema.NPCS_DIR / f"{k.view.slug}.md") for k in plan if k.view is not None}
+    plan = plan_key_npcs(ordered, campaign, npc_root=npc_root, rng=rng, results=results, forms=forms,
+                         dossier_paths=dossier_paths, reader=reader)
+    views = {k.view.slug: planning_view(Path(campaign) / schema.NPCS_DIR / f"{k.view.slug}.md", reader=reader)
+             for k in plan if k.view is not None}
     return PlanningPlan(plan, views)
 
 

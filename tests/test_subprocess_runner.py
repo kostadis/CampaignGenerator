@@ -27,6 +27,17 @@ def test_bounded_json_enforces_output_limit(tmp_path):
     assert raised.value.category == "output_limit"
 
 
+def test_bounded_json_retains_a_nonzero_cli_envelope(tmp_path):
+    with pytest.raises(BoundedJSONError) as raised:
+        asyncio.run(run_bounded_json(
+            [sys.executable, "-c", "import json, sys; print(json.dumps({'ok': False, 'code': 'AUTH_STALE', 'message': 'proposal changed'})); sys.exit(3)"],
+            cwd=str(tmp_path), save_run_log=False,
+        ))
+    assert raised.value.returncode == 3
+    assert raised.value.payload == {"ok": False, "code": "AUTH_STALE", "message": "proposal changed"}
+    assert str(raised.value) == "proposal changed"
+
+
 def test_stream_subprocess_save_run_log_false_preserves_terminal_result(tmp_path):
     async def consume():
         return [chunk async for chunk in stream_subprocess(

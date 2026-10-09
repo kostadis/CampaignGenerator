@@ -16,12 +16,12 @@ import yaml
 
 from campaignlib.config import ConfigLocationError, campaign_root_for_config, find_default_config
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME, load_players_config
-from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
+from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, ProjectionConfig, load_projection_config
 from campaignlib.registry import load_registry
 from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
 from campaignlib.api.client import resolve_cli_model
-from pipelines.summary_native import annotate, audit
+from pipelines.summary_native import annotate, audit, freshness
 from pipelines.summary_native import compare as compare_mod
 from pipelines.summary_native import corpus, duplicates, extract, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
 from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth, thread_propose
@@ -81,6 +81,8 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--chunk-chars", type=int, default=None,
                            help="chunk size limit in characters "
                                 f"(default: grounding.yaml summary_native.extract.chunk_chars, else {schema.DEFAULT_CHUNK_CHARS})")
+            p.add_argument("--audience", default="gm", metavar="TARGET",
+                           help="authority audience: gm, players, characters, or character:<stable-id>")
         if name in ("extract", "audit"):
             p.add_argument("--max-tokens", type=int, default=schema.DEFAULT_MAX_TOKENS,
                            help=f"max_tokens per call (default {schema.DEFAULT_MAX_TOKENS})")
@@ -155,6 +157,10 @@ def build_parser() -> argparse.ArgumentParser:
                            help="party roster (party; default <config>/party.yaml)")
             p.add_argument("--planning-config", default=None, metavar="FILE",
                            help="tracked NPCs/factions and arc scores (planning; default <config>/planning.yaml)")
+            p.add_argument("--authority-selection", default=None, metavar="SHA",
+                           help="reviewed planning authority selection_sha256 (planning only)")
+            p.add_argument("--audience", default="gm", metavar="TARGET",
+                           help="authority audience: gm, players, characters, or character:<stable-id>")
             p.add_argument("--audit", nargs="+", default=None, metavar="FILE",
                            help="retired for campaign_state (the audit is `summary_native audit`); "
                                 "refused for every document")
@@ -182,6 +188,88 @@ def build_parser() -> argparse.ArgumentParser:
             add_backend_args(p, default_backend=None)
         if name == "compare":
             p.add_argument("--live", required=True, metavar="FILE", help="the live grounding document to compare against")
+    authority = sub.add_parser("authority", help="campaign-local reviewed authority ledger")
+    authority_sub = authority.add_subparsers(dest="authority_command", required=True)
+    init = authority_sub.add_parser("init", help="create docs/authority.yaml")
+    init.add_argument("--campaign-dir", default=None, metavar="DIR")
+    init.add_argument("--config", default=None, metavar="PATH")
+    init.add_argument("--json", action="store_true", help="emit stable JSON envelope")
+    init.add_argument("--campaign", default=None, help="stable campaign id (default: campaign directory name)")
+    validate_authority = authority_sub.add_parser("validate", help="strictly validate ledger and transaction state")
+    validate_authority.add_argument("--campaign-dir", default=None, metavar="DIR")
+    validate_authority.add_argument("--config", default=None, metavar="PATH")
+    validate_authority.add_argument("--json", action="store_true", help="emit stable JSON envelope")
+    status_authority = authority_sub.add_parser("status", help="show ledger revision and recovery status")
+    status_authority.add_argument("--campaign-dir", default=None, metavar="DIR")
+    status_authority.add_argument("--config", default=None, metavar="PATH")
+    status_authority.add_argument("--json", action="store_true", help="emit stable JSON envelope")
+    for name in ("list", "validate", "status"):
+        if name in {"validate", "status"}:
+            continue
+        command = authority_sub.add_parser(name)
+        command.add_argument("--campaign-dir", default=None)
+        command.add_argument("--config", default=None, metavar="PATH")
+        command.add_argument("--json", action="store_true")
+        command.add_argument("--status", default=None)
+    for name in ("show", "history", "propose", "apply", "withdraw", "recover"):
+        command = authority_sub.add_parser(name)
+        command.add_argument("id")
+        command.add_argument("--campaign-dir", default=None)
+        command.add_argument("--config", default=None, metavar="PATH")
+        command.add_argument("--json", action="store_true")
+        if name == "propose": command.add_argument("--summaries-dir", default=None)
+        if name == "apply": command.add_argument("--proposal-sha256", required=True)
+        if name == "withdraw": command.add_argument("--reason", required=True)
+    conflicts = authority_sub.add_parser("conflicts", help="list reviewed authority conflicts")
+    conflicts.add_argument("--campaign-dir", default=None)
+    conflicts.add_argument("--config", default=None, metavar="PATH")
+    conflicts.add_argument("--json", action="store_true")
+    conflicts.add_argument("--status", default=None)
+    conflict = authority_sub.add_parser("conflict", help="inspect or resolve one authority conflict")
+    conflict_sub = conflict.add_subparsers(dest="authority_conflict_command", required=True)
+    conflict_history = conflict_sub.add_parser("history")
+    conflict_history.add_argument("id")
+    conflict_history.add_argument("--campaign-dir", default=None)
+    conflict_history.add_argument("--config", default=None, metavar="PATH")
+    conflict_history.add_argument("--json", action="store_true")
+    conflict_resolve = conflict_sub.add_parser("resolve")
+    conflict_resolve.add_argument("id")
+    conflict_resolve.add_argument("--resolution-record", required=True, metavar="FILE")
+    conflict_resolve.add_argument("--expected-ledger-sha256", required=True)
+    conflict_resolve.add_argument("--campaign-dir", default=None)
+    conflict_resolve.add_argument("--config", default=None, metavar="PATH")
+    conflict_resolve.add_argument("--json", action="store_true")
+    conflict_dismiss = conflict_sub.add_parser("dismiss")
+    conflict_dismiss.add_argument("id")
+    conflict_dismiss.add_argument("--reason", required=True)
+    conflict_dismiss.add_argument("--expected-ledger-sha256", required=True)
+    conflict_dismiss.add_argument("--campaign-dir", default=None)
+    conflict_dismiss.add_argument("--config", default=None, metavar="PATH")
+    conflict_dismiss.add_argument("--json", action="store_true")
+    conflict_identify = conflict_sub.add_parser("identify")
+    conflict_identify.add_argument("id")
+    conflict_identify.add_argument("--record", action="append", required=True, dest="record_ids")
+    conflict_identify.add_argument("--basis", choices=("human_identified", "prose_candidate"), default="human_identified")
+    conflict_identify.add_argument("--reason", required=True)
+    conflict_identify.add_argument("--expected-ledger-sha256", required=True)
+    conflict_identify.add_argument("--campaign-dir", default=None)
+    conflict_identify.add_argument("--config", default=None, metavar="PATH")
+    conflict_identify.add_argument("--json", action="store_true")
+    record = authority_sub.add_parser("record")
+    record_sub = record.add_subparsers(dest="record_command", required=True)
+    stage = record_sub.add_parser("stage"); stage.add_argument("record_file"); stage.add_argument("--campaign-dir", default=None); stage.add_argument("--config", default=None, metavar="PATH"); stage.add_argument("--json", action="store_true")
+    apply_stage = record_sub.add_parser("apply"); apply_stage.add_argument("stage_id"); apply_stage.add_argument("--stage-sha256", required=True); apply_stage.add_argument("--expected-ledger-sha256", required=True); apply_stage.add_argument("--campaign-dir", default=None); apply_stage.add_argument("--config", default=None, metavar="PATH"); apply_stage.add_argument("--json", action="store_true")
+    retire = record_sub.add_parser("retire"); retire.add_argument("id"); retire.add_argument("--reason", required=True); retire.add_argument("--expected-revision", type=int, required=True); retire.add_argument("--expected-ledger-sha256", required=True); retire.add_argument("--campaign-dir", default=None); retire.add_argument("--config", default=None, metavar="PATH"); retire.add_argument("--json", action="store_true")
+    notes_authority = authority_sub.add_parser("notes", help="preview explicit planning-note authority selection")
+    notes_sub = notes_authority.add_subparsers(dest="authority_notes_command", required=True)
+    preview = notes_sub.add_parser("preview")
+    preview.add_argument("--campaign-dir", default=None)
+    preview.add_argument("--config", default=None, metavar="PATH")
+    preview.add_argument("--planning-config", default=None, metavar="FILE")
+    preview.add_argument("--selector", action="append", default=None, metavar="ID=PATH",
+                         help="deprecated explicit selector override for migration tests")
+    preview.add_argument("--audience", default="gm")
+    preview.add_argument("--json", action="store_true")
     return parser
 
 
@@ -214,6 +302,9 @@ def _sha_if_file(path: Path | None) -> str | None:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "authority":
+        from pipelines.summary_native.authority_cli import run as run_authority
+        return run_authority(args)
     if args.command == "synth" and synth.retired_flag_refusal(args):
         return _err(synth.retired_flag_refusal(args))  # before any config or corpus read: the flag is gone, whatever else is wrong
     if args.command == "thread-propose" and (args.since is None or args.until is None):
@@ -610,6 +701,10 @@ def _extract(args, root: Path, config_path: Path, cfg: dict, report, range_dir: 
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
     except ValueError as e:  # ConfigRefusal is a ValueError
         return _err(str(e))
+    try:
+        _prepare_audience_inputs(args, root)
+    except ValueError as e:
+        return _err(str(e))
     return extract.run_extract(
         args,
         root=root,
@@ -620,6 +715,41 @@ def _extract(args, root: Path, config_path: Path, cfg: dict, report, range_dir: 
         players_path=_players_path(config_path),
         settings=settings,
     )
+
+
+def _prepare_audience_inputs(args, root: Path) -> None:
+    """Bind non-GM work to one locked, digestable authority snapshot.
+
+    A non-GM target never falls through to the historic corpus.  The evidence
+    object is deliberately ephemeral: only its digest is persisted in cache
+    and run identities while prompt construction sees its authorized bytes.
+    """
+    audience = getattr(args, "audience", "gm")
+    from pipelines.summary_native.authority import AuthorityError, load_ledger
+    from pipelines.summary_native.authority_inputs import audience_snapshot
+    if audience not in {"gm", "players", "characters"} and not audience.startswith("character:"):
+        raise ValueError("--audience must be gm, players, characters, or character:<stable-id>")
+    ledger = load_ledger(root, required=audience != "gm")
+    if ledger is None:
+        args.authority_manifest = None
+        args.authority_evidence = None
+        return
+    try:
+        _, args.authority_evidence, args.authority_manifest = audience_snapshot(
+            root, audience=audience, since=getattr(args, "since", None), until=getattr(args, "until", None),
+        )
+    except AuthorityError:
+        # Non-GM errors intentionally do not echo record names, raw source
+        # paths, or adjacent text.
+        if audience != "gm":
+            raise ValueError("authority support is incomplete or unavailable for this audience") from None
+        raise
+    if audience != "gm" and not args.authority_evidence.sections:
+        raise ValueError("no complete authorized support exists for this audience")
+    args.authority_filtered_payload_digest = args.authority_evidence.payload_digest if args.authority_evidence else None
+    args.authority_policy_version = (args.authority_manifest or {}).get("authority_policy")
+    args.authority_records_digest = freshness.authority_manifest_sha256(args.authority_manifest)
+    args.authority_source_digest = (args.authority_manifest or {}).get("ledger_sha256")
 
 
 def _audit(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, summaries_dir: Path,
@@ -670,8 +800,18 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
             return _err(str(e))
     if args.doc in ("planning", "campaign_state"):
         # Thread identity is the GM's registry; where it lives is projections.yaml's `stores` (as thread-propose reads it).
+        projection_path = config_path.expanduser().resolve().parent / PROJECTION_CONFIG_FILENAME
         try:
-            stores = load_projection_config(config_path.expanduser().resolve().parent / PROJECTION_CONFIG_FILENAME).stores
+            if getattr(args, "audience", "gm") != "gm":
+                # This config names the thread store, so it is itself a
+                # restricted deterministic input.  Resolve it before any raw
+                # projection loader can inspect campaign bytes.
+                from pipelines.summary_native.authority_inputs import support_snapshot
+                snap = support_snapshot(root, audience=args.audience, required=[projection_path],
+                                        since=getattr(args, "since", None), until=getattr(args, "until", None))
+                stores = ProjectionConfig.model_validate(yaml.safe_load(snap.text_for(projection_path)) or {}).stores
+            else:
+                stores = load_projection_config(projection_path).stores
         except ValueError as e:  # ConfigRefusal, malformed YAML and pydantic's ValidationError are ValueErrors
             return _err(str(e))
         thread_registry_path = _under(root, stores.thread_registry)

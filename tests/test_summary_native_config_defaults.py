@@ -175,6 +175,8 @@ class TestNoDriftInTheRouter:
             (n, line.strip())
             for n, line in enumerate(self.SRC.splitlines(), 1)
             if re.search(pattern, line)
+            # Transport constants are not Summary Native route/config defaults.
+            and not re.match(r"\s*[A-Z][A-Z0-9_]*\s*=", line)
         ]
         assert not offenders, offenders
 
