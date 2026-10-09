@@ -189,7 +189,7 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
         ("key_npcs_report", state_drafts / "key_npcs_report.md"),
         ("annotations", state_drafts / annotate.REPORT_FILE),
         ("canon_events_timeline", state_drafts / schema.TIMELINE_FILE),
-        ("budget_report", state_drafts / "budget_report.json"),
+        ("budget_report", state_drafts / schema.budget_report_file("world_state")),
         ("audit", freshness.audit_dir(range_dir) / "audit.md"),
         # party and planning (spec 034)
         ("party_report", state_drafts / "party_report.md"),
@@ -334,10 +334,6 @@ def _read_yaml(path: Path):
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
 
-#: The documents whose chunked build writes a word-budget report (campaign_state has no prose budgets).
-BUDGET_DOCS = ("world_state", "party", "planning")
-
-
 @router.get("/state")
 def get_state(request: Request, since: int | None = None, until: int | None = None):
     """What is on disk for the range, per step (read-only; files only)."""
@@ -345,7 +341,7 @@ def get_state(request: Request, since: int | None = None, until: int | None = No
     lo, hi = _require_range(run, since, until)
     range_dir = _range_dir(run, lo, hi)
     drafts = schema.draft_dir(range_dir, "world_state")
-    budgets = {doc: _read_json(drafts / schema.budget_report_file(doc)) for doc in BUDGET_DOCS}
+    budgets = {doc: _read_json(drafts / schema.budget_report_file(doc)) for doc in schema.BUDGET_DOCS}
     missing = _read_json(range_dir / schema.STATE_DIR / schema.missing_dossiers_file("world_state"))
     planning_missing = _read_json(range_dir / schema.STATE_DIR / schema.missing_dossiers_file("planning"))
     return {
