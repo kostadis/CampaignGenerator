@@ -211,7 +211,7 @@ No constitution violations to justify.
   - **#529:** a split-off note that shares a ratified name attaches anyway.
 - **#526:** the arc-score "states a value" check is an untuned regex.
 - **#527 (done):** subject-less prose in Party Overview and Dynamics now takes the `Party` subject and is stale-checked against the whole-party notes; it is not paired by the cross-section check.
-- **#528:** the summary-native page has no Annotate action for party and no budget panels for party and planning.
+- **#528 (done):** Annotate follows the document picker, and `GET /state` carries `budgets` for world_state, party and planning, shown in one panel.
 - **kostadis/campaigns#385:** drops `parts: 0` from OOTA's `grounding.yaml`. Merge it before or with this feature.
 - **#512:** incremental rebuild (extract cache across ranges). **#515:** a chunk missing a section passes the check. Both are inherited.
 - The ensemble-fact harvest (`thread_registry propose --corpus`) stays for campaigns on the ensemble path; retire it when no campaign uses it.

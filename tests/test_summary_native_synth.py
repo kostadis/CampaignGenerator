@@ -804,6 +804,23 @@ class TestEveryDocumentBuildsTheSameWay:
         assert {p.relative_to(first).as_posix(): p.read_bytes() for p in first.rglob("*") if p.is_file()} == before
         assert (state(root) / ref).read_bytes() == (first / "record.json").read_bytes()
 
+    def test_a_rebuild_that_reports_no_budgets_removes_that_documents_stale_report_only(self, four, monkeypatch):
+        # party is the document with no code-built budgeted part: world_state and planning still measure
+        # their code-built sections when the model returns nothing, so their report is never empty
+        doc = "party"
+        root, _, _ = four
+        drafts = state(root) / "drafts"
+        for d in ("world_state", "party", "planning"):
+            assert cs.run_cli(build(root, d))[0] == 0
+        files = {d: drafts / schema.budget_report_file(d) for d in ("world_state", "party", "planning")}
+        assert all(f.is_file() for f in files.values())
+        kept = {d: f.read_bytes() for d, f in files.items() if d != doc}
+        # every section comes back empty, so nothing is measured against a budget on this run
+        monkeypatch.setattr(cs.synth, "render_part", lambda *a, **k: "")
+        cs.run_cli(build(root, doc, "--force"))
+        assert not files[doc].exists()
+        assert {d: f.read_bytes() for d, f in files.items() if d != doc} == kept
+
     @pytest.mark.parametrize("doc", schema.DOCS)
     def test_an_existing_draft_needs_force(self, four, doc):
         root, base, _ = four

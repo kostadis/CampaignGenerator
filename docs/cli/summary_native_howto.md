@@ -1417,9 +1417,11 @@ proposals), read from `state/threads/attach.json` and the proposals file, with a
 link to the [Threads page](state_projection_howto.md#grouping-proposals-from-summary-native).
 The Drafts list includes `reference/party.md`, `party_report.md`,
 `planning_npcs_report.md`, `threads_report.md` and `arc_report.md`.
-Two gaps: the Annotate action is not surfaced for party, and party and planning
-have no word-budget panel (their budget reports are in the Drafts list); both
-are #528. `thread-propose` is run from the Threads page, not this one.
+Annotate (with its dry-run preview) and the **word-budget panel** follow the
+document picker for world_state, party and planning: the panel reads that
+document's last `budget_report*.json` (words against each section's budget,
+overruns flagged, nothing trimmed) and is absent until the document has been
+built. `thread-propose` is run from the Threads page, not this one.
 
 What it deliberately does **not** do: promote a draft, or edit `canon.yaml`.
 Those are judgment steps and stay by hand.

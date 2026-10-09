@@ -286,8 +286,8 @@ def missing_dossiers_file(doc: str) -> str:
 
 
 def budget_report_file(doc: str) -> str:
-    """The word-budget report beside ``doc``'s draft. world_state's keeps its name (``GET /state`` reads it);
-    party and planning write their own, so one document's budgets never replace another's."""
+    """The word-budget report beside ``doc``'s draft. world_state's keeps its name;
+    party and planning write their own (``GET /state`` reads all three), so one document's budgets never replace another's."""
     return f"budget_report.{doc}.json" if doc in ("party", "planning") else "budget_report.json"
 
 
