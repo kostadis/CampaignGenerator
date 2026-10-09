@@ -209,7 +209,7 @@ No constitution violations to justify.
   - **#524:** a pending group spanning the range edge loses its out-of-range notes.
   - **#525:** removing an alias leaves notes unattached and unflagged.
   - **#529:** a split-off note that shares a ratified name attaches anyway.
-- **#526:** the arc-score "states a value" check is an untuned regex.
+- **#526:** the arc-score "states a value" check is an untuned regex. Tightened with a verdict table (`arc_value_check.md`); measuring it on real Out of the Abyss output is still open.
 - **#527 (done):** subject-less prose in Party Overview and Dynamics now takes the `Party` subject and is stale-checked against the whole-party notes; it is not paired by the cross-section check.
 - **#528 (done):** Annotate follows the document picker, and `GET /state` carries `budgets` for world_state, party and planning, shown in one panel.
 - **kostadis/campaigns#385:** drops `parts: 0` from OOTA's `grounding.yaml`. Merge it before or with this feature.

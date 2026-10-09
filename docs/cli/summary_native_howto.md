@@ -1189,11 +1189,15 @@ checks; every dropped line is listed in `arc_report.md` with its reason:
 |---|---|
 | `cite-not-in-notes` | A citation is missing, malformed, or not one of that subject's own checked notes' citations. |
 | `trigger not verbatim` | The quoted trigger (at least 4 characters) is not verbatim in the mechanic file, or the line names no trigger. |
-| `states a value` | The event text matches the value pattern (a score, total, points or "now at N", a threshold reached). |
+| `states a value` | The event text states a value, running total or threshold crossed: a score word with a number (`score of 5`, `a score of seven`), `now at N` / `is at N`, `pushes it to 5`, a signed delta (`Wrath +2`), a fraction (`(2/3)`), a count of strikes or ticks (`has 3 strikes`, `his third strike`), a meter filling, a threshold reached, or one of the mechanic file's own score names with a number (`gains 1 Obsession`). Ordinals (`3rd gate`), amounts with a unit (`500 gp`, `2 bells`) and street addresses (`3 Waterdeep Lane`) are not values. |
 
-A false drop costs only a candidate you can read in `arc_report.md`. The value
-check is an untuned pattern (#526): it can drop ordinary text and, worse, can miss
-a phrasing like "pushes it to 5", so read the candidates as candidates.
+A false drop costs only a candidate you can read in `arc_report.md`, so the value
+check errs towards dropping: it will drop some ordinary lines (a `+1 longsword`, "a
+total of 12 guards", `2/3 of the guards`, `3 strikes on the ogre`). It was tightened in #526 from a table of
+verdicts (`specs/034-chunked-party-planning/arc_value_check.md`) but has **not yet been
+measured on real campaign output**; read the kept candidates as candidates. Phrasings
+with no number or score word ("two more and he breaks", "doubles his Wrath") and Roman
+numerals can still pass; the spec lists the known gaps.
 
 ### Annotation for party and planning
 

@@ -192,7 +192,7 @@ The `--plan` requirement stays, so there is no accept-as-proposed button (existi
 `arc_check.py` (deterministic) drops a line for any of these reasons:
 - its citation is not among the subject's checked notes' citations (`cite-not-in-notes`);
 - the trigger is not verbatim in the mechanic file (`trigger not verbatim`, via `npc_check._contains`);
-- it matches the value pattern `\b(score|total|value|points?)\b[^.]{0,30}\d|\bnow (?:at )?\d|\bthreshold\b[^.]{0,30}(?:reached|crossed|met)` (`states a value`).
+- `arc_check.states_a_value` says it states a current value, running total or threshold crossed (`states a value`). The first version was one regex, `\b(score|total|value|points?)\b[^.]{0,30}\d|\bnow (?:at )?\d|\bthreshold\b[^.]{0,30}(?:reached|crossed|met)`; #526 replaced it with the rules and verdict table in [arc_value_check.md](arc_value_check.md) (real-campaign measurement still pending).
 
 Survivors go in party under `#### Candidate Arc Score Events` in the character section, and in planning's Threat Tracker cell. Drops go in `arc_report.md`.
 
