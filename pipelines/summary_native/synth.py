@@ -1217,6 +1217,8 @@ def run_state_synth(
         kb = budget_report.get("Key NPCs", {})
         atomic_write_text(drafts / "key_npcs_report.md", key_npcs.report_md(
             key_plan, key_assembled, key_per, kb.get("words", 0), kb.get("budget", 0)))
+    # ratified proposal members that no longer attach (#525), for the thread report of either document that reads the registry
+    detached_lines = _detached_lines(thread_proposals_path, attachment) if doc in THREAD_DOCS else []
     if doc == "planning":
         # What code replaced in planning, and the thread layers it built (the attach map itself is state/threads/attach.json).
         nb = budget_report.get("NPC Dossiers", {})
@@ -1238,7 +1240,6 @@ def run_state_synth(
             atomic_write_text(drafts / "planning_npcs_report.md", key_npcs.planning_report_md(
                 npc_plan, a, per, nb.get("words", 0), nb.get("budget", 0), faction_lines))
         plots_part = planning_parts.get("## Active Plots")
-        detached_lines = _detached_lines(thread_proposals_path, attachment)
         atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(
             attachment, (since, until), detached_lines) + "\n".join([
             "", "## Active Plots entries replaced by code", "", *((plots_part.report if plots_part else []) or ["- (none)"]), ""]))
@@ -1247,7 +1248,7 @@ def run_state_synth(
         lines = [f"## {h[3:]} entries replaced by code\n\n" + "\n".join(planning_parts[h].report or ["- (none)"]) + "\n"
                  for h in ("## Resolved Plot Threads", "## Active Quests & Open Threads") if h in planning_parts]
         atomic_write_text(drafts / schema.CAMPAIGN_THREADS_REPORT_FILE,
-                          thread_attach.threads_report_md(attachment, (since, until)) + "\n".join(["", *lines]))
+                          thread_attach.threads_report_md(attachment, (since, until), detached_lines) + "\n".join(["", *lines]))
     # The files the sections point to. Written whether or not the draft is complete: they are
     # built by code from the checked notes and do not depend on the model.
     for kind, md in reference.items():
