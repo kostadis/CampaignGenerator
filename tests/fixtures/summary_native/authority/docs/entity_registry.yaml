@@ -1,0 +1,11 @@
+entities:
+  - name: Earthstone
+    type: npc
+  - name: Lucan
+    type: npc
+  - name: Nightmask
+    type: faction
+  - name: Neverwinter
+    type: location
+  - name: Sunblade
+    type: item

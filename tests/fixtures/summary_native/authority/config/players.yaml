@@ -1,0 +1,7 @@
+players:
+  - id: ara-player
+    name: Ara's player
+    plays: [ara]
+  - id: borin-player
+    name: Borin's player
+    plays: [borin]

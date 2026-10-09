@@ -1,0 +1,93 @@
+version: 1
+campaign: authority-fixture
+revision: 1
+records:
+  - id: earthstone-ruling
+    kind: ruling
+    revision: 1
+    classification: RULED
+    subject: {kind: entity, id: Earthstone}
+    effective: {from_chapter: 54, through_chapter: 54}
+    audience: {grants: [gm]}
+    projections: [world_state, campaign_state, planning]
+    status: draft
+    recorded_at: 2026-10-09T00:00:00Z
+    recorded_by: GM
+    source:
+      path: docs/summaries/chapter-054.md
+      anchor: claim-earthstone-responsible-actor
+    rejected_claim: The responsible actor was the false steward.
+    replacement_fact: The responsible actor was the correct actor.
+  - id: commission-canon
+    kind: note
+    revision: 1
+    classification: CANON
+    subject: {kind: thread, id: neverwinter-commission}
+    effective: {from_chapter: 1, through_chapter: 54}
+    audience: {grants: [players]}
+    projections: [campaign_state]
+    status: active
+    recorded_at: 2026-10-09T00:00:00Z
+    recorded_by: GM
+    source: {path: notes/earthstone-plan.md, anchor: established-canon}
+    content_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    selection_label: Commission canon
+  - id: commission-table
+    kind: note
+    revision: 1
+    classification: TABLE
+    subject: {kind: thread, id: neverwinter-commission}
+    effective: {from_chapter: 54, through_chapter: 54}
+    audience: {grants: [characters]}
+    projections: [party]
+    status: active
+    recorded_at: 2026-10-09T00:00:00Z
+    recorded_by: GM
+    source: {path: notes/earthstone-plan.md, anchor: table-fact}
+    content_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    selection_label: Commission table fact
+  - id: commission-prep
+    kind: note
+    revision: 1
+    classification: PREP
+    subject: {kind: thread, id: neverwinter-commission}
+    effective: {horizon: future}
+    audience: {grants: [gm]}
+    projections: [planning]
+    status: active
+    recorded_at: 2026-10-09T00:00:00Z
+    recorded_by: GM
+    source: {path: notes/earthstone-plan.md, anchor: current-plan}
+    content_digest: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    planning_date: chapter-55
+    selection_label: Commission prep
+  - id: commission-overlay
+    kind: note
+    revision: 1
+    classification: OVERLAY
+    subject: {kind: thread, id: neverwinter-commission}
+    effective: {horizon: future}
+    audience: {grants: [character:ara]}
+    projections: [planning]
+    status: active
+    recorded_at: 2026-10-09T00:00:00Z
+    recorded_by: GM
+    source: {path: notes/earthstone-plan.md, anchor: current-overlay}
+    content_digest: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    planning_date: chapter-55
+    selection_label: Commission overlay
+  - id: commission-open
+    kind: note
+    revision: 1
+    classification: OPEN
+    subject: {kind: topic, id: commission-patron}
+    effective: {horizon: open}
+    audience: {grants: [gm]}
+    projections: [planning]
+    status: active
+    recorded_at: 2026-10-09T00:00:00Z
+    recorded_by: GM
+    source: {path: notes/earthstone-plan.md, anchor: open-question}
+    content_digest: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    selection_label: Commission open question
+conflicts: []

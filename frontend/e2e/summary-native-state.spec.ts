@@ -190,7 +190,7 @@ test('planning sends the fallback flag only when checked, plus its selection and
   const seen = await mockRun(page, 'synth/planning', 'Wrote draft: state/drafts/planning.draft.md\n')
   const box = section(page, /5\. Synthesize a draft/)
   await box.locator('select').first().selectOption('planning')
-  await box.locator('textarea').first().fill('Ront')
+  await box.getByPlaceholder('One subject per line — force-includes these dossiers').fill('Ront')
   const fallback = box.getByLabel('Write fallback lines for NPCs without a published dossier')
   await expect(fallback).not.toBeChecked()
 
@@ -447,4 +447,242 @@ test('the world_state budget panel still reads its own report', async ({ page })
   const panel = section(page, /5\. Synthesize a draft/).locator('.budgets')
   await expect(panel.getByText('all within budget')).toBeVisible()
   await expect(panel.getByRole('row', { name: /Locations\s+400\s+450\s+ok/ })).toBeVisible()
+})
+
+test('authority correction follows the CLI parity flow in five explicit GM actions', async ({ page }) => {
+  await openPage(page)
+  let initialized = false
+  let revision = 1
+  let recordRevision = 1
+  const calls: { path: string; body: Record<string, unknown> }[] = []
+  const envelope = (data: Record<string, unknown> = {}, message = 'ok') => ({
+    ok: true, code: 'OK', message, artifacts: [], data,
+  })
+  const status = () => envelope({ campaign: 'fixture', revision, sha256: `ledger-${revision}`, records: initialized ? 1 : 0, pending_transaction: null })
+  const records = () => envelope({ records: initialized ? [{ id: 'earthstone-actor', revision: recordRevision, status: 'draft' }] : [] })
+
+  await page.route(url => url.pathname === `${BASE}/authority/status`, route => {
+    if (!initialized) return route.fulfill({ json: envelope({ state: 'absent', campaign: null, revision: null, sha256: null, records: 0, pending_transaction: null }) })
+    return route.fulfill({ json: status() })
+  })
+  await page.route(url => url.pathname === `${BASE}/authority/records`, route => route.fulfill({ json: records() }))
+  await page.route(url => url.pathname === `${BASE}/authority/records/earthstone-actor/history`, route => route.fulfill({ json: envelope({ events: [] }) }))
+  await page.route(url => url.pathname.startsWith(`${BASE}/authority/`), async route => {
+    if (route.request().method() !== 'POST') return route.fallback()
+    const path = new URL(route.request().url()).pathname.slice(`${BASE}/authority/`.length)
+    const body = route.request().postDataJSON() as Record<string, unknown>
+    calls.push({ path, body })
+    let result = envelope()
+    if (path === 'init') initialized = true
+    if (path === 'records/stage') result = envelope({ id: 'stage-1', sha256: 'stage-digest', record: { id: 'earthstone-actor' } }, 'record staged')
+    if (path === 'records/stages/stage-1/apply') {
+      revision = 2; recordRevision = 2
+      result = envelope({ id: 'earthstone-actor', revision: recordRevision, ledger_revision: revision }, 'stage applied')
+    }
+    if (path === 'records/earthstone-actor/propose') {
+      result = envelope({ id: 'proposal-1', proposal_sha256: 'proposal-digest', diff: '--- before\n+++ after\n-Earthstone fell\n+Earthstone was taken' }, 'proposal ready')
+    }
+    if (path === 'records/earthstone-actor/apply') { revision = 3; result = envelope({ transaction_id: 'tx-1' }, 'correction applied') }
+    await route.fulfill({ contentType: 'text/event-stream', body: sse(JSON.stringify(result), 0) })
+  })
+  await page.reload()
+
+  const authority = page.locator('[data-test="authority-panel"]')
+  await authority.getByRole('button', { name: 'Initialize authority ledger' }).click() // 1
+  await expect(authority.getByText('ledger revision 1')).toBeVisible()
+  await authority.getByPlaceholder('docs/authority/records/earthstone.yaml').fill('docs/authority/earthstone.yaml')
+  await authority.getByRole('button', { name: 'Stage record revision' }).click() // 2
+  await authority.getByRole('button', { name: 'Apply staged revision' }).click() // 3
+  await expect(authority.getByRole('button', { name: 'Apply staged revision' })).toHaveCount(0)
+  await expect(authority.getByRole('row', { name: /earthstone-actor\s+draft\s+2/ })).toBeVisible()
+  await authority.getByRole('button', { name: 'Propose source correction' }).click() // 4
+  await expect(authority.getByLabel('Exact proposed source diff')).toContainText('Earthstone was taken')
+  await authority.getByRole('button', { name: 'Apply displayed correction' }).click() // 5
+
+  expect(calls.map(c => c.path)).toEqual([
+    'init', 'records/stage', 'records/stages/stage-1/apply',
+    'records/earthstone-actor/propose', 'records/earthstone-actor/apply',
+  ])
+  expect(calls[4].body.proposal_sha256).toBe('proposal-digest')
+})
+
+test('authority keeps stale, recovery, withdrawal, retirement, and proposal binding visible to the GM', async ({ page }) => {
+  await openPage(page)
+  const calls: { path: string; body: Record<string, unknown> }[] = []
+  const envelope = (data: Record<string, unknown> = {}, message = 'ok') => ({ ok: true, code: 'OK', message, artifacts: [], data })
+  const recordRows = [
+    { id: 'note-a', revision: 3, status: 'applied', classification: 'RULED', audience: 'gm' },
+    { id: 'note-b', revision: 1, status: 'active', classification: 'PREP', audience: 'gm' },
+  ]
+  await page.route(url => url.pathname === `${BASE}/authority/status`, route => route.fulfill({
+    json: envelope({ state: 'pending', campaign: 'fixture', revision: 7, sha256: 'ledger-7', records: 2,
+      pending_transaction: 'tx-pending', stale_projections: [{ doc: 'planning', draft: 'state/drafts/planning.draft.md', reason: 'authority manifest changed; regenerate with --force' }] }),
+  }))
+  await page.route(url => url.pathname === `${BASE}/authority/records`, route => route.fulfill({ json: envelope({ records: recordRows }) }))
+  await page.route(url => url.pathname.startsWith(`${BASE}/authority/`), async route => {
+    if (route.request().method() !== 'POST') return route.fallback()
+    const path = new URL(route.request().url()).pathname.slice(`${BASE}/authority/`.length)
+    const body = route.request().postDataJSON() as Record<string, unknown>
+    calls.push({ path, body })
+    const result = path === 'records/note-a/propose'
+      ? envelope({ id: 'proposal-a', proposal_sha256: 'proposal-a-sha', diff: '--- before\n+++ after\n-old\n+new' })
+      : envelope()
+    await route.fulfill({ contentType: 'text/event-stream', body: sse(JSON.stringify(result), 0) })
+  })
+  await page.reload()
+
+  const authority = page.locator('[data-test="authority-panel"]')
+  await expect(authority.getByText('recovery required')).toBeVisible()
+  await expect(authority.getByText('Stale projections: planning: authority manifest changed; regenerate with --force')).toBeVisible()
+  await authority.getByRole('button', { name: 'Recover transaction' }).click()
+  await authority.getByRole('button', { name: 'Propose source correction' }).first().click()
+  await expect(authority.getByLabel('Exact proposed source diff')).toBeVisible()
+  await authority.getByRole('button', { name: 'Select' }).nth(1).click()
+  await expect(authority.getByLabel('Exact proposed source diff')).toHaveCount(0)
+  await expect(authority.getByRole('button', { name: 'Apply displayed correction' })).toHaveCount(0)
+  await authority.getByRole('button', { name: 'Select' }).first().click()
+  await authority.getByPlaceholder('Reason for requesting a safe reversal').fill('Superseded by table ruling')
+  await authority.getByRole('button', { name: 'Request withdrawal' }).click()
+  await authority.getByRole('button', { name: 'Select' }).nth(1).click()
+  await authority.getByRole('button', { name: 'Retire record' }).click()
+
+  expect(calls.map(call => call.path)).toEqual([
+    'transactions/tx-pending/recover', 'records/note-a/propose', 'records/note-a/withdraw', 'records/note-b/retire',
+  ])
+  expect(calls[2].body.reason).toBe('Superseded by table ruling')
+  expect(calls[3].body).toMatchObject({ reason: 'Superseded by table ruling', expected_revision: 1, expected_ledger_sha256: 'ledger-7' })
+})
+
+test('authority conflict review invokes the CLI-backed history, dismissal, and human finding controls', async ({ page }) => {
+  await openPage(page)
+  const calls: { path: string; body: Record<string, unknown> }[] = []
+  const envelope = (data: Record<string, unknown> = {}) => ({ ok: true, code: 'OK', message: 'ok', artifacts: [], data })
+  await page.route(url => url.pathname === `${BASE}/authority/status`, route => route.fulfill({ json: envelope({ state: 'initialized', campaign: 'fixture', revision: 4, sha256: 'ledger-4', records: 2, conflicts: 1 }) }))
+  await page.route(url => url.pathname === `${BASE}/authority/records`, route => route.fulfill({ json: envelope({ records: [] }) }))
+  await page.route(url => url.pathname === `${BASE}/authority/conflicts`, route => route.fulfill({ json: envelope({ conflicts: [{ id: 'gate-conflict', basis: 'structured_value', status: 'open', record_ids: ['gate-open', 'gate-closed'], projections: ['planning'], records: [{ id: 'gate-open', source: 'notes/gate.md', anchor: 'gate', normalized_value: 'open', effective: { from_chapter: 1, through_chapter: 3 }, projections: ['planning'] }, { id: 'gate-closed', source: 'notes/gate.md', anchor: 'gate', normalized_value: 'closed', effective: { from_chapter: 1, through_chapter: 3 }, projections: ['planning'] }] }] }) }))
+  await page.route(url => url.pathname === `${BASE}/authority/conflicts/gate-conflict/history`, route => route.fulfill({ json: envelope({ events: [] }) }))
+  await page.route(url => url.pathname.startsWith(`${BASE}/authority/conflicts/`), async route => {
+    if (route.request().method() !== 'POST') return route.fallback()
+    calls.push({ path: new URL(route.request().url()).pathname.slice(`${BASE}/authority/`.length), body: route.request().postDataJSON() as Record<string, unknown> })
+    await route.fulfill({ contentType: 'text/event-stream', body: sse(JSON.stringify(envelope()), 0) })
+  })
+  await page.reload()
+  const authority = page.locator('[data-test="authority-panel"]')
+  await expect(authority.getByText('gate-conflict')).toBeVisible()
+  await expect(authority.getByText(/notes\/gate\.md#gate = open/)).toBeVisible()
+  await authority.getByPlaceholder('Reason for requesting a safe reversal').fill('Reviewed as compatible')
+  await authority.getByRole('button', { name: 'Dismiss conflict' }).click()
+  await authority.getByPlaceholder('contradictory-gate-account').fill('prose-tension')
+  await authority.getByPlaceholder('record IDs, one per line').fill('gate-open\ngate-closed')
+  await authority.getByRole('button', { name: 'Record conflict' }).click()
+  expect(calls).toEqual([
+    { path: 'conflicts/gate-conflict/dismiss', body: { reason: 'Reviewed as compatible', expected_ledger_sha256: 'ledger-4' } },
+    { path: 'conflicts/identify', body: { id: 'prose-tension', record_ids: ['gate-open', 'gate-closed'], basis: 'human_identified', reason: 'Reviewed as compatible', expected_ledger_sha256: 'ledger-4' } },
+  ])
+})
+
+test('planning preview makes the reviewed selector set and GM audience repeatable synth arguments', async ({ page }) => {
+  await openPage(page)
+  const selector = { id: 'gm-notes', path: 'notes/gm/*.md', record_ids: ['note-a'] }
+  const previewCalls: Record<string, unknown>[] = []
+  await page.route(url => url.pathname === '/api/planning/notes', async route => {
+    if (route.request().method() === 'GET') return route.fulfill({ json: [selector] })
+    return route.fallback()
+  })
+  await page.route(url => url.pathname === `${BASE}/authority/notes/preview`, async route => {
+    previewCalls.push(route.request().postDataJSON() as Record<string, unknown>)
+    return route.fulfill({ json: {
+      ok: true, code: 'OK', message: 'authority note selection preview', artifacts: [], data: {
+        selection_sha256: 'selection-sha', membership_digest: 'members-sha', warnings: ['future plan may be stale'],
+        members: [{ selector_id: 'gm-notes', path: 'notes/gm/*.md', resolved_path: '/campaign/notes/gm/plot.md',
+          external: true, record_ids: ['note-a'], reason: 'selector:gm-notes', sha256: 'note-sha', records: [{
+            id: 'note-a', classification: 'PREP', audience: ['gm'], effective: { horizon: 'future' },
+            status: 'active', anchor: 'plot', section_sha256: 'section-sha',
+          }] }],
+      },
+    } })
+  })
+  await page.reload()
+  const seen = await mockRun(page, 'synth/planning')
+  const box = section(page, /5\. Synthesize a draft/)
+  await box.locator('select').first().selectOption('planning')
+  const notes = box.locator('[data-test="authority-note-selection"]')
+  await notes.getByRole('button', { name: 'Preview configured note selection' }).click()
+  const preview = box.locator('[data-test="authority-note-preview"]')
+  await expect(preview.getByLabel('Reviewed selection digest')).toHaveValue('selection-sha')
+  await expect(preview.getByText('external')).toBeVisible()
+  await expect(preview.getByRole('row', { name: /gm-notes.*note-a.*PREP.*gm.*selector:gm-notes.*note-sha/ })).toBeVisible()
+  await expect(preview.getByText('future plan may be stale')).toBeVisible()
+  await box.getByRole('button', { name: 'Synthesize planning' }).click()
+
+  expect(previewCalls).toEqual([{ audience: 'gm' }])
+  await expect.poll(() => seen.length).toBe(1)
+  expect(seen[0].searchParams.getAll('authority_selection')).toEqual(['selection-sha'])
+  expect(seen[0].searchParams.get('audience')).toBe('gm')
+
+  // Any path/membership edit discards the reviewed snapshot. The next run
+  // cannot reuse a selector set that the GM did not inspect.
+  await box.getByLabel('Path for gm-notes').fill('notes/gm/next.md')
+  await expect(preview).toHaveCount(0)
+  await box.getByRole('button', { name: 'Synthesize planning' }).click()
+  await expect.poll(() => seen.length).toBe(2)
+  expect(seen[1].searchParams.has('authority_selection')).toBe(false)
+  expect(seen[1].searchParams.has('audience')).toBe(false)
+})
+
+test('a non-GM coverage refusal is safe and cannot fall back to GM synthesis', async ({ page }) => {
+  await openPage(page)
+  const selector = { id: 'restricted', path: 'notes/restricted.md' }
+  await page.route(url => url.pathname === '/api/planning/notes', route => route.fulfill({ json: [selector] }))
+  await page.route(url => url.pathname === `${BASE}/authority/notes/preview`, route => route.fulfill({
+    status: 422,
+    json: { ok: false, code: 'AUTH_VALIDATION', message: 'non-GM generation is unavailable until authority audience filtering is enabled', artifacts: [], data: {} },
+  }))
+  await page.reload()
+  const box = section(page, /5\. Synthesize a draft/)
+  await box.locator('select').first().selectOption('planning')
+  const notes = box.locator('[data-test="authority-note-selection"]')
+  await notes.locator('select').selectOption('players')
+  await expect(box.getByText('Preview complete authorized support for this audience before planning synthesis.')).toBeVisible()
+  await notes.getByRole('button', { name: 'Preview configured note selection' }).click()
+  await expect(box.getByText('non-GM generation is unavailable until authority audience filtering is enabled')).toBeVisible()
+  await expect(box.getByRole('button', { name: 'Synthesize planning' })).toBeDisabled()
+  await expect(box.getByText('GM_SECRET_SENTINEL')).toHaveCount(0)
+})
+
+test('player and named-character previews run in distinct restricted namespaces', async ({ page }) => {
+  await openPage(page)
+  const selector = { id: 'restricted', path: 'notes/restricted.md' }
+  const previews: string[] = []
+  await page.route(url => url.pathname === '/api/planning/notes', route => route.fulfill({ json: [selector] }))
+  await page.route(url => url.pathname === `${BASE}/authority/notes/preview`, route => {
+    const audience = String((route.request().postDataJSON() as Record<string, unknown>).audience)
+    previews.push(audience)
+    return route.fulfill({ json: { ok: true, code: 'OK', message: 'authorized selection preview', artifacts: [], data: {
+      audience, selection_sha256: `${audience}-selection`, membership_digest: `${audience}-members`, warnings: [],
+      members: [{ authorized: true, reason: 'selected support' }],
+    } } })
+  })
+  await page.reload()
+  const seen = await mockRun(page, 'synth/planning')
+  const box = section(page, /5\. Synthesize a draft/)
+  await box.locator('select').first().selectOption('planning')
+  const notes = box.locator('[data-test="authority-note-selection"]')
+
+  await notes.locator('select').selectOption('players')
+  await notes.getByRole('button', { name: 'Preview configured note selection' }).click()
+  await expect(box.locator('[data-test="authority-note-preview"]').getByText('restricted member')).toBeVisible()
+  await expect(box.getByRole('button', { name: 'Synthesize planning' })).toBeEnabled()
+  await box.getByRole('button', { name: 'Synthesize planning' }).click()
+  await notes.locator('select').selectOption('character')
+  await notes.getByLabel('Stable character id').fill('sable')
+  await expect(box.getByRole('button', { name: 'Synthesize planning' })).toBeDisabled()
+  await notes.getByRole('button', { name: 'Preview configured note selection' }).click()
+  await expect.poll(() => previews).toEqual(['players', 'character:sable'])
+  await expect(box.getByRole('button', { name: 'Synthesize planning' })).toBeEnabled()
+  await box.getByRole('button', { name: 'Synthesize planning' }).click()
+  await expect.poll(() => seen.length).toBe(2)
+  expect(seen.map(call => call.searchParams.get('audience'))).toEqual(['players', 'character:sable'])
+  expect(seen.map(call => call.searchParams.get('authority_selection'))).toEqual(['players-selection', 'character:sable-selection'])
+  await expect(box.getByText('GM_SECRET_SENTINEL')).toHaveCount(0)
 })

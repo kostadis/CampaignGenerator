@@ -16,6 +16,7 @@ from campaignlib.planning_config import (
     PLANNING_CONFIG_FILENAME,
     PlanningConfig,
     PlanningEntry,
+    PlanningNoteSelector,
     load_planning_config,
     save_planning_config,
 )
@@ -163,3 +164,47 @@ class PlanningConfigService:
         if len(config.factions) == original_count:
             raise HTTPException(status_code=404, detail=f"Faction '{name}' not found")
         self._save(config)
+
+    # ========================================================================
+    # Authority-note selector operations
+    # ========================================================================
+
+    def get_notes(self) -> List[PlanningNoteSelector]:
+        """Return configured selectors; [] means legacy summary-only mode."""
+        return list(self._load().notes or [])
+
+    def get_note(self, selector_id: str) -> PlanningNoteSelector:
+        for selector in self.get_notes():
+            if selector.id == selector_id:
+                return selector
+        raise HTTPException(status_code=404, detail=f"Note selector '{selector_id}' not found")
+
+    def create_note(self, selector: PlanningNoteSelector) -> PlanningNoteSelector:
+        config = self._load()
+        selectors = list(config.notes or [])
+        if any(item.id == selector.id for item in selectors):
+            raise HTTPException(status_code=409, detail=f"Note selector '{selector.id}' already exists")
+        selectors.append(selector)
+        self._save(config.model_copy(update={"notes": selectors}))
+        return selector
+
+    def update_note(self, selector_id: str, selector: PlanningNoteSelector) -> PlanningNoteSelector:
+        if selector_id != selector.id:
+            raise HTTPException(status_code=400, detail="Note selector id mismatch between URL and body")
+        config = self._load()
+        selectors = list(config.notes or [])
+        for index, item in enumerate(selectors):
+            if item.id == selector_id:
+                selectors[index] = selector
+                self._save(config.model_copy(update={"notes": selectors}))
+                return selector
+        raise HTTPException(status_code=404, detail=f"Note selector '{selector_id}' not found")
+
+    def delete_note(self, selector_id: str) -> None:
+        config = self._load()
+        selectors = [item for item in (config.notes or []) if item.id != selector_id]
+        if len(selectors) == len(config.notes or []):
+            raise HTTPException(status_code=404, detail=f"Note selector '{selector_id}' not found")
+        # An explicit empty notes list is invalid; deleting the last selector
+        # returns this campaign to the absent legacy field instead.
+        self._save(config.model_copy(update={"notes": selectors or None}))

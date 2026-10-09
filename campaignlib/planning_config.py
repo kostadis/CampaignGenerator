@@ -25,7 +25,7 @@ from typing import Annotated, Any
 
 import yaml
 from campaignlib.selection import ModelSelection
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, model_validator
 
 from campaignlib.util import atomic_write_text
 
@@ -69,6 +69,27 @@ class PlanningEntry(BaseModel):
     trackless: bool = False
 
 
+class PlanningNoteSelector(BaseModel):
+    """One explicit exact-path or glob authority-note selector."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    path: str
+    record_ids: frozenset[str] | None = None
+
+    @model_validator(mode="after")
+    def _valid(self):
+        import re
+        if not re.fullmatch(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*", self.id):
+            raise ValueError("note selector id must be a stable lowercase slug")
+        if not self.path:
+            raise ValueError("note selector path is required")
+        if self.record_ids is not None and not self.record_ids:
+            raise ValueError("note selector record_ids must be non-empty when configured")
+        return self
+
+
 class PlanningConfig(BaseModel):
     """Root model — the ``<config>/planning.yaml`` shape."""
 
@@ -82,6 +103,9 @@ class PlanningConfig(BaseModel):
     #: case. Set it to run this document's generation on a different model or
     #: backend from the rest of the app, affecting only this service's runs.
     selection: ModelSelection = Field(default_factory=ModelSelection)
+    # None preserves the legacy summary-only configuration.  A present list is
+    # checked by the loader so empty cannot silently select everything.
+    notes: list[PlanningNoteSelector] | None = None
 
 
 class ResolvedEntry(BaseModel):
@@ -144,6 +168,10 @@ def load_planning_config(path: Path) -> PlanningConfig:
     if not isinstance(npcs_raw, list) or not isinstance(factions_raw, list):
         raise ValueError(f"{path} must define 'npcs' and/or 'factions' as lists")
 
+    notes_present = "notes" in raw
+    notes_raw = raw.get("notes")
+    if notes_present and (not isinstance(notes_raw, list) or not notes_raw):
+        raise ValueError(f"{path} notes must be a non-empty list when configured")
     return PlanningConfig(
         npcs=[_parse_entry(e, "npc", path) for e in npcs_raw],
         factions=[_parse_entry(e, "faction", path) for e in factions_raw],
@@ -152,6 +180,7 @@ def load_planning_config(path: Path) -> PlanningConfig:
         # `selection` and hit exactly that: the write returned 200 and the
         # read came back empty.
         selection=ModelSelection.model_validate(raw.get("selection") or {}),
+        notes=None if not notes_present else [PlanningNoteSelector.model_validate(item) for item in notes_raw],
     )
 
 
@@ -176,6 +205,11 @@ def save_planning_config(path: Path, cfg: PlanningConfig) -> None:
     # See save_party_config: this builder drops any field not named here.
     if not cfg.selection.is_empty():
         data["selection"] = cfg.selection.model_dump(exclude_none=True)
+    if cfg.notes is not None:
+        data["notes"] = [
+            {**note.model_dump(exclude_none=True), **({"record_ids": sorted(note.record_ids)} if note.record_ids is not None else {})}
+            for note in cfg.notes
+        ]
     if cfg.npcs:
         data["npcs"] = [_entry_dict(e) for e in cfg.npcs]
     if cfg.factions:

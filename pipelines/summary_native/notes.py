@@ -490,13 +490,20 @@ def check_chunk(raw: str, chunk: Sequence[Chapter], label: str | None = None) ->
     return res
 
 
-def cache_key(*, system: str, user: str, backend: str, model: str | None, max_tokens: int, chunk_chars: int) -> str:
+def cache_key(*, system: str, user: str, backend: str, model: str | None, max_tokens: int, chunk_chars: int,
+              audience: str = "gm", filtered_payload_digest: str | None = None,
+              authority_policy_version: int | None = None, authority_records_digest: str | None = None,
+              source_digest: str | None = None, selection_membership_digest: str | None = None) -> str:
     """Hash of everything that decides a chunk's extraction (research R5): the prompts (the user
     prompt holds the chapter texts and the outline), backend, model, ``max_tokens`` and ``chunk_chars``."""
     sha = lambda t: hashlib.sha256(t.encode("utf-8")).hexdigest()  # noqa: E731
     payload = {
         "system_sha": sha(system), "user_sha": sha(user), "backend": backend, "model": model,
         "max_tokens": max_tokens, "chunk_chars": chunk_chars,
+        "audience": audience, "filtered_payload_digest": filtered_payload_digest,
+        "authority_policy_version": authority_policy_version,
+        "authority_records_digest": authority_records_digest, "source_digest": source_digest,
+        "selection_membership_digest": selection_membership_digest,
     }
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
 
@@ -584,12 +591,12 @@ def chunk_stem(index: int, chapters: str) -> str:
     return f"chunk{index:02d}.{chapters}"
 
 
-def load_checked(range_dir: Path) -> tuple[dict, list[CheckedChunk]]:
+def load_checked(range_dir: Path, *, audience: str = "gm") -> tuple[dict, list[CheckedChunk]]:
     """``(manifest, [CheckedChunk])`` for a finished extraction, in chunk order.
 
     Raises ``NotesIncomplete`` naming every chunk that has no checked result matching the manifest.
     """
-    nd = freshness.notes_dir(range_dir)
+    nd = freshness.notes_dir(range_dir, audience)
     manifest = json.loads((nd / freshness.NOTES_MANIFEST).read_text(encoding="utf-8"))
     results: list[CheckedChunk] = []
     missing: list[str] = []

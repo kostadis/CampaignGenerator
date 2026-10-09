@@ -24,12 +24,14 @@ from campaignlib.api.client import resolve_cli_model
 from campaignlib.thread_registry import check_registry, load_registry
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import annotate, arc_check, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, thread_check, validate
+from pipelines.summary_native.authority import AuthorityError
 from pipelines.summary_native.freshness import check_fresh
 
 EXIT_REFUSED = 2
 EXIT_INCOMPLETE = 3
 EXIT_MODEL_FAILED = 4
 EXIT_BLOCKING = 1
+EXIT_AUTH_CONFLICT = 5
 
 
 def load_outline(doc: str) -> list[str]:
@@ -96,6 +98,15 @@ def _new_run_dir(runs_root: Path, stamp: str) -> Path:
 def _refuse(msg: str) -> int:
     print(f"Error: {msg}", file=sys.stderr)
     return EXIT_REFUSED
+
+
+def _authority_refuse(exc: Exception) -> int:
+    """Keep a structured authority conflict in its documented stable class."""
+    message = str(exc)
+    if message.startswith("AUTH_CONFLICT:"):
+        print(f"Error: {message}", file=sys.stderr)
+        return EXIT_AUTH_CONFLICT
+    return _refuse(f"authority input refused: {message}")
 
 
 def _rel(path: Path, root: Path) -> str:
@@ -257,6 +268,8 @@ class StateCtx:
     #: planning and campaign_state: the GM's thread registry as loaded (the chapter a thread was resolved at is read from it).
     thread_registry: object = None
     status_table: str = ""
+    #: Non-GM only: immutable bytes admitted by the authority snapshot.
+    support: object = None
 
 
 _FENCE = "`````"
@@ -644,7 +657,7 @@ def _arc_jobs(ctx: StateCtx) -> tuple[list[dict], list[arc_check.ArcSubject]]:
         report.append(arc_check.ArcSubject(name, kind, shown, len(ns)))
         if not ns:
             continue
-        text = Path(path).read_text(encoding="utf-8")
+        text = ctx.support.text_for(path) if ctx.support is not None else Path(path).read_text(encoding="utf-8")
         stem = f"arc_{_name_slug(name)}"
         while any(j["file"] == stem for j in jobs):  # two subjects can slug alike (an NPC and a faction)
             stem += "_"
@@ -686,6 +699,41 @@ def _prose_prompt(doc: str, heading: str, brief: str, routed: list[str], extra: 
         )
         + f"\n\nOUTLINE: write exactly this one `##` heading and its body, nothing else at that level:\n\n{heading}\n"
     )
+
+
+def _planning_authority_prompt(root: Path, records, support=None) -> str:
+    """Render the reviewed, precedence-resolved note sections for planning calls."""
+    if not records:
+        return ""
+    from pipelines.summary_native.authority_inputs import resolve_anchor_span
+
+    blocks = []
+    for record in records:
+        source = Path(record.source.path)
+        source = source if source.is_absolute() else root / source
+        raw = support.bytes_for(source) if support is not None else source.read_bytes()
+        section = resolve_anchor_span(raw, record.source.anchor).decode("utf-8")
+        scope = record.effective.model_dump(mode="json", exclude_none=True)
+        blocks.append(
+            f"ID: {record.id}\nCLASSIFICATION: {record.classification.value}\n"
+            f"SUBJECT: {record.subject.kind}:{record.subject.id}\nEFFECTIVE: {json.dumps(scope, sort_keys=True)}\n"
+            f"SOURCE: {_rel(source, root)}#{record.source.anchor}\n{section.rstrip()}"
+        )
+    return "\n\nREVIEWED PLANNING AUTHORITY (already classified and selected by the GM):\n\n" + "\n\n---\n\n".join(blocks)
+
+
+def _stale_future_warnings(records, latest_chapter: int) -> list[str]:
+    """Future notes dated before this range may describe play that has happened."""
+    warnings: list[str] = []
+    for record in records:
+        if record.classification.value not in {"PREP", "OVERLAY"} or not record.planning_date:
+            continue
+        match = re.search(r"(?:chapter[-:\s]*)?(\d+)$", record.planning_date, re.I)
+        if match and int(match.group(1)) <= latest_chapter:
+            warnings.append(
+                f"stale future planning authority: {record.id} is dated {record.planning_date} before or at chapter {latest_chapter}"
+            )
+    return warnings
 
 
 def _body_of(out: str, heading: str) -> str | None:
@@ -731,8 +779,23 @@ def run_state_synth(
     """
     now = now or _utcnow
     doc = args.doc
+    # Construct this snapshot while holding the authority read lock.  The
+    # matching check before draft publication closes the model-call window.
+    authority_manifest = None
+    authority_evidence = None
+    support = None
+    selection = None
+    planning_authority = []
+    authority_warnings: list[str] = []
+    try:
+        from pipelines.summary_native.authority import load_ledger
+    except Exception as e:
+        return _authority_refuse(e)
     budgets = {**_default_budgets(doc), **(budgets or {})}
+    audience = getattr(args, "audience", "gm")
     if report.blocking_count:
+        if audience != "gm":
+            return _refuse("validation is unavailable for this restricted audience")
         print(report.to_markdown(), end="")
         print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
         return EXIT_BLOCKING
@@ -744,8 +807,13 @@ def run_state_synth(
     if stale:
         return _refuse(stale)
     since, until = int(manifest["range"]["since"]), int(manifest["range"]["until"])
-    extract_cmd = f"summary_native extract --since {since} --until {until}"
-    problem = freshness.check_notes_fresh(range_dir, registry_path, players_path, extract_cmd=extract_cmd)
+    try:
+        from pipelines.summary_native.authority import validate_audience_target
+        validate_audience_target(root, audience)
+    except Exception:
+        return _refuse("invalid or unknown audience target")
+    extract_cmd = f"summary_native extract --since {since} --until {until} --audience {audience}"
+    problem = freshness.check_notes_fresh(range_dir, registry_path, players_path, extract_cmd=extract_cmd, audience=audience)
     if problem:
         return _refuse(problem)
     if doc in ("party", "planning"):
@@ -753,7 +821,7 @@ def run_state_synth(
         if problem:
             return _refuse(problem)
     try:
-        notes_manifest, results = notes.load_checked(range_dir)
+        notes_manifest, results = notes.load_checked(range_dir, audience=audience)
     except notes.NotesIncomplete as e:
         return _refuse(f"{e}; run `{extract_cmd}`")
 
@@ -765,37 +833,103 @@ def run_state_synth(
         problem = freshness.check_audit_fresh(range_dir, track_paths)
         if problem:
             return _refuse(problem)
-    try:
-        forms, pcs, ambiguous = state_sections.load_identity(registry_path, players_path)
-    except (ValueError, OSError) as e:
-        return _refuse(f"cannot read the entity registry or players.yaml: {e}")
-    party_chars: list[context.ResolvedCharacter] = []
     party_path: Path | None = None
+    planning_path: Path | None = None
     if doc == "party":
         given = getattr(args, "party_config", None)
         party_path = schema.resolve_under(root, given) if given else (
             Path(config_dir) if config_dir is not None else Path(root) / "config") / "party.yaml"
-        try:
-            party_chars = context.load_party(party_path, root)
-        except context.DocConfigError as e:
-            return _refuse(str(e))
-
-    planning: context.ResolvedPlanning | None = None
-    planning_path: Path | None = None
-    attachment: thread_attach.Attachment | None = None
     if doc == "planning":
         given = getattr(args, "planning_config", None)
         planning_path = schema.resolve_under(root, given) if given else (
             Path(config_dir) if config_dir is not None else Path(root) / "config") / "planning.yaml"
+    if audience != "gm":
+        # Capture every known deterministic input before the first support
+        # loader.  Dynamic files named by party/planning configs are checked by
+        # the same immutable snapshot when those configs are parsed below.
+        required = [p for p in (registry_path, players_path, party_path, planning_path,
+                                thread_registry_path if doc in THREAD_DOCS else None, *track_paths) if p is not None]
         try:
-            planning = context.load_planning(planning_path, root, explicit=bool(given))
-        except context.DocConfigError as e:
+            from pipelines.summary_native.authority_inputs import support_snapshot
+            support = support_snapshot(root, audience=audience, required=required, since=since, until=until)
+            authority_manifest = support.manifest
+        except Exception:
+            return _refuse("non-GM synthesis requires reviewed coverage for every supporting source")
+    try:
+        forms, pcs, ambiguous = state_sections.load_identity(
+            registry_path, players_path, source_bytes=support.bytes_for if support is not None else None)
+    except (ValueError, OSError) as e:
+        return _refuse(f"cannot read the entity registry or players.yaml: {e}")
+    party_chars: list[context.ResolvedCharacter] = []
+    if doc == "party":
+        try:
+            party_chars = context.load_party(party_path, root, source_text=support.text_for if support is not None else None)
+        except (context.DocConfigError, AuthorityError) as e:
+            if audience != "gm":
+                return _refuse("non-GM synthesis requires reviewed coverage for every supporting source")
             return _refuse(str(e))
+
+    planning: context.ResolvedPlanning | None = None
+    attachment: thread_attach.Attachment | None = None
+    if doc == "planning":
+        try:
+            planning = context.load_planning(planning_path, root, explicit=bool(getattr(args, "planning_config", None)),
+                                             source_text=support.text_for if support is not None else None)
+        except (context.DocConfigError, AuthorityError) as e:
+            if audience != "gm":
+                return _refuse("non-GM synthesis requires reviewed coverage for every supporting source")
+            return _refuse(str(e))
+    try:
+        from pipelines.summary_native.authority import Projection, load_ledger
+        from pipelines.summary_native.authority_inputs import (build_manifest, filtered_evidence,
+            require_conflict_free, resolve_anchored_records, resolve_planning_precedence,
+            resolve_selection, selected_planning_records)
+
+        requested_selection = getattr(args, "authority_selection", None)
+        if requested_selection and doc != "planning":
+            return _refuse("--authority-selection applies to planning only")
+        if doc == "planning" and planning.notes is not None:
+            if not requested_selection:
+                return _refuse("planning notes are configured; run `summary_native authority notes preview --audience gm --json` and pass its selection_sha256 as --authority-selection")
+            selection = resolve_selection(root, planning.notes)
+            if requested_selection != selection.digest:
+                return _refuse("authority selection changed or was not reviewed; run `summary_native authority notes preview --audience gm --json`")
+            ledger = load_ledger(root, required=audience != "gm")
+            authority_manifest = (
+                support_snapshot(root, audience=audience, required=required, selection=selection, since=since, until=until).manifest
+                if support is not None else
+                build_manifest(root, ledger, audience=audience, selection=selection, since=since, until=until)
+            )
+            authority_evidence = filtered_evidence(root, ledger, audience=audience, since=since, until=until)
+            scoped_records = selected_planning_records(root, ledger, selection, audience=audience, since=since, until=until)
+            require_conflict_free(ledger, projection=Projection(doc), record_ids={record.id for record in scoped_records})
+            planning_authority, authority_warnings = resolve_planning_precedence(scoped_records)
+            authority_warnings.extend(_stale_future_warnings(planning_authority, until))
+        elif requested_selection:
+            return _refuse("planning has no configured authority notes; remove --authority-selection")
+        else:
+            ledger = load_ledger(root, required=audience != "gm")
+            if ledger is not None:
+                authority_manifest = support.manifest if support is not None else build_manifest(root, ledger, audience=audience, since=since, until=until)
+                authority_evidence = filtered_evidence(root, ledger, audience=audience, since=since, until=until)
+                scoped_records = resolve_anchored_records(ledger, audience=audience, since=since, until=until)
+                require_conflict_free(ledger, projection=Projection(doc), record_ids={record.id for record in scoped_records})
+        if audience != "gm":
+            if authority_evidence is None or not authority_evidence.sections:
+                return _refuse("no complete authorized support exists for this audience")
+            if not any(chunk.notes for chunk in results):
+                return _refuse("checked notes have no complete authorized support for this audience; rerun extract")
+    except Exception as e:
+        return _authority_refuse(e)
     if doc in THREAD_DOCS:
         # Thread identity is the GM's registry; a registry that fails its own check is not read (spec 034 R4).
         # campaign_state reads it the same way (#530): no registry file is an empty one, so no ratified thread.
         try:
-            thread_registry = load_registry(thread_registry_path) if thread_registry_path is not None else {"version": 1, "threads": []}
+            thread_registry = (
+                yaml.safe_load(support.text_for(thread_registry_path))
+                if support is not None and thread_registry_path is not None
+                else load_registry(thread_registry_path) if thread_registry_path is not None else {"version": 1, "threads": []}
+            ) or {"version": 1, "threads": []}
             thread_registry["threads"] = list(thread_registry.get("threads") or [])
             findings = check_registry(thread_registry)
         except (OSError, ValueError, AttributeError, TypeError) as e:  # YAML errors are ValueErrors
@@ -812,7 +946,8 @@ def run_state_synth(
     if doc in ("world_state", "planning"):
         named = [forms.get(n.strip().casefold(), n.strip()) for n in args.name or ()]
         npc_dir = npc_root or Path(root) / schema.DEFAULT_NPC_ROOT
-        scopes = key_npcs.registry_npc_scopes(registry_path)
+        dossier_paths = support.paths_under(Path(root) / schema.NPCS_DIR, "*.md") if support is not None else None
+        scopes = key_npcs.registry_npc_scopes(registry_path, reader=support.bytes_for if support is not None else None)
         try:
             if doc == "world_state":
                 chosen = key_npcs.select_key_npcs(
@@ -820,31 +955,34 @@ def run_state_synth(
                     range_until=until, recent_chapters=recent_chapters, recurring_min=recurring_min, named=named,
                 )
                 key_plan = key_npcs.plan_key_npcs(
-                    chosen, root, npc_root=npc_dir, rng=rng_name, results=results, forms=forms)
+                    chosen, root, npc_root=npc_dir, rng=rng_name, results=results, forms=forms,
+                    dossier_paths=dossier_paths, reader=support.bytes_for if support is not None else None)
             else:
                 npc_plan = key_npcs.plan_planning_npcs(
                     select.read_corpus_dossiers(range_dir), scopes, pcs, forms, [e.name for e in planning.npcs],
                     range_until=until, recent_chapters=recent_chapters, recurring_min=recurring_min, named=named,
                     campaign=Path(root), npc_root=npc_dir, rng=rng_name, results=results,
+                    dossier_paths=dossier_paths, reader=support.bytes_for if support is not None else None,
                 )
                 key_plan = npc_plan.npcs
         except select.SelectionError as e:
             return _refuse(f"{e} ({'Key NPCs' if doc == 'world_state' else 'NPC Dossiers'} select the global NPCs only)")
         refusal = key_npcs.refusal_message(key_plan, since, until, getattr(args, "npc_root", None), doc=doc)
         refused = bool(refusal) and not getattr(args, "fallback_npc_lines", False)
-        # What `GET /state` reports as missing_dossiers: the NPCs the latest attempt of this document found
-        # without a usable dossier, whether it then refused or went on with fallback lines.
         atomic_write_text(Path(range_dir) / schema.STATE_DIR / schema.missing_dossiers_file(doc), json.dumps({
-            "range": {"since": since, "until": until},
-            "refused": refused,
+            "range": {"since": since, "until": until}, "refused": refused,
             "npcs": [{"name": k.name, "state": k.missing} for k in key_plan if k.view is None],
         }, indent=2, ensure_ascii=False) + "\n")
         if refused:
             return _refuse(refusal)
 
-    state_dir = Path(range_dir) / schema.STATE_DIR
-    drafts = schema.draft_dir(range_dir, doc)
+    state_dir = freshness.audience_state_dir(range_dir, audience)
+    drafts = state_dir / "drafts"
     draft_path = drafts / f"{doc}.draft.md"
+    if draft_path.exists() and authority_manifest is not None and not args.force:
+        stale_output = freshness.check_authority_draft_fresh(draft_path, authority_manifest)
+        if stale_output:
+            return _refuse(stale_output)
     if draft_path.exists() and not args.force and not args.dump_only:
         return _refuse(f"{draft_path} exists; pass --force to overwrite it")
 
@@ -876,7 +1014,10 @@ def run_state_synth(
     elif doc != "party":
         code_body["## Completed Encounters & Quests"] = state_sections.completed_md(results)
         code_body["## NPC Current States"] = table
-        code_body["## Audit: Tracking Claims"] = state_sections.audit_md(range_dir)
+        code_body["## Audit: Tracking Claims"] = (
+            state_sections.audit_md(range_dir) if audience == "gm"
+            else "_Audience-filtered tracking diagnostics are unavailable._"
+        )
         # the Active Quests section points at the unratified notes (#530), as planning's Active Plots does
         reference[state_sections.UNRATIFIED_KIND] = state_sections.unratified_reference_md(attachment)
         thread_attach.write_attach(range_dir, attachment, (since, until))
@@ -886,8 +1027,11 @@ def run_state_synth(
     last_numbers = set(notes_manifest["chunks"][-1]["numbers"]) if notes_manifest.get("chunks") else set()
     last_chunk = []
     if last_numbers and summaries_dir is not None:
-        last_chunk = [c for c in notes.load_chapters(Path(summaries_dir), min(last_numbers), max(last_numbers))
-                      if c.number in last_numbers]
+        # Full chapter bytes are not safe non-GM support.  A non-GM prompt
+        # only receives the already filtered checked notes above.
+        if audience == "gm":
+            last_chunk = [c for c in notes.load_chapters(Path(summaries_dir), min(last_numbers), max(last_numbers))
+                          if c.number in last_numbers]
     jobs = []
     arc_jobs: list[dict] = []
     arc_subjects: list[arc_check.ArcSubject] = []
@@ -901,10 +1045,16 @@ def run_state_synth(
             party=party_chars, attributions=attributions, levels=levels,
             planning=planning, npc_plan=npc_plan, attachment=attachment, status_table=table if doc == "planning" else "",
             thread_registry=thread_registry if doc in THREAD_DOCS else None,
+            support=support,
         )
         jobs.extend({"party": _party_jobs, "planning": _planning_jobs, "campaign_state": _campaign_jobs}[doc](ctx))
         if doc != "campaign_state":
             arc_jobs, arc_subjects = _arc_jobs(ctx)
+    if doc == "planning" and planning_authority:
+        authority_prompt = _planning_authority_prompt(Path(root), planning_authority, support=support)
+        for job in [*jobs, *arc_jobs]:
+            if job.get("user"):
+                job["user"] += authority_prompt
     for heading, route, attach in state_sections.PROSE_SECTIONS.get(doc, ()):
         routed = state_sections.route_notes(route, results)
         extra = ""
@@ -956,6 +1106,7 @@ def run_state_synth(
             "registry_sha256": freshness.sha_file(registry_path),
             "players_sha256": freshness.sha_file(players_path),
             "track_files": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in track_paths if p.is_file()],
+            **({"authority_manifest": authority_manifest} if authority_manifest is not None else {}),
             # party: the roster file and every sheet, backstory and mechanic file it names, by content
             **({"party_config": {
                 "path": _rel(party_path, root), "sha256": corpus.sha256_file(party_path),
@@ -969,7 +1120,10 @@ def run_state_synth(
                 "files": [{"role": f"arc_score:{e.name}", "path": _rel(e.arc_score, root), "sha256": corpus.sha256_file(e.arc_score)}
                           for e in planning.scored],
             }, "thread_registry_sha256": freshness.sha_file(thread_registry_path),
-                "budgets": dict(sorted(budgets.items()))} if doc == "planning" else {}),
+                "budgets": dict(sorted(budgets.items())),
+                "authority_selection_sha256": selection.digest if selection is not None else None,
+                "authority_warnings": authority_warnings,
+            } if doc == "planning" else {}),
             # campaign_state: the GM's thread registry decides its two thread sections, so it is an input (#530)
             **({"thread_registry_sha256": freshness.sha_file(thread_registry_path)} if doc == "campaign_state" else {}),
         },
@@ -1282,7 +1436,7 @@ def run_state_synth(
         f"<!-- summary_native draft | doc: {doc} | range: ch{since:03d}-{until:03d} "
         f"| record: {record_ref} | notes manifest sha256: {record['inputs']['notes_manifest_sha256']} -->\n" + joined
     )
-    if summaries_dir is not None:
+    if summaries_dir is not None and audience == "gm":
         # Later evidence goes under the line it bears on, verbatim; no line's text changes (FR-020).
         # Code only: a model never rewrites a line after the sections are built.
         ev = annotate.load_evidence(results, notes.load_chapters(Path(summaries_dir), since, until), registry_path, players_path)
@@ -1292,6 +1446,19 @@ def run_state_synth(
         record["annotations"] = annotated.counts()
         save_record()
         print(annotated.summary(), flush=True)
+    if authority_manifest is not None:
+        try:
+            from pipelines.summary_native.authority import load_ledger
+            from pipelines.summary_native.authority_inputs import build_manifest, support_snapshot
+            current_authority = (
+                support_snapshot(root, audience=audience, required=required, selection=selection, since=since, until=until).manifest
+                if support is not None else
+                build_manifest(root, load_ledger(root), audience=audience, selection=selection, since=since, until=until)
+            )
+        except Exception as e:
+            return _refuse(f"authority changed before draft publish: {e}")
+        if current_authority != authority_manifest:
+            return _refuse("authority inputs changed during synthesis; draft is stale, rerun synthesis")
     atomic_write_text(draft_path, text)
     (drafts / f"{doc}.incomplete.md").unlink(missing_ok=True)
     print(f"Wrote draft: {draft_path}")

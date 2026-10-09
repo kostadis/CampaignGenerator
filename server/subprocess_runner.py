@@ -23,10 +23,21 @@ from pathlib import Path
 class BoundedJSONError(RuntimeError):
     """A bounded JSON child failed without exposing untrusted diagnostics."""
 
-    def __init__(self, message: str, *, returncode: int = 70, category: str = "process_failure"):
+    def __init__(
+        self,
+        message: str,
+        *,
+        returncode: int = 70,
+        category: str = "process_failure",
+        payload: dict[str, object] | None = None,
+    ):
         super().__init__(message)
         self.returncode = returncode
         self.category = category
+        # A CLI may intentionally use a non-zero exit while still emitting its
+        # stable JSON envelope.  Keep that already-bounded, parsed object for
+        # typed adapters; legacy callers can continue using message/category.
+        self.payload = payload
 
 GRACE_SECONDS = 4.0  # SIGTERM grace window before SIGKILL (FR-008)
 
@@ -345,9 +356,12 @@ async def run_bounded_json(
             ) from exc
         if proc.returncode != 0:
             safe = _redact_text(stderr.decode("utf-8", errors="replace"), redact_values).strip()
+            error_payload: dict[str, object] | None = None
             try:
-                error_payload = json.loads(stdout.decode("utf-8"))
-                safe = str(error_payload.get("error") or safe) if isinstance(error_payload, dict) else safe
+                value = json.loads(stdout.decode("utf-8"))
+                if isinstance(value, dict):
+                    error_payload = value
+                    safe = str(value.get("message") or value.get("error") or safe)
             except (UnicodeDecodeError, json.JSONDecodeError):
                 pass
             safe = _redact_text(safe, redact_values)
@@ -357,6 +371,7 @@ async def run_bounded_json(
                 safe or f"command exited with code {proc.returncode}",
                 returncode=int(proc.returncode or 70),
                 category="nonzero_exit",
+                payload=error_payload,
             )
         try:
             text = stdout.decode("utf-8")

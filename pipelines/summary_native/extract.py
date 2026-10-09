@@ -26,6 +26,7 @@ endpoint that served it.
 from __future__ import annotations
 
 import json
+import hashlib
 import queue
 import re
 import sys
@@ -56,12 +57,12 @@ def load_system() -> str:
     return (context.PROMPT_DIR / SYSTEM_PROMPT).read_text(encoding="utf-8")
 
 
-def build_user(chunk) -> str:
+def build_user(chunk, *, evidence_header: str | None = None) -> str:
     """The user prompt for one chunk: its chapters verbatim, then the outline. Nothing else: no
     tracking-file items, no audit questions (FR-027)."""
     return (
         f"CHAPTERS IN THIS CHUNK: {npc_chunked.chunk_range(chunk)}\n\n"
-        "EVIDENCE (the GM-reviewed session summaries for these chapters, verbatim):\n"
+        + (evidence_header or "EVIDENCE (the GM-reviewed session summaries for these chapters, verbatim):") + "\n"
         + "".join(notes.chapter_block(c) for c in chunk)
         + "\n\nOUTLINE: write exactly these `##` sections, in this order, and nothing else at that level:\n\n"
         + "\n".join(schema.STATE_MAP_SECTIONS)
@@ -292,7 +293,10 @@ def run_extract(
     now=None,
 ) -> int:
     now = now or synth._utcnow
+    audience = getattr(args, "audience", "gm")
     if report.blocking_count:
+        if audience != "gm":
+            return _refuse("validation is unavailable for this restricted audience")
         print(report.to_markdown(), end="")
         print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
         return EXIT_BLOCKING
@@ -311,6 +315,30 @@ def run_extract(
     present = {c.number for c in chapters}
     absent = [n for n in range(since, until + 1) if n not in present]
 
+    evidence = getattr(args, "authority_evidence", None)
+    if audience != "gm":
+        if evidence is None or not evidence.sections:
+            return _refuse("no complete authorized support exists for this audience")
+        # The model receives only independently classified source slices.  Do
+        # not retain a neighbouring summary paragraph merely to preserve a
+        # chapter-shaped prompt.
+        chapters = []
+        for _, source, data in evidence.sections:
+            source_path = Path(source.split("#", 1)[0])
+            match = schema.PREFIX_RE.match(source_path.name)
+            # Planning notes are routed independently by their reviewed
+            # record/anchor; they must never be given an invented chapter id
+            # that could validate a forged summary citation.
+            if not match:
+                continue
+            text = data.decode("utf-8")
+            targets = set(re.findall(r"^### (\d{3}\.\d{2})\b", text, re.M))
+            h2_targets = {heading: key for heading, key in schema.SECTION_TARGETS.items()}
+            targets.update(h2_targets[line[3:]] for line in text.splitlines()
+                           if line.startswith("## ") and line[3:] in h2_targets)
+            chapters.append(notes.Chapter(int(match.group(1)), source_path, text, targets))
+        if not chapters:
+            return _refuse("no complete structured-summary support exists for this audience")
     system = load_system()
     backend = resolve_cli_model(args, legacy_default=None).backend
     endpoints = list(dict.fromkeys(getattr(args, "endpoints", None) or []))
@@ -325,19 +353,32 @@ def run_extract(
     plans: list[_Plan] = []
     for k, chunk in enumerate(npc_chunked.make_chunks(chapters, chunk_chars), 1):
         rng = npc_chunked.chunk_range(chunk)
-        user = build_user(chunk)
+        user = build_user(chunk, evidence_header=("AUTHORIZED EVIDENCE (verbatim, audience filtered):" if audience != "gm" else None))
         key = notes.cache_key(
-            system=system, user=user, backend=backend, model=args.model, max_tokens=max_tokens, chunk_chars=chunk_chars
+            system=system, user=user, backend=backend, model=args.model, max_tokens=max_tokens, chunk_chars=chunk_chars,
+            audience=getattr(args, "audience", "gm"),
+            filtered_payload_digest=getattr(args, "authority_filtered_payload_digest", None),
+            authority_policy_version=getattr(args, "authority_policy_version", None),
+            authority_records_digest=getattr(args, "authority_records_digest", None),
+            source_digest=getattr(args, "authority_source_digest", None),
+            selection_membership_digest=getattr(args, "authority_selection", None),
         )
         plans.append(_Plan(k, chunk, rng, system, user, key, notes.chunk_stem(k, rng)))
 
-    nd = freshness.notes_dir(range_dir)
+    started = now()
+    run_dir = synth._new_run_dir(freshness.audience_state_dir(range_dir, audience) / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
+    # Non-GM work is staged under its run until the authority manifest is
+    # checked again after the final model response.  A source/ledger change
+    # must never leave a newly checked chunk in the current audience view.
+    published_nd = freshness.notes_dir(range_dir, audience)
+    nd = published_nd
+    staging = audience != "gm" and getattr(args, "authority_manifest", None) is not None
+    if staging:
+        nd = run_dir / "notes"
     nd.mkdir(parents=True, exist_ok=True)
     for p in plans:
         _write_if_changed(nd / f"{p.stem}.user.md", p.user)
 
-    started = now()
-    run_dir = synth._new_run_dir(Path(range_dir) / schema.STATE_DIR / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
     if endpoints:
         targets = endpoints
     elif getattr(args, "endpoint", None) and backend == "dgx":
@@ -346,6 +387,8 @@ def run_extract(
         targets = []  # the backend's own resolution (environment, wiring) names the box
     labels = [short(t) for t in targets] or [backend]
     facts = freshness.notes_manifest_facts(range_dir, registry_path, players_path)
+    if evidence is not None:
+        facts["authority_filtered_payload_sha256"] = evidence.payload_digest
     record = {
         "step": "extract",
         "run_id": run_dir.name,
@@ -360,9 +403,12 @@ def run_extract(
         "parallel": parallel,
         "dump_only": bool(args.dump_only),
         "force": bool(args.force),
+        "audience": audience,
         "inputs": {
             **facts,
-            "summaries": [{"chapter": c.number, "file": c.path.name, "sha256": corpus.sha256_file(c.path)} for c in chapters],
+            "summaries": ([{"chapter": c.number, "sha256": hashlib.sha256(c.text.encode("utf-8")).hexdigest()} for c in chapters]
+                          if audience != "gm" else
+                          [{"chapter": c.number, "file": c.path.name, "sha256": corpus.sha256_file(c.path)} for c in chapters]),
         },
         "system_sha256": corpus.sha256_file(context.PROMPT_DIR / SYSTEM_PROMPT),
         "chunks": [],
@@ -381,11 +427,11 @@ def run_extract(
     todo: list[_Plan] = []
     incomplete_cached: list[_Plan] = []
     for p in plans:
-        cc = None if args.force else _read_cached(nd, p, shared)
+        cc = None if args.force else _read_cached(published_nd, p, shared)
         if cc is not None and cc.missing:
             # Reported from the raw output with no model call. Its checked file is removed so the next
             # run extracts this chunk alone, as it does a chunk whose call failed.
-            (nd / f"{p.stem}.checked.json").unlink(missing_ok=True)
+            (published_nd / f"{p.stem}.checked.json").unlink(missing_ok=True)
             outcomes[p.index] = _Outcome("failed", error=_missing_error(cc.missing), missing=cc.missing)
             incomplete_cached.append(p)
         elif cc is not None:
@@ -451,6 +497,33 @@ def run_extract(
     for p in plans:
         if outcomes[p.index].status == "cached":
             print(line(p, outcomes[p.index]), flush=True)
+
+    if audience != "gm" and getattr(args, "authority_manifest", None) is not None:
+        try:
+            from pipelines.summary_native.authority_inputs import audience_snapshot
+            _, _, current_manifest = audience_snapshot(root, audience=audience, since=since, until=until)
+        except Exception:
+            current_manifest = None
+        if current_manifest != args.authority_manifest:
+            # Prompts and raw model output are derived from a source view that
+            # is no longer current.  Remove this attempt's checked artifacts
+            # before any state renderer can consume them.
+            record["authority_stale"] = True
+            save_record(EXIT_REFUSED)
+            return _refuse("authority inputs changed during extraction; rerun extract")
+
+    if staging:
+        # Publish only the staged files this run created.  Cached chunks
+        # already belong to a compatible current manifest and stay in place.
+        published_nd.mkdir(parents=True, exist_ok=True)
+        for plan in plans:
+            if outcomes[plan.index].status != "extracted":
+                continue
+            for suffix in ("user.md", "out.md", "checked.json"):
+                staged = nd / f"{plan.stem}.{suffix}"
+                if staged.is_file():
+                    atomic_write_text(published_nd / staged.name, staged.read_text(encoding="utf-8"))
+        nd = published_nd
 
     results = _finish(nd, plans, outcomes, args, backend, settings, absent, facts, since, until, record)
     failed = [p for p in plans if outcomes[p.index].status == "failed"]
@@ -540,6 +613,7 @@ def _finish(nd, plans, outcomes, args, backend, settings, absent, facts, since, 
         "max_tokens": args.max_tokens,
         "chunk_chars": settings.chunk_chars,
         "system_sha256": record["system_sha256"],
+        "audience": getattr(args, "audience", "gm"),
         **facts,
         "chunks": entries,
     }

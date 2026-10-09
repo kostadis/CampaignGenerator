@@ -28,10 +28,12 @@ and `synth` writes each section of each document from only the checked notes
 that code routed to it. Scope, order and attribution are code's decisions
 (Steps 5b and 6).
 
-**2. It never creates or edits a summary.** How summaries get written is out
-of scope; the pipeline starts from a directory of summaries that already exist
-and tells you what is wrong with them. Every fix is yours, in the summary
-files.
+**2. Generation reads maintained summaries.** The build/extract/synth pipeline
+starts from summaries you have reviewed. To preserve a GM correction across
+regeneration, use the [reviewed authority workflow](summary_native_authority.md):
+stage a ruling, inspect its exact source diff, and approve the displayed digest.
+Only that explicit source-apply operation edits the maintained summary; generation
+continues to read its resulting text.
 
 **3. Everything up to `synth` calls no model and costs nothing.** `validate`,
 `build` and `compare` are deterministic. `synth --dump-only` also makes no

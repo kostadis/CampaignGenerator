@@ -6,7 +6,7 @@ in the planning configuration, isolated from the general config service.
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from typing import List
-from ..planning_config_service import PlanningConfigService, PlanningEntry
+from ..planning_config_service import PlanningConfigService, PlanningEntry, PlanningNoteSelector
 from campaignlib.selection import ModelSelection
 from ..platform_config_service import require_platform, resolve_selection
 
@@ -96,6 +96,36 @@ def update_faction(name: str, faction: PlanningEntry, service: PlanningConfigSer
 def delete_faction(name: str, service: PlanningConfigService = Depends(get_planning_service)):
     """Delete a faction by name."""
     service.delete_faction(name)
+    return None
+
+
+# ============================================================================
+# Authority-note selectors
+# ============================================================================
+
+@router.get("/notes", response_model=List[PlanningNoteSelector])
+def list_notes(service: PlanningConfigService = Depends(get_planning_service)):
+    return service.get_notes()
+
+
+@router.post("/notes", response_model=PlanningNoteSelector, status_code=status.HTTP_201_CREATED)
+def create_note(selector: PlanningNoteSelector, service: PlanningConfigService = Depends(get_planning_service)):
+    return service.create_note(selector)
+
+
+@router.get("/notes/{selector_id}", response_model=PlanningNoteSelector)
+def get_note(selector_id: str, service: PlanningConfigService = Depends(get_planning_service)):
+    return service.get_note(selector_id)
+
+
+@router.put("/notes/{selector_id}", response_model=PlanningNoteSelector)
+def update_note(selector_id: str, selector: PlanningNoteSelector, service: PlanningConfigService = Depends(get_planning_service)):
+    return service.update_note(selector_id, selector)
+
+
+@router.delete("/notes/{selector_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_note(selector_id: str, service: PlanningConfigService = Depends(get_planning_service)):
+    service.delete_note(selector_id)
     return None
 
 
