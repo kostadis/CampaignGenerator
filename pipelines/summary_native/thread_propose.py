@@ -129,10 +129,11 @@ def plan_batches(ratified: list[str], rows: list[str], max_chars: int) -> list[l
 
 
 def replaced_lines(merge: dict) -> list[str]:
-    """Report lines for pending groups the merge replaced that held notes outside the run's range.
+    """Report lines for what the merge did to pending proposals beyond regenerating them.
 
-    Those members are kept as pending single proposals (a note is never orphaned by a narrower run); a
-    member the run's range should hold but whose id no longer exists is named as gone.
+    Members of a replaced group outside the run's range are kept as pending singles (a narrower run never
+    orphans a note); a member whose id is in no range's notes is named as gone; a pending entry with no
+    living member is retired.
     """
     out = []
     for r in merge.get("kept_out_of_range") or ():
@@ -140,9 +141,28 @@ def replaced_lines(merge: dict) -> list[str]:
         out.append(f"replaced pending group {r['key']} ({r['title']}): kept {len(r['members'])} member(s) outside the "
                    f"run's range as single proposals: {shown}")
     for r in merge.get("gone") or ():
-        out.append(f"replaced pending group {r['key']} ({r['title']}): member(s) {', '.join(r['ids'])} no longer "
-                   "exist after re-extraction and were not kept")
+        out.append(f"replaced pending group {r['key']} ({r['title']}): member(s) {', '.join(r['ids'])} exist in no "
+                   "range's notes (re-extracted under new ids) and were not kept")
+    for r in merge.get("stale") or ():
+        out.append(f"retired stale pending proposal {r['key']} ({r['title']}): no member ({', '.join(r['ids'])}) exists "
+                   "in any range's notes; it held no living note, so nothing was lost")
     return out
+
+
+def known_note_ids(range_dir: Path) -> set[str]:
+    """Every thread-note id of every range's checked notes under the same output root.
+
+    Same glob as ``extract._range_cache``. An id is per extraction, so a note counts as gone only when
+    its id is in none of these. Unreadable files are skipped.
+    """
+    ids: set[str] = set()
+    for path in sorted(Path(range_dir).parent.glob("ch*-*/state/notes/*.checked.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            ids.update(n.note_id for n in thread_attach.thread_notes([notes.CheckedChunk.from_dict(data)]))
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            continue
+    return ids
 
 
 def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_attach.Attachment, batches: list[dict],
@@ -158,7 +178,7 @@ def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_atta
         "- (no notes were sent to a model)"]
     out += ["", "## Dropped and changed by the code check", ""]
     out += [f"- {ln}" for ln in lines] or ["- (nothing)"]
-    out += ["", "## Replaced groups with notes outside the range", ""]
+    out += ["", "## Replaced and retired pending proposals", ""]
     out += [f"- {ln}" for ln in replaced or ()] or ["- (none)"]
     out += ["", "## Stale rulings", ""]
     out += [f"- {ln}" for ln in stale] or ["- (none)"]
@@ -331,7 +351,7 @@ def run_thread_propose(
     stale = thread_check.stale_ratified(prior, {n.note_id for n in att.notes}, since, until)
     source = f"summary_native ch{since:03d}-{until:03d} run {run_dir.name}"
     merge = thread_check.merge_proposals(
-        proposals_path, groups, source, scope_ids={n.note_id for n in att.notes}, chapter_range=(since, until))
+        proposals_path, groups, source, scope_ids={n.note_id for n in att.notes}, known_ids=known_note_ids(range_dir))
     replaced = replaced_lines(merge)
 
     singles = sum(1 for g in groups if g["kind"] == "single")

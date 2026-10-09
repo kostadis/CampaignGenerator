@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
 from pathlib import Path
 
 import pytest
@@ -434,7 +435,7 @@ class TestMergeProposals:
         g = self.pending("g-111111111111", "Spans the edge", far, {"id": IDS[0], "chapter": 2})
         p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
         stats = thread_check.merge_proposals(
-            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS), chapter_range=(2, 4))
+            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS), known_ids=set(IDS) | {far["id"]})
         ps = self.proposals_of(p)
         assert "g-111111111111" not in {e["key"] for e in ps}
         (single,) = [e for e in ps if far["id"] in _ids(e)]
@@ -455,16 +456,48 @@ class TestMergeProposals:
         assert sum("n-far0000002" in _ids(e) for e in ps) == 1
         assert [m["id"] for r in stats["kept_out_of_range"] for m in r["members"]] == ["n-far0000002"]
 
-    def test_a_member_in_range_that_no_longer_exists_is_dropped_and_reported(self, tmp_path):
+    def test_a_member_that_exists_in_no_ranges_notes_is_dropped_and_reported(self, tmp_path):
         p = tmp_path / "t.yaml"
         g = self.pending("g-111111111111", "Spans", {"id": "n-vanished00", "chapter": 3}, {"id": IDS[0], "chapter": 2},
                          {"id": "n-far0000000", "chapter": 60})
         p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
         stats = thread_check.merge_proposals(
-            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS), chapter_range=(2, 4))
+            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS),
+            known_ids=set(IDS) | {"n-far0000000"})
         ids = {i for e in self.proposals_of(p) for i in _ids(e)}
         assert "n-vanished00" not in ids and "n-far0000000" in ids
         assert stats["gone"] == [{"key": "g-111111111111", "title": "Spans", "ids": ["n-vanished00"]}]
+
+    def test_a_member_re_extracted_in_this_range_but_alive_in_a_wider_one_is_kept(self, tmp_path):
+        """Ids are per extraction: ch002-060 holds b under n-b; ch002-008 chunks it differently (n-b2)."""
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-aaaaaaaaaaaa", "T", {"id": "n-a", "chapter": 3, "name": "A"}, {"id": "n-b", "chapter": 6, "name": "B"})
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(
+            p, [], "narrow", scope_ids={"n-a", "n-b2"}, known_ids={"n-a", "n-b", "n-b2"})
+        ps = self.proposals_of(p)
+        assert [_ids(e) for e in ps] == [["n-b"]] and ps[0]["kind"] == "single" and ps[0]["status"] == "pending"
+        assert stats["gone"] == [] and [m["id"] for r in stats["kept_out_of_range"] for m in r["members"]] == ["n-b"]
+
+    def test_a_pending_entry_with_no_member_in_any_ranges_notes_is_retired_and_reported(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        old_single = {**self.pending("g-bbbbbbbbbbbb", "Far", {"id": "n-far", "chapter": 40}), "kind": "single"}
+        partial = self.pending("g-cccccccccccc", "Half", {"id": "n-gone", "chapter": 40}, {"id": "n-live", "chapter": 41})
+        ruled = {**self.pending("g-dddddddddddd", "Ruled", {"id": "n-gone2"}), "status": "deferred"}
+        p.write_text(yaml.safe_dump({"proposals": [old_single, partial, ruled]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(p, [], "wide", scope_ids={"n-far2"}, known_ids={"n-far2", "n-live"})
+        keys = [e["key"] for e in self.proposals_of(p)]
+        assert keys == ["g-cccccccccccc", "g-dddddddddddd"]  # a ruling is never retired; a partly living entry stays
+        assert stats["stale"] == [{"key": "g-bbbbbbbbbbbb", "title": "Far", "ids": ["n-far"]}]
+
+    def test_nothing_is_judged_gone_or_stale_without_known_ids(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", "n-x", IDS[0])
+        lone = self.pending("g-222222222222", "Lone", "n-y")
+        p.write_text(yaml.safe_dump({"proposals": [g, lone]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(p, [], "src", scope_ids={IDS[0]})
+        assert {i for e in self.proposals_of(p) for i in _ids(e)} == {"n-x", "n-y"}
+        assert stats["gone"] == [] and stats["stale"] == []
 
     def test_merging_after_a_narrower_run_is_a_fixed_point_and_the_wider_run_regroups_the_singles(self, tmp_path):
         p = tmp_path / "t.yaml"
@@ -506,7 +539,7 @@ class TestMergeProposals:
             group = [i for i in regroup if i in offered]
             gs = ([grouped(*group)] if len(group) > 1 else []) + [
                 grouped(i) for i in offered if i not in group or len(group) < 2]
-            thread_check.merge_proposals(p, gs, "narrow", scope_ids=set(scope), chapter_range=None)
+            thread_check.merge_proposals(p, gs, "narrow", scope_ids=set(scope), known_ids=set(wide))
             after = {i for e in self.proposals_of(p) for i in _ids(e)}
             assert before - after <= attached_now, f"orphaned {sorted((before - after) - attached_now)}"
             assert len([i for e in self.proposals_of(p) for i in _ids(e)]) == len(after)  # and none twice
@@ -802,6 +835,29 @@ class TestThreadPropose:
         report = (cp.range_dir(root).parent / "ch003-004" / "state" / "threads" / "propose_report.md").read_text(encoding="utf-8")
         assert carver["key"] in report and kept["members"][0]["id"] in report and "outside the run's range" in report
         assert carver["key"] in out and kept["members"][0]["id"] in out
+
+    def test_known_note_ids_spans_every_ranges_notes(self, tcamp):
+        root, _ = tcamp
+        assert thread_propose.known_note_ids(cp.range_dir(root)) == set(all_note_ids(root))
+        sibling = cp.range_dir(root).parent / "ch003-004"
+        shutil.copytree(cp.range_dir(root) / "state" / "notes", sibling / "state" / "notes")
+        assert thread_propose.known_note_ids(sibling) == set(all_note_ids(root))  # sees the sibling range too
+
+    def test_a_pending_proposal_with_no_living_note_is_retired_and_reported(self, tcamp):
+        """#524: a single kept from a wide range that was later re-extracted under new ids must not linger."""
+        root, tm = tcamp
+        empty_registry(root)
+        stale = {"key": "g-eeeeeeeeeeee", "kind": "single", "title": "Old far note", "status": "pending",
+                 "source": "summary_native ch002-070 run X",
+                 "members": [{"id": "n-reextracted", "chapter": 40, "tag": "OPENED", "name": "Old far note"}]}
+        proposals_path(root).parent.mkdir(parents=True, exist_ok=True)
+        proposals_path(root).write_text(yaml.safe_dump({"proposals": [stale]}), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        assert "g-eeeeeeeeeeee" not in {p["key"] for p in proposals(root)}
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        for text in (report, out):
+            assert "g-eeeeeeeeeeee" in text and "n-reextracted" in text and "nothing was lost" in text
 
     def test_a_model_failure_exits_4_and_writes_no_proposal(self, tcamp):
         root, tm = tcamp

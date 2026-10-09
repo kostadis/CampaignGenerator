@@ -505,9 +505,16 @@ from the queue. Each one that no other proposal holds stays as a pending
 one-note `single` proposal, and `propose_report.md` (and the run's output) names the
 replaced group and the notes it kept — "replaced pending group g-… (title): kept N
 member(s) outside the run's range as single proposals". Run the wider range again
-and the singles are regrouped with everything else. A member inside the run's range
-whose id no longer exists (re-extraction reworded the note) is not kept; the report
-lists it as gone. Known gap: notes left unattached after you remove an alias are
+and the singles are regrouped with everything else. A kept single may name a note
+that a ratified thread now attaches (an alias added since the wide run): the next
+run whose range covers it resolves that. Note ids belong to one extraction, so a
+member counts as gone only when its id is in **no** range's checked notes
+(`ch*-*/state/notes/`); a note merely re-extracted in this range under a new id
+while the wider range still has it is kept. A gone member is not kept, and a
+pending proposal none of whose members exists in any range's notes (its wide range
+was re-extracted with `--force`) is retired and listed in the report — it held no
+living note, so nothing is lost. Rulings are never retired.
+Known gap: notes left unattached after you remove an alias are
 neither re-proposed nor flagged (#525).
 
 ### A thread you accepted keeps coming back — on purpose
