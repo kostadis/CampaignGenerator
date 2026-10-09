@@ -556,3 +556,30 @@ class TestPartyGrammarFreshness:
         from pipelines.summary_native import freshness
 
         assert freshness.check_party_grammar(tmp_path) is None
+
+
+class TestLeadingBoldCitation:
+    """qwen3.8 sometimes writes Events as ``- **ch 006 / 006.01** — text`` (OOTA ch 006, 013, 035-036, 048,
+    050): the citation is right, only its place is wrong. It is moved to the end and checked as usual."""
+
+    def test_the_leading_citation_moves_to_the_end(self):
+        assert notes.citation_to_end("- **ch 006 / 006.01** — The party foraged.") == "- The party foraged. [ch 006 / 006.01]"
+        assert notes.citation_to_end("- **[ch 006 / 006.01; ch 006 / npcs]** – Jimjar bet.") == \
+            "- Jimjar bet. [ch 006 / 006.01; ch 006 / npcs]"
+
+    def test_any_other_bullet_is_unchanged(self):
+        for t in ("- [ADVANCED] **Pursuit** — fewer drow [ch 006 / 006.02]", "- **Daz** — froze the water [ch 006 / 006.01]",
+                  "- The party foraged [ch 006 / 006.01]", "- **ch 006** — not a citation"):
+            assert notes.citation_to_end(t) == t
+
+    def test_an_events_bullet_with_a_leading_citation_is_kept(self):
+        ch = _lvl_chapter("The party foraged for water.")
+        cc = notes.check_chunk(_raw(Events="- **ch 002 / 002.01** — The party foraged for water."), [ch])
+        assert cc.drops == []
+        (n,) = cc.kept("event")
+        assert n.text == "- The party foraged for water. [ch 002 / 002.01]" and n.first_chapter == 2
+
+    def test_a_moved_citation_is_still_checked(self):
+        ch = _lvl_chapter("quiet")
+        cc = notes.check_chunk(_raw(Events="- **ch 002 / 002.09** — Something else happened."), [ch])
+        assert cc.kept("event") == [] and [d.reason.split(" ")[0] for d in cc.drops] == ["outside-chunk"]

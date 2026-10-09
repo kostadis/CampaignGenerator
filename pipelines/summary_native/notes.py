@@ -111,6 +111,26 @@ def cites(text: str) -> list[tuple[str, int, str]]:
     return out
 
 
+#: A bullet that opens with its citation as a bold label: ``- **ch 006 / 006.01** — text``. qwen3.8 writes
+#: Events this way on some calls (OOTA ch 006, 013, 035-036, 048, 050), copying the ``**Name** —`` shape of
+#: the other sections; every such bullet used to be dropped as uncited.
+_LEADING_CITE_RE = re.compile(
+    r"^-\s*\*\*\s*\[?\s*(ch \d{3} / [A-Za-z0-9.]+(?:\s*;\s*ch \d{3} / [A-Za-z0-9.]+)*)\s*\]?\s*\*\*\s*[—–:-]+\s*(\S.*)$"
+)
+
+
+def citation_to_end(text: str) -> str:
+    """Move a leading bold citation to the end, where the grammar puts it: ``- **ch 006 / 006.01** — The
+    party …`` becomes ``- The party … [ch 006 / 006.01]``. Only where the bullet begins with nothing but a
+    citation; any other bullet is returned unchanged. The moved citation is then checked like any other
+    (it must resolve inside the chunk), so this changes where a citation sits, never whether it holds."""
+    m = _LEADING_CITE_RE.match(text)
+    if not m:
+        return text
+    cite = re.sub(r"\s*;\s*", "; ", m.group(1))
+    return f"- {m.group(2).rstrip()} [{cite}]"
+
+
 def cite_problem(text: str, allowed: dict[int, set[str]]) -> str | None:
     """Why ``text``'s citations are not good enough, or ``None`` when it has one and all resolve.
 
@@ -413,6 +433,7 @@ def check_chunk(raw: str, chunk: Sequence[Chapter], label: str | None = None) ->
                 continue
             if _NONE_RE.fullmatch(text):
                 continue
+            text = citation_to_end(text)
             why = cite_problem(text, allowed)
             if why:
                 drop(why)
