@@ -825,6 +825,19 @@ class TestEveryDocumentBuildsTheSameWay:
         assert not files[doc].exists()
         assert {d: f.read_bytes() for d, f in files.items() if d != doc} == kept
 
+    def test_a_campaign_state_build_never_touches_world_states_budget_report(self, four):
+        # campaign_state has no budgets, and budget_report_file used to answer "budget_report.json" for it too
+        root, _, _ = four
+        report = state(root) / "drafts" / schema.budget_report_file("world_state")
+        assert cs.run_cli(build(root, "world_state"))[0] == 0
+        kept = report.read_bytes()
+        assert cs.run_cli(build(root, "campaign_state"))[0] == 0
+        assert cs.run_cli(build(root, "campaign_state", "--force"))[0] == 0
+        assert report.read_bytes() == kept
+        assert "campaign_state" not in schema.BUDGET_DOCS
+        with pytest.raises(ValueError, match="no word budgets"):
+            schema.budget_report_file("campaign_state")
+
     @pytest.mark.parametrize("doc", schema.DOCS)
     def test_an_existing_draft_needs_force(self, four, doc):
         root, base, _ = four

@@ -703,6 +703,31 @@ call).
 | `--dump-only` | Write prompts, chunks and the manifest; no model call. |
 | `--force` | Re-extract every chunk, ignoring cache keys. |
 
+**A chunk must write all six sections.** The prompt requires all
+six sections, and a section with nothing to report is written `- (none)`, so a heading that is *absent* from the output is the model having
+skipped it, not an empty answer (#515: a Haiku call returned only
+`## Events` and `## Concluded` and was recorded as `kept 45 dropped 0`). Such a
+chunk is a **failed chunk**, not a kept one: it is retried once like a failed
+call, and if the retry is also incomplete it is not counted as extracted,
+`checked.json` is not written, the run exits **3**, and the sections it lacked are
+named in the run output (`chunk 004-004: output missing outline section(s) ## World`),
+in `state/notes/drops.md` (an *Incomplete chunks* block) and in the run record
+(`missing_sections`). The raw `chunkNN.….out.md` is kept so you can see what the
+model wrote. A present section holding only `- (none)`, or nothing, passes.
+The prompt now says this in so many words, and the prompt is part of the chunk cache key, so the first
+`extract` after upgrading re-reads every chunk. Until then `synth party` and `synth planning` refuse
+with `the party notes predate the subject grammar; run summary_native extract …`: the message is
+worded for the original grammar change, but it fires on any change of the extraction prompt.
+
+A cached chunk is re-checked from its raw output on every run, so one saved before
+this check existed is caught too: the run prints `cached INCOMPLETE: …`, makes **no
+model call** for it, exits 3, and drops its checked file, so the next run extracts
+that chunk alone (a sibling range's incomplete output is never reused, and a complete
+sibling copy is used in its place if there is one). `--dump-only` reports the same,
+exits 3, and likewise removes that chunk's checked file. Exit 4 still means only that
+the backend could not be reached: a chunk found incomplete in the cache made no call
+and does not count towards it.
+
 Chunks are cached by a key over the chapter texts, prompts, backend, model and
 limits, so a second run extracts only what changed or failed. The cache also searches
 sibling `chNNN-NNN/state/notes/` folders under the configured output root. Extending
@@ -930,7 +955,8 @@ Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
 | `track file X: no such file` | audit | Check the path (relative paths resolve against the campaign root). |
 | `the track files hold no items (lines starting with `- `)` | audit | Items are `- ` lines. |
 | `no summaries for chapters A-B in <dir>` / corpus missing or stale (`run summary_native build`) | extract, audit | Build the corpus for this range. |
-| exit 3: `N chunk(s) failed after one retry: …` | extract | Rerun; only those chunks are redone. |
+| exit 3: `N chunk(s) failed (a call that failed twice, or an output missing outline sections, retried once): …` (and/or `N cached chunk(s) found incomplete, not called: …`) | extract | Rerun; only those chunks are redone. A `chunk A-B: output missing outline section(s) …` line before it names what the model skipped; if the same chunk keeps doing it, try another `--model` or a smaller `--chunk-chars`. |
+| exit 3: `chunk NN/MM ch A-B cached INCOMPLETE: …` (also with `--dump-only`) | extract | A saved output lacks a section. No call was made; rerun to extract just that chunk. |
 | exit 3: `N item(s) failed after one retry: …` | audit | Rerun; they are recorded `NOT JUDGED` until then. |
 | exit 3: `Incomplete: …/state/drafts/<doc>.incomplete.md` | synth | A section is missing; the file is never promotable. An earlier complete draft is kept. |
 | exit 4: `no chunk could be extracted: the backend could not be reached …` / `no item could be judged …` | extract, audit | The backend is unreachable; see `state/runs/<stamp>/record.json`. |
@@ -1296,8 +1322,8 @@ line as before.
 Exit 3 and `<doc>.incomplete.md` also cover: `<label>: the model wrote no body`,
 `<label>: the model wrote a heading (...)`, `<label>: the model wrote a level line
 (...)`, and `<label>: the model wrote '#### Candidate Arc Score Events'`. A chunk
-that is missing one of its sections still passes the extraction check (#515), so a
-quiet section in `drops.md` is worth a look. Incremental rebuilds after a new
+that is missing one of its sections no longer passes the extraction check: it fails
+`extract` (exit 3, #515). Incremental rebuilds after a new
 session are tracked in #512.
 
 ---
@@ -1506,7 +1532,7 @@ The page's Compare always diffs against `docs/<doc>.md`.
 | `0` | Success (`validate`/`build`: no blocking problem; `synth`: draft written or `--dump-only`; `compare`: done). |
 | `1` | `validate`, `build` or `synth` found **blocking** validation problems. The report was printed (`validate`/`build` also write it). |
 | `2` | A refusal (bad range, bad input, mixed corpus, existing output, stale corpus, bad flag/config) or an argparse usage error. Message on stderr, prefixed `Error:`. |
-| `3` | `synth` produced an incomplete document. `<doc>.incomplete.md` was written. |
+| `3` | `synth` produced an incomplete document (`<doc>.incomplete.md` was written), or `extract` left chunks failed (a call that failed twice, or an output missing outline sections). |
 | `4` | `synth` or `thread-propose`: the model call failed. See below. |
 
 | Message (abridged) | What to do |

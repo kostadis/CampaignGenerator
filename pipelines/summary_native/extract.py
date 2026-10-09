@@ -107,6 +107,7 @@ class _Outcome:
     endpoint: str = ""
     checked: notes.CheckedChunk | None = None
     error: str | None = None
+    missing: list[str] = field(default_factory=list)  # outline sections the output never wrote (#515)
 
 
 def _dumps(obj) -> str:
@@ -147,8 +148,13 @@ def _read_cached(nd: Path, plan: _Plan, shared: dict[str, list[Path]] | None = N
 
     Prefer this range. A sibling hit is copied into this range's notes so it is self-contained;
     source files and their checked results are never rewritten.
+
+    A raw output that lacks an outline section (written before that was a failure) is never used:
+    every source is tried, and if none is complete the local one is returned with ``missing`` set and
+    nothing is written, for the caller to report. A sibling's incomplete output is only skipped.
     """
     local = nd / f"{plan.stem}.checked.json"
+    incomplete = None
     for path in [local, *(shared or {}).get(plan.key, [])]:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
@@ -159,10 +165,14 @@ def _read_cached(nd: Path, plan: _Plan, shared: dict[str, list[Path]] | None = N
         except (OSError, ValueError):
             continue
         cc = notes.check_chunk(raw, plan.chunk, plan.chapters)
+        if cc.missing:
+            if path == local:
+                incomplete = cc
+            continue
         _write_if_changed(nd / f"{plan.stem}.out.md", raw)
         _write_checked(nd, plan, cc)
         return cc
-    return None
+    return incomplete
 
 
 def _write_checked(nd: Path, plan: _Plan, cc: notes.CheckedChunk) -> None:
@@ -170,22 +180,37 @@ def _write_checked(nd: Path, plan: _Plan, cc: notes.CheckedChunk) -> None:
 
 
 def _extract_one(client, plan: _Plan, nd: Path, args, endpoint: str) -> _Outcome:
-    """One chunk: the call (retried once), the raw output on disk, the code check, the checked file."""
-    error = None
+    """One chunk: the call, the raw output on disk, the code check, the checked file.
+
+    The call is retried once, and an output that lacks an outline section counts as a failed call
+    (#515): retried once, then a failed chunk with no ``checked.json``. The raw output stays on disk."""
+    missing: list[str] = []
     for attempt in (1, 2):
         t0 = time.monotonic()
         try:
             raw = render_part(client, plan.system, plan.user, args.model, args.max_tokens)
-            break
         except Exception as e:  # noqa: BLE001 - any backend error is a failed chunk
-            error = f"{type(e).__name__}: {e}"
             if attempt == 2:
-                return _Outcome("failed", time.monotonic() - t0, endpoint, None, error)
-    secs = time.monotonic() - t0
-    atomic_write_text(nd / f"{plan.stem}.out.md", raw)
-    cc = notes.check_chunk(raw, plan.chunk, plan.chapters)
-    _write_checked(nd, plan, cc)
-    return _Outcome("extracted", secs, endpoint, cc)
+                if missing:  # attempt 1 wrote an incomplete out.md; do not leave a result paired with it
+                    (nd / f"{plan.stem}.checked.json").unlink(missing_ok=True)
+                return _Outcome("failed", time.monotonic() - t0, endpoint, None, f"{type(e).__name__}: {e}", missing)
+            continue
+        secs = time.monotonic() - t0
+        atomic_write_text(nd / f"{plan.stem}.out.md", raw)
+        cc = notes.check_chunk(raw, plan.chunk, plan.chapters)
+        if cc.missing:
+            missing = cc.missing
+            if attempt == 2:
+                (nd / f"{plan.stem}.checked.json").unlink(missing_ok=True)  # never leave an older result standing
+                return _Outcome("failed", secs, endpoint, None, _missing_error(cc.missing), cc.missing)
+            continue
+        _write_checked(nd, plan, cc)
+        return _Outcome("extracted", secs, endpoint, cc)
+    raise AssertionError("unreachable")  # pragma: no cover
+
+
+def _missing_error(missing: list[str]) -> str:
+    return "output missing outline section(s) " + ", ".join(missing)
 
 
 def _run_pool(todo: list[_Plan], work, clients: dict[str, object], per_endpoint: int = 1):
@@ -354,9 +379,16 @@ def run_extract(
     shared = {} if args.force else _range_cache(range_dir)
     outcomes: dict[int, _Outcome] = {}
     todo: list[_Plan] = []
+    incomplete_cached: list[_Plan] = []
     for p in plans:
         cc = None if args.force else _read_cached(nd, p, shared)
-        if cc is not None:
+        if cc is not None and cc.missing:
+            # Reported from the raw output with no model call. Its checked file is removed so the next
+            # run extracts this chunk alone, as it does a chunk whose call failed.
+            (nd / f"{p.stem}.checked.json").unlink(missing_ok=True)
+            outcomes[p.index] = _Outcome("failed", error=_missing_error(cc.missing), missing=cc.missing)
+            incomplete_cached.append(p)
+        elif cc is not None:
             outcomes[p.index] = _Outcome("cached", checked=cc)
         else:
             outcomes[p.index] = _Outcome("pending")
@@ -372,11 +404,20 @@ def run_extract(
             return f"chunk {p.index:02d}/{n_total:02d} ch {p.chapters} cached {stats}"
         return f"chunk {p.index:02d}/{n_total:02d} ch {p.chapters} @{o.endpoint} {o.secs:.0f}s {stats}"
 
+    for p in incomplete_cached:
+        print(f"chunk {p.index:02d}/{n_total:02d} ch {p.chapters} cached INCOMPLETE: {outcomes[p.index].error}; "
+              f"its saved output is not used", file=sys.stderr, flush=True)
+
     if args.dump_only:
         _finish(nd, plans, outcomes, args, backend, settings, absent, facts, since, until, record)
-        save_record(0)
+        code = EXIT_INCOMPLETE if incomplete_cached else 0
+        save_record(code)
         print(f"[--dump-only: {n_total} prompts written to {schema.display_path(nd, root)}; no model call]")
-        return 0
+        if incomplete_cached:
+            print(f"Error: {len(incomplete_cached)} cached chunk(s) are incomplete: "
+                  f"{', '.join(p.chapters for p in incomplete_cached)}. Run without --dump-only to extract only those",
+                  file=sys.stderr)
+        return code
 
     if todo:
         def stop(msg: str) -> int:
@@ -431,8 +472,14 @@ def run_extract(
         print(f"note: chapters absent from the range: {', '.join(str(n) for n in absent)}")
     code = 0
     if failed:
-        names = ", ".join(p.chapters for p in failed)
-        if not n_new and not n_cached:
+        called = [p for p in failed if p not in incomplete_cached]
+        names = ", ".join(p.chapters for p in called)
+        for p in called:
+            if outcomes[p.index].missing:
+                print(f"chunk {p.chapters}: {outcomes[p.index].error}", file=sys.stderr)
+        # exit 4 means the backend could not be reached; a model that answered, incompletely, reached it
+        # (a chunk found incomplete in the cache made no call, so it says nothing about the backend)
+        if called and not n_new and not n_cached and not any(outcomes[p.index].missing for p in called):
             print(
                 f"Error: no chunk could be extracted: the backend could not be reached or rejected every call "
                 f"(see {schema.display_path(run_dir / 'record.json', root)})",
@@ -440,8 +487,15 @@ def run_extract(
             )
             code = EXIT_MODEL_FAILED
         else:
+            what = []
+            if called:
+                what.append(f"{len(called)} chunk(s) failed (a call that failed twice, or an output missing "
+                            f"outline sections, retried once): {names}")
+            if incomplete_cached:
+                what.append(f"{len(incomplete_cached)} cached chunk(s) found incomplete, not called: "
+                            + ", ".join(p.chapters for p in incomplete_cached))
             print(
-                f"Error: {len(failed)} chunk(s) failed after one retry: {names}. The notes are incomplete; "
+                f"Error: {'; '.join(what)}. The notes are incomplete; "
                 f"run the same command again to extract only those",
                 file=sys.stderr,
             )
@@ -470,6 +524,8 @@ def _finish(nd, plans, outcomes, args, backend, settings, absent, facts, since, 
                "status": o.status, "secs": round(o.secs, 1), "endpoint": o.endpoint, "kept": kept, "dropped": dropped}
         if o.error:
             rec["error"] = o.error
+        if o.missing:
+            rec["missing_sections"] = o.missing
         rec_chunks.append(rec)
     record["chunks"] = rec_chunks
     complete = all(e["status"] == "checked" for e in entries)
@@ -491,6 +547,7 @@ def _finish(nd, plans, outcomes, args, backend, settings, absent, facts, since, 
     for f in nd.iterdir():
         if _CHUNK_FILE_RE.match(f.name) and f.name not in keep:
             f.unlink()
-    _write_if_changed(nd / "drops.md", notes.render_drops_md(results))
+    incomplete = [(p.chapters, outcomes[p.index].missing) for p in plans if outcomes[p.index].missing]
+    _write_if_changed(nd / "drops.md", notes.render_drops_md(results, incomplete))
     _write_if_changed(nd / freshness.NOTES_MANIFEST, _dumps(manifest))
     return results
