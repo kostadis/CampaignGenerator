@@ -44,13 +44,13 @@ _STREET = r"(?:Lane|Street|St|Road|Rd|Way|Avenue|Ave|Alley|Row|Square|Court|Plac
 #: A number that is not an ordinal ("3rd"), not followed by a unit ("500 gp", "2 bells") and not the house number
 #: of an address ("3 Waterdeep Lane": capitalised words ending in a street suffix). A capitalised word alone is
 #: not an address: "now at 4 Madness" is a value followed by a score's name (#526 review).
-_NUM = rf"\d++(?:\.\d++)?\b(?!\s*{_UNITS}\b)(?!(?:\s+(?-i:[A-Z])[\w'’-]*)+\s+{_STREET}\b)"
+_NUM = rf"\d+(?:\.\d+)?\b(?!\s*{_UNITS}\b)(?!(?:\s+(?-i:[A-Z])[\w'’-]*)+\s+{_STREET}\b)"
 _WORDNUM = r"(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
 #: What can follow a number for it to be the end of a statement: a stop, a clause break, "N of <digits>", a
 #: counter noun, or a capitalised word (a score's name: "pushes it to five Wrath"). A bare number-word ("to
 #: one", "at three") is only read as a value with this behind it; "one of the Council" is not.
 _TAIL = (
-    r"(?=\s*(?:$|[,.;:)\]!?/%]|[—–]|\b(?:and|but|so far|already|points?|strikes?|marks?|ticks?|"
+    r"(?=\s*(?:$|[,.;:()\]!?/%]|[—–]|\b(?:and|but|so far|already|points?|strikes?|marks?|ticks?|"
     r"stages?|steps?|stacks?)\b)|\s+(?:out\s+)?of\s+\d|\s+(?-i:[A-Z]))"
 )
 #: A digit run anywhere, or a number word only as the end of a clause (a move verb already says "this is a counter").

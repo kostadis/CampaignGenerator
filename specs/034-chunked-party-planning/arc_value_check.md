@@ -89,6 +89,8 @@ that every row appears below.
 | Obsession: 4 | score name + colon + N |
 | His Wrath 2 goes up | score name directly followed by N |
 | Obsession total reaches 5 | total + number |
+| Daz now 3 (Wrath) | 'now N' followed by a parenthesised score name |
+| Daz now at 3 (Wrath) | 'now at N' followed by a parenthesised score name |
 | Daz now at 3 Obsession | value followed by a score name; a capital letter alone is not an address |
 | Daz now at 4 Madness | value followed by a capitalised word |
 | A score of 5 Doom | score word + number + capitalised word |

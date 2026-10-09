@@ -175,6 +175,8 @@ VALUE_TABLE = [
     ("His Wrath 2 goes up", True, "score name directly followed by N", False),
     ("Obsession total reaches 5", True, "total + number", False),
     # -- states a value, added after review: a value followed by a capitalised word (a score's name) --
+    ("Daz now 3 (Wrath)", True, "'now N' followed by a parenthesised score name", False),
+    ("Daz now at 3 (Wrath)", True, "'now at N' followed by a parenthesised score name", False),
     ("Daz now at 3 Obsession", True, "value followed by a score name; a capital letter alone is not an address", False),
     ("Daz now at 4 Madness", True, "value followed by a capitalised word", False),
     ("A score of 5 Doom", True, "score word + number + capitalised word", False),
