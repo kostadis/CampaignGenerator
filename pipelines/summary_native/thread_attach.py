@@ -100,7 +100,8 @@ class Attachment:
 
     @property
     def closed_threads(self) -> list[ThreadState]:
-        """Resolved or abandoned threads, by status or by the latest note, newest activity first."""
+        """Resolved or abandoned threads, by status (set at or before the range's last chapter) or by the latest note,
+        newest activity first."""
         return self._by_recency(lambda s: not s.open and not s.dormant)
 
 

@@ -769,6 +769,22 @@ class TestThreadPropose:
         assert len(by_title["The signet ring"]["members"]) == 2
         assert all(p["source"].startswith("summary_native ch002-004 run ") for p in ps)
 
+    def test_a_thread_resolved_after_the_range_is_open_in_the_attach_map_thread_propose_writes(self, tcamp):
+        """thread-propose passes the range's last chapter to attach (it writes attach.json beside synth's)."""
+        root, _ = tcamp
+        doc = {"version": 1, "threads": [
+            {**thr("cm", "The Carver's march", ["Carver march"], status="resolved"), "resolved": 50}]}
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        att = json.loads((threads_dir(root) / "attach.json").read_text(encoding="utf-8"))
+        assert att["range"]["until"] == 4 and att["threads"]["cm"]["open"] is True
+        doc["threads"][0]["resolved"] = 3
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        assert propose(root)[0] == 0
+        att = json.loads((threads_dir(root) / "attach.json").read_text(encoding="utf-8"))
+        assert att["threads"]["cm"]["open"] is False
+
     def test_the_summary_line(self, tcamp):
         root, _ = tcamp
         empty_registry(root)
@@ -1474,6 +1490,19 @@ class TestThreadPropose:
         t = {**thr("x", "X"), "status": "open", "excluded_notes": ["n-1"], "included_notes": ["n-1", "n-2"]}
         assert any("both in excluded_notes and included_notes" in e for e in check_registry(reg(t)))
         assert any("included_notes must be a list" in e for e in check_registry(reg({**thr("x", "X"), "included_notes": "n-1"})))
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    @pytest.mark.parametrize("recorded", ["50", True, "ch50", 0, -3, 4.0, None])
+    def test_a_closed_status_without_a_real_chapter_is_a_check_finding(self, status, recorded):
+        from campaignlib.thread_registry import check_registry
+        errors = check_registry(reg({**thr("x", "X", status=status), "resolved": recorded}))
+        assert any(f"x: status {status} but no real `resolved:` chapter ({recorded!r})" in e for e in errors)
+        assert check_registry(reg({**thr("x", "X", status=status), "resolved": 50})) == []
+
+    def test_a_log_row_chapter_that_is_a_bool_is_a_check_finding(self):
+        from campaignlib.thread_registry import check_registry
+        row = {"chapter": True, "change": "opened", "summary": "s"}
+        assert any("log row without a real chapter number (True)" in e for e in check_registry(reg(thr("x", "X", log=[row]))))
 
     def test_a_note_pinned_on_two_threads_is_a_check_finding(self):
         from campaignlib.thread_registry import check_registry

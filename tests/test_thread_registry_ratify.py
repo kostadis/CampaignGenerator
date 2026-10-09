@@ -83,7 +83,7 @@ def test_plan_failing_check_registry_writes_nothing(tmp_path):
     r = cli(c, "ratify", "--norm", NORM, "--plan", "-", stdin=bad)
     assert r.returncode != 0
     assert "refusing to save a registry that fails check" in r.stderr
-    assert "no `resolved:` chapter" in r.stderr
+    assert "no real `resolved:` chapter" in r.stderr
     assert not (c / REGISTRY).exists()
 
 
