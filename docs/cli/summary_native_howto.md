@@ -1261,7 +1261,7 @@ proposal. The notes you left out are recorded on the ratified thread as `exclude
 (`docs/thread_registry.yaml`, optional, no migration), and attachment honours that
 **before** the name, so a split-off note that shares a ratified member's bold name stays
 unattached and offered instead of being pulled back in. Ratifying it into the same thread
-later lifts its exclusion. `ratify` refuses (exit 2) a name in `aliases_add` that only a
+later lifts its exclusion. `ratify` refuses a name in `aliases_add` that only a
 left-out member carries. A re-extraction gives a note a new id, so an exclusion whose id is
 on no disk is named ("excluded note n-… is in no range's notes on disk (re-extracted?)") in
 `propose_report.md` and `threads_report.md`, never removed. See

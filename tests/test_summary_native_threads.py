@@ -1366,7 +1366,7 @@ class TestThreadPropose:
         plan.update(members=keep, log=[plan["log"][0], plan["log"][2]])
         before = proposals_path(root).read_bytes()
         r = self.treg(root, *base, "--plan", "-", stdin=json.dumps(plan))
-        assert r.returncode == 2 and "Carver march" in r.stderr and group["members"][1]["id"] in r.stderr
+        assert r.returncode == 1 and "Carver march" in r.stderr and group["members"][1]["id"] in r.stderr
         assert not registry_path(root).exists()  # the registry was emptied above and the refusal wrote nothing
         assert proposals_path(root).read_bytes() == before
 

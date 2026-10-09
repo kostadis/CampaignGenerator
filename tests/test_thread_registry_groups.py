@@ -269,20 +269,20 @@ class TestRatify:
         assert ratify(c, NEW["key"], emit(c, NEW["key"])).returncode == 0
         assert "excluded_notes" not in thread(c, "the-carvers-march")
 
-    def test_an_alias_only_a_left_out_member_carries_is_refused_with_exit_2_and_writes_nothing(self, tmp_path):
+    def test_an_alias_only_a_left_out_member_carries_is_refused_and_writes_nothing(self, tmp_path):
         c = seed(tmp_path, NEW)
         plan = emit(c, NEW["key"])  # aliases_add lists "Carver march", which only M2 carries
         plan["members"] = [M1["id"], M3["id"]]
         plan["log"] = [plan["log"][0], plan["log"][2]]
         before = [(c / p).read_bytes() for p in (PROPOSALS,)]
         r = ratify(c, NEW["key"], plan)
-        assert r.returncode == 2, r.stdout + r.stderr
+        assert r.returncode == 1, r.stdout + r.stderr
         assert "Carver march" in r.stderr and M2["id"] in r.stderr and "aliases_add" in r.stderr
         assert not (c / REGISTRY).exists() and [(c / p).read_bytes() for p in (PROPOSALS,)] == before
 
     def test_the_refusal_lifts_when_the_alias_is_removed_or_the_note_is_included(self, tmp_path):
         c = seed(tmp_path, NEW)
-        assert self.split(c, NEW, [M1, M3], aliases=["Carver march"]).returncode == 2
+        assert self.split(c, NEW, [M1, M3], aliases=["Carver march"]).returncode == 1
         assert self.split(c, NEW, [M1, M3], aliases=["The Carver's march"]).returncode == 0
         assert thread(c, "the-carvers-march")["excluded_notes"] == [M2["id"]]
         assert "Carver march" not in thread(c, "the-carvers-march")["aliases"]

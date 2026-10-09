@@ -554,7 +554,7 @@ bold name as one you ratified (the Drow Pursuit case, #529):
   **into the same thread** (the remainder's "continues <thread>") removes its id in that
   same write; ratifying it into another thread leaves the exclusion where it is. The
   Threads page lists a ratified thread's excluded notes ("Held out by a split").
-- `ratify` refuses (exit 2, nothing written) an `aliases_add` name that **only** a
+- `ratify` refuses (nothing written) an `aliases_add` name that **only** a
   left-out member carries: it would become an alias and attach the note you just split
   off. The page already does this for you by dropping the name when you untick. A name a
   ratified member shares is a legitimate alias (the exclusion holds the split-off note

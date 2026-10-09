@@ -864,10 +864,9 @@ def cmd_ratify_group(args) -> None:
         # this thread. A name a ratified member shares is fine; the exclusion below keeps the split-off note out.
         if norm_title(alias) in left_out and norm_title(alias) not in covered:
             only = [m["id"] for m in have if m.get("id") not in want and norm_title(m.get("name") or "") == norm_title(alias)]
-            print(f"error: alias {alias!r} is carried only by {', '.join(only)}, which this ratification "
-                  f"leaves out — it would attach {'it' if len(only) == 1 else 'them'} to the thread; "
-                  f"remove it from aliases_add (or include the note)", file=sys.stderr)
-            raise SystemExit(2)  # a refusal of the plan, as summary_native's exit 2; nothing has been written
+            raise SystemExit(f"error: alias {alias!r} is carried only by {', '.join(only)}, which this ratification "
+                             f"leaves out — it would attach {'it' if len(only) == 1 else 'them'} to the thread; "
+                             f"remove it from aliases_add (or include the note)")
         names.add(norm_title(alias))
         target.setdefault("aliases", []).append(alias)
         added_aliases += 1
