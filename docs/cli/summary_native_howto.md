@@ -1221,8 +1221,11 @@ note carries (`- **Party** — fact [cite]`). It is compared with the later
 whole-party notes only: the newest one, when it is cited after the line, appears
 under it as `⚠ later: **Party** — … [ch NNN / …]`. A line with its own subject (a
 bold character, or a group) keeps it and is compared with that character's notes.
-A mention is never a subject, and a one-character note or a level row is not
-whole-party evidence. The implicit `Party` subject takes part in the stale check
+An unbolded mention is never a subject (`The party holds **Brindol**.` still takes
+Brindol, the first bold name, and a standalone bold label line such as
+`**Where they are**` becomes a group), and a one-character note or a level row is
+not whole-party evidence. `Party` is resolved before the registry, so an entity
+aliased "Party" does not capture it. The implicit `Party` subject takes part in the stale check
 only: two subject-less lines in different sections are not paired by the
 cross-section check. The citation, quotation and mentioned-NPC checks run on every
 line as before.

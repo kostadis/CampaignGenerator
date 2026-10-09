@@ -95,7 +95,7 @@ class Fact:
     """One checked note about a subject, as it is shown under a line."""
 
     chapter: int
-    kind: str  # "world" | "status_row"
+    kind: str  # "world" | "status_row" | "party"
     text: str
     status: str | None = None
 
@@ -119,6 +119,8 @@ class Evidence:
 
     def canon(self, name: str) -> str:
         name = name.strip().strip("*").strip()
+        if name.casefold() == schema.PARTY_SUBJECT.casefold():
+            return schema.PARTY_SUBJECT  # the whole party is checked before the registry, as party_notes does
         return self.forms.get(name.casefold(), name)
 
     def facts(self, subject: str) -> list[Fact]:

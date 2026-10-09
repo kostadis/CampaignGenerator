@@ -556,6 +556,17 @@ class TestPartyProseSubject:
         (e,) = annotate.parse_entries(["## Party Overview", "### Thorin Giantfriend", "He holds. [ch 002 / 002.01]"], evp)
         assert e.subject == "Thorin" and not e.implicit
 
+    def test_a_registry_entity_aliased_party_does_not_capture_the_whole_party(self, tmp_path):
+        reg = {**REGISTRY, "entities": [*REGISTRY["entities"], {"name": "The Company", "type": "faction", "aliases": ["party"]}]}
+        (tmp_path / "registry.yaml").write_text(yaml.safe_dump(reg), encoding="utf-8")
+        (tmp_path / "players.yaml").write_text(yaml.safe_dump(PLAYERS), encoding="utf-8")
+        chapters = [notes.Chapter(n, Path(f"{n:03d}-x.md"), t, {f"{n:03d}.01", "end"}) for n, t in PARTY_CHAPTERS.items()]
+        ev = annotate.load_evidence([notes.CheckedChunk("002-005", [_party_note("Lost the gate of Brindol.", 4)])],
+                                    chapters, tmp_path / "registry.yaml", tmp_path / "players.yaml")
+        for line in (self.OVERVIEW, "**Party** hold the gate. [ch 002 / 002.01]"):
+            r = annotate.annotate_text(f"## Party Overview\n{line}\n", ev)
+            assert under(r, line) == [f"{schema.LATER} **Party** — Lost the gate of Brindol. [ch 004 / 004.01]"], line
+
     def test_a_mention_is_not_a_subject(self, evp):
         (e,) = annotate.parse_entries(["## Party Overview", "The party met Thorin Giantfriend. [ch 002 / 002.01]"], evp)
         assert e.subject == schema.PARTY_SUBJECT  # Thorin is mentioned, the whole party is the subject
