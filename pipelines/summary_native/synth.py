@@ -487,31 +487,13 @@ def _thread_blocks(threads: list, *, why=None) -> str:
         for s in threads)
 
 
-def _closed_why(ctx: StateCtx):
-    """Why a thread is closed, in words, for the Resolved call. A status the GM set carries the chapter the registry
-    records (``resolved:``), and says so when that chapter lies after the range: the notes then cannot show the ending.
-    ``ThreadState.why`` is not used: ``thread_attach`` words it for the reports and does not know the chapter."""
-    resolved_at = {t.get("id"): t.get("resolved") for t in (ctx.thread_registry or {}).get("threads") or []}
-
-    def why(s) -> str:
-        if s.status not in ("resolved", "abandoned"):
-            return s.why
-        n = resolved_at.get(s.id)
-        if not isinstance(n, int):
-            return f"the GM set it {s.status}"
-        late = f", after the last chapter of this range (ch {ctx.until})" if n > ctx.until else ""
-        return f"the GM set it {s.status} at ch {n}{late}"
-
-    return why
-
-
 def _thread_job(ctx: StateCtx, *, heading: str, file: str, threads: list, build, record, system: str | None = None,
                 why=None, discarded: str = "not an open ratified thread, or repeated") -> dict:
     """One thread section: the threads code chose, in code's order, are written by one call; code checks the entries
     and builds the section around them (``build`` is ``state_sections.active_plots_md`` or ``resolved_threads_md``).
 
     ``record(section)`` is what the run record keeps about the section. The budget is the document's, if it has
-    one (planning's Active Plots; campaign_state has none). ``why`` (see ``_closed_why``), ``system`` and
+    one (planning's Active Plots; campaign_state has none). ``why``, ``system`` and
     ``discarded`` (the wording of the report line for a heading the model added) are per document: campaign_state's
     calls say nothing about a word budget or a planning document, and planning's output must stay as it was.
     """
@@ -607,7 +589,7 @@ def _campaign_jobs(ctx: StateCtx) -> list[dict]:
     resolved = _thread_job(
         ctx, heading=heading, file=_slug(heading), threads=att.closed_threads, build=state_sections.resolved_threads_md,
         record=lambda sec: {"resolved": [s.title for s in att.closed_threads], "replaced": sec.replaced},
-        system=system, why=_closed_why(ctx), discarded="not a thread given to the model, or repeated")
+        system=system, why=lambda s: s.why, discarded="not a thread given to the model, or repeated")
     heading = "## Active Quests & Open Threads"
     active = _thread_job(
         ctx, heading=heading, file=_slug(heading), threads=att.open_threads, build=state_sections.active_plots_md,
@@ -822,7 +804,7 @@ def run_state_synth(
             return _refuse(
                 f"the thread registry {schema.display_path(thread_registry_path, root)} fails `thread_registry check`; "
                 "fix it first:\n  " + "\n  ".join(findings))
-        attachment = thread_attach.attach(results, thread_registry)
+        attachment = thread_attach.attach(results, thread_registry, until)
 
     rng_name = f"ch{since:03d}-{until:03d}"
     key_plan: list[key_npcs.KeyNpc] = []

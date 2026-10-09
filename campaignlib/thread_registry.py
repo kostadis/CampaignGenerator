@@ -96,6 +96,11 @@ def match_thread(data: dict, title: str) -> dict | None:
     return found[0] if found else None
 
 
+def _is_chapter(value) -> bool:
+    """A real chapter number: an int of at least 1 (a bool is not one)."""
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 1
+
+
 def check_registry(data: dict) -> list[str]:
     errors: list[str] = []
     seen_ids: set[str] = set()
@@ -110,8 +115,9 @@ def check_registry(data: dict) -> list[str]:
         if t.get("status") not in STATUSES:
             errors.append(f"{tid}: bad status {t.get('status')!r} "
                           f"(allowed: {', '.join(STATUSES)})")
-        if t.get("status") in ("resolved", "abandoned") and not t.get("resolved"):
-            errors.append(f"{tid}: status {t['status']} but no `resolved:` chapter")
+        if t.get("status") in ("resolved", "abandoned") and not _is_chapter(t.get("resolved")):
+            # A "50" or `true` would read as no chapter downstream and leave the thread closed in every range.
+            errors.append(f"{tid}: status {t['status']} but no real `resolved:` chapter ({t.get('resolved')!r})")
         for name in [t.get("title", "")] + list(t.get("aliases") or []):
             if not name:
                 continue
@@ -130,7 +136,7 @@ def check_registry(data: dict) -> list[str]:
         for row in t.get("log") or []:
             if row.get("change") not in CHANGES:
                 errors.append(f"{tid}: bad log change {row.get('change')!r}")
-            if not isinstance(row.get("chapter"), int) or row["chapter"] < 1:
+            if not _is_chapter(row.get("chapter")):
                 errors.append(f"{tid}: log row without a real chapter number "
                               f"({row.get('chapter')!r})")
     pinned: dict[str, list[str]] = {}

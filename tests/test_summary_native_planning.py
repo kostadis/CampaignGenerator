@@ -689,6 +689,27 @@ class TestSynthPlanning:
         assert "Prose for The Carver's march. [ch 004 / 004.01]" in plots_text
         assert "signet" not in pm.user_of("## Active Plots").lower()
 
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    def test_a_thread_closed_after_the_range_is_active_in_it(self, pcamp, status):
+        """GM ruling (#530): the build is ch 2-4, so a thread the GM closed at ch 50 is still open there."""
+        root, pm = pcamp
+        write_registry(root, registry(thread("carver-march", "The Carver's march", status=status,
+                                             aliases=["Carver march"], resolved=50)))
+        assert synth_planning(root)[0] == 0
+        assert re.findall(r"^### (.+)$", section(draft_text(root), "## Active Plots"), re.M) == [
+            "The Carver's march", schema.UNRATIFIED_HEADING[4:]]
+        assert f"the GM set it {status} at ch 50, after this range (ch 4): open here" in (
+            drafts(root) / "threads_report.md").read_text(encoding="utf-8")
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    def test_a_thread_closed_inside_the_range_is_not_active(self, pcamp, status):
+        root, pm = pcamp
+        write_registry(root, registry(thread("carver-march", "The Carver's march", status=status,
+                                             aliases=["Carver march"], resolved=3)))
+        assert synth_planning(root)[0] == 0
+        assert "Carver" not in section(draft_text(root), "## Active Plots").split(schema.UNRATIFIED_HEADING)[0]
+        assert not pm.called("## Active Plots")
+
     def test_the_active_plots_prompt_gives_each_open_thread_its_attached_notes_in_chapter_order(self, pcamp):
         root, pm = pcamp
         assert synth_planning(root)[0] == 0

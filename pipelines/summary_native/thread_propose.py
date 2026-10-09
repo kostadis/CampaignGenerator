@@ -252,7 +252,7 @@ def run_thread_propose(
         return _refuse(
             f"the thread registry {shown_registry} fails `thread_registry check`; fix it first:\n  " + "\n  ".join(findings))
 
-    att = thread_attach.attach(results, registry)
+    att = thread_attach.attach(results, registry, until)
     to_model = thread_check.offered(att.unattached, prior)
     ratified = thread_rows(registry, att)
     rows = [note_row(n) for n in to_model]

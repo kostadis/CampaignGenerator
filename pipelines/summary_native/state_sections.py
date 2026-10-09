@@ -692,8 +692,9 @@ def resolved_threads_md(
 ) -> ActivePlots:
     """campaign_state's ``## Resolved Plot Threads``: the ratified threads that are closed (#530).
 
-    A thread is closed when the GM set it ``resolved`` or ``abandoned`` in the registry, or when its status is
-    ``open`` and its latest attached note is tagged ``RESOLVED`` or ``ABANDONED`` (``Attachment.closed_threads``).
+    A thread is closed when the GM set it ``resolved`` or ``abandoned`` in the registry at or before the range's
+    last chapter (after it, the thread is decided as ``open``), or when its status is ``open`` and its latest
+    attached note is tagged ``RESOLVED`` or ``ABANDONED`` (``Attachment.closed_threads``).
     Entries are written like Active Plots': one per thread, newest activity first, the model's body or, when it
     is missing, the thread's latest attached note verbatim. A dormant thread is neither open nor closed and is
     listed only in Active Quests' dormant block. With no closed thread the body is one code line:

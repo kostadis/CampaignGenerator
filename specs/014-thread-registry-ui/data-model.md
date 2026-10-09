@@ -24,7 +24,7 @@ Lives in `stores.thread_registry` under `threads:`. Shape as written today by
 | `title` | string | Required. Its normalised form (`norm_title`) must not collide with another thread's title or alias. |
 | `status` | enum | One of `open`, `dormant`, `resolved`, `abandoned`. Anything else fails `check`. |
 | `opened` | int | The chapter the thread opened in. |
-| `resolved` | int \| null | **Required when** `status` is `resolved` or `abandoned` — `check_registry` reports "status X but no `resolved:` chapter". |
+| `resolved` | int \| null | **Required when** `status` is `resolved` or `abandoned` — `check_registry` reports "status X but no real `resolved:` chapter" unless it is an int of at least 1 (a string or bool is refused). |
 | `tracker` | string \| null | Optional link to a GM arc score. **Arc scores are not threads.** |
 | `aliases` | list[string] | Alternative titles. Each must normalise uniquely across the whole registry. |
 | `notes` | string | Free GM text. |

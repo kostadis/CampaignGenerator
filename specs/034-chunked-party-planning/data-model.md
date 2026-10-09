@@ -82,7 +82,7 @@ docs/ensemble/thread_proposals.yaml          # existing path (projections.yaml t
 | Field | Rule |
 |---|---|
 | `note_id` → `thread_id` | exact match only. A name matching two threads → `ambiguous` (reported). No match → unattached |
-| `open` | registry status `dormant` / `resolved` / `abandoned` wins (dormant → the dormant block); a status of `open` (the default) defers to the latest attached note's tag ∈ {OPENED, ADVANCED} |
+| `open` | registry status `dormant` / `resolved` / `abandoned` wins (dormant → the dormant block); a status of `open` (the default) defers to the latest attached note's tag ∈ {OPENED, ADVANCED}. A `resolved` / `abandoned` status whose `resolved:` chapter is after the build's last chapter is decided as `open` for that range (GM ruling, #530); with no chapter it stays closed |
 | `latest` | the latest attached note (max `first_chapter`, then extraction order); sets Active Plots order (newest first) |
 
 ### Thread proposal (group; new shape in the existing proposals file, R5)

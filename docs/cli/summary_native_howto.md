@@ -804,8 +804,8 @@ title or alias equals its bold name), and code decides openness and order.
 
 | Section | Holds |
 |---|---|
-| Resolved Plot Threads | The ratified threads that are **closed**: you set the status to `resolved` or `abandoned`, or the status is `open` and the thread's latest attached note is tagged `RESOLVED` or `ABANDONED`. Newest activity first; a tie goes to the registry's order. |
-| Active Quests & Open Threads | The **open** ratified threads (status `open` and the latest note `OPENED` or `ADVANCED`), newest activity first; then `### Dormant threads` (status `dormant`, each as its latest note, verbatim, no model call); then `### Unratified thread notes (not yet ruled on)`, one line giving the count and pointing to `reference/threads_unratified.md`. |
+| Resolved Plot Threads | The ratified threads that are **closed**: you set the status to `resolved` or `abandoned` at or before the range's last chapter, or the status is `open` (or a resolve/abandon after the range) and the thread's latest attached note is tagged `RESOLVED` or `ABANDONED`. Newest activity first; a tie goes to the registry's order. |
+| Active Quests & Open Threads | The **open** ratified threads (status `open`, or a resolve/abandon after the range, and the latest note `OPENED` or `ADVANCED`), newest activity first; then `### Dormant threads` (status `dormant`, each as its latest note, verbatim, no model call); then `### Unratified thread notes (not yet ruled on)`, one line giving the count and pointing to `reference/threads_unratified.md`. |
 
 A `dormant` status wins over a latest note tagged `RESOLVED`: a dormant thread is
 in Active Quests' dormant block and never in Resolved. One call per section
@@ -816,10 +816,11 @@ latest attached note, verbatim, and listed in `campaign_threads_report.md` (a
 heading the model added is discarded and listed there too). Each line keeps its
 `[ch NNN / target]` citation, and `annotate` scans these two sections like
 planning's Active Plots (the dormant and unratified blocks are skipped). The
-Resolved call is also told why each thread is closed, with the chapter the registry records (`resolved at ch 50, after the last
-chapter of this range`); if no note in a thread's block shows the ending it says the notes in this range do not show how it
-ended, and never infers one. (A thread whose registry `resolved:` chapter lies after the range is still listed as closed: that is
-`thread_attach`'s rule, shared with planning.) There are no word budgets,
+Resolved call is also told why each thread is closed, with the chapter the registry records (`the GM set it resolved at ch 4`);
+if no note in a thread's block shows the ending it says the notes in this range do not show how it
+ended, and never infers one. (A thread whose registry `resolved:` chapter lies after the range is open in it, not closed:
+that is `thread_attach`'s rule, shared with planning, and it lists the thread under Active Quests; only a latest note tagged
+`RESOLVED` or `ABANDONED` can still close it.) There are no word budgets,
 and the last chunk's evidence is no longer attached to Active Quests (Party
 Current Situation keeps it).
 
@@ -1159,7 +1160,13 @@ those names is a plot list. Thread identity is the GM's
    threads claim is *ambiguous*: reported, and the note stays unattached. Whether
    a thread is open is code's decision: a registry status of `dormant`,
    `resolved` or `abandoned` that you set wins; a status of `open` defers to the
-   latest attached note (open if its tag is `OPENED` or `ADVANCED`). One call
+   latest attached note (open if its tag is `OPENED` or `ADVANCED`). A build
+   describes the campaign as of its last chapter, so a thread you resolved or
+   abandoned *after* that chapter (the `resolved:` chapter `set-status
+   --chapter` records) is decided as if it were `open` in this range: a ch 2–30
+   build lists a thread resolved at ch 50 as open if its latest note is
+   `OPENED` or `ADVANCED` *(GM ruling, #530)*. A closed status with no chapter
+   stays closed. `threads_report.md` says which. One call
    writes the entries; a missing or bad one is replaced by the thread's latest
    attached note, verbatim.
 2. **`### Dormant threads`**: threads you marked `dormant` that have notes in the

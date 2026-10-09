@@ -128,6 +128,49 @@ class TestAttach:
         assert st.open is False and st.dormant is False
         assert att.open_threads == [] and att.dormant_threads == []
 
+    # a thread the GM closed after the build's last chapter is open in that build (#530)
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    def test_a_thread_closed_after_the_range_is_decided_by_its_latest_note(self, status):
+        t = {**thr("t", "T", status=status), "resolved": 50}
+        att = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30)
+        st = att.threads["t"]
+        assert st.open is True and st.dormant is False and [s.id for s in att.open_threads] == ["t"]
+        assert st.why == f"the GM set it {status} at ch 50, after this range (ch 30): open here, its latest note (ch 3) is ADVANCED"
+        closed = thread_attach.attach(chunks(tn(3, "RESOLVED", "T")), reg(t), until=30)
+        assert closed.threads["t"].open is False and closed.threads["t"].dormant is False
+        assert "after this range (ch 30)" in closed.threads["t"].why
+
+    @pytest.mark.parametrize("chapter", [3, 30])
+    def test_a_thread_closed_at_or_before_the_range_end_stays_closed(self, chapter):
+        t = {**thr("t", "T", status="resolved"), "resolved": chapter}
+        st = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"]
+        assert st.open is False and st.why == f"the GM set it resolved at ch {chapter}"
+
+    @pytest.mark.parametrize("recorded", [None, 0, "50", True])
+    def test_a_closed_status_without_a_real_chapter_stays_closed(self, recorded):
+        t = {**thr("t", "T", status="resolved"), "resolved": recorded}
+        assert thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"].open is False
+
+    def test_without_a_range_a_closed_status_is_closed_whatever_its_chapter(self):
+        t = {**thr("t", "T", status="resolved"), "resolved": 50}
+        assert thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t)).threads["t"].open is False
+
+    def test_a_dormant_status_is_not_read_against_the_range(self):
+        t = {**thr("t", "T", status="dormant"), "resolved": 50}
+        st = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"]
+        assert st.dormant is True and st.open is False
+
+    def test_an_open_status_ignores_a_stray_chapter(self):
+        t = {**thr("t", "T"), "resolved": 50}
+        assert thread_attach.attach(chunks(tn(3, "RESOLVED", "T")), reg(t), until=30).threads["t"].open is False
+
+    def test_decide_directly(self):
+        latest = tn(3, "OPENED", "T")
+        assert thread_attach._decide("resolved", latest, 31, 30)[:2] == (True, False)
+        assert thread_attach._decide("resolved", latest, 30, 30)[:2] == (False, False)
+        assert thread_attach._decide("resolved", latest)[:2] == (False, False)
+
     def test_a_dormant_thread_is_in_the_dormant_set_not_the_open_one(self):
         att = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(thr("t", "T", status="dormant")))
         assert att.threads["t"].open is False and att.threads["t"].dormant is True
@@ -725,6 +768,22 @@ class TestThreadPropose:
         assert [m["chapter"] for m in by_title["The Carver's march"]["members"]] == [2, 3, 4]
         assert len(by_title["The signet ring"]["members"]) == 2
         assert all(p["source"].startswith("summary_native ch002-004 run ") for p in ps)
+
+    def test_a_thread_resolved_after_the_range_is_open_in_the_attach_map_thread_propose_writes(self, tcamp):
+        """thread-propose passes the range's last chapter to attach (it writes attach.json beside synth's)."""
+        root, _ = tcamp
+        doc = {"version": 1, "threads": [
+            {**thr("cm", "The Carver's march", ["Carver march"], status="resolved"), "resolved": 50}]}
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        att = json.loads((threads_dir(root) / "attach.json").read_text(encoding="utf-8"))
+        assert att["range"]["until"] == 4 and att["threads"]["cm"]["open"] is True
+        doc["threads"][0]["resolved"] = 3
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        assert propose(root)[0] == 0
+        att = json.loads((threads_dir(root) / "attach.json").read_text(encoding="utf-8"))
+        assert att["threads"]["cm"]["open"] is False
 
     def test_the_summary_line(self, tcamp):
         root, _ = tcamp
@@ -1431,6 +1490,19 @@ class TestThreadPropose:
         t = {**thr("x", "X"), "status": "open", "excluded_notes": ["n-1"], "included_notes": ["n-1", "n-2"]}
         assert any("both in excluded_notes and included_notes" in e for e in check_registry(reg(t)))
         assert any("included_notes must be a list" in e for e in check_registry(reg({**thr("x", "X"), "included_notes": "n-1"})))
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    @pytest.mark.parametrize("recorded", ["50", True, "ch50", 0, -3, 4.0, None])
+    def test_a_closed_status_without_a_real_chapter_is_a_check_finding(self, status, recorded):
+        from campaignlib.thread_registry import check_registry
+        errors = check_registry(reg({**thr("x", "X", status=status), "resolved": recorded}))
+        assert any(f"x: status {status} but no real `resolved:` chapter ({recorded!r})" in e for e in errors)
+        assert check_registry(reg({**thr("x", "X", status=status), "resolved": 50})) == []
+
+    def test_a_log_row_chapter_that_is_a_bool_is_a_check_finding(self):
+        from campaignlib.thread_registry import check_registry
+        row = {"chapter": True, "change": "opened", "summary": "s"}
+        assert any("log row without a real chapter number (True)" in e for e in check_registry(reg(thr("x", "X", log=[row]))))
 
     def test_a_note_pinned_on_two_threads_is_a_check_finding(self):
         from campaignlib.thread_registry import check_registry

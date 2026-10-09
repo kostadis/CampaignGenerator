@@ -168,6 +168,12 @@ thread_registry check          # invariants; runs automatically on every save
 `--status` one of `open | dormant | resolved | abandoned` (resolving needs
 `--chapter`). A save that fails `check` is refused outright.
 
+The `--chapter` of a `resolved` or `abandoned` status is also read by the
+summary-native grounding builds: a build of chapters A..B describes the campaign
+as of chapter B, so a thread resolved at a chapter after B counts as `open` in
+that build (its latest attached note decides), and one resolved at or before B
+is closed. (`dormant` has no chapter and is not read against the range.)
+
 Until `docs/thread_registry.yaml` exists, the `planning` doc's `threads`
 section is `no-input` and a build of it fails loudly.
 
