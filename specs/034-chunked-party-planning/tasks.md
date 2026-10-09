@@ -394,6 +394,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 - [ ] T053 Run quickstart **S0 from main** (before this branch merges) and record the one-shot baseline sizes in `specs/034-chunked-party-planning/quickstart.md`. Adjust `DEFAULT_PARTY_BUDGETS` / `DEFAULT_PLANNING_BUDGETS` in `schema.py` if S6 shows the new drafts larger.
 - [ ] T054 Run quickstart S1–S7 on the OOTA copy and record the results under "Validation" in `specs/034-chunked-party-planning/quickstart.md`: extraction drops, level, attribution, proposal counts, ratification round trip, planning layers, the canary, sizes, citations and timing. Ask the GM before ratifying anything in the real campaign; S3 ratifies only in the copy.
 - [ ] T055 Run `PYTHONPATH=$PWD python -m pytest tests/` and `cd frontend && npx playwright test`. Then list the follow-ups (campaign_state threads from the registry; #512; #515; retiring the ensemble harvest) under "Follow-ups" in `specs/034-chunked-party-planning/plan.md`, and file the campaign_state-threads issue with the GitHub MCP tools.
+- [ ] T056 Remove `parts: 0` from Out of the Abyss's `config/grounding.yaml` (line 73) in the kostadis/campaigns repo, on a branch with a PR, merged before or with this feature. After this feature the key is refused at load. The line is harmless to the old code, so removing it first is safe. Ask the GM before touching the campaigns repo, and check the other campaigns' `grounding.yaml` for the same key. Found in the Phase 8 review.
 
 ---
 
