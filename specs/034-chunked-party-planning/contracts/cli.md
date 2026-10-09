@@ -38,13 +38,13 @@ summary_native synth planning --since A --until B [--planning-config FILE]
   - `party.yaml` (party only; player-character arc scores live there, never in planning);
   - `planning.yaml`;
   - published dossiers (planning);
-  - `docs/thread_registry.yaml` (planning).
+  - `docs/thread_registry.yaml` (planning; also campaign_state's two thread sections, #530).
 - **Backend:**
   - Defaults: flag > `grounding.yaml summary_native.prose` > `schema.DEFAULT_PROSE_*`, the same as world_state.
   - Budgets: `summary_native.prose.party_budgets` / `.planning_budgets`.
 - **Output:** `state/drafts/{party,planning}.draft.md` plus the reports in `data-model.md`. Annotation runs at the end, as for the other two documents. Nothing is written to `docs/`.
 - **planning, missing dossiers:** with default flags, a selected NPC without a published, verification-passing dossier refuses (exit 2), naming each NPC and its dossier state. `--fallback-npc-lines` writes the marked code-built line instead, for this run only.
-- **planning, thread registry:** an absent or empty registry is not a refusal. Active Plots carries the "No ratified thread …" line and the unratified notes. A registry that fails `thread_registry check` is refused (exit 2) with the check's findings.
+- **planning, thread registry:** an absent or empty registry is not a refusal. Active Plots carries the "No ratified thread …" line and the unratified notes. A registry that fails `thread_registry check` is refused (exit 2) with the check's findings. **campaign_state (#530)** reads the registry the same way for `## Resolved Plot Threads` (closed ratified threads) and `## Active Quests & Open Threads` (open ratified threads, dormant block, unratified pointer): the same refusals, an absent registry is the pointer-only form with no model call, and `inputs.thread_registry_sha256` is in its run record. It writes `campaign_threads_report.md` beside `threads_report.md`.
 
 **Refusals added (exit 2, before any model call), each naming its replacement:**
 

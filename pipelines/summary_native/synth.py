@@ -183,6 +183,8 @@ STATE_SYSTEM = {
 }
 #: The documents that open with a reading contract (campaign_state, as before, does not).
 CONTRACT_DOCS = ("world_state", "party", "planning")
+#: The documents whose thread sections are built from the GM's thread registry (spec 034 for planning, #530 for campaign_state).
+THREAD_DOCS = ("planning", "campaign_state")
 
 
 def _default_budgets(doc: str) -> dict[str, int]:
@@ -382,13 +384,15 @@ class PlanningPart:
     payload: object = None
 
 
-def _planning_prompt(heading: str, brief: str, budget: int, names_label: str, names: list[str], blocks: str) -> str:
-    """One planning call's user prompt: its identifying lines, the names to write about in the order to write
-    them, then each name's notes. ``SECTION:`` is the heading the call writes for, so a reader of the run
-    directory can tell the calls apart."""
+def _entries_prompt(doc: str, heading: str, brief: str, budget: int | None, names_label: str, names: list[str], blocks: str) -> str:
+    """One per-entry call's user prompt (planning's factions and plots, campaign_state's threads): its
+    identifying lines, the names to write about in the order to write them, then each name's notes.
+    ``SECTION:`` is the heading the call writes for, so a reader of the run directory can tell the calls
+    apart. ``budget`` is ``None`` for a document with no word budgets (campaign_state)."""
     listing = "\n".join(f"{i}. {n}" for i, n in enumerate(names, 1))
+    limit = f"WORD BUDGET: {budget} words, hard limit, for the whole section.\n" if budget else ""
     return (
-        f"DOCUMENT: planning\nSECTION: {heading}\nBRIEF: {brief}\nWORD BUDGET: {budget} words, hard limit, for the whole section.\n\n"
+        f"DOCUMENT: {doc}\nSECTION: {heading}\nBRIEF: {brief}\n{limit}\n"
         f"{names_label}, in this order (write exactly one `### <name exactly as given>` block for each, in this order, and no other block):\n"
         f"{listing}\n\n{blocks}\n\n"
         "OUTPUT: the `###` blocks only. No `##` heading, no preamble, no closing remarks.\n"
@@ -438,37 +442,61 @@ def _faction_states_job(ctx: StateCtx) -> dict:
 
     return {
         "heading": "## Faction States", "route": "FACTION", "file": "faction_states", "notes": sum(len(f.notes) for f in writing),
-        "user": _planning_prompt("## Faction States", state_sections.BRIEFS["## Faction States"], budget,
-                                 "FACTIONS", [f.name for f in writing], blocks) if writing else "",
+        "user": _entries_prompt("planning", "## Faction States", state_sections.BRIEFS["## Faction States"], budget,
+                                "FACTIONS", [f.name for f in writing], blocks) if writing else "",
         "budget": budget, "system": ctx.system, "finish": finish,
     }
+
+
+def _thread_blocks(threads: list, *, why: bool = False) -> str:
+    """Each thread's attached notes, in chapter order, under a ``=== THREAD: title (...) ===`` line. ``why`` adds
+    the reason code closed the thread (``ThreadState.why``), for the call that writes how threads ended."""
+    return "\n\n".join(
+        f"=== THREAD: {s.title} ({len(s.notes)} notes, chapter order, every one already checked by code"
+        + (f"; closed because {s.why}" if why else "") + f") ===\n{_note_lines(s.notes)}"
+        for s in threads)
+
+
+def _thread_job(ctx: StateCtx, *, heading: str, file: str, threads: list, build, record, system: str | None = None,
+                why: bool = False) -> dict:
+    """One thread section: the threads code chose, in code's order, are written by one call; code checks the entries
+    and builds the section around them (``build`` is ``state_sections.active_plots_md`` or ``resolved_threads_md``).
+
+    ``record(section)`` is what the run record keeps about the section. The budget is the document's, if it has
+    one (planning's Active Plots; campaign_state has none). The ``why`` and ``system`` parameters are for
+    campaign_state's calls, whose prompt says nothing about a word budget or a planning document.
+    """
+    att = ctx.attachment
+    budget = ctx.budgets["Active Plots"] if ctx.doc == "planning" else None
+
+    def finish(out: str | None) -> PlanningPart:
+        check = state_sections.check_entries(out, [s.title for s in threads])
+        sec = build(att, {s.id: check.bodies.get(s.title) for s in threads}, {s.id: check.bad.get(s.title, "") for s in threads})
+        report = sec.report + [f"- discarded (not a thread given to the model, or repeated): ### {x}" for x in check.extras]
+        return PlanningPart(sec.text, sec.model_text, report, record(sec))
+
+    return {
+        "heading": heading, "route": "threads", "file": file, "notes": sum(len(s.notes) for s in threads),
+        "user": _entries_prompt(ctx.doc, heading, state_sections.BRIEFS[heading], budget, "THREADS",
+                                [s.title for s in threads], _thread_blocks(threads, why=why)) if threads else "",
+        "budget": budget, "system": system or ctx.system, "finish": finish,
+    }
+
+
+def _open_record(att):
+    """What the run record keeps about a section of open threads (Active Plots, Active Quests & Open Threads)."""
+    return lambda sec: {
+        "open": [s.title for s in att.open_threads], "dormant": [s.title for s in att.dormant_threads],
+        "unratified": len(att.unattached), "replaced": sec.replaced}
 
 
 def _active_plots_job(ctx: StateCtx) -> dict:
     """Active Plots: the open ratified threads, newest activity first, are written by one call; code checks the
     entries and builds the dormant and unratified blocks."""
     att = ctx.attachment
-    open_threads = att.open_threads
-    budget = ctx.budgets["Active Plots"]
-    blocks = "\n\n".join(
-        f"=== THREAD: {s.title} ({len(s.notes)} notes, chapter order, every one already checked by code) ===\n{_note_lines(s.notes)}"
-        for s in open_threads)
-
-    def finish(out: str | None) -> PlanningPart:
-        check = state_sections.check_entries(out, [s.title for s in open_threads])
-        ap = state_sections.active_plots_md(
-            att, {s.id: check.bodies.get(s.title) for s in open_threads}, {s.id: check.bad.get(s.title, "") for s in open_threads})
-        report = ap.report + [f"- discarded (not an open ratified thread, or repeated): ### {x}" for x in check.extras]
-        return PlanningPart(ap.text, ap.model_text, report, {
-            "open": [s.title for s in open_threads], "dormant": [s.title for s in att.dormant_threads],
-            "unratified": len(att.unattached), "replaced": ap.replaced})
-
-    return {
-        "heading": "## Active Plots", "route": "threads", "file": "active_plots", "notes": sum(len(s.notes) for s in open_threads),
-        "user": _planning_prompt("## Active Plots", state_sections.BRIEFS["## Active Plots"], budget,
-                                 "THREADS", [s.title for s in open_threads], blocks) if open_threads else "",
-        "budget": budget, "system": ctx.system, "finish": finish,
-    }
+    return _thread_job(
+        ctx, heading="## Active Plots", file="active_plots", threads=att.open_threads,
+        build=state_sections.active_plots_md, record=_open_record(att))
 
 
 def _dm_notes_job(ctx: StateCtx) -> dict:
@@ -514,6 +542,28 @@ def _planning_jobs(ctx: StateCtx) -> list[dict]:
     made and ``finish`` builds the section from what code knows.
     """
     return [_npc_dossiers_job(ctx), _faction_states_job(ctx), _active_plots_job(ctx), _dm_notes_job(ctx)]
+
+
+def _campaign_jobs(ctx: StateCtx) -> list[dict]:
+    """campaign_state's thread jobs: Resolved Plot Threads and Active Quests & Open Threads (#530).
+
+    Thread identity, openness and order are planning's (``thread_attach``): the GM's registry decides which
+    notes are one thread and a registry status or the latest note's tag decides whether it is open. The
+    closed threads go to Resolved, the open ones to Active Quests (with the dormant and unratified blocks,
+    which code builds). campaign_state's other prose section, Party Current Situation, is a plain routed call.
+    """
+    att = ctx.attachment
+    system = (context.PROMPT_DIR / "state.campaign_threads.system.md").read_text(encoding="utf-8")
+    heading = "## Resolved Plot Threads"
+    resolved = _thread_job(
+        ctx, heading=heading, file=_slug(heading), threads=att.closed_threads, build=state_sections.resolved_threads_md,
+        record=lambda sec: {"resolved": [s.title for s in att.closed_threads], "replaced": sec.replaced},
+        system=system, why=True)
+    heading = "## Active Quests & Open Threads"
+    active = _thread_job(
+        ctx, heading=heading, file=_slug(heading), threads=att.open_threads, build=state_sections.active_plots_md,
+        record=_open_record(att), system=system)
+    return [resolved, active]
 
 
 # ── arc-score candidates (spec 034 US4, research R10) ───────────────────────
@@ -709,7 +759,9 @@ def run_state_synth(
             planning = context.load_planning(planning_path, root, explicit=bool(given))
         except context.DocConfigError as e:
             return _refuse(str(e))
+    if doc in THREAD_DOCS:
         # Thread identity is the GM's registry; a registry that fails its own check is not read (spec 034 R4).
+        # campaign_state reads it the same way (#530): no registry file is an empty one, so no ratified thread.
         try:
             thread_registry = load_registry(thread_registry_path) if thread_registry_path is not None else {"version": 1, "threads": []}
             thread_registry["threads"] = list(thread_registry.get("threads") or [])
@@ -793,6 +845,9 @@ def run_state_synth(
         code_body["## Completed Encounters & Quests"] = state_sections.completed_md(results)
         code_body["## NPC Current States"] = table
         code_body["## Audit: Tracking Claims"] = state_sections.audit_md(range_dir)
+        # the Active Quests section points at the unratified notes (#530), as planning's Active Plots does
+        reference[state_sections.UNRATIFIED_KIND] = state_sections.unratified_reference_md(attachment)
+        thread_attach.write_attach(range_dir, attachment, (since, until))
 
     # ── prose prompts ──
     system = (context.PROMPT_DIR / STATE_SYSTEM[doc]).read_text(encoding="utf-8")
@@ -804,7 +859,7 @@ def run_state_synth(
     jobs = []
     arc_jobs: list[dict] = []
     arc_subjects: list[arc_check.ArcSubject] = []
-    if doc in ("party", "planning"):
+    if doc in ("party", "planning", "campaign_state"):
         ctx = StateCtx(
             doc=doc, args=args, root=Path(root), range_dir=Path(range_dir),
             config_dir=Path(config_dir) if config_dir is not None else Path(root) / "config",
@@ -814,8 +869,9 @@ def run_state_synth(
             party=party_chars, attributions=attributions, levels=levels,
             planning=planning, npc_plan=npc_plan, attachment=attachment, status_table=table if doc == "planning" else "",
         )
-        jobs.extend((_party_jobs if doc == "party" else _planning_jobs)(ctx))
-        arc_jobs, arc_subjects = _arc_jobs(ctx)
+        jobs.extend({"party": _party_jobs, "planning": _planning_jobs, "campaign_state": _campaign_jobs}[doc](ctx))
+        if doc != "campaign_state":
+            arc_jobs, arc_subjects = _arc_jobs(ctx)
     for heading, route, attach in state_sections.PROSE_SECTIONS.get(doc, ()):
         routed = state_sections.route_notes(route, results)
         extra = ""
@@ -881,6 +937,8 @@ def run_state_synth(
                           for e in planning.scored],
             }, "thread_registry_sha256": freshness.sha_file(thread_registry_path),
                 "budgets": dict(sorted(budgets.items()))} if doc == "planning" else {}),
+            # campaign_state: the GM's thread registry decides its two thread sections, so it is an input (#530)
+            **({"thread_registry_sha256": freshness.sha_file(thread_registry_path)} if doc == "campaign_state" else {}),
         },
         "calls": [],
         "key_npcs": {
@@ -1076,6 +1134,9 @@ def run_state_synth(
         record["planning"]["Faction States"] = {
             **record["planning"].get("Faction States", {}),
             "report": planning_parts["## Faction States"].report if "## Faction States" in planning_parts else []}
+    if doc == "campaign_state":
+        # what code decided about each thread section, and every entry it replaced (#530)
+        record["threads"] = {h[3:]: {**p.record, "report": p.report} for h, p in sorted(planning_parts.items())}
     headings = load_outline(doc)
     parts: list[str] = []
     party_problems: list[str] = []
@@ -1142,6 +1203,12 @@ def run_state_synth(
         plots_part = planning_parts.get("## Active Plots")
         atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(attachment, (since, until)) + "\n".join([
             "", "## Active Plots entries replaced by code", "", *((plots_part.report if plots_part else []) or ["- (none)"]), ""]))
+    if doc == "campaign_state":
+        # campaign_state's side of threads_report.md, in a file of its own so one document's report never replaces the other's
+        lines = [f"## {h[3:]} entries replaced by code\n\n" + "\n".join(planning_parts[h].report or ["- (none)"]) + "\n"
+                 for h in ("## Resolved Plot Threads", "## Active Quests & Open Threads") if h in planning_parts]
+        atomic_write_text(drafts / schema.CAMPAIGN_THREADS_REPORT_FILE,
+                          thread_attach.threads_report_md(attachment, (since, until)) + "\n".join(["", *lines]))
     # The files the sections point to. Written whether or not the draft is complete: they are
     # built by code from the checked notes and do not depend on the model.
     for kind, md in reference.items():

@@ -204,7 +204,7 @@ No constitution violations to justify.
 
 ## Follow-ups (outside this feature)
 
-- **#530:** campaign_state's thread sections read the thread registry once OOTA's registry is ratified, replacing the model reading the whole ledger.
+- **#530 (done):** campaign_state's thread sections read the thread registry (`thread_attach`, `active_plots_md` and a new `resolved_threads_md`), replacing the model reading the whole ledger. The registry digest is in its run record; an absent registry leaves the unratified pointer. The old `threads` route is removed.
 - **Thread proposals:**
   - **#524:** a pending group spanning the range edge loses its out-of-range notes.
   - **#525:** removing an alias leaves notes unattached and unflagged.

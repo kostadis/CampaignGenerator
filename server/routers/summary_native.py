@@ -195,6 +195,7 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
         ("party_report", state_drafts / "party_report.md"),
         ("planning_npcs_report", state_drafts / "planning_npcs_report.md"),
         ("threads_report", state_drafts / "threads_report.md"),
+        ("campaign_threads_report", state_drafts / schema.CAMPAIGN_THREADS_REPORT_FILE),
         ("arc_report", state_drafts / "arc_report.md"),
         ("budget_report_party", state_drafts / schema.budget_report_file("party")),
         ("budget_report_planning", state_drafts / schema.budget_report_file("planning")),

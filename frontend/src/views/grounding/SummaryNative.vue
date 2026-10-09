@@ -591,6 +591,12 @@ onMounted(async () => {
           <template v-if="doc === 'world_state'">
             Key NPCs are rendered from the published NPC dossiers: the build refuses when a selected NPC has none.
           </template>
+          <template v-if="doc === 'campaign_state'">
+            Resolved Plot Threads and Active Quests &amp; Open Threads are built from the threads the GM has ratified
+            (<RouterLink to="/grounding/threads">Threads page</RouterLink>): code decides which threads are closed or open, in
+            what order, and lists the dormant and unratified ones; the model writes one entry per thread from that thread&rsquo;s own notes.
+            Until threads are ratified these sections say so and point to the unratified notes.
+          </template>
           <template v-if="doc === 'planning'">
             Code builds the Threat Tracker, picks the NPCs and factions, orders Active Plots by the ratified threads and lists the
             unratified thread notes verbatim. NPC Dossiers are rendered from the published NPC dossiers: the build refuses when a

@@ -667,7 +667,7 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
             npc_root = _npc_root(args, root, config_path)
         except ValueError as e:  # a malformed npc_dossiers.yaml
             return _err(str(e))
-    if args.doc == "planning":
+    if args.doc in ("planning", "campaign_state"):
         # Thread identity is the GM's registry; where it lives is projections.yaml's `stores` (as thread-propose reads it).
         try:
             stores = load_projection_config(config_path.expanduser().resolve().parent / PROJECTION_CONFIG_FILENAME).stores

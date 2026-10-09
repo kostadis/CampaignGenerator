@@ -153,7 +153,8 @@ from tests import conftest_state as cs  # noqa: E402
 
 WORLD_PROSE = ["## Party", "## Factions and Powers", "## Key NPCs", "## Locations", "## Items and Artifacts",
                "## Active Threats and Open Pressures"]
-CAMPAIGN_PROSE = ["## Resolved Plot Threads", "## Active Quests & Open Threads", "## Party Current Situation"]
+#: The state fixture ratifies no thread, so campaign_state's two thread sections are code lines and make no call (#530).
+CAMPAIGN_PROSE = ["## Party Current Situation"]
 
 
 @pytest.fixture
@@ -451,13 +452,16 @@ class TestCampaignState:
         rep = (state_dir(extracted) / "drafts" / "npc_status_report.md").read_text()
         assert "Ilvara Mizzrym: Ilvara, Ilvara Mizzrym" in rep and "Player-character rows dropped (1)" in rep
 
-    def test_the_thread_sections_get_the_ledger_and_the_last_chunk(self, extracted, fm):
+    def test_without_a_ratified_thread_the_thread_sections_are_code_lines_and_the_unratified_pointer(self, extracted, fm):
+        """No thread registry in the fixture: no call for either thread section, and the notes go to the pointer (#530)."""
         assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
-        by = {c["heading"]: c["user"] for c in fm.prose_calls}
-        ledger = by["## Resolved Plot Threads"]
-        assert "[OPENED] **The signet ring**" in ledger and "[RESOLVED] **The signet ring**" in ledger
-        assert "CHAPTER 005" in by["## Active Quests & Open Threads"] and "CHAPTER 005" in by["## Party Current Situation"]
-        assert "CHAPTER 005" not in ledger
+        text = draft_of(extracted, "campaign_state")
+        assert section(text, "## Resolved Plot Threads").startswith(schema.NO_RATIFIED_THREADS)
+        active = section(text, "## Active Quests & Open Threads")
+        assert active.startswith(schema.NO_RATIFIED_THREADS) and schema.UNRATIFIED_HEADING in active
+        assert "_4 checked thread notes are not in the thread registry." in active  # the signet ring (3) and Kalan (1)
+        assert [c["heading"] for c in fm.prose_calls] == ["## Party Current Situation"]
+        assert "CHAPTER 005" in fm.prose_calls[0]["user"]
 
     def test_the_audit_section_says_it_was_not_run(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
@@ -667,7 +671,7 @@ from tests.test_summary_native_planning import DEFAULT as PLANNING_DEFAULT  # no
 
 #: One section per document that, left blank, makes that document's draft incomplete (exit 3).
 BLANKABLE = {
-    "world_state": "## Locations", "campaign_state": "## Resolved Plot Threads",
+    "world_state": "## Locations", "campaign_state": "## Party Current Situation",
     "party": "## Party Overview", "planning": "## DM Notes",
 }
 
