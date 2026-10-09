@@ -344,6 +344,9 @@ class CheckedChunk:
     chunk: str  # "002-003"
     notes: list[Note] = field(default_factory=list)
     drops: list[Drop] = field(default_factory=list)
+    #: Outline headings the raw output never wrote. A chunk with any is a failed chunk and is not
+    #: saved, so a ``checked.json`` carries the key only if one was written by hand.
+    missing: list[str] = field(default_factory=list)
 
     def kept(self, kind: str) -> list[Note]:
         return [n for n in self.notes if n.kind == kind]
@@ -360,7 +363,10 @@ class CheckedChunk:
         }
 
     def to_dict(self) -> dict:
-        return {"chunk": self.chunk, "notes": [n.to_dict() for n in self.notes], "drops": [d.to_dict() for d in self.drops]}
+        d = {"chunk": self.chunk, "notes": [n.to_dict() for n in self.notes], "drops": [d.to_dict() for d in self.drops]}
+        if self.missing:
+            d["missing"] = list(self.missing)
+        return d
 
     @classmethod
     def from_dict(cls, d: dict) -> "CheckedChunk":
@@ -368,11 +374,15 @@ class CheckedChunk:
             d["chunk"],
             [Note.from_dict(n) for n in d.get("notes", [])],
             [Drop(x["chunk"], x["kind"], x["reason"], x["text"]) for x in d.get("drops", [])],
+            list(d.get("missing", [])),
         )
 
 
 def check_chunk(raw: str, chunk: Sequence[Chapter], label: str | None = None) -> CheckedChunk:
     """Check one extraction output against its chunk's chapters: keep what passes, drop what does not.
+
+    A heading of ``schema.STATE_MAP_SECTIONS`` absent from ``raw`` is listed in ``missing``; present
+    but empty (or ``- (none)``) is a legitimate empty answer.
 
     Order of checks, first failure wins: nested bullet, citation (uncited / invalid / outside the
     chunk), quoted span, then the tag or row format of the section. A drop keeps the note's text and
@@ -386,6 +396,11 @@ def check_chunk(raw: str, chunk: Sequence[Chapter], label: str | None = None) ->
     res = CheckedChunk(label)
     for heading in schema.STATE_MAP_SECTIONS:
         kind = _KIND_OF[heading]
+        # An absent heading is not an empty answer: the prompt requires all six sections, and an empty
+        # one is left empty or written `- (none)`, so a section never written is one the model skipped
+        # (#515). The caller fails the chunk.
+        if heading not in secs:
+            res.missing.append(heading)
         first, lines = secs.get(heading, (0, []))
         for b in npc_check.bullets(lines, first):
             text = b.text
@@ -503,8 +518,11 @@ def outlier_chunks(results: Sequence[CheckedChunk]) -> list[str]:
     return outliers_of([(r.chunk, len(r.drops)) for r in results])
 
 
-def render_drops_md(results: Sequence[CheckedChunk]) -> str:
-    """``drops.md``: counts per chunk and per reason, outliers flagged, then every drop with its text."""
+def render_drops_md(results: Sequence[CheckedChunk], incomplete: Sequence[tuple[str, Sequence[str]]] = ()) -> str:
+    """``drops.md``: counts per chunk and per reason, outliers flagged, then every drop with its text.
+
+    ``incomplete`` is ``(chunk, missing headings)`` for each chunk that failed for want of a section;
+    those chunks have no notes, so they would otherwise not appear here at all (#515)."""
     out_set = set(outlier_chunks(results))
     median = statistics.median(len(r.drops) for r in results) if results else 0
     total = sum(len(r.drops) for r in results)
@@ -523,6 +541,9 @@ def render_drops_md(results: Sequence[CheckedChunk]) -> str:
             by_reason[k] = by_reason.get(k, 0) + n
     lines += ["", "## Dropped by reason", ""]
     lines += [f"- {k}: {n}" for k, n in sorted(by_reason.items())] or ["- (none)"]
+    if incomplete:
+        lines += ["", "## Incomplete chunks (failed: output missing outline sections; no notes kept)", ""]
+        lines += [f"- {chunk}: missing {', '.join(missing)}" for chunk, missing in incomplete]
     for r in results:
         if not r.drops:
             continue

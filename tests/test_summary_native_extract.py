@@ -287,6 +287,212 @@ def test_load_checked_refuses_an_incomplete_extraction(camp, fm):
     assert "004-004" in str(e.value)
 
 
+# ── #515: a chunk missing outline sections is a failed chunk ────────────────
+
+
+def _without(raw: str, heading: str, keep_heading: bool = False, body: str = "") -> str:
+    """``raw`` with one ``##`` section removed (or, with ``keep_heading``, its body replaced)."""
+    out, skipping = [], False
+    for line in raw.splitlines():
+        if line.startswith("## "):
+            skipping = line.strip() == heading
+            if skipping and keep_heading:
+                out += [line, body]
+            if skipping:
+                continue
+        if not skipping:
+            out.append(line)
+    return "\n".join(out) + "\n"
+
+
+def _drop_world_in(fm, monkeypatch, rng: str, times: int | None = None, **kw):
+    """Make the fake backend answer ``rng`` without ``## World`` (``times`` calls, else always)."""
+    left = [times]
+
+    def render(client, system, user, model, max_tokens):
+        raw = fm.extract_render(client, system, user, model, max_tokens)
+        if f"CHAPTERS IN THIS CHUNK: {rng}" not in user or left[0] == 0:
+            return raw
+        if left[0] is not None:
+            left[0] -= 1
+        return _without(raw, "## World", **kw)
+
+    monkeypatch.setattr(extract, "render_part", render)
+
+
+def test_an_output_missing_world_is_a_failed_chunk_named_in_output_record_and_drops(camp, fm, monkeypatch):
+    _drop_world_in(fm, monkeypatch, "004-004")
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 3
+    assert sum(1 for c in fm.extract_calls if c["range"] == "004-004") == 2  # one retry, like a failed call
+    assert "004-004" in err and "## World" in err
+    assert "extracted 3/4 chunks" in out  # not counted as a success
+    nd = notes_dir(camp)
+    assert not (nd / "chunk03.004-004.checked.json").exists()
+    assert (nd / "chunk03.004-004.out.md").is_file()  # the raw output stays for inspection
+    m = json.loads((nd / "manifest.json").read_text())
+    assert m["complete"] is False and [c["status"] for c in m["chunks"]] == ["checked", "checked", "failed", "checked"]
+    (run,) = [p for p in (range_dir(camp) / schema.STATE_DIR / "runs").iterdir() if p.is_dir()]
+    rec = json.loads((run / "record.json").read_text())
+    bad = rec["chunks"][2]
+    assert rec["exit_code"] == 3 and bad["status"] == "failed" and bad["missing_sections"] == ["## World"]
+    assert "## World" in bad["error"]
+    drops = (nd / "drops.md").read_text()
+    assert "004-004: missing ## World" in drops
+    with pytest.raises(notes.NotesIncomplete):
+        notes.load_checked(range_dir(camp))
+
+
+def test_a_missing_section_gets_one_retry_and_a_complete_answer_then_passes(camp, fm, monkeypatch):
+    _drop_world_in(fm, monkeypatch, "003-003", times=1)
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    assert sum(1 for c in fm.extract_calls if c["range"] == "003-003") == 2
+    assert (notes_dir(camp) / "chunk02.003-003.out.md").read_text() == CANNED[3]
+
+
+def test_every_missing_section_is_named(camp, fm, monkeypatch):
+    monkeypatch.setattr(
+        extract, "render_part",
+        lambda client, system, user, model, max_tokens: "## Events\n- (none)\n\n## Concluded\n- (none)\n")
+    rc, _, err = run_cli(extract_args(camp))
+    assert rc == 3  # the backend answered, so it was reached: incomplete, not exit 4
+    for h in ("## Threads", "## NPC Status", "## World", "## Party"):
+        assert h in err
+    assert "## Events" not in err.split("output missing outline section(s)", 1)[1]
+
+
+def test_a_world_section_holding_only_none_passes(camp, fm, monkeypatch):
+    _drop_world_in(fm, monkeypatch, "004-004", keep_heading=True, body="- (none)")
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    assert sum(1 for c in fm.extract_calls if c["range"] == "004-004") == 1
+    assert "extracted 4/4 chunks" in out
+
+
+def test_a_present_but_empty_section_passes(camp, fm, monkeypatch):
+    _drop_world_in(fm, monkeypatch, "004-004", keep_heading=True, body="")
+    rc, _, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+
+
+def _break_cached_world(camp, rng_stem="chunk03.004-004"):
+    f = notes_dir(camp) / f"{rng_stem}.out.md"
+    f.write_text(_without(f.read_text(), "## World"))
+
+
+def test_a_cached_chunk_missing_a_section_is_reported_without_a_model_call(camp, fm):
+    run_cli(extract_args(camp))
+    _break_cached_world(camp)
+    fm.extract_calls.clear()
+    rc, out, err = run_cli(extract_args(camp, "--dump-only"))
+    assert rc == 3 and not fm.extract_calls
+    assert "004-004" in err and "INCOMPLETE" in err and "## World" in err
+    nd = notes_dir(camp)
+    m = json.loads((nd / "manifest.json").read_text())
+    assert m["complete"] is False and m["chunks"][2]["status"] == "failed"
+    assert "004-004: missing ## World" in (nd / "drops.md").read_text()
+    # reported, not repaired: the next full run extracts only that chunk
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    assert [c["range"] for c in fm.extract_calls] == ["004-004"]
+    assert json.loads((nd / "manifest.json").read_text())["complete"] is True
+
+
+def test_a_rerun_over_a_cached_incomplete_chunk_exits_3_with_no_model_call_then_fixes_it(camp, fm, monkeypatch):
+    run_cli(extract_args(camp))
+    _break_cached_world(camp)
+    fm.extract_calls.clear()
+    monkeypatch.setattr(extract, "client_from_args", lambda *a, **k: (_ for _ in ()).throw(AssertionError("client")))
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 3 and not fm.extract_calls
+    assert "cached INCOMPLETE" in err and "## World" in err and "extracted 3/4 chunks (0 new, 3 cached)" in out
+    monkeypatch.setattr(extract, "client_from_args", fm.make_client)
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    assert [c["range"] for c in fm.extract_calls] == ["004-004"]
+
+
+def test_a_cached_incomplete_chunk_does_not_hide_an_unreachable_backend_exit_4(camp, fm):
+    run_cli(extract_args(camp))
+    _break_cached_world(camp)
+    nd = notes_dir(camp)
+    for stem in ("chunk01.002-002", "chunk02.003-003", "chunk04.005-005"):  # the rest must be called again
+        (nd / f"{stem}.checked.json").unlink()
+    for r in RANGES:
+        fm.fail_chunks[r] = 5
+    fm.extract_calls.clear()
+    rc, _, err = run_cli(extract_args(camp))
+    assert rc == 4, err
+    assert "could not be reached" in err
+    assert "004-004" not in [c["range"] for c in fm.extract_calls]  # the cached one made no call
+
+
+def test_the_closing_message_words_cached_chunks_separately(camp, fm):
+    run_cli(extract_args(camp))
+    _break_cached_world(camp)
+    rc, _, err = run_cli(extract_args(camp))
+    assert rc == 3
+    assert "1 cached chunk(s) found incomplete, not called: 004-004" in err
+    assert "retried once" not in err
+
+
+def test_a_complete_sibling_copy_replaces_an_incomplete_local_one(camp, fm):
+    run_cli(extract_args(camp))
+    nd = notes_dir(camp)
+    sib = range_dir(camp).parent / "ch001-009" / "state" / "notes"
+    sib.mkdir(parents=True)
+    for suffix in ("checked.json", "out.md"):
+        (sib / f"chunk01.004-004.{suffix}").write_bytes((nd / f"chunk03.004-004.{suffix}").read_bytes())
+    _break_cached_world(camp)
+    fm.extract_calls.clear()
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    assert not fm.extract_calls
+    assert (nd / "chunk03.004-004.out.md").read_text() == CANNED[4]
+
+
+def test_a_retry_that_raises_after_an_incomplete_answer_keeps_the_missing_sections(camp, fm, monkeypatch):
+    calls = []
+
+    def render(client, system, user, model, max_tokens):
+        raw = fm.extract_render(client, system, user, model, max_tokens)
+        if "CHAPTERS IN THIS CHUNK: 004-004" not in user:
+            return raw
+        calls.append(1)
+        if len(calls) == 1:
+            return _without(raw, "## World")
+        raise RuntimeError("upstream failure")
+
+    monkeypatch.setattr(extract, "render_part", render)
+    rc, out, err = run_cli(extract_args(camp))
+    assert rc == 3, err  # the backend answered once, so it was reached
+    nd = notes_dir(camp)
+    assert not (nd / "chunk03.004-004.checked.json").exists()
+    (run,) = [p for p in (range_dir(camp) / schema.STATE_DIR / "runs").iterdir() if p.is_dir()]
+    rec = json.loads((run / "record.json").read_text())
+    assert rec["chunks"][2]["missing_sections"] == ["## World"]
+    assert "004-004: missing ## World" in (nd / "drops.md").read_text()
+
+
+def test_a_sibling_ranges_incomplete_output_is_not_reused(camp, fm, monkeypatch, tmp_path):
+    from tests.conftest_state import extract_args as _ea  # noqa: F401 - the same CLI, a second range
+    run_cli(extract_args(camp))
+    # An older sibling build of the same chunk whose raw output lacks a section: its key matches,
+    # but it must not be copied in as a success.
+    nd = notes_dir(camp)
+    sib = range_dir(camp).parent / "ch001-009" / "state" / "notes"
+    sib.mkdir(parents=True)
+    key = json.loads((nd / "chunk03.004-004.checked.json").read_text())["cache_key"]
+    (sib / "chunk01.004-004.checked.json").write_text(json.dumps({"chunk": "004-004", "notes": [], "drops": [], "cache_key": key}))
+    (sib / "chunk01.004-004.out.md").write_text(_without(CANNED[4], "## World"))
+    (nd / "chunk03.004-004.checked.json").unlink()
+    fm.extract_calls.clear()
+    rc, _, err = run_cli(extract_args(camp))
+    assert rc == 0, err
+    assert [c["range"] for c in fm.extract_calls] == ["004-004"]
+
+
 # ── spec 033 US5: several endpoints on one queue (T039) ─────────────────────
 
 import re
