@@ -43,7 +43,7 @@ from typing import Any, Literal
 
 import yaml
 from campaignlib.selection import Backend, ClaudeCodeEffort, ModelSelection
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native.schema import (
@@ -53,7 +53,6 @@ from pipelines.summary_native.schema import (
     DEFAULT_DUP_THRESHOLD,
     DISTILLED_DIR,
     DEFAULT_OUT_ROOT,
-    DEFAULT_PARTS,
     DEFAULT_PARTY_BUDGETS,
     DEFAULT_PLANNING_BUDGETS,
     DEFAULT_PROSE_BACKEND,
@@ -271,9 +270,19 @@ class SummaryNativeRun(BaseModel):
     recent_chapters: int = DEFAULT_RECENT_CHAPTERS
     recurring_min: int = DEFAULT_RECURRING_MIN
     dup_threshold: float = DEFAULT_DUP_THRESHOLD
-    parts: int = DEFAULT_PARTS
     extract: ExtractBlock = Field(default_factory=ExtractBlock)
     prose: ProseBlock = Field(default_factory=ProseBlock)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _parts_is_retired(cls, data: Any) -> Any:
+        """``parts`` split one-shot documents into N calls; every document is now built one call per section
+        (spec 034). A stale key is refused naming the fix, not silently dropped."""
+        if isinstance(data, dict) and "parts" in data:
+            raise ValueError(
+                "summary_native.parts is retired (every document is built one call per section from the "
+                "checked notes): delete the `parts:` line from grounding.yaml")
+        return data
 
 
 class GroundingConfig(BaseModel):

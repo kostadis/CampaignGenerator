@@ -381,6 +381,33 @@ class TestFactionStates:
         rec = json.loads((run / "record.json").read_text())
         assert rec["planning"]["Faction States"]["replaced"] == 1
 
+    def test_what_code_replaced_is_written_to_the_planning_report_on_disk(self, pcamp):
+        """Spec 034 T048: the faction substitutions are a file a GM can open, not only stdout and the run record."""
+        root, pm = pcamp
+        pm.override["## Faction States"] = "### Somebody Else\nWrong.\n"
+        rc, out, err = synth_planning(root)
+        assert rc == 0, out + err
+        rep = (drafts(root) / "planning_npcs_report.md").read_text()
+        facs = rep.split("\n## Faction States\n", 1)[1]
+        assert "1 written: House Mizzrym" in facs
+        assert "House Mizzrym: the latest note replaces the model's block (missing from the model's output)" in facs
+        assert "discarded (not a selected faction, or repeated): ### Somebody Else" in facs
+
+    def test_a_clean_faction_build_reports_what_was_written_and_nothing_replaced(self, pcamp):
+        root, _ = pcamp
+        assert synth_planning(root)[0] == 0
+        facs = (drafts(root) / "planning_npcs_report.md").read_text().split("\n## Faction States\n", 1)[1]
+        assert "1 written: House Mizzrym" in facs and "replaces the model's block" not in facs
+
+    def test_the_cap_overflow_is_named_in_the_report(self, pcamp, monkeypatch):
+        root, _ = pcamp
+        cfg = root / "config" / "planning.yaml"
+        cfg.write_text(cfg.read_text() + "  - name: House Baenre\n    arc_score: null\n", encoding="utf-8")
+        monkeypatch.setattr(schema, "DEFAULT_MAX_FACTIONS", 1)
+        assert synth_planning(root)[0] == 0
+        facs = (drafts(root) / "planning_npcs_report.md").read_text().split("\n## Faction States\n", 1)[1]
+        assert "1 not written (the cap): House Baenre" in facs
+
     def test_a_configured_faction_with_no_notes_gets_a_code_line_and_no_model_input(self, pcamp):
         root, pm = pcamp
         cfg = root / "config" / "planning.yaml"
@@ -584,6 +611,13 @@ class TestSynthNpcDossiers:
         assert rc == 0, out + err
         assert not pm.called("## NPC Dossiers")
         assert schema.KEY_NPC_FALLBACK_MARK in section(draft_text(root), "## NPC Dossiers")
+
+    def test_npc_root_is_accepted_and_named_in_the_refusals_commands(self, pcamp):
+        """Spec 034 T048: ``--npc-root`` applies to planning as to world_state (it was refused for planning)."""
+        root, pm = pcamp
+        rc, out, err = synth_planning(root, "--name", "Ront", "--npc-root", "docs/elsewhere")
+        assert rc == 2 and "--npc-root applies" not in err and pm.calls == []
+        assert "summary_native npc-draft --since 2 --until 4 --npc-root docs/elsewhere --name \"Ront\"" in err
 
     def test_fallback_flag_is_refused_for_party_and_campaign_state(self, pcamp):
         root, _ = pcamp

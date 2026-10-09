@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -235,8 +236,8 @@ def test_synth_has_backend_flags_and_rejects_unknown_doc(camp, capsys):
 
     p = build_parser()
     ns = p.parse_args(["synth", "world_state", "--backend", "dgx", "--endpoint", "http://x", "--model", "m",
-                       "--max-tokens", "5", "--parts", "2", "--name", "A", "B", "--audit", "a", "b"])
-    assert (ns.backend, ns.endpoint, ns.model, ns.max_tokens, ns.parts) == ("dgx", "http://x", "m", 5, 2)
+                       "--max-tokens", "5", "--name", "A", "B", "--audit", "a", "b"])
+    assert (ns.backend, ns.endpoint, ns.model, ns.max_tokens) == ("dgx", "http://x", "m", 5)
     assert ns.name == ["A", "B"] and ns.audit == ["a", "b"]
     with pytest.raises(SystemExit):
         p.parse_args(["synth", "bogus"])
@@ -437,3 +438,98 @@ def test_planning_config_applies_to_planning_only(camp, capsys):
     capsys.readouterr()
     assert main(["synth", "world_state", "--summaries-dir", "summaries", "--planning-config", "p.yaml"]) == 2
     assert "--planning-config applies to planning only, not world_state" in capsys.readouterr().err
+
+
+# ── spec 034 US6: one build surface, the one-shot flags retired ─────────────
+
+RETIRED = [
+    ("--parts", "2", schema.PARTS_REFUSAL),
+    ("--parts", "0", schema.PARTS_REFUSAL),  # an explicit zero is still the retired flag
+    ("--world-state", "docs/world_state.md", f"--world-state is retired: {schema.UPSTREAM_REFUSAL}"),
+    ("--campaign-state", "docs/campaign_state.md", f"--campaign-state is retired: {schema.UPSTREAM_REFUSAL}"),
+]
+
+
+@pytest.mark.parametrize("doc", schema.DOCS)
+@pytest.mark.parametrize("flag,value,message", RETIRED)
+def test_every_retired_flag_is_refused_with_its_replacement_for_every_document(camp, capsys, doc, flag, value, message):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", doc, "--summaries-dir", "summaries", flag, value]) == 2
+    err = capsys.readouterr().err
+    assert message in err
+    assert "Traceback" not in err and "unrecognized arguments" not in err
+
+
+@pytest.mark.parametrize("flag,value,message", RETIRED)
+def test_a_retired_flag_is_refused_before_the_corpus_is_read(camp, capsys, flag, value, message):
+    """Nothing is built and no summaries directory is given: the flag is gone whatever else is wrong."""
+    assert main(["synth", "party", flag, value]) == 2
+    assert message in capsys.readouterr().err
+
+
+def test_the_retired_flags_are_not_advertised_in_help(capsys):
+    from pipelines.summary_native.cli import build_parser
+
+    helptext = build_parser()._subparsers._group_actions[0].choices["synth"].format_help()
+    for flag in ("--parts", "--world-state", "--campaign-state"):
+        assert flag not in helptext
+
+
+def test_the_schema_names_the_retired_flags_and_no_longer_declares_a_parts_default():
+    assert set(schema.RETIRED_SYNTH_FLAGS) == {"parts", "world_state", "campaign_state"}
+    assert not hasattr(schema, "DEFAULT_PARTS") and not hasattr(schema, "STATE_PARTS_REFUSAL")
+
+
+def test_npc_root_is_accepted_for_planning_and_world_state_only(camp, capsys):
+    _built(camp)
+    capsys.readouterr()
+    for doc in ("party", "campaign_state"):
+        assert main(["synth", doc, "--summaries-dir", "summaries", "--npc-root", "docs/x"]) == 2
+        assert f"--npc-root applies to world_state and planning only, not {doc}" in capsys.readouterr().err
+    for doc in ("world_state", "planning"):
+        main(["synth", doc, "--summaries-dir", "summaries", "--npc-root", "docs/x"])  # refused later, for want of notes
+        assert "--npc-root applies" not in capsys.readouterr().err
+
+
+# ── the one-shot path is gone from the source tree ──────────────────────────
+
+ONE_SHOT_PROMPTS = ("party.system.md", "planning.system.md", "world_state.system.md", "campaign_state.system.md")
+ONE_SHOT_NAMES = {
+    "synth": {"split_parts", "check_threat_tracker", "_previous_draft_run"},
+    "context": {"build_context", "party_config_block", "planning_config_block", "load_system_prompt",
+                "_outline_instruction", "DocConfig", "AUDIT_LABEL"},
+    "schema": {"DEFAULT_PARTS", "STATE_PARTS_REFUSAL"},
+}
+
+
+def test_the_one_shot_prompt_files_are_gone():
+    prompts = Path(schema.__file__).parent / "prompts"
+    assert [n for n in ONE_SHOT_PROMPTS if (prompts / n).exists()] == []
+    # the outlines stay: the chunked build checks each document against its outline
+    for doc in schema.DOCS:
+        assert (prompts / f"{doc}.outline.yaml").is_file()
+
+
+@pytest.mark.parametrize("module", sorted(ONE_SHOT_NAMES))
+def test_the_one_shot_functions_and_constants_are_gone(module):
+    import ast
+
+    path = Path(schema.__file__).parent / f"{module}.py"
+    defined = {
+        n.name for n in ast.walk(ast.parse(path.read_text(encoding="utf-8")))
+        if isinstance(n, (ast.FunctionDef, ast.ClassDef))
+    } | {
+        t.id for n in ast.walk(ast.parse(path.read_text(encoding="utf-8"))) if isinstance(n, ast.Assign)
+        for t in n.targets if isinstance(t, ast.Name)
+    }
+    assert defined & ONE_SHOT_NAMES[module] == set()
+
+
+def test_no_source_names_a_retired_prompt_file():
+    root = Path(schema.__file__).parent
+    offenders = [
+        p.name for p in root.glob("*.py")
+        if any(re.search(rf"(?<![\w.]){re.escape(n)}", p.read_text(encoding="utf-8")) for n in ONE_SHOT_PROMPTS)  # state.party.system.md is fine
+    ]
+    assert offenders == []

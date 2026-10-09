@@ -394,9 +394,9 @@ class TestFlags:
         rc, _, err = cs.run_cli(["synth", "campaign_state", *cs.common(extracted), flag, value])
         assert rc == 2 and f"{flag} does not apply to campaign_state" in err
 
-    def test_npc_root_applies_to_world_state_only(self, extracted):
+    def test_npc_root_applies_to_world_state_and_planning_only(self, extracted):
         rc, _, err = cs.run_cli(["synth", "campaign_state", *cs.common(extracted), "--npc-root", "x"])
-        assert rc == 2 and "applies to world_state only" in err
+        assert rc == 2 and "applies to world_state and planning only, not campaign_state" in err
 
     @pytest.mark.parametrize("doc", ["campaign_state", "party"])
     def test_fallback_npc_lines_applies_to_world_state_and_planning_only(self, extracted, doc):

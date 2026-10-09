@@ -304,3 +304,80 @@ test('a missing-dossier refusal lists each NPC with its state and links to the N
   await expect(panel.getByRole('row')).toHaveCount(3) // header + two NPCs
   await expect(panel.getByRole('link', { name: 'NPC dossiers page' })).toHaveAttribute('href', '/npcs/dossiers')
 })
+
+// ── spec 034 US6: one build surface, the one-shot controls removed ──────────
+
+test('no document has a Parts control, an upstream-draft picker or an audit box on its synth step', async ({ page }) => {
+  await openPage(page)
+  const box = section(page, /5\. Synthesize a draft/)
+  for (const doc of ['world_state', 'campaign_state', 'party', 'planning']) {
+    await box.locator('select').first().selectOption(doc)
+    await expect(box.getByText('Parts', { exact: true })).toHaveCount(0)
+    await expect(box.getByText('World-state draft (context)')).toHaveCount(0)
+    await expect(box.getByText('Campaign-state draft (context)')).toHaveCount(0)
+    await expect(box.getByText('Audit files')).toHaveCount(0)
+    // every document has the prose controls, and Annotate follows the step for every document
+    await expect(box.getByLabel('Prose effort')).toBeVisible()
+    await expect(box.getByLabel('Dump only', { exact: false })).toBeVisible()
+    await expect(section(page, /6\. Annotate the .* draft/)).toBeVisible()
+  }
+})
+
+test('party is a chunked step: its roster, prose model and effort, Dump only and Force are sent; no NPC selection', async ({ page }) => {
+  await openPage(page)
+  const seen = await mockRun(page, 'synth/party', 'Wrote draft: state/drafts/party.draft.md\n')
+  const box = section(page, /5\. Synthesize a draft/)
+  await box.locator('select').first().selectOption('party')
+  await expect(box.getByText('One call per character, then the overview and the dynamics.')).toBeVisible()
+  // party selects no NPCs and has no fallback lines: none of these controls exists for it
+  await expect(box.getByText('Named subjects')).toHaveCount(0)
+  await expect(box.getByText('Recent chapters')).toHaveCount(0)
+  await expect(box.getByText('Recurring minimum')).toHaveCount(0)
+  await expect(box.getByLabel('Write fallback lines for NPCs without a published dossier')).toHaveCount(0)
+
+  await box.locator('.path-field', { hasText: 'Party config' }).locator('input').fill('config/party.yaml')
+  await box.locator('.field', { hasText: 'Prose model' }).locator('input').fill('claude-opus-5-5')
+  await box.getByLabel('Prose effort').selectOption('high')
+  await box.getByLabel('Dump only', { exact: false }).check()
+  await box.getByLabel('Replace existing reviewed draft (--force)').check()
+  await box.getByRole('button', { name: 'Synthesize party' }).click()
+  await expect(box.getByText('Success')).toBeVisible()
+
+  expect(seen).toHaveLength(1)
+  const q = seen[0].searchParams
+  expect(q.get('party_config')).toBe('config/party.yaml')
+  expect(q.get('model')).toBe('claude-opus-5-5')
+  expect(q.get('claude_code_effort')).toBe('high')
+  expect(q.get('dump_only')).toBe('true')
+  expect(q.get('force')).toBe('true')
+  expect(q.get('since')).toBe('2')
+  expect(q.get('until')).toBe('5')
+  for (const gone of ['name', 'recent_chapters', 'recurring_min', 'fallback_npc_lines', 'parts', 'world_state',
+    'campaign_state', 'audit', 'planning_config']) {
+    expect(q.has(gone), gone).toBe(false)
+  }
+})
+
+test('a plain party run sends only the range: the CLI resolves the roster, the prose block and the budgets', async ({ page }) => {
+  await openPage(page)
+  const seen = await mockRun(page, 'synth/party')
+  const box = section(page, /5\. Synthesize a draft/)
+  await box.locator('select').first().selectOption('party')
+  await box.getByRole('button', { name: 'Synthesize party' }).click()
+  await expect(box.getByText('Success')).toBeVisible()
+  expect([...seen[0].searchParams.keys()].sort()).toEqual(['since', 'summaries_dir', 'until'])
+})
+
+test('no document ever sends a retired parameter', async ({ page }) => {
+  await openPage(page)
+  const box = section(page, /5\. Synthesize a draft/)
+  for (const doc of ['world_state', 'campaign_state', 'party', 'planning']) {
+    const seen = await mockRun(page, `synth/${doc}`)
+    await box.locator('select').first().selectOption(doc)
+    await box.getByRole('button', { name: `Synthesize ${doc}` }).click()
+    await expect(box.getByText('Success')).toBeVisible()
+    for (const gone of ['parts', 'world_state', 'campaign_state', 'audit']) {
+      expect(seen[0].searchParams.has(gone), `${doc}: ${gone}`).toBe(false)
+    }
+  }
+})

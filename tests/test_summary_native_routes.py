@@ -90,7 +90,7 @@ def test_stored_config_reaches_the_command(campaign):
     _, svc, captured = campaign
     svc.update_config({"summary_native": {
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
-        "recent_chapters": 7, "recurring_min": 6, "parts": 3, "dup_threshold": 0.7,
+        "recent_chapters": 7, "recurring_min": 6, "dup_threshold": 0.7,
     }})
     assert _run("/run/synth/planning") == 200  # planning, not party: party selects no NPCs (spec 034)
     cmd = captured["cmd"]
@@ -98,7 +98,6 @@ def test_stored_config_reaches_the_command(campaign):
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("1", "5")
     assert _flag(cmd, "--recent-chapters") == "7"
     assert _flag(cmd, "--recurring-min") == "6"
-    assert "--parts" not in cmd  # spec 034: every document is chunked, so a stored parts value is never sent
     assert _run("/run/validate") == 200
     assert _flag(captured["cmd"], "--dup-threshold") == "0.7"
 
@@ -107,16 +106,15 @@ def test_explicit_request_beats_stored(campaign):
     _, svc, captured = campaign
     svc.update_config({"summary_native": {
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
-        "recent_chapters": 7, "parts": 3, "dup_threshold": 0.7,
+        "recent_chapters": 7, "dup_threshold": 0.7,
     }})
     assert _run("/run/synth/planning", {
-        **RANGE, "recent_chapters": 2, "parts": 0,
+        **RANGE, "recent_chapters": 2,
     }) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--summaries-dir") == "docs/summaries"
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("3", "9")
     assert _flag(cmd, "--recent-chapters") == "2"
-    assert "--parts" not in cmd  # spec 034: --parts is retired for every document, so an explicit zero is dropped too
     assert _run("/run/build", {**RANGE, "dup_threshold": 0.5, "force": True}) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--dup-threshold") == "0.5"
@@ -130,7 +128,6 @@ def test_unconfigured_defaults_come_from_the_schema(campaign):
     cmd = captured["cmd"]
     assert _flag(cmd, "--recent-chapters") == str(schema.DEFAULT_RECENT_CHAPTERS)
     assert _flag(cmd, "--recurring-min") == str(schema.DEFAULT_RECURRING_MIN)
-    assert "--parts" not in cmd  # spec 034: retired for every document
 
 
 def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
@@ -143,7 +140,6 @@ def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
         "max_tokens": 9000,
         "recent_chapters": 5,
         "recurring_min": 8,
-        "world_state": "docs/ws.draft.md",
         "force": True,
     }) == 200
     cmd = captured["cmd"]
@@ -153,8 +149,7 @@ def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
     assert _flag(cmd, "--max-tokens") == "9000"
     assert _flag(cmd, "--recent-chapters") == "5"
     assert _flag(cmd, "--recurring-min") == "8"
-    assert _flag(cmd, "--world-state") == "docs/ws.draft.md"  # the CLI refuses it for planning; the route just carries it
-    for banned in ("--registry", "--canon", "--out-root"):
+    for banned in ("--registry", "--canon", "--out-root", "--world-state", "--campaign-state", "--parts"):
         assert banned not in cmd
 
 
@@ -181,16 +176,24 @@ def test_compare_passes_the_live_document(campaign):
     assert _flag(captured["cmd"], "--live") == "docs/world_state.md"
 
 
-@pytest.mark.skip(reason="spec 034 T012: the per-service selection seam served only the one-shot documents "
-                         "(party, planning); every document now takes summary_native.prose. Deleted with the "
-                         "one-shot path at T048.")
-def test_backend_and_model_come_from_the_selection_seam(campaign):
+def test_the_prose_block_not_the_service_selection_decides_the_model_of_every_document(campaign):
+    """The per-service ``selection`` seam served only the one-shot documents (party, planning). Spec 034
+    moved every document to ``summary_native.prose``, so a ``selection`` block no longer reaches ``synth``:
+    the model is the request's, else the prose block's, else the schema's. (The skipped one-shot test this
+    replaces asserted the opposite for party.)"""
+    from pipelines.summary_native import schema
+
     _, svc, captured = campaign
     svc.update_config({"selection": {"backend": "anthropic", "model": "claude-test-model"}})
+    for doc in schema.DOCS:
+        assert _run(f"/run/synth/{doc}", RANGE) == 200
+        assert _flag(captured["cmd"], "--model") == schema.DEFAULT_PROSE_MODEL, doc
+        assert _flag(captured["cmd"], "--backend") == schema.DEFAULT_PROSE_BACKEND, doc
+        assert _run(f"/run/synth/{doc}", {**RANGE, "model": "claude-explicit"}) == 200
+        assert _flag(captured["cmd"], "--model") == "claude-explicit", doc
+    svc.update_config({"summary_native": {"prose": {"backend": "claude-code", "model": "claude-prose-model"}}})
     assert _run("/run/synth/party", RANGE) == 200
-    assert _flag(captured["cmd"], "--model") == "claude-test-model"
-    assert _run("/run/synth/party", {**RANGE, "model": "claude-explicit"}) == 200
-    assert _flag(captured["cmd"], "--model") == "claude-explicit"
+    assert _flag(captured["cmd"], "--model") == "claude-prose-model"
 
 
 # ── refusals (400, before spawning) ────────────────────────────────────────
@@ -462,22 +465,34 @@ def test_chunked_synth_prose_block_in_config_reaches_the_command(campaign):
     assert _flag(captured["cmd"], "--model") == "claude-opus-5-5"
 
 
-def test_a_stored_parts_value_is_not_sent_for_the_chunked_documents(campaign):
-    _, svc, captured = campaign
-    svc.update_config({"summary_native": {"parts": 3}})
-    assert _run("/run/synth/world_state", RANGE) == 200
-    assert "--parts" not in captured["cmd"]
-    assert _run("/run/synth/party", RANGE) == 200  # spec 034: party and planning are chunked too
-    assert "--parts" not in captured["cmd"]
+RETIRED_PARAMS = [
+    ("parts", 2), ("parts", 0),  # an explicit zero is still the retired parameter
+    ("world_state", "docs/ws.draft.md"), ("campaign_state", "docs/cs.draft.md"),
+]
 
 
 @pytest.mark.parametrize("doc", STATE_DOCS)
-def test_parts_is_a_400_for_the_chunked_documents_with_the_cli_message(campaign, doc):
+@pytest.mark.parametrize("param,value", RETIRED_PARAMS)
+def test_a_retired_parameter_is_a_400_with_the_cli_message_for_every_document(campaign, doc, param, value):
     _, _, captured = campaign
-    r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, "parts": 2})
+    r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, param: value})
     assert r.status_code == 400
-    assert r.json()["detail"] == _schema.STATE_PARTS_REFUSAL.format(doc=doc)
+    assert r.json()["detail"] == _schema.RETIRED_SYNTH_FLAGS[param]
+    assert f"--{param.replace('_', '-')} is retired" in r.json()["detail"]
     assert "cmd" not in captured
+
+
+def test_the_router_declares_none_of_the_retired_parameters_and_never_sends_their_flags(campaign):
+    import inspect
+
+    from server.routers import summary_native as router
+
+    declared = set(inspect.signature(router.run_synth).parameters)
+    assert declared.isdisjoint(_schema.RETIRED_SYNTH_FLAGS)
+    _, _, captured = campaign
+    for doc in STATE_DOCS:
+        assert _run(f"/run/synth/{doc}", RANGE) == 200
+        assert all(f not in captured["cmd"] for f in ("--parts", "--world-state", "--campaign-state"))
 
 
 def test_audit_is_a_400_for_campaign_state_naming_the_audit_step(campaign):
@@ -515,11 +530,6 @@ def test_the_key_npcs_selection_flags_go_to_world_state_but_not_campaign_state(c
     r = client.get(f"{BASE}/run/synth/campaign_state", params={**RANGE, "name": ["Kalan"]})
     assert r.status_code == 400 and "does not apply to campaign_state" in r.json()["detail"]
     assert "cmd" not in captured
-
-
-def test_parts_zero_is_not_a_refusal(campaign):
-    _, _, captured = campaign
-    assert _run("/run/synth/world_state", {**RANGE, "parts": 0}) == 200
 
 
 def _notes_manifest(root, **over):

@@ -16,9 +16,8 @@ const BASE = '/api/grounding/summary-native'
 const SYNTH_ENDPOINT = '/api/grounding/summary-native/run/synth'
 const DOCS = ['world_state', 'campaign_state', 'party', 'planning'] as const
 type Doc = (typeof DOCS)[number]
-// world_state, campaign_state and planning are built from the checked notes (specs 033, 034): Extract first,
-// one prose call per section, no --parts and no --audit. party keeps the one-shot form until its step is moved over.
-const CHUNKED: readonly Doc[] = ['world_state', 'campaign_state', 'planning']
+// Every document is built from the checked notes (specs 033, 034): Extract first, one prose call per section.
+// There is no Parts control, no upstream-draft picker and no audit box on this step: those options are retired.
 // The documents that select NPCs and render them from the published dossiers (world_state's Key NPCs, planning's NPC Dossiers).
 const KEY_NPC_DOCS: readonly Doc[] = ['world_state', 'planning']
 
@@ -36,7 +35,6 @@ const rangeUntil = ref<Num>(null)
 const dupThreshold = ref<Num>('')
 const recentChapters = ref<Num>('')
 const recurringMin = ref<Num>('')
-const parts = ref<Num>('')
 
 function persisted(r: Ref<Num>, nullable: boolean) {
   return computed<number | null | undefined>({
@@ -52,16 +50,12 @@ useGroundingRun('summary_native', {
   dup_threshold: persisted(dupThreshold, false),
   recent_chapters: persisted(recentChapters, false),
   recurring_min: persisted(recurringMin, false),
-  parts: persisted(parts, false),
 })
 
 // ── Per-run fields (not stored) ─────────────────────────────────────────────
 const doc = ref<Doc>('world_state')
-const worldStatePath = ref('')
-const campaignStatePath = ref('')
 const partyConfigPath = ref('')
 const planningConfigPath = ref('')
-const auditText = ref('')
 const namesText = ref('')
 const maxTokens = ref<Num>('')
 const dumpOnly = ref(false)
@@ -90,7 +84,7 @@ const forceAudit = ref(false)
 const auditModel = ref('')
 const auditEndpointsText = ref('')
 const auditParallel = ref<Num>('')
-// Prose step (world_state / campaign_state): blank uses grounding.yaml summary_native.prose.
+// Prose step (every document): blank uses grounding.yaml summary_native.prose.
 const proseModel = ref('')
 const proseEffort = ref('')
 const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'] as const
@@ -156,7 +150,6 @@ const validateParams = computed(() => ({
 const buildParams = computed(() => ({
   ...baseParams.value, dup_threshold: num(dupThreshold.value), force: forceBuild.value,
 }))
-const isChunked = computed(() => CHUNKED.includes(doc.value))
 const usesKeyNpcs = computed(() => KEY_NPC_DOCS.includes(doc.value))
 const extractParams = computed(() => ({
   ...baseParams.value,
@@ -178,44 +171,28 @@ const auditParams = computed(() => ({
   endpoints: lines(auditEndpointsText.value),
   parallel: num(auditParallel.value),
 }))
-const synthParams = computed(() => isChunked.value
-  ? {
-      // The prose step takes its backend and model from grounding.yaml summary_native.prose, so the
-      // page does not send the app-wide model for these two documents.
-      ...baseParams.value,
-      // The NPC selection of world_state's Key NPCs and planning's NPC Dossiers (campaign_state has no such section
-      // and the server refuses these); planning also reads its tracked entities from a config file.
-      ...(usesKeyNpcs.value
-        ? {
-            name: lines(namesText.value),
-            recent_chapters: num(recentChapters.value),
-            recurring_min: num(recurringMin.value),
-            fallback_npc_lines: fallbackNpcLines.value,
-          }
-        : {}),
-      ...(doc.value === 'planning' ? { planning_config: planningConfigPath.value.trim() } : {}),
-      max_tokens: num(maxTokens.value),
-      dump_only: dumpOnly.value,
-      force: forceSynth.value,
-      model: proseModel.value.trim() || undefined,
-      claude_code_effort: proseEffort.value || undefined,
-    }
-  : {
-      ...baseParams.value,
-      world_state: worldStatePath.value.trim(),
-      campaign_state: campaignStatePath.value.trim(),
-      party_config: doc.value === 'party' ? partyConfigPath.value.trim() : '',
-      planning_config: doc.value === 'planning' ? planningConfigPath.value.trim() : '',
-      audit: lines(auditText.value),
-      name: lines(namesText.value),
-      recent_chapters: num(recentChapters.value),
-      recurring_min: num(recurringMin.value),
-      parts: num(parts.value),
-      max_tokens: num(maxTokens.value),
-      dump_only: dumpOnly.value,
-      force: forceSynth.value,
-      model: config.model || undefined,
-    })
+// The prose step takes its backend and model from grounding.yaml summary_native.prose, so the page does not send
+// the app-wide model for any document.
+const synthParams = computed(() => ({
+  ...baseParams.value,
+  // The NPC selection of world_state's Key NPCs and planning's NPC Dossiers (campaign_state has no such section and
+  // party selects no NPCs: the server refuses these for them).
+  ...(usesKeyNpcs.value
+    ? {
+        name: lines(namesText.value),
+        recent_chapters: num(recentChapters.value),
+        recurring_min: num(recurringMin.value),
+        fallback_npc_lines: fallbackNpcLines.value,
+      }
+    : {}),
+  ...(doc.value === 'party' ? { party_config: partyConfigPath.value.trim() } : {}),
+  ...(doc.value === 'planning' ? { planning_config: planningConfigPath.value.trim() } : {}),
+  max_tokens: num(maxTokens.value),
+  dump_only: dumpOnly.value,
+  force: forceSynth.value,
+  model: proseModel.value.trim() || undefined,
+  claude_code_effort: proseEffort.value || undefined,
+}))
 
 // ── Report and drafts ───────────────────────────────────────────────────────
 interface Finding {
@@ -444,7 +421,7 @@ onMounted(async () => {
         <span class="field-help">
           Reads the full summaries a few chapters at a time and writes notes, which code then checks:
           every citation must resolve inside its chunk, every quotation must be verbatim, every note must carry its tag.
-          world_state and campaign_state are built from these notes. Notes that fail are dropped and listed in drops.md.
+          Every document (world_state, campaign_state, party and planning) is built from these notes. Notes that fail are dropped and listed in drops.md.
         </span>
         <div class="num-grid">
           <div class="field">
@@ -604,9 +581,13 @@ onMounted(async () => {
             <option v-for="d in DOCS" :key="d" :value="d">{{ d }}</option>
           </select>
         </div>
-        <span v-if="isChunked" class="field-help">
-          Built from the checked notes: run Extract first. Code builds the timeline, completed list and NPC status table;
-          the model writes each remaining section from the notes routed to it. The tracking audit is its own step.
+        <span class="field-help">
+          Built from the checked notes: run Extract first. Code builds the timeline, completed list, NPC status table and
+          every pointer; the model writes each remaining section from the notes routed to it. The tracking audit is its own step.
+          <template v-if="doc === 'party'">
+            One call per character, then the overview and the dynamics. Code writes each character&rsquo;s heading and level line;
+            a character with no notes says so and makes no call. The sheet and backstory come from the party config.
+          </template>
           <template v-if="doc === 'world_state'">
             Key NPCs are rendered from the published NPC dossiers: the build refuses when a selected NPC has none.
           </template>
@@ -616,43 +597,28 @@ onMounted(async () => {
             selected NPC has none.
           </template>
         </span>
-        <PathField v-if="!isChunked" v-model="worldStatePath" label="World-state draft (context)" resolve-base="campaign"
-          help="A GM-reviewed world_state draft to use as upstream context. Optional." />
-        <PathField v-if="!isChunked" v-model="campaignStatePath" label="Campaign-state draft (context)" resolve-base="campaign"
-          help="A GM-reviewed campaign_state draft to use as upstream context. Optional." />
         <PathField v-if="doc === 'party'" v-model="partyConfigPath" label="Party config" resolve-base="campaign"
           help="The party roster (sheets and backstories). Blank uses config/party.yaml." />
         <PathField v-if="doc === 'planning'" v-model="planningConfigPath" label="Planning config" resolve-base="campaign"
           help="Tracked NPCs, factions and arc scores. Blank uses config/planning.yaml; none means no arc scores." />
-        <div v-if="!isChunked" class="field">
-          <label class="field-label">Audit files</label>
-          <textarea class="field-textarea" v-model="auditText" rows="3"
-            placeholder="One path per line. Blank uses the Campaign State page's tracking lists." />
-          <span class="field-help">Tracking, planning or module files treated as questions to answer from the summaries.</span>
-        </div>
-        <div v-if="!isChunked || usesKeyNpcs" class="field">
+        <div v-if="usesKeyNpcs" class="field">
           <label class="field-label">Named subjects</label>
           <textarea class="field-textarea" v-model="namesText" rows="2"
             placeholder="One subject per line &mdash; force-includes these dossiers" />
-          <span v-if="usesKeyNpcs" class="field-help">
+          <span class="field-help">
             Force-includes these global NPCs in {{ doc === 'planning' ? 'NPC Dossiers (the NPCs in planning.yaml are always included)' : 'Key NPCs' }}.
           </span>
         </div>
         <div class="num-grid">
-          <div v-if="!isChunked || usesKeyNpcs" class="field">
+          <div v-if="usesKeyNpcs" class="field">
             <label class="field-label">Recent chapters</label>
             <input type="number" min="0" class="field-input" v-model.number="recentChapters" />
             <span class="field-help">Counted back from the range end; 0 = all.<template v-if="usesKeyNpcs"> Picks the {{ doc === 'planning' ? 'NPC Dossiers' : 'Key NPCs' }}.</template></span>
           </div>
-          <div v-if="!isChunked || usesKeyNpcs" class="field">
+          <div v-if="usesKeyNpcs" class="field">
             <label class="field-label">Recurring minimum</label>
             <input type="number" min="0" class="field-input" v-model.number="recurringMin" />
             <span class="field-help">Observations that make an entity recurring.</span>
-          </div>
-          <div v-if="!isChunked" class="field">
-            <label class="field-label">Parts</label>
-            <input type="number" min="0" class="field-input" v-model.number="parts" />
-            <span class="field-help">Split the outline into N calls; 0 = one call.</span>
           </div>
           <div class="field">
             <label class="field-label">Max tokens</label>
@@ -660,7 +626,7 @@ onMounted(async () => {
             <span class="field-help">Per call. Blank uses the CLI default.</span>
           </div>
         </div>
-        <div v-if="isChunked" class="num-grid">
+        <div class="num-grid">
           <div class="field">
             <label class="field-label">Prose model</label>
             <input type="text" class="field-input" v-model="proseModel" />
@@ -689,8 +655,7 @@ onMounted(async () => {
           &ldquo;(no published dossier &mdash; from checked notes)&rdquo;. Not saved.
         </span>
         <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
-          :label="`Synthesize ${doc}`" :selection-service="isChunked ? undefined : 'grounding'"
-          selection-doc="summary_native" :selection-can-override="true" @done="onSynthDone" />
+          :label="`Synthesize ${doc}`" @done="onSynthDone" />
         <div v-if="usesKeyNpcs && missingNpcs.length" class="panel missing-npcs">
           <div class="counts">
             <span class="bad">Build refused: {{ missingNpcs.length }} selected NPC(s) have no published, verified dossier</span>
@@ -750,7 +715,7 @@ onMounted(async () => {
       </div>
 
       <!-- 6. Annotate -->
-      <div v-if="isChunked" class="form-section">
+      <div class="form-section">
         <h3 class="step">6. Annotate the {{ doc }} draft</h3>
         <span class="field-help">
           Deterministic: no model is called and no line is reworded. Where a newer checked note, a mentioned NPC's later status,

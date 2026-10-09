@@ -78,15 +78,16 @@ summary_native:
   recent_chapters: 4                 # default
   recurring_min: 10                  # default
   dup_threshold: 0.88                # default
-  parts: 0                           # default (0 = one call)
 ```
 
 The CLI reads `summaries_dir`, `out_root`, `canon_file`, `registry`, `dup_threshold`,
-`recent_chapters`, `recurring_min` and `parts` from that group; a flag always wins
+`recent_chapters` and `recurring_min` from that group; a flag always wins
 (flag > `grounding.yaml` > default). A relative `canon_file`/`registry` resolves
 against the campaign root, and `~` is expanded. With no
 summaries directory from either place it refuses (see
 [the refusal table](#every-refusal-and-exit-code-decoded)).
+
+A `parts:` key left over in this group is refused when the file loads (the option is retired; delete the line).
 
 A `canon_file` or `registry` you set explicitly (flag or `grounding.yaml`) must exist; a missing one is refused with exit 2 rather than silently read as "no rulings" or "no registry". Only the defaults may be absent. A non-string value in `grounding.yaml` (for example `registry: 5`) is refused the same way.
 
@@ -466,26 +467,36 @@ it. Staleness is judged against every summary, not just the range, because
 
 ## Step 5 — synthesise a draft
 
-`synth <doc>` renders one document from the built corpus. `<doc>` is one of
-`world_state`, `campaign_state`, `party`, `planning`. **For `world_state` and
-`campaign_state` read [Step 5b](#step-5b--world_state-and-campaign_state-are-a-four-step-chunked-build)
-instead of this step:** they are built from extracted notes, and this step
-describes `party` and `planning`. It makes exactly the
-model calls you ask for (one, or `--parts` many), and nothing else.
+`synth <doc>` renders one document. `<doc>` is one of `world_state`,
+`campaign_state`, `party`, `planning`, and **every one of them is built the same
+way since spec 034: one model call per section, from the checked notes
+`extract` wrote, with code checking each section.** Read
+[Step 5b](#step-5b--world_state-and-campaign_state-are-a-four-step-chunked-build)
+for the build and its files.
 
-**Order matters, and the human checkpoint is between the calls.** A later
-document may read an earlier *draft*, but only one you name and only after you
-have reviewed it. The tool never picks up an unreviewed draft on its own.
+> **This step still describes the retired one-shot path** (the corpus's
+> chronology and dossiers in one prompt per document, an outline check, `--parts`,
+> `drafts/` and `runs/<doc>/`) for `party` and `planning`. It is kept until the
+> how-to is rewritten around the chunked party and planning builds (spec 034
+> T050); where it disagrees with Step 5b, Step 5b is right. What is gone, and
+> refused with the replacement named (exit 2, from the CLI and as HTTP 400 from
+> the routes):
+>
+> | Retired | Message |
+> |---|---|
+> | `--parts N` | `--parts is retired: every document is built one call per section from the checked notes` |
+> | `--world-state FILE`, `--campaign-state FILE` | `--world-state is retired: upstream drafts are no longer prompt context: party and planning build from the checked notes; review those documents on their own` (likewise `--campaign-state`) |
+
+**Order no longer matters between documents.** No document reads another's
+draft, so there is no upstream draft to name: build them in any order, and review
+each on its own.
 
 ```bash
-# 1. world_state, from the corpus alone
-summary_native synth world_state --summaries-dir docs/summaries --since 2 --until 70
-
-#    ... you review drafts/world_state.draft.md, fixing it ...
-
-# 2. campaign_state, with the reviewed world_state as context
-summary_native synth campaign_state --summaries-dir docs/summaries --since 2 --until 70 \
-    --world-state docs/summary_native/ch002-070/drafts/world_state.draft.md
+summary_native extract --summaries-dir docs/summaries --since 2 --until 70
+summary_native synth world_state    --summaries-dir docs/summaries --since 2 --until 70
+summary_native synth campaign_state --summaries-dir docs/summaries --since 2 --until 70
+summary_native synth party          --summaries-dir docs/summaries --since 2 --until 70
+summary_native synth planning       --summaries-dir docs/summaries --since 2 --until 70
 ```
 
 ### What goes into the prompt
@@ -505,17 +516,15 @@ with why it was chosen. Then, depending on the document:
 
 | Flag | Doc | What it does |
 |---|---|---|
-| `--world-state FILE` | `campaign_state`, `party`, `planning` | A GM-reviewed world_state draft, supplied as an `UPSTREAM DRAFT (GM-reviewed)` block for consistency. Never a substitute for the summaries. Refused for `world_state`. |
-| `--campaign-state FILE` | `party`, `planning` | Same, for a reviewed campaign_state draft. Refused for `world_state` and `campaign_state`. |
 | `--audit FILE …` | `campaign_state` only | Tracking/planning/module files, supplied under `AUDIT QUESTIONS — NOT EVIDENCE`. Each item is checked against the summaries and tagged; a claim with no support is labelled `NOT FOUND IN SUMMARIES` rather than stated as history. **Default:** `campaign_state.track_files` from `config/grounding.yaml`. With none, the `## Audit: Tracking Claims` section is still required and says so in one line. Refused for other docs. |
 | `--party-config FILE` | `party` only | The roster. Default `<config dir>/party.yaml`. Each character's sheet, backstory and arc-score mechanic is included, labelled by path. A missing or empty roster, or a missing sheet/backstory/arc-score file, is a refusal. Refused for other docs. |
 | `--planning-config FILE` | `planning` only | Tracked NPCs/factions and arc scores. Default `<config dir>/planning.yaml`; an *absent default* means "no arc scores configured", an *absent explicit* path is a refusal. Refused for other docs. |
 
 Relative paths resolve against the campaign root. Every flag in this table is
 refused (exit 2) for a document it does not apply to, e.g.
-`--world-state does not apply to world_state`.
+`--party-config applies to party only, not world_state`.
 
-### Outline check, `--parts`, `--max-tokens`
+### Outline check, `--max-tokens`
 
 Each document has a fixed ordered outline (the H2 headings in
 `pipelines/summary_native/prompts/<doc>.outline.yaml`):
@@ -532,10 +541,6 @@ no text before the first heading, every heading present exactly once and in
 order, no extra `## ` heading, and a non-empty body under each. A document that
 fails is never written as a draft.
 
-- `--parts N` splits the outline into N contiguous groups and makes N calls,
-  each told the full outline but asked for only its group; each part is
-  checked against its own group. `0` or `1` (default) is a single call.
-  Use it when a document is too long for one response.
 - `--max-tokens N` is per call; default **16000**.
 
 ### The Threat Tracker sentinel
@@ -547,12 +552,10 @@ is no config), the `## Threat Tracker` body must be **exactly** the single line
 _No arc scores configured._
 ```
 
-Anything else — an invented table, an empty section — fails the check
-(`threat tracker must be empty: no arc scores configured`). The sentinel is
-required, not just allowed: an empty section cannot be told apart from a
-dropped or truncated one. With arc scores configured the model lists those and
-only those, as candidate events with the trigger quoted verbatim — never a
-current value or a threshold crossed.
+Code writes the Threat Tracker (the sentinel, or one row per configured score);
+the model never does. With arc scores configured, the model lists candidate
+events with the trigger quoted verbatim — never a current value or a threshold
+crossed — and code checks each one before it is placed.
 
 ### Backend and model
 
@@ -578,44 +581,30 @@ existing-draft `--force` check, because nothing is overwritten.
 
 ### Where everything goes
 
-```text
-docs/summary_native/ch002-070/
-  drafts/
-    world_state.draft.md           ← complete: passed the outline check
-    world_state.incomplete.md      ← failed it (exit 3)
-    world_state.vs-live.diff       ← from compare
-  runs/world_state/20261005T154310Z/
-    selection.json                 ← which dossiers, and why each
-    part-1.system.md               ← the exact prompts sent
-    part-1.user.md
-    part-1.out.md                  ← the model's raw output (absent for --dump-only)
-    record.json
-```
+Nothing is written outside `state/` any more: the one-shot `drafts/`, `runs/<doc>/` and `selection.json` are
+gone. The layout of the runs, drafts and reports is under
+[Step 5b](#step-5b--world_state-and-campaign_state-are-a-four-step-chunked-build). A new
+`state/runs/<run_id>/` is created on every invocation and earlier runs are never touched. `run_id` is a UTC
+timestamp (`20261005T154310Z`), with `-1`, `-2`… appended if two runs start in the same second. `record.json`
+holds `step`, `doc`, `run_id`, `range`, `backend`, `model`, `effort`, `max_tokens`, the sha256 of every input
+(`inputs`), one entry per model call (`calls`), the `check` result (`{complete, problems}`, or `"not run"` for
+`--dump-only`, or `{complete: false, error}` when the run died before or during a model call), and
+`started` / `finished`.
 
-A new `runs/<doc>/<run_id>/` is created on every invocation and earlier runs
-are never touched. `run_id` is a UTC timestamp (`20261005T154310Z`), with `-1`,
-`-2`… appended if two runs start in the same second. `record.json` holds:
-`doc`, `backend`, `model`, `max_tokens`, `parts`, `range`, the sha256 of the
-corpus manifest, each `upstream` / `audit` / `config` file with its path and
-sha256, the full `outline`, the `check` result (`{complete, problems}`, or
-`"not run"` for `--dump-only`, or `{complete: false, error}` when the run died
-before or during the model call), and `started` / `finished`.
-
-A complete draft begins with a one-line HTML comment naming the doc, the range,
-the run's `record.json` and the corpus manifest sha256.
+A complete draft begins with a one-line HTML comment naming the doc, the range, the run's `record.json` and the
+notes manifest sha256.
 
 ### An incomplete draft: `.incomplete.md` and exit 3
 
 ```text
 Incomplete: docs/summary_native/ch002-070/drafts/world_state.incomplete.md
   - missing heading: ## Canon Events Timeline
-Retry with --parts N to write the outline in separate calls, or raise --max-tokens.
 ```
 
 The output is kept for inspection as `<doc>.incomplete.md` and the command
 exits **3**. An incomplete draft is not promotable. An existing
 `<doc>.draft.md` is **kept** (stderr says `previous draft kept:
-drafts/<doc>.draft.md (from run <id>)`); an existing `.incomplete.md` never
+state/drafts/<doc>.draft.md (from run <id>)`); an existing `.incomplete.md` never
 blocks a run and is replaced. A later complete run deletes the stale
 `.incomplete.md`.
 
@@ -657,11 +646,11 @@ that change validation findings only, never the corpus. A registry set in `groun
 
 ## Step 5b — `world_state` and `campaign_state` are a four-step chunked build
 
-> Everything in Step 5 about one call per document, `--parts` and
-> `drafts/` describes `party` and `planning` only. `world_state` and
-> `campaign_state` no longer take the one-shot path: `--parts` and `--audit`
-> are refused for them (exit 2, with the replacement named), and their drafts
-> live under `state/drafts/`. Design: `specs/033-chunked-grounding-docs/`
+> Every document takes this path (spec 034 retired the one-shot one for `party`
+> and `planning`). `--parts`, `--world-state` and `--campaign-state` are refused
+> for all four (exit 2, with the replacement named), `--audit` is refused as
+> below, and every draft lives under `state/drafts/`. Design:
+> `specs/033-chunked-grounding-docs/` and `specs/034-chunked-party-planning/`
 > (`contracts/cli.md` and `contracts/http.md`).
 
 The long chapter range is cut into chapter groups, each group is read by its own
@@ -849,9 +838,10 @@ Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
 | `state/notes/manifest.json is unreadable` / `is not a state-notes manifest; run … --force` | synth, annotate | `extract --force`. |
 | `<notes error>; run summary_native extract …` | synth, annotate | Some chunk has no checked notes; rerun `extract` (it does only the missing ones). |
 | `world_state's Key NPCs need a published, verified dossier …` | synth world_state | See above: publish dossiers, or `--fallback-npc-lines` for this run. |
-| `--parts does not apply to <doc>: it is built with one call per section …` | synth | Drop it; these docs are built per section. |
+| `--parts is retired: every document is built one call per section from the checked notes` | synth | Drop it. |
+| `--world-state is retired: upstream drafts are no longer prompt context …` (likewise `--campaign-state`) | synth | Drop it; no document reads another's draft. |
 | `--audit does not apply to campaign_state: the audit is its own step: summary_native audit` (world_state: `--audit applies to campaign_state only`) | synth | Run `audit`; `synth campaign_state` picks it up. |
-| `--fallback-npc-lines applies to world_state only` / `--npc-root applies to world_state only` | synth | Drop it. |
+| `--fallback-npc-lines applies to world_state and planning only, not <doc>` / `--npc-root applies to world_state and planning only, not <doc>` | synth | Drop it. |
 | `--name / --recent-chapters / --recurring-min does not apply to campaign_state: it has no Key NPCs section` | synth | Drop it. |
 | `the audit is stale (track file(s) changed: …); run summary_native audit` / `(the checked notes changed)` | synth campaign_state | Rerun `audit`. |
 | `state/audit/items.json is unreadable; run summary_native audit --force` | synth campaign_state | As said. |
@@ -896,7 +886,11 @@ summary_native check-pointers docs/world_state.md
 
 The check makes no model call and writes nothing. It exits 2 and names each missing
 file, summaries directory or cited chapter. Copying just `world_state` therefore
-reports the missing companions. Keep the hidden path record in the reading
+reports the missing companions. It requires only the files the document's own
+reading contract names: `world_state` lists six reference files and the timeline,
+`planning` lists `factions`, `npcs` and `threads` (no timeline), `party` lists
+`party` (no timeline), so a promoted party or planning bundle is complete without
+the files it never pointed to. Keep the hidden path record in the reading
 contract so the checker can resolve it; regenerate older drafts without one.
 The first-line HTML provenance comment is optional for this check.
 Prose edits, if any, happen now,
@@ -910,17 +904,15 @@ documents too (it reads `state/drafts/`).
 
 ```bash
 # party needs config/party.yaml (or --party-config)
-summary_native synth party --summaries-dir docs/summaries --since 2 --until 70 \
-    --world-state docs/summary_native/ch002-070/drafts/world_state.draft.md
+summary_native synth party --summaries-dir docs/summaries --since 2 --until 70
 
 # planning reads config/planning.yaml for arc scores; without one, the sentinel applies
-summary_native synth planning --summaries-dir docs/summaries --since 2 --until 70 \
-    --world-state docs/summary_native/ch002-070/drafts/world_state.draft.md \
-    --campaign-state docs/summary_native/ch002-070/drafts/campaign_state.draft.md
+summary_native synth planning --summaries-dir docs/summaries --since 2 --until 70
 ```
 
-Each is its own call, its own run directory and its own draft. Pass an
-upstream draft only after you have reviewed it.
+Each is built like the first two: one call per section from the checked notes, its own run directory under
+`state/runs/` and its own draft under `state/drafts/`. No document reads another's draft (`--world-state` and
+`--campaign-state` are refused). The party and planning builds are written up in full under spec 034 T050.
 
 ---
 
@@ -1118,8 +1110,7 @@ The page's Compare always diffs against `docs/<doc>.md`.
 | `entity registry changed since build — run summary_native build --force` | The registry differs from the one `build` used. Rebuild, then synthesise. |
 | `--audit applies to campaign_state only, not <doc>` | Drop it, or synthesise `campaign_state`. |
 | `--party-config applies to party only, not <doc>` / `--planning-config applies to planning only, not <doc>` | Same. |
-| `--world-state does not apply to <doc>` / `--campaign-state does not apply to <doc>` | Drop it; see the flag table for which documents take it. |
-| `--world-state X: no such file` / `--campaign-state X: no such file` | Check the path. |
+| `--parts is retired: …` / `--world-state is retired: …` / `--campaign-state is retired: …` | Drop it: every document is built one call per section, and none reads another's draft. |
 | `audit file X: no such file` | A `track_files` entry or `--audit` path is wrong. |
 | `…/<doc>.draft.md exists; pass --force to overwrite it` | You reviewed that draft. `--force` only if you mean to replace it. |
 | `--party-config …: not found` / `…: unreadable (…)` / `…: no characters declared` / `party config: <name> sheet file missing: …` | Fix `config/party.yaml` or its sheet/backstory/arc-score paths. |
@@ -1180,21 +1171,19 @@ summary_native build --summaries-dir docs/summaries
 
 ```bash
 summary_native synth world_state --summaries-dir docs/summaries
-# → drafts/world_state.draft.md   (exit 3 instead? retry with --parts 3)
+# → state/drafts/world_state.draft.md   (exit 3 instead? see the problems it printed; state/drafts/world_state.incomplete.md has the output)
 ```
 
-Read and correct `docs/summary_native/ch002-070/drafts/world_state.draft.md`.
+Read and correct `docs/summary_native/ch002-070/state/drafts/world_state.draft.md`.
 
-**6. campaign_state from the reviewed world_state, audited against your
-tracking files.**
+**6. campaign_state, audited against your tracking files.**
 
 ```bash
-summary_native synth campaign_state --summaries-dir docs/summaries \
-    --world-state docs/summary_native/ch002-070/drafts/world_state.draft.md \
-    --audit <your tracking files>
+summary_native audit --summaries-dir docs/summaries --track-file <your tracking file>
+summary_native synth campaign_state --summaries-dir docs/summaries
 ```
 
-(Omit `--audit` to use `campaign_state.track_files` from `grounding.yaml`.)
+(Omit `--track-file` to use `campaign_state.track_files` from `grounding.yaml`.)
 Anything in the tracking files that no summary supports comes back labelled
 `NOT FOUND IN SUMMARIES`.
 

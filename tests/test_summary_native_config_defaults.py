@@ -50,7 +50,7 @@ class TestModelDefaults:
         assert run.recent_chapters == 4
         assert run.recurring_min == 10
         assert run.dup_threshold == 0.88
-        assert run.parts == 0
+        assert not hasattr(run, "parts")  # retired by spec 034: every document is one call per section
         assert run.summaries_dir is None
         assert run.range_since is None and run.range_until is None
 
@@ -60,7 +60,6 @@ class TestModelDefaults:
         assert run.recent_chapters == schema.DEFAULT_RECENT_CHAPTERS
         assert run.recurring_min == schema.DEFAULT_RECURRING_MIN
         assert run.dup_threshold == schema.DEFAULT_DUP_THRESHOLD
-        assert run.parts == schema.DEFAULT_PARTS
 
     def test_path_keys_default_to_none_the_derive_it_sentinel(self):
         run = SummaryNativeRun()
@@ -69,11 +68,17 @@ class TestModelDefaults:
     def test_old_grounding_yaml_without_the_path_keys_loads(self, tmp_path):
         path = tmp_path / "grounding.yaml"
         path.write_text(
-            yaml.safe_dump({"summary_native": {"out_root": "docs/sn", "parts": 2}}),
+            yaml.safe_dump({"summary_native": {"out_root": "docs/sn"}}),
             encoding="utf-8",
         )
         run = load_grounding_config(path).summary_native
-        assert run.canon_file is None and run.registry is None and run.parts == 2
+        assert run.canon_file is None and run.registry is None
+
+    def test_a_stale_parts_key_is_refused_naming_the_fix_not_silently_dropped(self, tmp_path):
+        path = tmp_path / "grounding.yaml"
+        path.write_text(yaml.safe_dump({"summary_native": {"out_root": "docs/sn", "parts": 0}}), encoding="utf-8")
+        with pytest.raises(ValueError, match="summary_native.parts is retired.*delete the `parts:` line"):
+            load_grounding_config(path)
 
     def test_path_keys_round_trip(self, tmp_path):
         path = tmp_path / "grounding.yaml"
@@ -301,7 +306,7 @@ class TestExtractAndProseBlocks:
 
     def test_old_grounding_yaml_without_the_blocks_loads_with_defaults(self, tmp_path):
         path = tmp_path / "grounding.yaml"
-        path.write_text(yaml.safe_dump({"summary_native": {"parts": 2}}), encoding="utf-8")
+        path.write_text(yaml.safe_dump({"summary_native": {"recent_chapters": 2}}), encoding="utf-8")
         run = load_grounding_config(path).summary_native
         assert run.extract == SummaryNativeRun().extract and run.prose == SummaryNativeRun().prose
 

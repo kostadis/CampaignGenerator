@@ -140,7 +140,6 @@ DEFAULT_OUT_ROOT = "docs/summary_native"
 DEFAULT_RECENT_CHAPTERS = 4
 DEFAULT_RECURRING_MIN = 10
 DEFAULT_DUP_THRESHOLD = 0.88
-DEFAULT_PARTS = 0
 DEFAULT_MAX_TOKENS = 16000
 
 # ── NPC dossiers (spec 032) ─────────────────────────────────────────────────
@@ -256,14 +255,20 @@ MISSING_DOSSIERS_FILE = "missing_dossiers.json"
 #: planning's own file of the same shape, so one document's refusal is never shown as the other's.
 MISSING_DOSSIERS_PLANNING_FILE = "missing_dossiers.planning.json"
 #: Refusals shared by the CLI and the web routes (the routes answer 400 with the same words).
-STATE_PARTS_REFUSAL = (
-    "--parts does not apply to {doc}: it is built with one call per section from the checked notes"
-)
-#: ``--world-state`` / ``--campaign-state`` on party or planning (spec 034, contracts/cli.md).
+#: ``--parts`` on any document (spec 034, contracts/cli.md): every document is built one call per section.
+PARTS_REFUSAL = "--parts is retired: every document is built one call per section from the checked notes"
+#: Why ``--world-state`` / ``--campaign-state`` are gone (spec 034, contracts/cli.md).
 UPSTREAM_REFUSAL = (
     "upstream drafts are no longer prompt context: party and planning build from the checked notes; "
     "review those documents on their own"
 )
+#: The retired ``synth`` options, by the name the CLI parser and the route's query string give them, and
+#: the refusal each one gets (naming its replacement). A flag is refused when it is *present*, whatever its value.
+RETIRED_SYNTH_FLAGS: dict[str, str] = {
+    "parts": PARTS_REFUSAL,
+    "world_state": f"--world-state is retired: {UPSTREAM_REFUSAL}",
+    "campaign_state": f"--campaign-state is retired: {UPSTREAM_REFUSAL}",
+}
 #: ``--name`` / ``--recent-chapters`` / ``--recurring-min`` on party (spec 034, contracts/cli.md); the CLI prefixes the flag.
 PARTY_SELECTION_REFUSAL = "party selects no NPCs; these apply to planning and world_state"
 #: ``--fallback-npc-lines`` on party or campaign_state (spec 034, contracts/cli.md); the CLI prefixes the flag.

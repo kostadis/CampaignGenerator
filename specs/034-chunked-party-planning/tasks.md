@@ -353,9 +353,9 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 - `--parts`, `--world-state` and `--campaign-state` refuse with the contracts/cli.md messages, from the CLI and the routes alike;
 - the page has no Parts control.
 
-- [ ] T046 [P] [US6] Extend `tests/test_summary_native_cli.py` and `tests/test_summary_native_routes.py`: every retired flag or parameter is refused (exit 2 / 400) with the replacement message, and one-shot prompt files and functions no longer exist (an import/AST check).
-- [ ] T047 [P] [US6] Extend `tests/test_summary_native_synth.py`: build all four documents from one fixture extraction, and assert that the fake extraction client is called zero times by `synth`.
-- [ ] T048 [US6] Delete the one-shot path:
+- [X] T046 [P] [US6] Extend `tests/test_summary_native_cli.py` and `tests/test_summary_native_routes.py`: every retired flag or parameter is refused (exit 2 / 400) with the replacement message, and one-shot prompt files and functions no longer exist (an import/AST check).
+- [X] T047 [P] [US6] Extend `tests/test_summary_native_synth.py`: build all four documents from one fixture extraction, and assert that the fake extraction client is called zero times by `synth`.
+- [X] T048 [US6] Delete the one-shot path:
   - in `pipelines/summary_native/synth.py`, the `run_synth` one-shot body after the state dispatch, `split_parts` (if unused), `check_threat_tracker` (if no longer needed) and the `--parts` plumbing;
   - in `pipelines/summary_native/context.py`, `build_context`, the upstream-draft blocks, and the prompt-block renderers `party_config_block` / `planning_config_block`;
   - in `pipelines/summary_native/prompts/`, `party.system.md` and `planning.system.md`;
@@ -368,7 +368,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - **`--npc-root` for planning.** Accept `--npc-root` for `synth planning`, as for world_state; today it is refused for planning. Found in the Phase 5 review.
   - **Faction substitutions.** Write them to a report file on disk (e.g. a "Faction States" section in `planning_npcs_report.md`, renamed `planning_report.md` if that reads better), not only to stdout and the run record. Found in the Phase 5 review.
   - **`check-pointers`.** `pointers.check_paths` expects all six reference files plus the timeline. Make it check only the files a document's reading contract names (its `summary_native pointers:` comment), so it works on promoted party and planning bundles, and add a test.
-- [ ] T049 [US6] Router and page cleanup:
+- [X] T049 [US6] Router and page cleanup:
   - `server/routers/summary_native.py`: remove the `parts`, `world_state` and `campaign_state` params (a request carrying them gets a 400 with the CLI text);
   - `frontend/src/views/grounding/SummaryNative.vue`: party and planning use the same step component as world_state/campaign_state, and the Parts control and upstream-draft pickers are removed.
 

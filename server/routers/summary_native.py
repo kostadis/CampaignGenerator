@@ -33,7 +33,6 @@ from server.grounding_config_shared import SummaryNativeRun
 from server.platform_config_service import resolve_selection, selection_cli_args
 from server.routers.grounding import (
     _pick,
-    _selection_for,
     _service,
     _sse_response,
 )
@@ -56,8 +55,8 @@ def _run_config(request: Request) -> SummaryNativeRun:
 def _pick_num(explicit: int | float | None, stored: int | float | None):
     """Explicit request value wins; ``None`` (not ``0``) means "not supplied".
 
-    ``recent_chapters=0`` ("every chapter") and ``parts=0`` ("one call") are
-    meaningful values, so unlike ``grounding._pick`` a zero is an answer.
+    ``recent_chapters=0`` ("every chapter") is a meaningful value, so unlike
+    ``grounding._pick`` a zero is an answer.
     """
     return explicit if explicit is not None else stored
 
@@ -409,15 +408,12 @@ async def run_synth(
     summaries_dir: str = "",
     since: int | None = None,
     until: int | None = None,
-    world_state: str = "",
-    campaign_state: str = "",
     party_config: str = "",
     planning_config: str = "",
     audit: list[str] | None = Query(default=None),
     name: list[str] | None = Query(default=None),
     recent_chapters: int | None = None,
     recurring_min: int | None = None,
-    parts: int | None = None,
     max_tokens: int | None = None,
     dump_only: bool = False,
     force: bool = False,
@@ -426,8 +422,12 @@ async def run_synth(
     fallback_npc_lines: bool = False,
 ):
     _require_doc(doc)
+    # The retired parameters are not declared (FastAPI would ignore an undeclared one), so a request carrying
+    # any of them is refused here, with the CLI's words naming the replacement (spec 034 FR-024).
+    for retired, refusal in schema.RETIRED_SYNTH_FLAGS.items():
+        if retired in request.query_params:
+            raise HTTPException(status_code=400, detail=refusal)
     run = _run_config(request)
-    chunked = doc in schema.STATE_DOCS
     if fallback_npc_lines and doc not in ("world_state", "planning"):
         raise HTTPException(
             status_code=400, detail=f"--fallback-npc-lines {schema.FALLBACK_NPC_LINES_REFUSAL}, not {doc}")
@@ -442,28 +442,21 @@ async def run_synth(
             if given:
                 raise HTTPException(
                     status_code=400, detail=f"{flag} does not apply to party: {schema.PARTY_SELECTION_REFUSAL}")
-    if chunked:
-        # world_state and campaign_state write one call per section from the checked notes; the CLI
-        # refuses these flags and so does the route, with the CLI's words.
-        if parts:
-            raise HTTPException(status_code=400, detail=schema.STATE_PARTS_REFUSAL.format(doc=doc))
-        if any(a.strip() for a in (audit or [])):
-            raise HTTPException(
-                status_code=400,
-                detail=schema.STATE_AUDIT_REFUSAL if doc == "campaign_state"
-                else f"--audit applies to campaign_state only, not {doc}",
-            )
-        if doc == "campaign_state" and any(n.strip() for n in (name or [])):
-            raise HTTPException(
-                status_code=400, detail="--name does not apply to campaign_state: it has no Key NPCs section")
+    # Every document is built one call per section from the checked notes; the CLI refuses these flags and
+    # so does the route, with the CLI's words.
+    if any(a.strip() for a in (audit or [])):
+        raise HTTPException(
+            status_code=400,
+            detail=schema.STATE_AUDIT_REFUSAL if doc == "campaign_state"
+            else f"--audit applies to campaign_state only, not {doc}",
+        )
+    if doc == "campaign_state" and any(n.strip() for n in (name or [])):
+        raise HTTPException(
+            status_code=400, detail="--name does not apply to campaign_state: it has no Key NPCs section")
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     cmd = _base_cmd("synth", doc, directory, lo, hi)
 
-    if world_state.strip():
-        cmd += ["--world-state", world_state.strip()]
-    if campaign_state.strip():
-        cmd += ["--campaign-state", campaign_state.strip()]
     # --party-config / --planning-config default to <config>/party.yaml and
     # <config>/planning.yaml inside the CLI; passed only when the request names one.
     if party_config.strip():
@@ -483,8 +476,6 @@ async def run_synth(
     if doc not in ("campaign_state", "party"):
         cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
         cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
-    if not chunked:
-        cmd += ["--parts", str(_pick_num(parts, run.parts))]
     if max_tokens is not None:
         cmd += ["--max-tokens", str(max_tokens)]
     if dump_only:
@@ -494,13 +485,9 @@ async def run_synth(
     if fallback_npc_lines:  # per run, never from config
         cmd.append("--fallback-npc-lines")
 
-    if chunked:
-        # The prose step has its own backend/model block (grounding.yaml summary_native.prose).
-        service, service_name = run.prose, f"{_SERVICE_NAME}.prose"
-    else:
-        service, service_name = _selection_for(request, _SERVICE_NAME), _SERVICE_NAME
+    # The prose step has its own backend/model block (grounding.yaml summary_native.prose).
     cmd += selection_cli_args(resolve_selection(
-        request, request_model=model, service=service, service_name=service_name,
+        request, request_model=model, service=run.prose, service_name=f"{_SERVICE_NAME}.prose",
         request_claude_code_effort=(claude_code_effort or "").strip() or None,
     ))
     return _sse_response(cmd)

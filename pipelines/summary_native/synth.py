@@ -38,18 +38,6 @@ def load_outline(doc: str) -> list[str]:
     return [str(h) for h in data["headings"]]
 
 
-def split_parts(headings: list[str], n: int) -> list[list[str]]:
-    """``n`` contiguous groups, as even as possible, earlier groups larger."""
-    n = max(1, min(n, len(headings)))
-    size, extra = divmod(len(headings), n)
-    out, i = [], 0
-    for k in range(n):
-        j = i + size + (1 if k < extra else 0)
-        out.append(headings[i:j])
-        i = j
-    return out
-
-
 def check_outline(text: str, headings: list[str]) -> list[str]:
     """Problems with ``text`` against the ordered H2 ``headings`` (empty list = complete)."""
     lines = text.splitlines()
@@ -83,22 +71,6 @@ def check_outline(text: str, headings: list[str]) -> list[str]:
     return problems
 
 
-def check_threat_tracker(text: str) -> list[str]:
-    """With no arc score configured, ``## Threat Tracker`` is exactly the sentinel line."""
-    lines = text.splitlines()
-    try:
-        start = next(n for n, line in enumerate(lines) if line.rstrip() == "## Threat Tracker")
-    except StopIteration:
-        return []  # a missing heading is check_outline's report
-    end = next((n for n in range(start + 1, len(lines)) if lines[n].startswith("## ")), len(lines))
-    body = " ".join("\n".join(lines[start + 1 : end]).split())
-    # The sentinel is required, not merely allowed: an empty section cannot be
-    # told apart from a dropped or truncated one.
-    if body == context.NO_ARC_SENTINEL:
-        return []
-    return ["threat tracker must be empty: no arc scores configured"]
-
-
 def render_part(client, system: str, user: str, model: str, max_tokens: int) -> str:
     """The one model call in this package."""
     return stream_api(client, system, user, model, max_tokens=max_tokens)
@@ -121,11 +93,6 @@ def _new_run_dir(runs_root: Path, stamp: str) -> Path:
             k += 1
 
 
-def _previous_draft_run(draft: Path, doc: str) -> str:
-    m = re.search(rf"runs/{re.escape(doc)}/([^/\s]+)/record\.json", draft.read_text(encoding="utf-8").split("\n", 1)[0])
-    return m.group(1) if m else "unknown"
-
-
 def _refuse(msg: str) -> int:
     print(f"Error: {msg}", file=sys.stderr)
     return EXIT_REFUSED
@@ -138,6 +105,14 @@ def _rel(path: Path, root: Path) -> str:
         return Path(path).as_posix()
 
 
+def retired_flag_refusal(args) -> str | None:
+    """The refusal for the first retired ``synth`` option ``args`` carries (any value, even ``0``), or ``None``."""
+    for flag, refusal in schema.RETIRED_SYNTH_FLAGS.items():
+        if getattr(args, flag, None) is not None:
+            return refusal
+    return None
+
+
 def run_synth(
     args,
     *,
@@ -148,7 +123,6 @@ def run_synth(
     config_dir: Path | None = None,
     recent_chapters: int,
     recurring_min: int,
-    parts: int,
     registry_path: Path | None = None,
     summaries_dir: Path | None = None,
     players_path: Path | None = None,
@@ -157,21 +131,24 @@ def run_synth(
     thread_registry_path: Path | None = None,
     now=None,
 ) -> int:
+    """Refuse what does not apply to ``args.doc`` (exit 2, before any read of the corpus), then build it.
+
+    Every document builds from the checked notes, one call per section (spec 034 retired the one-shot
+    path). The retired flags are refused, never silently ignored.
+    """
     now = now or _utcnow
     doc = args.doc
     if doc not in schema.SYNTH_DOCS:
         return _refuse(f"synth {doc}: not implemented yet (available: {', '.join(schema.SYNTH_DOCS)})")
+    retired = retired_flag_refusal(args)
+    if retired:
+        return _refuse(retired)
     if args.audit and doc != "campaign_state":
         return _refuse(f"--audit applies to campaign_state only, not {doc}")
-    if doc in schema.STATE_DOCS:
-        # Every document builds from the checked notes, one call per section (spec 034 retired the
-        # one-shot path). The retired flags are refused, never silently ignored.
-        if args.parts:
-            return _refuse(schema.STATE_PARTS_REFUSAL.format(doc=doc))
-        if args.audit:
-            return _refuse(schema.STATE_AUDIT_REFUSAL)
-    if getattr(args, "npc_root", None) and doc != "world_state":
-        return _refuse(f"--npc-root applies to world_state only, not {doc}")
+    if args.audit:
+        return _refuse(schema.STATE_AUDIT_REFUSAL)
+    if getattr(args, "npc_root", None) and doc not in ("world_state", "planning"):
+        return _refuse(f"--npc-root applies to world_state and planning only, not {doc}")
     if getattr(args, "fallback_npc_lines", None) and doc not in ("world_state", "planning"):
         return _refuse(f"--fallback-npc-lines {schema.FALLBACK_NPC_LINES_REFUSAL}, not {doc}")
     if doc == "party":
@@ -184,220 +161,15 @@ def run_synth(
         for flag in ("name", "recent_chapters", "recurring_min"):
             if getattr(args, flag, None) is not None:
                 return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}: it has no Key NPCs section")
-    for flag in ("world_state", "campaign_state"):
-        if getattr(args, flag, None):
-            if doc in ("party", "planning"):
-                return _refuse(schema.UPSTREAM_REFUSAL)
-            return _refuse(f"--{flag.replace('_', '-')} does not apply to {doc}")
     for flag, owner in (("party_config", "party"), ("planning_config", "planning")):
         if getattr(args, flag, None) and doc != owner:
             return _refuse(f"--{flag.replace('_', '-')} applies to {owner} only, not {doc}")
-    if doc in schema.STATE_DOCS:
-        return run_state_synth(
-            args, root=root, range_dir=range_dir, report=report, summaries_dir=summaries_dir,
-            registry_path=registry_path, players_path=players_path, track_files=audit_default,
-            budgets=budgets, recent_chapters=recent_chapters, recurring_min=recurring_min,
-            npc_root=npc_root, now=now, config_dir=config_dir, thread_registry_path=thread_registry_path,
-        )
-
-    # ── The one-shot path (retired). Unreachable since spec 034 T012: ``schema.STATE_DOCS`` is every
-    # document, so the branch above always returns. Spec 034 T048 deletes the rest of this function.
-    if report.blocking_count:
-        # Same outcome as validate/build: the summaries need fixing, not the flags.
-        print(report.to_markdown(), end="")
-        print("validation has blocking problems; fix the summaries, then build --force", file=sys.stderr)
-        return EXIT_BLOCKING
-    try:
-        manifest = corpus.load_manifest(range_dir, require_complete=True)
-    except corpus.CorpusError as e:
-        return _refuse(str(e))
-    stale = check_fresh(report, range_dir, root, manifest, registry_path)
-    if stale:
-        return _refuse(stale)
-
-    upstream: dict[str, Path] = {}
-    for name, value in (("world_state", args.world_state), ("campaign_state", args.campaign_state)):
-        if value:
-            p = Path(value).expanduser()
-            p = p if p.is_absolute() else root / p
-            if not p.is_file():
-                return _refuse(f"--{name.replace('_', '-')} {value}: no such file")
-            upstream[name] = p
-    audit_paths: list[Path] = []
-    if doc == "campaign_state":
-        for value in args.audit if args.audit else audit_default:
-            p = Path(value).expanduser()
-            p = p if p.is_absolute() else root / p
-            if not p.is_file():
-                return _refuse(f"audit file {value}: no such file")
-            audit_paths.append(p)
-
-    drafts = range_dir / "drafts"
-    # An existing .incomplete.md never blocks a run (it is replaced); an existing
-    # .draft.md is GM-reviewed material and needs --force to be replaced.
-    draft_path = drafts / f"{doc}.draft.md"
-    if draft_path.exists() and not args.force and not args.dump_only:
-        return _refuse(f"{draft_path} exists; pass --force to overwrite it")
-
-    doc_config = None
-    cfg_dir = Path(config_dir) if config_dir is not None else root / "config"
-    try:
-        if doc == "party":
-            given = getattr(args, "party_config", None)
-            doc_config = context.party_config_block(
-                schema.resolve_under(root, given) if given else cfg_dir / "party.yaml", root
-            )
-        elif doc == "planning":
-            given = getattr(args, "planning_config", None)
-            doc_config = context.planning_config_block(
-                schema.resolve_under(root, given) if given else cfg_dir / "planning.yaml",
-                root,
-                explicit=bool(given),
-            )
-    except context.DocConfigError as e:
-        return _refuse(str(e))
-
-    range_end = int(manifest["range"]["until"])
-    range_since = int(manifest["range"]["since"])
-    candidates = select.read_corpus_dossiers(range_dir)
-    if doc == "planning":
-        candidates = [d for d in candidates if d.category == "npc"]
-    try:
-        selection = select.select_dossiers(
-            candidates,
-            range_end,
-            recent_chapters,
-            recurring_min,
-            tuple(args.name or ()),
-        )
-    except select.SelectionError as e:
-        if doc == "planning":
-            return _refuse(f"{e} (planning selects NPC dossiers only)")
-        return _refuse(str(e))
-
-    headings = load_outline(doc)
-    groups = split_parts(headings, parts) if parts and parts > 1 else [headings]
-    prompts = []
-    for group in groups:
-        prompts.append(
-            context.build_context(
-                doc, range_dir, selection, upstream, audit_paths,
-                group if len(groups) > 1 else None,
-                headings=headings, range_since=range_since, root=root,
-                config_block=doc_config.block if doc_config else None,
-            )
-        )
-
-    started = now()
-    run_dir = _new_run_dir(range_dir / "runs" / doc, started.strftime("%Y%m%dT%H%M%SZ"))
-    run_id = run_dir.name
-    atomic_write_text(run_dir / "selection.json", selection.to_json())
-    for k, (system, user) in enumerate(prompts, 1):
-        atomic_write_text(run_dir / f"part-{k}.system.md", system)
-        atomic_write_text(run_dir / f"part-{k}.user.md", user)
-
-    manifest_sha = corpus.sha256_file(range_dir / "manifest.json")
-    record = {
-        "doc": doc,
-        "backend": resolve_cli_model(args, legacy_default=None).backend,
-        "model": args.model,
-        "max_tokens": args.max_tokens,
-        "parts": len(groups),
-        "range": {"since": range_since, "until": range_end},
-        "corpus_manifest_sha256": manifest_sha,
-        "upstream": {n: {"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for n, p in upstream.items()},
-        "audit": [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in audit_paths],
-        "config": (
-            [{"path": _rel(p, root), "sha256": corpus.sha256_file(p)} for p in doc_config.files]
-            if doc_config else []
-        ),
-        "outline": headings,
-        "check": "not run",
-        "started": started.isoformat(timespec="seconds"),
-        "finished": None,
-    }
-
-    def save_record() -> None:
-        atomic_write_text(run_dir / "record.json", json.dumps(record, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
-
-    if args.dump_only:
-        record["finished"] = now().isoformat(timespec="seconds")
-        save_record()
-        print(f"[--dump-only: prompts written to {run_dir}; no model call]")
-        return 0
-
-    def fail(message: str) -> None:
-        # Every run directory keeps a record, including one that never reached
-        # the model, so a directory of prompts is never left unexplained.
-        record["check"] = {"complete": False, "error": message}
-        record["finished"] = now().isoformat(timespec="seconds")
-        save_record()
-
-    try:
-        client = client_from_args(args)
-    except SystemExit as e:  # client_from_args fails fast with SystemExit(message)
-        msg = str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})"
-        fail(msg)
-        return _refuse(msg)
-    except (ValueError, RuntimeError, ImportError) as e:
-        fail(str(e))
-        return _refuse(str(e))
-    outputs: list[str] = []
-    for k, (system, user) in enumerate(prompts, 1):
-        try:
-            out = render_part(client, system, user, args.model, args.max_tokens)
-        except Exception as e:
-            fail(f"part {k}: {type(e).__name__}: {e}")
-            print(
-                f"Error: model call failed in part {k}: {type(e).__name__}: {e} "
-                f"(see {schema.display_path(run_dir / 'record.json', root)})",
-                file=sys.stderr,
-            )
-            return EXIT_MODEL_FAILED
-        atomic_write_text(run_dir / f"part-{k}.out.md", out)
-        outputs.append(out.strip())
-    joined = "\n\n".join(outputs) + "\n"
-    if len(groups) > 1:
-        problems = [
-            f"part {k}: {p}"
-            for k, (group, out) in enumerate(zip(groups, outputs), 1)
-            for p in check_outline(out + "\n", group)
-        ]
-    else:
-        problems = check_outline(joined, headings)
-    if doc == "planning" and doc_config is not None and doc_config.arc_scores == 0:
-        problems += check_threat_tracker(joined)
-    record["check"] = {"complete": not problems, "problems": problems}
-    record["finished"] = now().isoformat(timespec="seconds")
-    save_record()
-
-    drafts.mkdir(parents=True, exist_ok=True)
-    record_ref = f"runs/{doc}/{run_id}/record.json"
-    if problems:
-        target = drafts / f"{doc}.incomplete.md"
-        header = (
-            f"<!-- summary_native INCOMPLETE | doc: {doc} | range: ch{range_since:03d}-{range_end:03d} "
-            f"| record: {record_ref} | run: {run_id} -->\n"
-        )
-        atomic_write_text(target, header + joined)
-        print(f"Incomplete: {target}", file=sys.stderr)
-        for p in problems:
-            print(f"  - {p}", file=sys.stderr)
-        if draft_path.exists():
-            print(
-                f"previous draft kept: drafts/{doc}.draft.md (from run {_previous_draft_run(draft_path, doc)})",
-                file=sys.stderr,
-            )
-        print("Retry with --parts N to write the outline in separate calls, or raise --max-tokens.", file=sys.stderr)
-        return EXIT_INCOMPLETE
-    header = (
-        f"<!-- summary_native draft | doc: {doc} | range: ch{range_since:03d}-{range_end:03d} "
-        f"| record: {record_ref} | corpus manifest sha256: {manifest_sha} -->\n"
+    return run_state_synth(
+        args, root=root, range_dir=range_dir, report=report, summaries_dir=summaries_dir,
+        registry_path=registry_path, players_path=players_path, track_files=audit_default,
+        budgets=budgets, recent_chapters=recent_chapters, recurring_min=recurring_min,
+        npc_root=npc_root, now=now, config_dir=config_dir, thread_registry_path=thread_registry_path,
     )
-    atomic_write_text(draft_path, header + joined)
-    (drafts / f"{doc}.incomplete.md").unlink(missing_ok=True)
-    print(f"Wrote draft: {draft_path}")
-    return 0
 
 
 # ── world_state and campaign_state from checked notes (spec 033 T019) ───────
@@ -1350,10 +1122,22 @@ def run_state_synth(
         # What code replaced in planning, and the thread layers it built (the attach map itself is state/threads/attach.json).
         nb = budget_report.get("NPC Dossiers", {})
         npc_part = planning_parts.get("## NPC Dossiers")
+        faction_part = planning_parts.get("## Faction States")
+        faction_lines = None
+        if faction_part is not None:
+            # Faction States' side of the same file: which factions were written, which the cap left out, and
+            # every entry code replaced or discarded (also in the run record, but a report is what a GM opens).
+            sel_rec = faction_part.record
+            faction_lines = [
+                f"- {len(sel_rec.get('selected', []))} written: {', '.join(sel_rec.get('selected', [])) or '(none)'}",
+                *([f"- {len(sel_rec['overflow'])} not written (the cap): {', '.join(sel_rec['overflow'])}"]
+                  if sel_rec.get("overflow") else []),
+                *faction_part.report,
+            ]
         if npc_part is not None and npc_part.payload is not None:
             a, per = npc_part.payload
             atomic_write_text(drafts / "planning_npcs_report.md", key_npcs.planning_report_md(
-                npc_plan, a, per, nb.get("words", 0), nb.get("budget", 0)))
+                npc_plan, a, per, nb.get("words", 0), nb.get("budget", 0), faction_lines))
         plots_part = planning_parts.get("## Active Plots")
         atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(attachment, (since, until)) + "\n".join([
             "", "## Active Plots entries replaced by code", "", *((plots_part.report if plots_part else []) or ["- (none)"]), ""]))

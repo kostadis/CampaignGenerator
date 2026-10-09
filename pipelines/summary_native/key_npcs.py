@@ -731,8 +731,13 @@ def planning_section_body(a: PlanningAssembled, n_published: int, n_total: int) 
     return "\n\n".join(a.blocks) + "\n\n" + note
 
 
-def planning_report_md(plan: PlanningPlan, a: PlanningAssembled, per: int, words: int, budget: int) -> str:
-    """``planning_npcs_report.md``: who was selected and why, what the model wrote, what code replaced."""
+def planning_report_md(plan: PlanningPlan, a: PlanningAssembled, per: int, words: int, budget: int,
+                       faction_report: Sequence[str] | None = None) -> str:
+    """``planning_npcs_report.md``: who was selected and why, what the model wrote, what code replaced.
+
+    ``faction_report`` is Faction States' side of the same story (the entries code replaced or discarded,
+    one line each): it ends the file as a ``## Faction States`` section, written whenever it is given.
+    """
     out = [
         "# Planning: NPC Dossiers", "",
         f"{len(plan.npcs)} selected; {a.from_model} blocks from the model, {a.substituted} replaced by the "
@@ -743,4 +748,6 @@ def planning_report_md(plan: PlanningPlan, a: PlanningAssembled, per: int, words
         f"- {k.name} ({k.reason}) — " + (f"docs/npcs/{k.slug}.md" if k.view else f"no dossier: {k.missing}") for k in plan.npcs]
     out += [f"- {k.name}: carried over from {k.carried_from}" for k in plan.npcs if k.carried_from]
     out += ["", "## Substitutions, fallbacks and discards", ""] + (a.report or ["(none)"])
+    if faction_report is not None:
+        out += ["", "## Faction States", ""] + (list(faction_report) or ["(none)"])
     return "\n".join(out) + "\n"
