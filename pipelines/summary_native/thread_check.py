@@ -1,0 +1,357 @@
+"""The code check on a model's thread groupings, and the proposals file they are merged into (spec 034, R5).
+
+``summary_native thread-propose`` asks a model to group the unattached thread notes. What the model
+returns is a suggestion and nothing more: this module decides what survives, so no grouping reaches the GM
+that names a note that is not there, claims a note twice, or continues a thread the registry does not have.
+A note the model leaves out (or that the check takes out) is never lost: it is offered as a single-note
+proposal. Deterministic, no model call; guarded by ``tests/test_summary_native_no_llm.py``.
+
+A proposal is a *group entry* in the proposals file::
+
+    key: g-<12 hex>      # campaignlib.thread_registry.group_key of the sorted member ids
+    kind: new | continues | single
+    title: ...           # new and single: a suggestion the GM edits
+    thread: <id>         # continues only
+    members: [{id, chapter, tag, name, text, cite}]
+    status: pending | ratified | rejected | deferred
+    source: summary_native ch002-070 run <run id>
+
+Group entries sit beside the ensemble harvest's name-keyed entries (``norm``); neither shape touches the
+other. This module never reads or writes the thread registry itself beyond the loaded document it is given.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+from collections.abc import Mapping, Sequence
+from pathlib import Path
+
+import yaml
+
+from campaignlib.thread_registry import group_key
+from campaignlib.util import atomic_write_text
+from pipelines.summary_native import notes, schema
+
+#: A report line that records something removed from a proposal. ``thread-propose`` counts them.
+DROPPED = "dropped"
+#: A report line that records something kept but changed.
+NOTE = "note"
+#: Group statuses the GM has ruled; a ruling is preserved by key.
+RULED = ("ratified", "rejected", "deferred")
+#: What a model may propose; ``single`` is code's.
+MODEL_KINDS = ("new", "continues")
+
+PROPOSALS_NOTE = (
+    "Proposals, not canon. Name-keyed entries (`norm`) come from the ensemble harvest; group entries (`key`, "
+    "`g-...`) come from `summary_native thread-propose`. A GM ruling is preserved across re-proposes. Ratify on "
+    "the Threads page (/grounding/threads) or with the thread_registry verbs."
+)
+
+_PREFIX_RE = re.compile(r"^-\s*\[[A-Z]+\]\s*\*\*.+?\*\*\s*[—–:-]*\s*")
+_FENCE_RE = re.compile(r"^```[A-Za-z]*\s*(.*?)\s*```$", re.S)
+
+
+class ThreadJsonError(ValueError):
+    """The model's output is not the JSON object the proposal prompt asks for."""
+
+
+# ── Notes as members ────────────────────────────────────────────────────────
+
+
+def note_name(n: notes.Note) -> str:
+    return (n.subject or "").strip()
+
+
+def note_body(n: notes.Note) -> str:
+    """The note without its tag, its bold name and its citations: the statement itself."""
+    text = _PREFIX_RE.sub("", n.text.strip(), count=1)
+    text = schema.STATE_CITE_RE.sub("", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def note_cite(n: notes.Note) -> str:
+    """The citation bracket(s) of the note, once each, in text order."""
+    return " ".join(dict.fromkeys(b for b, _, _ in notes.cites(n.text)))
+
+
+def member_of(n: notes.Note) -> dict:
+    return {
+        "id": n.note_id, "chapter": n.first_chapter, "tag": n.tag or "", "name": note_name(n),
+        "text": note_body(n), "cite": note_cite(n),
+    }
+
+
+# ── Parsing ─────────────────────────────────────────────────────────────────
+
+
+def parse_groups(raw) -> list:
+    """The ``groups`` list of the model's output (text, or an already parsed object).
+
+    A single markdown fence round the object is tolerated; nothing else is repaired. Raises
+    ``ThreadJsonError`` for text that is not a JSON object with a ``groups`` list.
+    """
+    obj = raw
+    if isinstance(raw, str):
+        text = raw.strip()
+        m = _FENCE_RE.match(text)
+        if m:
+            text = m.group(1)
+        try:
+            obj = json.loads(text)
+        except ValueError as e:
+            raise ThreadJsonError(f"not valid JSON ({e})") from None
+    if not isinstance(obj, dict) or not isinstance(obj.get("groups"), list):
+        raise ThreadJsonError('not a JSON object with a "groups" list')
+    return obj["groups"]
+
+
+# ── What the model is offered ───────────────────────────────────────────────
+
+
+def group_entries(prior: Sequence | None) -> list[dict]:
+    """The group entries of a proposals list (name-keyed ensemble entries are not ours)."""
+    return [p for p in prior or () if isinstance(p, dict) and p.get("key")]
+
+
+def _member_ids(entry: Mapping) -> list[str]:
+    return [m.get("id") for m in entry.get("members") or () if isinstance(m, Mapping) and m.get("id")]
+
+
+def excluded_ids(prior: Sequence | None) -> tuple[set[str], set[str]]:
+    """``(rejected, deferred)``: member ids of the groups the GM rejected, and of those they deferred."""
+    rejected: set[str] = set()
+    deferred: set[str] = set()
+    for p in group_entries(prior):
+        if p.get("status") == "rejected":
+            rejected.update(_member_ids(p))
+        elif p.get("status") == "deferred":
+            deferred.update(_member_ids(p))
+    return rejected, deferred
+
+
+def offered(unattached: Sequence[notes.Note], prior: Sequence | None) -> list[notes.Note]:
+    """The unattached notes a model may group: not the members of a rejected or a deferred group."""
+    rejected, deferred = excluded_ids(prior)
+    return [n for n in unattached if n.note_id not in rejected and n.note_id not in deferred]
+
+
+# ── The check ───────────────────────────────────────────────────────────────
+
+
+def check_groups(
+    raw,
+    unattached: Sequence[notes.Note],
+    registry: dict | None,
+    prior: Sequence | None,
+    *,
+    attached: Mapping[str, str] | None = None,
+) -> tuple[list[dict], list[str]]:
+    """Check a model's grouping of ``unattached`` and return ``(groups, report_lines)``.
+
+    ``raw`` is the model's output as text or as a parsed ``{"groups": [...]}``; ``registry`` the loaded
+    thread registry; ``prior`` the proposals already in the file (rulings decide what is offered);
+    ``attached`` an optional ``{note id: thread id}`` so a removed member can be reported as attached.
+
+    In order, each of these is removed and reported:
+
+    * a group of an unknown kind, or whose members are not a list of ids;
+    * a ``continues`` group whose thread is not in the registry;
+    * a member that is not an offered, unattached checked note (unknown, attached, or excluded by a ruling);
+    * a member claimed by two groups, which leaves **both**;
+    * a group left with no members.
+
+    A group left with exactly one member becomes ``single``. Every unattached note in no valid group becomes
+    a ``single`` proposal, the members of rejected groups included (re-offered one by one) and those of
+    deferred groups excluded (they live in the deferred entry). Output is in chapter order, members too.
+    """
+    ordered = sorted(unattached, key=lambda n: n.first_chapter)  # stable
+    position = {n.note_id: i for i, n in enumerate(ordered)}
+    by_id = {n.note_id: n for n in ordered}
+    rejected, deferred = excluded_ids(prior)
+    can_group = {n.note_id for n in offered(ordered, prior)}
+    registry_ids = {t.get("id") for t in (registry or {}).get("threads") or ()}
+    attached = attached or {}
+    lines: list[str] = []
+
+    try:
+        raw_groups = parse_groups(raw)
+    except ThreadJsonError as e:
+        raw_groups = []
+        lines.append(f"{DROPPED} the model's output: {e}; every offered note becomes a single-note proposal")
+
+    valid: list[dict] = []
+    for i, g in enumerate(raw_groups, 1):
+        label = f"group {i}"
+        if not isinstance(g, dict):
+            lines.append(f"{DROPPED} {label}: not an object")
+            continue
+        kind = g.get("kind")
+        title = str(g.get("title") or "").strip()
+        if title:
+            label += f" ({title})"
+        if kind not in MODEL_KINDS:
+            lines.append(f"{DROPPED} {label}: unknown kind {kind!r} (allowed: {', '.join(MODEL_KINDS)})")
+            continue
+        members = g.get("members")
+        if not isinstance(members, list) or not all(isinstance(m, str) for m in members):
+            lines.append(f"{DROPPED} {label}: members is not a list of note ids")
+            continue
+        thread = None
+        if kind == "continues":
+            thread = g.get("thread")
+            if thread not in registry_ids:
+                lines.append(f"{DROPPED} {label}: continues thread {thread!r}, which is not in the registry")
+                continue
+        kept: list[str] = []
+        for mid in dict.fromkeys(members):  # a repeated id counts once
+            if mid in can_group:
+                kept.append(mid)
+            elif mid in rejected:
+                lines.append(f"{DROPPED} {label} member {mid}: it was in a group the GM rejected, so it was not offered")
+            elif mid in deferred:
+                lines.append(f"{DROPPED} {label} member {mid}: it is in a group the GM deferred, so it was not offered")
+            elif mid in attached:
+                lines.append(f"{DROPPED} {label} member {mid}: already attached to thread {attached[mid]!r}")
+            else:
+                lines.append(f"{DROPPED} {label} member {mid}: not an unattached checked thread note of this run")
+        if not kept:
+            lines.append(f"{DROPPED} {label}: no valid members left")
+            continue
+        valid.append({"index": i, "label": label, "kind": kind, "title": title, "thread": thread, "ids": kept})
+
+    claims: dict[str, list[int]] = {}
+    for v in valid:
+        for mid in v["ids"]:
+            claims.setdefault(mid, []).append(v["index"])
+    for mid, groups_claiming in sorted(claims.items(), key=lambda kv: position[kv[0]]):
+        if len(groups_claiming) > 1:
+            lines.append(
+                f"{DROPPED} member {mid}: claimed by groups {' and '.join(str(g) for g in groups_claiming)}; "
+                "removed from both and offered on its own"
+            )
+    doubled = {mid for mid, gs in claims.items() if len(gs) > 1}
+
+    groups: list[dict] = []
+    used: set[str] = set()
+    for v in valid:
+        ids = sorted((m for m in v["ids"] if m not in doubled), key=position.__getitem__)
+        if not ids:
+            lines.append(f"{DROPPED} {v['label']}: no members left once the double-claimed notes were removed")
+            continue
+        used.update(ids)
+        members = [member_of(by_id[m]) for m in ids]
+        if len(ids) == 1:
+            if v["ids"] == ids:
+                lines.append(f"{NOTE} {v['label']}: one member, so it is a single-note proposal")
+            groups.append(_single(members[0], v["title"]))
+            continue
+        entry = {"key": group_key(ids), "kind": v["kind"]}
+        if v["kind"] == "new":
+            entry["title"] = v["title"] or members[0]["name"] or members[0]["text"][:60]
+        else:
+            entry["thread"] = v["thread"]
+        entry["members"] = members
+        groups.append(entry)
+
+    for n in ordered:
+        if n.note_id in used or n.note_id in deferred:
+            continue
+        groups.append(_single(member_of(n), ""))
+
+    groups.sort(key=lambda g: (position[g["members"][0]["id"]], g["key"]))
+    return groups, lines
+
+
+def _single(member: dict, title: str) -> dict:
+    return {
+        "key": group_key([member["id"]]), "kind": "single",
+        "title": title or member["name"] or member["text"][:60], "members": [member],
+    }
+
+
+def stale_ratified(prior: Sequence | None, note_ids: set[str], since: int, until: int) -> list[str]:
+    """Report lines for ratified groups whose members (chapters in ``since``..``until``) no longer exist.
+
+    Re-extraction that changes a note's text changes its id (research R6). The ratified thread's aliases
+    still attach any note that repeats a name, so this is a notice, not a fault.
+    """
+    out: list[str] = []
+    for p in group_entries(prior):
+        if p.get("status") != "ratified":
+            continue
+        gone = [
+            m["id"] for m in p.get("members") or ()
+            if isinstance(m, Mapping) and m.get("id") and isinstance(m.get("chapter"), int)
+            and since <= m["chapter"] <= until and m["id"] not in note_ids
+        ]
+        if gone:
+            out.append(
+                f"stale: ratified group {p['key']} ({p.get('title') or p.get('ruled_thread') or 'untitled'}): "
+                f"member(s) {', '.join(gone)} no longer exist after re-extraction; the thread's aliases still "
+                "attach any note that repeats a name"
+            )
+    return out
+
+
+# ── The proposals file ──────────────────────────────────────────────────────
+
+
+def _load(path: Path) -> dict:
+    if not Path(path).exists():
+        return {}
+    try:
+        doc = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    except yaml.YAMLError as e:
+        raise ValueError(f"{path}: not valid YAML ({e})") from None
+    if doc is None:
+        return {}
+    if not isinstance(doc, dict):
+        raise ValueError(f"{path}: expected a mapping with a `proposals` list")
+    return doc
+
+
+def load_proposals(path: Path) -> list:
+    """Every entry of the proposals file, name-keyed and group entries alike; ``[]`` when absent.
+
+    Raises ``ValueError`` for a file that is not YAML.
+    """
+    return list(_load(path).get("proposals") or [])
+
+
+def merge_proposals(path: Path, groups: Sequence[dict], source: str, scope_ids=None) -> dict:
+    """Merge ``groups`` into the proposals file at ``path`` and write it atomically.
+
+    * name-keyed (``norm``) entries and every ruled group entry (by ``key``) are kept exactly as they are;
+    * a pending group entry is replaced when it shares a note with this run (``scope_ids``, default the
+      members of ``groups``): the run regenerates its notes' proposals;
+    * a new group whose key is already a ruled entry is not added again (the ruling stands);
+    * every other new group is added ``pending`` with ``source``.
+
+    Returns counts: ``pending`` (group entries pending after the merge), ``added``, ``replaced``, ``ruled``.
+    """
+    doc = _load(path)
+    existing = list(doc.get("proposals") or [])
+    scope = set(scope_ids or ()) | {m["id"] for g in groups for m in g["members"]}
+    ruled_keys = {
+        p["key"] for p in existing if isinstance(p, dict) and p.get("key") and p.get("status") in RULED
+    }
+    kept: list = []
+    replaced = 0
+    for p in existing:
+        if isinstance(p, dict) and p.get("key") and p.get("status", "pending") == "pending":
+            if scope & set(_member_ids(p)):
+                replaced += 1
+                continue
+        kept.append(p)
+    added = [{**g, "status": "pending", "source": source} for g in groups if g["key"] not in ruled_keys]
+    merged = kept + added
+    out = dict(doc) if doc else {"note": PROPOSALS_NOTE}
+    out["proposals"] = merged
+    atomic_write_text(path, yaml.safe_dump(out, sort_keys=False, allow_unicode=True, width=100))
+    return {
+        "pending": sum(1 for p in merged if isinstance(p, dict) and p.get("key") and p.get("status", "pending") == "pending"),
+        "added": len(added),
+        "replaced": replaced,
+        "ruled": len(ruled_keys),
+    }

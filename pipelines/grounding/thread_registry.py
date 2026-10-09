@@ -45,6 +45,12 @@ Two surfaces, deliberately separated (GM direction, 2026-07-31):
   the workspace rule, nothing enters canon from notes without the GM).
   Inspiration surface only; no pipeline reads it.
 
+- **Group proposals (spec 034).** ``summary_native thread-propose`` writes *group* entries (``key:
+  g-<sha>``, ``kind new|continues|single``, ``members[]``) into the same proposals file, beside the
+  name-keyed ones. ``ratify --key``, ``ratify --key --emit-plan`` and ``rule --key`` rule on them: the GM's
+  edited ``--plan`` is still required for a write, one write per file, and a refused ratification writes
+  nothing. Only these verbs write the registry.
+
 Nothing here decides thread identity.
 
 Usage (from inside a campaign dir):
@@ -70,13 +76,21 @@ import yaml
 from campaignlib.util import atomic_write_text
 
 from campaignlib.constants import config_path
+from campaignlib.thread_registry import (  # noqa: F401  (re-exported: the CLI's tests import them from here)
+    CHANGES,
+    STATUSES,
+    check_registry,
+    find_thread,
+    group_key,
+    load_registry,
+    match_thread,
+    match_threads,
+    norm_title,
+)
 from campaignlib.projection_config import (
     PROJECTION_CONFIG_FILENAME,
     load_projection_config,
 )
-
-STATUSES = ("open", "dormant", "resolved", "abandoned")
-CHANGES = ("opened", "advanced", "resolved", "reopened", "abandoned")
 
 CHAP = re.compile(r"(?:chapter|session|ch|gen-ch)[_-]?0*(\d+)", re.I)
 
@@ -89,22 +103,9 @@ def chapter_of(path: str) -> int | None:
     return None
 
 
-def norm_title(title: str) -> str:
-    """'Aletra's Boss' -> 'aletras-boss'. Exact-match key; never similarity."""
-    t = title.lower().replace("'", "").replace("’", "")
-    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")
-
-
 # ── registry io ──────────────────────────────────────────────────────────
-
-def load_registry(path: Path) -> dict:
-    if not path.exists():
-        return {"version": 1, "threads": []}
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    data.setdefault("version", 1)
-    data.setdefault("threads", [])
-    return data
-
+# The read side (norm_title, load_registry, find_thread, match_thread, check_registry,
+# STATUSES, CHANGES) lives in campaignlib/thread_registry.py (spec 034 T002).
 
 def save_registry(path: Path, data: dict) -> None:
     # Atomic (research D12). The web surface turns hand-typed invocations into
@@ -112,56 +113,6 @@ def save_registry(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     atomic_write_text(path, yaml.safe_dump(data, sort_keys=False,
                                            allow_unicode=True))
-
-
-def find_thread(data: dict, thread_id: str) -> dict | None:
-    for t in data["threads"]:
-        if t.get("id") == thread_id:
-            return t
-    return None
-
-
-def match_thread(data: dict, title: str) -> dict | None:
-    """Exact normalised title/alias match against the registry."""
-    key = norm_title(title)
-    for t in data["threads"]:
-        names = [t.get("title", "")] + list(t.get("aliases") or [])
-        if any(norm_title(n) == key for n in names if n):
-            return t
-    return None
-
-
-def check_registry(data: dict) -> list[str]:
-    errors: list[str] = []
-    seen_ids: set[str] = set()
-    seen_norms: dict[str, str] = {}
-    for t in data["threads"]:
-        tid = t.get("id") or ""
-        if not tid:
-            errors.append(f"thread with no id (title {t.get('title')!r})")
-        elif tid in seen_ids:
-            errors.append(f"duplicate thread id {tid!r}")
-        seen_ids.add(tid)
-        if t.get("status") not in STATUSES:
-            errors.append(f"{tid}: bad status {t.get('status')!r} "
-                          f"(allowed: {', '.join(STATUSES)})")
-        if t.get("status") in ("resolved", "abandoned") and not t.get("resolved"):
-            errors.append(f"{tid}: status {t['status']} but no `resolved:` chapter")
-        for name in [t.get("title", "")] + list(t.get("aliases") or []):
-            if not name:
-                continue
-            key = norm_title(name)
-            if key in seen_norms and seen_norms[key] != tid:
-                errors.append(f"{tid}: title/alias {name!r} collides with "
-                              f"thread {seen_norms[key]!r}")
-            seen_norms[key] = tid
-        for row in t.get("log") or []:
-            if row.get("change") not in CHANGES:
-                errors.append(f"{tid}: bad log change {row.get('change')!r}")
-            if not isinstance(row.get("chapter"), int) or row["chapter"] < 1:
-                errors.append(f"{tid}: log row without a real chapter number "
-                              f"({row.get('chapter')!r})")
-    return errors
 
 
 # ── propose (deterministic harvest of thread facts) ──────────────────────
@@ -204,6 +155,14 @@ def load_prior_rulings(path: Path) -> dict[str, dict]:
     return {p["norm"]: p for p in data.get("proposals") or []
             if isinstance(p, dict) and p.get("norm")
             and p.get("status") in ("ratified", "rejected", "deferred")}
+
+
+def load_group_entries(path: Path) -> list[dict]:
+    """The group entries (`key:`) of a proposals file, as written; `[]` when the file is absent."""
+    if not path.exists():
+        return []
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return [p for p in data.get("proposals") or [] if isinstance(p, dict) and p.get("key")]
 
 
 def propose(corpus_globs: list[str], registry_path: Path, out: Path,
@@ -274,6 +233,9 @@ def propose(corpus_globs: list[str], registry_path: Path, out: Path,
         proposals.append(proposal)
         pending += 1
 
+    # Group entries (`key`, written by `summary_native thread-propose`) are not ours to rewrite: carry them
+    # through untouched, or a harvest would silently delete the GM's pending queue and its rulings.
+    groups = load_group_entries(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     atomic_write_text(out, yaml.safe_dump(
         {"note": ("Proposals, not canon — but this file IS read downstream: "
@@ -283,7 +245,7 @@ def propose(corpus_globs: list[str], registry_path: Path, out: Path,
                   "one-way door; a ratified candidate returns when later "
                   "chapters mention it). Ratify on the Threads page "
                   "(/grounding/threads) or with the thread_registry verbs."),
-         "proposals": proposals},
+         "proposals": proposals + groups},
         sort_keys=False, allow_unicode=True, width=100))
     return len(proposals), pending
 
@@ -363,8 +325,8 @@ def build_speculation_payload(data: dict, proposals_path: Path) -> str:
     if proposals_path.exists():
         pdata = yaml.safe_load(proposals_path.read_text(encoding="utf-8")) or {}
         for p in pdata.get("proposals") or []:
-            if p.get("status") == "rejected":
-                continue
+            if p.get("status") == "rejected" or not p.get("norm"):
+                continue  # group entries (spec 034) carry members, not harvested evidence
             parts.append(f"'{p.get('title')}' (ch {p.get('chapters')})")
             for ev in (p.get("evidence") or [])[:3]:
                 parts.append(f"  ch{ev.get('chapter')}: {ev.get('fact')}")
@@ -465,6 +427,23 @@ def append_adjudication(path: Path, proposal: dict, note: str) -> None:
         bundle = {"version": 1, "entries": []}
     bundle.setdefault("version", 1)
     bundle.setdefault("entries", [])
+    if proposal.get("key"):
+        # A group proposal (spec 034): identified by its key; its members are the evidence.
+        if any(e.get("key") == proposal["key"] for e in bundle["entries"]):
+            return
+        bundle["entries"].append({
+            "key": proposal["key"],
+            "kind": proposal.get("kind"),
+            "title": proposal.get("title"),
+            "thread": proposal.get("thread"),
+            "note": note or "",
+            "evidence": [{"chapter": m.get("chapter"), "fact": m.get("text"), "tag": m.get("tag"),
+                          "name": m.get("name"), "cite": m.get("cite")}
+                         for m in proposal.get("members") or [] if isinstance(m, dict)],
+        })
+        path.parent.mkdir(parents=True, exist_ok=True)
+        atomic_write_text(path, json.dumps(bundle, indent=2, ensure_ascii=False) + "\n")
+        return
     if any(e.get("norm") == proposal.get("norm") for e in bundle["entries"]):
         return   # already deferred once; the record of that is not a lie
     bundle["entries"].append({
@@ -480,7 +459,44 @@ def append_adjudication(path: Path, proposal: dict, note: str) -> None:
     atomic_write_text(path, json.dumps(bundle, indent=2, ensure_ascii=False) + "\n")
 
 
+def _find_group(doc: dict, key: str) -> dict | None:
+    for pr in doc.get("proposals") or []:
+        if isinstance(pr, dict) and pr.get("key") == key:
+            return pr
+    return None
+
+
+GROUP_RULINGS = ("rejected", "deferred")
+
+
+def cmd_rule_group(args) -> None:
+    """`rule --key g-...`: reject or defer ONE group proposal (a ratification is `ratify --key --plan`)."""
+    if args.status == "ratified":
+        raise SystemExit("error: a group proposal is ratified with `ratify --key KEY --plan FILE`, "
+                         "not `rule`: ratifying writes the thread, and the plan is yours to edit")
+    if args.status not in GROUP_RULINGS:
+        raise SystemExit(f"error: bad ruling {args.status!r} (allowed: {', '.join(GROUP_RULINGS)})")
+    if not args.proposals.exists():
+        raise SystemExit(f"error: no proposals file at {args.proposals} "
+                         f"— run `summary_native thread-propose` first")
+    doc = load_proposals(args.proposals)
+    pr = _find_group(doc, args.key)
+    if pr is None:
+        raise SystemExit(f"error: no group proposal with key {args.key!r} "
+                         f"— run `summary_native thread-propose` first")
+    if pr.get("status") == "ratified":
+        raise SystemExit(f"error: group {args.key} is already ratified; it cannot be ruled on again")
+    if args.status == "deferred":
+        append_adjudication(args.adjudication, pr, args.note or "")
+    pr["status"] = args.status
+    if args.note:
+        pr["note"] = args.note
+    save_proposals(args.proposals, doc)
+
+
 def cmd_rule(args) -> None:
+    if args.key:
+        return cmd_rule_group(args)
     if args.status not in RULINGS:
         raise SystemExit(f"error: bad ruling {args.status!r} "
                          f"(allowed: {', '.join(RULINGS)})")
@@ -548,6 +564,8 @@ def cmd_ratify(args) -> None:
     interpret. Here the registry is built in memory, validated, and written
     once.
     """
+    if args.key:
+        return cmd_ratify_group(args)
     if not args.proposals.exists():
         raise SystemExit(f"error: no proposals file at {args.proposals} "
                          f"— run propose first")
@@ -665,6 +683,242 @@ def cmd_ratify(args) -> None:
           + (f", {len(skipped)} already present)" if skipped else ")"))
 
 
+# ── group proposals (spec 034, research R7) ──────────────────────────────
+
+#: A member's tag -> the log row's change.
+TAG_CHANGE = {"OPENED": "opened", "ADVANCED": "advanced", "RESOLVED": "resolved", "ABANDONED": "abandoned"}
+
+
+def _members_in_order(pr: dict) -> list[dict]:
+    """The proposal's members in chapter order (stable among equals)."""
+    ms = [m for m in pr.get("members") or [] if isinstance(m, dict)]
+    return sorted(ms, key=lambda m: m.get("chapter") if isinstance(m.get("chapter"), int) else 0)
+
+
+def derive_group_plan(pr: dict, data: dict | None = None) -> dict:
+    """The starting point the GM edits for a group proposal — never what gets written unreviewed.
+
+    Log rows follow the members in chapter order: ``change`` from the member's tag, ``summary`` the note's
+    text, ``cite`` its citation. ``aliases_add`` is the distinct member names (by ``norm_title``) that are not
+    already the thread's title or alias. A ``continues`` proposal names its ``thread`` and has no title.
+    ``--plan`` stays required for a write, so this cannot become an "accept as proposed" button (SC-004).
+    """
+    ms = _members_in_order(pr)
+    log = []
+    for m in ms:
+        row = {"chapter": m.get("chapter"), "change": TAG_CHANGE.get(m.get("tag"), "advanced"),
+               "summary": m.get("text") or ""}
+        if m.get("cite"):
+            row["cite"] = m["cite"]
+        log.append(row)
+    known: set[str] = set()
+    target = None
+    if pr.get("kind") == "continues" and pr.get("thread"):
+        target = find_thread(data, pr["thread"]) if data else None
+        for name in [(target or {}).get("title") or ""] + list((target or {}).get("aliases") or []):
+            known.add(norm_title(name))
+    else:
+        known.add(norm_title(pr.get("title") or ""))
+    aliases: list[str] = []
+    for m in ms:
+        name = (m.get("name") or "").strip()
+        if name and norm_title(name) not in known:
+            known.add(norm_title(name))
+            aliases.append(name)
+    first = next((m["chapter"] for m in ms if isinstance(m.get("chapter"), int)), None)
+    if pr.get("kind") == "continues" and pr.get("thread"):
+        return {"thread": pr["thread"], "aliases_add": aliases, "members": [m.get("id") for m in ms], "log": log}
+    title = (pr.get("title") or (ms[0].get("name") if ms else "") or "").strip()
+    return {"id": norm_title(title) or pr.get("key"), "title": title, "status": "open", "opened": first,
+            "aliases_add": aliases, "members": [m.get("id") for m in ms], "log": log}
+
+
+def cmd_ratify_group(args) -> None:
+    """`ratify --key g-...`: one call, one write per file, no partial-apply window (D18, kept).
+
+    The registry is built in memory from the GM's plan, validated (the plan, then `check_registry`) and
+    written once; then the ruling is recorded. A refusal at any step has written nothing.
+    """
+    if not args.proposals.exists():
+        raise SystemExit(f"error: no proposals file at {args.proposals} "
+                         f"— run `summary_native thread-propose` first")
+    doc = load_proposals(args.proposals)
+    pr = _find_group(doc, args.key)
+    if pr is None:
+        raise SystemExit(f"error: no group proposal with key {args.key!r} "
+                         f"— run `summary_native thread-propose` first")
+    data = load_registry(args.registry)
+    data["threads"] = list(data.get("threads") or [])
+
+    if args.emit_plan:
+        print(json.dumps(derive_group_plan(pr, data), indent=2, ensure_ascii=False))
+        return
+    if not args.plan:
+        raise SystemExit("error: ratify needs --plan "
+                         "(use --emit-plan to derive a starting point)")
+    if pr.get("status") in ("ratified", "rejected"):
+        raise SystemExit(f"error: group {args.key} is already {pr['status']}; "
+                         + ("it cannot be ratified again" if pr["status"] == "ratified"
+                            else "a rejection is a one-way door"))
+
+    raw = sys.stdin.read() if str(args.plan) == "-" else Path(args.plan).read_text(encoding="utf-8")
+    try:
+        plan = json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise SystemExit(f"error: --plan is not valid JSON ({e})")
+    if not isinstance(plan, dict):
+        raise SystemExit("error: --plan must be a JSON object")
+
+    # ── the members the plan covers: a non-empty subset (a proper subset is a split) ──
+    have = [m for m in pr.get("members") or [] if isinstance(m, dict)]
+    have_ids = [m.get("id") for m in have]
+    want = plan.get("members")
+    if not isinstance(want, list) or not want or not all(isinstance(x, str) for x in want):
+        raise SystemExit("error: plan.members is required: the ids of the notes this ratification covers "
+                         "(a non-empty subset of the proposal's members)")
+    for x in want:
+        if want.count(x) > 1:
+            raise SystemExit(f"error: plan.members lists {x} twice")
+    outside = [x for x in want if x not in have_ids]
+    if outside:
+        raise SystemExit(f"error: plan.members names {', '.join(outside)}, which "
+                         f"{'is' if len(outside) == 1 else 'are'} not in group {args.key}")
+
+    rows = plan.get("log") or []
+    if not rows:
+        raise SystemExit("error: plan has no log rows — a ratified thread records at least the "
+                         "chapter it opened in")
+    for i, row in enumerate(rows, 1):
+        ch = row.get("chapter") if isinstance(row, dict) else None
+        if not isinstance(ch, int) or isinstance(ch, bool) or ch < 1:
+            raise SystemExit(f"error: log row {i} has no chapter — a thread's chapters are "
+                             f"yours to decide, not the extraction's")
+        if row.get("change") not in CHANGES:
+            raise SystemExit(f"error: log row {i} has bad change "
+                             f"{row.get('change')!r} (allowed: {', '.join(CHANGES)})")
+    aliases_add = plan.get("aliases_add") or []
+    if not isinstance(aliases_add, list) or not all(isinstance(a, str) for a in aliases_add):
+        raise SystemExit("error: plan.aliases_add must be a list of names")
+
+    # ── who the log goes to: an existing thread (continues) or a new one ──
+    notes_out: list[str] = []
+    if "thread" in plan:
+        thread_id = plan["thread"] or None
+    else:
+        thread_id = pr.get("thread") if pr.get("kind") == "continues" else None
+    if thread_id:
+        target = find_thread(data, thread_id)
+        if target is None:
+            raise SystemExit(f"error: no thread {thread_id!r} to continue — "
+                             f"it is not in the registry")
+        ignored = [k for k in ("id", "title", "opened", "status")
+                   if plan.get(k) not in (None, "", target.get(k))]
+        if ignored:
+            notes_out.append(f"note: continuing thread {target['id']!r}; ignoring plan {'/'.join(ignored)}")
+    else:
+        title = (plan.get("title") or pr.get("title") or "").strip()
+        if not title:
+            raise SystemExit("error: plan has no title — a new thread needs one")
+        tid = (plan.get("id") or norm_title(title) or "").strip()
+        if not tid:
+            raise SystemExit("error: plan has no id and the title gives none")
+        if find_thread(data, tid):
+            raise SystemExit(f"error: thread id {tid!r} already exists")
+        clash = match_thread(data, title)
+        if clash:
+            raise SystemExit(f"error: title {title!r} matches existing thread "
+                             f"{clash['id']!r} — use `log`/`alias` on it instead")
+        status = plan.get("status") or "open"
+        if status not in STATUSES:
+            raise SystemExit(f"error: bad status {status!r} (allowed: {', '.join(STATUSES)})")
+        opened = plan.get("opened")
+        if not isinstance(opened, int) or isinstance(opened, bool):
+            opened = min(r["chapter"] for r in rows)
+        resolved = plan.get("resolved")
+        target = {"id": tid, "title": title, "status": status, "opened": opened,
+                  "resolved": resolved if isinstance(resolved, int) and not isinstance(resolved, bool) else None,
+                  "tracker": plan.get("tracker"), "aliases": [], "notes": plan.get("notes") or "", "log": []}
+        data["threads"].append(target)
+
+    # An alias is a name a later note will attach by: it must not already belong to another thread.
+    names = {norm_title(n) for n in [target.get("title") or ""] + list(target.get("aliases") or [])}
+    added_aliases = 0
+    for alias in aliases_add:
+        alias = alias.strip()
+        if not alias:
+            continue
+        for other in match_threads({"threads": [t for t in data["threads"] if t is not target]}, alias):
+            raise SystemExit(f"error: alias {alias!r} collides with thread {other['id']!r} "
+                             f"(its title or an alias) — a name belongs to one thread")
+        if norm_title(alias) in names:
+            continue
+        names.add(norm_title(alias))
+        target.setdefault("aliases", []).append(alias)
+        added_aliases += 1
+
+    # Rows are appended as the plan lists them: two notes of one chapter and tag are two rows. Only a row
+    # identical to one already on the thread (a re-ratified continuation) is skipped, and said so.
+    existing = {(r.get("chapter"), r.get("change"), r.get("summary")) for r in (target.get("log") or [])}
+    skipped = []
+    appended = 0
+    for row in rows:
+        ident = (row["chapter"], row["change"], row.get("summary") or "")
+        if ident in existing:
+            skipped.append(f"ch{row['chapter']} ({row['change']})")
+            continue
+        existing.add(ident)
+        entry = {"chapter": row["chapter"], "change": row["change"], "summary": row.get("summary") or ""}
+        if row.get("quote"):
+            entry["quote"] = row["quote"]
+        if row.get("cite"):
+            entry["cite"] = row["cite"]
+        target.setdefault("log", []).append(entry)
+        appended += 1
+    if skipped:
+        notes_out.append(f"note: already logged on {target['id']!r}, not duplicated: {', '.join(skipped)}")
+    target["log"].sort(key=lambda r: (r.get("chapter", 0), r.get("change", "")))
+
+    errors = check_registry(data)
+    if errors:
+        for e in errors:
+            print(f"  {e}", file=sys.stderr)
+        raise SystemExit("error: refusing to save a registry that fails check")
+
+    # Canon first, then the ruling (the one non-atomic seam, as for `--norm`): if the second write fails
+    # the thread exists and the group stays pending, a readable and recoverable state.
+    remainder = [m for m in have if m.get("id") not in want]
+    rem_entry = None
+    if remainder:
+        rem_key = group_key([m["id"] for m in remainder])
+        if not _find_group(doc, rem_key):
+            rem_entry = {"key": rem_key,
+                         "kind": pr.get("kind") if len(remainder) > 1 else "single"}
+            for field in ("title", "thread"):
+                if pr.get(field) and (field != "thread" or rem_entry["kind"] == "continues"):
+                    rem_entry[field] = pr[field]
+            rem_entry.update({"members": remainder, "status": "pending", "source": pr.get("source"),
+                              "split_from": args.key})
+            if rem_entry["source"] is None:
+                del rem_entry["source"]
+    save_registry(args.registry, data)
+    pr["status"] = "ratified"
+    pr["ruled_thread"] = target["id"]
+    if args.note:
+        pr["note"] = args.note
+    if remainder:
+        pr["members"] = [m for m in have if m.get("id") in want]
+        if rem_entry is not None:
+            props = doc["proposals"]
+            props.insert(props.index(pr) + 1, rem_entry)
+    save_proposals(args.proposals, doc)
+    for n in notes_out:
+        print(n)
+    print(f"ok: ratified {args.key} -> thread {target['id']!r} "
+          f"({appended} log row(s) added, {added_aliases} alias(es) added)")
+    if remainder:
+        print(f"split: {len(remainder)} note(s) remain pending as {group_key([m['id'] for m in remainder])}")
+
+
 # ── read verbs (machine-readable; the server parses nothing) ─────────────
 #
 # `get_sections` already established that the server consumes `--json` rather
@@ -725,7 +979,11 @@ def main():
     # `rule` takes exactly one --norm: no --all, no repetition, no glob. FR-007
     # is enforced by the argument shape rather than by convention.
     rl = sub.add_parser("rule", help="Record a GM ruling on ONE proposal")
-    rl.add_argument("--norm", required=True, metavar="KEY")
+    rl_target = rl.add_mutually_exclusive_group(required=True)
+    rl_target.add_argument("--norm", metavar="KEY", help="a name-keyed (ensemble harvest) proposal")
+    rl_target.add_argument("--key", metavar="g-KEY",
+                           help="a group proposal from `summary_native thread-propose` "
+                                "(rejected | deferred; ratify takes a plan)")
     # No argparse `choices=`: cmd_rule owns the refusal so the message is the
     # one contracts/cli.md pins ("error: bad ruling 'X' (allowed: ...)"), and
     # so the route -- which forwards --status verbatim -- gets that same text
@@ -738,7 +996,11 @@ def main():
                     help="Discuss bundle (default: config stores.thread_adjudication)")
 
     rt = sub.add_parser("ratify", help="Turn ONE proposal into canon, atomically")
-    rt.add_argument("--norm", required=True, metavar="KEY")
+    rt_target = rt.add_mutually_exclusive_group(required=True)
+    rt_target.add_argument("--norm", metavar="KEY", help="a name-keyed (ensemble harvest) proposal")
+    rt_target.add_argument("--key", metavar="g-KEY",
+                           help="a group proposal from `summary_native thread-propose`; the plan may cover "
+                                "a subset of its members (a split)")
     rt.add_argument("--plan", default=None, metavar="FILE",
                     help="Plan JSON, or '-' for stdin. Required for a write.")
     rt.add_argument("--emit-plan", action="store_true",
@@ -833,7 +1095,7 @@ def main():
             if args.adjudication is None:
                 args.adjudication = Path(cfg.stores.thread_adjudication)
             cmd_rule(args)
-            print(f"ok: {args.norm} -> {args.status}")
+            print(f"ok: {args.norm or args.key} -> {args.status}")
         else:
             cmd_ratify(args)
         return

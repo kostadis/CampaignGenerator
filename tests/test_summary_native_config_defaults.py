@@ -50,7 +50,7 @@ class TestModelDefaults:
         assert run.recent_chapters == 4
         assert run.recurring_min == 10
         assert run.dup_threshold == 0.88
-        assert run.parts == 0
+        assert not hasattr(run, "parts")  # retired by spec 034: every document is one call per section
         assert run.summaries_dir is None
         assert run.range_since is None and run.range_until is None
 
@@ -60,7 +60,6 @@ class TestModelDefaults:
         assert run.recent_chapters == schema.DEFAULT_RECENT_CHAPTERS
         assert run.recurring_min == schema.DEFAULT_RECURRING_MIN
         assert run.dup_threshold == schema.DEFAULT_DUP_THRESHOLD
-        assert run.parts == schema.DEFAULT_PARTS
 
     def test_path_keys_default_to_none_the_derive_it_sentinel(self):
         run = SummaryNativeRun()
@@ -69,11 +68,17 @@ class TestModelDefaults:
     def test_old_grounding_yaml_without_the_path_keys_loads(self, tmp_path):
         path = tmp_path / "grounding.yaml"
         path.write_text(
-            yaml.safe_dump({"summary_native": {"out_root": "docs/sn", "parts": 2}}),
+            yaml.safe_dump({"summary_native": {"out_root": "docs/sn"}}),
             encoding="utf-8",
         )
         run = load_grounding_config(path).summary_native
-        assert run.canon_file is None and run.registry is None and run.parts == 2
+        assert run.canon_file is None and run.registry is None
+
+    def test_a_stale_parts_key_is_refused_naming_the_fix_not_silently_dropped(self, tmp_path):
+        path = tmp_path / "grounding.yaml"
+        path.write_text(yaml.safe_dump({"summary_native": {"out_root": "docs/sn", "parts": 0}}), encoding="utf-8")
+        with pytest.raises(ValueError, match="summary_native.parts is retired.*delete the `parts:` line"):
+            load_grounding_config(path)
 
     def test_path_keys_round_trip(self, tmp_path):
         path = tmp_path / "grounding.yaml"
@@ -201,6 +206,62 @@ class TestExtractAndProseBlocks:
         assert b.prose.budgets["Party"] == schema.DEFAULT_WORLD_BUDGETS["Party"]
         assert schema.DEFAULT_WORLD_BUDGETS["Party"] == 700
 
+    def test_party_and_planning_budget_defaults_are_the_schema_constants(self):
+        """Spec 034 T010: declared once in schema.py, surfaced by the shared model."""
+        p = SummaryNativeRun().prose
+        assert p.party_budgets == schema.DEFAULT_PARTY_BUDGETS == {
+            "Party Overview": 300, "Characters": 500, "Party Dynamics": 300}
+        assert p.planning_budgets == schema.DEFAULT_PLANNING_BUDGETS == {
+            "NPC Dossiers": 1500, "Faction States": 600, "Active Plots": 1200, "DM Notes": 400}
+
+    def test_party_and_planning_budgets_are_copied_not_shared(self):
+        a, b = SummaryNativeRun(), SummaryNativeRun()
+        a.prose.party_budgets["Characters"] = 1
+        a.prose.planning_budgets["DM Notes"] = 1
+        assert b.prose.party_budgets["Characters"] == schema.DEFAULT_PARTY_BUDGETS["Characters"] == 500
+        assert b.prose.planning_budgets["DM Notes"] == schema.DEFAULT_PLANNING_BUDGETS["DM Notes"] == 400
+
+    @pytest.mark.parametrize("payload", [
+        {"party_budgets": {"Party": 100}},                 # a world_state section is not a party section
+        {"party_budgets": {"Characters": 0}},
+        {"party_budgets": {"Characters": -5}},
+        {"planning_budgets": {"Key NPCs": 100}},
+        {"planning_budgets": {"Active Plots": 0}},
+        {"budgets": {"Characters": 100}},                  # and the reverse
+    ])
+    def test_the_new_budget_blocks_are_strict(self, payload):
+        with pytest.raises(Exception):
+            SummaryNativeRun.model_validate({"prose": payload})
+
+    def test_the_new_budget_blocks_take_known_sections(self):
+        """Like ``budgets``, a given mapping is stored as written; ``resolve_prose`` merges it over the defaults."""
+        p = SummaryNativeRun.model_validate(
+            {"prose": {"party_budgets": {"Characters": 700}, "planning_budgets": {"DM Notes": 200}}}).prose
+        assert p.party_budgets == {"Characters": 700} and p.planning_budgets == {"DM Notes": 200}
+        assert p.budgets == schema.DEFAULT_WORLD_BUDGETS
+
+    def test_an_old_prose_block_without_them_loads_with_defaults(self, tmp_path):
+        path = tmp_path / "grounding.yaml"
+        path.write_text(yaml.safe_dump({"summary_native": {"prose": {"budgets": {"Party": 10}}}}), encoding="utf-8")
+        p = load_grounding_config(path).summary_native.prose
+        assert p.party_budgets == schema.DEFAULT_PARTY_BUDGETS and p.planning_budgets == schema.DEFAULT_PLANNING_BUDGETS
+
+    def test_resolve_prose_merges_the_new_blocks_over_the_schema_defaults(self):
+        s = resolve.resolve_prose({"prose": {"party_budgets": {"Characters": 700}, "planning_budgets": {"DM Notes": 200}}})
+        assert s.party_budgets == {**schema.DEFAULT_PARTY_BUDGETS, "Characters": 700}
+        assert s.planning_budgets == {**schema.DEFAULT_PLANNING_BUDGETS, "DM Notes": 200}
+        assert s.budgets == schema.DEFAULT_WORLD_BUDGETS
+        d = resolve.resolve_prose({})
+        assert (d.party_budgets, d.planning_budgets) == (schema.DEFAULT_PARTY_BUDGETS, schema.DEFAULT_PLANNING_BUDGETS)
+
+    @pytest.mark.parametrize("block", [
+        {"party_budgets": {"Nope": 5}}, {"planning_budgets": {"Key NPCs": 5}},
+        {"party_budgets": {"Characters": 0}}, {"planning_budgets": [1]},
+    ])
+    def test_resolve_prose_refuses_a_bad_new_block(self, block):
+        with pytest.raises(resolve.ConfigRefusal):
+            resolve.resolve_prose({"prose": block})
+
     def test_the_other_constants(self):
         assert schema.DEFAULT_EXTRACT_PARALLEL == 6
         assert schema.DEFAULT_AUDIT_CANDIDATES == 3
@@ -245,7 +306,7 @@ class TestExtractAndProseBlocks:
 
     def test_old_grounding_yaml_without_the_blocks_loads_with_defaults(self, tmp_path):
         path = tmp_path / "grounding.yaml"
-        path.write_text(yaml.safe_dump({"summary_native": {"parts": 2}}), encoding="utf-8")
+        path.write_text(yaml.safe_dump({"summary_native": {"recent_chapters": 2}}), encoding="utf-8")
         run = load_grounding_config(path).summary_native
         assert run.extract == SummaryNativeRun().extract and run.prose == SummaryNativeRun().prose
 

@@ -396,8 +396,11 @@ Then, once you have ratified some threads, `--doc planning`.
 ## Threads: harvest, rule, maintain
 
 `/grounding/threads`. The page that makes `docs/thread_registry.yaml` exist
-without opening a terminal (#337). Everything on it is deterministic — **no
-model is called and no credential is involved at any point**.
+without opening a terminal (#337). There are two ways candidates arrive. The
+**harvest** (below) is deterministic: **no model is called and no credential is
+involved**. **Propose groupings** (next section) is the one step on the page that
+calls a model, and it needs the prose backend's credentials like `synth` does.
+Ruling is always yours and always deterministic.
 
 ### The sequence
 
@@ -445,6 +448,61 @@ a rejected one is always retrievable.
 
 Every count on the page is computed from what was loaded. None is written in.
 
+### Grouping proposals from summary-native
+
+The harvest keys candidates on free-text names, which is why most of its queue is
+noise. The summary-native path has a better source: the **checked thread notes**
+of a chapter range (`summary_native extract`). On Out of the Abyss they carry 554
+distinct thread names, 550 of them seen once, because the extractor names a thread
+afresh each time. **Propose groupings** asks a model to group the notes that no
+ratified thread already owns, so you rule on a few dozen groups instead of
+hundreds of names. It is the same command as `summary_native thread-propose`
+([summary-native how-to](summary_native_howto.md#thread-proposals--grouping-the-notes-nobody-owns)),
+and the corpus, `extract` and `build` must be current first.
+
+1. **Propose.** Under *Propose groupings* set the first and last chapter
+   (required; there is no implicit "all chapters"), optionally the model, effort
+   and max input characters per call, then **Run** (or **Dump prompts only** to read
+   what would be sent). It streams the CLI and refreshes the list. Code has
+   already attached every note whose name equals a ratified thread's title or
+   alias, so only the rest are sent, in batches that each see only the checked
+   notes and the ratified threads. Code then removes anything the notes and the
+   registry do not support; a note the model left out becomes a one-note
+   proposal, so none is lost.
+2. **Read the groups.** Each *Group proposals* card shows its kind (`new`,
+   `continues` an existing thread, or `single`), the suggested title or target
+   thread, its key (`g-…`), and every member: chapter, tag, the name as written, the
+   text and the citation. The filter defaults to *Pending*; *Deferred*, *Ratified*
+   and *Rejected* are one click away.
+3. **Ratify… (edit, split).** Opens an editor seeded from the plan code derives from
+   the members (`thread_registry ratify --key g-… --emit-plan`; read-only). You can:
+   - change the title, id and status (or pick *Continues a ratified thread*);
+   - **untick a member to split it off**: it stays behind as a new pending group
+     with its own key, and the card says how many notes stay behind;
+   - edit the aliases (one per line). Every member name not already a title or alias
+     is pre-filled; **these are what make the next build attach later notes by exact
+     match**, so strike any you do not want;
+   - edit, add or remove log rows (chapter, change, summary, citation).
+   Nothing is written until **Confirm**, and what is written is the plan you posted.
+   There is no one-click accept. Confirm is disabled with no member ticked.
+4. **Reject** marks the group `rejected`. It is a one-way door: its notes are not
+   sent to the model again, and come back **one at a time** as single-note
+   proposals. **Defer** marks it `deferred` and appends it to the adjudication
+   bundle, like *Discuss* above; its notes are not offered again, but the card stays
+   and can still be ratified or rejected.
+
+A group ratified once cannot be ruled on again. The next `synth planning` build
+reads the registry, so the notes you ratified move from *Unratified thread notes* (`reference/threads_unratified.md`)
+into Active Plots (or *Dormant threads*, if you set that status).
+
+The name-keyed harvest and the group proposals share one proposals file
+(`stores.thread_proposals`, default `docs/ensemble/thread_proposals.yaml`); group
+entries carry a `key`, harvest entries a `norm`, and neither touches the other.
+A re-run of `thread-propose` replaces pending groups that share a note with the run
+and keeps every ruling by `key`. Two known gaps: a pending group that spans the
+edge of the range loses its out-of-range notes (#524), and notes left unattached
+after you remove an alias are neither re-proposed nor flagged (#525).
+
 ### A thread you accepted keeps coming back — on purpose
 
 Accepting a thread at chapter 41 does not silence it. When later chapters
@@ -475,10 +533,22 @@ Every message below comes from `thread_registry` itself and is shown verbatim.
 | `error: alias 'X' already matches thread 'Y'` | That alias is taken. |
 | `error: resolving/abandoning needs --chapter` | Supply the closing chapter. |
 | `error: refusing to save a registry that fails check` | The per-problem lines follow it. Nothing was written. |
+| `error: no group proposal with key 'g-…' — run summary_native thread-propose first` | The queue is stale; reload, or run Propose groupings. |
+| `error: plan.members is required: the ids of the notes this ratification covers (a non-empty subset of the proposal's members)` | Tick at least one member. |
+| `error: plan.members names X, which is not in group g-…` / `plan.members lists X twice` | The page and the file disagree; reload. |
+| `error: plan has no log rows — a ratified thread records at least the chapter it opened in` / `log row N has no chapter …` | Keep one log row and give it a chapter of 1 or more. |
+| `error: no thread 'X' to continue — it is not in the registry` | The group continues a thread that is not there; pick *(a new thread)* or another. |
+| `error: plan has no title — a new thread needs one` | Fill the title. |
+| `error: alias 'X' collides with thread 'Y' (its title or an alias) — a name belongs to one thread` | Remove the alias from this plan, or ratify onto `Y`. |
+| `error: group g-… is already ratified; it cannot be ratified again` / `already rejected; a rejection is a one-way door` | Nothing to do; the ruling stands. |
+| `error: a group proposal is ratified with ratify --key KEY --plan FILE, not rule` | Use *Ratify…*, not a ruling. |
+| `since and until are required — pick the chapter range whose thread notes to group; there is no implicit "all chapters".` | Fill both chapter fields before Run. |
+| `the thread registry … fails thread_registry check; fix it first:` (from Propose groupings) | Fix the registry; the findings follow. |
 
 ### What it does not do
 
-No bulk ruling, no "accept remaining", no similarity-based grouping or
-merging of candidates, and no server-side search. Each absence is a
+No bulk ruling, no "accept remaining", no code that groups or merges candidates
+by similarity (the model's groups are suggestions you edit, and code only removes
+what the notes do not support), and no server-side search. Each absence is a
 requirement with a test behind it, not a missing feature: deciding that two
 titles are the same thread is an identity assertion, and it is yours.

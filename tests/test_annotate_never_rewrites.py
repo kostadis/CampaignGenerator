@@ -14,7 +14,9 @@ import pytest
 import yaml
 
 from pipelines.summary_native import annotate, schema
-from tests.test_summary_native_annotate import CHAPTER_TEXT, PLAYERS, REGISTRY, RESULTS, _chapter
+from tests.test_summary_native_annotate import (
+    CHAPTER_TEXT, PARTY_DOC, PLANNING_DOC, PLAYERS, REGISTRY, RESULTS, _chapter, _world, notes,
+)
 
 MODULE = Path(annotate.__file__)
 
@@ -122,6 +124,60 @@ def test_unicode_line_separators_inside_a_line_are_not_split(ev):
     # str.splitlines() would break a line on U+2028; annotating must leave the line whole
     line = "- **Kalan** — At the tower. Still there. [ch 067 / 067.01]"
     assert line in annotate.annotate_text(f"## Party\n\n{line}\n", ev).text
+
+
+# ── Spec 034 US5 (T043): the same guarantee over party and planning drafts ───
+
+
+@pytest.fixture
+def ev2(tmp_path):
+    (tmp_path / "registry.yaml").write_text(yaml.safe_dump(REGISTRY), encoding="utf-8")
+    (tmp_path / "players.yaml").write_text(yaml.safe_dump(PLAYERS), encoding="utf-8")
+    results = [notes.CheckedChunk("026-070", [*RESULTS[0].notes, _world("FACTION", "The Avowed", "They muster at dawn.", 70)])]
+    return annotate.load_evidence(
+        results, [_chapter(n) for n in CHAPTER_TEXT], tmp_path / "registry.yaml", tmp_path / "players.yaml")
+
+
+@pytest.mark.parametrize("doc", [PARTY_DOC, PLANNING_DOC], ids=["party", "planning"])
+class TestPartyAndPlanningDrafts:
+    def test_the_draft_trips_a_detector(self, ev2, doc):
+        c = annotate.annotate_text(doc, ev2).counts()
+        assert c["later"] + c["since"] + c["unverified"] + c["removed"] >= 2
+
+    def test_what_is_left_is_the_input_less_the_removed_lines(self, ev2, doc):
+        r = annotate.annotate_text(doc, ev2)
+        removed = {x.text for x in r.removed}
+        assert without_annotations(r.text) == [ln for ln in doc.split("\n") if ln not in removed]
+
+    def test_every_added_line_is_an_annotation_directly_under_a_line_of_the_document(self, ev2, doc):
+        r = annotate.annotate_text(doc, ev2)
+        original = set(doc.split("\n"))
+        lines = r.text.split("\n")
+        added = [ln for ln in lines if ln not in original]
+        assert added and all(annotate.ANNOTATION_RE.match(ln) for ln in added)
+        for i, ln in enumerate(lines):
+            if annotate.ANNOTATION_RE.match(ln):
+                above = lines[i - 1]
+                assert above in original or annotate.ANNOTATION_RE.match(above)
+
+    def test_reannotating_is_a_fixed_point_and_never_stacks(self, ev2, doc):
+        once = annotate.annotate_text(doc, ev2)
+        twice = annotate.annotate_text(once.text, ev2)
+        assert twice.text == once.text and twice.counts()["removed"] == 0
+
+    def test_a_clean_draft_comes_back_byte_for_byte(self, ev2, doc):
+        clean = annotate.annotate_text(doc, ev2).text
+        assert annotate.annotate_text(clean, ev2).text == clean
+
+    def test_the_skipped_blocks_come_back_byte_for_byte(self, ev2, doc):
+        skipped = ("| kalan-arc |", "Goals: He said", "- **Jimjar** — A dormant line", "- [OPENED] **Jimjar**",
+                   "- A bare unratified line.", "- Thorin falls back", "- Thorin holds the line [ch")
+        out = annotate.annotate_text(doc, ev2).text.split("\n")
+        for needle in skipped:
+            for i, ln in enumerate(doc.split("\n")):
+                if ln.startswith(needle):
+                    assert ln in out
+                    assert not annotate.ANNOTATION_RE.match(out[out.index(ln) + 1])
 
 
 def test_apply_annotations_never_assigns_into_a_sequence():

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -235,8 +236,8 @@ def test_synth_has_backend_flags_and_rejects_unknown_doc(camp, capsys):
 
     p = build_parser()
     ns = p.parse_args(["synth", "world_state", "--backend", "dgx", "--endpoint", "http://x", "--model", "m",
-                       "--max-tokens", "5", "--parts", "2", "--name", "A", "B", "--audit", "a", "b"])
-    assert (ns.backend, ns.endpoint, ns.model, ns.max_tokens, ns.parts) == ("dgx", "http://x", "m", 5, 2)
+                       "--max-tokens", "5", "--name", "A", "B", "--audit", "a", "b"])
+    assert (ns.backend, ns.endpoint, ns.model, ns.max_tokens) == ("dgx", "http://x", "m", 5)
     assert ns.name == ["A", "B"] and ns.audit == ["a", "b"]
     with pytest.raises(SystemExit):
         p.parse_args(["synth", "bogus"])
@@ -248,8 +249,8 @@ def test_compare_writes_diff_and_reads_inputs_only(camp, capsys):
     _corpus(camp)
     assert main(["build", "--summaries-dir", "summaries"]) == 0
     rd = camp / "docs/summary_native/ch002-005"
-    (rd / "drafts").mkdir()
-    draft = rd / "drafts/party.draft.md"
+    (rd / "state/drafts").mkdir(parents=True)
+    draft = rd / "state/drafts/party.draft.md"
     draft.write_text("## A\n\nSee ch 7 and Chapter 12.\nnew line\n")
     live = camp / "live.md"
     live.write_text("## A\n\nSee ch 3.\n")
@@ -257,7 +258,7 @@ def test_compare_writes_diff_and_reads_inputs_only(camp, capsys):
     assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
     out = capsys.readouterr().out
     assert "heuristic" in out and "12" in out
-    diff = (rd / "drafts/party.vs-live.diff").read_text()
+    diff = (rd / "state/drafts/party.vs-live.diff").read_text()
     assert "--- a/" in diff and "+++ b/" in diff and "+new line" in diff
     assert (draft.read_bytes(), live.read_bytes()) == before
 
@@ -268,8 +269,8 @@ def test_compare_errors_when_draft_or_live_missing(camp):
     (camp / "live.md").write_text("x\n")
     assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "live.md"]) == 2
     rd = camp / "docs/summary_native/ch002-005"
-    (rd / "drafts").mkdir()
-    (rd / "drafts/party.draft.md").write_text("x\n")
+    (rd / "state/drafts").mkdir(parents=True)
+    (rd / "state/drafts/party.draft.md").write_text("x\n")
     assert main(["compare", "party", "--summaries-dir", "summaries", "--live", "nope.md"]) == 2
 
 
@@ -357,3 +358,178 @@ def test_compare_reads_the_chunked_drafts_from_state(camp):
     (camp / "live.md").write_text("## A\n\nold\n")
     assert main(["compare", "world_state", "--summaries-dir", "summaries", "--live", "live.md"]) == 0
     assert (drafts / "world_state.vs-live.diff").is_file()
+
+
+# ── spec 034 US1: the party flags ───────────────────────────────────────────
+
+
+def _built(camp):
+    _corpus(camp)
+    assert main(["build", "--summaries-dir", "summaries"]) == 0
+
+
+@pytest.mark.parametrize("flag,value", [("--name", "Kalan"), ("--recent-chapters", "2"), ("--recurring-min", "2")])
+def test_party_refuses_the_npc_selection_flags(camp, capsys, flag, value):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", "party", "--summaries-dir", "summaries", flag, value]) == 2
+    err = capsys.readouterr().err
+    assert f"{flag} does not apply to party" in err
+    assert "party selects no NPCs; these apply to planning and world_state" in err
+
+
+@pytest.mark.parametrize("doc", ["party", "campaign_state"])
+def test_fallback_npc_lines_is_refused_outside_world_state_and_planning(camp, capsys, doc):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", doc, "--summaries-dir", "summaries", "--fallback-npc-lines"]) == 2
+    assert f"--fallback-npc-lines applies to world_state and planning only, not {doc}" in capsys.readouterr().err
+
+
+def test_party_prose_backend_defaults_come_from_the_prose_block_not_the_parser():
+    from pipelines.summary_native.cli import build_parser
+
+    ns = build_parser().parse_args(["synth", "party", "--party-config", "x.yaml"])
+    assert ns.party_config == "x.yaml" and ns.backend is None and ns.model is None
+
+
+# ── spec 034 US3: thread-propose ────────────────────────────────────────────
+
+
+def test_thread_propose_is_a_subcommand_with_its_own_flags_and_no_parser_defaults_for_the_prose_backend():
+    from pipelines.summary_native.cli import SUBCOMMANDS, build_parser
+
+    assert "thread-propose" in SUBCOMMANDS
+    ns = build_parser().parse_args(["thread-propose", "--since", "2", "--until", "9"])
+    assert (ns.since, ns.until) == (2, 9)
+    assert ns.max_input_chars is None  # resolved to schema.DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS in the CLI
+    assert ns.max_tokens == schema.DEFAULT_MAX_TOKENS and ns.dump_only is False
+    assert ns.backend is None and ns.model is None
+    ns = build_parser().parse_args(["thread-propose", "--since", "2", "--until", "9", "--max-input-chars", "5000", "--dump-only"])
+    assert ns.max_input_chars == 5000 and ns.dump_only is True
+    with pytest.raises(SystemExit):
+        build_parser().parse_args(["thread-propose", "--max-input-chars", "0"])
+
+
+@pytest.mark.parametrize("given", [["--since", "2"], ["--until", "9"], []])
+def test_thread_propose_refuses_a_missing_range_before_anything_else(camp, capsys, given):
+    _corpus(camp)
+    assert main(["thread-propose", "--summaries-dir", "summaries", *given]) == 2
+    err = capsys.readouterr().err
+    assert "--since" in err and "--until" in err
+
+
+# ── spec 034 US2: the planning flags ────────────────────────────────────────
+
+
+def test_planning_takes_the_selection_flags_the_config_flag_and_the_fallback_flag():
+    from pipelines.summary_native.cli import build_parser
+
+    ns = build_parser().parse_args([
+        "synth", "planning", "--planning-config", "p.yaml", "--name", "Kalan", "Ront", "--recent-chapters", "3",
+        "--recurring-min", "5", "--fallback-npc-lines"])
+    assert ns.planning_config == "p.yaml" and ns.name == ["Kalan", "Ront"]
+    assert (ns.recent_chapters, ns.recurring_min, ns.fallback_npc_lines) == (3, 5, True)
+    assert ns.backend is None and ns.model is None  # the prose block resolves them
+
+
+def test_planning_config_applies_to_planning_only(camp, capsys):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", "world_state", "--summaries-dir", "summaries", "--planning-config", "p.yaml"]) == 2
+    assert "--planning-config applies to planning only, not world_state" in capsys.readouterr().err
+
+
+# ── spec 034 US6: one build surface, the one-shot flags retired ─────────────
+
+RETIRED = [
+    ("--parts", "2", schema.PARTS_REFUSAL),
+    ("--parts", "0", schema.PARTS_REFUSAL),  # an explicit zero is still the retired flag
+    ("--world-state", "docs/world_state.md", f"--world-state is retired: {schema.UPSTREAM_REFUSAL}"),
+    ("--campaign-state", "docs/campaign_state.md", f"--campaign-state is retired: {schema.UPSTREAM_REFUSAL}"),
+]
+
+
+@pytest.mark.parametrize("doc", schema.DOCS)
+@pytest.mark.parametrize("flag,value,message", RETIRED)
+def test_every_retired_flag_is_refused_with_its_replacement_for_every_document(camp, capsys, doc, flag, value, message):
+    _built(camp)
+    capsys.readouterr()
+    assert main(["synth", doc, "--summaries-dir", "summaries", flag, value]) == 2
+    err = capsys.readouterr().err
+    assert message in err
+    assert "Traceback" not in err and "unrecognized arguments" not in err
+
+
+@pytest.mark.parametrize("flag,value,message", RETIRED)
+def test_a_retired_flag_is_refused_before_the_corpus_is_read(camp, capsys, flag, value, message):
+    """Nothing is built and no summaries directory is given: the flag is gone whatever else is wrong."""
+    assert main(["synth", "party", flag, value]) == 2
+    assert message in capsys.readouterr().err
+
+
+def test_the_retired_flags_are_not_advertised_in_help(capsys):
+    from pipelines.summary_native.cli import build_parser
+
+    helptext = build_parser()._subparsers._group_actions[0].choices["synth"].format_help()
+    for flag in ("--parts", "--world-state", "--campaign-state"):
+        assert flag not in helptext
+
+
+def test_the_schema_names_the_retired_flags_and_no_longer_declares_a_parts_default():
+    assert set(schema.RETIRED_SYNTH_FLAGS) == {"parts", "world_state", "campaign_state"}
+    assert not hasattr(schema, "DEFAULT_PARTS") and not hasattr(schema, "STATE_PARTS_REFUSAL")
+
+
+def test_npc_root_is_accepted_for_planning_and_world_state_only(camp, capsys):
+    _built(camp)
+    capsys.readouterr()
+    for doc in ("party", "campaign_state"):
+        assert main(["synth", doc, "--summaries-dir", "summaries", "--npc-root", "docs/x"]) == 2
+        assert f"--npc-root applies to world_state and planning only, not {doc}" in capsys.readouterr().err
+    for doc in ("world_state", "planning"):
+        main(["synth", doc, "--summaries-dir", "summaries", "--npc-root", "docs/x"])  # refused later, for want of notes
+        assert "--npc-root applies" not in capsys.readouterr().err
+
+
+# ── the one-shot path is gone from the source tree ──────────────────────────
+
+ONE_SHOT_PROMPTS = ("party.system.md", "planning.system.md", "world_state.system.md", "campaign_state.system.md")
+ONE_SHOT_NAMES = {
+    "synth": {"split_parts", "check_threat_tracker", "_previous_draft_run"},
+    "context": {"build_context", "party_config_block", "planning_config_block", "load_system_prompt",
+                "_outline_instruction", "DocConfig", "AUDIT_LABEL"},
+    "schema": {"DEFAULT_PARTS", "STATE_PARTS_REFUSAL"},
+}
+
+
+def test_the_one_shot_prompt_files_are_gone():
+    prompts = Path(schema.__file__).parent / "prompts"
+    assert [n for n in ONE_SHOT_PROMPTS if (prompts / n).exists()] == []
+    # the outlines stay: the chunked build checks each document against its outline
+    for doc in schema.DOCS:
+        assert (prompts / f"{doc}.outline.yaml").is_file()
+
+
+@pytest.mark.parametrize("module", sorted(ONE_SHOT_NAMES))
+def test_the_one_shot_functions_and_constants_are_gone(module):
+    import ast
+
+    path = Path(schema.__file__).parent / f"{module}.py"
+    defined = {
+        n.name for n in ast.walk(ast.parse(path.read_text(encoding="utf-8")))
+        if isinstance(n, (ast.FunctionDef, ast.ClassDef))
+    } | {
+        t.id for n in ast.walk(ast.parse(path.read_text(encoding="utf-8"))) if isinstance(n, ast.Assign)
+        for t in n.targets if isinstance(t, ast.Name)
+    }
+    assert defined & ONE_SHOT_NAMES[module] == set()
+
+
+def test_no_source_names_a_retired_prompt_file():
+    root = Path(schema.__file__).parent
+    offenders = [
+        p.name for p in root.glob("*.py")
+        if any(re.search(rf"(?<![\w.]){re.escape(n)}", p.read_text(encoding="utf-8")) for n in ONE_SHOT_PROMPTS)  # state.party.system.md is fine
+    ]
+    assert offenders == []

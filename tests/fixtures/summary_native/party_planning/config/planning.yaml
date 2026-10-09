@@ -1,0 +1,7 @@
+npcs:
+  - name: Ilvara Mizzrym
+    dossier: docs/npcs/ilvara-mizzrym.md
+    arc_score: docs/mechanics/ilvara-arc.md
+factions:
+  - name: House Mizzrym
+    arc_score: null

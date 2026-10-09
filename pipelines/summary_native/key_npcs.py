@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from campaignlib.registry import load_registry
-from pipelines.summary_native import notes, npc_check, npc_compose, npc_publish, npc_slug, schema, select
+from pipelines.summary_native import notes, npc_check, npc_compose, npc_publish, npc_slug, schema, select, state_sections
 
 #: The only two sections ever read. Anything else in a dossier is discarded unread.
 TAKE: tuple[str, str] = ("## Identity", "## Last Observed State")
@@ -89,28 +89,72 @@ def _norm(text: str) -> str:
     return _ENTRY_CITE_RE.sub(r"\1npcs", text)
 
 
-def published_view(path: Path) -> PublishedView:
-    """The view of one published dossier. Raises ``NotPublished`` for any other file.
+def _read_sections(path: Path, take: Sequence[str]) -> tuple["re.Match[str]", dict[str, str]]:
+    """``(header match, {heading: normalised body})`` for the ``take`` sections of one published dossier.
 
-    One pass over the lines: a line is kept only while a ``TAKE`` heading is current, so no other
-    section is ever held, parsed or returned.
+    One pass over the lines: a line is kept only while a ``take`` heading is current, so no other
+    section is ever held, parsed or returned. Raises ``NotPublished`` for any other file.
     """
-    p = Path(path)
-    text = p.read_text(encoding="utf-8")
+    text = Path(path).read_text(encoding="utf-8")
     m = _PUBLISHED_RE.match(text.split("\n", 1)[0])
     if m is None:
         raise NotPublished("not a summary_native publication")
-    kept: dict[str, list[str]] = {h: [] for h in TAKE}
+    kept: dict[str, list[str]] = {h: [] for h in take}
     current = None
     for line in text.splitlines()[1:]:
         if line.startswith("## "):
             current = line.rstrip() if line.rstrip() in kept else None
         elif current is not None:
             kept[current].append(line)
-    ident, state = (_norm("\n".join(kept[h]).strip("\n")) for h in TAKE)
+    return m, {h: _norm("\n".join(kept[h]).strip("\n")) for h in take}
+
+
+def published_view(path: Path) -> PublishedView:
+    """The view of one published dossier. Raises ``NotPublished`` for any other file.
+
+    Reads only the ``TAKE`` sections (see :func:`_read_sections`).
+    """
+    m, got = _read_sections(path, TAKE)
+    ident, state = (got[h] for h in TAKE)
     if not state:
         raise NotPublished("no Last Observed State")
-    return PublishedView(m.group("npc"), p.stem, m.group("range"), m.group("verify"), ident, state)
+    return PublishedView(m.group("npc"), Path(path).stem, m.group("range"), m.group("verify"), ident, state)
+
+
+#: planning's NPC Dossiers read four sections: the two above plus the NPC's motives and relationships.
+PLANNING_TAKE: tuple[str, str, str, str] = (
+    "## Identity", "## Personality and Motivations", "## Last Observed State", "## Relationships")
+
+
+@dataclass(frozen=True)
+class PlanningView:
+    """What planning may know of a published dossier: its name, header facts and four sections."""
+
+    name: str
+    slug: str
+    range: str
+    verify: str
+    identity: str
+    personality: str
+    state: str
+    relationships: str
+
+    @property
+    def source(self) -> str:
+        """Everything the NPC's block may be written from, and every quotation checked against."""
+        return "\n".join(s for s in (self.identity, self.personality, self.state, self.relationships) if s)
+
+
+def planning_view(path: Path) -> PlanningView:
+    """The planning view of one published dossier. Raises ``NotPublished`` like :func:`published_view`.
+
+    The same one-pass, held-heading-only reader, with ``PLANNING_TAKE`` as its take-set.
+    """
+    m, got = _read_sections(path, PLANNING_TAKE)
+    ident, pers, state, rels = (got[h] for h in PLANNING_TAKE)
+    if not state:
+        raise NotPublished("no Last Observed State")
+    return PlanningView(m.group("npc"), Path(path).stem, m.group("range"), m.group("verify"), ident, pers, state, rels)
 
 
 def _range_numbers(rng: str) -> tuple[int, int]:
@@ -274,7 +318,13 @@ def plan_key_npcs(
     return out
 
 
-def refusal_message(plan: Sequence[KeyNpc], since: int, until: int, npc_root_flag: str | None = None) -> str | None:
+#: Who is refusing, by document: the refusal names the section that needs the dossiers.
+_REFUSER = {"world_state": "world_state's Key NPCs", "planning": "planning's NPC Dossiers"}
+
+
+def refusal_message(
+    plan: Sequence[KeyNpc], since: int, until: int, npc_root_flag: str | None = None, doc: str = "world_state",
+) -> str | None:
     """The refusal text for the NPCs in ``plan`` with no usable dossier, or ``None`` when there are none."""
     missing = [k for k in plan if k.view is None]
     if not missing:
@@ -282,7 +332,7 @@ def refusal_message(plan: Sequence[KeyNpc], since: int, until: int, npc_root_fla
     rng = f"--since {since} --until {until}" + (f" --npc-root {npc_root_flag}" if npc_root_flag else "")
     names = " ".join(f'"{k.name}"' for k in missing)
     lines = [
-        f"world_state's Key NPCs need a published, verified dossier for each selected NPC; "
+        f"{_REFUSER[doc]} need a published, verified dossier for each selected NPC; "
         f"{len(missing)} of {len(plan)} have none:",
         *(f"  {k.name}: {k.missing}" for k in missing),
         "Draft, verify and publish them, then build again:",
@@ -356,13 +406,18 @@ def first_sentence(text: str) -> str:
     return s
 
 
-def fallback_from_dossier(view: PublishedView) -> str:
+def dossier_sentence(view: PublishedView | "PlanningView") -> str:
     """The dossier's own first Last Observed State sentence, led by its Identity sentence when the
     state sentence carries no citation (``Status not established in the summaries.``)."""
     fb = first_sentence(view.state)
     if not notes.cites(fb):
         fb = f"{first_sentence(view.identity)} {fb}"
-    return f"- **{view.name}** — {fb}"
+    return fb
+
+
+def fallback_from_dossier(view: PublishedView) -> str:
+    """:func:`dossier_sentence` as a Key NPCs line."""
+    return f"- **{view.name}** — {dossier_sentence(view)}"
 
 
 def with_pointer(line: str, slug: str) -> str:
@@ -471,4 +526,228 @@ def report_md(plan: Sequence[KeyNpc], a: Assembled, per: int, words: int, budget
     out += [f"- {k.name} ({k.reason}) — " + (f"docs/npcs/{k.slug}.md" if k.view else f"no dossier: {k.missing}") for k in plan]
     out += [f"- {k.name}: carried over from {k.carried_from}" for k in plan if k.carried_from]
     out += ["", "## Substitutions, fallbacks and discards", ""] + (a.report or ["(none)"])
+    return "\n".join(out) + "\n"
+
+
+# ── planning's NPC Dossiers (spec 034 US2, research R8) ─────────────────────
+
+#: The three labelled lines of a planning NPC block, in order.
+PLANNING_LABELS = ("Status and location:", "Goals:", "Relationships:")
+#: What a labelled line says when the dossier gives nothing for it (it then cites nothing).
+NOT_ESTABLISHED = "not established in the dossier"
+#: Fewest words a block may be given, however many NPCs share the section budget.
+PLANNING_MIN_WORDS = 45
+
+
+@dataclass(frozen=True)
+class PlanningPlan:
+    """planning's selected NPCs in order, and the four-section view of each published dossier."""
+
+    npcs: list[KeyNpc]
+    #: ``{dossier slug: view}`` for each NPC with a usable dossier.
+    views: dict[str, PlanningView]
+
+    def view_of(self, k: KeyNpc) -> PlanningView | None:
+        return self.views.get(k.view.slug) if k.view is not None else None
+
+
+def plan_planning_npcs(
+    dossiers: Sequence[select.Dossier],
+    scopes: dict[str, str],
+    pcs: set[str],
+    forms: dict[str, str],
+    tracked: Sequence[str],
+    *,
+    range_until: int,
+    recent_chapters: int,
+    recurring_min: int,
+    named: Sequence[str] = (),
+    campaign: Path,
+    npc_root: Path,
+    rng: str,
+    results: Sequence[notes.CheckedChunk] | None = None,
+) -> PlanningPlan:
+    """planning's NPCs, chosen by code (FR-011): the NPCs the planning config tracks, in config order and
+    canonicalised by ``forms``, then the ones ``--name`` forces, then the recent and recurring ones.
+
+    World_state's selection and dossier lookup are reused as they are (``select_key_npcs``,
+    ``plan_key_npcs``); a tracked NPC is added as named. A tracked NPC the checked notes never mention
+    has no corpus dossier: it is still selected (the GM asked for it), and its published dossier, or the
+    lack of one, decides what its block is. Raises ``select.SelectionError`` for a ``--name`` outside the
+    global NPCs.
+    """
+    pc_keys = {p.casefold() for p in pcs}
+    chosen = select_key_npcs(
+        dossiers, scopes, pcs, range_until=range_until, recent_chapters=recent_chapters,
+        recurring_min=recurring_min, named=named,
+    )
+    picked = {d.subject.casefold(): d for d, _ in chosen}
+    corpus = {d.subject.casefold(): d for d in dossiers if d.category == "npc"}
+    ordered: list[tuple[select.Dossier, str]] = []
+    taken: set[str] = set()
+    for name in tracked:
+        canon = forms.get(name.strip().casefold(), name.strip())
+        key = canon.casefold()
+        if key in taken or key in pc_keys:
+            continue
+        taken.add(key)
+        d = picked.get(key) or corpus.get(key) or select.Dossier(
+            stem=npc_slug.stem_for("npc", canon), subject=canon, category="npc", n_observations=0,
+            first_chapter=0, last_chapter=0, path=Path(""))
+        ordered.append((d, "tracked"))
+    for d, reason in chosen:
+        if d.subject.casefold() not in taken:
+            taken.add(d.subject.casefold())
+            ordered.append((d, reason))
+    plan = plan_key_npcs(ordered, campaign, npc_root=npc_root, rng=rng, results=results, forms=forms)
+    views = {k.view.slug: planning_view(Path(campaign) / schema.NPCS_DIR / f"{k.view.slug}.md") for k in plan if k.view is not None}
+    return PlanningPlan(plan, views)
+
+
+def planning_words_per_block(budget: int, n: int) -> int:
+    """Each published NPC's share of the NPC Dossiers word budget."""
+    return max(PLANNING_MIN_WORDS, budget // max(n, 1))
+
+
+def planning_prompt(plan: PlanningPlan, per_npc_words: int) -> str:
+    """The user prompt of the one NPC Dossiers call: each published NPC's four passages, in selection order.
+
+    Nothing else of a dossier reaches it: ``planning_view`` keeps those four sections and discards every
+    other line as it reads.
+    """
+    shown = [(k, plan.view_of(k)) for k in plan.npcs if plan.view_of(k) is not None]
+    blocks = "\n\n".join(
+        f"=== NPC: {k.name} (last seen ch {k.last_seen:03d}) ===\n"
+        f"IDENTITY: {v.identity or '(none)'}\nPERSONALITY AND MOTIVATIONS: {v.personality or '(none)'}\n"
+        f"LAST OBSERVED STATE: {v.state}\nRELATIONSHIPS: {v.relationships or '(none)'}"
+        for k, v in shown
+    )
+    return (
+        "DOCUMENT: planning\nSECTION: ## NPC Dossiers\n\n"
+        f"{len(shown)} NPCs, in this order. About {per_npc_words} words per NPC block at most (citations not counted).\n\n"
+        f"{blocks}\n\n"
+        "Write exactly one block per NPC, in the same order, each starting `### <name exactly as given>`.\n"
+    )
+
+
+def verify_planning_block(
+    block: str, view: PlanningView, hay: str = "", max_words: int | None = None, *, name: str | None = None,
+) -> str | None:
+    """Why ``block`` is not an acceptable NPC block for ``view``, or ``None``.
+
+    It is ``### <name>`` and exactly the three labelled lines, in order. Every line cites what that NPC's
+    own dossier cites, or says ``not established in the dossier`` and cites nothing. A quotation must be
+    verbatim in the dossier's four sections (or in ``hay``, when given). With ``max_words`` it may not
+    run past twice that.
+    """
+    heading = name or view.name
+    lines = [ln for ln in block.strip().splitlines() if ln.strip()]
+    if not lines or lines[0].strip() != f"### {heading}":
+        return "does not start with the NPC's exact heading"
+    body = [ln.strip() for ln in lines[1:]]
+    if len(body) != len(PLANNING_LABELS) or any(not ln.startswith(lab) for ln, lab in zip(body, PLANNING_LABELS)):
+        return "is not exactly the three labelled lines (Status and location, Goals, Relationships), in order"
+    allowed = {(c, t) for _, c, t in notes.cites(view.source)}
+    for ln, lab in zip(body, PLANNING_LABELS):
+        found = notes.cites(ln)
+        said = schema.STATE_CITE_RE.sub("", ln[len(lab):]).strip().rstrip(".").strip()
+        if not found:
+            if said.casefold() != NOT_ESTABLISHED:
+                return f"uncited line: {lab}"
+            continue
+        for bracket, c, t in found:
+            if c < 0 or (c, t) not in allowed:
+                return f"citation not in this NPC's dossier: {bracket}"
+    for span in npc_check.SPAN_RE.findall(block):
+        inner = npc_check.strip_quote_marks(span)
+        if len(inner) >= 4 and npc_check._contains(view.source, inner) is None and npc_check._contains(hay, inner) is None:
+            return f"quotation not verbatim: {span}"
+    if max_words is not None and _words(block) > 2 * max_words:
+        return f"too long ({_words(block)} words)"
+    return None
+
+
+@dataclass(frozen=True)
+class PlanningAssembled:
+    #: One block per selected NPC, in selection order, each ending with its pointer (or the fallback mark).
+    blocks: list[str]
+    report: list[str]  # one line per substitution, fallback and discard, for the report
+    from_model: int
+    substituted: int  # a failing or missing model block replaced by the dossier's own sentence
+    fallbacks: int  # an NPC with no dossier, block built from checked notes
+    #: The model-written blocks that were kept, for the word budget.
+    model_text: str
+
+
+def assemble_planning(
+    plan: PlanningPlan, model_out: str | None, per: int, results: Sequence[notes.CheckedChunk],
+    forms: dict[str, str], hay: str = "",
+) -> PlanningAssembled:
+    """One block per selected NPC, in selection order (FR-011). ``model_out`` is the call's raw output, or
+    ``None`` when no call was made.
+
+    A model block that is missing, misplaced, mis-shaped, cites outside that NPC's dossier or quotes it
+    inexactly is replaced by the dossier's own first Last Observed State sentence; an NPC with no usable
+    dossier gets a block built from the checked notes and marked. An NPC the model added is dropped.
+    """
+    published = [k for k in plan.npcs if plan.view_of(k) is not None]
+    check = state_sections.check_entries(model_out, [k.name for k in published])
+    blocks: list[str] = []
+    report: list[str] = []
+    kept: list[str] = []
+    from_model = substituted = fallbacks = 0
+    for k in plan.npcs:
+        view = plan.view_of(k)
+        if view is None:
+            line = fallback_from_notes(k.name, results, forms)
+            blocks.append(f"### {k.name}\n{line.removeprefix(f'- **{k.name}** — ')}")
+            report.append(f"- {k.name}: fallback block from checked notes ({k.missing})")
+            fallbacks += 1
+            continue
+        pointer = POINTER.format(slug=k.slug)
+        body = check.bodies.get(k.name)
+        why = check.bad.get(k.name) if body is None else verify_planning_block(
+            f"### {k.name}\n{body}", view, hay, per, name=k.name)
+        if why:
+            blocks.append(f"### {k.name}\n{dossier_sentence(view)}\n{pointer}")
+            report.append(f"- {k.name}: the dossier's own sentence replaces the model's block ({why})")
+            substituted += 1
+        else:
+            blocks.append(f"### {k.name}\n{body}\n{pointer}")
+            kept.append(body)
+            from_model += 1
+    report += [f"- discarded (not a selected NPC, or repeated): ### {x}" for x in check.extras]
+    return PlanningAssembled(blocks, report, from_model, substituted, fallbacks, "\n".join(kept))
+
+
+def planning_section_body(a: PlanningAssembled, n_published: int, n_total: int) -> str:
+    """NPC Dossiers' body: the blocks, then a note saying where they come from."""
+    note = (
+        f"_Source: the published NPC dossiers in `docs/npcs/` ({n_published} of {n_total} NPCs; verified). "
+        "Fix an NPC in its dossier, not here."
+        + (f" {a.fallbacks} NPC(s) have no published dossier and are marked." if a.fallbacks else "")
+        + "_"
+    )
+    return "\n\n".join(a.blocks) + "\n\n" + note
+
+
+def planning_report_md(plan: PlanningPlan, a: PlanningAssembled, per: int, words: int, budget: int,
+                       faction_report: Sequence[str] | None = None) -> str:
+    """``planning_npcs_report.md``: who was selected and why, what the model wrote, what code replaced.
+
+    ``faction_report`` is Faction States' side of the same story (the entries code replaced or discarded,
+    one line each): it ends the file as a ``## Faction States`` section, written whenever it is given.
+    """
+    out = [
+        "# Planning: NPC Dossiers", "",
+        f"{len(plan.npcs)} selected; {a.from_model} blocks from the model, {a.substituted} replaced by the "
+        f"dossier's own sentence, {a.fallbacks} built from checked notes. {words}/{budget} words, "
+        f"about {per} words per model block.", "", "## Selected (order)", "",
+    ]
+    out += [
+        f"- {k.name} ({k.reason}) — " + (f"docs/npcs/{k.slug}.md" if k.view else f"no dossier: {k.missing}") for k in plan.npcs]
+    out += [f"- {k.name}: carried over from {k.carried_from}" for k in plan.npcs if k.carried_from]
+    out += ["", "## Substitutions, fallbacks and discards", ""] + (a.report or ["(none)"])
+    if faction_report is not None:
+        out += ["", "## Faction States", ""] + (list(faction_report) or ["(none)"])
     return "\n".join(out) + "\n"

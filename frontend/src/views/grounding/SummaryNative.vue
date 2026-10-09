@@ -16,9 +16,10 @@ const BASE = '/api/grounding/summary-native'
 const SYNTH_ENDPOINT = '/api/grounding/summary-native/run/synth'
 const DOCS = ['world_state', 'campaign_state', 'party', 'planning'] as const
 type Doc = (typeof DOCS)[number]
-// world_state and campaign_state are built from the checked notes (spec 033): Extract first, one prose
-// call per section, no --parts and no --audit. party and planning keep the one-shot path.
-const CHUNKED: readonly Doc[] = ['world_state', 'campaign_state']
+// Every document is built from the checked notes (specs 033, 034): Extract first, one prose call per section.
+// There is no Parts control, no upstream-draft picker and no audit box on this step: those options are retired.
+// The documents that select NPCs and render them from the published dossiers (world_state's Key NPCs, planning's NPC Dossiers).
+const KEY_NPC_DOCS: readonly Doc[] = ['world_state', 'planning']
 
 const config = useConfigStore()
 
@@ -34,7 +35,6 @@ const rangeUntil = ref<Num>(null)
 const dupThreshold = ref<Num>('')
 const recentChapters = ref<Num>('')
 const recurringMin = ref<Num>('')
-const parts = ref<Num>('')
 
 function persisted(r: Ref<Num>, nullable: boolean) {
   return computed<number | null | undefined>({
@@ -50,16 +50,12 @@ useGroundingRun('summary_native', {
   dup_threshold: persisted(dupThreshold, false),
   recent_chapters: persisted(recentChapters, false),
   recurring_min: persisted(recurringMin, false),
-  parts: persisted(parts, false),
 })
 
 // ── Per-run fields (not stored) ─────────────────────────────────────────────
 const doc = ref<Doc>('world_state')
-const worldStatePath = ref('')
-const campaignStatePath = ref('')
 const partyConfigPath = ref('')
 const planningConfigPath = ref('')
-const auditText = ref('')
 const namesText = ref('')
 const maxTokens = ref<Num>('')
 const dumpOnly = ref(false)
@@ -67,7 +63,7 @@ const forceBuild = ref(false)
 // Per-run, never persisted: replacing a reviewed draft must be a deliberate act each time.
 const forceSynth = ref(false)
 // Per run, never persisted and unchecked on every load (spec 033 FR-018b): write a code-built Key NPCs line
-// for an NPC with no published dossier instead of refusing. world_state only.
+// for an NPC with no published dossier instead of refusing. world_state and planning.
 const fallbackNpcLines = ref(false)
 // Extract (per run, never persisted): a blank chunk size uses grounding.yaml summary_native.extract.chunk_chars.
 const extractChunkChars = ref<Num>('')
@@ -88,7 +84,7 @@ const forceAudit = ref(false)
 const auditModel = ref('')
 const auditEndpointsText = ref('')
 const auditParallel = ref<Num>('')
-// Prose step (world_state / campaign_state): blank uses grounding.yaml summary_native.prose.
+// Prose step (every document): blank uses grounding.yaml summary_native.prose.
 const proseModel = ref('')
 const proseEffort = ref('')
 const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'] as const
@@ -154,7 +150,7 @@ const validateParams = computed(() => ({
 const buildParams = computed(() => ({
   ...baseParams.value, dup_threshold: num(dupThreshold.value), force: forceBuild.value,
 }))
-const isChunked = computed(() => CHUNKED.includes(doc.value))
+const usesKeyNpcs = computed(() => KEY_NPC_DOCS.includes(doc.value))
 const extractParams = computed(() => ({
   ...baseParams.value,
   chunk_chars: num(extractChunkChars.value),
@@ -175,42 +171,28 @@ const auditParams = computed(() => ({
   endpoints: lines(auditEndpointsText.value),
   parallel: num(auditParallel.value),
 }))
-const synthParams = computed(() => isChunked.value
-  ? {
-      // The prose step takes its backend and model from grounding.yaml summary_native.prose, so the
-      // page does not send the app-wide model for these two documents.
-      ...baseParams.value,
-      // world_state's Key NPCs selection (campaign_state has no such section and the server refuses these)
-      ...(doc.value === 'world_state'
-        ? {
-            name: lines(namesText.value),
-            recent_chapters: num(recentChapters.value),
-            recurring_min: num(recurringMin.value),
-            fallback_npc_lines: fallbackNpcLines.value,
-          }
-        : {}),
-      max_tokens: num(maxTokens.value),
-      dump_only: dumpOnly.value,
-      force: forceSynth.value,
-      model: proseModel.value.trim() || undefined,
-      claude_code_effort: proseEffort.value || undefined,
-    }
-  : {
-      ...baseParams.value,
-      world_state: worldStatePath.value.trim(),
-      campaign_state: campaignStatePath.value.trim(),
-      party_config: doc.value === 'party' ? partyConfigPath.value.trim() : '',
-      planning_config: doc.value === 'planning' ? planningConfigPath.value.trim() : '',
-      audit: lines(auditText.value),
-      name: lines(namesText.value),
-      recent_chapters: num(recentChapters.value),
-      recurring_min: num(recurringMin.value),
-      parts: num(parts.value),
-      max_tokens: num(maxTokens.value),
-      dump_only: dumpOnly.value,
-      force: forceSynth.value,
-      model: config.model || undefined,
-    })
+// The prose step takes its backend and model from grounding.yaml summary_native.prose, so the page does not send
+// the app-wide model for any document.
+const synthParams = computed(() => ({
+  ...baseParams.value,
+  // The NPC selection of world_state's Key NPCs and planning's NPC Dossiers (campaign_state has no such section and
+  // party selects no NPCs: the server refuses these for them).
+  ...(usesKeyNpcs.value
+    ? {
+        name: lines(namesText.value),
+        recent_chapters: num(recentChapters.value),
+        recurring_min: num(recurringMin.value),
+        fallback_npc_lines: fallbackNpcLines.value,
+      }
+    : {}),
+  ...(doc.value === 'party' ? { party_config: partyConfigPath.value.trim() } : {}),
+  ...(doc.value === 'planning' ? { planning_config: planningConfigPath.value.trim() } : {}),
+  max_tokens: num(maxTokens.value),
+  dump_only: dumpOnly.value,
+  force: forceSynth.value,
+  model: proseModel.value.trim() || undefined,
+  claude_code_effort: proseEffort.value || undefined,
+}))
 
 // ── Report and drafts ───────────────────────────────────────────────────────
 interface Finding {
@@ -226,6 +208,11 @@ interface Report {
 }
 interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete' | 'report'; bytes: number }
 interface ExtractChunk { index: number; chapters: string; status: string; kept: number; dropped: number; outlier: boolean }
+// The ratified-thread counts of the last planning build (read by the server from state/threads/attach.json).
+interface ThreadCounts {
+  present: boolean; ratified_in_range: number | null; open: number | null; dormant: number | null
+  unattached: number | null; ambiguous: number | null; pending_groups: number | null
+}
 interface ExtractState {
   present: boolean; complete: boolean; stale: boolean; stale_reason: string | null
   backend?: string; model?: string; chunk_chars?: number; absent_chapters?: number[]
@@ -252,6 +239,7 @@ const auditState = ref<AuditState | null>(null)
 // world_state's last build: words written against each prose section's budget.
 interface BudgetRow { budget: number; words: number; over: boolean }
 const worldBudgets = ref<Record<string, BudgetRow> | null>(null)
+const threadCounts = ref<ThreadCounts | null>(null)
 // Each chunked document's last annotate step (written by synth, and again by Annotate).
 interface AnnotationCounts { later: number; since: number; unverified: number; removed: number; lines: number }
 const annotations = ref<Record<string, AnnotationCounts>>({})
@@ -268,6 +256,7 @@ async function refreshOutputs() {
   extractState.value = null
   auditState.value = null
   worldBudgets.value = null
+  threadCounts.value = null
   annotations.value = {}
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
@@ -276,6 +265,8 @@ async function refreshOutputs() {
       extract: ExtractState; audit: AuditState; world_budgets: Record<string, BudgetRow> | null
       annotations: Record<string, AnnotationCounts>
       missing_dossiers: MissingNpc[] | null; missing_dossiers_refused: boolean
+      planning_missing_dossiers: MissingNpc[] | null; planning_missing_dossiers_refused: boolean
+      threads: ThreadCounts
     }>(`${BASE}/state?${q}`)
     extractState.value = state.extract
     auditState.value = state.audit
@@ -285,8 +276,12 @@ async function refreshOutputs() {
     }
     worldBudgets.value = state.world_budgets
     annotations.value = state.annotations ?? {}
-    // The latest world_state attempt's list, so a refusal is still shown after a reload.
-    missingNpcs.value = state.missing_dossiers_refused ? (state.missing_dossiers ?? []) : []
+    // The latest attempt's list for each document, so a refusal is still shown after a reload.
+    missingByDoc.value = {
+      world_state: state.missing_dossiers_refused ? (state.missing_dossiers ?? []) : [],
+      planning: state.planning_missing_dossiers_refused ? (state.planning_missing_dossiers ?? []) : [],
+    }
+    threadCounts.value = state.threads ?? null
   } catch {
     extractState.value = null // the Extract panel simply stays empty; the other outputs still load
   }
@@ -307,9 +302,10 @@ async function refreshOutputs() {
   }
 }
 
-// The NPCs a refused world_state build named, parsed from the CLI's own message (one `  Name: state` line each).
+// The NPCs a refused build named, parsed from the CLI's own message (one `  Name: state` line each).
 interface MissingNpc { name: string; state: string }
-const missingNpcs = ref<MissingNpc[]>([])
+const missingByDoc = ref<Record<string, MissingNpc[]>>({})
+const missingNpcs = computed(() => missingByDoc.value[doc.value] ?? [])
 const MISSING_HEADER = /need a published, verified dossier/
 const MISSING_LINE = /^ {2}(?!summary_native )(.+?): (not drafted|drafted, not verified|drafted, not published|failed verification.*|published for .+)$/
 function parseMissingNpcs(output: string): MissingNpc[] {
@@ -324,7 +320,7 @@ function parseMissingNpcs(output: string): MissingNpc[] {
 
 function onSynthDone(rc: number, output = '') {
   forceSynth.value = false
-  missingNpcs.value = rc === 2 && doc.value === 'world_state' ? parseMissingNpcs(output) : []
+  if (usesKeyNpcs.value) missingByDoc.value = { ...missingByDoc.value, [doc.value]: rc === 2 ? parseMissingNpcs(output) : [] }
   refreshOutputs()
 }
 
@@ -425,7 +421,7 @@ onMounted(async () => {
         <span class="field-help">
           Reads the full summaries a few chapters at a time and writes notes, which code then checks:
           every citation must resolve inside its chunk, every quotation must be verbatim, every note must carry its tag.
-          world_state and campaign_state are built from these notes. Notes that fail are dropped and listed in drops.md.
+          Every document (world_state, campaign_state, party and planning) is built from these notes. Notes that fail are dropped and listed in drops.md.
         </span>
         <div class="num-grid">
           <div class="field">
@@ -585,48 +581,44 @@ onMounted(async () => {
             <option v-for="d in DOCS" :key="d" :value="d">{{ d }}</option>
           </select>
         </div>
-        <span v-if="isChunked" class="field-help">
-          Built from the checked notes: run Extract first. Code builds the timeline, completed list and NPC status table;
-          the model writes each remaining section from the notes routed to it. The tracking audit is its own step.
+        <span class="field-help">
+          Built from the checked notes: run Extract first. Code builds the timeline, completed list, NPC status table and
+          every pointer; the model writes each remaining section from the notes routed to it. The tracking audit is its own step.
+          <template v-if="doc === 'party'">
+            One call per character, then the overview and the dynamics. Code writes each character&rsquo;s heading and level line;
+            a character with no notes says so and makes no call. The sheet and backstory come from the party config.
+          </template>
           <template v-if="doc === 'world_state'">
             Key NPCs are rendered from the published NPC dossiers: the build refuses when a selected NPC has none.
           </template>
+          <template v-if="doc === 'planning'">
+            Code builds the Threat Tracker, picks the NPCs and factions, orders Active Plots by the ratified threads and lists the
+            unratified thread notes verbatim. NPC Dossiers are rendered from the published NPC dossiers: the build refuses when a
+            selected NPC has none.
+          </template>
         </span>
-        <PathField v-if="!isChunked" v-model="worldStatePath" label="World-state draft (context)" resolve-base="campaign"
-          help="A GM-reviewed world_state draft to use as upstream context. Optional." />
-        <PathField v-if="!isChunked" v-model="campaignStatePath" label="Campaign-state draft (context)" resolve-base="campaign"
-          help="A GM-reviewed campaign_state draft to use as upstream context. Optional." />
         <PathField v-if="doc === 'party'" v-model="partyConfigPath" label="Party config" resolve-base="campaign"
           help="The party roster (sheets and backstories). Blank uses config/party.yaml." />
         <PathField v-if="doc === 'planning'" v-model="planningConfigPath" label="Planning config" resolve-base="campaign"
           help="Tracked NPCs, factions and arc scores. Blank uses config/planning.yaml; none means no arc scores." />
-        <div v-if="!isChunked" class="field">
-          <label class="field-label">Audit files</label>
-          <textarea class="field-textarea" v-model="auditText" rows="3"
-            placeholder="One path per line. Blank uses the Campaign State page's tracking lists." />
-          <span class="field-help">Tracking, planning or module files treated as questions to answer from the summaries.</span>
-        </div>
-        <div v-if="!isChunked || doc === 'world_state'" class="field">
+        <div v-if="usesKeyNpcs" class="field">
           <label class="field-label">Named subjects</label>
           <textarea class="field-textarea" v-model="namesText" rows="2"
             placeholder="One subject per line &mdash; force-includes these dossiers" />
-          <span v-if="doc === 'world_state'" class="field-help">Force-includes these global NPCs in Key NPCs.</span>
+          <span class="field-help">
+            Force-includes these global NPCs in {{ doc === 'planning' ? 'NPC Dossiers (the NPCs in planning.yaml are always included)' : 'Key NPCs' }}.
+          </span>
         </div>
         <div class="num-grid">
-          <div v-if="!isChunked || doc === 'world_state'" class="field">
+          <div v-if="usesKeyNpcs" class="field">
             <label class="field-label">Recent chapters</label>
             <input type="number" min="0" class="field-input" v-model.number="recentChapters" />
-            <span class="field-help">Counted back from the range end; 0 = all.<template v-if="doc === 'world_state'"> Picks the Key NPCs.</template></span>
+            <span class="field-help">Counted back from the range end; 0 = all.<template v-if="usesKeyNpcs"> Picks the {{ doc === 'planning' ? 'NPC Dossiers' : 'Key NPCs' }}.</template></span>
           </div>
-          <div v-if="!isChunked || doc === 'world_state'" class="field">
+          <div v-if="usesKeyNpcs" class="field">
             <label class="field-label">Recurring minimum</label>
             <input type="number" min="0" class="field-input" v-model.number="recurringMin" />
             <span class="field-help">Observations that make an entity recurring.</span>
-          </div>
-          <div v-if="!isChunked" class="field">
-            <label class="field-label">Parts</label>
-            <input type="number" min="0" class="field-input" v-model.number="parts" />
-            <span class="field-help">Split the outline into N calls; 0 = one call.</span>
           </div>
           <div class="field">
             <label class="field-label">Max tokens</label>
@@ -634,7 +626,7 @@ onMounted(async () => {
             <span class="field-help">Per call. Blank uses the CLI default.</span>
           </div>
         </div>
-        <div v-if="isChunked" class="num-grid">
+        <div class="num-grid">
           <div class="field">
             <label class="field-label">Prose model</label>
             <input type="text" class="field-input" v-model="proseModel" />
@@ -655,17 +647,16 @@ onMounted(async () => {
         <label class="checkbox-label">
           <input type="checkbox" v-model="forceSynth" /> Replace existing reviewed draft (--force)
         </label>
-        <label v-if="doc === 'world_state'" class="checkbox-label">
+        <label v-if="usesKeyNpcs" class="checkbox-label">
           <input type="checkbox" v-model="fallbackNpcLines" /> Write fallback lines for NPCs without a published dossier
         </label>
-        <span v-if="doc === 'world_state' && fallbackNpcLines" class="field-help">
+        <span v-if="usesKeyNpcs && fallbackNpcLines" class="field-help">
           This run only. Each such NPC gets a line built by code from its checked notes and marked
           &ldquo;(no published dossier &mdash; from checked notes)&rdquo;. Not saved.
         </span>
         <RunPanel :endpoint="`${SYNTH_ENDPOINT}/${doc}`" :params="synthParams" :disabled="!ready"
-          :label="`Synthesize ${doc}`" :selection-service="isChunked ? undefined : 'grounding'"
-          selection-doc="summary_native" :selection-can-override="true" @done="onSynthDone" />
-        <div v-if="doc === 'world_state' && missingNpcs.length" class="panel missing-npcs">
+          :label="`Synthesize ${doc}`" @done="onSynthDone" />
+        <div v-if="usesKeyNpcs && missingNpcs.length" class="panel missing-npcs">
           <div class="counts">
             <span class="bad">Build refused: {{ missingNpcs.length }} selected NPC(s) have no published, verified dossier</span>
           </div>
@@ -681,6 +672,25 @@ onMounted(async () => {
           <span class="field-help">
             Draft, verify and publish them on the <RouterLink to="/npcs/dossiers">NPC dossiers page</RouterLink>,
             then build again &mdash; or tick &ldquo;Write fallback lines&rdquo; above for this run.
+          </span>
+        </div>
+        <div v-if="doc === 'planning'" class="panel threads">
+          <div class="counts">
+            <span>Ratified threads (last planning build)</span>
+            <template v-if="threadCounts?.present">
+              <span data-test="thread-in-range">{{ threadCounts.ratified_in_range }} with notes in range</span>
+              <span data-test="thread-open">{{ threadCounts.open }} open</span>
+              <span data-test="thread-dormant">{{ threadCounts.dormant }} dormant</span>
+              <span data-test="thread-unattached" :class="threadCounts.unattached ? 'bad' : 'ok'">{{ threadCounts.unattached }} unratified notes</span>
+              <span v-if="threadCounts.ambiguous" class="bad" data-test="thread-ambiguous">{{ threadCounts.ambiguous }} ambiguous name(s)</span>
+            </template>
+            <span v-else>not built yet</span>
+            <span v-if="threadCounts?.pending_groups" data-test="thread-pending">{{ threadCounts.pending_groups }} proposal group(s) awaiting a ruling</span>
+          </div>
+          <span class="field-help">
+            Active Plots lists only the threads the GM has ratified; the other thread notes are listed verbatim under
+            &ldquo;Unratified thread notes&rdquo;. Propose groupings and rule on them on the
+            <RouterLink to="/grounding/threads">Threads page</RouterLink>, then build again.
           </span>
         </div>
         <div v-if="doc === 'world_state' && budgetRows.length" class="panel budgets">
@@ -705,14 +715,15 @@ onMounted(async () => {
       </div>
 
       <!-- 6. Annotate -->
-      <div v-if="isChunked" class="form-section">
+      <div class="form-section">
         <h3 class="step">6. Annotate the {{ doc }} draft</h3>
         <span class="field-help">
           Deterministic: no model is called and no line is reworded. Where a newer checked note, a mentioned NPC's later status,
           another section, a non-verbatim quotation or an unresolved citation bears on a line, the evidence is appended under it
           (<code>&#9888; later:</code>, <code>&#8505; since:</code>, <code>&#9888; unverified:</code>); a player character listed as a
           companion is removed. Synthesize already does this; run it again after publishing a dossier or editing a summary.
-          Key NPCs and the code-built sections are never annotated.
+          Key NPCs, planning&rsquo;s NPC Dossiers and Threat Tracker, the dormant and unratified thread blocks and the other
+          code-built sections are never annotated.
         </span>
         <div v-if="docAnnotations" class="panel annotations">
           <div class="counts">

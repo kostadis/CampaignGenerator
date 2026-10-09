@@ -14,7 +14,10 @@ So the detectors run, and code appends the LATER EVIDENCE beneath the line, verb
 The annotated line's text is never changed, and re-annotating replaces the old annotation sub-bullets
 instead of stacking new ones. Not scanned (FR-019): world_state's Key NPCs, which is fixed in the NPC
 dossiers, and the sections code builds from the checked notes, which carry their own handling of later
-evidence. Guarded by ``tests/test_summary_native_no_llm.py`` and ``tests/test_annotate_never_rewrites.py``.
+evidence. For party and planning (spec 034) that also means the Threat Tracker, the NPC Dossiers, the
+dormant and unratified blocks of Active Plots, and the ``#### Candidate Arc Score Events`` subsection of a
+character; their model-written sections are scanned line by line, paragraphs as well as bullets, and a
+player character listed in Faction States is removed like one listed as a companion. Guarded by ``tests/test_summary_native_no_llm.py`` and ``tests/test_annotate_never_rewrites.py``.
 """
 
 from __future__ import annotations
@@ -40,11 +43,29 @@ ANNOTATION_RE = re.compile(r"^\s+- (?:" + "|".join(re.escape(m) for m in MARKERS
 #: built by code from the checked notes.
 SKIP_SECTIONS = frozenset({
     "## Key NPCs",
+    "## Threat Tracker",
+    "## NPC Dossiers",
     "## Canon Events Timeline",
     "## Completed Encounters & Quests",
     "## NPC Current States",
     "## Audit: Tracking Claims",
 })
+
+#: ``###`` blocks of planning's Active Plots that code builds from the notes verbatim (the dormant threads
+#: and the unratified thread notes): evidence, not claims, so never annotated (spec 034 FR-019).
+SKIP_GROUPS = frozenset({schema.DORMANT_HEADING[4:], schema.UNRATIFIED_HEADING[4:]})
+
+#: The model-written sections of party and planning, whose prose is written as paragraphs as often as
+#: bullets: their column-0 prose lines are scanned like bullets (spec 034 FR-019). Code-built lines (the
+#: level line, the pointers, the labels) and the world_state / campaign_state sections are not.
+PROSE_SECTIONS = frozenset({
+    "## Party Overview", "## Characters", "## Party Dynamics",
+    "## Faction States", "## Active Plots", "## DM Notes",
+})
+
+#: The sections where a player character is listed as if an NPC: such a line is removed (a rule, not a
+#: judgment). Party's ``## Characters`` is deliberately absent: player characters belong there.
+NPC_SECTIONS = frozenset({"## Faction States", "## NPC Dossiers"})
 
 REPORT_FILE = "annotations.md"
 COUNTS_FILE = "annotations.json"
@@ -177,22 +198,36 @@ def strip_annotations(lines: Sequence[str]) -> list[str]:
     return [ln for ln in lines if not ANNOTATION_RE.match(ln)]
 
 
+def _is_prose_claim(ln: str) -> bool:
+    """A column-0 line of running prose: not blank, a heading, a table row, a quotation, a pointer or label
+    (the ``_italic_`` lines code writes), the level line code writes, or a sub-bullet."""
+    return bool(ln.strip()) and ln[0] not in " \t#-_>|→`<" and not ln.startswith("Level:")
+
+
 def parse_entries(lines: Sequence[str], ev: Evidence) -> list[Entry]:
-    """The bullet lines the detectors scan: column-0 ``- `` lines outside the skipped sections.
+    """The lines the detectors scan outside the skipped sections: column-0 ``- `` bullets and, in the
+    model-written sections of party and planning (``PROSE_SECTIONS``), column-0 prose lines too.
 
     An entry's subject is its first bold name, else the group (``### `` heading or standalone bold
-    label) it sits under, resolved to the registry's canonical name.
+    label) it sits under, resolved to the registry's canonical name. The ``#### `` subsection of
+    checked arc-score candidates is never scanned: its triggers are quoted from the mechanic file, not
+    from a chapter, and code has already checked every line.
     """
     out: list[Entry] = []
     section = group = ""
+    in_candidates = False
     for n, ln in enumerate(lines):
         if ln.startswith("## "):
-            section, group = ln.rstrip(), ""
+            section, group, in_candidates = ln.rstrip(), "", False
         elif ln.startswith("### "):
-            group = ln[4:].strip()
+            group, in_candidates = ln[4:].strip(), False
+        elif ln.startswith("#### "):
+            in_candidates = ln.rstrip() == schema.ARC_HEADING
         elif re.fullmatch(r"\*\*[^*]+\*\*\s*", ln.strip()):
             group = ln.strip().strip("*").strip()
-        elif ln.startswith("- ") and section not in SKIP_SECTIONS:
+        elif section in SKIP_SECTIONS or group in SKIP_GROUPS or in_candidates:
+            continue
+        elif ln.startswith("- ") or (section in PROSE_SECTIONS and _is_prose_claim(ln)):
             m = _BOLD_RE.search(ln)
             out.append(Entry(n, section, group, ln, ev.canon(m.group(1) if m else group)))
     return out
@@ -237,7 +272,10 @@ def detect(entries: Sequence[Entry], ev: Evidence) -> list[Flag]:
     flags: list[Flag] = []
     allowed = ev.allowed
     for e in entries:
-        if e.subject in ev.pcs and e.group.casefold() == "companions":
+        # A PC listed as a companion, or a Faction States block NAMED for a PC (a PC treated as a faction).
+        # A line inside a real faction's block that merely names a PC ("recruited **Daz**") is a claim, not a removal.
+        if (e.subject in ev.pcs and e.group.casefold() == "companions") or (
+                e.section in NPC_SECTIONS and e.group and ev.canon(e.group) in ev.pcs):
             flags.append(Flag(e, PC_IN_NPC, f"{e.subject} is a player character (players.yaml)"))
         for bracket, c, t in notes.cites(e.text):
             if c < 0 or c not in allowed or t not in allowed[c] or ("." in t and int(t[:3]) != c):

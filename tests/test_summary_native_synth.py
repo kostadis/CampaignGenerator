@@ -1,9 +1,17 @@
-"""synth: outline check, parts, dump-only, refusals, run records (T020)."""
+"""synth: outline check, refusals, and the behaviours every document shares (T020, spec 034 T047/T048).
+
+Every document is built the same way: one call per section, from the checked notes (spec 034 retired the
+one-shot path). The generic behaviours of a ``synth`` run (run ids, the record written on a failure, the
+previous draft kept on an incomplete build, freshness) are asserted for all four documents in
+``TestEveryDocumentBuildsTheSameWay`` below.
+"""
 
 from __future__ import annotations
 
 import json
+import re
 import shutil
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -18,6 +26,7 @@ RD = "docs/summary_native/ch002-005"
 
 @pytest.fixture
 def camp(tmp_path, monkeypatch):
+    """A built corpus and no extraction: whatever ``synth`` does here, it does before reading any note."""
     root = tmp_path / "camp"
     (root / "config").mkdir(parents=True)
     (root / "config" / "config.yaml").write_text("paths: {}\n")
@@ -27,35 +36,11 @@ def camp(tmp_path, monkeypatch):
     (root / "docs" / "campaign_state.md").write_text("LIVE CAMPAIGN\n")
     monkeypatch.chdir(root)
     assert main(["build", "--summaries-dir", "summaries"]) == 0
-    # The generic synth machinery (flags, runs, records, refusals) is exercised through ``party``,
-    # a one-shot document. world_state and campaign_state build from checked notes (spec 033).
     write_party(root, trackless=True)
     return root
 
 
 ARGS = ["--summaries-dir", "summaries"]
-
-
-def run_dirs(camp, doc):
-    root = camp / RD / "runs" / doc
-    return sorted(p for p in root.iterdir() if p.is_dir()) if root.exists() else []
-
-
-def latest_run(camp, doc):
-    return run_dirs(camp, doc)[-1]
-
-
-def headings(doc):
-    return synth.load_outline(doc)
-
-
-def full_text(doc, skip=()):
-    out = []
-    for h in headings(doc):
-        if h in skip:
-            continue
-        out.append(f"{h}\n\nBody for {h} (ch 2, 002.01).\n")
-    return "\n".join(out)
 
 
 @pytest.fixture
@@ -76,69 +61,6 @@ def fake(monkeypatch):
     return calls, state
 
 
-def test_dump_only_writes_prompts_no_call(camp, monkeypatch, fake):
-    calls, _ = fake
-
-    def boom(*a, **k):
-        raise AssertionError("client created")
-
-    monkeypatch.setattr(synth, "client_from_args", boom)
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    runs = latest_run(camp, "party")
-    assert (runs / "part-1.system.md").is_file() and (runs / "part-1.user.md").is_file()
-    assert (runs / "selection.json").is_file()
-    rec = json.loads((runs / "record.json").read_text())
-    assert rec["check"] == "not run"
-    assert not calls and not (camp / RD / "drafts").exists()
-
-
-test_dump_only_creates_no_client = test_dump_only_writes_prompts_no_call
-
-
-def test_draft_written_when_outline_complete(camp, fake):
-    calls, state = fake
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS]) == 0
-    draft = (camp / RD / "drafts/party.draft.md").read_text()
-    first = draft.splitlines()[0]
-    run = latest_run(camp, "party").name
-    assert first.startswith(f"<!-- summary_native draft | doc: party | range: ch002-005 | record: runs/party/{run}/record.json | corpus manifest sha256: ")
-    assert "## " in draft and len(calls) == 1
-    assert (latest_run(camp, "party") / "part-1.out.md").is_file()
-
-
-def test_incomplete_when_heading_missing_exit3(camp, fake, capsys):
-    _, state = fake
-    hs = headings("party")
-    state["texts"] = full_text("party", skip=(hs[2],))
-    assert main(["synth", "party", *ARGS]) == 3
-    assert (camp / RD / "drafts/party.incomplete.md").is_file()
-    assert not (camp / RD / "drafts/party.draft.md").exists()
-    err = capsys.readouterr()
-    assert hs[2] in err.out + err.err and "--parts" in err.out + err.err
-
-
-def test_parts_one_call_per_part_joined_in_order(camp, fake):
-    calls, state = fake
-    hs = headings("party")
-    groups = synth.split_parts(hs, 3)
-    state["texts"] = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
-    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 0
-    assert len(calls) == 3
-    for k, g in enumerate(groups):
-        assert all(h in calls[k]["system"] for h in g)
-        assert "write ONLY these headings" in calls[k]["system"]
-        assert (latest_run(camp, "party") / f"part-{k + 1}.out.md").is_file()
-    draft = (camp / RD / "drafts/party.draft.md").read_text()
-    pos = [draft.index(h) for h in hs]
-    assert pos == sorted(pos)
-
-
-def test_split_parts_contiguous():
-    assert synth.split_parts(list("abcde"), 2) == [list("abc"), list("de")]
-    assert synth.split_parts(list("abc"), 3) == [["a"], ["b"], ["c"]]
-
-
 def test_check_outline_problems():
     hs = ["## A", "## B"]
     assert synth.check_outline("## A\n\nx\n\n## B\n\ny\n", hs) == []
@@ -149,27 +71,9 @@ def test_check_outline_problems():
     assert synth.check_outline("Sure! here:\n## A\n\nx\n\n## B\n\ny", hs)
 
 
-def test_world_state_input_only_from_explicit_flag(camp, fake):
-    calls, state = fake
-    state["texts"] = full_text("party")
-    drafts = camp / RD / "drafts"
-    drafts.mkdir(parents=True)
-    (drafts / "world_state.draft.md").write_text("UNREVIEWED DRAFT TEXT\n")
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    user = (latest_run(camp, "party") / "part-1.user.md").read_text()
-    assert "UNREVIEWED DRAFT TEXT" not in user and "UPSTREAM DRAFT" not in user
-    reviewed = camp / "reviewed_ws.md"
-    reviewed.write_text("REVIEWED WORLD\n")
-    assert main(["synth", "party", *ARGS, "--dump-only", "--force", "--world-state", "reviewed_ws.md"]) == 0
-    user = (latest_run(camp, "party") / "part-1.user.md").read_text()
-    assert "UPSTREAM DRAFT (GM-reviewed): world_state" in user and "REVIEWED WORLD" in user
-    assert "UNREVIEWED DRAFT TEXT" not in user
-    assert main(["synth", "party", *ARGS, "--dump-only", "--world-state", "nope.md"]) == 2
-
-
-# The one-shot campaign_state audit tests (audit files fenced as questions, the grounding.yaml default)
-# are gone with the one-shot path for these two documents (FR-029): the audit is its own step now, and
-# its refusal and freshness are covered under "spec 033 US1" below.
+def test_check_outline_unexpected_heading():
+    hs = ["## A"]
+    assert any("unexpected" in p for p in synth.check_outline("## A\n\nx\n\n## Z\n\ny\n", hs))
 
 
 def test_audit_rejected_for_world_state(camp):
@@ -180,35 +84,6 @@ def test_audit_rejected_for_world_state(camp):
 def test_unknown_doc_rejected_by_parser(camp):
     with pytest.raises(SystemExit):
         main(["synth", "nonsense", *ARGS, "--dump-only"])
-
-
-def test_never_writes_live_docs(camp, fake):
-    _, state = fake
-    state["texts"] = full_text("party")
-    before = {p.name: p.read_bytes() for p in (camp / "docs").glob("*.md")}
-    assert main(["synth", "party", *ARGS]) == 0
-    assert {p.name: p.read_bytes() for p in (camp / "docs").glob("*.md")} == before
-
-
-def test_existing_draft_needs_force(camp, fake):
-    calls, state = fake
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS]) == 0
-    n = len(calls)
-    assert main(["synth", "party", *ARGS]) == 2
-    assert len(calls) == n
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS, "--force"]) == 0
-
-
-def test_existing_incomplete_never_blocks(camp, fake):
-    calls, state = fake
-    state["texts"] = "## nothing\n"
-    assert main(["synth", "party", *ARGS]) == 3
-    n = len(calls)
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS]) == 0 and len(calls) == n + 1
-    assert not (camp / RD / "drafts/party.incomplete.md").exists()
 
 
 def test_synth_refuses_stale_corpus(camp, fake, capsys):
@@ -242,386 +117,10 @@ def test_synth_refuses_unbuilt_range(camp, fake):
     assert main(["synth", "party", *ARGS]) == 2
 
 
-def test_unmatched_name_exit_2(camp):
-    assert main(["synth", "party", *ARGS, "--dump-only", "--name", "Nobody Here"]) == 2
-
-
-def test_record_json_fields(camp, fake):
-    _, state = fake
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS, "--backend", "anthropic", "--model", "m-test", "--max-tokens", "1234"]) == 0
-    rec = json.loads((latest_run(camp, "party") / "record.json").read_text())
-    for k in ("doc", "backend", "model", "max_tokens", "parts", "range", "corpus_manifest_sha256",
-              "upstream", "audit", "outline", "check", "started", "finished"):
-        assert k in rec, k
-    assert rec["doc"] == "party" and rec["model"] == "m-test" and rec["max_tokens"] == 1234
-    assert rec["range"] == {"since": 2, "until": 5} and rec["parts"] == 1
-    assert rec["check"] == {"complete": True, "problems": []}
-    assert rec["outline"] == headings("party")
-    import hashlib
-    assert rec["corpus_manifest_sha256"] == hashlib.sha256((camp / RD / "manifest.json").read_bytes()).hexdigest()
-
-
-def test_prompts_are_deterministic(camp):
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    r1 = latest_run(camp, "party")
-    a = (r1 / "part-1.user.md").read_bytes(), (r1 / "part-1.system.md").read_bytes()
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    r2 = latest_run(camp, "party")
-    assert r1 != r2
-    assert a == ((r2 / "part-1.user.md").read_bytes(), (r2 / "part-1.system.md").read_bytes())
-
-
-@pytest.fixture
-def clock(monkeypatch):
-    from datetime import datetime, timezone
-    t = {"n": 0}
-
-    def tick():
-        t["n"] += 1
-        return datetime(2026, 1, 1, 0, 0, t["n"], tzinfo=timezone.utc)
-
-    monkeypatch.setattr(synth, "_utcnow", tick)
-    return tick
-
-
-def snapshot(d):
-    return {p.relative_to(d).as_posix(): p.read_bytes() for p in d.rglob("*") if p.is_file()}
-
-
-def test_run_ids_are_utc_timestamps(camp, fake, clock):
-    _, state = fake
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS]) == 0
-    assert [d.name for d in run_dirs(camp, "party")] == ["20260101T000001Z"]
-
-
-def test_run_id_collision_gets_suffix(camp, monkeypatch):
-    from datetime import datetime, timezone
-    monkeypatch.setattr(synth, "_utcnow", lambda: datetime(2026, 1, 1, tzinfo=timezone.utc))
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    assert [d.name for d in run_dirs(camp, "party")] == ["20260101T000000Z", "20260101T000000Z-1"]
-
-
-def test_dump_only_leaves_earlier_run_and_draft_record_intact(camp, fake, clock):
-    _, state = fake
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS]) == 0
-    runs = camp / RD / "runs/party"
-    before = snapshot(runs)
-    draft = camp / RD / "drafts/party.draft.md"
-    ref = draft.read_text().splitlines()[0].split("record: ")[1].split(" |")[0]
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    after = snapshot(runs)
-    assert all(after[k] == v for k, v in before.items())
-    assert len(run_dirs(camp, "party")) == 2
-    assert (camp / RD / ref).is_file() and (camp / RD / ref).read_bytes() == before[ref.split("/", 2)[2]]
-
-
-def test_parts_run_then_single_part_run_keep_separate_dirs(camp, fake, clock):
-    _, state = fake
-    groups = synth.split_parts(headings("party"), 3)
-    state["texts"] = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
-    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 0
-    first = run_dirs(camp, "party")[0]
-    before = snapshot(first)
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS, "--parts", "1", "--force"]) == 0
-    dirs = run_dirs(camp, "party")
-    assert len(dirs) == 2 and snapshot(first) == before
-    assert sorted(p.name for p in dirs[1].glob("part-*")) == ["part-1.out.md", "part-1.system.md", "part-1.user.md"]
-    assert (first / "part-3.out.md").is_file()
-
-
-def test_incomplete_keeps_previous_draft(camp, fake, clock, capsys):
-    _, state = fake
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS]) == 0
-    draft = camp / RD / "drafts/party.draft.md"
-    kept = draft.read_bytes()
-    first_run = run_dirs(camp, "party")[0].name
-    capsys.readouterr()
-    state["texts"] = "## nothing\n"
-    assert main(["synth", "party", *ARGS, "--force"]) == 3
-    assert draft.read_bytes() == kept
-    inc = camp / RD / "drafts/party.incomplete.md"
-    second_run = run_dirs(camp, "party")[1].name
-    assert f"run: {second_run}" in inc.read_text().splitlines()[0]
-    err = capsys.readouterr()
-    assert f"previous draft kept: drafts/party.draft.md (from run {first_run})" in err.out + err.err
-
-
-def test_chatty_part_preamble_makes_run_incomplete(camp, fake, capsys):
-    _, state = fake
-    groups = synth.split_parts(headings("party"), 3)
-    texts = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
-    texts[1] = "Here is part 2:\n" + texts[1]
-    state["texts"] = texts
-    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 3
-    e = capsys.readouterr()
-    assert "part 2" in e.out + e.err
-    assert not (camp / RD / "drafts/party.draft.md").exists()
-
-
-def test_extra_h2_makes_run_incomplete(camp, fake, capsys):
-    _, state = fake
-    state["texts"] = full_text("party") + "\n## Notes\n\nextra\n"
-    assert main(["synth", "party", *ARGS]) == 3
-    e = capsys.readouterr()
-    assert "unexpected heading: ## Notes" in e.out + e.err
-
-
-def test_part_with_foreign_heading_incomplete(camp, fake):
-    _, state = fake
-    hs = headings("party")
-    groups = synth.split_parts(hs, 3)
-    # part 1 also writes a heading assigned to part 3
-    texts = ["\n".join(f"{h}\n\nBody {h}\n" for h in g) for g in groups]
-    texts[0] += f"\n{groups[2][0]}\n\nstolen\n"
-    state["texts"] = texts
-    assert main(["synth", "party", *ARGS, "--parts", "3"]) == 3
-
-
-def test_check_outline_unexpected_heading():
-    hs = ["## A"]
-    assert any("unexpected" in p for p in synth.check_outline("## A\n\nx\n\n## Z\n\ny\n", hs))
-
-
-def test_record_backend_is_effective_backend(camp, fake, monkeypatch):
-    _, state = fake
-    state["texts"] = full_text("party")
-    monkeypatch.setenv("CG_BACKEND", "openrouter")
-    assert main(["synth", "party", *ARGS]) == 0
-    rec = json.loads((latest_run(camp, "party") / "record.json").read_text())
-    assert rec["backend"] == "openrouter"
-
-
-def test_failed_client_setup_still_writes_record(camp, monkeypatch):
-    """A run that never reaches the model still leaves an explained run dir."""
-
-    def boom(*_a, **_k):
-        raise SystemExit("no credentials for this backend")
-
-    monkeypatch.setattr(synth, "client_from_args", boom)
-    assert main(["synth", "party", *ARGS]) == 2
-    record = json.loads((latest_run(camp, "party") / "record.json").read_text())
-    assert record["check"] == {"complete": False, "error": "no credentials for this backend"}
-
-
-def test_failed_model_call_still_writes_record(camp, monkeypatch, fake, capsys):
-    def explode(*_a, **_k):
-        raise RuntimeError("upstream 529")
-
-    monkeypatch.setattr(synth, "render_part", explode)
-    assert main(["synth", "party", *ARGS]) == 4
-    err = capsys.readouterr().err
-    assert "Error: model call failed in part 1: RuntimeError: upstream 529" in err
-    assert f"see {RD}/runs/party/" in err and "record.json" in err  # campaign-relative
-    record = json.loads((latest_run(camp, "party") / "record.json").read_text())
-    assert record["check"]["complete"] is False
-    assert "upstream 529" in record["check"]["error"]
-
-
-# ── US4: party and planning (T039) ──────────────────────────────────────────
-
-SENTINEL = "_No arc scores configured._"
-
-
-def write_party(camp, *, trackless=False, missing_sheet=False):
-    (camp / "docs").mkdir(exist_ok=True)
-    (camp / "docs" / "Daz.md").write_text("SHEET-OF-DAZ level 5 fighter\n")
-    (camp / "docs" / "daz_backstory.md").write_text("BACKSTORY-OF-DAZ was a sellsword\n")
-    entry = {"name": "Daz", "sheet": "docs/Nope.md" if missing_sheet else "docs/Daz.md",
-             "backstory": "docs/daz_backstory.md"}
-    if trackless:
-        entry["arc_score"] = None
-    (camp / "config" / "party.yaml").write_text(yaml.safe_dump({"characters": [entry]}, sort_keys=False))
-
-
-def write_planning(camp, *, with_score=False):
-    entry = {"name": "Gith", "dossier": "docs/gith.md"}
-    if with_score:
-        (camp / "docs" / "gith_score.md").write_text("MECHANIC: +1 Rage when Gith is insulted\n")
-        entry["arc_score"] = "docs/gith_score.md"
-    (camp / "config" / "planning.yaml").write_text(
-        yaml.safe_dump({"npcs": [entry], "factions": [{"name": "Gauntlet", "arc_score": None}]}, sort_keys=False)
-    )
-
-
-def test_party_reads_party_config_and_sheets(camp):
-    write_party(camp, trackless=True)
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 0
-    run = latest_run(camp, "party")
-    user = (run / "part-1.user.md").read_text()
-    system = (run / "part-1.system.md").read_text()
-    assert "SHEET-OF-DAZ" in user and "BACKSTORY-OF-DAZ" in user
-    assert "docs/Daz.md" in user and "docs/daz_backstory.md" in user
-    assert "trackless" in user.lower()
-    assert "## Party Overview" in system and "## Characters" in system
-    # an explicit --party-config wins over the default
-    (camp / "alt.yaml").write_text(yaml.safe_dump({"characters": [{"name": "Zed", "sheet": "docs/Daz.md"}]}))
-    assert main(["synth", "party", *ARGS, "--dump-only", "--party-config", "alt.yaml"]) == 0
-    assert "### Zed" in (latest_run(camp, "party") / "part-1.user.md").read_text()
-
-
-def test_party_config_missing_or_invalid_exits_2(camp, capsys):
-    (camp / "config" / "party.yaml").unlink()
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2  # no config/party.yaml
-    (camp / "config" / "party.yaml").write_text("characters: not-a-list\n")
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
-    write_party(camp, missing_sheet=True)
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
-    assert "Nope.md" in capsys.readouterr().err
-    assert not run_dirs(camp, "party")
-
-
-def test_party_config_failure_prints_one_error_line(camp, capsys):
-    (camp / "config" / "party.yaml").unlink()
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
-    lines = [l for l in capsys.readouterr().err.splitlines() if l.strip()]
-    assert len(lines) == 1 and "--party-config" in lines[0]
-    (camp / "config" / "party.yaml").write_text("characters: not-a-list\n")
-    assert main(["synth", "party", *ARGS, "--dump-only"]) == 2
-    lines = [l for l in capsys.readouterr().err.splitlines() if l.strip()]
-    assert len(lines) == 1 and "--party-config" in lines[0]
-    assert main(["synth", "planning", *ARGS, "--dump-only", "--planning-config", "nope.yaml"]) == 2
-    lines = [l for l in capsys.readouterr().err.splitlines() if l.strip()]
-    assert len(lines) == 1 and "--planning-config" in lines[0]
-
-
-def test_planning_no_arc_scores_prompt_states_empty(camp):
-    write_planning(camp)
-    assert main(["synth", "planning", *ARGS, "--dump-only"]) == 0
-    run = latest_run(camp, "planning")
-    system = (run / "part-1.system.md").read_text()
-    user = (run / "part-1.user.md").read_text()
-    assert "## Threat Tracker" in system
-    assert SENTINEL in system and SENTINEL in user
-    assert "No arc scores are configured" in user
-    assert "### Gith" in user and "### Gauntlet" in user
-    sel = json.loads((run / "selection.json").read_text())
-    assert all(i["subject"] for i in sel["selected"])
-
-
-def test_planning_selection_is_npc_only_with_reasons(camp):
-    write_planning(camp)
-    assert main(["synth", "planning", *ARGS, "--dump-only", "--recent-chapters", "0"]) == 0
-    sel = json.loads((latest_run(camp, "planning") / "selection.json").read_text())
-    from pipelines.summary_native import select as sel_mod
-    cats = {d.stem: d.category for d in sel_mod.read_corpus_dossiers(camp / RD)}
-    assert sel["selected"] and all(cats[i["dossier"]] == "npc" for i in sel["selected"])
-    assert all(i["reason"] for i in sel["selected"])
-
-
-def test_planning_threat_tracker_score_line_fails(camp, fake, capsys):
-    write_planning(camp)
-    _, state = fake
-    text = full_text("planning").replace(
-        "## Threat Tracker\n\nBody for ## Threat Tracker (ch 2, 002.01).\n",
-        "## Threat Tracker\n\n| Rage | Gith | 3 |\n",
-    )
-    state["texts"] = text
-    assert main(["synth", "planning", *ARGS]) == 3
-    err = capsys.readouterr()
-    assert "threat tracker must be empty: no arc scores configured" in err.out + err.err
-    assert (camp / RD / "drafts/planning.incomplete.md").is_file()
-    assert not (camp / RD / "drafts/planning.draft.md").exists()
-    rec = json.loads((latest_run(camp, "planning") / "record.json").read_text())
-    assert rec["check"]["complete"] is False
-    assert any("threat tracker must be empty" in p for p in rec["check"]["problems"])
-
-
-def test_planning_sentinel_only_threat_tracker_passes(camp, fake):
-    write_planning(camp)
-    _, state = fake
-    state["texts"] = full_text("planning").replace(
-        "## Threat Tracker\n\nBody for ## Threat Tracker (ch 2, 002.01).\n",
-        f"## Threat Tracker\n\n  {SENTINEL}  \n",
-    )
-    assert main(["synth", "planning", *ARGS]) == 0
-
-
-def test_planning_with_arc_scores_needs_no_extra_check(camp, fake):
-    write_planning(camp, with_score=True)
-    _, state = fake
-    state["texts"] = full_text("planning")
-    assert main(["synth", "planning", *ARGS, "--dump-only"]) == 0
-    user = (latest_run(camp, "planning") / "part-1.user.md").read_text()
-    assert "MECHANIC: +1 Rage" in user and SENTINEL not in user
-    assert main(["synth", "planning", *ARGS]) == 0
-
-
-def test_planning_without_any_config_means_no_arc_scores(camp):
-    assert main(["synth", "planning", *ARGS, "--dump-only"]) == 0
-    assert SENTINEL in (latest_run(camp, "planning") / "part-1.user.md").read_text()
-
-
-def test_planning_explicit_missing_config_exits_2(camp):
-    assert main(["synth", "planning", *ARGS, "--dump-only", "--planning-config", "nope.yaml"]) == 2
-
-
-def test_party_planning_require_explicit_upstream_flags(camp):
-    write_party(camp)
-    write_planning(camp)
-    drafts = camp / RD / "drafts"
-    drafts.mkdir(parents=True)
-    (drafts / "world_state.draft.md").write_text("UNREVIEWED WORLD\n")
-    (drafts / "campaign_state.draft.md").write_text("UNREVIEWED CAMPAIGN\n")
-    for doc in ("party", "planning"):
-        assert main(["synth", doc, *ARGS, "--dump-only", "--force"]) == 0
-        user = (latest_run(camp, doc) / "part-1.user.md").read_text()
-        assert "UNREVIEWED" not in user and "UPSTREAM DRAFT" not in user
-        assert main(["synth", doc, *ARGS, "--dump-only", "--force",
-                     "--world-state", "docs/world_state.md", "--campaign-state", "docs/campaign_state.md"]) == 0
-        user = (latest_run(camp, doc) / "part-1.user.md").read_text()
-        assert "UPSTREAM DRAFT (GM-reviewed): world_state" in user and "LIVE WORLD" in user
-        assert "UPSTREAM DRAFT (GM-reviewed): campaign_state" in user and "LIVE CAMPAIGN" in user
-
-
 def test_party_flags_rejected_for_other_docs(camp):
     write_party(camp)
     assert main(["synth", "world_state", *ARGS, "--dump-only", "--party-config", "config/party.yaml"]) == 2
     assert main(["synth", "party", *ARGS, "--dump-only", "--planning-config", "config/planning.yaml"]) == 2
-
-
-def test_planning_empty_threat_tracker_fails(camp, fake):
-    """An empty section is not the sentinel: it could be a dropped section."""
-    write_planning(camp)
-    _, state = fake
-    state["texts"] = full_text("planning").replace(
-        "## Threat Tracker\n\nBody for ## Threat Tracker (ch 2, 002.01).\n",
-        "## Threat Tracker\n\n",
-    )
-    assert main(["synth", "planning", *ARGS]) == 3
-
-
-# ── upstream flag applicability, registry staleness ─────────────────────────
-
-
-@pytest.mark.parametrize(
-    "doc,flag,ok",
-    [
-        ("world_state", "--world-state", False),
-        ("world_state", "--campaign-state", False),
-        ("campaign_state", "--world-state", False),  # one-shot upstream context: party and planning only
-        ("campaign_state", "--campaign-state", False),
-        ("party", "--world-state", True),
-        ("party", "--campaign-state", True),
-        ("planning", "--world-state", True),
-        ("planning", "--campaign-state", True),
-    ],
-)
-def test_upstream_flag_applicability(camp, capsys, doc, flag, ok):
-    write_party(camp)
-    write_planning(camp)
-    src = "docs/world_state.md" if flag == "--world-state" else "docs/campaign_state.md"
-    rc = main(["synth", doc, *ARGS, "--dump-only", "--force", flag, src])
-    if ok:
-        assert rc == 0
-    else:
-        assert rc == 2
-        assert f"{flag} does not apply to {doc}" in capsys.readouterr().err
 
 
 def test_registry_change_makes_corpus_stale(camp, fake, capsys):
@@ -634,31 +133,15 @@ def test_registry_change_makes_corpus_stale(camp, fake, capsys):
     assert not calls
 
 
-def test_canon_change_does_not_make_corpus_stale(camp, fake):
-    calls, state = fake
-    state["texts"] = full_text("party")
-    (camp / "docs" / "summary_native").mkdir(parents=True, exist_ok=True)
-    (camp / "docs" / "summary_native" / "canon.yaml").write_text("not_duplicates: []\n")
-    assert main(["synth", "party", *ARGS]) == 0
-
-
-def test_configured_registry_not_stale_after_build_then_stale_on_change(camp, fake, capsys):
-    calls, state = fake
-    reg = camp / "docs" / "entity_registry.yaml"
-    reg.write_text("entities: []\n")
-    (camp / "reg_cfg.yaml").write_text("entities: []\n")
-    (camp / "config" / "grounding.yaml").write_text(
-        yaml.safe_dump({"summary_native": {"registry": "reg_cfg.yaml"}})
-    )
-    assert main(["build", *ARGS, "--force"]) == 0
-    state["texts"] = full_text("party")
-    assert main(["synth", "party", *ARGS]) == 0
-    assert calls
-    (camp / "reg_cfg.yaml").write_text("entities: []\n# changed\n")
-    calls.clear()
-    assert main(["synth", "party", *ARGS]) == 2
-    assert "entity registry changed since build" in capsys.readouterr().err
-    assert not calls
+def write_party(camp, *, trackless=False, missing_sheet=False):
+    (camp / "docs").mkdir(exist_ok=True)
+    (camp / "docs" / "Daz.md").write_text("SHEET-OF-DAZ level 5 fighter\n")
+    (camp / "docs" / "daz_backstory.md").write_text("BACKSTORY-OF-DAZ was a sellsword\n")
+    entry = {"name": "Daz", "sheet": "docs/Nope.md" if missing_sheet else "docs/Daz.md",
+             "backstory": "docs/daz_backstory.md"}
+    if trackless:
+        entry["arc_score"] = None
+    (camp / "config" / "party.yaml").write_text(yaml.safe_dump({"characters": [entry]}, sort_keys=False))
 
 
 # ── spec 033 US1: world_state and campaign_state build from checked notes (T015) ─────────────
@@ -737,10 +220,13 @@ class TestChunkedRefusals:
         rc, _, err = cs.run_cli(synth_args(scamp, "world_state"))
         assert rc == 2 and "summary_native extract" in err
 
-    @pytest.mark.parametrize("doc", ["world_state", "campaign_state"])
-    def test_parts_is_retired_for_these_two_documents(self, extracted, fm, doc):
-        rc, _, err = cs.run_cli(synth_args(extracted, doc, "--parts", "2"))
-        assert rc == 2 and "--parts" in err and "one call per section" in err
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    @pytest.mark.parametrize("flag,value", [("--parts", "2"), ("--world-state", "docs/npcs/ilvara-mizzrym.md"),
+                                            ("--campaign-state", "docs/npcs/ilvara-mizzrym.md")])
+    def test_the_retired_flags_are_refused_for_every_document_with_notes_in_place(self, extracted, fm, doc, flag, value):
+        """The CLI-level matrix is in test_summary_native_cli.py; this one proves no model is reached."""
+        rc, _, err = cs.run_cli(synth_args(extracted, doc, flag, value))
+        assert rc == 2 and schema.RETIRED_SYNTH_FLAGS[flag[2:].replace("-", "_")] in err
         assert not fm.prose_calls
 
     def test_audit_is_retired_for_campaign_state_naming_the_audit_step(self, extracted, fm):
@@ -751,11 +237,6 @@ class TestChunkedRefusals:
         rc, _, err = cs.run_cli(synth_args(extracted, "world_state", "--audit", "docs/tracking/tracking.txt"))
         assert rc == 2 and "campaign_state only" in err
 
-    @pytest.mark.parametrize("flag", ["--world-state", "--campaign-state"])
-    def test_one_shot_upstream_flags_do_not_apply_to_the_chunked_documents(self, extracted, flag):
-        rc, _, err = cs.run_cli(synth_args(extracted, "campaign_state", flag, "docs/npcs/ilvara-mizzrym.md"))
-        assert rc == 2 and f"{flag} does not apply" in err
-
     def test_a_stale_audit_refuses_naming_the_audit_step(self, extracted, fm):
         (extracted / "config" / "grounding.yaml").write_text(
             "campaign_state:\n  track_files: [docs/tracking/tracking.txt]\n")
@@ -765,19 +246,60 @@ class TestChunkedRefusals:
         rc, _, err = cs.run_cli(synth_args(extracted, "campaign_state"))
         assert rc == 2 and "summary_native audit" in err and not fm.prose_calls
 
-    def test_party_and_planning_keep_the_one_shot_path(self, extracted, fm):
-        (extracted / "docs" / "Daz.md").write_text("A fighter.\n")
-        (extracted / "config" / "party.yaml").write_text(
-            yaml.safe_dump({"characters": [{"name": "Daz", "sheet": "docs/Daz.md"}]}))
-        rc, out, err = cs.run_cli(synth_args(extracted, "party", "--dump-only"))
+    @pytest.mark.parametrize("doc", ["party", "planning"])
+    def test_party_and_planning_route_through_the_chunked_synth(self, extracted, fm, doc):
+        """Spec 034 T012: no one-shot ``runs/<doc>/part-N.*``; the run lives in ``state/runs`` and the draft in ``state/drafts``."""
+        extra = []
+        if doc == "party":  # party reads its roster: the 033 fixture has none, so give it one (US1 refuses without)
+            (extracted / "docs" / "sheet.md").write_text("# Daz\n\nLevel: 8\n")
+            (extracted / "config" / "party.yaml").write_text("characters:\n  - name: Daz\n    sheet: docs/sheet.md\n")
+        else:  # planning refuses an NPC with no published dossier, and this fixture publishes one of three
+            extra = ["--fallback-npc-lines"]
+        rc, out, err = cs.run_cli(synth_args(extracted, doc, "--dump-only", *extra))
         assert rc == 0, err
-        (run,) = (cs.range_dir(extracted) / "runs" / "party").iterdir()
-        assert (run / "part-1.system.md").is_file() and (run / "part-1.user.md").is_file()
-        rc, _, err = cs.run_cli(synth_args(extracted, "planning", "--dump-only"))
-        assert rc == 0, err
-        assert (next((cs.range_dir(extracted) / "runs" / "planning").iterdir()) / "part-1.user.md").is_file()
-        # the one-shot path never reads the checked notes
+        (run,) = [p for p in (state_dir(extracted) / "runs").iterdir() if (p / f"{doc}.system.md").is_file()]
+        assert (run / f"{doc}.system.md").is_file() and (run / "record.json").is_file()
+        assert json.loads((run / "record.json").read_text())["doc"] == doc
+        assert not (cs.range_dir(extracted) / "runs").exists() and not (cs.range_dir(extracted) / "drafts").exists()
         assert not fm.prose_calls
+
+    def test_planning_opens_with_its_reading_contract_and_builds_with_fallback_lines(self, extracted, fm):
+        """Spec 034 US2: planning's sections exist (party's: tests/test_summary_native_party.py; planning's in depth: tests/test_summary_native_planning.py)."""
+        rc, _, err = cs.run_cli(synth_args(extracted, "planning", "--fallback-npc-lines"))
+        assert rc == 0, err
+        text = (state_dir(extracted) / "drafts" / "planning.draft.md").read_text()
+        assert "How to read this document" in text and "summary_native pointers:" in text
+        assert not (state_dir(extracted) / "drafts" / "planning.incomplete.md").exists()
+        assert not (cs.range_dir(extracted) / "drafts").exists()
+
+    def test_planning_refuses_an_npc_with_no_published_dossier_before_any_call(self, extracted, fm):
+        rc, _, err = cs.run_cli(synth_args(extracted, "planning"))
+        assert rc == 2 and "planning's NPC Dossiers need a published, verified dossier" in err
+        assert not fm.prose_calls
+
+    @pytest.mark.parametrize("doc", ["party", "planning"])
+    def test_notes_extracted_under_the_old_party_grammar_refuse_naming_extract(self, extracted, fm, doc):
+        nm = cs.notes_dir(extracted) / "manifest.json"
+        m = json.loads(nm.read_text())
+        m["system_sha256"] = "0" * 64
+        nm.write_text(json.dumps(m))
+        rc, _, err = cs.run_cli(synth_args(extracted, doc))
+        assert rc == 2
+        assert "the party notes predate the subject grammar" in err
+        assert "summary_native extract --since 2 --until 5" in err
+        # world_state is untouched by the party grammar
+        rc, _, err = cs.run_cli(synth_args(extracted, "world_state", "--dump-only"))
+        assert rc == 0, err
+
+    def test_budgets_default_per_document(self):
+        assert synth._default_budgets("party") == schema.DEFAULT_PARTY_BUDGETS
+        assert synth._default_budgets("planning") == schema.DEFAULT_PLANNING_BUDGETS
+        assert synth._default_budgets("world_state") == schema.DEFAULT_WORLD_BUDGETS
+
+    def test_every_document_drafts_under_state_drafts(self, tmp_path):
+        for doc in schema.DOCS:
+            assert schema.draft_dir(tmp_path, doc) == tmp_path / "state" / "drafts"
+        assert schema.STATE_DOCS == schema.DOCS
 
 
 class TestWorldState:
@@ -1136,3 +658,326 @@ class TestSeparateBackends:
         assert rc == 0, err
         assert fm.extract_calls == [] and fm.prose_calls
         assert fm.preflighted == [] and {a["backend"] for a in fm.client_args} == {"claude-code"}
+
+
+# ── spec 034 US6 (T047/T048): one build surface for all four documents ──────
+
+from tests import conftest_party as cp  # noqa: E402
+from tests.test_summary_native_planning import DEFAULT as PLANNING_DEFAULT  # noqa: E402
+
+#: One section per document that, left blank, makes that document's draft incomplete (exit 3).
+BLANKABLE = {
+    "world_state": "## Locations", "campaign_state": "## Resolved Plot Threads",
+    "party": "## Party Overview", "planning": "## DM Notes",
+}
+
+
+class Models:
+    """The fake model for a campaign that builds all four documents: it answers each call the way that
+    document's own tests do, and can blank one section per document or fail every call."""
+
+    def __init__(self, base) -> None:
+        self.base = base
+        self.blank = False  # the one BLANKABLE section of each document comes back empty
+        self.fail: Exception | None = None
+
+    def render(self, client, system, user, model, max_tokens):
+        if self.fail is not None:
+            raise self.fail
+        doc = re.search(r"^DOCUMENT: (\w+)", user, re.M).group(1)
+        heading = re.search(r"^SECTION: (## .+)$", user, re.M).group(1)
+        if self.blank and heading == BLANKABLE[doc]:
+            return ""
+        if doc == "planning":
+            self.base.prose_calls.append({"heading": heading, "system": system, "user": user, "model": model})
+            return PLANNING_DEFAULT[heading](user)
+        if doc == "party":
+            return type(self.base).prose_render(self.base, client, system, user, model, max_tokens)
+        return cs.FakeModels.prose_render(self.base, client, system, user, model, max_tokens)
+
+
+@pytest.fixture
+def four(tmp_path, monkeypatch):
+    """The party/planning fixture campaign, extracted once, with a fake model that can build any document."""
+    root = cp.party_campaign(tmp_path)
+    base = cp.fake_party_models(monkeypatch)
+    rc, out, err = cs.run_cli(cp.extract_args(root))
+    assert rc == 0, out + err
+    base.extract_calls.clear()
+    base.preflighted.clear()
+    models = Models(base)
+    monkeypatch.setattr(cs.synth, "render_part", models.render)
+    return root, base, models
+
+
+def build(root, doc, *extra):
+    flags = ["--fallback-npc-lines"] if doc in ("world_state", "planning") else []
+    return ["synth", doc, *cp.common(root), *flags, *(["--recent-chapters", "2"] if doc == "planning" else []), *extra]
+
+
+def state(root):
+    return cp.range_dir(root) / "state"
+
+
+def runs(root):
+    return sorted(p for p in (state(root) / "runs").iterdir() if (p / "record.json").is_file()
+                  and json.loads((p / "record.json").read_text()).get("step") == "synth")
+
+
+class TestEveryDocumentBuildsTheSameWay:
+    def test_all_four_documents_build_from_one_extraction_and_synth_extracts_nothing(self, four):
+        root, base, _ = four
+        for doc in schema.DOCS:
+            rc, out, err = cs.run_cli(build(root, doc))
+            assert rc == 0, f"{doc}: {err}"
+            text = (state(root) / "drafts" / f"{doc}.draft.md").read_text()
+            assert synth.check_outline(text, synth.load_outline(doc)) == [], doc
+            assert not (state(root) / "drafts" / f"{doc}.incomplete.md").exists()
+        # synth owns no extraction call and no endpoint check: the notes it read were extracted once, above
+        assert base.extract_calls == [] and base.preflighted == []
+        assert base.prose_calls and not (cp.range_dir(root) / "drafts").exists()
+
+    def test_the_notes_are_untouched_by_building_all_four(self, four):
+        root, _, _ = four
+        notes_dir = state(root) / "notes"
+        before = {p.name: p.read_bytes() for p in notes_dir.iterdir() if p.is_file()}
+        assert before
+        for doc in schema.DOCS:
+            assert cs.run_cli(build(root, doc))[0] == 0
+        assert before == {p.name: p.read_bytes() for p in notes_dir.iterdir() if p.is_file()}
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_never_writes_live_docs(self, four, doc):
+        root, _, _ = four
+        before = {p.relative_to(root).as_posix(): p.read_bytes() for p in (root / "docs").rglob("*")
+                  if p.is_file() and "summary_native" not in p.parts}
+        assert cs.run_cli(build(root, doc))[0] == 0
+        assert before == {p.relative_to(root).as_posix(): p.read_bytes() for p in (root / "docs").rglob("*")
+                          if p.is_file() and "summary_native" not in p.parts}
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_dump_only_creates_no_client_makes_no_call_and_writes_no_draft(self, four, monkeypatch, doc):
+        root, base, _ = four
+
+        def boom(*a, **k):
+            raise AssertionError("a client was created")
+
+        monkeypatch.setattr(cs.synth, "client_from_args", boom)
+        rc, out, err = cs.run_cli(build(root, doc, "--dump-only"))
+        assert rc == 0, err
+        (run,) = runs(root)
+        assert json.loads((run / "record.json").read_text())["check"] == "not run"
+        assert (run / f"{doc}.system.md").is_file() and list(run.glob(f"{doc}.*.user.md"))
+        assert not base.prose_calls and not (state(root) / "drafts").exists()
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_prompts_are_byte_identical_across_runs(self, four, doc):
+        root, _, _ = four
+        assert cs.run_cli(build(root, doc, "--dump-only"))[0] == 0
+        assert cs.run_cli(build(root, doc, "--dump-only"))[0] == 0
+        first, second = runs(root)
+        assert first != second
+        names = sorted(p.name for p in first.glob("*.md"))
+        assert names and names == sorted(p.name for p in second.glob("*.md"))
+        assert all((first / n).read_bytes() == (second / n).read_bytes() for n in names)
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_run_ids_are_utc_timestamps_and_a_clash_gets_a_suffix(self, four, monkeypatch, doc):
+        root, _, _ = four
+        monkeypatch.setattr(synth, "_utcnow", lambda: datetime(2026, 1, 1, 0, 0, 7, tzinfo=timezone.utc))
+        assert cs.run_cli(build(root, doc, "--dump-only"))[0] == 0
+        assert cs.run_cli(build(root, doc, "--dump-only"))[0] == 0
+        assert [p.name for p in runs(root)] == ["20260101T000007Z", "20260101T000007Z-1"]
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_a_dump_only_run_leaves_the_earlier_run_and_the_draft_record_intact(self, four, monkeypatch, doc):
+        root, _, _ = four
+        ticks = iter(range(1, 60))
+        monkeypatch.setattr(synth, "_utcnow", lambda: datetime(2026, 1, 1, 0, 0, next(ticks), tzinfo=timezone.utc))
+        assert cs.run_cli(build(root, doc))[0] == 0
+        (first,) = runs(root)
+        before = {p.relative_to(first).as_posix(): p.read_bytes() for p in first.rglob("*") if p.is_file()}
+        draft = state(root) / "drafts" / f"{doc}.draft.md"
+        ref = re.search(r"record: (runs/\S+/record\.json)", draft.read_text().splitlines()[0]).group(1)
+        assert cs.run_cli(build(root, doc, "--dump-only"))[0] == 0
+        assert len(runs(root)) == 2
+        assert {p.relative_to(first).as_posix(): p.read_bytes() for p in first.rglob("*") if p.is_file()} == before
+        assert (state(root) / ref).read_bytes() == (first / "record.json").read_bytes()
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_an_existing_draft_needs_force(self, four, doc):
+        root, base, _ = four
+        assert cs.run_cli(build(root, doc))[0] == 0
+        n = len(base.prose_calls)
+        rc, _, err = cs.run_cli(build(root, doc))
+        assert rc == 2 and "--force" in err and len(base.prose_calls) == n
+        assert cs.run_cli(build(root, doc, "--force"))[0] == 0 and len(base.prose_calls) > n
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_an_incomplete_build_exits_3_keeps_the_previous_draft_and_names_the_run_it_came_from(self, four, doc):
+        root, base, models = four
+        assert cs.run_cli(build(root, doc))[0] == 0
+        draft = state(root) / "drafts" / f"{doc}.draft.md"
+        kept = draft.read_bytes()
+        (first,) = runs(root)
+        models.blank = True
+        rc, out, err = cs.run_cli(build(root, doc, "--force"))
+        assert rc == 3, err
+        assert draft.read_bytes() == kept
+        incomplete = state(root) / "drafts" / f"{doc}.incomplete.md"
+        second = [r for r in runs(root) if r != first][0]
+        assert f"run: {second.name}" in incomplete.read_text().splitlines()[0]
+        assert f"previous draft kept: state/drafts/{doc}.draft.md (from run {first.name})" in err
+        assert json.loads((second / "record.json").read_text())["check"]["complete"] is False
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_an_existing_incomplete_file_never_blocks_a_rebuild_and_a_good_build_removes_it(self, four, doc):
+        root, _, models = four
+        models.blank = True
+        assert cs.run_cli(build(root, doc))[0] == 3
+        incomplete = state(root) / "drafts" / f"{doc}.incomplete.md"
+        assert incomplete.is_file() and not (state(root) / "drafts" / f"{doc}.draft.md").exists()
+        models.blank = False
+        assert cs.run_cli(build(root, doc))[0] == 0  # no --force: only a draft needs it
+        assert not incomplete.exists()
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_a_failed_client_setup_still_leaves_an_explained_record(self, four, monkeypatch, doc):
+        root, _, _ = four
+
+        def boom(*_a, **_k):
+            raise SystemExit("no credentials for this backend")
+
+        monkeypatch.setattr(cs.synth, "client_from_args", boom)
+        rc, _, err = cs.run_cli(build(root, doc))
+        assert rc == 2 and "no credentials for this backend" in err
+        (run,) = runs(root)
+        assert json.loads((run / "record.json").read_text())["check"] == {
+            "complete": False, "error": "no credentials for this backend"}
+        assert not (state(root) / "drafts" / f"{doc}.draft.md").exists()
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_a_failed_model_call_exits_4_and_still_leaves_a_record(self, four, doc):
+        root, _, models = four
+        models.fail = RuntimeError("upstream 529")
+        rc, _, err = cs.run_cli(build(root, doc))
+        assert rc == 4
+        assert "Error: model call failed in " in err and "RuntimeError: upstream 529" in err
+        assert "state/runs/" in err and "record.json" in err  # campaign-relative
+        (run,) = runs(root)
+        check = json.loads((run / "record.json").read_text())["check"]
+        assert check["complete"] is False and "upstream 529" in check["error"]
+        assert not (state(root) / "drafts" / f"{doc}.draft.md").exists()
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_the_record_names_the_effective_backend_and_the_settings(self, four, doc):
+        root, _, _ = four
+        assert cs.run_cli(build(root, doc, "--model", "m-test", "--max-tokens", "1234"))[0] == 0
+        (run,) = runs(root)
+        rec = json.loads((run / "record.json").read_text())
+        assert (rec["doc"], rec["backend"], rec["model"], rec["max_tokens"]) == (doc, "claude-code", "m-test", 1234)
+        assert rec["range"] == {"since": cp.SINCE, "until": cp.UNTIL} and rec["check"] == {"complete": True, "problems": []}
+        assert "parts" not in rec and "outline" not in rec  # the one-shot record's fields
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_a_changed_registry_refuses_every_document_before_any_call(self, four, doc):
+        root, base, _ = four
+        reg = root / "docs" / "entity_registry.yaml"
+        reg.write_text(reg.read_text() + "\n# edited after the build\n")
+        rc, _, err = cs.run_cli(build(root, doc))
+        assert rc == 2 and "entity registry changed since build" in err and "summary_native build --force" in err
+        assert not base.prose_calls
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_a_canon_file_is_not_a_corpus_input(self, four, doc):
+        root, _, _ = four
+        canon = root / "docs" / "summary_native" / "canon.yaml"
+        canon.write_text("not_duplicates: []\n")
+        assert cs.run_cli(build(root, doc))[0] == 0
+
+    @pytest.mark.parametrize("doc", schema.DOCS)
+    def test_a_registry_named_in_grounding_yaml_is_fresh_after_a_rebuild_and_stale_on_change(self, four, doc):
+        root, base, _ = four
+        shutil.copy(root / "docs" / "entity_registry.yaml", root / "reg_cfg.yaml")
+        (root / "config" / "grounding.yaml").write_text(yaml.safe_dump({"summary_native": {"registry": "reg_cfg.yaml"}}))
+        assert cs.run_cli(["build", *cp.common(root), "--force"])[0] == 0
+        assert cs.run_cli(cp.extract_args(root))[0] == 0
+        assert cs.run_cli(build(root, doc))[0] == 0
+        (root / "reg_cfg.yaml").write_text((root / "reg_cfg.yaml").read_text() + "\n# changed\n")
+        base.prose_calls.clear()
+        rc, _, err = cs.run_cli(build(root, doc, "--force"))
+        assert rc == 2 and "entity registry changed since build" in err and not base.prose_calls
+
+
+class TestPromotedBundlesAreCheckedAgainstTheirOwnContract:
+    """``check-pointers`` requires only the files the document's reading contract names (spec 034 T048)."""
+
+    @staticmethod
+    def _promote(root, doc, name):
+        """Copy a built draft and the files it points to to ``reviewed/<name>``, as a GM would after review."""
+        target = root / "reviewed" / name
+        shutil.copytree(state(root) / "drafts", target)
+        return target, target / f"{doc}.draft.md"
+
+    @pytest.mark.parametrize("doc,kinds,timeline", [
+        ("party", ["party"], False), ("planning", ["factions", "npcs", "threads", "threads_unratified"], False),
+        ("world_state", ["factions", "items", "locations", "npcs", "threads", "threats"], True),
+    ])
+    def test_the_contract_names_exactly_the_files_that_document_points_to(self, four, doc, kinds, timeline):
+        from pipelines.summary_native.pointers import check_paths
+
+        root, _, _ = four
+        assert cs.run_cli(build(root, doc))[0] == 0
+        target, document = self._promote(root, doc, doc)
+        assert check_paths(document, root) == []
+        assert cs.run_cli(["check-pointers", str(document), "--config", str(root / "config" / "config.yaml")])[0] == 0
+        assert sorted(p.stem for p in (target / "reference").glob("*.md")) == kinds
+        assert (target / schema.TIMELINE_FILE).is_file() is timeline
+
+    def test_a_promoted_party_bundle_is_complete_with_its_one_reference_file_and_no_timeline(self, four):
+        from pipelines.summary_native.pointers import check_paths
+
+        root, _, _ = four
+        assert cs.run_cli(build(root, "party"))[0] == 0
+        target, document = self._promote(root, "party", "party")
+        # nothing but the document and the one file its contract names
+        for extra in [p for p in target.rglob("*") if p.is_file() and p not in (document, target / "reference" / "party.md")]:
+            extra.unlink()
+        assert check_paths(document, root) == []
+        (target / "reference" / "party.md").unlink()
+        problems = check_paths(document, root)
+        assert len(problems) == 1 and "reference/party.md" in problems[0]
+        rc, _, err = cs.run_cli(["check-pointers", str(document), "--config", str(root / "config" / "config.yaml")])
+        assert rc == 2 and "reference/party.md" in err and "timeline" not in err
+
+    def test_a_promoted_planning_bundle_is_complete_with_its_three_reference_files(self, four):
+        from pipelines.summary_native.pointers import check_paths
+
+        root, _, _ = four
+        assert cs.run_cli(build(root, "planning"))[0] == 0
+        target, document = self._promote(root, "planning", "planning")
+        for extra in [p for p in target.rglob("*") if p.is_file()
+                      and p != document and p.parent != target / "reference"]:
+            extra.unlink()  # the reports and the budget file are not part of the contract
+        assert check_paths(document, root) == []
+        (target / "reference" / "npcs.md").unlink()
+        problems = check_paths(document, root)
+        assert len(problems) == 1 and "reference/npcs.md" in problems[0]
+
+    def test_a_published_dossier_the_planning_document_points_to_is_still_required(self, four):
+        from pipelines.summary_native.pointers import check_paths
+
+        root, _, _ = four
+        assert cs.run_cli(build(root, "planning"))[0] == 0
+        _, document = self._promote(root, "planning", "planning")
+        (root / "docs" / "npcs" / "ilvara-mizzrym.md").unlink()
+        problems = check_paths(document, root)
+        assert any("docs/npcs/ilvara-mizzrym.md" in p for p in problems)
+
+    def test_a_document_whose_contract_lists_no_reference_files_is_refused(self, tmp_path):
+        from pipelines.summary_native.pointers import check_paths
+
+        doc = tmp_path / "x.md"
+        doc.write_text('> <!-- summary_native pointers: {"reference": "reference", "summaries": "s", "timeline": "t.md"} -->\n')
+        assert check_paths(doc, tmp_path) == [
+            "the reading contract lists no reference files; regenerate the document with summary_native synth"]

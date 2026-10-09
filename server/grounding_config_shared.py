@@ -43,7 +43,7 @@ from typing import Any, Literal
 
 import yaml
 from campaignlib.selection import Backend, ClaudeCodeEffort, ModelSelection
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native.schema import (
@@ -53,7 +53,8 @@ from pipelines.summary_native.schema import (
     DEFAULT_DUP_THRESHOLD,
     DISTILLED_DIR,
     DEFAULT_OUT_ROOT,
-    DEFAULT_PARTS,
+    DEFAULT_PARTY_BUDGETS,
+    DEFAULT_PLANNING_BUDGETS,
     DEFAULT_PROSE_BACKEND,
     DEFAULT_PROSE_EFFORT,
     DEFAULT_PROSE_MODEL,
@@ -196,6 +197,10 @@ class ProseBlock(BaseModel):
     model: str = DEFAULT_PROSE_MODEL
     effort: ClaudeCodeEffort = DEFAULT_PROSE_EFFORT  # type: ignore[assignment]
     budgets: dict[str, int] = Field(default_factory=lambda: dict(DEFAULT_WORLD_BUDGETS))
+    #: party's and planning's section budgets (spec 034). Same rules as ``budgets``; ``Characters``
+    #: in ``party_budgets`` is words per character.
+    party_budgets: dict[str, int] = Field(default_factory=lambda: dict(DEFAULT_PARTY_BUDGETS))
+    planning_budgets: dict[str, int] = Field(default_factory=lambda: dict(DEFAULT_PLANNING_BUDGETS))
 
     @field_validator("model")
     @classmethod
@@ -204,16 +209,30 @@ class ProseBlock(BaseModel):
             raise ValueError("model must not be blank")
         return v.strip()
 
-    @field_validator("budgets")
-    @classmethod
-    def _budgets_known_and_positive(cls, v: dict[str, int]) -> dict[str, int]:
-        unknown = sorted(set(v) - set(DEFAULT_WORLD_BUDGETS))
+    @staticmethod
+    def _check_budgets(v: dict[str, int], known: dict[str, int], doc: str) -> dict[str, int]:
+        unknown = sorted(set(v) - set(known))
         if unknown:
-            raise ValueError(f"unknown world_state section(s) {unknown}; known: {sorted(DEFAULT_WORLD_BUDGETS)}")
+            raise ValueError(f"unknown {doc} section(s) {unknown}; known: {sorted(known)}")
         bad = sorted(k for k, n in v.items() if n < 1)
         if bad:
             raise ValueError(f"budget for {bad} must be at least 1 word")
         return v
+
+    @field_validator("budgets")
+    @classmethod
+    def _budgets_known_and_positive(cls, v: dict[str, int]) -> dict[str, int]:
+        return cls._check_budgets(v, DEFAULT_WORLD_BUDGETS, "world_state")
+
+    @field_validator("party_budgets")
+    @classmethod
+    def _party_budgets_known_and_positive(cls, v: dict[str, int]) -> dict[str, int]:
+        return cls._check_budgets(v, DEFAULT_PARTY_BUDGETS, "party")
+
+    @field_validator("planning_budgets")
+    @classmethod
+    def _planning_budgets_known_and_positive(cls, v: dict[str, int]) -> dict[str, int]:
+        return cls._check_budgets(v, DEFAULT_PLANNING_BUDGETS, "planning")
 
 
 class SummaryNativeRun(BaseModel):
@@ -251,9 +270,19 @@ class SummaryNativeRun(BaseModel):
     recent_chapters: int = DEFAULT_RECENT_CHAPTERS
     recurring_min: int = DEFAULT_RECURRING_MIN
     dup_threshold: float = DEFAULT_DUP_THRESHOLD
-    parts: int = DEFAULT_PARTS
     extract: ExtractBlock = Field(default_factory=ExtractBlock)
     prose: ProseBlock = Field(default_factory=ProseBlock)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _parts_is_retired(cls, data: Any) -> Any:
+        """``parts`` split one-shot documents into N calls; every document is now built one call per section
+        (spec 034). A stale key is refused naming the fix, not silently dropped."""
+        if isinstance(data, dict) and "parts" in data:
+            raise ValueError(
+                "summary_native.parts is retired (every document is built one call per section from the "
+                "checked notes): delete the `parts:` line from grounding.yaml")
+        return data
 
 
 class GroundingConfig(BaseModel):

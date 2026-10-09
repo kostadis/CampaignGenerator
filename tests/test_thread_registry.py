@@ -17,6 +17,7 @@ import yaml
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
+from campaignlib.thread_registry import match_threads  # noqa: E402
 from pipelines.grounding.thread_registry import (  # noqa: E402
     build_speculation_payload,
     check_registry,
@@ -63,6 +64,21 @@ def test_match_thread_uses_title_and_aliases_only():
     assert match_thread(data, "aletras boss")["id"] == "aletra-boss"
     assert match_thread(data, "Aletra's Mysterious Boss")["id"] == "aletra-boss"
     assert match_thread(data, "Aletra's employer") is None
+
+
+def test_match_threads_returns_every_match_so_callers_can_see_ambiguity():
+    # check_registry forbids this registry; match_threads must still report both (spec 034 R4)
+    data = {"threads": [{"id": "a", "title": "The Wall"}, {"id": "b", "title": "Other", "aliases": ["the wall"]}]}
+    assert [t["id"] for t in match_threads(data, "THE WALL")] == ["a", "b"]
+    assert match_threads(data, "nothing") == []
+    assert match_thread(data, "the wall")["id"] == "a"
+
+
+def test_the_read_side_has_one_home():
+    import campaignlib.thread_registry as home
+    import pipelines.grounding.thread_registry as cli
+    for name in ("norm_title", "match_thread", "find_thread", "load_registry", "check_registry", "STATUSES", "CHANGES"):
+        assert getattr(cli, name) is getattr(home, name)
 
 
 # ── verbs via CLI (the ratification writers) ─────────────────────────────

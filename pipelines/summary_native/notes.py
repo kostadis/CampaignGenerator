@@ -181,6 +181,12 @@ _NONE_RE = re.compile(r"-\s*\(?none\)?\.?", re.I)
 _THREAD_TAG_RE = re.compile(rf"^-\s*\[({'|'.join(schema.THREAD_TAGS)})\]")
 _WORLD_TAG_RE = re.compile(rf"^-\s*\[({'|'.join(schema.WORLD_TAGS)})\]")
 _SUBJECT_RE = re.compile(r"^-\s*\[[A-Z]+\]\s*\*\*(.+?)\*\*")
+#: A party bullet: an optional ``[LEVEL]`` tag, then the bold subject (research R1).
+_PARTY_SUBJECT_RE = re.compile(rf"^-\s*(?:\[({schema.LEVEL_TAG})\]\s*)?\*\*(.+?)\*\*")
+#: The tag written inside the bold, ``**[LEVEL] Daz**`` (a form qwen3.8 produces): the same level row.
+_INNER_LEVEL_RE = re.compile(rf"^\[({schema.LEVEL_TAG})\]\s*(.+)$")
+#: The number of a level row: ``- [LEVEL] **Subject** — 9 [cite]``.
+_LEVEL_VALUE_RE = re.compile(r"^-\s*(?:\[[A-Z]+\]\s*)?\*\*.+?\*\*\s*[—–:-]*\s*(\d{1,2})\b")
 _ROW_RE = re.compile(
     r"^-\s*\*{0,2}([^|*]+?)\*{0,2}\s*\|\s*([A-Za-z]+)\s*\|\s*([^|]*?)\s*\|\s*([^|]*?)\s*(\[ch .*\])\s*$"
 )
@@ -190,6 +196,93 @@ NESTED_BULLET = "nested-bullet"
 MISSING_THREAD_TAG = "missing-thread-tag"
 MISSING_WORLD_TAG = "missing-world-tag"
 MALFORMED_ROW = "malformed-row"
+MISSING_PARTY_SUBJECT = "missing-party-subject"
+LEVEL_NOT_IN_CITED_TEXT = "level-not-in-cited-text"
+MALFORMED_LEVEL_ROW = "malformed-level-row"
+
+# ── Levels (research R1) ────────────────────────────────────────────────────
+
+_CARDINALS = (
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen "
+    "sixteen seventeen eighteen nineteen twenty"
+).split()
+_ORDINALS = (
+    "zeroth first second third fourth fifth sixth seventh eighth ninth tenth eleventh twelfth thirteenth "
+    "fourteenth fifteenth sixteenth seventeenth eighteenth nineteenth twentieth"
+).split()
+#: A phrase naming a spell level or slot is not a character level: "4th-level slot", "level 9 spells".
+_SPELL_AFTER_RE = re.compile(r"[\s-]*(?:spells?|slots?)\b", re.I)
+
+
+def _ordinal_digits(n: int) -> str:
+    suffix = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suffix}"
+
+
+def _level_patterns(n: int) -> list["re.Pattern[str]"]:
+    """The level phrases that state ``n`` (research R1): digit, word and ordinal spellings."""
+    cardinal = [str(n)] + ([_CARDINALS[n]] if n < len(_CARDINALS) else [])
+    ordinal = [_ordinal_digits(n)] + ([_ORDINALS[n]] if n < len(_ORDINALS) else [])
+    any_form = "|".join(re.escape(f) for f in cardinal + ordinal)
+    ord_form = "|".join(re.escape(f) for f in ordinal)
+    return [re.compile(p, re.I) for p in (
+        rf"\blevel\s+(?:{any_form})\b",                         # level 9 / level nine
+        rf"\b(?:{ord_form})[\s-]+level\b",                      # 9th level / ninth-level
+        rf"\blevels?\s+(?:up\s+)?to\s+(?:{any_form})\b",        # levels to 9 / levels up to 9
+        rf"\breach(?:es|ed)?\s+(?:level\s+)?(?:{any_form})\b",  # reaches 9 / reached level nine
+    )]
+
+
+def level_stated(text: str, n: int) -> bool:
+    """Whether ``text`` states character level ``n`` in a level phrase that is not a spell level."""
+    for pat in _level_patterns(n):
+        for m in pat.finditer(text):
+            if not _SPELL_AFTER_RE.match(text, m.end()):
+                return True
+    return False
+
+
+def target_text(ch: Chapter, target: str) -> str:
+    """The text a citation target points to inside ``ch``: a scene (``NNN.SS``, from its ``###`` heading
+    to the next ``###`` or ``##`` heading) or a section (``moment``, ``npcs``, ... from its ``##``
+    heading to the next one). ``""`` when the chapter has no such target."""
+    lines = ch.text.splitlines()
+    out: list[str] = []
+    taking = False
+    for line in lines:
+        if "." in target:
+            m = schema.H3_RE.match(line)
+            if m:
+                taking = m.group(1).split(" ", 1)[0] == target
+            elif line.startswith("## "):
+                taking = False
+        else:
+            m = schema.H2_RE.match(line)
+            if m:
+                taking = _H2_TO_KEY.get(m.group(1)) == target
+        if taking:
+            out.append(line)
+    return "\n".join(out)
+
+
+def cited_text(text: str, by_number: dict[int, Chapter]) -> str:
+    """The text of every section ``text`` cites, from the chapters in ``by_number``."""
+    parts: list[str] = []
+    seen: set[tuple[int, str]] = set()
+    for _, chapter, target in cites(text):
+        if chapter < 0 or (chapter, target) in seen or chapter not in by_number:
+            continue
+        seen.add((chapter, target))
+        parts.append(target_text(by_number[chapter], target))
+    return "\n".join(parts)
+
+
+# ── Note ids (research R6) ──────────────────────────────────────────────────
+
+
+def note_id(note: "Note") -> str:
+    """A stable id: the same chapter, kind and text give the same id across re-extraction and chunking."""
+    return "n-" + hashlib.sha1(f"{note.first_chapter:03d}|{note.kind}|{note.text}".encode("utf-8")).hexdigest()[:10]
 
 #: A chunk is an outlier (a possible runaway call) above this multiple of the run's median drops
 #: per chunk, and at or above this many drops (research R4).
@@ -212,15 +305,23 @@ class Note:
     location: str | None = None
     disposition: str | None = None
     cite: str | None = None
+    # a party level row only: the checked number (spec 034)
+    level: int | None = None
+
+    _FIELDS = ("kind", "text", "first_chapter", "chunk", "tag", "subject", "status", "location", "disposition",
+               "cite", "level")
+
+    @property
+    def note_id(self) -> str:
+        """The stable id of this note (research R6); see :func:`note_id`."""
+        return note_id(self)
 
     def to_dict(self) -> dict:
-        return {k: getattr(self, k) for k in (
-            "kind", "text", "first_chapter", "chunk", "tag", "subject", "status", "location", "disposition", "cite")}
+        return {k: getattr(self, k) for k in self._FIELDS}
 
     @classmethod
     def from_dict(cls, d: dict) -> "Note":
-        return cls(**{k: d.get(k) for k in (
-            "kind", "text", "first_chapter", "chunk", "tag", "subject", "status", "location", "disposition", "cite")})
+        return cls(**{k: d.get(k) for k in cls._FIELDS})
 
 
 @dataclass(frozen=True)
@@ -279,6 +380,7 @@ def check_chunk(raw: str, chunk: Sequence[Chapter], label: str | None = None) ->
     """
     label = label or npc_chunked.chunk_range(chunk)
     allowed = {c.number: c.targets for c in chunk}
+    by_number = {c.number: c for c in chunk}
     hay = npc_chunked.chunk_text(chunk)
     secs = npc_check.parse_sections(raw)
     res = CheckedChunk(label)
@@ -328,6 +430,25 @@ def check_chunk(raw: str, chunk: Sequence[Chapter], label: str | None = None) ->
                     kind, text, fc, label, subject=m.group(1).strip(), status=m.group(2),
                     location=m.group(3) or "—", disposition=m.group(4) or "—", cite=_normalise_cite(m.group(5)),
                 ))
+            elif kind == "party":
+                m = _PARTY_SUBJECT_RE.match(text)
+                if not m:
+                    drop(MISSING_PARTY_SUBJECT)
+                    continue
+                subject, tag, level = m.group(2).strip(), m.group(1), None
+                inner = _INNER_LEVEL_RE.match(subject)
+                if inner and tag is None:
+                    tag, subject = inner.group(1), inner.group(2).strip()
+                if tag == schema.LEVEL_TAG:
+                    v = _LEVEL_VALUE_RE.match(text)
+                    if not v:
+                        drop(MALFORMED_LEVEL_ROW)
+                        continue
+                    level = int(v.group(1))
+                    if not level_stated(cited_text(text, by_number), level):
+                        drop(LEVEL_NOT_IN_CITED_TEXT)
+                        continue
+                res.notes.append(Note(kind, text, fc, label, tag=tag, subject=subject, level=level))
             else:
                 res.notes.append(Note(kind, text, fc, label))
     return res

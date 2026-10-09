@@ -326,6 +326,49 @@ class TestReadingContract:
     def test_it_is_deterministic(self):
         assert self._md() == self._md()
 
+    def test_world_states_contract_is_byte_identical_to_the_one_written_before_spec_034(self):
+        """Pinned (spec 034 T009) against the output recorded before ``reading_contract`` took a ``doc``."""
+        golden = (Path(__file__).parent / "fixtures" / "summary_native" / "world_state_reading_contract.golden.md")
+        want = golden.read_text(encoding="utf-8")
+        assert state_sections.reading_contract((2, 70), self.PATHS) == want
+        assert state_sections.reading_contract((2, 70), self.PATHS, "world_state") == want
+
+    def test_party_names_only_its_own_reference_file_and_has_no_dossier_or_thread_paragraph(self):
+        md = state_sections.reading_contract((2, 70), self.PATHS, "party")
+        assert "`docs/reference/party.md`" in md
+        for other in ("factions", "npcs", "locations", "items", "threats", "threads"):
+            assert f"docs/reference/{other}.md" not in md
+        assert "docs/npcs/<slug>.md" not in md and "Key NPCs" not in md and "NPC Dossiers" not in md
+        assert "Active Plots" not in md and "canon_events_timeline" not in md.split("<!--")[0]
+        assert all(ln.startswith(">") for ln in md.strip().splitlines())
+
+    def test_planning_names_the_dossier_section_the_thread_layers_and_its_three_reference_files(self):
+        md = state_sections.reading_contract((2, 70), self.PATHS, "planning")
+        assert "Each line under `## NPC Dossiers` ends with `→ docs/npcs/<slug>.md`" in md
+        assert schema.KEY_NPC_FALLBACK_MARK in md and "Key NPCs" not in md
+        for text in ("## Active Plots", schema.DORMANT_HEADING, schema.UNRATIFIED_HEADING, "/grounding/threads",
+                     "docs/ensemble/thread_proposals.yaml", "docs/thread_registry.yaml"):
+            assert text in md
+        assert "docs/reference/factions.md`, `docs/reference/npcs.md`, `docs/reference/threads.md`" in md
+        for other in ("party", "locations", "items", "threats"):
+            assert f"docs/reference/{other}.md" not in md
+        assert "canon_events_timeline" not in md.split("<!--")[0]
+
+    def test_world_state_alone_has_no_thread_paragraph(self):
+        md = self._md()
+        assert "Active Plots" not in md and "thread_registry" not in md
+
+    def test_every_variant_keeps_the_markers_and_the_machine_readable_paths(self):
+        for doc in ("world_state", "campaign_state", "party", "planning"):
+            md = state_sections.reading_contract((2, 70), self.PATHS, doc)
+            for marker in (schema.LATER, schema.SINCE, schema.UNVERIFIED):
+                assert marker in md
+            assert md.rstrip().endswith("-->") and "summary_native pointers:" in md
+
+    def test_an_unknown_document_has_no_contract(self):
+        with pytest.raises(ValueError):
+            state_sections.reading_contract((2, 70), self.PATHS, "bogus")
+
 
 # ── The session-prep contract (spec 033 US7, T052) ──────────────────────────
 #

@@ -1,4 +1,4 @@
-"""summary_native CLI: validate | build | extract | audit | synth | annotate | compare | npc-link | npc-draft | npc-compose | npc-verify | npc-publish.
+"""summary_native CLI: validate | build | extract | audit | synth | annotate | compare | thread-propose | npc-link | npc-draft | npc-compose | npc-verify | npc-publish.
 
 Exit codes (contracts/cli.md): 0 ok, 1 blocking validation problems, 2 refusal,
 3 incomplete synthesis, 4 model call failed, 5 npc-verify found a failing draft.
@@ -16,6 +16,7 @@ import yaml
 
 from campaignlib.config import ConfigLocationError, campaign_root_for_config, find_default_config
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME, load_players_config
+from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
 from campaignlib.registry import load_registry
 from campaignlib.util import atomic_write_text
 from campaignlib import DEFAULT_MODEL, add_backend_args
@@ -23,11 +24,11 @@ from campaignlib.api.client import resolve_cli_model
 from pipelines.summary_native import annotate, audit
 from pipelines.summary_native import compare as compare_mod
 from pipelines.summary_native import corpus, duplicates, extract, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
-from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth
+from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth, thread_propose
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
-SUBCOMMANDS = ("validate", "build", "extract", "audit", "synth", "annotate", "compare", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish", "check-pointers")
+SUBCOMMANDS = ("validate", "build", "extract", "audit", "synth", "annotate", "compare", "thread-propose", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish", "check-pointers")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -39,7 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
     for name in SUBCOMMANDS:
         p = sub.add_parser(name, help=name)
         if name == "check-pointers":
-            p.add_argument("document", help="promoted world_state file (or its draft)")
+            p.add_argument("document", help="promoted world_state, party or planning file (or its draft)")
             p.add_argument("--config", default=None)
             continue
         if name in ("synth", "compare"):
@@ -63,6 +64,19 @@ def build_parser() -> argparse.ArgumentParser:
                                 "default: grounding.yaml campaign_state.track_files)")
             p.add_argument("--candidates", type=_positive_int, default=schema.DEFAULT_AUDIT_CANDIDATES, metavar="N",
                            help=f"max candidate chapters per item (default {schema.DEFAULT_AUDIT_CANDIDATES})")
+        if name == "thread-propose":
+            p.add_argument("--max-input-chars", type=_positive_int, default=None, metavar="N",
+                           help="split the thread notes into chapter-ordered batches of at most N characters "
+                                f"(default {schema.DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS}); every batch sees only "
+                                "the checked notes and the ratified threads, never another batch's output")
+            p.add_argument("--max-tokens", type=int, default=schema.DEFAULT_MAX_TOKENS,
+                           help=f"max_tokens per call (default {schema.DEFAULT_MAX_TOKENS})")
+            p.add_argument("--dump-only", action="store_true", help="write the prompts and the run record; make no model call")
+            p.add_argument("--model", default=None,
+                           help="model id (default: grounding.yaml summary_native.prose.model, "
+                                f"else {schema.DEFAULT_PROSE_MODEL})")
+            # no parser default: precedence is flag > grounding.yaml summary_native.prose > schema
+            add_backend_args(p, default_backend=None)
         if name == "extract":
             p.add_argument("--chunk-chars", type=int, default=None,
                            help="chunk size limit in characters "
@@ -91,7 +105,7 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--npc-root", default=None,
                            help="NPC output root (default: npc_dossiers.yaml npc_root, else "
                                 f"{schema.DEFAULT_NPC_ROOT})"
-                                + ("; world_state only: where draft verifications and the publish log are read, "
+                                + ("; world_state and planning: where draft verifications and the publish log are read, "
                                    "to explain a missing dossier" if name == "synth" else ""))
         if name == "npc-link":
             p.add_argument("--force", action="store_true",
@@ -132,8 +146,11 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--init", nargs="+", default=None, metavar="NAME",
                            help="create an empty authored file for each name; composes nothing")
         if name == "synth":
-            p.add_argument("--world-state", default=None, metavar="FILE", help="GM-reviewed world-state draft to use as context")
-            p.add_argument("--campaign-state", default=None, metavar="FILE", help="GM-reviewed campaign-state draft to use as context")
+            # Retired options (spec 034). They stay on the parser only so that `synth` can refuse them with the
+            # message that names the replacement (schema.RETIRED_SYNTH_FLAGS) instead of argparse's generic one.
+            p.add_argument("--world-state", default=None, metavar="FILE", help=argparse.SUPPRESS)
+            p.add_argument("--campaign-state", default=None, metavar="FILE", help=argparse.SUPPRESS)
+            p.add_argument("--parts", default=None, metavar="N", help=argparse.SUPPRESS)
             p.add_argument("--party-config", default=None, metavar="FILE",
                            help="party roster (party; default <config>/party.yaml)")
             p.add_argument("--planning-config", default=None, metavar="FILE",
@@ -143,29 +160,25 @@ def build_parser() -> argparse.ArgumentParser:
                                 "refused for every document")
             p.add_argument("--recent-chapters", type=int, default=None,
                            help=f"chapters counted back from the range end (default {schema.DEFAULT_RECENT_CHAPTERS}; 0 = all); "
-                                "party, planning and world_state's Key NPCs; refused for campaign_state")
+                                "planning and world_state's Key NPCs; refused for party and campaign_state")
             p.add_argument("--recurring-min", type=int, default=None,
                            help=f"observations that make an entity recurring (default {schema.DEFAULT_RECURRING_MIN}); "
-                                "party, planning and world_state's Key NPCs; refused for campaign_state")
+                                "planning and world_state's Key NPCs; refused for party and campaign_state")
             p.add_argument("--name", nargs="+", default=None, metavar="SUBJECT",
-                           help="force-include dossiers by subject (party, planning; world_state: force-include "
-                                "these global NPCs in Key NPCs); refused for campaign_state")
+                           help="force-include dossiers by subject (planning; world_state: force-include "
+                                "these global NPCs in Key NPCs); refused for party and campaign_state")
             p.add_argument("--fallback-npc-lines", action="store_true",
-                           help="world_state only: when a selected NPC has no published, verified dossier, write a "
+                           help="world_state and planning: when a selected NPC has no published, verified dossier, write a "
                                 f"code-built line {schema.KEY_NPC_FALLBACK_MARK} instead of refusing "
                                 "(per run; never read from config)")
-            p.add_argument("--parts", type=int, default=None,
-                           help=f"split the outline into N calls (party and planning; default {schema.DEFAULT_PARTS} = one call; "
-                                "refused for world_state and campaign_state, which write one call per section)")
             p.add_argument("--dump-only", action="store_true", help="write prompts and the record; make no model call")
             p.add_argument("--force", action="store_true", help="overwrite an existing draft")
             p.add_argument("--model", default=None,
-                           help=f"model id (default: {DEFAULT_MODEL}; world_state and campaign_state: "
-                                f"grounding.yaml summary_native.prose.model, else {schema.DEFAULT_PROSE_MODEL})")
+                           help="model id (default: grounding.yaml summary_native.prose.model, "
+                                f"else {schema.DEFAULT_PROSE_MODEL})")
             p.add_argument("--max-tokens", type=int, default=schema.DEFAULT_MAX_TOKENS,
                            help=f"max_tokens per call (default {schema.DEFAULT_MAX_TOKENS})")
-            # no parser default: world_state/campaign_state resolve flag > grounding.yaml summary_native.prose > schema.
-            # None behaves as "anthropic" everywhere else (client_from_args, resolve_cli_model), so party and planning are unchanged.
+            # no parser default: every document resolves flag > grounding.yaml summary_native.prose > schema
             add_backend_args(p, default_backend=None)
         if name == "compare":
             p.add_argument("--live", required=True, metavar="FILE", help="the live grounding document to compare against")
@@ -201,6 +214,10 @@ def _sha_if_file(path: Path | None) -> str | None:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "synth" and synth.retired_flag_refusal(args):
+        return _err(synth.retired_flag_refusal(args))  # before any config or corpus read: the flag is gone, whatever else is wrong
+    if args.command == "thread-propose" and (args.since is None or args.until is None):
+        return _err("thread-propose needs --since and --until: the thread notes of a chapter range, never all chapters")
     try:
         config_path = Path(args.config) if args.config else Path(find_default_config())
         root = campaign_root_for_config(config_path)
@@ -277,6 +294,8 @@ def _after_scan(args, root, config_path, cfg, report, range_dir, summaries_dir, 
         return _audit(args, root, config_path, cfg, report, range_dir, summaries_dir, registry_path)
     if args.command == "synth":
         return _synth(args, root, config_path, cfg, report, range_dir, registry_path, summaries_dir)
+    if args.command == "thread-propose":
+        return _thread_propose(args, root, config_path, cfg, report, range_dir, registry_path)
     if args.command == "annotate":
         return annotate.run_annotate(
             args, range_dir=range_dir, summaries_dir=summaries_dir, registry_path=registry_path,
@@ -631,24 +650,30 @@ def _audit(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
 
 def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, registry_path,
            summaries_dir: Path) -> int:
-    budgets = None
     try:
-        if args.doc in schema.STATE_DOCS:
-            # world_state and campaign_state: flag > grounding.yaml summary_native.prose > schema.
-            prose = resolve.resolve_prose(
-                cfg, backend=args.backend, model=args.model, effort=getattr(args, "claude_code_effort", None))
-            args.backend, args.model, args.claude_code_effort = prose.backend, prose.model, prose.effort
-            budgets = prose.budgets
+        # every document: flag > grounding.yaml summary_native.prose > schema.
+        prose = resolve.resolve_prose(
+            cfg, backend=args.backend, model=args.model, effort=getattr(args, "claude_code_effort", None))
+        args.backend, args.model, args.claude_code_effort = prose.backend, prose.model, prose.effort
+        budgets = {"party": prose.party_budgets, "planning": prose.planning_budgets}.get(args.doc, prose.budgets)
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
     except ValueError as e:
         return _err(str(e))
     track = _grounding_group(config_path.expanduser().resolve(), "campaign_state").get("track_files") or []
     npc_root = None
-    if args.doc == "world_state":
+    thread_registry_path = None
+    if args.doc in ("world_state", "planning"):
         try:
             npc_root = _npc_root(args, root, config_path)
         except ValueError as e:  # a malformed npc_dossiers.yaml
             return _err(str(e))
+    if args.doc == "planning":
+        # Thread identity is the GM's registry; where it lives is projections.yaml's `stores` (as thread-propose reads it).
+        try:
+            stores = load_projection_config(config_path.expanduser().resolve().parent / PROJECTION_CONFIG_FILENAME).stores
+        except ValueError as e:  # ConfigRefusal, malformed YAML and pydantic's ValidationError are ValueErrors
+            return _err(str(e))
+        thread_registry_path = _under(root, stores.thread_registry)
     return synth.run_synth(
         args,
         root=root,
@@ -659,11 +684,35 @@ def _synth(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
         config_dir=config_path.expanduser().resolve().parent,
         recent_chapters=_pick(args.recent_chapters, cfg, "recent_chapters", schema.DEFAULT_RECENT_CHAPTERS),
         recurring_min=_pick(args.recurring_min, cfg, "recurring_min", schema.DEFAULT_RECURRING_MIN),
-        parts=_pick(args.parts, cfg, "parts", schema.DEFAULT_PARTS),
         summaries_dir=summaries_dir,
         players_path=_players_path(config_path),
         budgets=budgets,
         npc_root=npc_root,
+        thread_registry_path=thread_registry_path,
+    )
+
+
+def _thread_propose(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, registry_path) -> int:
+    """thread-propose: prose backend defaults (flag > grounding.yaml summary_native.prose > schema); the thread
+    registry and the proposals file come from ``projections.yaml`` ``stores`` (contracts/cli.md)."""
+    try:
+        prose = resolve.resolve_prose(
+            cfg, backend=args.backend, model=args.model, effort=getattr(args, "claude_code_effort", None))
+        args.backend, args.model, args.claude_code_effort = prose.backend, prose.model, prose.effort
+        args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
+        stores = load_projection_config(config_path.expanduser().resolve().parent / PROJECTION_CONFIG_FILENAME).stores
+    except ValueError as e:  # ConfigRefusal, malformed YAML and pydantic's ValidationError are ValueErrors
+        return _err(str(e))
+    return thread_propose.run_thread_propose(
+        args,
+        root=root,
+        range_dir=range_dir,
+        report=report,
+        entity_registry_path=registry_path,
+        players_path=_players_path(config_path),
+        thread_registry_path=_under(root, stores.thread_registry),
+        proposals_path=_under(root, stores.thread_proposals),
+        max_input_chars=args.max_input_chars or schema.DEFAULT_THREAD_PROPOSE_MAX_INPUT_CHARS,
     )
 
 

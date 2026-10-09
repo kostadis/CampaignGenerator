@@ -59,6 +59,7 @@ from campaignlib.selection import ModelSelection
 from server.backend_forwarding import backend_cli_args
 from server.platform_config_service import resolve_selection, selection_cli_args
 from server.projection_config_service import ProjectionConfigService
+from server.routers.summary_native import _base_cmd, _require_dir, _run_config
 from server.subprocess_runner import console_script, stream_subprocess
 
 router = APIRouter()
@@ -468,6 +469,64 @@ async def run_threads_propose(corpus: list[str] = Query(default=[])):
     return _sse_response(cmd)
 
 
+# ── Thread proposals: grouping the notes no ratified thread claims (034 US3) ──
+
+
+@router.get("/threads/run/group-propose")
+async def run_threads_group_propose(
+    request: Request,
+    since: int | None = None,
+    until: int | None = None,
+    summaries_dir: str = "",
+    max_input_chars: int | None = None,
+    max_tokens: int | None = None,
+    dump_only: bool = False,
+    model: str | None = None,
+    claude_code_effort: str | None = None,
+):
+    """Stream ``summary_native thread-propose`` (SSE): a model groups the unattached thread notes.
+
+    ``since`` and ``until`` are required — Constitution X: the notes of a chapter range, never an implicit
+    "all chapters" and never a range read from a config the GM did not look at. The model, backend and effort
+    resolve from ``grounding.yaml`` ``summary_native.prose`` exactly as ``synth`` does. The CLI resolves the
+    registry and proposals paths itself, from ``projections.yaml``; nothing here names either.
+    """
+    if since is None or until is None:
+        raise HTTPException(
+            status_code=400,
+            detail="since and until are required — pick the chapter range whose thread notes to group; "
+                   "there is no implicit \"all chapters\".")
+    for name, value in (("max_input_chars", max_input_chars), ("max_tokens", max_tokens)):
+        if value is not None and value < 1:
+            raise HTTPException(status_code=400, detail=f"{name} must be at least 1, got {value}")
+    run = _run_config(request)
+    cmd = _base_cmd("thread-propose", None, _require_dir(run, summaries_dir), since, until)
+    if max_input_chars is not None:
+        cmd += ["--max-input-chars", str(max_input_chars)]
+    if max_tokens is not None:
+        cmd += ["--max-tokens", str(max_tokens)]
+    if dump_only:
+        cmd.append("--dump-only")
+    cmd += selection_cli_args(resolve_selection(
+        request, request_model=model, service=run.prose, service_name="summary_native.prose",
+        request_claude_code_effort=(claude_code_effort or "").strip() or None,
+    ))
+    return _sse_response(cmd)
+
+
+@router.get("/threads/plan")
+def threads_plan(key: str = "") -> dict:
+    """The starting plan for ratifying ONE group proposal: ``thread_registry ratify --key K --emit-plan``.
+
+    Read-only. The editor starts from this and posts its own edited plan to ``POST /threads/ratify``;
+    nothing here, and nothing in the page, turns it into a write.
+    """
+    key = key.strip()
+    if not key:
+        raise HTTPException(status_code=400, detail="key is required")
+    return _thread_registry("ratify", "--key", key, "--emit-plan")
+
+
 # ── Thread registry: rulings (014 US2) ────────────────────────────────────
 
 
@@ -475,20 +534,24 @@ async def run_threads_propose(corpus: list[str] = Query(default=[])):
 async def threads_rule(request: Request) -> dict:
     """Record ONE ruling on ONE candidate: ratified / rejected / deferred.
 
-    There is deliberately no bulk variant — no endpoint in this router
-    accepts a list of ``norm`` values (SC-004, asserted by
+    A name-keyed candidate takes ``norm``; a group proposal takes ``key`` (rejected / deferred: a group
+    is ratified with a plan, at ``/threads/ratify``). There is deliberately no bulk variant — no endpoint
+    in this router accepts a list of ``norm`` or ``key`` values (SC-004, asserted by
     tests/test_thread_registry_routes.py).
     """
     body: Any = await request.json()
     if not isinstance(body, dict):
         raise HTTPException(status_code=400, detail="body must be a JSON object")
     norm = (body.get("norm") or "").strip()
+    key = (body.get("key") or "").strip()
     status = (body.get("status") or "").strip()
-    if not norm:
-        raise HTTPException(status_code=400, detail="norm is required")
+    if not norm and not key:
+        raise HTTPException(status_code=400, detail="norm is required (or key, for a group proposal)")
+    if norm and key:
+        raise HTTPException(status_code=400, detail="give norm or key, not both")
     if not status:
         raise HTTPException(status_code=400, detail="status is required")
-    args = ["rule", "--norm", norm, "--status", status]
+    args = ["rule", "--key", key, "--status", status] if key else ["rule", "--norm", norm, "--status", status]
     if body.get("note"):
         args += ["--note", str(body["note"])]
     if body.get("thread"):
@@ -509,8 +572,13 @@ async def threads_ratify(request: Request) -> dict:
     if not isinstance(body, dict):
         raise HTTPException(status_code=400, detail="body must be a JSON object")
     norm = (body.get("norm") or "").strip()
+    key = (body.get("key") or "").strip()
+    if norm and key:
+        raise HTTPException(status_code=400, detail="give norm or key, not both")
+    if key:
+        return await _ratify_group(key, body)
     if not norm:
-        raise HTTPException(status_code=400, detail="norm is required")
+        raise HTTPException(status_code=400, detail="norm is required (or key, for a group proposal)")
 
     # Route-edge validation BEFORE the subprocess (research D4): a chapterless
     # accept is a *form* problem, and the GM should be told which field is
@@ -535,6 +603,54 @@ async def threads_ratify(request: Request) -> dict:
 
     cmd = [console_script("thread_registry"), "ratify", "--norm", norm,
            "--plan", "-"]
+    result = await run_in_threadpool(
+        subprocess.run, cmd, cwd=str(Path.cwd()), capture_output=True,
+        text=True, input=json.dumps(plan))
+    if result.returncode != 0:
+        raise HTTPException(
+            status_code=400,
+            detail=(result.stderr or result.stdout).strip() or "ratify failed")
+    return {"ok": True, "output": (result.stdout or "").strip()}
+
+
+async def _ratify_group(key: str, body: dict) -> dict:
+    """Ratify ONE group proposal from the GM's edited plan — **one** subprocess for the write.
+
+    The body is the plan plus ``key``; the plan goes to ``thread_registry ratify --key K --plan -`` on
+    stdin. The route edge checks what is a form problem, and says which field: ``members`` is a
+    non-empty list that is a subset of the proposal's, and every log chapter is a whole number of at
+    least 1. The CLI validates the rest (aliases, ids, the registry's own check) and is the authority.
+    """
+    plan = {k: v for k, v in body.items() if k != "key"}
+    members = plan.get("members")
+    if not isinstance(members, list) or not members or not all(isinstance(m, str) for m in members):
+        raise HTTPException(
+            status_code=400,
+            detail="members is required — the ids of the notes this ratification covers "
+                   "(untick a note to split it off)")
+    rows = plan.get("log")
+    if not isinstance(rows, list) or not rows:
+        raise HTTPException(
+            status_code=400,
+            detail="log is required — a ratified thread records at least the chapter it opened in.")
+    for i, row in enumerate(rows, 1):
+        ch = row.get("chapter") if isinstance(row, dict) else None
+        if not isinstance(ch, int) or isinstance(ch, bool) or ch < 1:
+            raise HTTPException(
+                status_code=400,
+                detail=f"log row {i}: chapter is required and must be a chapter number")
+    listing = await run_in_threadpool(_thread_registry, "proposals", "--json")
+    proposal = next((p for p in listing.get("proposals") or [] if isinstance(p, dict) and p.get("key") == key), None)
+    if proposal is None:
+        raise HTTPException(status_code=400, detail=f"no group proposal with key {key!r}")
+    have = {m.get("id") for m in proposal.get("members") or [] if isinstance(m, dict)}
+    outside = [m for m in members if m not in have]
+    if outside:
+        raise HTTPException(
+            status_code=400,
+            detail=f"members must be a subset of the proposal's; not in {key}: {', '.join(outside)}")
+
+    cmd = [console_script("thread_registry"), "ratify", "--key", key, "--plan", "-"]
     result = await run_in_threadpool(
         subprocess.run, cmd, cwd=str(Path.cwd()), capture_output=True,
         text=True, input=json.dumps(plan))

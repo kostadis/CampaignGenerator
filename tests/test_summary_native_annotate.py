@@ -345,8 +345,212 @@ def test_refuses_when_the_notes_are_stale(built):
     assert rc == 2 and "stale" in err and "summary_native extract" in err
 
 
-def test_party_and_planning_are_not_annotatable():
+def test_every_document_is_annotatable():
+    """Spec 034 T012: party and planning build from the checked notes, so ``annotate`` accepts them."""
     from pipelines.summary_native.cli import build_parser
 
-    with pytest.raises(SystemExit):
-        build_parser().parse_args(["annotate", "party"])
+    for doc in ("world_state", "campaign_state", "party", "planning"):
+        assert build_parser().parse_args(["annotate", doc]).doc == doc
+
+
+# ── Spec 034 US5 (T043/T044): party and planning drafts ─────────────────────
+
+#: A party draft as ``synth party`` builds it: the level line and pointer are code's, a body line is the
+#: model's (a paragraph or a bullet), and the candidate events sit in the subsection code places.
+PARTY_DOC = """\
+<!-- summary_native draft | doc: party | range: ch026-070 | record: runs/x/record.json -->
+> **How to read this document.** A blockquote.
+
+## Party Overview
+The party are camped by the tower with Kalan. [ch 065 / 065.01]
+
+## Characters
+### Thorin Giantfriend
+
+Level: 9 [ch 026 / 026.01]
+
+Thorin travelled with Kalan, who fled the tower. [ch 065 / 065.01]
+Kalan said "we shall never yield" to him. [ch 065 / 065.01]
+- **Thorin Giantfriend** — A dwarf who holds the line. [ch 026 / 026.01]
+- A bullet the model wrote. [ch 026 / 026.01]
+
+#### Candidate Arc Score Events
+
+- Thorin holds the line [ch 026 / 026.01] — trigger: "Thorin holds the line against the tide"
+- Thorin falls back [ch 099 / 099.09] — trigger: "words in no chapter at all"
+
+_Full notes: reference/party.md_
+
+## Party Dynamics
+Thorin and Kalan are wary allies. [ch 065 / 065.01]
+"""
+
+#: A planning draft: the tracker and the dossier-sourced NPC entries are code's; the unratified and dormant
+#: blocks are code-built from the notes verbatim.
+PLANNING_DOC = """\
+<!-- summary_native draft | doc: planning | range: ch026-070 | record: runs/x/record.json -->
+> **How to read this document.** A blockquote.
+
+## Threat Tracker
+
+| Score | Subject | Candidate events | Trigger text |
+|---|---|---|---|
+| kalan-arc | Kalan | Kalan fled [ch 065 / 065.01] — trigger: "never again" | docs/mechanics/kalan-arc.md |
+
+## NPC Dossiers
+
+### Kalan
+Status and location: At the tower. [ch 065 / 065.01]
+Goals: He said "invented words" for nobody. [ch 065 / 065.01]
+
+→ docs/npcs/kalan.md
+
+## Faction States
+
+### The Avowed
+The Avowed regroup at the tower. [ch 065 / 065.01]
+- **Thorin Giantfriend** — Joined the Avowed. [ch 026 / 026.01]
+
+### Thorin Giantfriend
+A faction block the model named for a player character. [ch 026 / 026.01]
+
+## Active Plots
+
+### The Carver's march
+The march gathers. [ch 026 / 026.01]
+
+### Dormant threads
+- **Jimjar** — A dormant line that would be stale if scanned. [ch 026 / 026.01]
+
+### Unratified thread notes (not yet ruled on)
+_1 checked thread notes are not in the thread registry._
+- [OPENED] **Jimjar** — An unratified note that would be stale if scanned. [ch 026 / 026.01]
+- A bare unratified line. [ch 026 / 026.01]
+
+## DM Notes
+_Suggestions for the GM, not events._
+- Ask Kalan about the tower. [ch 065 / 065.01]
+"""
+
+
+@pytest.fixture
+def ev2(tmp_path):
+    """The scenario above plus a faction note, so a faction block can go stale."""
+    (tmp_path / "registry.yaml").write_text(yaml.safe_dump(REGISTRY), encoding="utf-8")
+    (tmp_path / "players.yaml").write_text(yaml.safe_dump(PLAYERS), encoding="utf-8")
+    results = [notes.CheckedChunk("026-070", [*RESULTS[0].notes, _world("FACTION", "The Avowed", "They muster at dawn.", 70)])]
+    return annotate.load_evidence(
+        results, [_chapter(n) for n in CHAPTER_TEXT], tmp_path / "registry.yaml", tmp_path / "players.yaml")
+
+
+def entries_of(doc: str, ev):
+    return annotate.parse_entries(doc.split("\n"), ev)
+
+
+class TestPartyDraft:
+    def test_a_characters_sub_entries_take_the_three_hash_name_as_subject(self, ev2):
+        es = [e for e in entries_of(PARTY_DOC, ev2) if e.section == "## Characters"]
+        assert {e.group for e in es} == {"Thorin Giantfriend"}
+        assert {e.subject for e in es if "A bullet the model wrote" in e.text} == {"Thorin"}  # canonical, via the registry
+
+    def test_prose_lines_under_a_character_are_entries_but_the_level_line_and_pointer_are_not(self, ev2):
+        texts = [e.text for e in entries_of(PARTY_DOC, ev2) if e.section == "## Characters"]
+        assert "Thorin travelled with Kalan, who fled the tower. [ch 065 / 065.01]" in texts
+        assert not any(t.startswith("Level:") or t.startswith("_Full notes") for t in texts)
+
+    def test_the_candidate_subsection_is_never_scanned(self, ev2):
+        texts = [e.text for e in entries_of(PARTY_DOC, ev2)]
+        assert not any("Thorin holds the line [ch" in t or "Thorin falls back" in t for t in texts)
+
+    def test_the_scanning_resumes_after_the_candidate_subsection(self):
+        # the subsection ends at the next heading of any level
+        doc = f"## Characters\n### A\n{schema.ARC_HEADING}\n- one [ch 026 / 026.01]\n### B\n- two [ch 026 / 026.01]\n"
+        got = annotate.parse_entries(doc.split("\n"), SimpleNamespaceEv())
+        assert [e.text for e in got] == ["- two [ch 026 / 026.01]"]
+
+    def test_a_companion_whose_status_changed_later_gets_a_since_under_the_prose_line(self, ev2):
+        r = annotate.annotate_text(PARTY_DOC, ev2)
+        line = "Thorin travelled with Kalan, who fled the tower. [ch 065 / 065.01]"
+        assert under(r, line) == [f"{schema.SINCE} **Kalan** — Alive; the tower; Reinstated [ch 067 / 067.01]"]
+
+    def test_a_quote_that_is_not_verbatim_is_unverified_and_the_line_keeps_its_text(self, ev2):
+        r = annotate.annotate_text(PARTY_DOC, ev2)
+        line = 'Kalan said "we shall never yield" to him. [ch 065 / 065.01]'
+        assert line in r.text.split("\n")
+        assert [a for a in under(r, line) if a.startswith(schema.UNVERIFIED) and "we shall never yield" in a]
+
+    def test_a_player_character_in_a_characters_section_is_never_removed(self, ev2):
+        r = annotate.annotate_text(PARTY_DOC, ev2)
+        assert r.removed == []
+        assert "- **Thorin Giantfriend** — A dwarf who holds the line. [ch 026 / 026.01]" in r.text.split("\n")
+        assert "### Thorin Giantfriend" in r.text
+
+    def test_the_candidate_lines_the_level_line_and_the_pointer_carry_no_annotation(self, ev2):
+        r = annotate.annotate_text(PARTY_DOC, ev2)
+        lines = r.text.split("\n")
+        for needle in ("Level: 9 [ch 026 / 026.01]", "- Thorin falls back [ch 099 / 099.09]", "_Full notes: reference/party.md_"):
+            i = next(n for n, ln in enumerate(lines) if ln.startswith(needle))
+            assert not annotate.ANNOTATION_RE.match(lines[i + 1])
+
+    def test_an_invalid_citation_in_a_character_line_is_unverified(self, ev2):
+        doc = "## Characters\n### Thorin Giantfriend\nHe holds. [ch 026 / 026.77]\n"
+        r = annotate.annotate_text(doc, ev2)
+        assert [a for a in under(r, "He holds. [ch 026 / 026.77]") if a.startswith(schema.UNVERIFIED) and "026.77" in a]
+
+    def test_the_overview_and_dynamics_are_scanned_like_any_other_prose_section(self, ev2):
+        r = annotate.annotate_text(PARTY_DOC, ev2)
+        for line in ("The party are camped by the tower with Kalan. [ch 065 / 065.01]",
+                     "Thorin and Kalan are wary allies. [ch 065 / 065.01]"):
+            assert [a for a in under(r, line) if a.startswith(schema.SINCE) and "**Kalan**" in a], line
+
+
+class SimpleNamespaceEv:
+    @staticmethod
+    def canon(name):
+        return name
+
+
+class TestPlanningDraft:
+    def test_the_threat_tracker_and_the_npc_dossiers_are_skipped(self, ev2):
+        sections = {e.section for e in entries_of(PLANNING_DOC, ev2)}
+        assert "## Threat Tracker" not in sections and "## NPC Dossiers" not in sections
+
+    def test_the_dormant_and_unratified_blocks_are_skipped_but_the_plot_entry_is_not(self, ev2):
+        es = [e for e in entries_of(PLANNING_DOC, ev2) if e.section == "## Active Plots"]
+        assert [e.text for e in es] == ["The march gathers. [ch 026 / 026.01]"]
+        assert es[0].subject == "The Carver's march"  # the ### name, as written (no registry entity)
+
+    def test_nothing_in_the_skipped_blocks_is_annotated(self, ev2):
+        r = annotate.annotate_text(PLANNING_DOC, ev2)
+        lines = r.text.split("\n")
+        for needle in ("| kalan-arc |", "Goals: He said", "- **Jimjar** — A dormant line", "- [OPENED] **Jimjar** — An unratified",
+                       "- A bare unratified line."):
+            i = next(n for n, ln in enumerate(lines) if ln.startswith(needle))
+            assert not annotate.ANNOTATION_RE.match(lines[i + 1]), needle
+        assert not [h for h in r.hits if h.section in ("Threat Tracker", "NPC Dossiers")]
+
+    def test_a_faction_block_whose_faction_has_a_later_note_gets_a_later(self, ev2):
+        r = annotate.annotate_text(PLANNING_DOC, ev2)
+        line = "The Avowed regroup at the tower. [ch 065 / 065.01]"
+        assert under(r, line) == [f"{schema.LATER} **The Avowed** — They muster at dawn. [ch 070 / 070.01]"]
+
+    def test_a_faction_block_named_for_a_player_character_is_removed_and_reported(self, ev2):
+        r = annotate.annotate_text(PLANNING_DOC, ev2)
+        assert "A faction block the model named for a player character. [ch 026 / 026.01]" not in r.text
+        assert {(x.section, x.text) for x in r.removed} == {
+            ("Faction States", "A faction block the model named for a player character. [ch 026 / 026.01]")}
+        assert r.counts()["removed"] == 1
+
+    def test_a_real_factions_line_naming_a_player_character_stays(self, ev2):
+        # "Thorin joined the Avowed" is a claim about the Avowed, not a PC listed as an NPC: it is kept.
+        line = "- **Thorin Giantfriend** — Joined the Avowed. [ch 026 / 026.01]"
+        assert line in annotate.annotate_text(PLANNING_DOC, ev2).text
+        assert line in annotate.annotate_text(f"## Faction States\n### The Avowed\n{line}\n", ev2).text
+        assert line in annotate.annotate_text(f"## Characters\n### Thorin Giantfriend\n{line}\n", ev2).text
+
+    def test_a_dm_note_is_scanned(self, ev2):
+        line = "- Ask Kalan about the tower. [ch 065 / 065.01]"
+        assert [a for a in under(annotate.annotate_text(PLANNING_DOC, ev2), line) if a.startswith(schema.SINCE)]
+
+    def test_the_label_and_the_unratified_summary_line_are_not_entries(self, ev2):
+        assert not [e for e in entries_of(PLANNING_DOC, ev2) if e.text.startswith("_")]

@@ -29,7 +29,12 @@ Status is exactly one of: Alive, Dead, Missing, Imprisoned, Departed, Unknown. U
 One bullet per fact about the world, starting with exactly one tag: `[FACTION]` (groups, houses, cults, powers, deities), `[NPC]` (who an NPC is, what they want, what they did or revealed), `[LOCATION]` (what a place is, who holds it, what changed there), `[ITEM]` (what an item is or does, who holds it), `[THREAT]` (an active danger, pursuer, deadline or pressure on the party). Name the subject in bold: `- [LOCATION] **Velkynvelve** — fact [cite]`.
 
 ## Party
-Bullets on the party itself as of the END of this chunk: where they are, their group name, level or rank if stated, each player character's new abilities, items, injuries, titles or relationships, and what they intend to do next.
+Bullets on the party itself as of the END of this chunk: where they are, their group name, each player character's new abilities, items, injuries, titles or relationships, and what they intend to do next. Every bullet starts with its subject in bold, exactly in this form:
+`- **Subject** — fact [cite]`
+Subject is ONE player character's name, spelled as the evidence spells it, or exactly `Party` for a fact about the group as a whole. A fact about two characters is two bullets. Never begin a bullet with anything but the bold subject.
+A level gets its own bullet, with the tag first, the subject in bold, and the number only:
+`- [LEVEL] **Subject** — N [cite]`
+Write a level bullet only when the cited text states a character level in words such as "level 9", "9th level" or "the party reaches ninth level". A spell level or a spell slot is not a character level. Do not write levels from silence, and do not put a level in an ordinary bullet.
 
 Rules:
 - Use only the supplied evidence. Do not add anything from the published module, from your own knowledge of the adventure, or from the usual shape of such campaigns.

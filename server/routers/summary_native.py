@@ -27,12 +27,12 @@ from types import SimpleNamespace
 from fastapi import APIRouter, HTTPException, Query, Request
 
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
-from pipelines.summary_native import annotate, audit_select, freshness, notes, resolve, schema
+from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
+from pipelines.summary_native import annotate, audit_select, freshness, notes, resolve, schema, thread_attach
 from server.grounding_config_shared import SummaryNativeRun
 from server.platform_config_service import resolve_selection, selection_cli_args
 from server.routers.grounding import (
     _pick,
-    _selection_for,
     _service,
     _sse_response,
 )
@@ -55,8 +55,8 @@ def _run_config(request: Request) -> SummaryNativeRun:
 def _pick_num(explicit: int | float | None, stored: int | float | None):
     """Explicit request value wins; ``None`` (not ``0``) means "not supplied".
 
-    ``recent_chapters=0`` ("every chapter") and ``parts=0`` ("one call") are
-    meaningful values, so unlike ``grounding._pick`` a zero is an answer.
+    ``recent_chapters=0`` ("every chapter") is a meaningful value, so unlike
+    ``grounding._pick`` a zero is an answer.
     """
     return explicit if explicit is not None else stored
 
@@ -191,6 +191,13 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
         ("canon_events_timeline", state_drafts / schema.TIMELINE_FILE),
         ("budget_report", state_drafts / "budget_report.json"),
         ("audit", freshness.audit_dir(range_dir) / "audit.md"),
+        # party and planning (spec 034)
+        ("party_report", state_drafts / "party_report.md"),
+        ("planning_npcs_report", state_drafts / "planning_npcs_report.md"),
+        ("threads_report", state_drafts / "threads_report.md"),
+        ("arc_report", state_drafts / "arc_report.md"),
+        ("budget_report_party", state_drafts / schema.budget_report_file("party")),
+        ("budget_report_planning", state_drafts / schema.budget_report_file("planning")),
     ]
     reports += [(f"reference/{p.stem}", p) for p in sorted((state_drafts / "reference").glob("*.md"))]
     for name, p in reports:
@@ -289,6 +296,44 @@ def _audit_block(request: Request, run: SummaryNativeRun, lo: int, hi: int) -> d
     return block
 
 
+def _threads_block(request: Request, run: SummaryNativeRun, lo: int, hi: int) -> dict:
+    """The ratified-thread counts of the last planning build, from ``state/threads/attach.json`` and the
+    proposals file only: no model, no CLI, no summary parsing. ``present`` is false before a planning build."""
+    range_dir = _range_dir(run, lo, hi)
+    block: dict = {"present": False, "ratified_in_range": None, "open": None, "dormant": None,
+                   "unattached": None, "ambiguous": None, "pending_groups": None}
+    data = _read_json(thread_attach.threads_dir(range_dir) / thread_attach.ATTACH_FILE)
+    if isinstance(data, dict) and data.get("kind") == "thread_attach":
+        threads = data.get("threads") or {}
+        counts = data.get("counts") or {}
+        block.update(
+            present=True,
+            ratified_in_range=len(threads),
+            open=sum(1 for t in threads.values() if t.get("open")),
+            dormant=sum(1 for t in threads.values() if t.get("dormant")),
+            unattached=int(counts.get("unattached", 0)),
+            ambiguous=len(data.get("ambiguous") or {}),
+        )
+    # Group proposals the GM has not ruled on yet (the file is not range-scoped, as the Threads page shows it).
+    try:
+        stores = load_projection_config(_service(request).config_path_base / PROJECTION_CONFIG_FILENAME).stores
+        proposals = (_read_yaml(schema.resolve_under(Path.cwd(), stores.thread_proposals)) or {}).get("proposals") or []
+        block["pending_groups"] = sum(
+            1 for p in proposals if isinstance(p, dict) and p.get("key") and p.get("status", "pending") == "pending")
+    except (ValueError, OSError, AttributeError, TypeError):
+        pass
+    return block
+
+
+def _read_yaml(path: Path):
+    """A YAML file as data, or ``None`` when it is absent."""
+    import yaml
+
+    if not path.is_file():
+        return None
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
 @router.get("/state")
 def get_state(request: Request, since: int | None = None, until: int | None = None):
     """What is on disk for the range, per step (read-only; files only)."""
@@ -297,7 +342,8 @@ def get_state(request: Request, since: int | None = None, until: int | None = No
     range_dir = _range_dir(run, lo, hi)
     drafts = schema.draft_dir(range_dir, "world_state")
     budgets = _read_json(drafts / "budget_report.json")
-    missing = _read_json(range_dir / schema.STATE_DIR / schema.MISSING_DOSSIERS_FILE)
+    missing = _read_json(range_dir / schema.STATE_DIR / schema.missing_dossiers_file("world_state"))
+    planning_missing = _read_json(range_dir / schema.STATE_DIR / schema.missing_dossiers_file("planning"))
     return {
         "range": f"{lo}-{hi}",
         "extract": _extract_block(request, run, lo, hi),
@@ -310,6 +356,11 @@ def get_state(request: Request, since: int | None = None, until: int | None = No
         # ([] when none, null before any build); `missing_dossiers_refused` says whether that build stopped
         "missing_dossiers": missing.get("npcs") if isinstance(missing, dict) else None,
         "missing_dossiers_refused": bool(missing.get("refused")) if isinstance(missing, dict) else False,
+        # the same for planning's NPC Dossiers (its own file: one document's refusal is not the other's)
+        "planning_missing_dossiers": planning_missing.get("npcs") if isinstance(planning_missing, dict) else None,
+        "planning_missing_dossiers_refused": bool(planning_missing.get("refused")) if isinstance(planning_missing, dict) else False,
+        # {present, ratified_in_range, open, dormant, unattached, ambiguous, pending_groups} from the last planning build
+        "threads": _threads_block(request, run, lo, hi),
     }
 
 
@@ -357,15 +408,12 @@ async def run_synth(
     summaries_dir: str = "",
     since: int | None = None,
     until: int | None = None,
-    world_state: str = "",
-    campaign_state: str = "",
     party_config: str = "",
     planning_config: str = "",
     audit: list[str] | None = Query(default=None),
     name: list[str] | None = Query(default=None),
     recent_chapters: int | None = None,
     recurring_min: int | None = None,
-    parts: int | None = None,
     max_tokens: int | None = None,
     dump_only: bool = False,
     force: bool = False,
@@ -374,32 +422,41 @@ async def run_synth(
     fallback_npc_lines: bool = False,
 ):
     _require_doc(doc)
+    # The retired parameters are not declared (FastAPI would ignore an undeclared one), so a request carrying
+    # any of them is refused here, with the CLI's words naming the replacement (spec 034 FR-024).
+    for retired, refusal in schema.RETIRED_SYNTH_FLAGS.items():
+        if retired in request.query_params:
+            raise HTTPException(status_code=400, detail=refusal)
     run = _run_config(request)
-    chunked = doc in schema.STATE_DOCS
-    if fallback_npc_lines and doc != "world_state":
-        raise HTTPException(status_code=400, detail=f"--fallback-npc-lines applies to world_state only, not {doc}")
-    if chunked:
-        # world_state and campaign_state write one call per section from the checked notes; the CLI
-        # refuses these flags and so does the route, with the CLI's words.
-        if parts:
-            raise HTTPException(status_code=400, detail=schema.STATE_PARTS_REFUSAL.format(doc=doc))
-        if any(a.strip() for a in (audit or [])):
-            raise HTTPException(
-                status_code=400,
-                detail=schema.STATE_AUDIT_REFUSAL if doc == "campaign_state"
-                else f"--audit applies to campaign_state only, not {doc}",
-            )
-        if doc == "campaign_state" and any(n.strip() for n in (name or [])):
-            raise HTTPException(
-                status_code=400, detail="--name does not apply to campaign_state: it has no Key NPCs section")
+    if fallback_npc_lines and doc not in ("world_state", "planning"):
+        raise HTTPException(
+            status_code=400, detail=f"--fallback-npc-lines {schema.FALLBACK_NPC_LINES_REFUSAL}, not {doc}")
+    if doc == "party":
+        # party selects no NPCs, so the flags that choose them are refused here with the CLI's words
+        # (a party run carries neither a stored nor a schema-default value of them either).
+        for flag, given in (
+            ("--name", any(n.strip() for n in (name or []))),
+            ("--recent-chapters", recent_chapters is not None),
+            ("--recurring-min", recurring_min is not None),
+        ):
+            if given:
+                raise HTTPException(
+                    status_code=400, detail=f"{flag} does not apply to party: {schema.PARTY_SELECTION_REFUSAL}")
+    # Every document is built one call per section from the checked notes; the CLI refuses these flags and
+    # so does the route, with the CLI's words.
+    if any(a.strip() for a in (audit or [])):
+        raise HTTPException(
+            status_code=400,
+            detail=schema.STATE_AUDIT_REFUSAL if doc == "campaign_state"
+            else f"--audit applies to campaign_state only, not {doc}",
+        )
+    if doc == "campaign_state" and any(n.strip() for n in (name or [])):
+        raise HTTPException(
+            status_code=400, detail="--name does not apply to campaign_state: it has no Key NPCs section")
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
     cmd = _base_cmd("synth", doc, directory, lo, hi)
 
-    if world_state.strip():
-        cmd += ["--world-state", world_state.strip()]
-    if campaign_state.strip():
-        cmd += ["--campaign-state", campaign_state.strip()]
     # --party-config / --planning-config default to <config>/party.yaml and
     # <config>/planning.yaml inside the CLI; passed only when the request names one.
     if party_config.strip():
@@ -415,12 +472,10 @@ async def run_synth(
     if subjects:
         cmd += ["--name", *subjects]
 
-    # campaign_state has no Key NPCs section, so the CLI refuses the selection flags for it
-    if doc != "campaign_state":
+    # campaign_state has no Key NPCs section and party selects no NPCs, so the CLI refuses the selection flags for them
+    if doc not in ("campaign_state", "party"):
         cmd += ["--recent-chapters", str(_pick_num(recent_chapters, run.recent_chapters))]
         cmd += ["--recurring-min", str(_pick_num(recurring_min, run.recurring_min))]
-    if not chunked:
-        cmd += ["--parts", str(_pick_num(parts, run.parts))]
     if max_tokens is not None:
         cmd += ["--max-tokens", str(max_tokens)]
     if dump_only:
@@ -430,13 +485,9 @@ async def run_synth(
     if fallback_npc_lines:  # per run, never from config
         cmd.append("--fallback-npc-lines")
 
-    if chunked:
-        # The prose step has its own backend/model block (grounding.yaml summary_native.prose).
-        service, service_name = run.prose, f"{_SERVICE_NAME}.prose"
-    else:
-        service, service_name = _selection_for(request, _SERVICE_NAME), _SERVICE_NAME
+    # The prose step has its own backend/model block (grounding.yaml summary_native.prose).
     cmd += selection_cli_args(resolve_selection(
-        request, request_model=model, service=service, service_name=service_name,
+        request, request_model=model, service=run.prose, service_name=f"{_SERVICE_NAME}.prose",
         request_claude_code_effort=(claude_code_effort or "").strip() or None,
     ))
     return _sse_response(cmd)

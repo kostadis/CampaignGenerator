@@ -90,15 +90,14 @@ def test_stored_config_reaches_the_command(campaign):
     _, svc, captured = campaign
     svc.update_config({"summary_native": {
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
-        "recent_chapters": 7, "recurring_min": 6, "parts": 3, "dup_threshold": 0.7,
+        "recent_chapters": 7, "recurring_min": 6, "dup_threshold": 0.7,
     }})
-    assert _run("/run/synth/party") == 200
+    assert _run("/run/synth/planning") == 200  # planning, not party: party selects no NPCs (spec 034)
     cmd = captured["cmd"]
     assert _flag(cmd, "--summaries-dir") == "docs/stored"
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("1", "5")
     assert _flag(cmd, "--recent-chapters") == "7"
     assert _flag(cmd, "--recurring-min") == "6"
-    assert _flag(cmd, "--parts") == "3"
     assert _run("/run/validate") == 200
     assert _flag(captured["cmd"], "--dup-threshold") == "0.7"
 
@@ -107,17 +106,15 @@ def test_explicit_request_beats_stored(campaign):
     _, svc, captured = campaign
     svc.update_config({"summary_native": {
         "summaries_dir": "docs/stored", "range_since": 1, "range_until": 5,
-        "recent_chapters": 7, "parts": 3, "dup_threshold": 0.7,
+        "recent_chapters": 7, "dup_threshold": 0.7,
     }})
-    assert _run("/run/synth/party", {
-        **RANGE, "recent_chapters": 2, "parts": 0,
+    assert _run("/run/synth/planning", {
+        **RANGE, "recent_chapters": 2,
     }) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--summaries-dir") == "docs/summaries"
     assert (_flag(cmd, "--since"), _flag(cmd, "--until")) == ("3", "9")
     assert _flag(cmd, "--recent-chapters") == "2"
-    # An explicit zero is an answer ("one call"), not "unset".
-    assert _flag(cmd, "--parts") == "0"
     assert _run("/run/build", {**RANGE, "dup_threshold": 0.5, "force": True}) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--dup-threshold") == "0.5"
@@ -127,25 +124,22 @@ def test_explicit_request_beats_stored(campaign):
 def test_unconfigured_defaults_come_from_the_schema(campaign):
     from pipelines.summary_native import schema
     _, _, captured = campaign
-    assert _run("/run/synth/party", RANGE) == 200
+    assert _run("/run/synth/planning", RANGE) == 200
     cmd = captured["cmd"]
     assert _flag(cmd, "--recent-chapters") == str(schema.DEFAULT_RECENT_CHAPTERS)
     assert _flag(cmd, "--recurring-min") == str(schema.DEFAULT_RECURRING_MIN)
-    assert _flag(cmd, "--parts") == str(schema.DEFAULT_PARTS)
 
 
 def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
     _, svc, captured = campaign
     svc.update_config({"summary_native": {"out_root": "elsewhere"}})
-    assert _run("/run/synth/party", {
+    assert _run("/run/synth/planning", {
         **RANGE,
         "name": ["Brewbarry", "Vukradin"],
         "dump_only": True,
         "max_tokens": 9000,
         "recent_chapters": 5,
         "recurring_min": 8,
-        "world_state": "docs/ws.draft.md",
-        "audit": ["notes/track.txt", "notes/other.txt"],
         "force": True,
     }) == 200
     cmd = captured["cmd"]
@@ -155,10 +149,7 @@ def test_synth_carries_per_run_flags_and_never_the_cli_only_ones(campaign):
     assert _flag(cmd, "--max-tokens") == "9000"
     assert _flag(cmd, "--recent-chapters") == "5"
     assert _flag(cmd, "--recurring-min") == "8"
-    assert _flag(cmd, "--world-state") == "docs/ws.draft.md"
-    j = cmd.index("--audit")
-    assert cmd[j + 1:j + 3] == ["notes/track.txt", "notes/other.txt"]
-    for banned in ("--registry", "--canon", "--out-root"):
+    for banned in ("--registry", "--canon", "--out-root", "--world-state", "--campaign-state", "--parts"):
         assert banned not in cmd
 
 
@@ -185,13 +176,24 @@ def test_compare_passes_the_live_document(campaign):
     assert _flag(captured["cmd"], "--live") == "docs/world_state.md"
 
 
-def test_backend_and_model_come_from_the_selection_seam(campaign):
+def test_the_prose_block_not_the_service_selection_decides_the_model_of_every_document(campaign):
+    """The per-service ``selection`` seam served only the one-shot documents (party, planning). Spec 034
+    moved every document to ``summary_native.prose``, so a ``selection`` block no longer reaches ``synth``:
+    the model is the request's, else the prose block's, else the schema's. (The skipped one-shot test this
+    replaces asserted the opposite for party.)"""
+    from pipelines.summary_native import schema
+
     _, svc, captured = campaign
     svc.update_config({"selection": {"backend": "anthropic", "model": "claude-test-model"}})
+    for doc in schema.DOCS:
+        assert _run(f"/run/synth/{doc}", RANGE) == 200
+        assert _flag(captured["cmd"], "--model") == schema.DEFAULT_PROSE_MODEL, doc
+        assert _flag(captured["cmd"], "--backend") == schema.DEFAULT_PROSE_BACKEND, doc
+        assert _run(f"/run/synth/{doc}", {**RANGE, "model": "claude-explicit"}) == 200
+        assert _flag(captured["cmd"], "--model") == "claude-explicit", doc
+    svc.update_config({"summary_native": {"prose": {"backend": "claude-code", "model": "claude-prose-model"}}})
     assert _run("/run/synth/party", RANGE) == 200
-    assert _flag(captured["cmd"], "--model") == "claude-test-model"
-    assert _run("/run/synth/party", {**RANGE, "model": "claude-explicit"}) == 200
-    assert _flag(captured["cmd"], "--model") == "claude-explicit"
+    assert _flag(captured["cmd"], "--model") == "claude-prose-model"
 
 
 # ── refusals (400, before spawning) ────────────────────────────────────────
@@ -293,16 +295,15 @@ def test_drafts_lists_draft_and_incomplete_files(campaign):
     (dd / "world_state.draft.md").write_text("abc")
     (dd / "campaign_state.incomplete.md").write_text("abcdef")
     (dd / "world_state.vs-live.diff").write_text("ignored")
-    # party and planning keep the one-shot path and its drafts/ directory
-    (rd / "drafts").mkdir()
-    (rd / "drafts" / "party.draft.md").write_text("pp")
+    # spec 034: party and planning also build from the checked notes, so their drafts live in state/drafts/ too
+    (dd / "party.draft.md").write_text("pp")
     r = client.get(f"{BASE}/drafts", params={"since": 3, "until": 9})
     assert r.status_code == 200
     rows = {(x["doc"], x["status"]): x for x in r.json()}
     assert set(rows) == {("world_state", "draft"), ("campaign_state", "incomplete"), ("party", "draft")}
     assert rows[("world_state", "draft")]["bytes"] == 3
     assert rows[("world_state", "draft")]["path"].endswith("state/drafts/world_state.draft.md")
-    assert rows[("party", "draft")]["path"].endswith("drafts/party.draft.md")
+    assert rows[("party", "draft")]["path"].endswith("state/drafts/party.draft.md")
 
 
 def test_drafts_lists_the_timeline_reference_files_and_budget_report(campaign):
@@ -391,7 +392,7 @@ def test_party_planning_config_paths_only_when_supplied(campaign):
 
 from pipelines.summary_native import schema as _schema  # noqa: E402
 
-STATE_DOCS = ["world_state", "campaign_state"]
+STATE_DOCS = list(_schema.STATE_DOCS)  # spec 034: all four documents build from the checked notes
 
 
 def test_extract_argv(campaign):
@@ -464,22 +465,34 @@ def test_chunked_synth_prose_block_in_config_reaches_the_command(campaign):
     assert _flag(captured["cmd"], "--model") == "claude-opus-5-5"
 
 
-def test_a_stored_parts_value_is_not_sent_for_the_chunked_documents(campaign):
-    _, svc, captured = campaign
-    svc.update_config({"summary_native": {"parts": 3}})
-    assert _run("/run/synth/world_state", RANGE) == 200
-    assert "--parts" not in captured["cmd"]
-    assert _run("/run/synth/party", RANGE) == 200  # the one-shot documents still get it
-    assert _flag(captured["cmd"], "--parts") == "3"
+RETIRED_PARAMS = [
+    ("parts", 2), ("parts", 0),  # an explicit zero is still the retired parameter
+    ("world_state", "docs/ws.draft.md"), ("campaign_state", "docs/cs.draft.md"),
+]
 
 
 @pytest.mark.parametrize("doc", STATE_DOCS)
-def test_parts_is_a_400_for_the_chunked_documents_with_the_cli_message(campaign, doc):
+@pytest.mark.parametrize("param,value", RETIRED_PARAMS)
+def test_a_retired_parameter_is_a_400_with_the_cli_message_for_every_document(campaign, doc, param, value):
     _, _, captured = campaign
-    r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, "parts": 2})
+    r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, param: value})
     assert r.status_code == 400
-    assert r.json()["detail"] == _schema.STATE_PARTS_REFUSAL.format(doc=doc)
+    assert r.json()["detail"] == _schema.RETIRED_SYNTH_FLAGS[param]
+    assert f"--{param.replace('_', '-')} is retired" in r.json()["detail"]
     assert "cmd" not in captured
+
+
+def test_the_router_declares_none_of_the_retired_parameters_and_never_sends_their_flags(campaign):
+    import inspect
+
+    from server.routers import summary_native as router
+
+    declared = set(inspect.signature(router.run_synth).parameters)
+    assert declared.isdisjoint(_schema.RETIRED_SYNTH_FLAGS)
+    _, _, captured = campaign
+    for doc in STATE_DOCS:
+        assert _run(f"/run/synth/{doc}", RANGE) == 200
+        assert all(f not in captured["cmd"] for f in ("--parts", "--world-state", "--campaign-state"))
 
 
 def test_audit_is_a_400_for_campaign_state_naming_the_audit_step(campaign):
@@ -500,8 +513,10 @@ def test_fallback_npc_lines_is_per_run_and_world_state_only(campaign):
     captured.clear()
     for doc in ("campaign_state", "party"):
         r = client.get(f"{BASE}/run/synth/{doc}", params={**RANGE, "fallback_npc_lines": True})
-        assert r.status_code == 400 and "world_state only" in r.json()["detail"]
+        assert r.status_code == 400 and "applies to world_state and planning only" in r.json()["detail"]
     assert "cmd" not in captured
+    assert _run("/run/synth/planning", {**RANGE, "fallback_npc_lines": True}) == 200  # spec 034: planning takes it too
+    assert "--fallback-npc-lines" in captured["cmd"]
 
 
 def test_the_key_npcs_selection_flags_go_to_world_state_but_not_campaign_state(campaign):
@@ -515,11 +530,6 @@ def test_the_key_npcs_selection_flags_go_to_world_state_but_not_campaign_state(c
     r = client.get(f"{BASE}/run/synth/campaign_state", params={**RANGE, "name": ["Kalan"]})
     assert r.status_code == 400 and "does not apply to campaign_state" in r.json()["detail"]
     assert "cmd" not in captured
-
-
-def test_parts_zero_is_not_a_refusal(campaign):
-    _, _, captured = campaign
-    assert _run("/run/synth/world_state", {**RANGE, "parts": 0}) == 200
 
 
 def _notes_manifest(root, **over):
@@ -593,13 +603,6 @@ def test_annotate_argv_and_dry_run(campaign, doc):
     assert "--dry-run" not in cmd
     assert _run(f"/run/annotate/{doc}", {**RANGE, "dry_run": True}) == 200
     assert "--dry-run" in captured["cmd"]
-
-
-@pytest.mark.parametrize("doc", ["party", "planning"])
-def test_annotate_is_a_400_for_the_one_shot_documents(campaign, doc):
-    _, _, captured = campaign
-    assert _run(f"/run/annotate/{doc}", RANGE) == 400
-    assert "cmd" not in captured
 
 
 def test_annotate_unset_range_or_directory_is_400(campaign):
@@ -823,3 +826,106 @@ def test_drafts_lists_the_audit_report(campaign):
     _audit_files(root)
     rows = {r["doc"]: r for r in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
     assert rows["audit"]["status"] == "report" and rows["audit"]["path"].endswith("state/audit/audit.md")
+
+
+# ── spec 034 US1: party's parameters ───────────────────────────────────────
+
+
+@pytest.mark.parametrize("param,flag,value", [
+    ("name", "--name", ["Kalan"]), ("recent_chapters", "--recent-chapters", 2), ("recurring_min", "--recurring-min", 2),
+])
+def test_party_selection_params_are_a_400_with_the_cli_text(campaign, param, flag, value):
+    _, _, captured = campaign
+    r = client.get(f"{BASE}/run/synth/party", params={**RANGE, param: value})
+    assert r.status_code == 400
+    assert r.json()["detail"] == f"{flag} does not apply to party: {_schema.PARTY_SELECTION_REFUSAL}"
+    assert "cmd" not in captured
+
+
+def test_a_party_run_sends_no_selection_flags_not_even_stored_ones(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"recent_chapters": 7, "recurring_min": 6}})
+    assert _run("/run/synth/party", RANGE) == 200
+    cmd = captured["cmd"]
+    for banned in ("--recent-chapters", "--recurring-min", "--name", "--parts", "--fallback-npc-lines"):
+        assert banned not in cmd
+
+
+def test_party_takes_the_prose_selection_and_its_roster(campaign):
+    _, svc, captured = campaign
+    svc.update_config({"summary_native": {"prose": {"backend": "claude-code", "model": "claude-opus-5-5"}}})
+    assert _run("/run/synth/party", {**RANGE, "party_config": "config/alt_party.yaml", "claude_code_effort": "low"}) == 200
+    cmd = captured["cmd"]
+    assert _flag(cmd, "--model") == "claude-opus-5-5" and _flag(cmd, "--party-config") == "config/alt_party.yaml"
+    assert _flag(cmd, "--claude-code-effort") == "low"
+
+
+# ── spec 034 US2: planning's missing dossiers, the thread counts and the new reports ───────────────
+
+
+def _state_dir(root: Path) -> Path:
+    sd = root / "docs" / "summary_native" / "ch003-009" / "state"
+    sd.mkdir(parents=True, exist_ok=True)
+    return sd
+
+
+def test_state_planning_missing_dossiers_have_their_own_file_and_leave_world_states_alone(campaign):
+    root, _, _ = campaign
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["planning_missing_dossiers"] is None and body["planning_missing_dossiers_refused"] is False
+    sd = _state_dir(root)
+    npcs = [{"name": "Ront", "state": "not drafted"}]
+    (sd / "missing_dossiers.planning.json").write_text(json.dumps({"range": {"since": 3, "until": 9}, "refused": True, "npcs": npcs}))
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["planning_missing_dossiers"] == npcs and body["planning_missing_dossiers_refused"] is True
+    assert body["missing_dossiers"] is None and body["missing_dossiers_refused"] is False  # world_state's file is another file
+
+
+def test_state_threads_block_is_absent_before_a_planning_build(campaign):
+    body = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()
+    assert body["threads"] == {"present": False, "ratified_in_range": None, "open": None, "dormant": None,
+                               "unattached": None, "ambiguous": None, "pending_groups": 0}
+
+
+def test_state_threads_block_reads_attach_json_and_the_proposals_file(campaign):
+    root, _, _ = campaign
+    (_state_dir(root) / "threads").mkdir()
+    (_state_dir(root) / "threads" / "attach.json").write_text(json.dumps({
+        "kind": "thread_attach", "schema": 1, "range": {"since": 3, "until": 9},
+        "counts": {"notes": 9, "attached": 6, "ambiguous": 1, "unattached": 4, "threads": 3},
+        "notes": {}, "ambiguous": {"Ring": ["a", "b"]},
+        "threads": {
+            "a": {"status": "open", "open": True, "dormant": False, "latest": "x", "notes": ["x"]},
+            "b": {"status": "dormant", "open": False, "dormant": True, "latest": "y", "notes": ["y"]},
+            "c": {"status": "resolved", "open": False, "dormant": False, "latest": "z", "notes": ["z"]},
+        },
+    }))
+    (root / "docs" / "ensemble").mkdir(parents=True)
+    (root / "docs" / "ensemble" / "thread_proposals.yaml").write_text(
+        "proposals:\n- {key: g-1, status: pending}\n- {key: g-2, status: ratified}\n- {key: g-3, status: pending}\n"
+        "- {norm: old, status: pending}\n")
+    got = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["threads"]
+    assert got == {"present": True, "ratified_in_range": 3, "open": 1, "dormant": 1, "unattached": 4,
+                   "ambiguous": 1, "pending_groups": 2}
+
+
+def test_drafts_lists_the_party_and_planning_reports(campaign):
+    root, _, _ = campaign
+    dd = _state_dir(root) / "drafts"
+    (dd / "reference").mkdir(parents=True)
+    for name in ("party_report.md", "planning_npcs_report.md", "threads_report.md", "arc_report.md"):
+        (dd / name).write_text("r")
+    (dd / "reference" / "party.md").write_text("r")
+    (dd / "budget_report.planning.json").write_text("{}")
+    rows = {x["doc"]: x for x in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
+    assert set(rows) == {"party_report", "planning_npcs_report", "threads_report", "arc_report", "reference/party",
+                         "budget_report_planning"}
+    assert rows["reference/party"]["path"].endswith("state/drafts/reference/party.md")
+
+
+def test_planning_fallback_flag_reaches_the_command_and_is_never_stored(campaign):
+    _, _, captured = campaign
+    assert _run("/run/synth/planning", {**RANGE, "fallback_npc_lines": True}) == 200
+    assert "--fallback-npc-lines" in captured["cmd"]
+    assert _run("/run/synth/planning", RANGE) == 200
+    assert "--fallback-npc-lines" not in captured["cmd"]
