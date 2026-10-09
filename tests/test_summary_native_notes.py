@@ -419,6 +419,14 @@ class TestPartyLevelRows:
         (n,) = cc.kept("party")
         assert (n.subject, n.tag, n.level) == ("Daz", "LEVEL", 5)
 
+    def test_the_tag_written_inside_the_bold_is_the_same_level_row(self):
+        # qwen3.8 writes `**[LEVEL] Daz**` (seen on OOTA ch 016): it is a level row, checked like any other
+        cc = _party_check("- **[LEVEL] Daz** — 5 [ch 002 / 002.01]", "Daz is now a 5th-level wizard.")
+        (n,) = cc.kept("party")
+        assert (n.subject, n.tag, n.level) == ("Daz", "LEVEL", 5)
+        cc = _party_check("- **[LEVEL] Daz** — 5 [ch 002 / 002.01]", "quiet")
+        assert _party_reasons(cc) == ["level-not-in-cited-text"]
+
     def test_the_phrase_must_be_in_a_cited_section_not_just_the_chunk(self):
         ch = _lvl_chapter("quiet", "The party reaches 9th level.")
         cc = notes.check_chunk(_raw(Party="- [LEVEL] **Party** — 9 [ch 002 / 002.01]"), [ch])

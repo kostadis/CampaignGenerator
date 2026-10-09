@@ -183,8 +183,10 @@ _WORLD_TAG_RE = re.compile(rf"^-\s*\[({'|'.join(schema.WORLD_TAGS)})\]")
 _SUBJECT_RE = re.compile(r"^-\s*\[[A-Z]+\]\s*\*\*(.+?)\*\*")
 #: A party bullet: an optional ``[LEVEL]`` tag, then the bold subject (research R1).
 _PARTY_SUBJECT_RE = re.compile(rf"^-\s*(?:\[({schema.LEVEL_TAG})\]\s*)?\*\*(.+?)\*\*")
+#: The tag written inside the bold, ``**[LEVEL] Daz**`` (a form qwen3.8 produces): the same level row.
+_INNER_LEVEL_RE = re.compile(rf"^\[({schema.LEVEL_TAG})\]\s*(.+)$")
 #: The number of a level row: ``- [LEVEL] **Subject** — 9 [cite]``.
-_LEVEL_VALUE_RE = re.compile(r"^-\s*\[[A-Z]+\]\s*\*\*.+?\*\*\s*[—–:-]*\s*(\d{1,2})\b")
+_LEVEL_VALUE_RE = re.compile(r"^-\s*(?:\[[A-Z]+\]\s*)?\*\*.+?\*\*\s*[—–:-]*\s*(\d{1,2})\b")
 _ROW_RE = re.compile(
     r"^-\s*\*{0,2}([^|*]+?)\*{0,2}\s*\|\s*([A-Za-z]+)\s*\|\s*([^|]*?)\s*\|\s*([^|]*?)\s*(\[ch .*\])\s*$"
 )
@@ -434,6 +436,9 @@ def check_chunk(raw: str, chunk: Sequence[Chapter], label: str | None = None) ->
                     drop(MISSING_PARTY_SUBJECT)
                     continue
                 subject, tag, level = m.group(2).strip(), m.group(1), None
+                inner = _INNER_LEVEL_RE.match(subject)
+                if inner and tag is None:
+                    tag, subject = inner.group(1), inner.group(2).strip()
                 if tag == schema.LEVEL_TAG:
                     v = _LEVEL_VALUE_RE.match(text)
                     if not v:
