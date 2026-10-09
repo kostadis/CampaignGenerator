@@ -315,6 +315,41 @@ class TestRatify:
         assert thread(c, "the-carvers-march")["excluded_notes"] == [M3["id"], M4["id"]]
         assert thread(c, "old")["excluded_notes"] == [M3["id"]]
 
+    def test_the_remainder_of_a_split_new_group_derives_a_fresh_thread_and_ratifies_unedited(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        assert self.split(c, NEW, [M1, M2]).returncode == 0
+        rest = entry(c, group_key([M3["id"]]))
+        plan = emit(c, rest["key"])
+        assert "thread" not in plan and plan["id"] == "the-carvers-march-split-off" and plan["title"] == "The Carver's march (split off)"
+        assert plan["aliases_add"] == ["The Carver's march"]  # its name belongs to the thread just made
+        r = ratify(c, rest["key"], plan)  # unedited: the alias is dropped and the note pinned by id
+        assert r.returncode == 0, r.stderr
+        assert thread(c, "the-carvers-march-split-off")["included_notes"] == [M3["id"]]
+        assert thread(c, "the-carvers-march-split-off")["aliases"] == []
+        assert thread(c, "the-carvers-march")["excluded_notes"] == [M3["id"]]
+        assert cli(c, "check").returncode == 0
+
+    def test_the_remainder_of_a_split_continues_group_still_continues_its_thread(self, tmp_path):
+        g = group("continues", [M1, M2, M3], thread="old")
+        c = seed(tmp_path, g, threads=[OLD])
+        assert self.split(c, g, [M1], aliases=["The Carver's march"]).returncode == 0
+        assert emit(c, group_key([M2["id"], M3["id"]]))["thread"] == "old"
+
+    def test_a_member_whose_alias_the_gm_struck_is_pinned_so_it_stays_attached(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        plan = emit(c, NEW["key"])
+        plan["aliases_add"] = ["The Carver's march"]  # "Carver march" (M2) struck
+        assert ratify(c, NEW["key"], plan).returncode == 0
+        assert thread(c, "the-carvers-march")["included_notes"] == [M2["id"]]
+
+    def test_splitting_off_a_pinned_note_drops_its_pin(self, tmp_path):
+        g = group("continues", [M2, M3], thread="old")
+        old = {**OLD, "included_notes": [M2["id"]]}
+        c = seed(tmp_path, g, threads=[old])
+        assert self.split(c, g, [M3], aliases=["The Carver's march"]).returncode == 0
+        t = thread(c, "old")
+        assert "included_notes" not in t and t["excluded_notes"] == [M2["id"]]
+
     def test_a_malformed_excluded_notes_is_a_check_finding(self, tmp_path):
         c = seed(tmp_path, NEW, threads=[{**OLD, "excluded_notes": "n-0000000001"}])
         r = cli(c, "check")
@@ -353,15 +388,31 @@ class TestRatify:
         plan["aliases_add"] = ["ye olde"]
         self.refused(c, NEW["key"], plan, "ye olde", "old")
 
-    def test_a_continues_alias_colliding_with_a_third_thread_is_refused_but_its_own_is_fine(self, tmp_path):
-        other = {"id": "other", "title": "Carver march", "status": "open", "aliases": [], "opened": 1,
+    def test_a_continues_alias_colliding_with_a_third_thread_is_refused_unless_a_ratified_member_carries_it(self, tmp_path):
+        other = {"id": "other", "title": "Carver march", "status": "open", "aliases": ["Other name"], "opened": 1,
                  "log": [{"chapter": 1, "change": "opened", "summary": "x"}]}
         g = group("continues", [M2, M3], thread="old")
         c = seed(tmp_path, g, threads=[OLD, other])
         plan = emit(c, g["key"])
-        self.refused(c, g["key"], plan, "Carver march", "other")
+        plan["aliases_add"] = ["Ye olde", "The Carver's march", "Other name"]
+        self.refused(c, g["key"], plan, "Other name", "other")  # no ratified member carries it: still a collision
         plan["aliases_add"] = ["Ye olde", "The Carver's march"]  # its own alias again is not a collision
         assert ratify(c, g["key"], plan).returncode == 0
+
+    # ── #529: a ratified member whose name belongs to another thread is pinned by id ──
+
+    def test_a_ratified_members_name_that_is_another_threads_is_not_an_alias_and_the_member_is_pinned(self, tmp_path):
+        other = {"id": "other", "title": "Carver march", "status": "open", "aliases": [], "opened": 1,
+                 "log": [{"chapter": 1, "change": "opened", "summary": "x"}]}
+        g = group("continues", [M2, M3], thread="old")
+        c = seed(tmp_path, g, threads=[OLD, other])
+        r = ratify(c, g["key"], emit(c, g["key"]))  # the derived plan lists "Carver march", which `other` owns
+        assert r.returncode == 0, r.stderr
+        assert "not added" in r.stdout and "'other'" in r.stdout
+        old = thread(c, "old")
+        assert "Carver march" not in old["aliases"] and "The Carver's march" in old["aliases"]
+        assert old["included_notes"] == [M2["id"]]  # M3 attaches by its alias; only M2 needs the pin
+        assert "included_notes" not in thread(c, "other")
 
     def test_a_new_title_matching_an_existing_thread_is_refused(self, tmp_path):
         c = seed(tmp_path, NEW, threads=[OLD])

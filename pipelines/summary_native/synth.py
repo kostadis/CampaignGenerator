@@ -186,16 +186,18 @@ def _detached_lines(proposals_path: Path | None, att: thread_attach.Attachment) 
     return thread_check.detached_lines(entries, thread_check.detached(entries, att.unattached))
 
 
-def _excluded_lines(proposals_path: Path | None, registry: dict, range_dir: Path) -> list[str]:
-    """Excluded notes (a split's ruling, #529) found in no range's notes, for ``threads_report.md``. Read-only;
-    an unreadable notes file or proposals file means nothing is judged."""
+def _excluded_lines(proposals_path: Path | None, registry: dict, range_dir: Path, root: Path) -> list[str]:
+    """Excluded or pinned notes (a split's rulings, #529) found in no range's notes, for the thread reports.
+    Read-only; an unreadable notes file means nothing is judged, and the line says so. An unreadable proposals
+    file only costs the note names in the lines."""
     entries: list = []
     if proposals_path is not None:
         try:
             entries = thread_check.load_proposals(proposals_path)
         except (OSError, ValueError):
-            entries = []  # only the names in the lines come from here
-    return thread_check.excluded_stale_lines(registry, thread_check.known_note_ids(range_dir), entries)
+            entries = []
+    known, unreadable = thread_check.scan_note_ids(range_dir)
+    return thread_check.ruling_stale_lines(registry, known, entries, [schema.display_path(f, root) for f in unreadable])
 
 
 # ── world_state and campaign_state from checked notes (spec 033 T019) ───────
@@ -1232,7 +1234,7 @@ def run_state_synth(
     # ratified proposal members that no longer attach (#525), for the thread report of either document that reads the registry
     detached_lines = _detached_lines(thread_proposals_path, attachment) if doc in THREAD_DOCS else []
     # split-off notes whose exclusion id is on no disk (#529), likewise computed once for both reports
-    excluded_lines = _excluded_lines(thread_proposals_path, thread_registry, range_dir) if doc in THREAD_DOCS else []
+    excluded_lines = _excluded_lines(thread_proposals_path, thread_registry, range_dir, root) if doc in THREAD_DOCS else []
     if doc == "planning":
         # What code replaced in planning, and the thread layers it built (the attach map itself is state/threads/attach.json).
         nb = budget_report.get("NPC Dossiers", {})

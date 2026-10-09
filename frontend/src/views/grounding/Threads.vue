@@ -76,6 +76,8 @@ interface Thread {
   log: LogRow[]
   /** Note ids the GM split off when ratifying a group: never attached to this thread by name (#529). Optional. */
   excluded_notes?: string[]
+  /** Note ids pinned to this thread: attached by id, whatever their name (#529). Optional. */
+  included_notes?: string[]
 }
 
 /** One checked thread note inside a group proposal (034 data-model "Thread proposal"). */
@@ -99,6 +101,8 @@ interface GroupProposal {
   ruled_thread?: string
   /** A ratified member whose alias was removed, offered again by `thread-propose` (#525). Optional. */
   reoffer?: { from_group?: string; thread?: string }
+  /** A `continues` group holding notes that thread excluded in a split: ratifying lifts the exclusion (#529). Optional. */
+  split_off?: { thread?: string; notes?: string[] }
 }
 /** `GET /threads/plan` — what `thread_registry ratify --key K --emit-plan` prints. */
 interface GroupPlan {
@@ -967,6 +971,11 @@ const addAlias = (t: Thread) => {
           but its name no longer attaches (alias removed{{ g.reoffer.thread ? ` from ${threadTitle(g.reoffer.thread)}` : '' }}?).
           Ratify it into that thread to restore the alias, or put the alias back with <code>thread_registry alias</code>.
         </p>
+        <p v-if="g.split_off && (g.split_off.notes || []).length" class="muted small split-off">
+          Includes {{ g.split_off.notes!.length === 1 ? 'a note' : `${g.split_off.notes!.length} notes` }} you split off
+          {{ threadTitle(g.split_off.thread) }} ({{ g.split_off.notes!.join(', ') }}). Ratifying into that thread lifts the
+          exclusion; the thread does not attach them until you do.
+        </p>
         <ul class="evidence">
           <li v-for="m in g.members" :key="m.id">
             <span class="ev-ch">ch{{ m.chapter ?? '—' }}</span>
@@ -1241,6 +1250,10 @@ const addAlias = (t: Thread) => {
           <p v-if="(t.excluded_notes || []).length" class="muted small excluded">
             Held out by a split (never attached to this thread by name):
             <span v-for="(id, i) in t.excluded_notes" :key="id" class="excluded-note">{{ i ? '; ' : '' }}{{ excludedLabel(id) }}</span>
+          </p>
+          <p v-if="(t.included_notes || []).length" class="muted small included">
+            Pinned by id (attach here whatever their name):
+            <span v-for="(id, i) in t.included_notes" :key="id" class="included-note">{{ i ? '; ' : '' }}{{ excludedLabel(id) }}</span>
           </p>
           <ul v-if="problemsFor(t.id).length" class="problems">
             <li v-for="p in problemsFor(t.id)" :key="p">{{ p }}</li>

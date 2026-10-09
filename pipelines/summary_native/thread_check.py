@@ -10,6 +10,7 @@ A proposal is a *group entry* in the proposals file::
 
     key: g-<12 hex>      # campaignlib.thread_registry.group_key of the sorted member ids
     reoffer: {from_group, thread}   # single only, optional: a ratified member whose alias was removed (#525)
+    split_off: {thread, notes}      # continues only, optional: members that thread excluded in a split (#529)
     kind: new | continues | single
     title: ...           # new and single: a suggestion the GM edits
     thread: <id>         # continues only
@@ -30,7 +31,7 @@ from pathlib import Path
 
 import yaml
 
-from campaignlib.thread_registry import excluded_notes, group_key
+from campaignlib.thread_registry import excluded_notes, group_key, included_notes
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import notes, schema, thread_attach
 
@@ -193,6 +194,7 @@ def check_groups(
             for i in _member_ids(p):
                 came_from[i] = {"from_group": p["key"], **({"thread": p["ruled_thread"]} if p.get("ruled_thread") else {})}
     can_group = {n.note_id for n in offered(ordered, prior)}
+    split_off = {t.get("id"): set(excluded_notes(t)) for t in (registry or {}).get("threads") or ()}
     registry_ids = {t.get("id") for t in (registry or {}).get("threads") or ()}
     attached = attached or {}
     lines: list[str] = []
@@ -245,6 +247,10 @@ def check_groups(
             lines.append(f"{DROPPED} {label}: no valid members left")
             continue
         valid.append({"index": i, "label": label, "kind": kind, "title": title, "thread": thread, "ids": kept})
+        back = [m for m in kept if kind == "continues" and m in split_off.get(thread, ())]
+        if back:  # kept, never dropped: ratifying it into that thread is the GM's to do, and it lifts the exclusion
+            lines.append(f"{NOTE} {label}: {', '.join(back)} was split off thread {thread!r} by the GM; "
+                         "ratifying it into that thread lifts the exclusion")
 
     claims: dict[str, list[int]] = {}
     for v in valid:
@@ -277,6 +283,9 @@ def check_groups(
             entry["title"] = v["title"] or members[0]["name"] or members[0]["text"][:60]
         else:
             entry["thread"] = v["thread"]
+            back = [m["id"] for m in members if m["id"] in split_off.get(v["thread"], ())]
+            if back:
+                entry["split_off"] = {"thread": v["thread"], "notes": back}
         entry["members"] = members
         groups.append(entry)
 
@@ -404,27 +413,37 @@ def known_note_ids(range_dir: Path) -> set[str] | None:
     return scan_note_ids(range_dir)[0]
 
 
-def excluded_stale_lines(registry: Mapping | None, known: set[str] | None, entries: Sequence | None = None) -> list[str]:
-    """Report lines for a thread's ``excluded_notes`` id that is in no range's notes on disk (#529).
+def ruling_stale_lines(
+    registry: Mapping | None, known: set[str] | None, entries: Sequence | None = None, unreadable: Sequence[str] = (),
+) -> list[str]:
+    """Report lines for a thread's ``excluded_notes`` / ``included_notes`` id that is in no range's notes (#529).
 
-    An id is per extraction (research R6): re-extracting a changed note gives it a new id, and the exclusion
-    stops holding for it, so a name match attaches the note again. Nothing here removes the id; the GM
-    re-checks the notes that carry the name. ``known`` is :func:`scan_note_ids`' set, ``None`` when any notes
-    file was unreadable, and then nothing is judged. ``entries`` (the proposals file) only supplies the note's
-    name; without it the thread's title stands in.
+    An id is per extraction (research R6): re-extracting a changed note gives it a new id, and the ruling stops
+    holding for it (a name match attaches the note again; a pinned note stops attaching). Nothing here removes the
+    id; the GM re-checks the notes that carry the name. ``known`` is :func:`scan_note_ids`' set, ``None`` when any
+    notes file was unreadable: then nothing is judged, and when there is something to judge a line says so
+    (``unreadable``: the files, as the caller displays them). ``entries`` (the proposals file) only supplies the
+    note's name; without it the thread's title stands in.
     """
+    threads = list((registry or {}).get("threads") or ())
     if known is None:
-        return []
+        if not any(excluded_notes(t) or included_notes(t) for t in threads):
+            return []
+        return [f"(not judged: {f} unreadable)" for f in unreadable] or ["(not judged: a checked-notes file is unreadable)"]
     names = {m["id"]: m.get("name") for p in group_entries(entries) for m in p.get("members") or ()
              if isinstance(m, Mapping) and m.get("id") and m.get("name")}
     out = []
-    for t in (registry or {}).get("threads") or ():
+    for t in threads:
         for nid in excluded_notes(t):
             if nid not in known:
-                name = names.get(nid) or t.get("title") or t.get("id")
                 out.append(
                     f"thread {t.get('id')}: excluded note {nid} is in no range's notes on disk (re-extracted?) — "
-                    f"the split may no longer hold; re-check notes named {name}")
+                    f"the split may no longer hold; re-check notes named {names.get(nid) or t.get('title') or t.get('id')}")
+        for nid in included_notes(t):
+            if nid not in known:
+                out.append(
+                    f"thread {t.get('id')}: pinned note {nid} is in no range's notes on disk (re-extracted?) — "
+                    f"it may no longer attach to this thread; re-check notes named {names.get(nid) or t.get('title') or t.get('id')}")
     return out
 
 

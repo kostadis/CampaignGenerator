@@ -829,12 +829,14 @@ class TestSynthPlanning:
         att = json.loads((cp.range_dir(root) / "state" / "threads" / "attach.json").read_text(encoding="utf-8"))
         assert att["notes"][ch4.note_id] is None and ch4.note_id not in att["threads"]["carver-march"]["notes"]
         rep = (drafts(root) / "threads_report.md").read_text(encoding="utf-8")
-        assert "## Excluded notes no longer on disk (split may not hold)\n\n- (none)" in rep
+        assert "## Excluded and pinned notes no longer on disk (ruling may not hold)\n\n- (none)" in rep
+        held = rep.split("## Held out of a thread by a split (name matches, thread excludes the note)")[1].split("\n## ")[0]
+        assert ch4.note_id in held and "which excludes it" in held
         write_registry(root, registry({**CARVER, "excluded_notes": [ch4.note_id, "n-reextracted"]}))
         assert synth_planning(root, "--force")[0] == 0
         rep = (drafts(root) / "threads_report.md").read_text(encoding="utf-8")
         assert ("thread carver-march: excluded note n-reextracted is in no range's notes on disk (re-extracted?)"
-                in rep.split("## Excluded notes no longer on disk (split may not hold)")[1].split("\n## ")[0])
+                in rep.split("## Excluded and pinned notes no longer on disk (ruling may not hold)")[1].split("\n## ")[0])
 
     def test_the_run_record_has_the_registry_the_config_files_and_the_budgets(self, pcamp):
         root, _ = pcamp

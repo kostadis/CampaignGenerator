@@ -540,33 +540,57 @@ A ratified member outside the run's range cannot be judged by that run and is le
 alone.
 
 **Splitting a group.** Ratify only some of a group's notes and the rest go back to
-the queue as a new pending proposal (`split_from` names the group). Two things keep the
-split true, because attachment is by exact name and a split-off note can carry the same
-bold name as one you ratified (the Drow Pursuit case, #529):
+the queue as a new pending proposal (`split_from` names the group). Attachment is by
+exact name, and a split-off note can carry the same bold name as one you ratified (the
+Drow Pursuit case, #529), so the registry keeps two optional, additive per-thread lists
+of note ids. Neither needs a migration: an older registry has none, and `thread_registry
+check` accepts them (it flags a value that is not a list of ids, and one id in both lists
+of one thread). `thread_attach` reads them **before** any name, in this order: (a) a
+note in a thread's `included_notes` attaches to that thread by id and never also by name
+elsewhere; (b) a thread's `excluded_notes` take that thread out of the running for the
+note; (c) the name rule.
 
-- The ratified thread records the notes you left out as `excluded_notes: [n-…]` in
-  `docs/thread_registry.yaml`. `thread_attach` checks it **before** the name: an
-  excluded note never attaches to that thread, so it stays unattached and is offered
-  again for a ruling (it may still attach to another thread that claims its name). The
-  field is optional and additive: an older registry simply has none, `thread_registry
-  check` accepts it (and flags a value that is not a list of ids), and no migration is
-  needed. A second split of the remainder adds to the list. Ratifying an excluded note
-  **into the same thread** (the remainder's "continues <thread>") removes its id in that
-  same write; ratifying it into another thread leaves the exclusion where it is. The
-  Threads page lists a ratified thread's excluded notes ("Held out by a split").
-- `ratify` refuses (nothing written) an `aliases_add` name that **only** a
-  left-out member carries: it would become an alias and attach the note you just split
-  off. The page already does this for you by dropping the name when you untick. A name a
-  ratified member shares is a legitimate alias (the exclusion holds the split-off note
-  out); a name that is already the thread's title or alias is skipped as before.
+- `excluded_notes: [n-…]` is the notes you left out. A split-off note stays unattached
+  and is offered again for a ruling (it may still attach to *another* thread that claims
+  its name). A second split of the remainder adds to the list. Ratifying an excluded note
+  **into the same thread** (pick *Continues a ratified thread* in the editor) removes its
+  id in that same write; ratifying it elsewhere leaves the exclusion where it is.
+- `included_notes: [n-…]` pins a ratified member whose name the thread cannot attach it
+  by. The rule, stated exactly: after the plan's aliases are applied, a member of the
+  ratified subset whose name is **not** the thread's title or an alias (it belongs to
+  another thread, or you struck it from the alias box) is pinned. A member that attaches
+  by name is not pinned. Splitting a pinned note off drops its pin; ratifying a note into
+  one thread removes its pin on any other. This is what lets a split-off note that shares
+  the first thread's name be ruled into a *different* thread: the derived plan's alias
+  (its name, which the first thread owns) is dropped with a note ("alias … not added")
+  instead of refused, and the pin attaches the note. An alias you type yourself that
+  collides, and that no ratified member carries, is still refused.
+- The remainder of a split `new` group derives a fresh target (the title gets a
+  " (split off)" suffix when the original title is a thread now); it defaults to
+  *continues* only when the original group was a `continues` one.
+- `ratify` refuses (nothing written) an `aliases_add` name that **only** a left-out member
+  carries: it would attach the note you just split off. The page drops the name for you
+  when you untick. A name a ratified member shares is a legitimate alias (the exclusion
+  keeps the split-off note out); a name already the thread's title or alias is skipped.
+- A name in `aliases_add` is not the end of it: adding an alias later with `thread_registry
+  alias` does not attach an excluded note, and now says so ("thread … excludes n-…, which
+  carries the name …"; with no proposals file it can only count the excluded notes).
+- Reports: `propose_report.md`, `threads_report.md` and `campaign_threads_report.md` list
+  under "Held out of a thread by a split" every unattached note whose name matches a thread
+  that excludes it, so a held-out note is never silent. If the model proposes `continues
+  <thread>` for notes that thread excluded, the proposal keeps them (never dropped), carries
+  `split_off: {thread, notes}`, and the card says "Includes … you split off …; ratifying into
+  that thread lifts the exclusion". The Threads page lists a thread's excluded and pinned notes.
 
 Note ids belong to one extraction, so re-extracting a changed note gives it a new id and
-the exclusion stops holding for it. `thread-propose` says so, and never removes the id:
+the ruling stops holding for it. `thread-propose` says so, and never removes the id:
 "thread <id>: excluded note n-… is in no range's notes on disk (re-extracted?) — the split
-may no longer hold; re-check notes named <name>" (in the run's output, in
-`propose_report.md` under "Excluded notes no longer on disk (split may not hold)", and in
-`threads_report.md`). Nothing is judged when any checked-notes file is unreadable. Re-check
-the notes with that name; if the new note is not the thread, split it off again.
+may no longer hold; re-check notes named <name>" (and "pinned note … — it may no longer
+attach to this thread"), in the run's output, in `propose_report.md` under "Excluded and
+pinned notes no longer on disk (ruling may not hold)", and in `threads_report.md` /
+`campaign_threads_report.md`. When any checked-notes file is unreadable nothing is judged and
+the section says "(not judged: <file> unreadable)". Re-check the notes with that name; if the
+new note is not the thread, split it off again.
 
 **Settling a re-offered note.** Either put the alias back (`thread_registry alias
 --id <thread> --alias "<name>"`), or ratify the pending single. The Threads page

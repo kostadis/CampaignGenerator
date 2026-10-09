@@ -592,7 +592,9 @@ def test_a_split_off_note_is_not_attached_in_campaign_state_and_a_stale_exclusio
     assert att["notes"][off["id"]] is None  # campaign_state uses the same attach
     assert att["threads"]["the-carvers-march"]["notes"] == [m["id"] for m in group["members"][:2]]
     report = (drafts(root) / schema.CAMPAIGN_THREADS_REPORT_FILE).read_text(encoding="utf-8")
-    heading = "## Excluded notes no longer on disk (split may not hold)"
+    heading = "## Excluded and pinned notes no longer on disk (ruling may not hold)"
+    held = report.split("## Held out of a thread by a split (name matches, thread excludes the note)")[1].split("\n## ")[0]
+    assert off["id"] in held and "thread the-carvers-march, which excludes it" in held
     assert "- (none)" in report.split(heading)[1].split("\n## ")[0]
 
     import yaml

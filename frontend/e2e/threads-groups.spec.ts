@@ -347,3 +347,26 @@ test('a ratified thread lists the notes a split held out of it, by chapter and n
   await expect(held).toContainText('n-reextracted') // no proposal carries it: the bare id
   await expect(page.locator('.thread', { hasText: 'A plain thread' }).locator('.excluded')).toHaveCount(0)
 })
+
+test('a group holding notes a thread excluded says so, and a thread lists the notes pinned to it by id (#529)', async ({ page }) => {
+  const world = await openPage(page)
+  await page.route(url => url.pathname === `${API}/registry`, route => route.fulfill({
+    json: {
+      version: 1, count: 1,
+      threads: [{ id: 'the-carvers-march', title: "The Carver's march", status: 'open', aliases: [], log: [],
+        excluded_notes: [N3.id], included_notes: [N2.id] }],
+    },
+  }))
+  world.proposals = [
+    group('g-555555555555', 'continues', '', [N3], 'pending', { thread: 'the-carvers-march', split_off: { thread: 'the-carvers-march', notes: [N3.id] } }),
+    group(RING, 'single', 'The signet ring', [N4]),
+    group('g-666666666666', 'single', 'Carver march', [N2], 'ratified', { ruled_thread: 'the-carvers-march' }),
+  ]
+  await page.reload()
+  await expect(card(page, 'g-555555555555').locator('.split-off')).toContainText("you split off The Carver's march")
+  await expect(card(page, 'g-555555555555').locator('.split-off')).toContainText('lifts the')
+  await expect(card(page, RING).locator('.split-off')).toHaveCount(0)
+  const thread = page.locator('.thread', { hasText: "The Carver's march" })
+  await expect(thread.locator('.included')).toContainText('Pinned by id')
+  await expect(thread.locator('.included')).toContainText('ch3 Carver march')
+})

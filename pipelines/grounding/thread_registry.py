@@ -82,6 +82,7 @@ from campaignlib.thread_registry import (  # noqa: F401  (re-exported: the CLI's
     check_registry,
     excluded_notes,
     find_thread,
+    included_notes,
     group_key,
     load_registry,
     match_thread,
@@ -307,6 +308,35 @@ def cmd_alias(data: dict, args) -> None:
     aliases = t.setdefault("aliases", [])
     if args.alias not in aliases:
         aliases.append(args.alias)
+    _note_exclusions_for(t, args.alias, getattr(args, "proposals", None))
+
+
+def _note_exclusions_for(t: dict, alias: str, proposals: Path | None) -> None:
+    """Say so when a thread's exclusions will keep a note with this name out, whatever the alias (#529).
+
+    Names come from the proposals file (a note's id carries none); without them it can only say how many
+    notes the thread excludes. Best effort: an unreadable proposals file costs the names, never the alias.
+    """
+    excluded = excluded_notes(t)
+    if not excluded:
+        return
+    names: dict[str, str] = {}
+    try:
+        if proposals is not None and Path(proposals).exists():
+            for pr in load_proposals(Path(proposals)).get("proposals") or []:
+                for m in (pr.get("members") or []) if isinstance(pr, dict) else []:
+                    if isinstance(m, dict) and m.get("id") and m.get("name"):
+                        names[m["id"]] = m["name"]
+    except (OSError, ValueError, AttributeError, TypeError):
+        names = {}
+    carrying = [i for i in excluded if norm_title(names.get(i, "")) == norm_title(alias)]
+    if carrying:
+        print(f"note: thread {t['id']!r} excludes {', '.join(carrying)}, which carry{'' if len(carrying) > 1 else 's'} "
+              f"the name {alias!r}: the alias does not attach {'them' if len(carrying) > 1 else 'it'} "
+              "(ratify it into the thread to lift the exclusion)")
+    elif any(i not in names for i in excluded):
+        print(f"note: thread {t['id']!r} excludes {len(excluded)} note(s) ({', '.join(excluded)}); an excluded note "
+              "does not attach by name, so this alias does not attach it")
 
 
 # ── speculate (the inspiration surface — LLM, non-canon by design) ───────
@@ -696,6 +726,10 @@ def _members_in_order(pr: dict) -> list[dict]:
     return sorted(ms, key=lambda m: m.get("chapter") if isinstance(m.get("chapter"), int) else 0)
 
 
+#: Appended to a derived title that is already a thread's, so the plan's id and title are free.
+SPLIT_SUFFIX = " (split off)"
+
+
 def derive_group_plan(pr: dict, data: dict | None = None) -> dict:
     """The starting point the GM edits for a group proposal — never what gets written unreviewed.
 
@@ -735,6 +769,13 @@ def derive_group_plan(pr: dict, data: dict | None = None) -> dict:
     if continues:
         return {"thread": continues, "aliases_add": aliases, "members": [m.get("id") for m in ms], "log": log}
     title = (pr.get("title") or (ms[0].get("name") if ms else "") or "").strip()
+    if data and title and (match_thread(data, title) or find_thread(data, norm_title(title))):
+        # The suggestion is a thread that exists (the remainder of a split `new` group carries the title of the
+        # thread just made): `ratify` refuses it, so start from a fresh one. Continuing the thread is the GM's pick.
+        title += SPLIT_SUFFIX
+        n = 2
+        while match_thread(data, title) or find_thread(data, norm_title(title)):
+            title, n = title.split(SPLIT_SUFFIX)[0] + f"{SPLIT_SUFFIX} {n}", n + 1
     return {"id": norm_title(title) or pr.get("key"), "title": title, "status": "open", "opened": first,
             "aliases_add": aliases, "members": [m.get("id") for m in ms], "log": log}
 
@@ -855,7 +896,14 @@ def cmd_ratify_group(args) -> None:
         alias = alias.strip()
         if not alias:
             continue
-        for other in match_threads({"threads": [t for t in data["threads"] if t is not target]}, alias):
+        others = match_threads({"threads": [t for t in data["threads"] if t is not target]}, alias)
+        if others and norm_title(alias) in covered:
+            # A ratified member's own name belongs to another thread: not an alias then, and the member is pinned
+            # to this thread by id below, which is what attaches it (#529).
+            notes_out.append(f"note: alias {alias!r} not added: it belongs to thread {others[0]['id']!r}; "
+                             "the note(s) that carry it are attached to this thread by id (included_notes)")
+            continue
+        for other in others:
             raise SystemExit(f"error: alias {alias!r} collides with thread {other['id']!r} "
                              f"(its title or an alias) — a name belongs to one thread")
         if norm_title(alias) in names:
@@ -898,10 +946,29 @@ def cmd_ratify_group(args) -> None:
     # A note ratified into the thread now leaves the list: ratifying it is the GM changing their mind.
     excluded = [x for x in excluded_notes(target) if x not in want]
     excluded += [m["id"] for m in have if m.get("id") and m["id"] not in want and m["id"] not in excluded]
-    if excluded:
-        target["excluded_notes"] = excluded
-    else:
-        target.pop("excluded_notes", None)
+    # A ratified member the thread's names cannot attach (its name is another thread's, or was struck from the
+    # aliases, or the thread excludes it) is pinned by id: `included_notes`, read before any name. Members that
+    # attach by name are not pinned. A note moved out of this ratification, or ratified into another thread,
+    # loses its pin here.
+    names_now = {norm_title(n) for n in [target.get("title") or ""] + list(target.get("aliases") or [])}
+    included = [x for x in included_notes(target) if x not in excluded]
+    for m in have:
+        mid = m.get("id")
+        if mid in want and mid not in included and (
+                norm_title(m.get("name") or "") not in names_now or not norm_title(m.get("name") or "")):
+            included.append(mid)
+    for field, ids in (("excluded_notes", excluded), ("included_notes", included)):
+        if ids:
+            target[field] = ids
+        else:
+            target.pop(field, None)
+    for other in data["threads"]:
+        if other is not target and set(want) & set(included_notes(other)):
+            keep = [x for x in included_notes(other) if x not in want]
+            if keep:
+                other["included_notes"] = keep
+            else:
+                other.pop("included_notes", None)
 
     errors = check_registry(data)
     if errors:
@@ -942,7 +1009,7 @@ def cmd_ratify_group(args) -> None:
           f"({appended} log row(s) added, {added_aliases} alias(es) added)")
     if remainder:
         print(f"split: {len(remainder)} note(s) remain pending as {group_key([m['id'] for m in remainder])}; "
-              f"thread {target['id']!r} will not attach them by name (excluded_notes)")
+              f"thread {target['id']!r} will not attach them (excluded_notes)")
 
 
 # ── read verbs (machine-readable; the server parses nothing) ─────────────
@@ -1114,6 +1181,8 @@ def main():
         print(f"wrote {args.out}: {total} proposal(s), {pending} pending GM review")
         return
 
+    if args.cmd == "alias":
+        args.proposals = Path(cfg.stores.thread_proposals)
     if args.cmd in ("rule", "ratify"):
         if args.proposals is None:
             args.proposals = Path(cfg.stores.thread_proposals)

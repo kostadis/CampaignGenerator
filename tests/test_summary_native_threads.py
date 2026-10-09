@@ -46,6 +46,10 @@ def reg(*threads: dict) -> dict:
     return {"version": 1, "threads": list(threads)}
 
 
+def schema_heading(name: str) -> str:
+    return getattr(schema, name)
+
+
 def sha12(ids) -> str:
     return "g-" + hashlib.sha1("|".join(sorted(ids)).encode("utf-8")).hexdigest()[:12]
 
@@ -1315,7 +1319,7 @@ class TestThreadPropose:
         line = (f"thread the-carvers-march: excluded note {off['id']} is in no range's notes on disk (re-extracted?) "
                 f"— the split may no longer hold; re-check notes named The Carver's march")
         report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
-        section = report.split("## Excluded notes no longer on disk (split may not hold)")[1].split("\n## ")[0]
+        section = report.split("## Excluded and pinned notes no longer on disk (ruling may not hold)")[1].split("\n## ")[0]
         assert line in section and line in out
         assert self.carver_thread(root)["excluded_notes"] == [off["id"]]  # reported, not removed
         assert propose(root)[0] == 0 and line in propose(root)[1]  # on every run, not once
@@ -1328,7 +1332,7 @@ class TestThreadPropose:
         rc, out, err = propose(root)
         assert rc == 0 and "excluded note" not in out
         assert "(none)" in (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8").split(
-            "## Excluded notes no longer on disk (split may not hold)")[1].split("\n## ")[0]
+            "## Excluded and pinned notes no longer on disk (ruling may not hold)")[1].split("\n## ")[0]
         # an id that is on no disk, but with another range's notes file unreadable: judge nothing
         doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
         doc["threads"][0]["excluded_notes"].append("n-nowhere000")
@@ -1369,6 +1373,155 @@ class TestThreadPropose:
         assert r.returncode == 1 and "Carver march" in r.stderr and group["members"][1]["id"] in r.stderr
         assert not registry_path(root).exists()  # the registry was emptied above and the refusal wrote nothing
         assert proposals_path(root).read_bytes() == before
+
+    # ── #529 review: pins (included_notes), held-out reporting, the alias note, model-proposed continues ──
+
+    def remainder_of(self, root, off):
+        assert propose(root)[0] == 0
+        (rest,) = [p for p in proposals(root) if p["status"] == "pending" and p["members"][0]["id"] == off["id"]]
+        return rest
+
+    def ratify_remainder_as(self, root, rest, plan_edits):
+        base = ["ratify", "--key", rest["key"], "--proposals", str(proposals_path(root))]
+        plan = json.loads(self.treg(root, *base, "--emit-plan").stdout)
+        plan.update(plan_edits)
+        return plan, self.treg(root, *base, "--plan", "-", stdin=json.dumps(plan))
+
+    def splinter(self, root):
+        return next(t for t in yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))["threads"]
+                    if t["id"] == "carver-splinter")
+
+    @pytest.mark.parametrize("keep_derived_aliases", [True, False])
+    def test_a_split_off_note_sharing_the_threads_name_can_be_ruled_into_a_different_thread(self, tcamp, keep_derived_aliases):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        rest = self.remainder_of(root, off)
+        plan = json.loads(self.treg(root, "ratify", "--key", rest["key"], "--proposals", str(proposals_path(root)),
+                                    "--emit-plan").stdout)
+        assert plan["id"] != "the-carvers-march" and "thread" not in plan  # a fresh target, not the thread just made
+        edits = {"id": "carver-splinter", "title": "Carver splinter"}
+        if not keep_derived_aliases:
+            edits["aliases_add"] = []
+        plan, r = self.ratify_remainder_as(root, rest, edits)
+        assert r.returncode == 0, r.stderr + r.stdout  # the colliding alias is dropped, not refused
+        assert ("not added" in r.stdout) == keep_derived_aliases
+        assert self.splinter(root)["included_notes"] == [off["id"]]
+        assert off["id"] in self.carver_thread(root)["excluded_notes"]
+        for _ in range(2):  # and it holds, run after run
+            rc, out, err = propose(root)
+            assert rc == 0, out + err
+            assert self.attach_map(root)["notes"][off["id"]] == "carver-splinter"
+            assert not any(p["status"] == "pending" and off["id"] in str(p["members"]) for p in proposals(root))
+            report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+            section = report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+            assert "- (none)" in section and off["id"] not in section  # #525 counts a pinned member as attached
+            assert off["id"] not in report.split("## " + schema_heading("HELD_OUT_HEADING"))[1].split("\n## ")[0]
+
+    def test_a_pinned_note_attaches_by_id_and_never_by_name_elsewhere(self):
+        a = tn(2, "OPENED", "The ring")
+        pinned = reg({**thr("x", "Other"), "included_notes": [a.note_id]}, thr("y", "The ring"))
+        att = thread_attach.attach(chunks(a), pinned)
+        assert att.by_note[a.note_id] == "x" and "y" not in att.threads  # "y" owns the name, the pin wins
+        both = reg({**thr("x", "Other"), "included_notes": [a.note_id]}, {**thr("z", "Third"), "included_notes": [a.note_id]})
+        assert thread_attach.attach(chunks(a), both).by_note[a.note_id] == thread_attach.AMBIGUOUS
+
+    def test_a_pin_and_an_exclusion_of_one_id_on_one_thread_is_a_check_finding(self, tmp_path):
+        from campaignlib.thread_registry import check_registry
+        t = {**thr("x", "X"), "status": "open", "excluded_notes": ["n-1"], "included_notes": ["n-1", "n-2"]}
+        assert any("both in excluded_notes and included_notes" in e for e in check_registry(reg(t)))
+        assert any("included_notes must be a list" in e for e in check_registry(reg({**thr("x", "X"), "included_notes": "n-1"})))
+
+    def test_a_re_extracted_pinned_note_is_reported_never_removed(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        self.ratify_remainder_as(root, self.remainder_of(root, off), {"id": "carver-splinter", "title": "Carver splinter"})
+        for f in sorted(cp.range_dir(root).glob("state/notes/*.checked.json")):
+            text = f.read_text(encoding="utf-8")
+            if off["text"] in text:
+                f.write_text(text.replace(off["text"], off["text"] + " Again."), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        line = (f"thread carver-splinter: pinned note {off['id']} is in no range's notes on disk (re-extracted?) "
+                f"— it may no longer attach to this thread; re-check notes named The Carver's march")
+        assert line in out and line in (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert self.splinter(root)["included_notes"] == [off["id"]]
+
+    def test_ratifying_a_pinned_note_into_another_thread_moves_the_pin(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        self.ratify_remainder_as(root, self.remainder_of(root, off), {"id": "carver-splinter", "title": "Carver splinter"})
+        assert propose(root)[0] == 0
+        doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
+        assert [t["id"] for t in doc["threads"] if off["id"] in t.get("included_notes", [])] == ["carver-splinter"]
+        # the GM re-ratifies the same note into the Carver thread by hand (a reoffered single): the pin follows
+        entry = {"key": "g-" + "9" * 12, "kind": "single", "title": "x", "status": "pending", "members": [off]}
+        pdoc = yaml.safe_load(proposals_path(root).read_text(encoding="utf-8"))
+        pdoc["proposals"].append(entry)
+        proposals_path(root).write_text(yaml.safe_dump(pdoc), encoding="utf-8")
+        self.ratify(root, entry["key"], thread="the-carvers-march")
+        doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
+        assert not any(t.get("included_notes") for t in doc["threads"] if t["id"] == "carver-splinter")
+        assert off["id"] not in doc["threads"][0].get("excluded_notes", [])
+
+    def test_the_report_lists_a_note_held_out_of_a_thread_whose_name_it_carries(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        assert propose(root)[0] == 0
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        section = report.split("## " + schema_heading("HELD_OUT_HEADING"))[1].split("\n## ")[0]
+        assert off["id"] in section and "thread the-carvers-march, which excludes it" in section and "ch 4" in section
+
+    def test_an_alias_added_after_a_split_says_that_the_excluded_note_it_names_stays_out(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root, keep_chapters=(2, 4), aliases_add=[])  # leave out ch3 "Carver march"
+        off = group["members"][1]
+        assert off["name"] == "Carver march"
+        r = self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Carver march")
+        assert r.returncode == 0, r.stderr
+        assert off["id"] in r.stdout and "does not attach it" in r.stdout and "ok: alias" in r.stdout
+        assert propose(root)[0] == 0
+        assert self.attach_map(root)["notes"][off["id"]] is None  # still out, and now the report says why
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert off["id"] in report.split("## " + schema_heading("HELD_OUT_HEADING"))[1].split("\n## ")[0]
+        # an alias that names no excluded note says nothing about exclusions
+        r = self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Something unrelated")
+        assert "excludes" not in r.stdout
+        # with no proposals file to learn names from, it can only count the excluded notes
+        proposals_path(root).unlink()
+        r = self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Another")
+        assert "excludes 1 note(s)" in r.stdout
+
+    def test_a_model_continues_proposal_with_notes_the_thread_excluded_keeps_them_and_says_so(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root, keep_chapters=(2,), aliases_add=["The Carver's march"])  # ch3 and ch4 left out
+        left = [m["id"] for m in group["members"][1:]]
+        assert self.carver_thread(root)["excluded_notes"] == left
+        tm.output = lambda rows: json.dumps({"groups": [
+            {"kind": "continues", "thread": "the-carvers-march", "members": [r[0] for r in rows if "carver" in r[3].lower()]}]})
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        (holder,) = [p for p in proposals(root) if p["status"] == "pending" and left[0] in [m["id"] for m in p["members"]]]
+        assert holder["kind"] == "continues" and [m["id"] for m in holder["members"]] == left  # kept, not dropped
+        assert holder["split_off"] == {"thread": "the-carvers-march", "notes": left}
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert f"was split off thread 'the-carvers-march' by the GM" in report
+        assert self.carver_thread(root)["excluded_notes"] == left  # only the GM's ratification lifts it
+
+    def test_an_unreadable_notes_file_says_not_judged_instead_of_none(self, tcamp):
+        root, tm = tcamp
+        self.split_carver(root)
+        bad = cp.range_dir(root).parent / "ch002-060" / "state" / "notes" / "chunk01.002-060.checked.json"
+        bad.parent.mkdir(parents=True)
+        bad.write_text('{"cache_key": "x", "notes": [', encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        section = report.split("## " + schema_heading("STALE_RULINGS_HEADING"))[1].split("\n## ")[0]
+        assert "(not judged: " in section and "chunk01.002-060.checked.json" in section and "(none)" not in section
 
     def test_the_registry_and_proposals_paths_come_from_projections_yaml(self, tcamp):
         root, tm = tcamp

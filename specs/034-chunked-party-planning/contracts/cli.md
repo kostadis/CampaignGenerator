@@ -71,7 +71,7 @@ summary_native thread-propose --since A --until B          # both required: refu
 - **Writes:**
   - group proposals merged into the proposals file, with existing rulings preserved by `key`; a replaced pending group's members outside the run's range stay as pending `single` proposals (#524) and are named in the report and on stdout (`note: replaced pending group g-… (…): kept N member(s) outside the run's range as single proposals: …`);
   - `state/threads/propose.{user,out}.md`;
-  - `state/threads/propose_report.md` (including "Excluded notes no longer on disk (split may not hold)": a thread's `excluded_notes` id found in no range's notes, reported and never removed, #529);
+  - `state/threads/propose_report.md` (including "Excluded and pinned notes no longer on disk (ruling may not hold)": a thread's `excluded_notes` id found in no range's notes, reported and never removed, #529);
   - a run record.
 
   It never writes the registry.
@@ -84,10 +84,11 @@ summary_native thread-propose --since A --until B          # both required: refu
 thread_registry ratify --key g-… --plan FILE|-        # group proposal; the plan is the GM's edit of `ratify --key g-… --emit-plan`
 thread_registry ratify --key g-… --emit-plan          # prints derive_plan(members) for the GM to edit (never writes)
 thread_registry rule   --key g-… --status rejected|deferred [--note TEXT]
+thread_registry alias  --id T --alias NAME           # also notes the excluded notes of T that carry NAME (#529)
 ```
 
 - **Plan shape:** `{id, title, status, opened, aliases_add: [..], members: [ids], log: [{chapter, change, summary, cite}]}`.
   - A `continues` plan names `thread: <id>` and has no `title`.
   - `members` listing a subset of the proposal's members is a **split**: the remainder becomes a new pending group, and its note ids are recorded on the ratified thread as `excluded_notes` so a shared name cannot attach them (#529). Ratifying an excluded note into the same thread removes its id in the same write.
-- **Validation before the single write:** every log row's chapter is ≥ 1; `id` is new for `new`; the thread exists for `continues`; aliases do not collide with another thread's title or alias; an alias that only a member left out of `members` carries is refused (#529).
+- **Validation before the single write:** every log row's chapter is ≥ 1; `id` is new for `new`; the thread exists for `continues`; aliases do not collide with another thread's title or alias (a derived alias that is a ratified member's own name and belongs to another thread is dropped with a note and the member pinned in `included_notes` instead, #529); an alias that only a member left out of `members` carries is refused (#529).
 - **Existing verbs:** `--norm` keeps working unchanged for name-keyed (ensemble) proposals.

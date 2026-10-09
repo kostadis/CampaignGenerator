@@ -1260,11 +1260,14 @@ under "Ratified but no longer attached (alias removed?)" in `propose_report.md`
 proposal. The notes you left out are recorded on the ratified thread as `excluded_notes`
 (`docs/thread_registry.yaml`, optional, no migration), and attachment honours that
 **before** the name, so a split-off note that shares a ratified member's bold name stays
-unattached and offered instead of being pulled back in. Ratifying it into the same thread
-later lifts its exclusion. `ratify` refuses a name in `aliases_add` that only a
-left-out member carries. A re-extraction gives a note a new id, so an exclusion whose id is
-on no disk is named ("excluded note n-… is in no range's notes on disk (re-extracted?)") in
-`propose_report.md` and `threads_report.md`, never removed. See
+unattached and offered instead of being pulled back in. A ratified member the thread's names
+cannot attach (its name belongs to another thread, or you struck the alias) is pinned by id in
+`included_notes`, which is how a split-off note can be ruled into a different thread. Both lists
+are checked before any name. Ratifying an excluded note into the same thread lifts its exclusion;
+`ratify` refuses a name in `aliases_add` that only a left-out member carries. A re-extraction
+gives a note a new id, so an excluded or pinned id on no disk is named in `propose_report.md`,
+`threads_report.md` and `campaign_threads_report.md`, never removed, and notes held out by an
+exclusion are listed under "Held out of a thread by a split". See
 [Splitting a group](state_projection_howto.md#grouping-proposals-from-summary-native).
 
 ### Arc-score candidates

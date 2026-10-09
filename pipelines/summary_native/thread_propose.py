@@ -24,8 +24,8 @@ Layout, under ``<range_dir>/state/``::
     threads/attach.json          code: note id -> thread id | "ambiguous" | null
     threads/propose.NN.user.md   the prompt of batch NN
     threads/propose.NN.out.md    the model's raw output for batch NN
-    threads/propose_report.md    what was dropped and why, ratified members no longer attached, excluded notes
-                                 no longer on disk, stale rulings, ambiguous names
+    threads/propose_report.md    what was dropped and why, ratified members no longer attached, excluded and pinned notes
+                                 no longer on disk, notes held out of a thread by a split, stale rulings, ambiguous names
     runs/<stamp>/record.json     the run record (and propose.system.md)
 """
 
@@ -182,8 +182,10 @@ def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_atta
     out += [f"- {ln}" for ln in replaced or ()] or ["- (none)"]
     out += ["", "## Ratified but no longer attached (alias removed?)", ""]
     out += [f"- {ln}" for ln in detached or ()] or ["- (none)"]
-    out += ["", "## Excluded notes no longer on disk (split may not hold)", ""]
+    out += ["", f"## {schema.STALE_RULINGS_HEADING}", ""]
     out += [f"- {ln}" for ln in excluded or ()] or ["- (none)"]
+    out += ["", f"## {schema.HELD_OUT_HEADING}", ""]
+    out += [f"- {ln}" for ln in thread_attach.held_out_lines(att)] or ["- (none)"]
     out += ["", "## Stale rulings", ""]
     out += [f"- {ln}" for ln in stale] or ["- (none)"]
     out += ["", "## Ambiguous names (claimed by more than one thread, never attached)", ""]
@@ -366,7 +368,8 @@ def run_thread_propose(
     # Read back after the merge: the report says which pending proposal each detached note ended up in.
     current = thread_check.load_proposals(proposals_path)
     detached = thread_check.detached_lines(current, thread_check.detached(current, att.unattached))
-    excluded = thread_check.excluded_stale_lines(registry, known, current)
+    excluded = thread_check.ruling_stale_lines(
+        registry, known, current, [schema.display_path(f, root) for f in unreadable])
 
     singles = sum(1 for g in groups if g["kind"] == "single")
     dropped = sum(1 for ln in lines if ln.startswith(thread_check.DROPPED))
@@ -380,7 +383,7 @@ def run_thread_propose(
     )
     for ln in unreadable_lines:
         print(ln, file=sys.stderr)
-    for ln in [*replaced[len(unreadable_lines):], *detached, *excluded]:
+    for ln in [*replaced[len(unreadable_lines):], *detached, *(x for x in excluded if not x.startswith('(not judged'))]:
         print(f"note: {ln}")
     if att.ambiguous:
         print(f"warning: {len(att.ambiguous)} name(s) are claimed by more than one ratified thread and were left "
