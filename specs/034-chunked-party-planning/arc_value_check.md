@@ -9,10 +9,11 @@ that had never been run against real output.
 
 The issue asks for the check to be measured on real Out of the Abyss output. That campaign's data was not
 available when this change was made, so **nothing here was measured on real candidates**. The rules and the
-table below come from the three false positives and three misses the issue names, plus cases constructed in
-the same spirit (addresses, times, ordinals, creature counts, gold). Run `synth` for party and planning on the
-real campaign and read `arc_report.md`'s `states a value` drops (false positives) and the kept candidates
-(misses) before trusting the rates.
+table below come from the three false positives and three misses the issue names, a code review's probe set
+(about 90 value phrasings and 30 ordinary sentences), and cases constructed in the same spirit (addresses,
+times, ordinals, creature counts, gold). Run `synth` for party and planning on the real campaign and read
+`arc_report.md`'s `states a value` drops (false positives) and the kept candidates (misses) before trusting
+the rates.
 
 ## Rule
 
@@ -20,22 +21,36 @@ A miss is the worse failure (a number reaches the GM as if decided); a false pos
 which `arc_report.md` lists with its reason. So every rule errs towards dropping. `states_a_value(event, names)`
 drops a line when any of these match, case-insensitively:
 
-- a score word (`score`, `total`, `value(s)`, `points`) with a number within 30 characters, where the number is
-  not an ordinal (`3rd`), a unit amount (`500 gp`, `2 bells`, `10 feet`, `3 days`) or a house number (a capitalised
-  word follows: `3 Waterdeep Lane`); `N points` / `one point`;
-- `now` / `stands at` / `sits at` / `reaches` / `totals` / `currently` plus a number that ends the clause (stop,
-  comma, dash, `and`, `of`, or a counter noun such as `strikes`), so `now at 3 Waterdeep Lane` and `now sees 3
-  banners` stay;
+- a score word (`score`, `total`, `value(s)`, `point(s)`) with a number within 30 characters, where the number
+  is not an ordinal (`3rd`), a unit amount (`500 gp`, `2 bells`, `10 feet`, `3 days`) or a house number (a
+  capitalised name ending in a street suffix: `3 Waterdeep Lane`). A capitalised word alone is **not** an
+  address: `score of 5 Doom` and `now at 3 Obsession` are values. Also a score word + number word at the end of
+  the clause (`a score of seven`, not `a total of seven guards`); `N points` / `one point`; `arc|tally|count|
+  meter` within 15 characters of a number (`the tally is 4`);
+- `now` / `is at` / `stands at` / `sits at` / `reaches` / `totals` / `currently` plus a number that ends the
+  clause (stop, comma, dash, `and`, `N of <digits>`, a counter noun, or a capitalised word), so `now at 3
+  Waterdeep Lane`, `now sees 3 banners` and `now one of the Council` stay. `is at N` is not read after an
+  appointment noun (`the meeting is at 9`);
 - a counter-moving verb (`push`, `raise`, `bump`, `drop`, `climb`, `fall`, ...) a few words before `to N` or `by N`,
-  or `bring/take/put/set ... it to N`;
+  or `bring/take/put/set ... it to N`; `from N to M`; `ticks up|down`;
 - a signed delta: `+2` after a word, a stand-alone `-1`;
 - a fraction `N/M`, or `strike|mark|tick|stage ... N of M`;
-- a threshold reached, crossed, met, exceeded, or `crosses the threshold` (not `the threshold of the tower`);
-- the mechanic file's own score names (`score_names`: `Obsession` from `# Daz — Obsession arc`, `the Wrath score`)
-  followed by filler (`is`, `now`, `at`, `to`, `level`, `:`) and a number, `+N`, or before a threshold.
+- a bare count of a counter noun: `N strikes|ticks|stacks|segments|boxes` (also `N more …`); `marks` only after
+  `has|gains|earns|carries|bears|with|at` or before `now|so far`; an ordinal + `strike|tick|segment|box`
+  (`his third strike`, not `the first strike on the ogre`; `second mark` is left out on purpose); `strike|tick N`;
+- a meter, tracker, track, clock or gauge filling (`the meter fills`, `Daz's meter is full`, not `full of`);
+- a threshold reached, crossed, met, exceeded, `crosses the threshold` (not `the threshold of the tower`),
+  `one mark away from the threshold`;
+- the mechanic file's own score names (`score_names`: `Obsession` from `# Daz — Obsession arc`, `the Wrath
+  score`) followed by filler (`is`, `now`, `at`, `to`, `level`, `:`) and a number, `+N`, or before a threshold;
+  `N <name>` (`gains 1 Obsession`); `<name> point(s)` / `point(s) of <name>`; `<name> is full|maxed|at its max`,
+  `<name> reaches its peak`, `<name> ticks`; `<name>, at 4,`.
 
-Score names are read from free prose, so they are a hint: a wrong name can only cost a candidate. Number words
-(`four`, `zero`) count only where a counter verb or `stands at` already says the sentence is about a counter.
+Score names are read from free prose next to `arc|score|track|tracker|meter|counter|clock|tally|pool`, so they
+are a hint: a wrong name can only cost a candidate. A capitalised word that starts a sentence (`Keep score`) and
+common words are skipped; a player character's name next to "arc" is not told apart (the check is not given the
+roster). Number words (`four`, `zero`) count only where a verb, `stands at`, `is at` or a score word already says
+the sentence is about a counter, and the number word ends the clause.
 
 ## Verdicts
 
@@ -74,11 +89,64 @@ that every row appears below.
 | Obsession: 4 | score name + colon + N |
 | His Wrath 2 goes up | score name directly followed by N |
 | Obsession total reaches 5 | total + number |
+| Daz now at 3 Obsession | value followed by a score name; a capital letter alone is not an address |
+| Daz now at 4 Madness | value followed by a capitalised word |
+| A score of 5 Doom | score word + number + capitalised word |
+| Score 4 Obsession | score word + number + score name |
+| The Madness score is now 3 Daz snaps | 'now 3' followed by a capitalised word |
+| His point count is 4 | singular 'point' is a score word |
+| Daz pushes it to 5 Wrath | counter verb + 'it to N' + score name |
+| Daz raises it to 4 Corruption | counter verb + 'it to N' + score name |
+| A score of seven | score word + number word |
+| His score is seven | score word + number word |
+| Daz's arc is at 3 | 'arc' near a number |
+| The tally is 4 | 'tally' near a number |
+| Daz is at 3 | 'is at N' ending the clause |
+| Max is 6 and he is at 5 | 'is at N' before 'and' |
+| Daz has 3 strikes against him | bare count of a counter noun |
+| Daz needs two more strikes | 'N more' + counter noun |
+| Daz has three marks | 'has N marks' |
+| 4 marks now | 'N marks now' |
+| A second strike against him | ordinal + strike |
+| His third strike | ordinal + strike |
+| Strike two | 'strike N' |
+| Daz fills a third box | ordinal + box |
+| The meter fills | a meter filling |
+| Daz's meter is full | a meter full |
+| Daz is one mark away from the threshold | 'away from the threshold' |
+| Daz goes from 2 to 3 | 'from N to M' |
+| Wrath ticks up | 'ticks up' |
+| Wrath ticks up to 4 | 'ticks up' + 'to N' |
+| Daz gains 1 Obsession | N + score name |
+| Daz loses 2 Wrath | N + score name |
+| Daz gains two Obsession | number word + score name |
+| Daz gains 2 Corruption points | N + score name + points |
+| Another point of Wrath | 'point of' + score name |
+| Daz's first Obsession point | score name + point |
+| Wrath is maxed out | score name maxed |
+| Obsession is at its maximum | score name at its maximum |
+| Obsession reaches its peak | score name reaches its peak |
+| Daz's Obsession, at 4, flares | score name, at N, |
 
 ### Ordinary text (kept)
 
 | Event text | Why |
 |---|---|
+| He is now one of the Council | 'now one' is not a count when 'of the' follows |
+| The meeting is at 9 | 'is at N' after an appointment noun |
+| Daz leaves two marks on the cell door | 'marks' counts only after a possessing verb or before 'now' |
+| Daz bears a second mark from the ritual | ordinal + 'mark' is left out on purpose |
+| Daz carries the mark of Demogorgon | 'mark' with no number |
+| Daz lands the first strike on the ogre | ordinal + strike followed by 'on' |
+| Daz travels from 3 to 4 days out | 'from N to M' where M carries a unit |
+| The maximum depth is 300 feet | a unit amount; 'maximum' is not a rule here |
+| The count of Gracklstugh offers him a deal | 'count' with no number |
+| The clock tower strikes three | 'strikes' is a verb; the clock is not a meter |
+| Daz counts 3 tracks in the mud | 'tracks' is not a counter noun |
+| The party is at 3 days from the Underdark exit | 'is at N' where N carries a unit |
+| Daz is at the 2nd gate | an ordinal |
+| Daz drinks to the full | 'full' with no meter |
+| Daz kills two more and flees | 'two more' with no counter noun |
 | Total strangers at the 3rd gate | 'total' but the number is an ordinal |
 | The point of no return at 2 bells | 'point' but 2 counts bells |
 | They are now at 3 Waterdeep Lane | an address (capitalised street name follows) |
@@ -111,6 +179,8 @@ that every row appears below.
 
 | Event text | Why accepted |
 |---|---|
+| Daz lands 3 strikes on the ogre | a bare 'N strikes' is a count of the counter noun; combat prose is not told apart |
+| Daz opens 3 boxes in the cellar | a bare 'N boxes' is a count of the counter noun |
 | Daz wields a +1 longsword | a magic item's '+1' is indistinguishable from a signed delta |
 | A total of 12 guards patrol the wall | 'total ... N' is the value shape; the idiom is not told apart |
 | 2/3 of the guards flee | any bare 'N/M' is read as a fraction/score |
@@ -119,8 +189,11 @@ that every row appears below.
 
 ## Known gaps (not in the table)
 
-- A bare count of a counter noun with no score word, name or delta: `Daz has 3 strikes against him`. It reads
-  like an ordinary count of events, and `hits 3 guards`-style text is far commoner; the prompt forbids it.
-- Number words outside the shapes above: `a score of seven`, `the total is five` (the latter is caught only
-  because `total` precedes a stop-ending number word; `score of seven` is not).
+Misses left on purpose (rare, or not separable from ordinary prose without a model):
+
+- A count with no digit-or-number-word shape: `two more and he breaks`, `one step from breaking`, `Wrath
+  increases`, `Daz's Wrath is high`, `doubles his Wrath`.
+- Em-dash deltas (`Wrath—2`), Roman numerals (`now at IV`), `Obsession x3`, `box 3 is checked`.
+- `Daz is at 4 on the track`: `is at N` is not read when a noun follows the number.
+- `three marks` with no possessing verb (`marks` is also ordinary prose), and `a second mark`.
 - A score name the mechanic file never writes beside `arc`/`score`/`meter`/`counter`/`clock`/`tally`/`track`/`pool`.
