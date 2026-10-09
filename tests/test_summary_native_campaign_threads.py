@@ -23,6 +23,7 @@ import pytest
 from pipelines.summary_native import annotate, notes, schema, state_sections, synth, thread_attach
 from tests import conftest_party as cp
 from tests import conftest_state as cs
+from tests.test_summary_native_threads import tcamp  # noqa: F401  (fixture)
 from tests.test_summary_native_planning import (
     BACKEND, CARVER, RING_OPEN, _names, drafts, registry, section, thread, write_registry,
 )
@@ -543,3 +544,30 @@ class TestEndingNotShown:
         rc, out, err = cs.run_cli(["synth", "planning", *cp.common(root), *BACKEND, "--fallback-npc-lines", "--recent-chapters", "2"])
         assert "- discarded (not an open ratified thread, or repeated): ### An invented plot" in out
         assert "not a thread given to the model" not in out
+
+
+# ── #525: a ratified member whose alias was removed is named in campaign_threads_report.md too ──
+
+
+def test_a_ratified_member_whose_alias_was_removed_is_named_in_campaign_states_thread_report(tcamp, monkeypatch):
+    from types import SimpleNamespace
+
+    from tests.test_summary_native_threads import TestThreadPropose
+
+    root, tm = tcamp
+    monkeypatch.setattr(cs.synth, "render_part", CampaignModels(SimpleNamespace(prose_calls=[])).render)
+    helper = TestThreadPropose()  # its helpers drive the real thread_registry verbs
+    group = helper.ratify_carver(root, tm)
+    detached = [m for m in group["members"] if m["name"] == "Carver march"]
+    assert detached
+    assert build(root)[0] == 0
+    report = (drafts(root) / schema.CAMPAIGN_THREADS_REPORT_FILE).read_text(encoding="utf-8")
+    none = report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+    assert "- (none)" in none and detached[0]["id"] not in none  # nothing detached yet
+
+    helper.drop_alias(root)
+    assert build(root, "--force")[0] == 0
+    report = (drafts(root) / schema.CAMPAIGN_THREADS_REPORT_FILE).read_text(encoding="utf-8")
+    section = report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+    for m in detached:
+        assert m["id"] in section and "ratified but no longer attached (alias removed?)" in section
