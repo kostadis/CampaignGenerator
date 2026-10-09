@@ -20,11 +20,13 @@ All four produce a draft of `world_state`, `campaign_state`, `party` or
 | state projection | stores built by `event_spine` / `thread_registry`, rendered section by section | [State Projection how-to](state_projection_howto.md) |
 | **summary-native** | **your reviewed structured summaries, parsed with no model** | this page |
 
-The summary-native path does not re-extract. A deterministic parser reads the
-structure your summaries already declare (scenes, entity sections, memorable
-moments), writes an ordered evidence corpus, and only then calls a model — once
-per document — to render a draft from that corpus. Nothing in it is chunked or
-re-read for facts.
+The summary-native path reads structure your summaries already declare (scenes,
+entity sections, memorable moments). A deterministic parser writes an ordered
+evidence corpus; `extract` then has a model read it a chunk at a time, **code**
+keeps only the notes whose citations resolve and whose quotations are verbatim,
+and `synth` writes each section of each document from only the checked notes
+that code routed to it. Scope, order and attribution are code's decisions
+(Steps 5b and 6).
 
 **2. It never creates or edits a summary.** How summaries get written is out
 of scope; the pipeline starts from a directory of summaries that already exist
@@ -474,18 +476,18 @@ way since spec 034: one model call per section, from the checked notes
 [Step 5b](#step-5b--world_state-and-campaign_state-are-a-four-step-chunked-build)
 for the build and its files.
 
-> **This step still describes the retired one-shot path** (the corpus's
-> chronology and dossiers in one prompt per document, an outline check, `--parts`,
-> `drafts/` and `runs/<doc>/`) for `party` and `planning`. It is kept until the
-> how-to is rewritten around the chunked party and planning builds (spec 034
-> T050); where it disagrees with Step 5b, Step 5b is right. What is gone, and
-> refused with the replacement named (exit 2, from the CLI and as HTTP 400 from
-> the routes):
+> **What is gone.** The one-shot path (the corpus's chronology and dossiers in
+> one prompt per document, `--parts`, `drafts/` and `runs/<doc>/`) was retired
+> by spec 034. These are refused with the replacement named (exit 2 from the
+> CLI, HTTP 400 from the routes):
 >
 > | Retired | Message |
 > |---|---|
 > | `--parts N` | `--parts is retired: every document is built one call per section from the checked notes` |
 > | `--world-state FILE`, `--campaign-state FILE` | `--world-state is retired: upstream drafts are no longer prompt context: party and planning build from the checked notes; review those documents on their own` (likewise `--campaign-state`) |
+> | `parts:` under `summary_native` in `grounding.yaml` | "summary_native.parts is retired (every document is built one call per section from the checked notes): delete the `parts:` line from grounding.yaml" (refused when the config loads, not only at `synth`) |
+>
+> The retired flags are checked first, before any config or corpus is read.
 
 **Order no longer matters between documents.** No document reads another's
 draft, so there is no upstream draft to name: build them in any order, and review
@@ -501,28 +503,27 @@ summary_native synth planning       --summaries-dir docs/summaries --since 2 --u
 
 ### What goes into the prompt
 
-Always: the full chronology, all memorable moments, and the **selected**
-dossiers. Selection (deterministic, recorded in `selection.json`):
+One call per section, and each call sees only the checked notes code routed to
+it (plus, for a few sections, the last chunk's summaries or a configured sheet).
+Nothing reads the corpus's chronology or dossiers wholesale, and no document
+reads another's draft. What each document's calls see is described in
+[Step 5b](#step-5b--world_state-and-campaign_state-are-a-four-step-chunked-build)
+(world_state, campaign_state) and [Step 6](#step-6--party-and-planning-the-chunked-builds)
+(party, planning).
 
-1. **named** — any dossier whose subject matches a `--name` (case-insensitive
-   equality; an unmatched name is a refusal);
-2. **recent** — a dossier whose last chapter is within `--recent-chapters`
-   (default **4**) of the range end; `0` means every dossier;
-3. **recurring** — a dossier with at least `--recurring-min` observations
-   (default **10**).
+These `synth` flags select or configure; each is refused (exit 2) for a document
+it does not apply to:
 
-`planning` selects NPC dossiers only. Each dossier is tagged in the prompt
-with why it was chosen. Then, depending on the document:
-
-| Flag | Doc | What it does |
+| Flag | Applies to | What it does |
 |---|---|---|
-| `--audit FILE …` | `campaign_state` only | Tracking/planning/module files, supplied under `AUDIT QUESTIONS — NOT EVIDENCE`. Each item is checked against the summaries and tagged; a claim with no support is labelled `NOT FOUND IN SUMMARIES` rather than stated as history. **Default:** `campaign_state.track_files` from `config/grounding.yaml`. With none, the `## Audit: Tracking Claims` section is still required and says so in one line. Refused for other docs. |
-| `--party-config FILE` | `party` only | The roster. Default `<config dir>/party.yaml`. Each character's sheet, backstory and arc-score mechanic is included, labelled by path. A missing or empty roster, or a missing sheet/backstory/arc-score file, is a refusal. Refused for other docs. |
-| `--planning-config FILE` | `planning` only | Tracked NPCs/factions and arc scores. Default `<config dir>/planning.yaml`; an *absent default* means "no arc scores configured", an *absent explicit* path is a refusal. Refused for other docs. |
+| `--party-config FILE` | `party` | The roster. Default `<config dir>/party.yaml`. A missing file, an unreadable one, one with no characters, or a missing sheet/backstory/arc-score file is a refusal. |
+| `--planning-config FILE` | `planning` | Tracked NPCs/factions and arc scores. Default `<config dir>/planning.yaml`; an *absent default* means "no arc scores configured", an *absent explicit* path is a refusal. |
+| `--name SUBJECT …`, `--recent-chapters N`, `--recurring-min N` | `planning`, `world_state` | Choose the NPCs that get a published-dossier line (defaults 4 and 10; `0` recent chapters = all). Refused for `party` and `campaign_state`. |
+| `--fallback-npc-lines` | `planning`, `world_state` | Per run only: write a marked code-built line for an NPC without a published dossier instead of refusing. Refused for `party` and `campaign_state`. |
+| `--npc-root DIR` | `planning`, `world_state` | Where draft verifications and the publish log are read, to explain a missing dossier. |
 
-Relative paths resolve against the campaign root. Every flag in this table is
-refused (exit 2) for a document it does not apply to, e.g.
-`--party-config applies to party only, not world_state`.
+`--audit` is accepted by the parser only to be refused for every document: the
+audit is its own step (`summary_native audit`, Step 5b).
 
 ### Outline check, `--max-tokens`
 
@@ -536,37 +537,44 @@ Each document has a fixed ordered outline (the H2 headings in
 | `party` | Party Overview · Characters · Party Dynamics |
 | `planning` | Threat Tracker · NPC Dossiers · Faction States · Active Plots · DM Notes |
 
-After the call the output is checked **deterministically** against the outline:
-no text before the first heading, every heading present exactly once and in
-order, no extra `## ` heading, and a non-empty body under each. A document that
-fails is never written as a draft.
+After the build the assembled document is checked **deterministically** against
+the outline: no text before the first heading, every heading present exactly once
+and in order, no extra `## ` heading, and a non-empty body under each. A document
+that fails is never written as a draft (it becomes `<doc>.incomplete.md`, exit 3).
 
 - `--max-tokens N` is per call; default **16000**.
+- Word budgets are per section, reported (`Party Overview: 241/300 words`) and
+  **never trimmed**: an overrun is flagged `OVER` and kept whole. Defaults are
+  declared once in `schema.py` (`DEFAULT_PARTY_BUDGETS`, `DEFAULT_PLANNING_BUDGETS`);
+  override them under `summary_native.prose.party_budgets` /
+  `planning_budgets` in `grounding.yaml`. A section name outside the defaults, or
+  a value below 1, is refused when the config loads. `Characters` is words **per
+  character**.
 
 ### The Threat Tracker sentinel
 
-For `planning`, when the planning config configures **no** arc score (or there
-is no config), the `## Threat Tracker` body must be **exactly** the single line
+For `planning`, code writes the Threat Tracker; the model never does. When the
+planning config configures **no** arc score (or there is no config), the body is
+**exactly** the single line
 
 ```text
 _No arc scores configured._
 ```
 
-Code writes the Threat Tracker (the sentinel, or one row per configured score);
-the model never does. With arc scores configured, the model lists candidate
-events with the trigger quoted verbatim — never a current value or a threshold
-crossed — and code checks each one before it is placed.
+With arc scores configured it is a table, one row per tracked NPC or faction
+that has a mechanic file; see [Arc-score candidates](#arc-score-candidates) in
+Step 6 for what goes in the cells.
 
 ### Backend and model
 
 Same flags as the other synthesis tools: `--backend
 {anthropic,dgx,openrouter,claude-code,codex-cli}`, `--model`, `--endpoint`
-(with `--backend dgx`), `--batch` (anthropic only), and the
-`--codex-reasoning-effort` / `--claude-code-effort` / `--[no-]claude-code-thinking`
-knobs. The default backend is `anthropic` and the default model is whatever
-`--help` prints (`claude-fable-5` today). A backend/model pair that cannot work
-together is a refusal. `ANTHROPIC_API_KEY` is needed only for the `anthropic`
-backend; each backend refuses for itself at the call.
+(with `--backend dgx`), and the `--codex-reasoning-effort` /
+`--claude-code-effort` / `--[no-]claude-code-thinking` knobs. The prose backend
+is `summary_native.prose.*` in `grounding.yaml` (flag > config > default), and
+the default is `claude-code` / `claude-sonnet-5-5` / effort `medium`, the same
+for all four documents. A backend/model pair that cannot work together is a
+refusal; each backend refuses for itself at the call.
 
 ### `--dump-only`
 
@@ -651,7 +659,9 @@ that change validation findings only, never the corpus. A registry set in `groun
 > for all four (exit 2, with the replacement named), `--audit` is refused as
 > below, and every draft lives under `state/drafts/`. Design:
 > `specs/033-chunked-grounding-docs/` and `specs/034-chunked-party-planning/`
-> (`contracts/cli.md` and `contracts/http.md`).
+> (`contracts/cli.md` and `contracts/http.md`). This step walks world_state and
+> campaign_state; [Step 6](#step-6--party-and-planning-the-chunked-builds) covers
+> what is different for party and planning.
 
 The long chapter range is cut into chapter groups, each group is read by its own
 model call, **code** checks what came back, and only the checked notes reach the
@@ -766,7 +776,9 @@ rewrites only the annotation sub-bullets under lines: `⚠ later:` (newer
 information about the same subject), `ℹ since:` (the later status of someone the
 line mentions) and `⚠ unverified:` (a quotation not verbatim in the chapter it
 cites, or a citation that does not resolve). A player character listed as a
-companion is the one thing it removes. Use it after publishing a dossier or
+companion, and a Faction States block named for a player character, are the only
+things it removes. It works on all four documents (for party and planning's scope
+see [Step 6](#annotation-for-party-and-planning)). Use it after publishing a dossier or
 editing a summary when you do not want a full rebuild; `--dry-run` prints the hits
 and writes nothing. It prints `annotations: 8 later, 7 since, 2 unverified; 0
 removed` and writes `annotations.md`.
@@ -800,11 +812,15 @@ docs/summary_native/ch002-070/
     notes/    manifest.json, chunkNN.*.{user,out}.md, chunkNN.*.checked.json, drops.md
     runs/<stamp>/record.json                     ← one per extract / synth / audit run, with the prompts
     audit/    items.json, audit.json, audit.md
+    threads/  attach.json (planning), propose.NN.{user,out}.md, propose_report.md (thread-propose)
     drafts/
       world_state.draft.md  campaign_state.draft.md   (*.incomplete.md if a section is missing)
+      party.draft.md  planning.draft.md
       canon_events_timeline.md
-      reference/{factions,npcs,locations,items,threads,threats}.md
+      reference/{factions,npcs,locations,items,threads,threats}.md   (party: reference/party.md)
       annotations.md, npc_status_report.md, key_npcs_report.md, budget_report.json
+      party_report.md, planning_npcs_report.md, threads_report.md, arc_report.md
+      budget_report.party.json, budget_report.planning.json
 ```
 
 Everything this build writes is under `state/`. `docs/`, `docs/npcs/` and the 031
@@ -843,6 +859,18 @@ Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
 | `--audit does not apply to campaign_state: the audit is its own step: summary_native audit` (world_state: `--audit applies to campaign_state only`) | synth | Run `audit`; `synth campaign_state` picks it up. |
 | `--fallback-npc-lines applies to world_state and planning only, not <doc>` / `--npc-root applies to world_state and planning only, not <doc>` | synth | Drop it. |
 | `--name / --recent-chapters / --recurring-min does not apply to campaign_state: it has no Key NPCs section` | synth | Drop it. |
+| `--name / --recent-chapters / --recurring-min does not apply to party: party selects no NPCs; these apply to planning and world_state` | synth party | Drop it. |
+| `the party notes predate the subject grammar; run summary_native extract --since A --until B (it re-extracts every chunk)` | synth party, synth planning | Run the `extract` it names, once. See Step 6. |
+| `planning's NPC Dossiers need a published, verified dossier for each selected NPC; N of M have none: …` | synth planning | As world_state's Key NPCs above: run the four `npc-*` commands it lists, or `--fallback-npc-lines` for this run. A selected NPC can be one the notes never mention but `planning.yaml` tracks. |
+| `no dossier has subject: X (NPC Dossiers select the global NPCs only)` | synth planning (also world_state: Key NPCs) | A `--name` matched no global NPC, or named a player character. Check the spelling against the registry. |
+| `the thread registry docs/thread_registry.yaml fails thread_registry check; fix it first:` + the findings | synth planning, thread-propose | Run `thread_registry check`, fix what it lists. An *absent* registry is not an error. |
+| `cannot read the thread registry: …` / `cannot read the thread registry or the proposals file: …` | synth planning, thread-propose | The YAML will not load; fix the file. |
+| `cannot read the entity registry or players.yaml: …` | synth, thread-propose | Fix the file named. |
+| `thread-propose needs --since and --until: the thread notes of a chapter range, never all chapters` | thread-propose | Give both. |
+| exit 3: `<label>: the model wrote no body` / `…wrote a heading (…)` / `…wrote a level line (…)` / `…wrote '#### Candidate Arc Score Events'; code places the checked candidates there` | synth party | Rerun with `--force`; the label names the section or `Characters: <name>`. The draft is `party.incomplete.md`. |
+| exit 3: `<section>: the model wrote no body` | synth planning | As above (`planning.incomplete.md`). |
+| exit 4: `batch i/N failed after one retry: …; no proposal was written` | thread-propose | The backend failed; nothing was merged. Rerun. A batch that *answers* with unusable JSON is not exit 4: its notes become single-note proposals. |
+| exit 4: `model call failed in Arc score: <subject> …` | synth party, planning | The arc call failed; no draft was written. Rerun. |
 | `the audit is stale (track file(s) changed: …); run summary_native audit` / `(the checked notes changed)` | synth campaign_state | Rerun `audit`. |
 | `state/audit/items.json is unreadable; run summary_native audit --force` | synth campaign_state | As said. |
 | `…/state/drafts/<doc>.draft.md exists; pass --force to overwrite it` | synth | `--force` only if you do not mind losing that draft (it is output; see above). |
@@ -872,7 +900,9 @@ the reading contract at the top of `world_state` points at them:
 | `world_state.draft.md` | `docs/world_state.md` |
 | `campaign_state.draft.md` | `docs/campaign_state.md` |
 | `canon_events_timeline.md` | `docs/canon_events_timeline.md` |
-| `reference/` | `docs/reference/` |
+| `party.draft.md` | `docs/party.md` |
+| `planning.draft.md` | `docs/planning.md` |
+| `reference/` (incl. `party.md`) | `docs/reference/` |
 
 The timeline and `reference/` paths are relative to `world_state`, so the whole
 bundle can instead be copied to another directory. Summaries and NPC dossiers
@@ -900,19 +930,295 @@ documents too (it reads `state/drafts/`).
 
 ---
 
-## Step 6 — the other two documents
+## Step 6 — party and planning, the chunked builds
+
+`party` and `planning` are built exactly like `world_state`: `extract` writes the
+checked notes, `synth` builds one document from them (code first, then one model
+call per section, then a code check), and `annotate` runs at the end. Neither
+reads another document's draft, and nothing is written to `docs/`.
 
 ```bash
 # party needs config/party.yaml (or --party-config)
-summary_native synth party --summaries-dir docs/summaries --since 2 --until 70
+summary_native synth party    --since 2 --until 70
 
-# planning reads config/planning.yaml for arc scores; without one, the sentinel applies
-summary_native synth planning --summaries-dir docs/summaries --since 2 --until 70
+# planning reads config/planning.yaml; without one, the Threat Tracker sentinel applies
+summary_native synth planning --since 2 --until 70
 ```
 
-Each is built like the first two: one call per section from the checked notes, its own run directory under
-`state/runs/` and its own draft under `state/drafts/`. No document reads another's draft (`--world-state` and
-`--campaign-state` are refused). The party and planning builds are written up in full under spec 034 T050.
+**Run `extract` again once, after upgrading.** The `## Party` grammar changed
+(below), and the extraction prompt is part of the chunk cache key, so the first
+`extract` reports `0 cached` and re-reads every chunk. Until you do, both
+documents refuse:
+
+```text
+Error: the party notes predate the subject grammar; run `summary_native extract --since 2 --until 70` (it re-extracts every chunk)
+```
+
+Both documents also accept `--force`, `--dump-only`, `--max-tokens` and the
+backend flags, as in Step 5. `--dump-only` writes every prompt to
+`state/runs/<stamp>/` and makes no call.
+
+### party
+
+Sections, in order: **Party Overview**, **Characters**, **Party Dynamics**.
+Budgets (words): 300, 500 *per character*, 300.
+
+**The party grammar, and the re-extract.** Every `## Party` bullet the extraction
+step writes begins with a bold subject:
+
+```text
+- **Daz** — carries the Ring of Winter now [ch 031 / 031.04]
+- **Party** — camped at the Darklake shore [ch 031 / end]
+- [LEVEL] **Party** — 9 [ch 034 / moment]
+```
+
+The subject is one player character, several joined by `,` / `and` / `&`, or
+exactly `Party`. A level gets its own `[LEVEL]` bullet with the number alone.
+`extract` drops (listed in `state/notes/drops.md`):
+
+| Drop reason | Meaning | What to do |
+|---|---|---|
+| `missing-party-subject` | A party bullet with no leading `**Subject**`. | Nothing; rerun `extract` if many. The note is not guessable. |
+| `level-not-in-cited-text` | A `[LEVEL]` row whose number is not stated as a character level ("level 9", "9th level", "reaches ninth level") in a section it cites. A spell level or slot does not count. | Nothing: this is the check working. If the summary never states the level, there is no level row. |
+| `malformed-level-row` | A `[LEVEL]` row without the `**Subject** — N` shape. | Rerun `extract`. |
+
+**Attribution is code's decision.** Each party note is attributed from its
+subject by exact, casefolded equality through the entity registry and
+`players.yaml`, never by similarity (`Dazz` is not `Daz`). The whole subject is
+tried first; it is split on `,` / `&` / `and` only when the whole resolves to
+nothing, and then *every* piece must resolve (so a registry entity called
+"Topsy and Turvy" stays one companion). The result is one of:
+
+| Scope | Where the note goes |
+|---|---|
+| `character` | The section of each player character it names (a joint note counts for each). |
+| `party` | Party-wide: seen by Party Overview and Party Dynamics, and by every character's call from the last chunk. |
+| `companion` | A non-player entity the registry names (Glabbagool, Jimjar, Ront in Out of the Abyss). No character section. |
+| `unattributed` | Resolves to nothing, or to more than one entity. Listed in `party_report.md` with the reason. |
+
+An unattributed note is a fix-at-source item: declare the name in `players.yaml`
+or the registry, or correct the summary, then `extract` and `synth --force`.
+
+**Companions are in the overview and the dynamics.** *(GM ruling, 2026-10-08.)*
+Party Overview and Party Dynamics are written from every party-wide note, the
+latest two notes of each character, **and the latest two notes of each
+companion**, so the group is described with the people travelling with it. A
+companion never gets a `### name` section.
+
+**Level is code's decision too.** Each `### name` carries a line the model cannot
+write:
+
+- `Level: 9 [ch 034 / moment]`: the latest `[LEVEL]` row for that character or for
+  `Party`, by first chapter (a character's own row beats a party row of the same
+  chapter);
+- else `Level: not recorded in the summaries (sheet says 8)`: the figure from an
+  explicit `Level:` / `Class & Level:` / `## Level N` line of the character's
+  sheet, shown as the sheet's, never as fact; or `(sheet gives none)` when the
+  sheet has none or two different ones.
+
+A model that writes a level line, any `#` heading, or the arc-score heading in
+its body makes the draft incomplete (exit 3, below).
+
+**Characters.** One `### name` per character in `party.yaml`, in that order and
+spelled as configured: the level line, the model's body (written from *that
+character's* notes, the last chunk's party-wide notes, and their sheet and
+backstory, nothing else), an `Unsupported by the summaries:` line where the sheet
+says more than the notes, optionally the candidate arc-score subsection, and
+`_Full notes: reference/party.md_`. A character with no notes gets the code line
+`The summaries in this range record nothing for <name>.` and no call. A player
+character with notes but no `party.yaml` entry gets no section, and is named in
+`party_report.md`.
+
+**Files.**
+
+| File (under `state/drafts/`) | Holds |
+|---|---|
+| `party.draft.md` | The document, annotated. |
+| `reference/party.md` | Every checked party note, verbatim: one group per character, then `Party`, `Companions`, `Unattributed`. Promote it beside `party.md`. |
+| `party_report.md` | Counts by scope, the level source per character, the companions, the unattributed notes with reasons, and the word counts against budget. **Read this first.** |
+| `arc_report.md`, `budget_report.party.json`, `annotations.md` | As below. |
+
+### planning
+
+Sections, in order: **Threat Tracker** (code only), **NPC Dossiers**, **Faction
+States**, **Active Plots**, **DM Notes**. Budgets: 1500, 600, 1200, 400.
+
+**NPC Dossiers** come from *published* dossiers, as world_state's Key NPCs do.
+Code selects the NPCs: those in `planning.yaml`, then `--name`, then the recent
+and recurring ones (`--recent-chapters`, `--recurring-min`), never a player
+character. For each, one block `### <name>` with `Status and location:`,
+`Goals:` and `Relationships:` lines, written from that NPC's dossier (Identity,
+Personality and Motivations, Last Observed State and Relationships only) and
+ending in `→ docs/npcs/<slug>.md`. Code checks the heading set and order, that
+every citation is one of that dossier's, and that quotes are verbatim; a block
+that fails is replaced by the dossier's own first Last Observed State sentence
+and listed in `planning_npcs_report.md`.
+
+A selected NPC without a published, verification-passing dossier **refuses the
+build** (exit 2) with the same message and `npc-draft` / `npc-verify` /
+`npc-compose` / `npc-publish` commands as world_state (Step 5b), starting
+`planning's NPC Dossiers need a published, verified dossier for each selected
+NPC; N of M have none:`. `--fallback-npc-lines` is the per-run way out: a code
+line ending `(no published dossier — from checked notes)`. It is never read from
+config.
+
+**Faction States.** Code selects the factions: those in `planning.yaml` plus every
+`[FACTION]` subject in the notes (canonical by registry name or alias), newest
+activity first, at most 20 written; the rest are named in one closing line with a
+pointer to `reference/factions.md`. One call writes a `### <faction>` block per
+faction that has notes; a faction with none gets the code line
+`The summaries in this range record nothing for <name>.`; a block that is
+missing, out of order or empty is replaced by that faction's latest note,
+verbatim. A block named for a *player character* is removed by `annotate`.
+
+**Active Plots has three layers**, and the thread registry is why. Out of the
+Abyss's checked notes carry 554 distinct thread names, and 550 of them appear
+once; the extractor names a thread freshly each time, so no count or grouping of
+those names is a plot list. Thread identity is the GM's
+`docs/thread_registry.yaml`, nothing else:
+
+1. **Open ratified threads** (`### <title>`), newest activity first. A thread's
+   notes attach to it when the note's bold name equals the thread's title or one
+   of its aliases after `norm_title`; equality is the whole rule. A name two
+   threads claim is *ambiguous*: reported, and the note stays unattached. Whether
+   a thread is open is code's decision: a registry status of `dormant`,
+   `resolved` or `abandoned` that you set wins; a status of `open` defers to the
+   latest attached note (open if its tag is `OPENED` or `ADVANCED`). One call
+   writes the entries; a missing or bad one is replaced by the thread's latest
+   attached note, verbatim.
+2. **`### Dormant threads`**: threads you marked `dormant` that have notes in the
+   range, as `- **title** — latest note, verbatim`. A code-built block of its own;
+   no model call. *(GM ruling.)*
+3. **`### Unratified thread notes (not yet ruled on)`**: every checked thread
+   note no ratified thread owns, verbatim, with a count. Evidence, not plots.
+
+With no ratified thread that has notes in the range the first layer is the line
+`_No ratified thread has notes in this range._`; with some but none open it is
+`_No ratified thread is open in this range._`. An **absent or empty registry is
+not a refusal**: every thread note is then unratified. A registry that fails
+`thread_registry check` **is** refused (exit 2) with the check's findings, and
+nothing is read from it.
+
+**DM Notes** opens with the code label `_Suggestions for the GM, not events._`,
+then bullets written from the open threads' latest notes, the NPC status table
+and the last chunk.
+
+**Files.**
+
+| File (under `state/`) | Holds |
+|---|---|
+| `drafts/planning.draft.md`, `drafts/reference/{factions,npcs,threads}.md` | The document and the three reference files its reading contract names. |
+| `drafts/planning_npcs_report.md` | Per NPC: model line / substituted by the dossier's sentence / fallback; and the Faction States selection and replacements. |
+| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, the unattached count, and each Active Plots entry code replaced. |
+| `threads/attach.json` | Code's map: note id → thread id, `"ambiguous"` or `null`. |
+| `drafts/arc_report.md`, `budget_report.planning.json`, `annotations.md`, `missing_dossiers.planning.json` | As described here and in Step 5b. |
+
+### Thread proposals — grouping the notes nobody owns
+
+The unratified block is the queue of notes that need a decision. Three commands
+move them into the registry, and the model is only in the first:
+
+```bash
+summary_native thread-propose --since 2 --until 70      # a model groups; code checks; the GM rules
+# then /grounding/threads: Ratify (edit, split), Reject or Defer, one group at a time
+summary_native synth planning --since 2 --until 70 --force
+```
+
+`thread-propose` needs `--since` and `--until` (`thread-propose needs --since
+and --until: the thread notes of a chapter range, never all chapters`) and a
+current corpus and checked notes. It also accepts `--max-input-chars N` (default
+150000: the notes are sent in chapter-ordered batches no larger than this),
+`--max-tokens`, `--dump-only` and the backend flags.
+
+What it does, in order:
+
+1. **Code attaches first.** Notes whose name equals a ratified title or alias are
+   attached and never sent. Notes in a group you rejected or deferred are not sent
+   either.
+2. The rest are sent in batches with the ratified-thread list. **Each batch sees
+   only the checked notes and the ratified threads**, never another batch's
+   output. The model returns groupings as JSON: a suggestion.
+3. **Code checks every group** and removes what the notes and the registry do not
+   support: an unknown kind, a `continues` group naming a thread that is not in the
+   registry, a member that is not an unattached checked note of this run, a member
+   claimed by two groups (removed from *both*), an empty group. Every note left
+   out is offered as a one-note `single` proposal, so none is lost. A batch whose
+   output is not the JSON asked for becomes single-note proposals.
+4. The groups are merged into the proposals file (`projections.yaml`
+   `thread_proposals`, default `docs/ensemble/thread_proposals.yaml`), keeping
+   every ruling by `key` (`g-` plus a hash of the member ids). It never writes the
+   registry.
+
+It prints `threads: 120 notes — 40 attached to 12 ratified threads, 80 unattached
+→ 21 group proposals (9 single), 3 dropped (see propose_report.md)` and writes
+`state/threads/propose.NN.{user,out}.md`, `propose_report.md` (what was dropped and
+why, stale rulings, ambiguous names) and a run record.
+
+**A proposal is a candidate the GM ratifies.** Grouping notes under one thread name
+is an identity assertion, and it is yours. On the [Threads page](state_projection_howto.md#grouping-proposals-from-summary-native)
+you edit the title, status, members and aliases before anything is written;
+there is no one-click accept. Ratifying adds the thread (or log rows on an existing
+one), and **every member's name becomes an alias**, so the next build attaches those
+notes by exact match. Reject, Defer and splitting are covered there. Two known
+gaps: a pending group that spans the edge of the range loses its out-of-range
+notes on the next run (#524), and notes left unattached after you remove an alias
+are neither re-proposed nor flagged (#525).
+
+### Arc-score candidates
+
+Arc scores are yours. The documents may surface *candidate events* that might
+count toward a score, never a value, a total or a threshold.
+
+- **party:** a `#### Candidate Arc Score Events` subsection under a character
+  whose `party.yaml` entry has an `arc_score` mechanic file.
+- **planning:** the Threat Tracker table has one row per NPC or faction with a
+  mechanic file, columns `Score | Subject | Candidate events | Trigger text`. The
+  candidates are in the third cell; the fourth is the mechanic file's path. A
+  subject with none shows `—`.
+
+One call per scored subject that has checked notes, from that subject's notes and
+the mechanic file, nothing else. A trackless subject (no file) gets no call. Code
+keeps a line `- <event> [cite] — trigger: "<text>"` only if it passes all three
+checks; every dropped line is listed in `arc_report.md` with its reason:
+
+| Drop reason | Meaning |
+|---|---|
+| `cite-not-in-notes` | A citation is missing, malformed, or not one of that subject's own checked notes' citations. |
+| `trigger not verbatim` | The quoted trigger (at least 4 characters) is not verbatim in the mechanic file, or the line names no trigger. |
+| `states a value` | The event text matches the value pattern (a score, total, points or "now at N", a threshold reached). |
+
+A false drop costs only a candidate you can read in `arc_report.md`. The value
+check is an untuned pattern (#526): it can drop ordinary text and, worse, can miss
+a phrasing like "pushes it to 5", so read the candidates as candidates.
+
+### Annotation for party and planning
+
+`annotate` runs at the end of `synth`, as for the other two documents, and adds
+`⚠ later:`, `ℹ since:` and `⚠ unverified:` under lines; no line's text changes.
+For these documents it scans the model-written sections line by line, **prose
+paragraphs as well as bullets**. It skips what code built or what is not a claim:
+
+- the Threat Tracker and the NPC Dossiers;
+- Active Plots' `### Dormant threads` and `### Unratified thread notes` blocks;
+- the `#### Candidate Arc Score Events` subsection (triggers are quoted from the
+  mechanic file, not a chapter);
+- the level line, the `_Full notes_` pointers and the labels.
+
+Two things are **removed** (a rule, not a judgment, listed in `annotations.md`): a
+player character listed as a companion, and a Faction States block named for a
+player character. A line inside a real faction's block that merely mentions a
+player character is a claim and stays. Party Overview and Party Dynamics lines
+usually have no bold subject, so `⚠ later:` rarely fires on them (#527); the
+citation and quotation checks still run.
+
+### Incomplete drafts for these two documents
+
+Exit 3 and `<doc>.incomplete.md` also cover: `<label>: the model wrote no body`,
+`<label>: the model wrote a heading (...)`, `<label>: the model wrote a level line
+(...)`, and `<label>: the model wrote '#### Candidate Arc Score Events'`. A chunk
+that is missing one of its sections still passes the extraction check (#515), so a
+quiet section in `drops.md` is worth a look. Incremental rebuilds after a new
+session are tracked in #512.
 
 ---
 
@@ -944,12 +1250,13 @@ exist.
 ## Step 8 — review and promote by hand
 
 The tool never writes `docs/<doc>.md`. (For `world_state` and `campaign_state`,
-promotion also carries the timeline and `reference/`; see
-[Promotion](#promotion) in Step 5b.) To promote:
+promotion also carries the timeline and `reference/`; `party` carries
+`reference/party.md`; see [Promotion](#promotion) in Step 5b.) To promote:
 
-1. Read `drafts/<doc>.draft.md` against the diff.
-2. Fix what is wrong, in the draft. (Fix a *summary* error in the summary, then
-   `build --force` and `synth --force` again — never patch around it.)
+1. Read `drafts/<doc>.draft.md` against the diff and its reports.
+2. Fix what is wrong at its source (a summary, the registry, a dossier, a thread
+   ruling), then `synth --force`. Prose edits happen only after promotion, in
+   `docs/`, where the next build cannot overwrite them.
 3. Copy it over the live file yourself, deleting the first-line HTML provenance
    comment if you do not want it in the live document. `git diff` and the commit
    are your record.
@@ -958,9 +1265,13 @@ promotion also carries the timeline and `reference/`; see
 
 ## What session prep may rely on — the documents are an index
 
-The chunked state documents (`campaign_state.md`, `world_state.md`, built by
-`extract` → `synth` → `annotate` → `audit`) are designed to be read by session
-prep as an **index**, not as proof. The summaries stay the authority. The
+All four chunked documents (`campaign_state.md`, `world_state.md`, `party.md` and
+`planning.md`, built by `extract` → `synth` → `annotate`, plus `audit` for
+campaign_state) are designed to be read by session prep as an **index**, not as
+proof. The summaries stay the authority, and that holds for party and planning
+exactly as for the first two: a level line, a Threat Tracker candidate, an
+Active Plots entry and a dossier line are all things to navigate by and then
+check. The
 agreement is written down in
 [`specs/033-chunked-grounding-docs/contracts/session-prep.md`](../../specs/033-chunked-grounding-docs/contracts/session-prep.md);
 this section is what it means for you at the keyboard. The consumer is the
@@ -971,26 +1282,46 @@ nothing in this repo installs it.
 
 ### What the documents promise
 
-Four things, each checked by `tests/test_summary_native_state_sections.py`
-(`TestSessionPrepContract`) on the fixture campaign:
+Four things. The first three are checked for world_state by
+`tests/test_summary_native_state_sections.py` (`TestSessionPrepContract`) on the
+fixture campaign, and party and planning are exercised by
+`tests/test_summary_native_party.py` and `tests/test_summary_native_planning.py`.
+What differs per document is noted in each item:
 
 1. **Every content line carries a citation** `[ch NNN / target]` that resolves
    to a scene id (`NNN.SS`) or a named section (`npcs`, `locations`, `items`,
    `spells`, `moment`, `end`) of `docs/summaries/NNN-*.md`. A table row cites in
    its last column. Not counted: headings, the reading-contract blockquote, the
    italic pointer lines (`_Full notes: ..._`, `_Source: ..._`), annotation
-   sub-bullets, the Timeline section (a pointer to the timeline file) and an
-   "Audit not run" notice.
-2. **`world_state.md` opens with a reading contract.** A blockquote that names
+   sub-bullets, the Timeline section (a pointer to the timeline file), an
+   "Audit not run" notice, party's code-written `Level:` line, and planning's
+   Threat Tracker table, whose rows name the GM's mechanic file rather than a
+   chapter (the candidate events in its cells do cite).
+2. **Each document opens with a reading contract.** A blockquote that names
    the three markers (`⚠ later:`, `ℹ since:`, `⚠ unverified:`), the citation
-   grammar, the six `reference/*.md` files and `canon_events_timeline.md` beside it,
-   and says that anything the document does not settle is a decision for the GM.
-3. **Every Key NPCs line ends in `→ docs/npcs/<slug>.md`**, or in
-   `(no published dossier — from checked notes)`. The second form means there is
-   no dossier to open: the line is the NPC's latest status and checked notes.
+   grammar, the `reference/*.md` files that document points to
+   (`world_state`: six and `canon_events_timeline.md`; `party`: `party.md`;
+   `planning`: `factions`, `npcs`, `threads`) and says that anything the document
+   does not settle is a decision for the GM. Planning's also says what the three
+   Active Plots layers are and that the thread registry is the GM's.
+3. **Every dossier-sourced line ends in `→ docs/npcs/<slug>.md`**, or in
+   `(no published dossier — from checked notes)`: world_state's Key NPCs and
+   planning's NPC Dossiers. The second form means there is no dossier to open: the
+   line is the NPC's latest status and checked notes.
 4. **No model rewrote a line after the code check.** After drafting, a line
-   changes only by an annotation under it, or by removal of a player-character
-   line from an NPC group. `annotations.md` in the drafts folder lists each one.
+   changes only by an annotation under it, or by removal of a player character
+   listed as a companion or a Faction States block named for one.
+   `annotations.md` in the drafts folder lists each one.
+
+Two promises are specific to party and planning:
+
+- **A level is a citation or a disclaimer.** Party's `Level: N [cite]` comes from
+  a `[LEVEL]` row whose number the cited text states; otherwise the line says the
+  summaries record none and shows the sheet's figure as the sheet's.
+- **Arc scores are never stated.** The documents list candidate events with a
+  quoted trigger; the score, its total and its threshold are the GM's.
+  Planning's Active Plots lists only threads the GM has ratified; the rest sit in
+  the unratified block as evidence, and dormant threads in their own block.
 
 The markers mean: `⚠ later:` is newer information about the same subject (where
 they conflict, the later one wins); `ℹ since:` is the later status of someone the
@@ -1003,7 +1334,7 @@ it as a paraphrase).
 The skill, not this tool, does these. They are listed so you know what a prep
 run should have done, and what to check if it did not:
 
-1. **Index pass.** Read the state documents, following `world_state`'s reading
+1. **Index pass.** Read the state documents, following each one's reading
    contract, to decide what the session puts on stage.
 2. **Read the last two summaries in full.**
 3. **Verify pass.** For each NPC, item, faction or thread the prep *uses*,
@@ -1050,10 +1381,26 @@ list marking each `draft` or `incomplete`.
 
 What it exposes per run: the summaries directory, the range (with **All
 chapters**), the duplicate threshold, build `--force`, and for synthesis the
-document, upstream draft paths, party/planning config, audit files, named
-subjects, recent chapters, recurring minimum, parts, max tokens, dump-only,
-force, and the model/backend selection. `recent_chapters`, `recurring_min`,
-`parts` and `dup_threshold` fall back to `grounding.yaml`.
+document, the party or planning config path, audit files, named subjects,
+recent chapters, recurring minimum, max tokens, dump-only, force, the
+model/backend selection and, for world_state and planning only, a
+**"Write fallback lines for NPCs without a published dossier"** checkbox that is
+unchecked on every load and never saved. `recent_chapters`, `recurring_min` and
+`dup_threshold` fall back to `grounding.yaml`. The Parts control and the
+upstream-draft pickers are gone. A request that carries `parts`, `world_state` or
+`campaign_state` gets HTTP 400 with the CLI's refusal text; `fallback_npc_lines`
+for party or campaign_state, and `name` / `recent_chapters` / `recurring_min`
+for party, are 400 too.
+
+The planning step also shows the **ratified-thread counts** of the last planning
+build (ratified in range, open, dormant, unattached, ambiguous, and pending group
+proposals), read from `state/threads/attach.json` and the proposals file, with a
+link to the [Threads page](state_projection_howto.md#grouping-proposals-from-summary-native).
+The Drafts list includes `reference/party.md`, `party_report.md`,
+`planning_npcs_report.md`, `threads_report.md` and `arc_report.md`.
+Two gaps: the Annotate action is not surfaced for party, and party and planning
+have no word-budget panel (their budget reports are in the Drafts list); both
+are #528. `thread-propose` is run from the Threads page, not this one.
 
 What it deliberately does **not** do: promote a draft, or edit `canon.yaml`.
 Those are judgment steps and stay by hand.
@@ -1078,7 +1425,7 @@ The page's Compare always diffs against `docs/<doc>.md`.
 | `1` | `validate`, `build` or `synth` found **blocking** validation problems. The report was printed (`validate`/`build` also write it). |
 | `2` | A refusal (bad range, bad input, mixed corpus, existing output, stale corpus, bad flag/config) or an argparse usage error. Message on stderr, prefixed `Error:`. |
 | `3` | `synth` produced an incomplete document. `<doc>.incomplete.md` was written. |
-| `4` | `synth`: the model call failed. See below. |
+| `4` | `synth` or `thread-propose`: the model call failed. See below. |
 
 | Message (abridged) | What to do |
 |---|---|
@@ -1121,7 +1468,7 @@ The page's Compare always diffs against `docs/<doc>.md`.
 | `no draft file at …` / `no live file at …` (compare) | Run `synth` first / check `--live`. |
 | `Incomplete: …` + problem list (exit 3) | See [incomplete draft](#an-incomplete-draft-incompletemd-and-exit-3). Problems are `missing heading`, `headings out of order`, `unexpected heading`, `empty body`, `text before the first heading (no preamble allowed)`, `threat tracker must be empty: no arc scores configured`. |
 
-A model-call failure mid-run (a rate limit that exhausts retries, a dropped
+`thread-propose` is a model step too: a batch that fails after one retry exits **4**, writes no proposal, and prints `batch i/N failed after one retry: …`. A model-call failure mid-run (a rate limit that exhausts retries, a dropped
 connection) is not an exit-3 case. It exits **4**, no draft is written, and
 stderr says where to look:
 
@@ -1186,6 +1533,21 @@ summary_native synth campaign_state --summaries-dir docs/summaries
 (Omit `--track-file` to use `campaign_state.track_files` from `grounding.yaml`.)
 Anything in the tracking files that no summary supports comes back labelled
 `NOT FOUND IN SUMMARIES`.
+
+**6b. party and planning (extract first).**
+
+```bash
+summary_native extract --since 2 --until 70            # first run after upgrading: 0 cached
+summary_native synth party --since 2 --until 70
+# read state/drafts/party_report.md: Daz, Gyrgum, Thorin Giantfriend and Zalthir get a
+# section each; Glabbagool, Jimjar and Ront are companions (reference/party.md), not sections.
+summary_native thread-propose --since 2 --until 70     # 554 thread names, 550 of them seen once
+# /grounding/threads: ratify, split, reject or defer each group; then
+summary_native synth planning --since 2 --until 70     # needs published dossiers, or --fallback-npc-lines
+```
+
+Before ratifying anything there, `synth planning` still works: with an empty
+registry every thread note lands under "Unratified thread notes".
 
 **7. Compare each draft against what is live.**
 

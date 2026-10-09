@@ -380,7 +380,7 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
 
 ## Phase 9: Polish & Cross-Cutting Concerns
 
-- [ ] T050 [P] `docs/cli/summary_native_howto.md`:
+- [X] T050 [P] `docs/cli/summary_native_howto.md`:
   - replace "Step 6 — the other two documents" with the chunked party and planning builds;
   - document the party grammar and the re-extract, the level rows, attribution and `party_report.md`;
   - add planning's sections and the two Active Plots layers, and the thread proposal workflow (`thread-propose` → Threads page → ratify, split, reject);
@@ -389,8 +389,8 @@ description: "Task list for 034 — Chunked, Code-Checked Party and Planning Doc
   - document the planning companions and the companion notes in Party Overview and Dynamics;
   - list every new refusal and exit code;
   - state the session-prep contract for all four documents (FR-025).
-- [ ] T051 [P] `docs/cli/state_projection_howto.md`: group proposals on the Threads page, ratifying a group (edit, split), rejection persistence, and where summary-native proposals come from.
-- [ ] T052 [P] `docs/core/architecture.md`: four documents, one chunked build; thread identity from the registry; the new `state/threads/` and reports. Also update `CLAUDE.md`'s "Grounding docs are an index" paragraph to cover party and planning.
+- [X] T051 [P] `docs/cli/state_projection_howto.md`: group proposals on the Threads page, ratifying a group (edit, split), rejection persistence, and where summary-native proposals come from.
+- [X] T052 [P] `docs/core/architecture.md`: four documents, one chunked build; thread identity from the registry; the new `state/threads/` and reports. Also update `CLAUDE.md`'s "Grounding docs are an index" paragraph to cover party and planning.
 - [ ] T053 Run quickstart **S0 from main** (before this branch merges) and record the one-shot baseline sizes in `specs/034-chunked-party-planning/quickstart.md`. Adjust `DEFAULT_PARTY_BUDGETS` / `DEFAULT_PLANNING_BUDGETS` in `schema.py` if S6 shows the new drafts larger.
 - [ ] T054 Run quickstart S1–S7 on the OOTA copy and record the results under "Validation" in `specs/034-chunked-party-planning/quickstart.md`: extraction drops, level, attribution, proposal counts, ratification round trip, planning layers, the canary, sizes, citations and timing. Ask the GM before ratifying anything in the real campaign; S3 ratifies only in the copy.
 - [ ] T055 Run `PYTHONPATH=$PWD python -m pytest tests/` and `cd frontend && npx playwright test`. Then list the follow-ups (campaign_state threads from the registry; #512; #515; retiring the ensemble harvest) under "Follow-ups" in `specs/034-chunked-party-planning/plan.md`, and file the campaign_state-threads issue with the GitHub MCP tools.

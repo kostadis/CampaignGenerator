@@ -15,6 +15,7 @@ Every command runs from the campaign root (`<cwd>/config/config.yaml`, no fallba
 The `## Party` grammar changes (research R1). The first run after this feature re-extracts every chunk, because the prompt is part of the cache key, and reports `0 cached`. New drop reasons in `drops.md`:
 
 - `missing-party-subject`: a party bullet without a leading `**Subject**`.
+- `malformed-level-row`: a `[LEVEL]` row with no readable number.
 - `level-not-in-cited-text`: a `[LEVEL]` row whose number is not stated in a level phrase of a cited section.
 
 ## `summary_native synth party | planning` (rewired)
@@ -60,7 +61,7 @@ summary_native synth planning --since A --until B [--planning-config FILE]
 ## `summary_native thread-propose` (new, model step)
 
 ```text
-summary_native thread-propose --since A --until B
+summary_native thread-propose --since A --until B          # both required: refused (exit 2) without them
                               [--max-input-chars N] [--max-tokens N] [--dump-only]
                               [--backend … --model … --endpoint … --claude-code-effort …]
 ```

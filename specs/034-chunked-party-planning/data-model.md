@@ -67,7 +67,7 @@ docs/ensemble/thread_proposals.yaml          # existing path (projections.yaml t
 | body (current situation, recent decisions, injuries, acquisitions, relationships) | model, from this character's notes + sheet + backstory only |
 | `Unsupported by the summaries: …` | model, checked by the annotators like any prose line |
 | `#### Candidate Arc Score Events` | model, checked by `arc_check` (R10); absent for trackless characters |
-| `_Full notes: reference/party.md#{name}_` | code |
+| `_Full notes: reference/party.md_` | code |
 
 ### Thread registry entry (existing schema; read here)
 | Field | Rule |
@@ -130,7 +130,7 @@ docs/ensemble/thread_proposals.yaml          # existing path (projections.yaml t
 _{N} checked thread notes are not in the thread registry. They are evidence, not plots: rule on them at /grounding/threads (or `summary_native thread-propose`, then `thread_registry ratify`)._
 <every unattached thread note, verbatim, chapter order>
 ```
-When the registry has no thread with notes in the range, the ratified part is the single line `_No ratified thread has notes in this range._`
+When the registry has no thread with notes in the range, the ratified part is the single line `_No ratified thread has notes in this range._`; when ratified threads have notes but none is open, it is the `NO_OPEN_THREADS` line instead
 
 ## Defaults (declared once in `schema.py`)
 | Name | Value |

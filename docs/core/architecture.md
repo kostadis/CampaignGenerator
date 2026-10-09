@@ -283,11 +283,11 @@ End-to-end walkthrough: [`docs/cli/session_prep_workflow.md`](../cli/session_pre
 | [`campaign_state.py`](../../pipelines/grounding/campaign_state.py) | `docs/campaign_state.md` (what's done, active threads) | summaries.md |
 | [`make_tracking.py`](../../pipelines/grounding/make_tracking.py) | per-character/faction arc tracking files | adventure module |
 | [`arc_triggers.py`](../../pipelines/grounding/arc_triggers.py) | candidate trigger events from chronicle | mempalace |
-| [`summary_native`](../../pipelines/summary_native/cli.py) | the fourth rendering path: drafts of all four grounding docs under `docs/summary_native/ch<since>-<until>/` (never the live files). `party` / `planning`: one render call per doc, under `drafts/`. `world_state` / `campaign_state`: the four-step chunked build below, under `state/` | reviewed structured summaries, parsed with no model. See [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md) |
+| [`summary_native`](../../pipelines/summary_native/cli.py) | the fourth rendering path: drafts of all four grounding docs under `docs/summary_native/ch<since>-<until>/` (never the live files), every one from the chunked build below, under `state/` | reviewed structured summaries, parsed with no model. See [`docs/cli/summary_native_howto.md`](../cli/summary_native_howto.md) |
 
-### Chunked state documents (summary-native, spec 033)
+### Chunked state documents (summary-native, specs 033 and 034)
 
-`world_state` and `campaign_state` are built in four steps, each with its own subcommand. Code
+All four documents (`world_state`, `campaign_state`, `party`, `planning`) are built by one chunked path (spec 034 retired the one-shot party and planning builds, `--parts` and the upstream-draft flags). The steps are, each with its own subcommand. Code
 decides scope, order and attribution (chunking, routing, timeline order, Key NPCs selection, audit
 candidates); a model only reads one chunk at a time, writes prose, or judges one item, and code
 checks every model output before anything downstream reads it.
@@ -295,7 +295,7 @@ checks every model output before anything downstream reads it.
 | Step | Model? | What it does | Writes (under `<range>/state/`) |
 |---|---|---|---|
 | `extract` | yes (map) | per-chunk notes from whole chapters, then a code check (citations resolve in-chunk, quotations verbatim); multi-endpoint queue with a preflight | `notes/` (`manifest.json`, `chunkNN.*.{user,out}.md`, `*.checked.json`, `drops.md`), `runs/` |
-| `synth world_state \| campaign_state` | yes (prose, one call per section) | code builds the timeline, completed list, NPC status table, `reference/` files, Audit section and reading contract; Key NPCs come from published dossiers (missing one refuses; `--fallback-npc-lines` per run); then `annotate` runs | `drafts/`, `runs/` |
+| `synth <doc>` | yes (prose, one call per section; party also one per character) | code builds the timeline, completed list, NPC status table, `reference/` files, Audit section and reading contract; Key NPCs (world_state) and NPC Dossiers (planning) come from published dossiers (missing one refuses; `--fallback-npc-lines` per run); then `annotate` runs | `drafts/`, `runs/` |
 | `annotate` | no | detectors append `⚠ later:` / `ℹ since:` / `⚠ unverified:` under a line; a line's text never changes | `drafts/annotations.md` (and the draft's annotations) |
 | `audit` | yes (judge, one item per call) | tracking items: code picks candidate chapters, model judges, code accepts SUPPORTED only for a resolving citation and a verbatim span | `audit/` (`items.json`, `audit.json`, `audit.md`), `runs/` |
 
@@ -309,8 +309,28 @@ docs/summary_native/ch<since>-<until>/
              annotations.md  npc_status_report.md  key_npcs_report.md  budget_report.json
 ```
 
+`party` and `planning` add three code decisions to the same shape:
+
+- **Party attribution and level.** `extract` makes every `## Party` bullet name its subject; code attributes
+  each note to a player character, `Party`, a companion or nobody (exact name or alias through the registry and
+  `players.yaml`), and builds each character's `Level:` line from a checked `[LEVEL]` row or the sheet's
+  disclaimed figure. Companions have no section but are seen by the overview and dynamics.
+- **Thread identity comes from the registry.** `thread_attach` attaches a thread note to a ratified thread of
+  `docs/thread_registry.yaml` by exact title or alias, and decides open or dormant; Active Plots is built from
+  that, with the dormant and unratified notes in code-built blocks of their own. The extractor's own thread
+  names are not identity (554 names, 550 seen once, on Out of the Abyss). `thread-propose` (a model step; its
+  output is checked by `thread_check`) groups the unattached notes into proposals, and only a GM ratification
+  (`thread_registry ratify --key`) writes the registry.
+- **Arc-score candidates** are checked by `arc_check`: a cited, verbatim-trigger event, never a value.
+
+Beyond 033's layout, `state/` gains `threads/` (`attach.json`, `propose.NN.{user,out}.md`, `propose_report.md`)
+and, in `drafts/`, `party.draft.md`, `planning.draft.md`, `reference/party.md`, `party_report.md`,
+`planning_npcs_report.md`, `threads_report.md`, `arc_report.md` and `budget_report.{party,planning}.json`.
+`party_notes`, `thread_attach`, `thread_check` and `arc_check` are AST-guarded no-LLM like the modules below;
+`thread_propose` and `synth` are the model steps.
+
 Nothing outside `state/` is written (`tests/test_state_docs_no_live_writes.py`). Promotion is manual:
-the two drafts, the timeline and `reference/` are copied into the live `docs/`. The documents are an
+the drafts, the timeline and `reference/` are copied into the live `docs/`. The documents are an
 index for session prep and the summaries stay the authority (`CLAUDE.md`, "Grounding docs are an
 index"). `notes`, `state_sections`, `key_npcs`, `annotate` and `audit_select` are AST-guarded no-LLM
 (`tests/test_summary_native_no_llm.py`). Operator guide:
