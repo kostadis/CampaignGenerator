@@ -132,8 +132,8 @@ def replaced_lines(merge: dict) -> list[str]:
     """Report lines for what the merge did to pending proposals beyond regenerating them.
 
     Members of a replaced group outside the run's range are kept as pending singles (a narrower run never
-    orphans a note); a member whose id is in no range's notes is named as gone; a pending entry with no
-    living member is retired.
+    orphans a note). A member whose id is in no range's notes on disk is dropped, and written out in full
+    here so it can be recovered. A pending entry none of whose notes is on disk is kept and named, every run.
     """
     out = []
     for r in merge.get("kept_out_of_range") or ():
@@ -141,28 +141,43 @@ def replaced_lines(merge: dict) -> list[str]:
         out.append(f"replaced pending group {r['key']} ({r['title']}): kept {len(r['members'])} member(s) outside the "
                    f"run's range as single proposals: {shown}")
     for r in merge.get("gone") or ():
-        out.append(f"replaced pending group {r['key']} ({r['title']}): member(s) {', '.join(r['ids'])} exist in no "
-                   "range's notes (re-extracted under new ids) and were not kept")
+        out.append(f"replaced pending group {r['key']} ({r['title']}): dropped {len(r['members'])} member(s) whose "
+                   "note is in no range's notes on disk:")
+        for m in r["members"]:
+            out.append("    " + _dropped_member(m))
     for r in merge.get("stale") or ():
-        out.append(f"retired stale pending proposal {r['key']} ({r['title']}): no member ({', '.join(r['ids'])}) exists "
-                   "in any range's notes; it held no living note, so nothing was lost")
+        out.append(f"pending proposal {r['key']} ({r['title']}): none of its notes is in any range's notes on disk "
+                   f"(ids {', '.join(r['ids'])}) — re-extract that range or reject it on the Threads page")
     return out
 
 
-def known_note_ids(range_dir: Path) -> set[str]:
-    """Every thread-note id of every range's checked notes under the same output root.
+def _dropped_member(m: dict) -> str:
+    head = f"{m.get('id')} (ch {m.get('chapter')}" + (f", {m['tag']}" if m.get("tag") else "") + ")"
+    body = " — ".join(x for x in (m.get("name"), m.get("text")) if x)
+    return " ".join(x for x in (head, body, m.get("cite") or "") if x)
 
-    Same glob as ``extract._range_cache``. An id is per extraction, so a note counts as gone only when
-    its id is in none of these. Unreadable files are skipped.
+
+def scan_note_ids(range_dir: Path) -> tuple[set[str] | None, list[Path]]:
+    """``(ids, unreadable)``: every thread-note id of every range's checked notes under the same output root.
+
+    Same glob as ``extract._range_cache``. An id is per extraction, so a note counts as gone only when its
+    id is in none of these. If any file cannot be read the set is incomplete, so ``ids`` is ``None``
+    (judge nothing gone or stale) and ``unreadable`` names the files.
     """
     ids: set[str] = set()
+    bad: list[Path] = []
     for path in sorted(Path(range_dir).parent.glob("ch*-*/state/notes/*.checked.json")):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
             ids.update(n.note_id for n in thread_attach.thread_notes([notes.CheckedChunk.from_dict(data)]))
         except (OSError, ValueError, KeyError, TypeError, AttributeError):
-            continue
-    return ids
+            bad.append(path)
+    return (None if bad else ids), bad
+
+
+def known_note_ids(range_dir: Path) -> set[str] | None:
+    """The ids of :func:`scan_note_ids`, or ``None`` when any checked-notes file is unreadable."""
+    return scan_note_ids(range_dir)[0]
 
 
 def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_attach.Attachment, batches: list[dict],
@@ -178,7 +193,7 @@ def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_atta
         "- (no notes were sent to a model)"]
     out += ["", "## Dropped and changed by the code check", ""]
     out += [f"- {ln}" for ln in lines] or ["- (nothing)"]
-    out += ["", "## Replaced and retired pending proposals", ""]
+    out += ["", "## Replaced groups and pending proposals with no note on disk", ""]
     out += [f"- {ln}" for ln in replaced or ()] or ["- (none)"]
     out += ["", "## Stale rulings", ""]
     out += [f"- {ln}" for ln in stale] or ["- (none)"]
@@ -350,9 +365,13 @@ def run_thread_propose(
     lines += check_lines
     stale = thread_check.stale_ratified(prior, {n.note_id for n in att.notes}, since, until)
     source = f"summary_native ch{since:03d}-{until:03d} run {run_dir.name}"
+    known, unreadable = scan_note_ids(range_dir)
     merge = thread_check.merge_proposals(
-        proposals_path, groups, source, scope_ids={n.note_id for n in att.notes}, known_ids=known_note_ids(range_dir))
-    replaced = replaced_lines(merge)
+        proposals_path, groups, source, scope_ids={n.note_id for n in att.notes}, known_ids=known)
+    unreadable_lines = [
+        f"warning: cannot read {schema.display_path(f, root)}; no note was judged missing from disk in this run"
+        for f in unreadable]
+    replaced = unreadable_lines + replaced_lines(merge)
 
     singles = sum(1 for g in groups if g["kind"] == "single")
     dropped = sum(1 for ln in lines if ln.startswith(thread_check.DROPPED))
@@ -364,7 +383,9 @@ def run_thread_propose(
         f"{counts['unattached']} unattached → {counts['groups']} group proposals ({singles} single), "
         f"{dropped} dropped (see {REPORT_FILE})"
     )
-    for ln in replaced:
+    for ln in unreadable_lines:
+        print(ln, file=sys.stderr)
+    for ln in replaced[len(unreadable_lines):]:
         print(f"note: {ln}")
     if att.ambiguous:
         print(f"warning: {len(att.ambiguous)} name(s) are claimed by more than one ratified thread and were left "

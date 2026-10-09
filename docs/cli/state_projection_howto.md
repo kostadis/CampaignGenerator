@@ -508,12 +508,16 @@ member(s) outside the run's range as single proposals". Run the wider range agai
 and the singles are regrouped with everything else. A kept single may name a note
 that a ratified thread now attaches (an alias added since the wide run): the next
 run whose range covers it resolves that. Note ids belong to one extraction, so a
-member counts as gone only when its id is in **no** range's checked notes
+member counts as missing only when its id is in **no** range's checked notes
 (`ch*-*/state/notes/`); a note merely re-extracted in this range under a new id
-while the wider range still has it is kept. A gone member is not kept, and a
-pending proposal none of whose members exists in any range's notes (its wide range
-was re-extracted with `--force`) is retired and listed in the report — it held no
-living note, so nothing is lost. Rulings are never retired.
+while the wider range still has it is kept. A member of a replaced group whose note
+is in no range's notes on disk is dropped, and `propose_report.md` writes it out in
+full (id, chapter, tag, name, text, citation) so you can recover it. A pending
+proposal none of whose notes is on disk (its range was re-extracted with `--force`,
+moved or deleted) is **kept untouched** and named in the report and the output on
+every run — "none of its notes is in any range's notes on disk … re-extract that
+range or reject it on the Threads page". If any checked-notes file cannot be read,
+the run warns, names the file in the report, and judges nothing missing.
 Known gap: notes left unattached after you remove an alias are
 neither re-proposed nor flagged (#525).
 

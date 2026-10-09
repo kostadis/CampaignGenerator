@@ -1155,14 +1155,18 @@ What it does, in order:
    that no other proposal holds stays as a pending `single`, and the report and the
    terminal name the replaced group and those singles. A kept single may name a note a
    ratified thread now attaches (an alias added since the wide run); the next run whose
-   range covers it resolves that. A member whose id is in no range's checked notes is
-   not kept, and a pending proposal with no such living member is retired and
-   reported (rulings never are). It never writes the registry.
+   range covers it resolves that. A member whose id is in no range's checked notes on
+   disk is dropped from a replaced group and written out in full in the report; a
+   pending proposal none of whose notes is on disk is kept untouched and named in the
+   report and output every run (re-extract that range or reject it on the Threads
+   page); rulings are never touched. If a checked-notes file is unreadable the run
+   warns and judges nothing missing. It never writes the registry.
 
 It prints `threads: 120 notes — 40 attached to 12 ratified threads, 80 unattached
 → 21 group proposals (9 single), 3 dropped (see propose_report.md)` and writes
 `state/threads/propose.NN.{user,out}.md`, `propose_report.md` (what was dropped and
-why, replaced groups with notes outside the range, retired stale proposals, stale
+why, replaced groups with notes outside the range, pending proposals with no note on
+disk, stale
 rulings, ambiguous names) and a run record.
 
 **A proposal is a candidate the GM ratifies.** Grouping notes under one thread name

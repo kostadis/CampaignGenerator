@@ -332,15 +332,16 @@ def merge_proposals(
       that keeps the group's ``source``;
     * ``known_ids`` is every thread-note id of every range's checked notes (``None``: not known, nothing is
       judged gone). An id is per extraction, so only an id in *no* range's notes names a note that no longer
-      exists: such a member of a replaced group is dropped and reported (``gone``), and a pending group entry
-      none of whose members exists anywhere is retired and reported (``stale``) — it holds no living note;
+      exists: such a member of a replaced group is dropped and reported in full (``gone``), so it can be
+      recovered from the report; a pending entry none of whose members is in any range's notes is **kept
+      untouched** and reported (``stale``) — the GM re-extracts that range or rejects the entry;
     * a new group whose key is already a ruled entry is not added again (the ruling stands);
     * every other new group is added ``pending`` with ``source``.
 
     Returns counts: ``pending`` (group entries pending after the merge), ``added``, ``replaced``, ``ruled``;
     ``kept_out_of_range`` (one ``{key, title, members}`` per replaced group that left members as singles) and
-    ``gone`` (one ``{key, title, ids}`` per replaced group with members that no longer exist) and ``stale``
-    (one ``{key, title, ids}`` per pending entry retired because no member exists in any range's notes).
+    ``gone`` (one ``{key, title, members}`` per replaced group, ``members`` the dropped member dicts in full)
+    and ``stale`` (one ``{key, title, ids}`` per kept pending entry no member of which is in any range's notes).
     """
     doc = _load(path)
     existing = list(doc.get("proposals") or [])
@@ -350,15 +351,15 @@ def merge_proposals(
     }
     living = None if known_ids is None else set(known_ids) | scope
     replaced_at: dict[int, dict] = {}
-    retired_at: dict[int, dict] = {}
+    stale_at: dict[int, dict] = {}
     for i, p in enumerate(existing):
         if isinstance(p, dict) and p.get("key") and p.get("status", "pending") == "pending":
             ids = _member_ids(p)
             if scope & set(ids):
                 replaced_at[i] = p
             elif living is not None and ids and not living & set(ids):
-                retired_at[i] = p
-    kept = [p for i, p in enumerate(existing) if i not in replaced_at and i not in retired_at]
+                stale_at[i] = p
+    kept = [p for i, p in enumerate(existing) if i not in replaced_at]
     added = [{**g, "status": "pending", "source": source} for g in groups if g["key"] not in ruled_keys]
     held = {i for e in [*kept, *added] if isinstance(e, dict) and e.get("key") for i in _member_ids(e)}
 
@@ -369,12 +370,12 @@ def merge_proposals(
     for idx, p in replaced_at.items():
         title = p.get("title") or p.get("thread") or p["key"]
         saved: list[dict] = []
-        gone: list[str] = []
+        gone: list[dict] = []
         for m in p.get("members") or ():
             if not isinstance(m, Mapping) or not m.get("id") or m["id"] in scope or m["id"] in held:
                 continue
             if living is not None and m["id"] not in living:
-                gone.append(m["id"])
+                gone.append(dict(m))
                 continue
             held.add(m["id"])
             saved.append(m)
@@ -383,14 +384,12 @@ def merge_proposals(
                 {**_single(dict(m), ""), "status": "pending", "source": p.get("source") or source} for m in saved]
             kept_report.append({"key": p["key"], "title": title, "members": saved})
         if gone:
-            gone_report.append({"key": p["key"], "title": title, "ids": gone})
+            gone_report.append({"key": p["key"], "title": title, "members": gone})
     stale_report = [
         {"key": p["key"], "title": p.get("title") or p.get("thread") or p["key"], "ids": _member_ids(p)}
-        for p in retired_at.values()]
+        for p in stale_at.values()]
     merged: list = []
     for i, p in enumerate(existing):
-        if i in retired_at:
-            continue
         if i in replaced_at:
             merged.extend(saved_at.get(i, ()))
         else:

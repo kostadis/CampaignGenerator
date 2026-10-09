@@ -466,7 +466,7 @@ class TestMergeProposals:
             known_ids=set(IDS) | {"n-far0000000"})
         ids = {i for e in self.proposals_of(p) for i in _ids(e)}
         assert "n-vanished00" not in ids and "n-far0000000" in ids
-        assert stats["gone"] == [{"key": "g-111111111111", "title": "Spans", "ids": ["n-vanished00"]}]
+        assert stats["gone"] == [{"key": "g-111111111111", "title": "Spans", "members": [{"id": "n-vanished00", "chapter": 3}]}]
 
     def test_a_member_re_extracted_in_this_range_but_alive_in_a_wider_one_is_kept(self, tmp_path):
         """Ids are per extraction: ch002-060 holds b under n-b; ch002-008 chunks it differently (n-b2)."""
@@ -479,16 +479,15 @@ class TestMergeProposals:
         assert [_ids(e) for e in ps] == [["n-b"]] and ps[0]["kind"] == "single" and ps[0]["status"] == "pending"
         assert stats["gone"] == [] and [m["id"] for r in stats["kept_out_of_range"] for m in r["members"]] == ["n-b"]
 
-    def test_a_pending_entry_with_no_member_in_any_ranges_notes_is_retired_and_reported(self, tmp_path):
+    def test_a_pending_entry_with_no_member_in_any_ranges_notes_is_kept_untouched_and_reported(self, tmp_path):
         p = tmp_path / "t.yaml"
         old_single = {**self.pending("g-bbbbbbbbbbbb", "Far", {"id": "n-far", "chapter": 40}), "kind": "single"}
         partial = self.pending("g-cccccccccccc", "Half", {"id": "n-gone", "chapter": 40}, {"id": "n-live", "chapter": 41})
         ruled = {**self.pending("g-dddddddddddd", "Ruled", {"id": "n-gone2"}), "status": "deferred"}
         p.write_text(yaml.safe_dump({"proposals": [old_single, partial, ruled]}), encoding="utf-8")
         stats = thread_check.merge_proposals(p, [], "wide", scope_ids={"n-far2"}, known_ids={"n-far2", "n-live"})
-        keys = [e["key"] for e in self.proposals_of(p)]
-        assert keys == ["g-cccccccccccc", "g-dddddddddddd"]  # a ruling is never retired; a partly living entry stays
-        assert stats["stale"] == [{"key": "g-bbbbbbbbbbbb", "title": "Far", "ids": ["n-far"]}]
+        assert self.proposals_of(p) == [old_single, partial, ruled]  # nothing is deleted for having no note on disk
+        assert stats["stale"] == [{"key": "g-bbbbbbbbbbbb", "title": "Far", "ids": ["n-far"]}]  # only a wholly missing pending one
 
     def test_nothing_is_judged_gone_or_stale_without_known_ids(self, tmp_path):
         p = tmp_path / "t.yaml"
@@ -843,8 +842,8 @@ class TestThreadPropose:
         shutil.copytree(cp.range_dir(root) / "state" / "notes", sibling / "state" / "notes")
         assert thread_propose.known_note_ids(sibling) == set(all_note_ids(root))  # sees the sibling range too
 
-    def test_a_pending_proposal_with_no_living_note_is_retired_and_reported(self, tcamp):
-        """#524: a single kept from a wide range that was later re-extracted under new ids must not linger."""
+    def test_a_pending_proposal_with_no_note_on_disk_is_kept_and_reported_every_run(self, tcamp):
+        """#524: a single kept from a wide range that was later re-extracted (or deleted) is named, not deleted."""
         root, tm = tcamp
         empty_registry(root)
         stale = {"key": "g-eeeeeeeeeeee", "kind": "single", "title": "Old far note", "status": "pending",
@@ -852,12 +851,61 @@ class TestThreadPropose:
                  "members": [{"id": "n-reextracted", "chapter": 40, "tag": "OPENED", "name": "Old far note"}]}
         proposals_path(root).parent.mkdir(parents=True, exist_ok=True)
         proposals_path(root).write_text(yaml.safe_dump({"proposals": [stale]}), encoding="utf-8")
+        for _ in range(2):  # reported on every run, not once
+            rc, out, err = propose(root)
+            assert rc == 0, out + err
+            assert stale in proposals(root)
+            report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+            for text in (report, out):
+                assert "g-eeeeeeeeeeee" in text and "n-reextracted" in text
+                assert "none of its notes is in any range's notes on disk" in text
+                assert "reject it on the Threads page" in text
+                assert "retired" not in text and "nothing was lost" not in text
+
+    def test_an_unreadable_notes_file_in_another_range_makes_the_run_judge_nothing_missing(self, tcamp):
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        wide = cp.range_dir(root).parent / "ch002-060"
+        bad = wide / "state" / "notes" / "chunk01.002-060.checked.json"
+        bad.parent.mkdir(parents=True)
+        bad.write_text('{"cache_key": "x", "notes": [', encoding="utf-8")  # truncated
+        ids, unreadable = thread_propose.scan_note_ids(cp.range_dir(root))
+        assert ids is None and unreadable == [bad] and thread_propose.known_note_ids(cp.range_dir(root)) is None
+        carver = next(p for p in proposals(root) if p["title"] == "The Carver's march")
+        far = {"key": "g-ffffffffffff", "kind": "new", "title": "Wide group", "status": "pending", "source": "w",
+               "members": [{"id": "n-notinthisrun", "chapter": 40, "name": "W", "text": "t"}]}
+        doc = yaml.safe_load(proposals_path(root).read_text(encoding="utf-8"))
+        doc["proposals"].append(far)
+        carver_member = carver["members"][0]["id"]
+        for p in doc["proposals"]:
+            if p["key"] == carver["key"]:
+                p["members"].append({"id": "n-alsonotthere", "chapter": 40, "name": "X", "text": "t"})
+        proposals_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
         rc, out, err = propose(root)
         assert rc == 0, out + err
-        assert "g-eeeeeeeeeeee" not in {p["key"] for p in proposals(root)}
+        ps = proposals(root)
+        assert far in ps  # not reported as missing, not touched
+        assert any("n-alsonotthere" in str(p) for p in ps)  # a replaced group's unknown member is kept, not dropped
         report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
-        for text in (report, out):
-            assert "g-eeeeeeeeeeee" in text and "n-reextracted" in text and "nothing was lost" in text
+        assert "chunk01.002-060.checked.json" in report and "chunk01.002-060.checked.json" in err
+        assert "none of its notes is in any range's notes" not in report and carver_member in str(ps)
+
+    def test_a_dropped_member_is_written_out_in_full_in_the_report(self, tcamp):
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        doc = yaml.safe_load(proposals_path(root).read_text(encoding="utf-8"))
+        carver = next(p for p in doc["proposals"] if p["title"] == "The Carver's march")
+        carver["members"].append({"id": "n-droppedone", "chapter": 40, "tag": "OPENED", "name": "Lost name",
+                                  "text": "the lost statement", "cite": "[ch 040 / 040.01]"})
+        proposals_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        assert not any("n-droppedone" in str(p) for p in proposals(root))
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert "n-droppedone (ch 40, OPENED) Lost name — the lost statement [ch 040 / 040.01]" in report
+        assert "note is in no range's notes on disk" in report
 
     def test_a_model_failure_exits_4_and_writes_no_proposal(self, tcamp):
         root, tm = tcamp
