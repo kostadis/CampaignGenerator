@@ -38,7 +38,7 @@ The map step: per-chunk model calls, then the code check. It writes `state/notes
 - `--parallel` < 1;
 - `--chunk-chars` < 1 (`--chunk-chars must be a whole number of at least 1`).
 
-**Exit 3**: one or more chunks failed after one retry. They are listed, and the next run extracts only those.
+**Exit 3**: one or more chunks failed after one retry, either the call failed or the output lacked a `##` section of the outline (#515; `- (none)` is the empty form, an absent heading is not). They are listed with the missing sections, in the run output, `drops.md` and the record, and the next run extracts only those. A cached chunk whose raw output lacks a section is reported the same way with no model call.
 
 **Exit 4**: the backend could not be reached at all.
 

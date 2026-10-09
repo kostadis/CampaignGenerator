@@ -38,13 +38,13 @@ summary_native synth planning --since A --until B [--planning-config FILE]
   - `party.yaml` (party only; player-character arc scores live there, never in planning);
   - `planning.yaml`;
   - published dossiers (planning);
-  - `docs/thread_registry.yaml` (planning).
+  - `docs/thread_registry.yaml` (planning; also campaign_state's two thread sections, #530).
 - **Backend:**
   - Defaults: flag > `grounding.yaml summary_native.prose` > `schema.DEFAULT_PROSE_*`, the same as world_state.
   - Budgets: `summary_native.prose.party_budgets` / `.planning_budgets`.
 - **Output:** `state/drafts/{party,planning}.draft.md` plus the reports in `data-model.md`. Annotation runs at the end, as for the other two documents. Nothing is written to `docs/`.
 - **planning, missing dossiers:** with default flags, a selected NPC without a published, verification-passing dossier refuses (exit 2), naming each NPC and its dossier state. `--fallback-npc-lines` writes the marked code-built line instead, for this run only.
-- **planning, thread registry:** an absent or empty registry is not a refusal. Active Plots carries the "No ratified thread …" line and the unratified notes. A registry that fails `thread_registry check` is refused (exit 2) with the check's findings.
+- **planning, thread registry:** an absent or empty registry is not a refusal. Active Plots carries the "No ratified thread …" line and the unratified notes. A registry that fails `thread_registry check` is refused (exit 2) with the check's findings. **campaign_state (#530)** reads the registry the same way for `## Resolved Plot Threads` (closed ratified threads) and `## Active Quests & Open Threads` (open ratified threads, dormant block, unratified pointer): the same refusals, an absent registry is the pointer-only form with no model call, and `inputs.thread_registry_sha256` is in its run record. It writes `campaign_threads_report.md` beside `threads_report.md`.
 
 **Refusals added (exit 2, before any model call), each naming its replacement:**
 
@@ -67,11 +67,11 @@ summary_native thread-propose --since A --until B          # both required: refu
 ```
 
 - **Reads:** the checked thread notes for the range, `docs/thread_registry.yaml`, and the proposals file (path from `projections.yaml thread_proposals`, default `docs/ensemble/thread_proposals.yaml`).
-- **Attaches first** (code, R4). Only unattached notes, minus members of rejected groups, are sent.
+- **Attaches first** (code, R4). Only unattached notes, minus members of rejected, deferred and ratified groups, are sent. A ratified member that is unattached (its alias was removed) is offered again by code as a pending `single` and listed under "Ratified but no longer attached (alias removed?)" in `propose_report.md` (#525).
 - **Writes:**
-  - group proposals merged into the proposals file, with existing rulings preserved by `key`;
+  - group proposals merged into the proposals file, with existing rulings preserved by `key`; a replaced pending group's members outside the run's range stay as pending `single` proposals (#524) and are named in the report and on stdout (`note: replaced pending group g-… (…): kept N member(s) outside the run's range as single proposals: …`);
   - `state/threads/propose.{user,out}.md`;
-  - `state/threads/propose_report.md`;
+  - `state/threads/propose_report.md` (including "Excluded and pinned notes no longer on disk (ruling may not hold)": a thread's `excluded_notes` id found in no range's notes, reported and never removed, #529);
   - a run record.
 
   It never writes the registry.
@@ -84,10 +84,11 @@ summary_native thread-propose --since A --until B          # both required: refu
 thread_registry ratify --key g-… --plan FILE|-        # group proposal; the plan is the GM's edit of `ratify --key g-… --emit-plan`
 thread_registry ratify --key g-… --emit-plan          # prints derive_plan(members) for the GM to edit (never writes)
 thread_registry rule   --key g-… --status rejected|deferred [--note TEXT]
+thread_registry alias  --id T --alias NAME           # also notes the excluded notes of T that carry NAME (#529)
 ```
 
 - **Plan shape:** `{id, title, status, opened, aliases_add: [..], members: [ids], log: [{chapter, change, summary, cite}]}`.
   - A `continues` plan names `thread: <id>` and has no `title`.
-  - `members` listing a subset of the proposal's members is a **split**: the remainder becomes a new pending group.
-- **Validation before the single write:** every log row's chapter is ≥ 1; `id` is new for `new`; the thread exists for `continues`; aliases do not collide with another thread's title or alias.
+  - `members` listing a subset of the proposal's members is a **split**: the remainder becomes a new pending group, and its note ids are recorded on the ratified thread as `excluded_notes` so a shared name cannot attach them (#529). Ratifying an excluded note into the same thread removes its id in the same write.
+- **Validation before the single write:** every log row's chapter is ≥ 1; `id` is new for `new`; the thread exists for `continues`; aliases do not collide with another thread's title or alias (a derived alias that is a ratified member's own name and belongs to another thread is dropped with a note and the member pinned in `included_notes` instead, #529); an alias that only a member left out of `members` carries is refused (#529).
 - **Existing verbs:** `--norm` keeps working unchanged for name-keyed (ensemble) proposals.

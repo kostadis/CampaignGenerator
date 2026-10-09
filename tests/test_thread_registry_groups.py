@@ -93,11 +93,12 @@ class TestEmitPlan:
         assert plan["status"] == "open" and plan["opened"] == 2
         assert "thread" not in plan
 
-    def test_members_are_listed_and_aliases_are_the_distinct_names_minus_the_title(self, tmp_path):
+    def test_members_are_listed_and_aliases_are_every_distinct_member_name(self, tmp_path):
         c = seed(tmp_path, NEW)
         plan = emit(c, NEW["key"])
         assert plan["members"] == [M1["id"], M2["id"], M3["id"]]
-        assert plan["aliases_add"] == ["Carver march"]  # "The Carver's march" is the title; it appears twice
+        # The title's own spelling is listed too (#525): ratifying skips it, but a retitled plan needs it.
+        assert plan["aliases_add"] == ["The Carver's march", "Carver march"]
 
     def test_every_tag_maps_to_its_change(self, tmp_path):
         ms = [member(10, 2, "OPENED", "X", "a"), member(11, 3, "ADVANCED", "X", "b"),
@@ -118,7 +119,16 @@ class TestEmitPlan:
         g = group("single", [M2], title="Carver march")
         c = seed(tmp_path, g)
         plan = emit(c, g["key"])
-        assert plan["title"] == "Carver march" and plan["aliases_add"] == [] and len(plan["log"]) == 1
+        assert plan["title"] == "Carver march" and plan["aliases_add"] == ["Carver march"] and len(plan["log"]) == 1
+
+    def test_a_reoffered_single_defaults_to_continuing_the_thread_it_came_from(self, tmp_path):
+        g = group("single", [M2], title="Carver march", reoffer={"from_group": "g-aaaaaaaaaaaa", "thread": "old"})
+        c = seed(tmp_path, g, threads=[OLD])
+        plan = emit(c, g["key"])
+        assert plan["thread"] == "old" and "title" not in plan and plan["aliases_add"] == ["Carver march"]
+        # the thread is gone from the registry: it is an ordinary single again
+        c2 = seed(tmp_path / "x", g, threads=[])
+        assert "thread" not in emit(c2, g["key"]) and emit(c2, g["key"])["title"] == "Carver march"
 
     def test_emit_plan_writes_nothing(self, tmp_path):
         c = seed(tmp_path, NEW)
@@ -220,6 +230,8 @@ class TestRatify:
         rest = entry(c, rest_key)
         assert rest["status"] == "pending" and [m["id"] for m in rest["members"]] == [M3["id"]]
         assert rest["kind"] == "single" and rest_key in r.stdout
+        # #529: the split-off note is recorded on the thread, so its shared name cannot attach it again
+        assert thread(c, "the-carvers-march")["excluded_notes"] == [M3["id"]]
 
     def test_a_larger_remainder_keeps_the_kind_and_the_suggestion(self, tmp_path):
         g = group("continues", [M1, M2, M3], thread="old")
@@ -227,9 +239,121 @@ class TestRatify:
         plan = emit(c, g["key"])
         plan["members"] = [M1["id"]]
         plan["log"] = plan["log"][:1]
+        plan["aliases_add"] = ["The Carver's march"]  # narrowed with the members, as the Threads page does
         assert ratify(c, g["key"], plan).returncode == 0
         rest = entry(c, group_key([M2["id"], M3["id"]]))
         assert rest["kind"] == "continues" and rest["thread"] == "old" and rest["status"] == "pending"
+        assert thread(c, "old")["excluded_notes"] == [M2["id"], M3["id"]]
+
+    # ── #529: a split records what it leaves out ──
+
+    def split(self, c: Path, g: dict, keep: list[dict], aliases: list[str] | None = None):
+        plan = emit(c, g["key"])
+        rows = {m["id"]: r for m, r in zip(sorted(g["members"], key=lambda m: m["chapter"]), plan["log"])}
+        plan["members"] = [m["id"] for m in keep]
+        plan["log"] = [rows[m["id"]] for m in keep]
+        if aliases is not None:
+            plan["aliases_add"] = aliases
+        return ratify(c, g["key"], plan)
+
+    def test_a_split_off_note_that_shares_a_ratified_members_name_is_excluded_and_the_shared_name_is_still_an_alias(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        r = self.split(c, NEW, [M1, M2])  # the derived aliases, unedited: M3's name is M1's title
+        assert r.returncode == 0, r.stderr
+        t = thread(c, "the-carvers-march")
+        assert t["excluded_notes"] == [M3["id"]] and t["aliases"] == ["Carver march"]
+        assert cli(c, "check").returncode == 0  # an additive field the registry check accepts
+
+    def test_an_unsplit_ratification_writes_no_excluded_notes(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        assert ratify(c, NEW["key"], emit(c, NEW["key"])).returncode == 0
+        assert "excluded_notes" not in thread(c, "the-carvers-march")
+
+    def test_an_alias_only_a_left_out_member_carries_is_refused_and_writes_nothing(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        plan = emit(c, NEW["key"])  # aliases_add lists "Carver march", which only M2 carries
+        plan["members"] = [M1["id"], M3["id"]]
+        plan["log"] = [plan["log"][0], plan["log"][2]]
+        before = [(c / p).read_bytes() for p in (PROPOSALS,)]
+        r = ratify(c, NEW["key"], plan)
+        assert r.returncode == 1, r.stdout + r.stderr
+        assert "Carver march" in r.stderr and M2["id"] in r.stderr and "aliases_add" in r.stderr
+        assert not (c / REGISTRY).exists() and [(c / p).read_bytes() for p in (PROPOSALS,)] == before
+
+    def test_the_refusal_lifts_when_the_alias_is_removed_or_the_note_is_included(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        assert self.split(c, NEW, [M1, M3], aliases=["Carver march"]).returncode == 1
+        assert self.split(c, NEW, [M1, M3], aliases=["The Carver's march"]).returncode == 0
+        assert thread(c, "the-carvers-march")["excluded_notes"] == [M2["id"]]
+        assert "Carver march" not in thread(c, "the-carvers-march")["aliases"]
+
+    def test_a_left_out_members_name_that_is_the_threads_own_title_or_alias_is_harmless(self, tmp_path):
+        g = group("continues", [M2, M3], thread="old")  # M2 "Carver march" is left out, and is an alias of old
+        old = {**OLD, "aliases": ["Ye olde", "Carver march"]}
+        c = seed(tmp_path, g, threads=[old])
+        assert self.split(c, g, [M3]).returncode == 0  # the alias would have been skipped; nothing to refuse
+        assert thread(c, "old")["excluded_notes"] == [M2["id"]]
+
+    def test_ratifying_an_excluded_note_into_the_same_thread_lifts_its_exclusion(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        assert self.split(c, NEW, [M1, M2]).returncode == 0
+        rest = entry(c, group_key([M3["id"]]))
+        plan = emit(c, rest["key"])
+        plan["thread"] = "the-carvers-march"
+        assert ratify(c, rest["key"], plan).returncode == 0
+        assert "excluded_notes" not in thread(c, "the-carvers-march")
+
+    def test_ratifying_an_excluded_note_elsewhere_leaves_the_exclusion_and_a_second_split_adds_to_it(self, tmp_path):
+        g = group("new", [M1, M2, M3, M4], title="The Carver's march")
+        c = seed(tmp_path, g, threads=[OLD])
+        assert self.split(c, g, [M1, M2], aliases=["Carver march"]).returncode == 0
+        assert thread(c, "the-carvers-march")["excluded_notes"] == [M3["id"], M4["id"]]
+        rest = entry(c, group_key([M3["id"], M4["id"]]))
+        plan = emit(c, rest["key"])  # the remainder goes to OLD: the exclusion on the Carver thread stays
+        plan.update(thread="old", members=[M4["id"]], log=plan["log"][1:], aliases_add=["Carver marching"])
+        assert ratify(c, rest["key"], plan).returncode == 0
+        assert thread(c, "the-carvers-march")["excluded_notes"] == [M3["id"], M4["id"]]
+        assert thread(c, "old")["excluded_notes"] == [M3["id"]]
+
+    def test_the_remainder_of_a_split_new_group_derives_a_fresh_thread_and_ratifies_unedited(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        assert self.split(c, NEW, [M1, M2]).returncode == 0
+        rest = entry(c, group_key([M3["id"]]))
+        plan = emit(c, rest["key"])
+        assert "thread" not in plan and plan["id"] == "the-carvers-march-split-off" and plan["title"] == "The Carver's march (split off)"
+        assert plan["aliases_add"] == ["The Carver's march"]  # its name belongs to the thread just made
+        r = ratify(c, rest["key"], plan)  # unedited: the alias is dropped and the note pinned by id
+        assert r.returncode == 0, r.stderr
+        assert thread(c, "the-carvers-march-split-off")["included_notes"] == [M3["id"]]
+        assert thread(c, "the-carvers-march-split-off")["aliases"] == []
+        assert thread(c, "the-carvers-march")["excluded_notes"] == [M3["id"]]
+        assert cli(c, "check").returncode == 0
+
+    def test_the_remainder_of_a_split_continues_group_still_continues_its_thread(self, tmp_path):
+        g = group("continues", [M1, M2, M3], thread="old")
+        c = seed(tmp_path, g, threads=[OLD])
+        assert self.split(c, g, [M1], aliases=["The Carver's march"]).returncode == 0
+        assert emit(c, group_key([M2["id"], M3["id"]]))["thread"] == "old"
+
+    def test_a_member_whose_alias_the_gm_struck_is_pinned_so_it_stays_attached(self, tmp_path):
+        c = seed(tmp_path, NEW)
+        plan = emit(c, NEW["key"])
+        plan["aliases_add"] = ["The Carver's march"]  # "Carver march" (M2) struck
+        assert ratify(c, NEW["key"], plan).returncode == 0
+        assert thread(c, "the-carvers-march")["included_notes"] == [M2["id"]]
+
+    def test_splitting_off_a_pinned_note_drops_its_pin(self, tmp_path):
+        g = group("continues", [M2, M3], thread="old")
+        old = {**OLD, "included_notes": [M2["id"]]}
+        c = seed(tmp_path, g, threads=[old])
+        assert self.split(c, g, [M3], aliases=["The Carver's march"]).returncode == 0
+        t = thread(c, "old")
+        assert "included_notes" not in t and t["excluded_notes"] == [M2["id"]]
+
+    def test_a_malformed_excluded_notes_is_a_check_finding(self, tmp_path):
+        c = seed(tmp_path, NEW, threads=[{**OLD, "excluded_notes": "n-0000000001"}])
+        r = cli(c, "check")
+        assert r.returncode != 0 and "excluded_notes" in r.stderr
 
     def test_the_whole_member_list_leaves_no_remainder(self, tmp_path):
         c = seed(tmp_path, NEW)
@@ -264,15 +388,31 @@ class TestRatify:
         plan["aliases_add"] = ["ye olde"]
         self.refused(c, NEW["key"], plan, "ye olde", "old")
 
-    def test_a_continues_alias_colliding_with_a_third_thread_is_refused_but_its_own_is_fine(self, tmp_path):
-        other = {"id": "other", "title": "Carver march", "status": "open", "aliases": [], "opened": 1,
+    def test_a_continues_alias_colliding_with_a_third_thread_is_refused_unless_a_ratified_member_carries_it(self, tmp_path):
+        other = {"id": "other", "title": "Carver march", "status": "open", "aliases": ["Other name"], "opened": 1,
                  "log": [{"chapter": 1, "change": "opened", "summary": "x"}]}
         g = group("continues", [M2, M3], thread="old")
         c = seed(tmp_path, g, threads=[OLD, other])
         plan = emit(c, g["key"])
-        self.refused(c, g["key"], plan, "Carver march", "other")
+        plan["aliases_add"] = ["Ye olde", "The Carver's march", "Other name"]
+        self.refused(c, g["key"], plan, "Other name", "other")  # no ratified member carries it: still a collision
         plan["aliases_add"] = ["Ye olde", "The Carver's march"]  # its own alias again is not a collision
         assert ratify(c, g["key"], plan).returncode == 0
+
+    # ── #529: a ratified member whose name belongs to another thread is pinned by id ──
+
+    def test_a_ratified_members_name_that_is_another_threads_is_not_an_alias_and_the_member_is_pinned(self, tmp_path):
+        other = {"id": "other", "title": "Carver march", "status": "open", "aliases": [], "opened": 1,
+                 "log": [{"chapter": 1, "change": "opened", "summary": "x"}]}
+        g = group("continues", [M2, M3], thread="old")
+        c = seed(tmp_path, g, threads=[OLD, other])
+        r = ratify(c, g["key"], emit(c, g["key"]))  # the derived plan lists "Carver march", which `other` owns
+        assert r.returncode == 0, r.stderr
+        assert "not added" in r.stdout and "'other'" in r.stdout
+        old = thread(c, "old")
+        assert "Carver march" not in old["aliases"] and "The Carver's march" in old["aliases"]
+        assert old["included_notes"] == [M2["id"]]  # M3 attaches by its alias; only M2 needs the pin
+        assert "included_notes" not in thread(c, "other")
 
     def test_a_new_title_matching_an_existing_thread_is_refused(self, tmp_path):
         c = seed(tmp_path, NEW, threads=[OLD])

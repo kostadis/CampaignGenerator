@@ -236,6 +236,8 @@ LEVEL_TAG = "LEVEL"
 NO_RATIFIED_THREADS = "_No ratified thread has notes in this range._"
 #: Active Plots, when ratified threads have notes in the range but none of them is open.
 NO_OPEN_THREADS = "_No ratified thread is open in this range._"
+#: campaign_state's Resolved Plot Threads, when ratified threads have notes in the range but none of them is closed.
+NO_RESOLVED_THREADS = "_No ratified thread is resolved in this range._"
 #: Faction States, when no faction is configured and none has notes in the range.
 NO_FACTIONS = "_No faction is configured or has notes in this range._"
 #: Where a party character's checked arc-score candidates go, inside that character's section. Code places
@@ -245,6 +247,11 @@ ARC_HEADING = "#### Candidate Arc Score Events"
 ARC_CALL_SECTION = "## Candidate Arc Score Events"
 DORMANT_HEADING = "### Dormant threads"
 UNRATIFIED_HEADING = "### Unratified thread notes (not yet ruled on)"
+#: campaign_state's account of its thread sections (planning's is ``threads_report.md``), beside the drafts.
+CAMPAIGN_THREADS_REPORT_FILE = "campaign_threads_report.md"
+#: Report sections of the thread reports about the GM's by-id rulings (#529): `excluded_notes` / `included_notes`.
+STALE_RULINGS_HEADING = "Excluded and pinned notes no longer on disk (ruling may not hold)"
+HELD_OUT_HEADING = "Held out of a thread by a split (name matches, thread excludes the note)"
 #: Printed under DM Notes by code, so the section cannot be read as events.
 DM_NOTES_LABEL = "_Suggestions for the GM, not events._"
 #: Everything 033 writes lives under ``<range_dir>/state/``.
@@ -285,9 +292,17 @@ def missing_dossiers_file(doc: str) -> str:
     return MISSING_DOSSIERS_PLANNING_FILE if doc == "planning" else MISSING_DOSSIERS_FILE
 
 
+#: The documents whose chunked build measures prose against word budgets, and so writes a report.
+#: campaign_state has none: it must neither write nor delete a budget report (its name would collide with world_state's).
+BUDGET_DOCS: tuple[str, ...] = ("world_state", "party", "planning")
+
+
 def budget_report_file(doc: str) -> str:
-    """The word-budget report beside ``doc``'s draft. world_state's keeps its name (``GET /state`` reads it);
-    party and planning write their own, so one document's budgets never replace another's."""
+    """The word-budget report beside ``doc``'s draft. world_state's keeps its name;
+    party and planning write their own (``GET /state`` reads all three), so one document's budgets never replace another's.
+    Only the documents in ``BUDGET_DOCS`` have one: asking for any other (campaign_state) is a bug, not a path to ``budget_report.json``."""
+    if doc not in BUDGET_DOCS:
+        raise ValueError(f"{doc} has no word budgets, so no budget report (budgeted documents: {', '.join(BUDGET_DOCS)})")
     return f"budget_report.{doc}.json" if doc in ("party", "planning") else "budget_report.json"
 
 

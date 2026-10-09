@@ -74,6 +74,10 @@ interface Thread {
   aliases: string[]
   notes: string
   log: LogRow[]
+  /** Note ids the GM split off when ratifying a group: never attached to this thread by name (#529). Optional. */
+  excluded_notes?: string[]
+  /** Note ids pinned to this thread: attached by id, whatever their name (#529). Optional. */
+  included_notes?: string[]
 }
 
 /** One checked thread note inside a group proposal (034 data-model "Thread proposal"). */
@@ -95,6 +99,10 @@ interface GroupProposal {
   source?: string
   note?: string
   ruled_thread?: string
+  /** A ratified member whose alias was removed, offered again by `thread-propose` (#525). Optional. */
+  reoffer?: { from_group?: string; thread?: string }
+  /** A `continues` group holding notes that thread excluded in a split: ratifying lifts the exclusion (#529). Optional. */
+  split_off?: { thread?: string; notes?: string[] }
 }
 /** `GET /threads/plan` — what `thread_registry ratify --key K --emit-plan` prints. */
 interface GroupPlan {
@@ -677,6 +685,40 @@ function removeEditRow(i: number) {
   edit.value?.rows.splice(i, 1)
 }
 
+/** `campaignlib.thread_registry.norm_title`: the key two names are the same name by. */
+function normTitle(name: string): string {
+  return name.toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+}
+
+/**
+ * Keep the alias box in step with the ticks (#529). The derived plan lists every member's name; a name carried
+ * only by an unticked member would become an alias and attach the note the GM just split off, so unticking
+ * removes it, unless a still-ticked member carries the same name. Ticking again puts it back.
+ */
+function syncAliases(g: GroupProposal, m: GroupMember) {
+  const e = edit.value
+  if (!e || !m.name) return
+  const key = normTitle(m.name)
+  const lines = e.aliases.split('\n').map((x) => x.trim()).filter(Boolean)
+  const has = lines.some((x) => normTitle(x) === key)
+  if (e.ticked[m.id]) {
+    if (!has) lines.push(m.name)
+  } else if (!g.members.some((o) => o.id !== m.id && e.ticked[o.id] && normTitle(o.name) === key)) {
+    e.aliases = lines.filter((x) => normTitle(x) !== key).join('\n')
+    return
+  }
+  e.aliases = lines.join('\n')
+}
+
+/** What a ratified thread's excluded note id stands for, when a proposal still carries its member. */
+function excludedLabel(id: string): string {
+  for (const g of groups.value) {
+    const m = g.members.find((x) => x.id === id)
+    if (m) return `ch${m.chapter ?? '—'} ${m.name} (${id})`
+  }
+  return id
+}
+
 const tickedCount = computed(() => Object.values(edit.value?.ticked || {}).filter(Boolean).length)
 
 function groupBody(g: GroupProposal): Record<string, any> {
@@ -924,6 +966,16 @@ const addAlias = (t: Thread) => {
           <code>{{ g.key }}</code>
         </div>
         <p v-if="g.ruled_thread" class="muted small">ratified as thread <code>{{ g.ruled_thread }}</code></p>
+        <p v-if="g.reoffer" class="muted small reoffer">
+          Back in the queue: this note was ratified{{ g.reoffer.thread ? ` into ${threadTitle(g.reoffer.thread)}` : '' }}
+          but its name no longer attaches (alias removed{{ g.reoffer.thread ? ` from ${threadTitle(g.reoffer.thread)}` : '' }}?).
+          Ratify it into that thread to restore the alias, or put the alias back with <code>thread_registry alias</code>.
+        </p>
+        <p v-if="g.split_off && (g.split_off.notes || []).length" class="muted small split-off">
+          Includes {{ g.split_off.notes!.length === 1 ? 'a note' : `${g.split_off.notes!.length} notes` }} you split off
+          {{ threadTitle(g.split_off.thread) }} ({{ g.split_off.notes!.join(', ') }}). Ratifying into that thread lifts the
+          exclusion; the thread does not attach them until you do.
+        </p>
         <ul class="evidence">
           <li v-for="m in g.members" :key="m.id">
             <span class="ev-ch">ch{{ m.chapter ?? '—' }}</span>
@@ -966,14 +1018,16 @@ const addAlias = (t: Thread) => {
               </div>
               <h4>Notes this ratification covers (untick one to split it off)</h4>
               <div v-for="m in g.members" :key="m.id" class="logrow">
-                <input v-model="edit.ticked[m.id]" type="checkbox" class="field-input check" :aria-label="`Include ${m.name} ch${m.chapter}`" />
+                <input v-model="edit.ticked[m.id]" type="checkbox" class="field-input check" :aria-label="`Include ${m.name} ch${m.chapter}`"
+                       @change="syncAliases(g, m)" />
                 <span class="ev-ch">ch{{ m.chapter ?? '—' }}</span>
                 <span class="badge">{{ m.tag }}</span>
                 <strong>{{ m.name }}</strong>
                 <span>{{ m.text }}</span>
               </div>
               <p v-if="g.members.length > tickedCount" class="muted small">
-                {{ g.members.length - tickedCount }} note(s) stay behind as a new pending group.
+                {{ g.members.length - tickedCount }} note(s) stay behind as a new pending group. The thread is told not to
+                attach them by name, and their names leave the alias box unless a ticked note shares them.
               </p>
               <label class="field"><span>Names to record as aliases (one per line): later notes using them attach by exact match</span>
                 <textarea v-model="edit.aliases" class="field-input" rows="3" aria-label="Aliases"></textarea></label>
@@ -1192,6 +1246,14 @@ const addAlias = (t: Thread) => {
             opened ch{{ t.opened ?? '—' }}
             <span v-if="t.resolved"> &middot; closed ch{{ t.resolved }}</span>
             <span v-if="(t.aliases || []).length"> &middot; also: {{ t.aliases.join(', ') }}</span>
+          </p>
+          <p v-if="(t.excluded_notes || []).length" class="muted small excluded">
+            Held out by a split (never attached to this thread by name):
+            <span v-for="(id, i) in t.excluded_notes" :key="id" class="excluded-note">{{ i ? '; ' : '' }}{{ excludedLabel(id) }}</span>
+          </p>
+          <p v-if="(t.included_notes || []).length" class="muted small included">
+            Pinned by id (attach here whatever their name):
+            <span v-for="(id, i) in t.included_notes" :key="id" class="included-note">{{ i ? '; ' : '' }}{{ excludedLabel(id) }}</span>
           </p>
           <ul v-if="problemsFor(t.id).length" class="problems">
             <li v-for="p in problemsFor(t.id)" :key="p">{{ p }}</li>

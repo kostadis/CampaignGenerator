@@ -208,7 +208,7 @@ interface Report {
 }
 interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete' | 'report'; bytes: number }
 interface ExtractChunk { index: number; chapters: string; status: string; kept: number; dropped: number; outlier: boolean }
-// The ratified-thread counts of the last planning build (read by the server from state/threads/attach.json).
+// The ratified-thread counts of the last build that read the thread registry (read by the server from state/threads/attach.json).
 interface ThreadCounts {
   present: boolean; ratified_in_range: number | null; open: number | null; dormant: number | null
   unattached: number | null; ambiguous: number | null; pending_groups: number | null
@@ -236,15 +236,15 @@ interface AuditState {
 }
 const extractState = ref<ExtractState | null>(null)
 const auditState = ref<AuditState | null>(null)
-// world_state's last build: words written against each prose section's budget.
+// Each document's last build: words written against each prose section's budget (null before a build).
 interface BudgetRow { budget: number; words: number; over: boolean }
-const worldBudgets = ref<Record<string, BudgetRow> | null>(null)
+const budgets = ref<Record<string, Record<string, BudgetRow> | null>>({})
 const threadCounts = ref<ThreadCounts | null>(null)
 // Each chunked document's last annotate step (written by synth, and again by Annotate).
 interface AnnotationCounts { later: number; since: number; unverified: number; removed: number; lines: number }
 const annotations = ref<Record<string, AnnotationCounts>>({})
 const docAnnotations = computed(() => annotations.value[doc.value] ?? null)
-const budgetRows = computed(() => Object.entries(worldBudgets.value ?? {}))
+const budgetRows = computed(() => Object.entries(budgets.value[doc.value] ?? {}))
 const overBudget = computed(() => budgetRows.value.filter(([, r]) => r.over).length)
 
 const duplicates = computed(() => report.value?.findings.filter(f => f.code === 'possible-duplicate') ?? [])
@@ -255,14 +255,14 @@ async function refreshOutputs() {
   drafts.value = []; draftsNote.value = ''
   extractState.value = null
   auditState.value = null
-  worldBudgets.value = null
+  budgets.value = {}
   threadCounts.value = null
   annotations.value = {}
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
   try {
     const state = await apiFetch<{
-      extract: ExtractState; audit: AuditState; world_budgets: Record<string, BudgetRow> | null
+      extract: ExtractState; audit: AuditState; budgets: Record<string, Record<string, BudgetRow> | null>
       annotations: Record<string, AnnotationCounts>
       missing_dossiers: MissingNpc[] | null; missing_dossiers_refused: boolean
       planning_missing_dossiers: MissingNpc[] | null; planning_missing_dossiers_refused: boolean
@@ -274,7 +274,7 @@ async function refreshOutputs() {
     if (!auditTrackText.value.trim() && state.audit?.track_files?.length) {
       auditTrackText.value = state.audit.track_files.join('\n')
     }
-    worldBudgets.value = state.world_budgets
+    budgets.value = state.budgets ?? {}
     annotations.value = state.annotations ?? {}
     // The latest attempt's list for each document, so a refusal is still shown after a reload.
     missingByDoc.value = {
@@ -591,6 +591,12 @@ onMounted(async () => {
           <template v-if="doc === 'world_state'">
             Key NPCs are rendered from the published NPC dossiers: the build refuses when a selected NPC has none.
           </template>
+          <template v-if="doc === 'campaign_state'">
+            Resolved Plot Threads and Active Quests &amp; Open Threads are built from the threads the GM has ratified
+            (<RouterLink to="/grounding/threads">Threads page</RouterLink>): code decides which threads are closed or open, in
+            what order, and lists the dormant and unratified ones; the model writes one entry per thread from that thread&rsquo;s own notes.
+            Until threads are ratified these sections say so and point to the unratified notes.
+          </template>
           <template v-if="doc === 'planning'">
             Code builds the Threat Tracker, picks the NPCs and factions, orders Active Plots by the ratified threads and lists the
             unratified thread notes verbatim. NPC Dossiers are rendered from the published NPC dossiers: the build refuses when a
@@ -676,7 +682,7 @@ onMounted(async () => {
         </div>
         <div v-if="doc === 'planning'" class="panel threads">
           <div class="counts">
-            <span>Ratified threads (last planning build)</span>
+            <span>Ratified threads (last build that read the thread registry)</span>
             <template v-if="threadCounts?.present">
               <span data-test="thread-in-range">{{ threadCounts.ratified_in_range }} with notes in range</span>
               <span data-test="thread-open">{{ threadCounts.open }} open</span>
@@ -693,9 +699,9 @@ onMounted(async () => {
             <RouterLink to="/grounding/threads">Threads page</RouterLink>, then build again.
           </span>
         </div>
-        <div v-if="doc === 'world_state' && budgetRows.length" class="panel budgets">
+        <div v-if="budgetRows.length" class="panel budgets">
           <div class="counts">
-            <span>Word budgets (last world_state build; citations not counted)</span>
+            <span>Word budgets (last {{ doc }} build; citations not counted)</span>
             <span :class="overBudget ? 'bad' : 'ok'">
               {{ overBudget ? `${overBudget} over budget` : 'all within budget' }}
             </span>

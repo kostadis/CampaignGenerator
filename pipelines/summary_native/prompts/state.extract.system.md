@@ -47,4 +47,4 @@ Rules:
 - Anything inside double quotation marks must be copied character-for-character from the evidence. Do not quote what you paraphrase.
 - A mention is not a presence. An NPC spoken about is not an NPC who was there.
 - Spell every name exactly as the evidence spells it. Do not merge two characters because their names look alike.
-- Write only the six `##` headings, in that order, nothing else at that level, no preamble, no closing remarks. Bullets only; no nested bullets, no tables.
+- Write ALL six `##` headings every time, in that order, nothing else at that level, no preamble, no closing remarks. A section with nothing to report holds exactly one line, `- (none)`; never leave a heading out. Bullets only; no nested bullets, no tables.

@@ -10,12 +10,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 import yaml
 
+from campaignlib.thread_registry import group_key
 from pipelines.summary_native import notes, schema, thread_attach, thread_check, thread_propose
 from tests import conftest_party as cp
 from tests import conftest_state as cs
@@ -39,6 +44,10 @@ def thr(tid: str, title: str, aliases=(), status: str = "open", log=()) -> dict:
 
 def reg(*threads: dict) -> dict:
     return {"version": 1, "threads": list(threads)}
+
+
+def schema_heading(name: str) -> str:
+    return getattr(schema, name)
 
 
 def sha12(ids) -> str:
@@ -119,6 +128,49 @@ class TestAttach:
         assert st.open is False and st.dormant is False
         assert att.open_threads == [] and att.dormant_threads == []
 
+    # a thread the GM closed after the build's last chapter is open in that build (#530)
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    def test_a_thread_closed_after_the_range_is_decided_by_its_latest_note(self, status):
+        t = {**thr("t", "T", status=status), "resolved": 50}
+        att = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30)
+        st = att.threads["t"]
+        assert st.open is True and st.dormant is False and [s.id for s in att.open_threads] == ["t"]
+        assert st.why == f"the GM set it {status} at ch 50, after this range (ch 30): open here, its latest note (ch 3) is ADVANCED"
+        closed = thread_attach.attach(chunks(tn(3, "RESOLVED", "T")), reg(t), until=30)
+        assert closed.threads["t"].open is False and closed.threads["t"].dormant is False
+        assert "after this range (ch 30)" in closed.threads["t"].why
+
+    @pytest.mark.parametrize("chapter", [3, 30])
+    def test_a_thread_closed_at_or_before_the_range_end_stays_closed(self, chapter):
+        t = {**thr("t", "T", status="resolved"), "resolved": chapter}
+        st = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"]
+        assert st.open is False and st.why == f"the GM set it resolved at ch {chapter}"
+
+    @pytest.mark.parametrize("recorded", [None, 0, "50", True])
+    def test_a_closed_status_without_a_real_chapter_stays_closed(self, recorded):
+        t = {**thr("t", "T", status="resolved"), "resolved": recorded}
+        assert thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"].open is False
+
+    def test_without_a_range_a_closed_status_is_closed_whatever_its_chapter(self):
+        t = {**thr("t", "T", status="resolved"), "resolved": 50}
+        assert thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t)).threads["t"].open is False
+
+    def test_a_dormant_status_is_not_read_against_the_range(self):
+        t = {**thr("t", "T", status="dormant"), "resolved": 50}
+        st = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(t), until=30).threads["t"]
+        assert st.dormant is True and st.open is False
+
+    def test_an_open_status_ignores_a_stray_chapter(self):
+        t = {**thr("t", "T"), "resolved": 50}
+        assert thread_attach.attach(chunks(tn(3, "RESOLVED", "T")), reg(t), until=30).threads["t"].open is False
+
+    def test_decide_directly(self):
+        latest = tn(3, "OPENED", "T")
+        assert thread_attach._decide("resolved", latest, 31, 30)[:2] == (True, False)
+        assert thread_attach._decide("resolved", latest, 30, 30)[:2] == (False, False)
+        assert thread_attach._decide("resolved", latest)[:2] == (False, False)
+
     def test_a_dormant_thread_is_in_the_dormant_set_not_the_open_one(self):
         att = thread_attach.attach(chunks(tn(3, "ADVANCED", "T")), reg(thr("t", "T", status="dormant")))
         assert att.threads["t"].open is False and att.threads["t"].dormant is True
@@ -180,6 +232,26 @@ class TestAttach:
         assert "Dup" in md and "d1" in md and "d2" in md and "ambiguous" in md.lower()
         assert "2 unattached" in md  # "Dup" (ambiguous) and "Loose"
 
+    # ── #529: a split's exclusion beats name identity ──
+
+    def test_an_excluded_note_does_not_attach_to_the_thread_that_excludes_it_and_is_unattached(self):
+        a, b = tn(2, "OPENED", "The Carver's march"), tn(4, "ADVANCED", "The Carver's march", "another")
+        att = thread_attach.attach(chunks(a, b), reg({**thr("cm", "The Carver's march"), "excluded_notes": [b.note_id]}))
+        assert att.by_note == {a.note_id: "cm", b.note_id: None}
+        assert att.unattached == [b] and [n.note_id for n in att.threads["cm"].notes] == [a.note_id]
+        assert att.threads["cm"].latest.note_id == a.note_id  # the excluded note is not the thread's latest
+
+    def test_an_excluded_note_may_still_attach_to_another_thread_by_name(self):
+        n = tn(4, "ADVANCED", "The ring")
+        att = thread_attach.attach(chunks(n), reg({**thr("a", "The ring"), "excluded_notes": [n.note_id]},
+                                                  thr("b", "Other", ["the ring"])))
+        assert att.by_note[n.note_id] == "b" and att.ambiguous == {}  # "a" no longer claims it: not ambiguous
+
+    def test_exclusion_is_by_note_id_so_an_identical_name_with_another_id_still_attaches(self):
+        gone, new = tn(4, "ADVANCED", "The ring", "old text"), tn(4, "ADVANCED", "The ring", "re-extracted text")
+        att = thread_attach.attach(chunks(new), reg({**thr("a", "The ring"), "excluded_notes": [gone.note_id]}))
+        assert att.by_note[new.note_id] == "a"
+
 
 # ── T022: check_groups ──────────────────────────────────────────────────────
 
@@ -199,6 +271,10 @@ def new(title: str, *members) -> dict:
 
 def cont(thread: str, *members) -> dict:
     return {"kind": "continues", "thread": thread, "members": list(members)}
+
+
+def _ids(entry) -> list[str]:
+    return [m["id"] for m in entry["members"]]
 
 
 def member_ids(groups) -> list[str]:
@@ -340,10 +416,68 @@ class TestCheckGroups:
         groups, _ = thread_check.check_groups(groups_raw(), N, REGISTRY, [deferred])
         assert sorted(member_ids(groups)) == sorted(IDS[2:])  # they live in the deferred entry
 
-    def test_pending_and_ratified_groups_do_not_exclude_anything(self):
-        for status in ("pending", "ratified"):
-            prior = {"key": sha12(IDS[:2]), "kind": "new", "status": status, "members": [{"id": i} for i in IDS[:2]]}
-            assert [n.note_id for n in thread_check.offered(N, [prior])] == IDS
+    def test_a_pending_group_does_not_exclude_anything(self):
+        prior = {"key": sha12(IDS[:2]), "kind": "new", "status": "pending", "members": [{"id": i} for i in IDS[:2]]}
+        assert [n.note_id for n in thread_check.offered(N, [prior])] == IDS
+
+    # ── #525: a ratified member that attaches to nothing any more ──
+
+    def ratified(self, *ids, key=None, **extra):
+        return {"key": key or sha12(ids), "kind": "new", "title": "Alpha plan", "status": "ratified",
+                "ruled_thread": "t-alpha", "members": [{"id": i} for i in ids], **extra}
+
+    def test_unattached_ratified_members_are_not_offered_to_the_model_but_come_back_as_singles(self):
+        prior = [self.ratified(*IDS[:2])]
+        assert [n.note_id for n in thread_check.offered(N, prior)] == IDS[2:]
+        groups, lines = thread_check.check_groups(groups_raw(new("Alpha", IDS[0], IDS[2])), N, REGISTRY, prior)
+        assert sorted(member_ids(groups)) == sorted(IDS)
+        assert kinds_of(groups, IDS[0]) == {"single"} and kinds_of(groups, IDS[1]) == {"single"}
+        assert any(IDS[0] in ln and "ratified group" in ln for ln in lines)  # told why the model's claim failed
+
+    def test_a_ratified_single_is_offered_again_under_a_key_of_its_own(self):
+        ratified = self.ratified(IDS[0], key=sha12([IDS[0]]))
+        groups, _ = thread_check.check_groups(groups_raw(), N, REGISTRY, [ratified])
+        (again,) = [g for g in groups if g["members"][0]["id"] == IDS[0]]
+        assert again["kind"] == "single" and again["key"] != ratified["key"] and re.fullmatch(r"g-[0-9a-f]{12}", again["key"])
+        # deterministic, and the next ratification of the same note gets yet another key
+        assert thread_check.check_groups(groups_raw(), N, REGISTRY, [ratified])[0] == groups
+        ruled_again = {**ratified, "key": again["key"]}
+        (third,) = [g for g in thread_check.check_groups(groups_raw(), N, REGISTRY, [ratified, ruled_again])[0]
+                    if g["members"][0]["id"] == IDS[0]]
+        assert third["key"] not in (ratified["key"], again["key"])
+
+    def test_a_rejected_single_stays_rejected_even_if_it_was_once_ratified(self):
+        ratified = self.ratified(IDS[0], key=sha12([IDS[0]]))
+        again = thread_check.check_groups(groups_raw(), N, REGISTRY, [ratified])[0][0]
+        rejected = {**again, "status": "rejected"}
+        groups, _ = thread_check.check_groups(groups_raw(), N, REGISTRY, [ratified, rejected])
+        (offered_again,) = [g for g in groups if g["members"][0]["id"] == IDS[0]]
+        assert offered_again["key"] == rejected["key"]  # merge_proposals then leaves the ruling standing
+
+    def test_detached_names_only_the_unattached_members_of_this_run(self):
+        prior = [self.ratified(IDS[0], IDS[1], "n-out-of-range"), self.ratified(IDS[1], key="g-bbbbbbbbbbbb"),
+                 {"key": "g-cccccccccccc", "kind": "new", "status": "pending", "members": [{"id": IDS[2]}]}]
+        found = thread_check.detached(prior, [N[0], N[1], N[2]])
+        assert [d["note"].note_id for d in found] == [IDS[0], IDS[1]]  # IDS[2] is only pending; out-of-range unjudged
+        assert [p["key"] for p in found[1]["groups"]] == [sha12([IDS[0], IDS[1], "n-out-of-range"]), "g-bbbbbbbbbbbb"]
+        assert thread_check.detached(prior, []) == []
+
+    def test_detached_lines_say_what_became_of_the_note(self):
+        prior = [self.ratified(IDS[0]), self.ratified(IDS[1], key="g-bbbbbbbbbbbb"), self.ratified(IDS[2], key="g-cccccccccccc"),
+                 {"key": "g-pppppppppppp", "kind": "single", "status": "pending", "members": [{"id": IDS[0]}]},
+                 {"key": "g-rrrrrrrrrrrr", "kind": "single", "status": "rejected", "members": [{"id": IDS[1]}]}]
+        lines = thread_check.detached_lines(prior, thread_check.detached(prior, N))
+        assert len(lines) == 3 and all("ratified but no longer attached (alias removed?)" in ln for ln in lines)
+        assert "offered again as pending proposal g-pppppppppppp" in lines[0] and "thread t-alpha" in lines[0]
+        assert "g-rrrrrrrrrrrr is rejected, so it is not offered again" in lines[1]
+        assert "thread-propose" in lines[2]
+
+    def test_now_attached_lines_name_pending_proposals_whose_notes_all_attach(self):
+        prior = [{"key": "g-111111111111", "kind": "single", "title": "Alpha", "status": "pending", "members": [{"id": IDS[0]}]},
+                 {"key": "g-222222222222", "kind": "new", "status": "pending", "members": [{"id": IDS[1]}, {"id": IDS[2]}]},
+                 {"key": "g-333333333333", "kind": "single", "status": "rejected", "members": [{"id": IDS[0]}]}]
+        lines = thread_check.now_attached_lines(prior, {IDS[0]: "t-alpha", IDS[1]: "t-alpha"}, {"t-alpha": "Alpha plan"})
+        assert lines == ["pending proposal g-111111111111 (Alpha): now attached to Alpha plan; dropped from the queue"]
 
     def test_name_keyed_ensemble_proposals_are_ignored(self):
         ensemble = {"norm": "alpha", "title": "Alpha", "status": "rejected", "chapters": [2], "evidence": []}
@@ -413,6 +547,129 @@ class TestMergeProposals:
         p.write_text(yaml.safe_dump({"proposals": [stale]}), encoding="utf-8")
         thread_check.merge_proposals(p, [], "src", scope_ids={"n-nowattached"})
         assert yaml.safe_load(p.read_text(encoding="utf-8"))["proposals"] == []
+
+    # ── #524: a replaced group never orphans a note outside the run's range ──
+
+    def pending(self, key, title, *members, source="old run"):
+        return {"key": key, "kind": "new", "title": title, "status": "pending", "source": source,
+                "members": [dict(m) if isinstance(m, dict) else {"id": m} for m in members]}
+
+    def proposals_of(self, p):
+        return yaml.safe_load(p.read_text(encoding="utf-8"))["proposals"]
+
+    def test_out_of_range_members_of_a_replaced_group_are_kept_as_pending_singles(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        far = {"id": "n-far0000000", "chapter": 60, "tag": "OPENED", "name": "Far", "text": "far one", "cite": "[ch 060 / 060.01]"}
+        g = self.pending("g-111111111111", "Spans the edge", far, {"id": IDS[0], "chapter": 2})
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(
+            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS), known_ids=set(IDS) | {far["id"]})
+        ps = self.proposals_of(p)
+        assert "g-111111111111" not in {e["key"] for e in ps}
+        (single,) = [e for e in ps if far["id"] in _ids(e)]
+        assert single["kind"] == "single" and single["status"] == "pending" and single["members"] == [far]
+        assert single["key"] == group_key([far["id"]]) and single["title"] == "Far"
+        assert single["source"] == "old run"  # provenance of the earlier run is not rewritten
+        assert stats["replaced"] == 1
+        assert stats["kept_out_of_range"] == [{"key": "g-111111111111", "title": "Spans the edge", "members": [far]}]
+
+    def test_a_member_ruled_elsewhere_or_covered_by_another_entry_is_not_duplicated(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", "n-far0000001", "n-far0000002", IDS[0])
+        ruled = {"key": "g-333333333333", "kind": "single", "status": "rejected", "members": [{"id": "n-far0000001"}]}
+        p.write_text(yaml.safe_dump({"proposals": [g, ruled]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS))
+        ps = self.proposals_of(p)
+        assert [e for e in ps if "n-far0000001" in _ids(e)] == [ruled]
+        assert sum("n-far0000002" in _ids(e) for e in ps) == 1
+        assert [m["id"] for r in stats["kept_out_of_range"] for m in r["members"]] == ["n-far0000002"]
+
+    def test_a_member_that_exists_in_no_ranges_notes_is_dropped_and_reported(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", {"id": "n-vanished00", "chapter": 3}, {"id": IDS[0], "chapter": 2},
+                         {"id": "n-far0000000", "chapter": 60})
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(
+            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS),
+            known_ids=set(IDS) | {"n-far0000000"})
+        ids = {i for e in self.proposals_of(p) for i in _ids(e)}
+        assert "n-vanished00" not in ids and "n-far0000000" in ids
+        assert stats["gone"] == [{"key": "g-111111111111", "title": "Spans", "members": [{"id": "n-vanished00", "chapter": 3}]}]
+
+    def test_a_member_re_extracted_in_this_range_but_alive_in_a_wider_one_is_kept(self, tmp_path):
+        """Ids are per extraction: ch002-060 holds b under n-b; ch002-008 chunks it differently (n-b2)."""
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-aaaaaaaaaaaa", "T", {"id": "n-a", "chapter": 3, "name": "A"}, {"id": "n-b", "chapter": 6, "name": "B"})
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(
+            p, [], "narrow", scope_ids={"n-a", "n-b2"}, known_ids={"n-a", "n-b", "n-b2"})
+        ps = self.proposals_of(p)
+        assert [_ids(e) for e in ps] == [["n-b"]] and ps[0]["kind"] == "single" and ps[0]["status"] == "pending"
+        assert stats["gone"] == [] and [m["id"] for r in stats["kept_out_of_range"] for m in r["members"]] == ["n-b"]
+
+    def test_a_pending_entry_with_no_member_in_any_ranges_notes_is_kept_untouched_and_reported(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        old_single = {**self.pending("g-bbbbbbbbbbbb", "Far", {"id": "n-far", "chapter": 40}), "kind": "single"}
+        partial = self.pending("g-cccccccccccc", "Half", {"id": "n-gone", "chapter": 40}, {"id": "n-live", "chapter": 41})
+        ruled = {**self.pending("g-dddddddddddd", "Ruled", {"id": "n-gone2"}), "status": "deferred"}
+        p.write_text(yaml.safe_dump({"proposals": [old_single, partial, ruled]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(p, [], "wide", scope_ids={"n-far2"}, known_ids={"n-far2", "n-live"})
+        assert self.proposals_of(p) == [old_single, partial, ruled]  # nothing is deleted for having no note on disk
+        assert stats["stale"] == [{"key": "g-bbbbbbbbbbbb", "title": "Far", "ids": ["n-far"]}]  # only a wholly missing pending one
+
+    def test_nothing_is_judged_gone_or_stale_without_known_ids(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", "n-x", IDS[0])
+        lone = self.pending("g-222222222222", "Lone", "n-y")
+        p.write_text(yaml.safe_dump({"proposals": [g, lone]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(p, [], "src", scope_ids={IDS[0]})
+        assert {i for e in self.proposals_of(p) for i in _ids(e)} == {"n-x", "n-y"}
+        assert stats["gone"] == [] and stats["stale"] == []
+
+    def test_merging_after_a_narrower_run_is_a_fixed_point_and_the_wider_run_regroups_the_singles(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", "n-far0000000", IDS[0])
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        gs = self.groups(new("Alpha", IDS[0], IDS[1]))
+        thread_check.merge_proposals(p, gs, "src", scope_ids=set(IDS))
+        first = p.read_bytes()
+        thread_check.merge_proposals(p, gs, "src", scope_ids=set(IDS))
+        assert p.read_bytes() == first
+        # the wider run now has the far note in scope: its single is replaced by whatever that run proposes
+        wide = set(IDS) | {"n-far0000000"}
+        thread_check.merge_proposals(p, [], "src", scope_ids=wide)
+        assert not any("n-far0000000" in _ids(e) for e in self.proposals_of(p))
+
+    def test_invariant_no_pending_note_leaves_the_queue_whatever_the_ranges(self, tmp_path):
+        """Every note in a pending proposal before a run is in some proposal after it, or attached."""
+        p = tmp_path / "t.yaml"
+        wide = [f"n-{i:010x}" for i in range(12)]
+        chapter = {nid: 50 + i for i, nid in enumerate(wide)}
+
+        def member(nid):
+            return {"id": nid, "chapter": chapter[nid], "tag": "OPENED", "name": nid, "text": nid, "cite": ""}
+
+        def grouped(*ids):
+            return {"key": group_key(ids), "kind": "new", "title": "G " + ids[0], "members": [member(i) for i in ids]}
+
+        first = [grouped(*wide[0:4]), grouped(*wide[4:8]), grouped(*wide[8:12])]
+        thread_check.merge_proposals(p, first, "wide", scope_ids=set(wide))
+        queue = {i for e in self.proposals_of(p) for i in _ids(e)}
+        assert queue == set(wide)
+        # a sequence of narrower, overlapping runs; like thread-propose, each proposes every unattached note
+        # of its scope (one group, the rest singles), and one note becomes attached to a ratified thread
+        runs = [(wide[3:6], wide[4:6]), (wide[6:10], wide[7:9]), (wide[0:3], wide[0:3]), (wide[2:9], wide[2:9])]
+        attached_now = {wide[8]}
+        for scope, regroup in runs:
+            before = {i for e in self.proposals_of(p) for i in _ids(e)}
+            offered = [n for n in scope if n not in attached_now]
+            group = [i for i in regroup if i in offered]
+            gs = ([grouped(*group)] if len(group) > 1 else []) + [
+                grouped(i) for i in offered if i not in group or len(group) < 2]
+            thread_check.merge_proposals(p, gs, "narrow", scope_ids=set(scope), known_ids=set(wide))
+            after = {i for e in self.proposals_of(p) for i in _ids(e)}
+            assert before - after <= attached_now, f"orphaned {sorted((before - after) - attached_now)}"
+            assert len([i for e in self.proposals_of(p) for i in _ids(e)]) == len(after)  # and none twice
 
     def test_merging_twice_is_a_fixed_point(self, tmp_path):
         p = tmp_path / "t.yaml"
@@ -511,6 +768,22 @@ class TestThreadPropose:
         assert [m["chapter"] for m in by_title["The Carver's march"]["members"]] == [2, 3, 4]
         assert len(by_title["The signet ring"]["members"]) == 2
         assert all(p["source"].startswith("summary_native ch002-004 run ") for p in ps)
+
+    def test_a_thread_resolved_after_the_range_is_open_in_the_attach_map_thread_propose_writes(self, tcamp):
+        """thread-propose passes the range's last chapter to attach (it writes attach.json beside synth's)."""
+        root, _ = tcamp
+        doc = {"version": 1, "threads": [
+            {**thr("cm", "The Carver's march", ["Carver march"], status="resolved"), "resolved": 50}]}
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        att = json.loads((threads_dir(root) / "attach.json").read_text(encoding="utf-8"))
+        assert att["range"]["until"] == 4 and att["threads"]["cm"]["open"] is True
+        doc["threads"][0]["resolved"] = 3
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        assert propose(root)[0] == 0
+        att = json.loads((threads_dir(root) / "attach.json").read_text(encoding="utf-8"))
+        assert att["threads"]["cm"]["open"] is False
 
     def test_the_summary_line(self, tcamp):
         root, _ = tcamp
@@ -678,6 +951,106 @@ class TestThreadPropose:
         report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
         assert "batch 1" in report and "not valid" in report.lower()
 
+    def test_a_narrower_overlapping_range_keeps_the_out_of_range_notes_of_a_replaced_group(self, tcamp):
+        """#524: ch002-004 groups the Carver notes; a later ch003-004 run must not lose the ch002 one."""
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        carver = next(p for p in proposals(root) if p["title"] == "The Carver's march")
+        assert [m["chapter"] for m in carver["members"]] == [2, 3, 4]
+        before = {m["id"] for p in proposals(root) for m in p["members"]}
+
+        narrow = ["--config", str(root / "config" / "config.yaml"), "--summaries-dir", str(root / "docs" / "summaries"),
+                  "--since", "3", "--until", "4"]
+        assert cs.run_cli(["build", *narrow])[0] == 0
+        rc, out, err = cs.run_cli(["extract", *narrow[:-4], "--since", "3", "--until", "4", "--chunk-chars", "1", *BACKEND])
+        assert rc == 0, out + err
+        rc, out, err = cs.run_cli(["thread-propose", *narrow, *BACKEND])
+        assert rc == 0, out + err
+
+        ps = proposals(root)
+        after = {m["id"] for p in ps for m in p["members"]}
+        assert before <= after  # nothing that was queued left the queue
+        assert carver["key"] not in {p["key"] for p in ps}  # the group was replaced...
+        (kept,) = [p for p in ps if p["members"][0]["chapter"] == 2 and p["members"][0]["name"] == "The Carver's march"]
+        assert kept["kind"] == "single" and kept["status"] == "pending"  # ...and its ch002 member survives
+        # the run says so, in the report and on the terminal
+        report = (cp.range_dir(root).parent / "ch003-004" / "state" / "threads" / "propose_report.md").read_text(encoding="utf-8")
+        assert carver["key"] in report and kept["members"][0]["id"] in report and "outside the run's range" in report
+        assert carver["key"] in out and kept["members"][0]["id"] in out
+
+    def test_known_note_ids_spans_every_ranges_notes(self, tcamp):
+        root, _ = tcamp
+        assert thread_propose.known_note_ids(cp.range_dir(root)) == set(all_note_ids(root))
+        sibling = cp.range_dir(root).parent / "ch003-004"
+        shutil.copytree(cp.range_dir(root) / "state" / "notes", sibling / "state" / "notes")
+        assert thread_propose.known_note_ids(sibling) == set(all_note_ids(root))  # sees the sibling range too
+
+    def test_a_pending_proposal_with_no_note_on_disk_is_kept_and_reported_every_run(self, tcamp):
+        """#524: a single kept from a wide range that was later re-extracted (or deleted) is named, not deleted."""
+        root, tm = tcamp
+        empty_registry(root)
+        stale = {"key": "g-eeeeeeeeeeee", "kind": "single", "title": "Old far note", "status": "pending",
+                 "source": "summary_native ch002-070 run X",
+                 "members": [{"id": "n-reextracted", "chapter": 40, "tag": "OPENED", "name": "Old far note"}]}
+        proposals_path(root).parent.mkdir(parents=True, exist_ok=True)
+        proposals_path(root).write_text(yaml.safe_dump({"proposals": [stale]}), encoding="utf-8")
+        for _ in range(2):  # reported on every run, not once
+            rc, out, err = propose(root)
+            assert rc == 0, out + err
+            assert stale in proposals(root)
+            report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+            for text in (report, out):
+                assert "g-eeeeeeeeeeee" in text and "n-reextracted" in text
+                assert "none of its notes is in any range's notes on disk" in text
+                assert "reject it on the Threads page" in text
+                assert "retired" not in text and "nothing was lost" not in text
+
+    def test_an_unreadable_notes_file_in_another_range_makes_the_run_judge_nothing_missing(self, tcamp):
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        wide = cp.range_dir(root).parent / "ch002-060"
+        bad = wide / "state" / "notes" / "chunk01.002-060.checked.json"
+        bad.parent.mkdir(parents=True)
+        bad.write_text('{"cache_key": "x", "notes": [', encoding="utf-8")  # truncated
+        ids, unreadable = thread_propose.scan_note_ids(cp.range_dir(root))
+        assert ids is None and unreadable == [bad] and thread_propose.known_note_ids(cp.range_dir(root)) is None
+        carver = next(p for p in proposals(root) if p["title"] == "The Carver's march")
+        far = {"key": "g-ffffffffffff", "kind": "new", "title": "Wide group", "status": "pending", "source": "w",
+               "members": [{"id": "n-notinthisrun", "chapter": 40, "name": "W", "text": "t"}]}
+        doc = yaml.safe_load(proposals_path(root).read_text(encoding="utf-8"))
+        doc["proposals"].append(far)
+        carver_member = carver["members"][0]["id"]
+        for p in doc["proposals"]:
+            if p["key"] == carver["key"]:
+                p["members"].append({"id": "n-alsonotthere", "chapter": 40, "name": "X", "text": "t"})
+        proposals_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        ps = proposals(root)
+        assert far in ps  # not reported as missing, not touched
+        assert any("n-alsonotthere" in str(p) for p in ps)  # a replaced group's unknown member is kept, not dropped
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert "chunk01.002-060.checked.json" in report and "chunk01.002-060.checked.json" in err
+        assert "none of its notes is in any range's notes" not in report and carver_member in str(ps)
+
+    def test_a_dropped_member_is_written_out_in_full_in_the_report(self, tcamp):
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        doc = yaml.safe_load(proposals_path(root).read_text(encoding="utf-8"))
+        carver = next(p for p in doc["proposals"] if p["title"] == "The Carver's march")
+        carver["members"].append({"id": "n-droppedone", "chapter": 40, "tag": "OPENED", "name": "Lost name",
+                                  "text": "the lost statement", "cite": "[ch 040 / 040.01]"})
+        proposals_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        assert not any("n-droppedone" in str(p) for p in proposals(root))
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert "n-droppedone (ch 40, OPENED) Lost name — the lost statement [ch 040 / 040.01]" in report
+        assert "note is in no range's notes on disk" in report
+
     def test_a_model_failure_exits_4_and_writes_no_proposal(self, tcamp):
         root, tm = tcamp
         empty_registry(root)
@@ -747,6 +1120,487 @@ class TestThreadPropose:
         assert "The Carver's march" not in sent and "Carver march" not in sent
         assert {p["title"] for p in proposals(root) if p["status"] == "pending"} == {"The signet ring"}
         assert "3 attached to 1 ratified thread" in out
+
+    # ── #525: an alias removed after a ratification ──
+
+    CARVER_NAMES = ("The Carver's march", "Carver march")
+
+    def ratify_carver(self, root, tm):
+        """Propose against an empty registry, then ratify the Carver group with the real verb (the plan it
+        derives, unedited), as the Threads page does. Returns the group entry as it was proposed."""
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        group = next(p for p in proposals(root) if p["title"] == "The Carver's march")
+        self.ratify(root, group["key"])
+        assert "Carver march" in yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))["threads"][0]["aliases"]
+        return next(p for p in proposals(root) if p["key"] == group["key"])
+
+    def treg(self, root, *argv, stdin=None):
+        env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1])}
+        script = Path(__file__).resolve().parents[1] / "pipelines" / "grounding" / "thread_registry.py"
+        return subprocess.run([sys.executable, str(script), "--registry", str(registry_path(root)), *argv],
+                              capture_output=True, text=True, cwd=root, input=stdin, env=env)
+
+    def ratify(self, root, key, **plan_edits):
+        """`thread_registry ratify --key K`: derive the plan, apply the GM's edits, write it."""
+        base = ["ratify", "--key", key, "--proposals", str(proposals_path(root))]
+        r = self.treg(root, *base, "--emit-plan")
+        assert r.returncode == 0, r.stderr
+        plan = {**json.loads(r.stdout), **plan_edits}
+        r = self.treg(root, *base, "--plan", "-", stdin=json.dumps(plan))
+        assert r.returncode == 0, r.stderr + r.stdout
+        return plan
+
+    def drop_alias(self, root, alias="Carver march"):
+        """What the GM does by hand: take an alias off a thread."""
+        doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
+        for t in doc["threads"]:
+            t["aliases"] = [a for a in t.get("aliases") or [] if a != alias]
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+
+    def carver_pending(self, root):
+        return [p for p in proposals(root) if p["status"] == "pending" and any(m["name"] == "Carver march" for m in p["members"])]
+
+    def test_a_member_whose_alias_was_removed_is_reported_and_offered_again_as_a_pending_single(self, tcamp):
+        root, tm = tcamp
+        group = self.ratify_carver(root, tm)
+        assert propose(root)[0] == 0
+        assert [p for p in proposals(root) if p["status"] == "pending" and p["members"][0]["name"] in self.CARVER_NAMES] == []
+        detached = [m for m in group["members"] if m["name"] == "Carver march"]
+        assert detached  # the fixture names the thread both ways
+
+        self.drop_alias(root)  # the GM removes the alias
+        calls = len(tm.calls)
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        ps = proposals(root)
+        for m in detached:
+            (again,) = [p for p in ps if p["status"] == "pending" and [x["id"] for x in p["members"]] == [m["id"]]]
+            assert again["kind"] == "single" and again["key"] != group["key"]
+            assert again["reoffer"] == {"from_group": group["key"], "thread": "the-carvers-march"}
+            assert m["id"] not in str(tm.calls[calls:])  # code offers it again; the model never saw it
+        assert group in ps  # the ratified entry stays as it was: history
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        section = report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+        for m in detached:
+            assert m["id"] in section and "ratified but no longer attached (alias removed?)" in section
+            assert "offered again as pending proposal" in section
+        assert group["key"] in section and "the-carvers-march" in section
+        assert detached[0]["id"] in out  # and on the terminal
+
+    def test_a_ratified_single_whose_alias_was_removed_is_offered_again_under_its_own_key(self, tcamp):
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        member = next(m for p in proposals(root) for m in p["members"] if m["name"] == "Carver march")
+        ratified = {"key": thread_check.group_key([member["id"]]), "kind": "single", "title": "Carver march",
+                    "status": "ratified", "ruled_thread": "carver-march", "members": [member]}
+        others = [p for p in proposals(root) if member["id"] not in [m["id"] for m in p["members"]]]
+        proposals_path(root).write_text(yaml.safe_dump({"proposals": [ratified, *others]}), encoding="utf-8")
+        assert propose(root)[0] == 0
+        keys = [p["key"] for p in proposals(root)]
+        assert len(keys) == len(set(keys)), "a key names one entry"
+        (again,) = [p for p in proposals(root) if p["status"] == "pending" and member["id"] in str(p["members"])]
+        assert again["key"] != ratified["key"] and again["kind"] == "single"
+        assert ratified in proposals(root)
+
+    def test_re_running_with_the_alias_still_missing_changes_nothing(self, tcamp):
+        root, tm = tcamp
+        self.ratify_carver(root, tm)
+        self.drop_alias(root)
+        assert propose(root)[0] == 0
+        strip = lambda ps: [{k: v for k, v in p.items() if k != "source"} for p in ps]  # noqa: E731
+        first = strip(proposals(root))
+        assert propose(root)[0] == 0
+        assert strip(proposals(root)) == first
+
+    def test_the_alias_put_back_attaches_the_note_and_the_pending_single_leaves_the_queue_with_a_line_saying_so(self, tcamp):
+        root, tm = tcamp
+        group = self.ratify_carver(root, tm)
+        self.drop_alias(root)
+        assert propose(root)[0] == 0
+        pending = [p for p in proposals(root) if p["status"] == "pending" and p["members"][0]["name"] == "Carver march"]
+        assert pending
+        assert self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Carver march").returncode == 0
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        ps = proposals(root)
+        assert not any(p["key"] == q["key"] for q in pending for p in ps)
+        assert group in ps
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert f"pending proposal {pending[0]['key']}" in report and "now attached to The Carver's march" in report
+        section = report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+        assert "(none)" in section
+
+    def test_one_ratification_settles_a_re_offer_for_good(self, tcamp):
+        """The loop the reviewer found: ratifying a re-offered single into its thread restored no alias, so the
+        note came back as re-offered-2, -3, ... Ratifying it with the plan the engine derives must end it."""
+        root, tm = tcamp
+        self.ratify_carver(root, tm)
+        self.drop_alias(root)
+        assert propose(root)[0] == 0
+        (again,) = self.carver_pending(root)
+        plan = json.loads(self.treg(root, "ratify", "--key", again["key"], "--proposals", str(proposals_path(root)),
+                                    "--emit-plan").stdout)
+        assert plan["thread"] == "the-carvers-march"  # the page's default: continues the thread it left
+        self.ratify(root, again["key"])
+        assert "Carver march" in yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))["threads"][0]["aliases"]
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        assert self.carver_pending(root) == []
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert "ratified but no longer attached" not in report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+        assert not any("re-offered" in str(p) for p in proposals(root))
+
+    def test_ratifying_a_re_offer_under_a_new_title_still_restores_the_alias(self, tcamp):
+        root, tm = tcamp
+        self.ratify_carver(root, tm)
+        self.drop_alias(root)
+        assert propose(root)[0] == 0
+        (again,) = self.carver_pending(root)
+        plan = json.loads(self.treg(root, "ratify", "--key", again["key"], "--proposals", str(proposals_path(root)),
+                                    "--emit-plan").stdout)
+        for k in ("thread",):
+            plan.pop(k)
+        plan.update(title="The horde marches", id="horde-marches", status="open")
+        base = ["ratify", "--key", again["key"], "--proposals", str(proposals_path(root))]
+        assert self.treg(root, *base, "--plan", "-", stdin=json.dumps(plan)).returncode == 0
+        assert propose(root)[0] == 0
+        assert self.carver_pending(root) == []  # "Carver march" is an alias of the new thread
+
+    def test_an_ordinary_single_ratified_into_an_existing_thread_attaches_and_is_not_offered_again(self, tcamp):
+        root, tm = tcamp
+        # a registry with the Carver thread but WITHOUT the alias: "Carver march" notes are ordinary unattached ones
+        self.drop_alias(root)
+        assert propose(root)[0] == 0
+        (single,) = self.carver_pending(root)
+        assert single["kind"] == "single" and "reoffer" not in single
+        self.ratify(root, single["key"], thread="carver-march")
+        assert propose(root)[0] == 0
+        assert self.carver_pending(root) == []
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert single["members"][0]["id"] not in report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+
+    def test_a_rejected_re_offer_is_not_offered_a_third_time(self, tcamp):
+        root, tm = tcamp
+        self.ratify_carver(root, tm)
+        self.drop_alias(root)
+        assert propose(root)[0] == 0
+        doc = yaml.safe_load(proposals_path(root).read_text(encoding="utf-8"))
+        for p in doc["proposals"]:
+            if p["status"] == "pending" and p["members"][0]["name"] == "Carver march":
+                p["status"] = "rejected"
+        proposals_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        assert propose(root)[0] == 0
+        assert not any(p["status"] == "pending" and p["members"][0]["name"] == "Carver march" for p in proposals(root))
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert "is rejected, so it is not offered again" in report
+
+    # ── #529: splitting a group whose split-off note shares a ratified member's name ──
+
+    def split_carver(self, root, keep_chapters=(2, 3), **plan_edits):
+        """Propose against an empty registry, then ratify only ``keep_chapters`` of the 3-note Carver group with the
+        real verb (the derived plan narrowed as the Threads page narrows it). Returns the group as proposed."""
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        group = next(p for p in proposals(root) if p["title"] == "The Carver's march")
+        assert [m["chapter"] for m in group["members"]] == [2, 3, 4]
+        base = ["ratify", "--key", group["key"], "--proposals", str(proposals_path(root))]
+        plan = json.loads(self.treg(root, *base, "--emit-plan").stdout)
+        rows = dict(zip(plan["members"], plan["log"]))
+        keep = [m["id"] for m in group["members"] if m["chapter"] in keep_chapters]
+        plan.update(members=keep, log=[rows[i] for i in keep], **plan_edits)
+        r = self.treg(root, *base, "--plan", "-", stdin=json.dumps(plan))
+        assert r.returncode == 0, r.stderr + r.stdout
+        return group
+
+    def attach_map(self, root):
+        return json.loads((threads_dir(root) / "attach.json").read_text(encoding="utf-8"))
+
+    def carver_thread(self, root):
+        return yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))["threads"][0]
+
+    def test_a_split_off_note_sharing_a_ratified_members_name_is_not_attached_and_is_still_offered(self, tcamp):
+        """The issue's acceptance scenario: ch004 "The Carver's march" shares the title of the ratified ch002 note."""
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        assert off["name"] == "The Carver's march"  # the same bold name as the ratified ch002 member
+        assert self.carver_thread(root)["excluded_notes"] == [off["id"]]
+        rest = next(p for p in proposals(root) if p["status"] == "pending" and [m["id"] for m in p["members"]] == [off["id"]])
+        assert rest["split_from"] == group["key"]
+
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        att = self.attach_map(root)
+        assert att["notes"][off["id"]] is None  # not attached: the GM's ruling beats the name
+        assert att["threads"]["the-carvers-march"]["notes"] == [m["id"] for m in group["members"][:2]]
+        assert att["threads"]["the-carvers-march"]["latest"] == group["members"][1]["id"]
+        # ...and still offered for a ruling, not dropped as "now attached"
+        (kept,) = [p for p in proposals(root) if p["status"] == "pending" and p["members"][0]["id"] == off["id"]]
+        assert kept["key"] == rest["key"] and kept["kind"] == "single"
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert "now attached" not in report and "2 attached to 1 ratified thread" in out
+        # a second run changes nothing
+        strip = lambda ps: [{k: v for k, v in p.items() if k != "source"} for p in ps]  # noqa: E731
+        first = strip(proposals(root))
+        assert propose(root)[0] == 0 and strip(proposals(root)) == first
+
+    def test_without_the_exclusion_the_same_note_attaches_by_name(self, tcamp):
+        """The control for the test above: the field, not something else, is what holds the note out."""
+        root, tm = tcamp
+        group = self.split_carver(root)
+        doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
+        del doc["threads"][0]["excluded_notes"]
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        assert propose(root)[0] == 0
+        assert self.attach_map(root)["notes"][group["members"][2]["id"]] == "the-carvers-march"
+
+    def test_the_planning_build_reads_the_exclusion_too(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        _, results = notes.load_checked(cp.range_dir(root))
+        att = thread_attach.attach(results, yaml.safe_load(registry_path(root).read_text(encoding="utf-8")))
+        assert group["members"][2]["id"] in {n.note_id for n in att.unattached}
+
+    def test_a_re_extracted_excluded_note_is_reported_never_removed(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        # re-extraction that changes the note's text changes its id (research R6): simulate it on disk
+        for f in sorted(cp.range_dir(root).glob("state/notes/*.checked.json")):
+            text = f.read_text(encoding="utf-8")
+            if off["text"] in text:
+                f.write_text(text.replace(off["text"], off["text"] + " Again."), encoding="utf-8")
+        assert off["id"] not in set(all_note_ids(root))
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        line = (f"thread the-carvers-march: excluded note {off['id']} is in no range's notes on disk (re-extracted?) "
+                f"— the split may no longer hold; re-check notes named The Carver's march")
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        section = report.split("## Excluded and pinned notes no longer on disk (ruling may not hold)")[1].split("\n## ")[0]
+        assert line in section and line in out
+        assert self.carver_thread(root)["excluded_notes"] == [off["id"]]  # reported, not removed
+        assert propose(root)[0] == 0 and line in propose(root)[1]  # on every run, not once
+        # the new note really does attach by name now: that is what the report warns about
+        assert len(self.attach_map(root)["threads"]["the-carvers-march"]["notes"]) == 3
+
+    def test_nothing_is_reported_while_the_excluded_note_is_on_disk_or_a_notes_file_is_unreadable(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        rc, out, err = propose(root)
+        assert rc == 0 and "excluded note" not in out
+        assert "(none)" in (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8").split(
+            "## Excluded and pinned notes no longer on disk (ruling may not hold)")[1].split("\n## ")[0]
+        # an id that is on no disk, but with another range's notes file unreadable: judge nothing
+        doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
+        doc["threads"][0]["excluded_notes"].append("n-nowhere000")
+        registry_path(root).write_text(yaml.safe_dump(doc), encoding="utf-8")
+        bad = cp.range_dir(root).parent / "ch002-060" / "state" / "notes" / "chunk01.002-060.checked.json"
+        bad.parent.mkdir(parents=True)
+        bad.write_text('{"cache_key": "x", "notes": [', encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0 and "n-nowhere000" not in out
+        bad.unlink()
+        rc, out, err = propose(root)
+        assert "excluded note n-nowhere000 is in no range's notes" in out
+
+    def test_ratifying_the_excluded_note_into_the_same_thread_lifts_the_exclusion_and_it_attaches(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        assert propose(root)[0] == 0
+        (rest,) = [p for p in proposals(root) if p["status"] == "pending" and p["members"][0]["id"] == off["id"]]
+        self.ratify(root, rest["key"], thread="the-carvers-march")
+        assert "excluded_notes" not in self.carver_thread(root)
+        assert propose(root)[0] == 0
+        assert self.attach_map(root)["notes"][off["id"]] == "the-carvers-march"
+        assert not any(p["status"] == "pending" and p["members"][0]["id"] == off["id"] for p in proposals(root))
+
+    def test_an_alias_only_a_left_out_member_carries_is_refused_and_the_registry_is_untouched(self, tcamp):
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        group = next(p for p in proposals(root) if p["title"] == "The Carver's march")
+        base = ["ratify", "--key", group["key"], "--proposals", str(proposals_path(root))]
+        plan = json.loads(self.treg(root, *base, "--emit-plan").stdout)
+        assert "Carver march" in plan["aliases_add"]
+        keep = [m["id"] for m in group["members"] if m["chapter"] != 3]  # leave out the only "Carver march" note
+        plan.update(members=keep, log=[plan["log"][0], plan["log"][2]])
+        before = proposals_path(root).read_bytes()
+        r = self.treg(root, *base, "--plan", "-", stdin=json.dumps(plan))
+        assert r.returncode == 1 and "Carver march" in r.stderr and group["members"][1]["id"] in r.stderr
+        assert not registry_path(root).exists()  # the registry was emptied above and the refusal wrote nothing
+        assert proposals_path(root).read_bytes() == before
+
+    # ── #529 review: pins (included_notes), held-out reporting, the alias note, model-proposed continues ──
+
+    def remainder_of(self, root, off):
+        assert propose(root)[0] == 0
+        (rest,) = [p for p in proposals(root) if p["status"] == "pending" and p["members"][0]["id"] == off["id"]]
+        return rest
+
+    def ratify_remainder_as(self, root, rest, plan_edits):
+        base = ["ratify", "--key", rest["key"], "--proposals", str(proposals_path(root))]
+        plan = json.loads(self.treg(root, *base, "--emit-plan").stdout)
+        plan.update(plan_edits)
+        return plan, self.treg(root, *base, "--plan", "-", stdin=json.dumps(plan))
+
+    def splinter(self, root):
+        return next(t for t in yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))["threads"]
+                    if t["id"] == "carver-splinter")
+
+    @pytest.mark.parametrize("keep_derived_aliases", [True, False])
+    def test_a_split_off_note_sharing_the_threads_name_can_be_ruled_into_a_different_thread(self, tcamp, keep_derived_aliases):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        rest = self.remainder_of(root, off)
+        plan = json.loads(self.treg(root, "ratify", "--key", rest["key"], "--proposals", str(proposals_path(root)),
+                                    "--emit-plan").stdout)
+        assert plan["id"] != "the-carvers-march" and "thread" not in plan  # a fresh target, not the thread just made
+        edits = {"id": "carver-splinter", "title": "Carver splinter"}
+        if not keep_derived_aliases:
+            edits["aliases_add"] = []
+        plan, r = self.ratify_remainder_as(root, rest, edits)
+        assert r.returncode == 0, r.stderr + r.stdout  # the colliding alias is dropped, not refused
+        assert ("not added" in r.stdout) == keep_derived_aliases
+        assert self.splinter(root)["included_notes"] == [off["id"]]
+        assert off["id"] in self.carver_thread(root)["excluded_notes"]
+        for _ in range(2):  # and it holds, run after run
+            rc, out, err = propose(root)
+            assert rc == 0, out + err
+            assert self.attach_map(root)["notes"][off["id"]] == "carver-splinter"
+            assert not any(p["status"] == "pending" and off["id"] in str(p["members"]) for p in proposals(root))
+            report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+            section = report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+            assert "- (none)" in section and off["id"] not in section  # #525 counts a pinned member as attached
+            assert off["id"] not in report.split("## " + schema_heading("HELD_OUT_HEADING"))[1].split("\n## ")[0]
+
+    def test_a_pinned_note_attaches_by_id_and_never_by_name_elsewhere(self):
+        a = tn(2, "OPENED", "The ring")
+        pinned = reg({**thr("x", "Other"), "included_notes": [a.note_id]}, thr("y", "The ring"))
+        att = thread_attach.attach(chunks(a), pinned)
+        assert att.by_note[a.note_id] == "x" and "y" not in att.threads  # "y" owns the name, the pin wins
+        both = reg({**thr("x", "Other"), "included_notes": [a.note_id]}, {**thr("z", "Third"), "included_notes": [a.note_id]})
+        assert thread_attach.attach(chunks(a), both).by_note[a.note_id] == thread_attach.AMBIGUOUS
+
+    def test_a_pin_and_an_exclusion_of_one_id_on_one_thread_is_a_check_finding(self, tmp_path):
+        from campaignlib.thread_registry import check_registry
+        t = {**thr("x", "X"), "status": "open", "excluded_notes": ["n-1"], "included_notes": ["n-1", "n-2"]}
+        assert any("both in excluded_notes and included_notes" in e for e in check_registry(reg(t)))
+        assert any("included_notes must be a list" in e for e in check_registry(reg({**thr("x", "X"), "included_notes": "n-1"})))
+
+    @pytest.mark.parametrize("status", ["resolved", "abandoned"])
+    @pytest.mark.parametrize("recorded", ["50", True, "ch50", 0, -3, 4.0, None])
+    def test_a_closed_status_without_a_real_chapter_is_a_check_finding(self, status, recorded):
+        from campaignlib.thread_registry import check_registry
+        errors = check_registry(reg({**thr("x", "X", status=status), "resolved": recorded}))
+        assert any(f"x: status {status} but no real `resolved:` chapter ({recorded!r})" in e for e in errors)
+        assert check_registry(reg({**thr("x", "X", status=status), "resolved": 50})) == []
+
+    def test_a_log_row_chapter_that_is_a_bool_is_a_check_finding(self):
+        from campaignlib.thread_registry import check_registry
+        row = {"chapter": True, "change": "opened", "summary": "s"}
+        assert any("log row without a real chapter number (True)" in e for e in check_registry(reg(thr("x", "X", log=[row]))))
+
+    def test_a_note_pinned_on_two_threads_is_a_check_finding(self):
+        from campaignlib.thread_registry import check_registry
+        two = reg({**thr("a", "A"), "included_notes": ["n-1", "n-2"]}, {**thr("b", "B"), "included_notes": ["n-1"]})
+        errors = check_registry(two)
+        assert [e for e in errors if "pinned to threads a and b" in e and "n-1" in e] and not any("n-2" in e for e in errors)
+        assert not any("pinned to" in e for e in check_registry(reg({**thr("a", "A"), "included_notes": ["n-1", "n-1"]})))
+
+    def test_a_re_extracted_pinned_note_is_reported_never_removed(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        self.ratify_remainder_as(root, self.remainder_of(root, off), {"id": "carver-splinter", "title": "Carver splinter"})
+        for f in sorted(cp.range_dir(root).glob("state/notes/*.checked.json")):
+            text = f.read_text(encoding="utf-8")
+            if off["text"] in text:
+                f.write_text(text.replace(off["text"], off["text"] + " Again."), encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        line = (f"thread carver-splinter: pinned note {off['id']} is in no range's notes on disk (re-extracted?) "
+                f"— it may no longer attach to this thread; re-check notes named The Carver's march")
+        assert line in out and line in (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert self.splinter(root)["included_notes"] == [off["id"]]
+
+    def test_ratifying_a_pinned_note_into_another_thread_moves_the_pin(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        self.ratify_remainder_as(root, self.remainder_of(root, off), {"id": "carver-splinter", "title": "Carver splinter"})
+        assert propose(root)[0] == 0
+        doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
+        assert [t["id"] for t in doc["threads"] if off["id"] in t.get("included_notes", [])] == ["carver-splinter"]
+        # the GM re-ratifies the same note into the Carver thread by hand (a reoffered single): the pin follows
+        entry = {"key": "g-" + "9" * 12, "kind": "single", "title": "x", "status": "pending", "members": [off]}
+        pdoc = yaml.safe_load(proposals_path(root).read_text(encoding="utf-8"))
+        pdoc["proposals"].append(entry)
+        proposals_path(root).write_text(yaml.safe_dump(pdoc), encoding="utf-8")
+        self.ratify(root, entry["key"], thread="the-carvers-march")
+        doc = yaml.safe_load(registry_path(root).read_text(encoding="utf-8"))
+        assert not any(t.get("included_notes") for t in doc["threads"] if t["id"] == "carver-splinter")
+        assert off["id"] not in doc["threads"][0].get("excluded_notes", [])
+
+    def test_the_report_lists_a_note_held_out_of_a_thread_whose_name_it_carries(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root)
+        off = group["members"][2]
+        assert propose(root)[0] == 0
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        section = report.split("## " + schema_heading("HELD_OUT_HEADING"))[1].split("\n## ")[0]
+        assert off["id"] in section and "thread the-carvers-march, which excludes it" in section and "ch 4" in section
+
+    def test_an_alias_added_after_a_split_says_that_the_excluded_note_it_names_stays_out(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root, keep_chapters=(2, 4), aliases_add=[])  # leave out ch3 "Carver march"
+        off = group["members"][1]
+        assert off["name"] == "Carver march"
+        r = self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Carver march")
+        assert r.returncode == 0, r.stderr
+        assert off["id"] in r.stdout and "which carries the name" in r.stdout and "does not attach it" in r.stdout and "ok: alias" in r.stdout
+        assert propose(root)[0] == 0
+        assert self.attach_map(root)["notes"][off["id"]] is None  # still out, and now the report says why
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert off["id"] in report.split("## " + schema_heading("HELD_OUT_HEADING"))[1].split("\n## ")[0]
+        # an alias that names no excluded note says nothing about exclusions
+        r = self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Something unrelated")
+        assert "excludes" not in r.stdout
+        # with no proposals file to learn names from, it can only count the excluded notes
+        proposals_path(root).unlink()
+        r = self.treg(root, "alias", "--id", "the-carvers-march", "--alias", "Another")
+        assert "excludes 1 note(s)" in r.stdout
+
+    def test_a_model_continues_proposal_with_notes_the_thread_excluded_keeps_them_and_says_so(self, tcamp):
+        root, tm = tcamp
+        group = self.split_carver(root, keep_chapters=(2,), aliases_add=["The Carver's march"])  # ch3 and ch4 left out
+        left = [m["id"] for m in group["members"][1:]]
+        assert self.carver_thread(root)["excluded_notes"] == left
+        tm.output = lambda rows: json.dumps({"groups": [
+            {"kind": "continues", "thread": "the-carvers-march", "members": [r[0] for r in rows if "carver" in r[3].lower()]}]})
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        (holder,) = [p for p in proposals(root) if p["status"] == "pending" and left[0] in [m["id"] for m in p["members"]]]
+        assert holder["kind"] == "continues" and [m["id"] for m in holder["members"]] == left  # kept, not dropped
+        assert holder["split_off"] == {"thread": "the-carvers-march", "notes": left}
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        assert f"was split off thread 'the-carvers-march' by the GM" in report
+        assert self.carver_thread(root)["excluded_notes"] == left  # only the GM's ratification lifts it
+
+    def test_an_unreadable_notes_file_says_not_judged_instead_of_none(self, tcamp):
+        root, tm = tcamp
+        self.split_carver(root)
+        bad = cp.range_dir(root).parent / "ch002-060" / "state" / "notes" / "chunk01.002-060.checked.json"
+        bad.parent.mkdir(parents=True)
+        bad.write_text('{"cache_key": "x", "notes": [', encoding="utf-8")
+        rc, out, err = propose(root)
+        assert rc == 0, out + err
+        report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
+        section = report.split("## " + schema_heading("STALE_RULINGS_HEADING"))[1].split("\n## ")[0]
+        assert "(not judged: " in section and "chunk01.002-060.checked.json" in section and "(none)" not in section
 
     def test_the_registry_and_proposals_paths_come_from_projections_yaml(self, tcamp):
         root, tm = tcamp

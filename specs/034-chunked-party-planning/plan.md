@@ -204,14 +204,14 @@ No constitution violations to justify.
 
 ## Follow-ups (outside this feature)
 
-- **#530:** campaign_state's thread sections read the thread registry once OOTA's registry is ratified, replacing the model reading the whole ledger.
+- **#530 (done):** campaign_state's thread sections read the thread registry (`thread_attach`, `active_plots_md` and a new `resolved_threads_md`), replacing the model reading the whole ledger. The registry digest is in its run record; an absent registry leaves the unratified pointer. The old `threads` route is removed.
 - **Thread proposals:**
   - **#524:** a pending group spanning the range edge loses its out-of-range notes.
-  - **#525:** removing an alias leaves notes unattached and unflagged.
-  - **#529:** a split-off note that shares a ratified name attaches anyway.
-- **#526:** the arc-score "states a value" check is an untuned regex.
-- **#527:** subject-less prose in Party Overview and Dynamics escapes the stale and cross-section detectors.
-- **#528:** the summary-native page has no Annotate action for party and no budget panels for party and planning.
+  - **#525 (done):** a ratified member left unattached by a removed alias is reported ("ratified but no longer attached (alias removed?)") and offered again as a pending single.
+  - **#529 (done):** a split-off note that shares a ratified name attaches anyway. `ratify --key` records the left-out notes as the thread's `excluded_notes`; `thread_attach` honours them before the name; an alias carried only by a left-out member is refused; an excluded id found on no disk is reported, never removed.
+- **#526:** the arc-score "states a value" check is an untuned regex. Tightened with a verdict table (`arc_value_check.md`); measuring it on real Out of the Abyss output is still open.
+- **#527 (done):** subject-less prose in Party Overview and Dynamics now takes the `Party` subject and is stale-checked against the whole-party notes; it is not paired by the cross-section check.
+- **#528 (done):** Annotate follows the document picker, and `GET /state` carries `budgets` for world_state, party and planning, shown in one panel.
 - **kostadis/campaigns#385:** drops `parts: 0` from OOTA's `grounding.yaml`. Merge it before or with this feature.
 - **#512:** incremental rebuild (extract cache across ranges). **#515:** a chunk missing a section passes the check. Both are inherited.
 - The ensemble-fact harvest (`thread_registry propose --corpus`) stays for campaigns on the ensemble path; retire it when no campaign uses it.

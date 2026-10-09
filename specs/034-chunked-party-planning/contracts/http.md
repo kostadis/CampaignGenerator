@@ -11,7 +11,7 @@ The routes build argv and stream CLI output over SSE via `subprocess_runner`, as
 | `POST /api/projections/threads/rule` | `thread_registry rule` | **Extended.** Accepts `key` as well as `norm` |
 | `GET /api/projections/threads/proposals` | — (reads the file) | **Extended.** Group proposals are returned with `kind`, `title`, `thread`, `members[]` and `source`, beside name-keyed ones |
 | `GET /api/grounding/summary-native/state` | — | **Extended.** Per range: party/planning draft presence, `missing_dossiers` for planning, and `threads: {ratified_in_range, open, unattached, ambiguous, pending_groups}` read from `state/threads/` and the proposals file |
-| `GET /api/grounding/summary-native/drafts` | — | **Extended.** Lists `reference/party.md`, `party_report.md`, `planning_npcs_report.md`, `arc_report.md` and `threads_report.md` |
+| `GET /api/grounding/summary-native/drafts` | — | **Extended.** Lists `reference/party.md`, `party_report.md`, `planning_npcs_report.md`, `arc_report.md`, `threads_report.md` and (#530) `campaign_threads_report.md` |
 
 ## Pages
 

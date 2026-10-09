@@ -383,9 +383,9 @@ documented:
   same subject), `ℹ since:` (a mentioned NPC's later status) and `⚠ unverified:` (a quotation not
   verbatim in its cited chapter, or a citation that does not resolve) *under* a line. The line's text
   is never changed; the only removals are a player character listed as a companion and a Faction States
-  block named for a player character. For party and planning it scans the model-written prose lines as
-  well as bullets, and skips what code built or what is not a claim: the Threat Tracker, NPC Dossiers,
-  Active Plots' dormant and unratified blocks (the latter is one pointer line; the notes are in `reference/threads_unratified.md`), and the `#### Candidate Arc Score Events` subsection.
+  block named for a player character. For party and planning, and campaign_state's two thread sections, it
+  scans the model-written prose lines as well as bullets, and skips what code built or what is not a
+  claim: the Threat Tracker, NPC Dossiers, Active Plots' (and Active Quests') dormant and unratified blocks (the latter is one pointer line; the notes are in `reference/threads_unratified.md`), and the `#### Candidate Arc Score Events` subsection.
   `tests/test_annotate_never_rewrites.py` fails the build if a non-removed line's text differs after
   annotation, and `annotate` is AST-guarded no-LLM so a model cannot reword a line after the code check.
 - **A draft is output, not a document.** Everything is written under `<range>/state/`, never to
@@ -396,14 +396,17 @@ documented:
   dossier refuses the build of world_state's Key NPCs and planning's NPC Dossiers; `--fallback-npc-lines`
   is per run, never read from config, and its lines are marked `(no published dossier — from checked notes)`.
 
-Three more rules are what make party and planning safe to navigate by:
+Three more rules are what make party and planning (and campaign_state's thread sections) safe to navigate by:
 
 - **Identity is code's, from an authority.** A party note is attributed to a character, the party, a
   companion or nobody by exact name or alias through the entity registry and `players.yaml`, and a
   character's level comes from a checked `[LEVEL]` row or is disclaimed as the sheet's figure. A thread
   note belongs to a thread only by exact title or alias in `docs/thread_registry.yaml`, the identity
-  authority for threads, which only GM ratification writes. The extractor's own thread names are not
-  identity (554 names, 550 seen once, on Out of the Abyss). `thread-propose` groups unattached notes, but a
+  authority for threads, which only GM ratification writes. campaign_state's `## Resolved Plot Threads` and
+  `## Active Quests & Open Threads` read the same registry through the same `thread_attach` (code decides which
+  threads are closed or open and their order; the model writes one entry per thread from its own notes), and an
+  absent registry leaves them as the unratified pointer, never a whole-ledger model call. The extractor's own
+  thread names are not identity (554 names, 550 seen once, on Out of the Abyss). `thread-propose` groups unattached notes, but a
   proposal is a candidate the GM ratifies, and each batch sees only checked notes and ratified threads.
 - **Arc scores are never stated.** The documents list candidate events with a verbatim trigger from the
   GM's mechanic file (`arc_check` drops a line without a resolving citation or a verbatim trigger, or one

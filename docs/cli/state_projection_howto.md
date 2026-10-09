@@ -168,6 +168,12 @@ thread_registry check          # invariants; runs automatically on every save
 `--status` one of `open | dormant | resolved | abandoned` (resolving needs
 `--chapter`). A save that fails `check` is refused outright.
 
+The `--chapter` of a `resolved` or `abandoned` status is also read by the
+summary-native grounding builds: a build of chapters A..B describes the campaign
+as of chapter B, so a thread resolved at a chapter after B counts as `open` in
+that build (its latest attached note decides), and one resolved at or before B
+is closed. (`dormant` has no chapter and is not read against the range.)
+
 Until `docs/thread_registry.yaml` exists, the `planning` doc's `threads`
 section is `no-input` and a build of it fails loudly.
 
@@ -478,10 +484,13 @@ and the corpus, `extract` and `build` must be current first.
    the members (`thread_registry ratify --key g-… --emit-plan`; read-only). You can:
    - change the title, id and status (or pick *Continues a ratified thread*);
    - **untick a member to split it off**: it stays behind as a new pending group
-     with its own key, and the card says how many notes stay behind;
+     with its own key, and the card says how many notes stay behind (see "Splitting
+     a group" below for what the split also records on the thread);
    - edit the aliases (one per line). Every member name not already a title or alias
      is pre-filled; **these are what make the next build attach later notes by exact
-     match**, so strike any you do not want;
+     match**, so strike any you do not want. Unticking a member removes its name from
+     the box (unless a still-ticked member has the same name); ticking it again puts
+     it back;
    - edit, add or remove log rows (chapter, change, summary, citation).
    Nothing is written until **Confirm**, and what is written is the plan you posted.
    There is no one-click accept. Confirm is disabled with no member ticked.
@@ -499,9 +508,107 @@ The name-keyed harvest and the group proposals share one proposals file
 (`stores.thread_proposals`, default `docs/ensemble/thread_proposals.yaml`); group
 entries carry a `key`, harvest entries a `norm`, and neither touches the other.
 A re-run of `thread-propose` replaces pending groups that share a note with the run
-and keeps every ruling by `key`. Two known gaps: a pending group that spans the
-edge of the range loses its out-of-range notes (#524), and notes left unattached
-after you remove an alias are neither re-proposed nor flagged (#525).
+and keeps every ruling by `key`. A replaced group may hold notes from outside the
+run's range (an earlier, wider run proposed it): those members are never dropped
+from the queue. Each one that no other proposal holds stays as a pending
+one-note `single` proposal, and `propose_report.md` (and the run's output) names the
+replaced group and the notes it kept — "replaced pending group g-… (title): kept N
+member(s) outside the run's range as single proposals". Run the wider range again
+and the singles are regrouped with everything else. A kept single may name a note
+that a ratified thread now attaches (an alias added since the wide run): the next
+run whose range covers it resolves that. Note ids belong to one extraction, so a
+member counts as missing only when its id is in **no** range's checked notes
+(`ch*-*/state/notes/`); a note merely re-extracted in this range under a new id
+while the wider range still has it is kept. A member of a replaced group whose note
+is in no range's notes on disk is dropped, and `propose_report.md` writes it out in
+full (id, chapter, tag, name, text, citation) so you can recover it. A pending
+proposal none of whose notes is on disk (its range was re-extracted with `--force`,
+moved or deleted) is **kept untouched** and named in the report and the output on
+every run — "none of its notes is in any range's notes on disk … re-extract that
+range or reject it on the Threads page". If any checked-notes file cannot be read,
+the run warns, names the file in the report, and judges nothing missing.
+
+**An alias you removed after ratifying.** Ratifying adds every member's name as an
+alias; if you later remove one (by hand or with `thread_registry alias`), the notes
+that name attached are unattached again. `thread-propose` compares each ratified
+group's members with this run's attachment. A member whose note is in the run but
+attaches to no thread is not sent to the model; it is offered again, by code, as a
+pending one-note `single` proposal, so it is back on the Threads page. The
+ratified entry stays in the file as it was. `propose_report.md` (and the run's
+output) lists it under "Ratified but no longer attached (alias removed?)" with the
+group it came from and the pending proposal it is in; `threads_report.md`, written
+by `synth planning`, carries the same section (it only reads the proposals file, so
+until the next `thread-propose` it says to run it). A re-offered note whose
+proposal you reject or defer is not offered again. If you put the alias back, the
+note attaches again, the pending single leaves the queue, and the report says
+"pending proposal g-… (title): now attached to <thread>; dropped from the queue".
+A ratified member outside the run's range cannot be judged by that run and is left
+alone.
+
+**Splitting a group.** Ratify only some of a group's notes and the rest go back to
+the queue as a new pending proposal (`split_from` names the group). Attachment is by
+exact name, and a split-off note can carry the same bold name as one you ratified (the
+Drow Pursuit case, #529), so the registry keeps two optional, additive per-thread lists
+of note ids. Neither needs a migration: an older registry has none, and `thread_registry
+check` accepts them (it flags a value that is not a list of ids, and one id in both lists
+of one thread). `thread_attach` reads them **before** any name, in this order: (a) a
+note in a thread's `included_notes` attaches to that thread by id and never also by name
+elsewhere; (b) a thread's `excluded_notes` take that thread out of the running for the
+note; (c) the name rule.
+
+- `excluded_notes: [n-…]` is the notes you left out. A split-off note stays unattached
+  and is offered again for a ruling (it may still attach to *another* thread that claims
+  its name). A second split of the remainder adds to the list. Ratifying an excluded note
+  **into the same thread** (pick *Continues a ratified thread* in the editor) removes its
+  id in that same write; ratifying it elsewhere leaves the exclusion where it is.
+- `included_notes: [n-…]` pins a ratified member whose name the thread cannot attach it
+  by. The rule, stated exactly: after the plan's aliases are applied, a member of the
+  ratified subset whose name is **not** the thread's title or an alias (it belongs to
+  another thread, or you struck it from the alias box) is pinned. A member that attaches
+  by name is not pinned. Splitting a pinned note off drops its pin; ratifying a note into
+  one thread removes its pin on any other. This is what lets a split-off note that shares
+  the first thread's name be ruled into a *different* thread: the derived plan's alias
+  (its name, which the first thread owns) is dropped with a note ("alias … not added")
+  instead of refused, and the pin attaches the note. An alias you type yourself that
+  collides, and that no ratified member carries, is still refused.
+- The remainder of a split `new` group derives a fresh target (the title gets a
+  " (split off)" suffix when the original title is a thread now); it defaults to
+  *continues* only when the original group was a `continues` one.
+- `ratify` refuses (nothing written) an `aliases_add` name that **only** a left-out member
+  carries: it would attach the note you just split off. The page drops the name for you
+  when you untick. A name a ratified member shares is a legitimate alias (the exclusion
+  keeps the split-off note out); a name already the thread's title or alias is skipped.
+- A name in `aliases_add` is not the end of it: adding an alias later with `thread_registry
+  alias` does not attach an excluded note, and now says so ("thread … excludes n-…, which
+  carries the name …"; with no proposals file it can only count the excluded notes).
+- Reports: `propose_report.md`, `threads_report.md` and `campaign_threads_report.md` list
+  under "Held out of a thread by a split" every unattached note whose name matches a thread
+  that excludes it, so a held-out note is never silent. If the model proposes `continues
+  <thread>` for notes that thread excluded, the proposal keeps them (never dropped), carries
+  `split_off: {thread, notes}`, and the card says "Includes … you split off …; ratifying into
+  that thread lifts the exclusion". The Threads page lists a thread's excluded and pinned notes.
+
+Note ids belong to one extraction, so re-extracting a changed note gives it a new id and
+the ruling stops holding for it. `thread-propose` says so, and never removes the id:
+"thread <id>: excluded note n-… is in no range's notes on disk (re-extracted?) — the split
+may no longer hold; re-check notes named <name>" (and "pinned note … — it may no longer
+attach to this thread"), in the run's output, in `propose_report.md` under "Excluded and
+pinned notes no longer on disk (ruling may not hold)", and in `threads_report.md` /
+`campaign_threads_report.md`. When any checked-notes file is unreadable nothing is judged and
+the section says "(not judged: <file> unreadable)". Re-check the notes with that name; if the
+new note is not the thread, split it off again.
+
+**Settling a re-offered note.** Either put the alias back (`thread_registry alias
+--id <thread> --alias "<name>"`), or ratify the pending single. The Threads page
+shows why the card is back ("alias removed from <thread>?") and opens its editor on
+"continues <thread>", with the note's name already in the alias box; `ratify --key`
+records every name in the plan's `aliases_add` (the plan now lists *every* member name,
+including one equal to a new thread's title, which ratifying skips), so one
+ratification restores the alias and the note attaches on the next build. If you
+ratify it under a new title or another thread, its name becomes an alias of that
+thread. A re-offered single carries an optional `reoffer: {from_group, thread}` field
+that only the Threads page and `--emit-plan` read; it is additive, an older reader
+ignores it, and no migration is needed.
 
 ### A thread you accepted keeps coming back — on purpose
 

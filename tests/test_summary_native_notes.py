@@ -165,6 +165,21 @@ class TestCheckChunk:
         }
         assert cc.chunk == "002-003"
 
+    def test_every_absent_heading_is_missing_and_a_present_empty_one_is_not(self):
+        raw = "## Events\n- (none)\n\n## Threads\n\n## Party\n- (none)\n"
+        cc = notes.check_chunk(raw, _chunk())
+        assert cc.missing == ["## Concluded", "## NPC Status", "## World"]
+        full = dict.fromkeys(("Events", "Concluded", "Threads", "Status", "World", "Party"), "- (none)")
+        assert notes.check_chunk(_raw(**full), _chunk()).missing == []
+        assert notes.check_chunk(_raw(**{**full, "World": ""}), _chunk()).missing == []
+        again = notes.CheckedChunk.from_dict(json.loads(json.dumps(cc.to_dict())))
+        assert again.missing == cc.missing
+
+    def test_the_drops_report_names_an_incomplete_chunk(self):
+        md = notes.render_drops_md([], [("004-004", ["## World", "## Party"])])
+        assert "004-004: missing ## World, ## Party" in md
+        assert "Incomplete chunks" not in notes.render_drops_md([])
+
     def test_uncited(self):
         cc = notes.check_chunk(_raw(Events="- Sarith holds the gate."), _chunk())
         assert _reasons(cc) == [("event", "uncited")]

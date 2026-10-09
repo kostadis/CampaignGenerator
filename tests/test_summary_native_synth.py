@@ -153,7 +153,8 @@ from tests import conftest_state as cs  # noqa: E402
 
 WORLD_PROSE = ["## Party", "## Factions and Powers", "## Key NPCs", "## Locations", "## Items and Artifacts",
                "## Active Threats and Open Pressures"]
-CAMPAIGN_PROSE = ["## Resolved Plot Threads", "## Active Quests & Open Threads", "## Party Current Situation"]
+#: The state fixture ratifies no thread, so campaign_state's two thread sections are code lines and make no call (#530).
+CAMPAIGN_PROSE = ["## Party Current Situation"]
 
 
 @pytest.fixture
@@ -451,13 +452,16 @@ class TestCampaignState:
         rep = (state_dir(extracted) / "drafts" / "npc_status_report.md").read_text()
         assert "Ilvara Mizzrym: Ilvara, Ilvara Mizzrym" in rep and "Player-character rows dropped (1)" in rep
 
-    def test_the_thread_sections_get_the_ledger_and_the_last_chunk(self, extracted, fm):
+    def test_without_a_ratified_thread_the_thread_sections_are_code_lines_and_the_unratified_pointer(self, extracted, fm):
+        """No thread registry in the fixture: no call for either thread section, and the notes go to the pointer (#530)."""
         assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
-        by = {c["heading"]: c["user"] for c in fm.prose_calls}
-        ledger = by["## Resolved Plot Threads"]
-        assert "[OPENED] **The signet ring**" in ledger and "[RESOLVED] **The signet ring**" in ledger
-        assert "CHAPTER 005" in by["## Active Quests & Open Threads"] and "CHAPTER 005" in by["## Party Current Situation"]
-        assert "CHAPTER 005" not in ledger
+        text = draft_of(extracted, "campaign_state")
+        assert section(text, "## Resolved Plot Threads").startswith(schema.NO_RATIFIED_THREADS)
+        active = section(text, "## Active Quests & Open Threads")
+        assert active.startswith(schema.NO_RATIFIED_THREADS) and schema.UNRATIFIED_HEADING in active
+        assert "_4 checked thread notes are not in the thread registry." in active  # the signet ring (3) and Kalan (1)
+        assert [c["heading"] for c in fm.prose_calls] == ["## Party Current Situation"]
+        assert "CHAPTER 005" in fm.prose_calls[0]["user"]
 
     def test_the_audit_section_says_it_was_not_run(self, extracted, fm):
         assert cs.run_cli(synth_args(extracted, "campaign_state"))[0] == 0
@@ -667,7 +671,7 @@ from tests.test_summary_native_planning import DEFAULT as PLANNING_DEFAULT  # no
 
 #: One section per document that, left blank, makes that document's draft incomplete (exit 3).
 BLANKABLE = {
-    "world_state": "## Locations", "campaign_state": "## Resolved Plot Threads",
+    "world_state": "## Locations", "campaign_state": "## Party Current Situation",
     "party": "## Party Overview", "planning": "## DM Notes",
 }
 
@@ -803,6 +807,36 @@ class TestEveryDocumentBuildsTheSameWay:
         assert len(runs(root)) == 2
         assert {p.relative_to(first).as_posix(): p.read_bytes() for p in first.rglob("*") if p.is_file()} == before
         assert (state(root) / ref).read_bytes() == (first / "record.json").read_bytes()
+
+    def test_a_rebuild_that_reports_no_budgets_removes_that_documents_stale_report_only(self, four, monkeypatch):
+        # party is the document with no code-built budgeted part: world_state and planning still measure
+        # their code-built sections when the model returns nothing, so their report is never empty
+        doc = "party"
+        root, _, _ = four
+        drafts = state(root) / "drafts"
+        for d in ("world_state", "party", "planning"):
+            assert cs.run_cli(build(root, d))[0] == 0
+        files = {d: drafts / schema.budget_report_file(d) for d in ("world_state", "party", "planning")}
+        assert all(f.is_file() for f in files.values())
+        kept = {d: f.read_bytes() for d, f in files.items() if d != doc}
+        # every section comes back empty, so nothing is measured against a budget on this run
+        monkeypatch.setattr(cs.synth, "render_part", lambda *a, **k: "")
+        cs.run_cli(build(root, doc, "--force"))
+        assert not files[doc].exists()
+        assert {d: f.read_bytes() for d, f in files.items() if d != doc} == kept
+
+    def test_a_campaign_state_build_never_touches_world_states_budget_report(self, four):
+        # campaign_state has no budgets, and budget_report_file used to answer "budget_report.json" for it too
+        root, _, _ = four
+        report = state(root) / "drafts" / schema.budget_report_file("world_state")
+        assert cs.run_cli(build(root, "world_state"))[0] == 0
+        kept = report.read_bytes()
+        assert cs.run_cli(build(root, "campaign_state"))[0] == 0
+        assert cs.run_cli(build(root, "campaign_state", "--force"))[0] == 0
+        assert report.read_bytes() == kept
+        assert "campaign_state" not in schema.BUDGET_DOCS
+        with pytest.raises(ValueError, match="no word budgets"):
+            schema.budget_report_file("campaign_state")
 
     @pytest.mark.parametrize("doc", schema.DOCS)
     def test_an_existing_draft_needs_force(self, four, doc):

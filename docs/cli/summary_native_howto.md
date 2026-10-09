@@ -703,6 +703,31 @@ call).
 | `--dump-only` | Write prompts, chunks and the manifest; no model call. |
 | `--force` | Re-extract every chunk, ignoring cache keys. |
 
+**A chunk must write all six sections.** The prompt requires all
+six sections, and a section with nothing to report is written `- (none)`, so a heading that is *absent* from the output is the model having
+skipped it, not an empty answer (#515: a Haiku call returned only
+`## Events` and `## Concluded` and was recorded as `kept 45 dropped 0`). Such a
+chunk is a **failed chunk**, not a kept one: it is retried once like a failed
+call, and if the retry is also incomplete it is not counted as extracted,
+`checked.json` is not written, the run exits **3**, and the sections it lacked are
+named in the run output (`chunk 004-004: output missing outline section(s) ## World`),
+in `state/notes/drops.md` (an *Incomplete chunks* block) and in the run record
+(`missing_sections`). The raw `chunkNN.….out.md` is kept so you can see what the
+model wrote. A present section holding only `- (none)`, or nothing, passes.
+The prompt now says this in so many words, and the prompt is part of the chunk cache key, so the first
+`extract` after upgrading re-reads every chunk. Until then `synth party` and `synth planning` refuse
+with `the party notes predate the subject grammar; run summary_native extract …`: the message is
+worded for the original grammar change, but it fires on any change of the extraction prompt.
+
+A cached chunk is re-checked from its raw output on every run, so one saved before
+this check existed is caught too: the run prints `cached INCOMPLETE: …`, makes **no
+model call** for it, exits 3, and drops its checked file, so the next run extracts
+that chunk alone (a sibling range's incomplete output is never reused, and a complete
+sibling copy is used in its place if there is one). `--dump-only` reports the same,
+exits 3, and likewise removes that chunk's checked file. Exit 4 still means only that
+the backend could not be reached: a chunk found incomplete in the cache made no call
+and does not count towards it.
+
 Chunks are cached by a key over the chapter texts, prompts, backend, model and
 limits, so a second run extracts only what changed or failed. The cache also searches
 sibling `chNNN-NNN/state/notes/` folders under the configured output root. Extending
@@ -769,6 +794,56 @@ A fallback line is the NPC's latest checked status and ends in
 refused for `campaign_state`, which has no such section, as are
 `--fallback-npc-lines` and `--npc-root`.
 
+**campaign_state's two thread sections read your thread registry (#530).**
+`## Resolved Plot Threads` and `## Active Quests & Open Threads` used to be
+written by a model from the whole thread ledger, which meant the model decided
+which notes were one thread and whether it had ended. Both are precision
+decisions, so they are now planning's: thread identity is
+`docs/thread_registry.yaml` (a note attaches to the one ratified thread whose
+title or alias equals its bold name), and code decides openness and order.
+
+| Section | Holds |
+|---|---|
+| Resolved Plot Threads | The ratified threads that are **closed**: you set the status to `resolved` or `abandoned` at or before the range's last chapter, or the status is `open` (or a resolve/abandon after the range) and the thread's latest attached note is tagged `RESOLVED` or `ABANDONED`. Newest activity first; a tie goes to the registry's order. |
+| Active Quests & Open Threads | The **open** ratified threads (status `open`, or a resolve/abandon after the range, and the latest note `OPENED` or `ADVANCED`), newest activity first; then `### Dormant threads` (status `dormant`, each as its latest note, verbatim, no model call); then `### Unratified thread notes (not yet ruled on)`, one line giving the count and pointing to `reference/threads_unratified.md`. |
+
+A `dormant` status wins over a latest note tagged `RESOLVED`: a dormant thread is
+in Active Quests' dormant block and never in Resolved. One call per section
+writes one `### <title>` entry per thread, **from that thread's attached notes
+only** and in the order code gave, with the same check as planning's Active
+Plots: an entry that is missing, out of order or empty is replaced by the thread's
+latest attached note, verbatim, and listed in `campaign_threads_report.md` (a
+heading the model added is discarded and listed there too). Each line keeps its
+`[ch NNN / target]` citation, and `annotate` scans these two sections like
+planning's Active Plots (the dormant and unratified blocks are skipped). The
+Resolved call is also told why each thread is closed, with the chapter the registry records (`the GM set it resolved at ch 4`);
+if no note in a thread's block shows the ending it says the notes in this range do not show how it
+ended, and never infers one. (A thread whose registry `resolved:` chapter lies after the range is open in it, not closed:
+that is `thread_attach`'s rule, shared with planning, and it lists the thread under Active Quests; only a latest note tagged
+`RESOLVED` or `ABANDONED` can still close it.) There are no word budgets,
+and the last chunk's evidence is no longer attached to Active Quests (Party
+Current Situation keeps it).
+
+With no ratified thread that has notes in the range, a section is one code line
+(`_No ratified thread has notes in this range._`; `_No ratified thread is open in
+this range._` and `_No ratified thread is resolved in this range._` when some do
+but none is open or closed) and makes **no model call**. **An absent or empty
+registry is not a refusal**, exactly as for planning: until you ratify threads
+(the [Threads page](state_projection_howto.md), then `summary_native thread-propose`),
+these sections are mostly the unratified pointer. A registry that fails
+`thread_registry check` is refused (exit 2) with the findings. There is no
+fallback to the old whole-ledger prompt.
+
+The registry is an input of the build: `state/runs/<stamp>/record.json` keeps
+`inputs.thread_registry_sha256` (null for an absent file), so a draft built from
+an older registry is distinguishable from one built from the current one; the
+per-section outcome (`resolved`, `open`, `dormant`, entries replaced, and the
+report lines) is under `record.threads`. The audit is unrelated: it reads the
+track files and the chapters, not the threads, so a registry edit does not make it
+stale. Files: `drafts/campaign_threads_report.md` (campaign_state's counterpart of
+`threads_report.md`), `drafts/reference/threads_unratified.md`, and
+`threads/attach.json` (the same map planning writes).
+
 ### `annotate` — evidence under a line, never a changed line
 
 Deterministic, no model. It re-runs the detectors over an existing draft and
@@ -812,7 +887,7 @@ docs/summary_native/ch002-070/
     notes/    manifest.json, chunkNN.*.{user,out}.md, chunkNN.*.checked.json, drops.md
     runs/<stamp>/record.json                     ← one per extract / synth / audit run, with the prompts
     audit/    items.json, audit.json, audit.md
-    threads/  attach.json (planning), propose.NN.{user,out}.md, propose_report.md (thread-propose)
+    threads/  attach.json (planning, campaign_state), propose.NN.{user,out}.md, propose_report.md (thread-propose)
     drafts/
       world_state.draft.md  campaign_state.draft.md   (*.incomplete.md if a section is missing)
       party.draft.md  planning.draft.md
@@ -820,6 +895,7 @@ docs/summary_native/ch002-070/
       reference/{factions,npcs,locations,items,threads,threats}.md   (party: reference/party.md)
       annotations.md, npc_status_report.md, key_npcs_report.md, budget_report.json
       party_report.md, planning_npcs_report.md, threads_report.md, arc_report.md
+      campaign_threads_report.md            (campaign_state's thread sections)
       budget_report.party.json, budget_report.planning.json
 ```
 
@@ -863,8 +939,8 @@ Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
 | `the party notes predate the subject grammar; run summary_native extract --since A --until B (it re-extracts every chunk)` | synth party, synth planning | Run the `extract` it names, once. See Step 6. |
 | `planning's NPC Dossiers need a published, verified dossier for each selected NPC; N of M have none: …` | synth planning | As world_state's Key NPCs above: run the four `npc-*` commands it lists, or `--fallback-npc-lines` for this run. A selected NPC can be one the notes never mention but `planning.yaml` tracks. |
 | `no dossier has subject: X (NPC Dossiers select the global NPCs only)` | synth planning (also world_state: Key NPCs) | A `--name` matched no global NPC, or named a player character. Check the spelling against the registry. |
-| `the thread registry docs/thread_registry.yaml fails thread_registry check; fix it first:` + the findings | synth planning, thread-propose | Run `thread_registry check`, fix what it lists. An *absent* registry is not an error. |
-| `cannot read the thread registry: …` / `cannot read the thread registry or the proposals file: …` | synth planning, thread-propose | The YAML will not load; fix the file. |
+| `the thread registry docs/thread_registry.yaml fails thread_registry check; fix it first:` + the findings | synth planning, synth campaign_state, thread-propose | Run `thread_registry check`, fix what it lists. An *absent* registry is not an error. |
+| `cannot read the thread registry: …` / `cannot read the thread registry or the proposals file: …` | synth planning, synth campaign_state, thread-propose | The YAML will not load; fix the file. |
 | `cannot read the entity registry or players.yaml: …` | synth, thread-propose | Fix the file named. |
 | `thread-propose needs --since and --until: the thread notes of a chapter range, never all chapters` | thread-propose | Give both. |
 | exit 3: `<label>: the model wrote no body` / `…wrote a heading (…)` / `…wrote a level line (…)` / `…wrote '#### Candidate Arc Score Events'; code places the checked candidates there` | synth party | Rerun with `--force`; the label names the section or `Characters: <name>`. The draft is `party.incomplete.md`. |
@@ -883,7 +959,8 @@ Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
 | `track file X: no such file` | audit | Check the path (relative paths resolve against the campaign root). |
 | `the track files hold no items (lines starting with `- `)` | audit | Items are `- ` lines. |
 | `no summaries for chapters A-B in <dir>` / corpus missing or stale (`run summary_native build`) | extract, audit | Build the corpus for this range. |
-| exit 3: `N chunk(s) failed after one retry: …` | extract | Rerun; only those chunks are redone. |
+| exit 3: `N chunk(s) failed (a call that failed twice, or an output missing outline sections, retried once): …` (and/or `N cached chunk(s) found incomplete, not called: …`) | extract | Rerun; only those chunks are redone. A `chunk A-B: output missing outline section(s) …` line before it names what the model skipped; if the same chunk keeps doing it, try another `--model` or a smaller `--chunk-chars`. |
+| exit 3: `chunk NN/MM ch A-B cached INCOMPLETE: …` (also with `--dump-only`) | extract | A saved output lacks a section. No call was made; rerun to extract just that chunk. |
 | exit 3: `N item(s) failed after one retry: …` | audit | Rerun; they are recorded `NOT JUDGED` until then. |
 | exit 3: `Incomplete: …/state/drafts/<doc>.incomplete.md` | synth | A section is missing; the file is never promotable. An earlier complete draft is kept. |
 | exit 4: `no chunk could be extracted: the backend could not be reached …` / `no item could be judged …` | extract, audit | The backend is unreachable; see `state/runs/<stamp>/record.json`. |
@@ -1083,7 +1160,13 @@ those names is a plot list. Thread identity is the GM's
    threads claim is *ambiguous*: reported, and the note stays unattached. Whether
    a thread is open is code's decision: a registry status of `dormant`,
    `resolved` or `abandoned` that you set wins; a status of `open` defers to the
-   latest attached note (open if its tag is `OPENED` or `ADVANCED`). One call
+   latest attached note (open if its tag is `OPENED` or `ADVANCED`). A build
+   describes the campaign as of its last chapter, so a thread you resolved or
+   abandoned *after* that chapter (the `resolved:` chapter `set-status
+   --chapter` records) is decided as if it were `open` in this range: a ch 2–30
+   build lists a thread resolved at ch 50 as open if its latest note is
+   `OPENED` or `ADVANCED` *(GM ruling, #530)*. A closed status with no chapter
+   stays closed. `threads_report.md` says which. One call
    writes the entries; a missing or bad one is replaced by the thread's latest
    attached note, verbatim.
 2. **`### Dormant threads`**: threads you marked `dormant` that have notes in the
@@ -1113,7 +1196,7 @@ and the last chunk.
 |---|---|
 | `drafts/planning.draft.md`, `drafts/reference/{factions,npcs,threads,threads_unratified}.md` | The document and the four reference files its reading contract names. `threads_unratified.md` holds the unattached thread notes verbatim (it exists, saying none, when there are none). |
 | `drafts/planning_npcs_report.md` | Per NPC: model line / substituted by the dossier's sentence / fallback; and the Faction States selection and replacements. |
-| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, the unattached count, and each Active Plots entry code replaced. |
+| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, ratified proposal members that no longer attach (alias removed?), split-off notes whose exclusion id is on no disk, the unattached count, and each Active Plots entry code replaced. |
 | `threads/attach.json` | Code's map: note id → thread id, `"ambiguous"` or `null`. |
 | `drafts/arc_report.md`, `budget_report.planning.json`, `annotations.md`, `missing_dossiers.planning.json` | As described here and in Step 5b. |
 
@@ -1150,23 +1233,49 @@ What it does, in order:
    output is not the JSON asked for becomes single-note proposals.
 4. The groups are merged into the proposals file (`projections.yaml`
    `thread_proposals`, default `docs/ensemble/thread_proposals.yaml`), keeping
-   every ruling by `key` (`g-` plus a hash of the member ids). It never writes the
-   registry.
+   every ruling by `key` (`g-` plus a hash of the member ids). A pending group the
+   run replaces keeps its out-of-range members: a member outside `--since`..`--until`
+   that no other proposal holds stays as a pending `single`, and the report and the
+   terminal name the replaced group and those singles. A kept single may name a note a
+   ratified thread now attaches (an alias added since the wide run); the next run whose
+   range covers it resolves that. A member whose id is in no range's checked notes on
+   disk is dropped from a replaced group and written out in full in the report; a
+   pending proposal none of whose notes is on disk is kept untouched and named in the
+   report and output every run (re-extract that range or reject it on the Threads
+   page); rulings are never touched. If a checked-notes file is unreadable the run
+   warns and judges nothing missing. It never writes the registry.
 
 It prints `threads: 120 notes — 40 attached to 12 ratified threads, 80 unattached
 → 21 group proposals (9 single), 3 dropped (see propose_report.md)` and writes
 `state/threads/propose.NN.{user,out}.md`, `propose_report.md` (what was dropped and
-why, stale rulings, ambiguous names) and a run record.
+why, replaced groups with notes outside the range, pending proposals with no note on
+disk, ratified
+members that no longer attach, stale rulings, ambiguous names) and a run record.
 
 **A proposal is a candidate the GM ratifies.** Grouping notes under one thread name
 is an identity assertion, and it is yours. On the [Threads page](state_projection_howto.md#grouping-proposals-from-summary-native)
 you edit the title, status, members and aliases before anything is written;
 there is no one-click accept. Ratifying adds the thread (or log rows on an existing
 one), and **every member's name becomes an alias**, so the next build attaches those
-notes by exact match. Reject, Defer and splitting are covered there. Two known
-gaps: a pending group that spans the edge of the range loses its out-of-range
-notes on the next run (#524), and notes left unattached after you remove an alias
-are neither re-proposed nor flagged (#525).
+notes by exact match. Reject, Defer and splitting are covered there. If you later
+remove one of those aliases, the notes it attached are unattached again: the next
+`thread-propose` offers them again as pending single-note proposals and lists them
+under "Ratified but no longer attached (alias removed?)" in `propose_report.md`
+(and `threads_report.md`).
+
+**Splitting a group.** Ratify a subset and the rest return to the queue as a new pending
+proposal. The notes you left out are recorded on the ratified thread as `excluded_notes`
+(`docs/thread_registry.yaml`, optional, no migration), and attachment honours that
+**before** the name, so a split-off note that shares a ratified member's bold name stays
+unattached and offered instead of being pulled back in. A ratified member the thread's names
+cannot attach (its name belongs to another thread, or you struck the alias) is pinned by id in
+`included_notes`, which is how a split-off note can be ruled into a different thread. Both lists
+are checked before any name. Ratifying an excluded note into the same thread lifts its exclusion;
+`ratify` refuses a name in `aliases_add` that only a left-out member carries. A re-extraction
+gives a note a new id, so an excluded or pinned id on no disk is named in `propose_report.md`,
+`threads_report.md` and `campaign_threads_report.md`, never removed, and notes held out by an
+exclusion are listed under "Held out of a thread by a split". See
+[Splitting a group](state_projection_howto.md#grouping-proposals-from-summary-native).
 
 ### Arc-score candidates
 
@@ -1189,11 +1298,15 @@ checks; every dropped line is listed in `arc_report.md` with its reason:
 |---|---|
 | `cite-not-in-notes` | A citation is missing, malformed, or not one of that subject's own checked notes' citations. |
 | `trigger not verbatim` | The quoted trigger (at least 4 characters) is not verbatim in the mechanic file, or the line names no trigger. |
-| `states a value` | The event text matches the value pattern (a score, total, points or "now at N", a threshold reached). |
+| `states a value` | The event text states a value, running total or threshold crossed: a score word with a number (`score of 5`, `a score of seven`), `now at N` / `is at N`, `pushes it to 5`, a signed delta (`Wrath +2`), a fraction (`(2/3)`), a count of strikes or ticks (`has 3 strikes`, `his third strike`), a meter filling, a threshold reached, or one of the mechanic file's own score names with a number (`gains 1 Obsession`). Ordinals (`3rd gate`), amounts with a unit (`500 gp`, `2 bells`) and street addresses (`3 Waterdeep Lane`) are not values. |
 
-A false drop costs only a candidate you can read in `arc_report.md`. The value
-check is an untuned pattern (#526): it can drop ordinary text and, worse, can miss
-a phrasing like "pushes it to 5", so read the candidates as candidates.
+A false drop costs only a candidate you can read in `arc_report.md`, so the value
+check errs towards dropping: it will drop some ordinary lines (a `+1 longsword`, "a
+total of 12 guards", `2/3 of the guards`, `3 strikes on the ogre`). It was tightened in #526 from a table of
+verdicts (`specs/034-chunked-party-planning/arc_value_check.md`) but has **not yet been
+measured on real campaign output**; read the kept candidates as candidates. Phrasings
+with no number or score word ("two more and he breaks", "doubles his Wrath") and Roman
+numerals can still pass; the spec lists the known gaps.
 
 ### Annotation for party and planning
 
@@ -1203,7 +1316,7 @@ For these documents it scans the model-written sections line by line, **prose
 paragraphs as well as bullets**. It skips what code built or what is not a claim:
 
 - the Threat Tracker and the NPC Dossiers;
-- Active Plots' `### Dormant threads` and `### Unratified thread notes` blocks;
+- Active Plots' (and campaign_state's Active Quests') `### Dormant threads` and `### Unratified thread notes` blocks;
 - the `#### Candidate Arc Score Events` subsection (triggers are quoted from the
   mechanic file, not a chapter);
 - the level line, the `_Full notes_` pointers and the labels.
@@ -1211,17 +1324,32 @@ paragraphs as well as bullets**. It skips what code built or what is not a claim
 Two things are **removed** (a rule, not a judgment, listed in `annotations.md`): a
 player character listed as a companion, and a Faction States block named for a
 player character. A line inside a real faction's block that merely mentions a
-player character is a claim and stays. Party Overview and Party Dynamics lines
-usually have no bold subject, so `⚠ later:` rarely fires on them (#527); the
-citation and quotation checks still run.
+player character is a claim and stays.
+
+**Subjects.** `⚠ later:` compares a line with the later notes about its subject: its
+first bold name, else the `###` group it sits under. Party Overview and Party
+Dynamics are free prose with neither, so a line there with no subject of its own is
+about the whole party and gets the subject `Party`, the same token a whole-party
+note carries (`- **Party** — fact [cite]`). It is compared with the later
+whole-party notes only: the newest one, when it is cited after the line, appears
+under it as `⚠ later: **Party** — … [ch NNN / …]`. A line with its own subject (a
+bold character, or a group) keeps it and is compared with that character's notes.
+An unbolded mention is never a subject (`The party holds **Brindol**.` still takes
+Brindol, the first bold name, and a standalone bold label line such as
+`**Where they are**` becomes a group), and a one-character note or a level row is
+not whole-party evidence. `Party` is resolved before the registry, so an entity
+aliased "Party" does not capture it. The implicit `Party` subject takes part in the stale check
+only: two subject-less lines in different sections are not paired by the
+cross-section check. The citation, quotation and mentioned-NPC checks run on every
+line as before.
 
 ### Incomplete drafts for these two documents
 
 Exit 3 and `<doc>.incomplete.md` also cover: `<label>: the model wrote no body`,
 `<label>: the model wrote a heading (...)`, `<label>: the model wrote a level line
 (...)`, and `<label>: the model wrote '#### Candidate Arc Score Events'`. A chunk
-that is missing one of its sections still passes the extraction check (#515), so a
-quiet section in `drops.md` is worth a look. Incremental rebuilds after a new
+that is missing one of its sections no longer passes the extraction check: it fails
+`extract` (exit 3, #515). Incremental rebuilds after a new
 session are tracked in #512.
 
 ---
@@ -1402,9 +1530,11 @@ proposals), read from `state/threads/attach.json` and the proposals file, with a
 link to the [Threads page](state_projection_howto.md#grouping-proposals-from-summary-native).
 The Drafts list includes `reference/party.md`, `party_report.md`,
 `planning_npcs_report.md`, `threads_report.md` and `arc_report.md`.
-Two gaps: the Annotate action is not surfaced for party, and party and planning
-have no word-budget panel (their budget reports are in the Drafts list); both
-are #528. `thread-propose` is run from the Threads page, not this one.
+Annotate (with its dry-run preview) and the **word-budget panel** follow the
+document picker for world_state, party and planning: the panel reads that
+document's last `budget_report*.json` (words against each section's budget,
+overruns flagged, nothing trimmed) and is absent until the document has been
+built. `thread-propose` is run from the Threads page, not this one.
 
 What it deliberately does **not** do: promote a draft, or edit `canon.yaml`.
 Those are judgment steps and stay by hand.
@@ -1428,7 +1558,7 @@ The page's Compare always diffs against `docs/<doc>.md`.
 | `0` | Success (`validate`/`build`: no blocking problem; `synth`: draft written or `--dump-only`; `compare`: done). |
 | `1` | `validate`, `build` or `synth` found **blocking** validation problems. The report was printed (`validate`/`build` also write it). |
 | `2` | A refusal (bad range, bad input, mixed corpus, existing output, stale corpus, bad flag/config) or an argparse usage error. Message on stderr, prefixed `Error:`. |
-| `3` | `synth` produced an incomplete document. `<doc>.incomplete.md` was written. |
+| `3` | `synth` produced an incomplete document (`<doc>.incomplete.md` was written), or `extract` left chunks failed (a call that failed twice, or an output missing outline sections). |
 | `4` | `synth` or `thread-propose`: the model call failed. See below. |
 
 | Message (abridged) | What to do |
@@ -1537,6 +1667,9 @@ summary_native synth campaign_state --summaries-dir docs/summaries
 (Omit `--track-file` to use `campaign_state.track_files` from `grounding.yaml`.)
 Anything in the tracking files that no summary supports comes back labelled
 `NOT FOUND IN SUMMARIES`.
+Its two thread sections come from the thread registry (6b ratifies the threads):
+build campaign_state again with `--force` after ratifying and they list the threads
+you ruled on instead of only the unratified pointer.
 
 **6b. party and planning (extract first).**
 

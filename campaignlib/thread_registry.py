@@ -66,10 +66,39 @@ def match_threads(data: dict, title: str) -> list[dict]:
     return found
 
 
+def _note_ids(thread: dict, field: str) -> list[str]:
+    raw = thread.get(field)
+    return [x for x in raw if isinstance(x, str)] if isinstance(raw, list) else []
+
+
+def excluded_notes(thread: dict) -> list[str]:
+    """The note ids the GM ruled are not this thread (``excluded_notes``, #529); ``[]`` when none.
+
+    Written by ``thread_registry ratify --key`` when a group is split: the notes left out of the ratified
+    subset. An attachment by name never overrides it. Optional and additive, so an older registry has none.
+    """
+    return _note_ids(thread, "excluded_notes")
+
+
+def included_notes(thread: dict) -> list[str]:
+    """The note ids pinned to this thread (``included_notes``, #529); ``[]`` when none.
+
+    Written by ``ratify --key`` for a ratified member whose name cannot attach it to the thread by name (the name
+    is another thread's, or this ratification did not make it an alias). A pinned id attaches to the thread by id,
+    before any name is compared. Optional and additive.
+    """
+    return _note_ids(thread, "included_notes")
+
+
 def match_thread(data: dict, title: str) -> dict | None:
     """Exact normalised title/alias match against the registry (the first, when several match)."""
     found = match_threads(data, title)
     return found[0] if found else None
+
+
+def _is_chapter(value) -> bool:
+    """A real chapter number: an int of at least 1 (a bool is not one)."""
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 1
 
 
 def check_registry(data: dict) -> list[str]:
@@ -86,8 +115,9 @@ def check_registry(data: dict) -> list[str]:
         if t.get("status") not in STATUSES:
             errors.append(f"{tid}: bad status {t.get('status')!r} "
                           f"(allowed: {', '.join(STATUSES)})")
-        if t.get("status") in ("resolved", "abandoned") and not t.get("resolved"):
-            errors.append(f"{tid}: status {t['status']} but no `resolved:` chapter")
+        if t.get("status") in ("resolved", "abandoned") and not _is_chapter(t.get("resolved")):
+            # A "50" or `true` would read as no chapter downstream and leave the thread closed in every range.
+            errors.append(f"{tid}: status {t['status']} but no real `resolved:` chapter ({t.get('resolved')!r})")
         for name in [t.get("title", "")] + list(t.get("aliases") or []):
             if not name:
                 continue
@@ -96,10 +126,24 @@ def check_registry(data: dict) -> list[str]:
                 errors.append(f"{tid}: title/alias {name!r} collides with "
                               f"thread {seen_norms[key]!r}")
             seen_norms[key] = tid
+        for field in ("excluded_notes", "included_notes"):
+            ids = t.get(field)
+            if ids is not None and (not isinstance(ids, list) or not all(isinstance(x, str) and x for x in ids)):
+                errors.append(f"{tid}: {field} must be a list of note ids ({ids!r})")
+        both = sorted(set(excluded_notes(t)) & set(included_notes(t)))
+        if both:
+            errors.append(f"{tid}: note(s) {', '.join(both)} are both in excluded_notes and included_notes")
         for row in t.get("log") or []:
             if row.get("change") not in CHANGES:
                 errors.append(f"{tid}: bad log change {row.get('change')!r}")
-            if not isinstance(row.get("chapter"), int) or row["chapter"] < 1:
+            if not _is_chapter(row.get("chapter")):
                 errors.append(f"{tid}: log row without a real chapter number "
                               f"({row.get('chapter')!r})")
+    pinned: dict[str, list[str]] = {}
+    for t in data["threads"]:
+        for nid in dict.fromkeys(included_notes(t)):
+            pinned.setdefault(nid, []).append(t.get("id") or "")
+    for nid, tids in sorted(pinned.items()):
+        if len(tids) > 1:
+            errors.append(f"note {nid} is pinned to threads {' and '.join(tids)} (included_notes): a note belongs to one thread")
     return errors
