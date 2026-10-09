@@ -15,7 +15,7 @@ The annotated line's text is never changed, and re-annotating replaces the old a
 instead of stacking new ones. Not scanned (FR-019): world_state's Key NPCs, which is fixed in the NPC
 dossiers, and the sections code builds from the checked notes, which carry their own handling of later
 evidence. For party and planning (spec 034) that also means the Threat Tracker, the NPC Dossiers, the
-dormant and unratified blocks of Active Plots, and the ``#### Candidate Arc Score Events`` subsection of a
+dormant and unratified blocks of Active Plots (and of campaign_state's Active Quests), and the ``#### Candidate Arc Score Events`` subsection of a
 character; their model-written sections are scanned line by line, paragraphs as well as bullets, and a
 player character listed in Faction States is removed like one listed as a companion. A line of party's
 Party Overview / Party Dynamics with no subject of its own is compared with the whole-party notes (#527). Guarded by ``tests/test_summary_native_no_llm.py`` and ``tests/test_annotate_never_rewrites.py``.
@@ -52,16 +52,19 @@ SKIP_SECTIONS = frozenset({
     "## Audit: Tracking Claims",
 })
 
-#: ``###`` blocks of planning's Active Plots that code builds from the notes verbatim (the dormant threads
-#: and the unratified thread notes): evidence, not claims, so never annotated (spec 034 FR-019).
+#: ``###`` blocks of planning's Active Plots (and campaign_state's Active Quests, #530) that code builds from
+#: the notes verbatim (the dormant threads and the unratified thread notes): evidence, not claims, so never
+#: annotated (spec 034 FR-019).
 SKIP_GROUPS = frozenset({schema.DORMANT_HEADING[4:], schema.UNRATIFIED_HEADING[4:]})
 
-#: The model-written sections of party and planning, whose prose is written as paragraphs as often as
-#: bullets: their column-0 prose lines are scanned like bullets (spec 034 FR-019). Code-built lines (the
-#: level line, the pointers, the labels) and the world_state / campaign_state sections are not.
+#: The model-written sections of party and planning, and campaign_state's two thread sections (#530), whose
+#: prose is written as paragraphs as often as bullets: their column-0 prose lines are scanned like bullets
+#: (spec 034 FR-019). Code-built lines (the level line, the pointers, the labels) and the other
+#: world_state / campaign_state sections are not.
 PROSE_SECTIONS = frozenset({
     "## Party Overview", "## Characters", "## Party Dynamics",
     "## Faction States", "## Active Plots", "## DM Notes",
+    "## Resolved Plot Threads", "## Active Quests & Open Threads",  # campaign_state's thread entries (#530)
 })
 
 #: Party's free-prose sections, which carry no ``###`` groups and rarely a bold name. A line there with no

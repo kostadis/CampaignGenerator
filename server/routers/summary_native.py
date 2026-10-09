@@ -195,6 +195,7 @@ def get_drafts(request: Request, since: int | None = None, until: int | None = N
         ("party_report", state_drafts / "party_report.md"),
         ("planning_npcs_report", state_drafts / "planning_npcs_report.md"),
         ("threads_report", state_drafts / "threads_report.md"),
+        ("campaign_threads_report", state_drafts / schema.CAMPAIGN_THREADS_REPORT_FILE),
         ("arc_report", state_drafts / "arc_report.md"),
         ("budget_report_party", state_drafts / schema.budget_report_file("party")),
         ("budget_report_planning", state_drafts / schema.budget_report_file("planning")),
@@ -297,8 +298,9 @@ def _audit_block(request: Request, run: SummaryNativeRun, lo: int, hi: int) -> d
 
 
 def _threads_block(request: Request, run: SummaryNativeRun, lo: int, hi: int) -> dict:
-    """The ratified-thread counts of the last planning build, from ``state/threads/attach.json`` and the
-    proposals file only: no model, no CLI, no summary parsing. ``present`` is false before a planning build."""
+    """The ratified-thread counts of the last build that read the thread registry (planning or campaign_state), from
+    ``state/threads/attach.json`` and the proposals file only: no model, no CLI, no summary parsing. ``present`` is false
+    before such a build."""
     range_dir = _range_dir(run, lo, hi)
     block: dict = {"present": False, "ratified_in_range": None, "open": None, "dormant": None,
                    "unattached": None, "ambiguous": None, "pending_groups": None}
@@ -359,7 +361,7 @@ def get_state(request: Request, since: int | None = None, until: int | None = No
         # the same for planning's NPC Dossiers (its own file: one document's refusal is not the other's)
         "planning_missing_dossiers": planning_missing.get("npcs") if isinstance(planning_missing, dict) else None,
         "planning_missing_dossiers_refused": bool(planning_missing.get("refused")) if isinstance(planning_missing, dict) else False,
-        # {present, ratified_in_range, open, dormant, unattached, ambiguous, pending_groups} from the last planning build
+        # {present, ratified_in_range, open, dormant, unattached, ambiguous, pending_groups} from the last build that read the thread registry
         "threads": _threads_block(request, run, lo, hi),
     }
 

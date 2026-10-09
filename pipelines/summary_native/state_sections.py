@@ -309,8 +309,10 @@ def npc_status_table(
 # ── Which notes go to which prose section (research R8) ─────────────────────
 
 #: ``doc -> ((heading, route, attach the last chunk's summaries), ...)`` in outline order. A route is
-#: ``party``, ``threads`` or a World tag. Code routes the notes; the model never chooses its inputs.
+#: ``party`` or a World tag. Code routes the notes; the model never chooses its inputs.
 #: world_state's ``## Key NPCs`` is not here: it is rendered from the published dossiers (``key_npcs``).
+#: Neither are campaign_state's two thread sections: they are built from the GM's thread registry
+#: (``thread_attach``, ``resolved_threads_md`` / ``active_plots_md``), like planning's Active Plots.
 PROSE_SECTIONS: dict[str, tuple[tuple[str, str, bool], ...]] = {
     "world_state": (
         ("## Party", "party", True),
@@ -320,8 +322,6 @@ PROSE_SECTIONS: dict[str, tuple[tuple[str, str, bool], ...]] = {
         ("## Active Threats and Open Pressures", "THREAT", False),
     ),
     "campaign_state": (
-        ("## Resolved Plot Threads", "threads", False),
-        ("## Active Quests & Open Threads", "threads", True),
         ("## Party Current Situation", "party", True),
     ),
 }
@@ -346,8 +346,9 @@ BRIEFS: dict[str, str] = {
     "## Locations": "Places as they stand NOW: what each is, who controls it, what the party did there and left unresolved.",
     "## Items and Artifacts": "Significant items NOW: what each does, who holds it, open questions about it.",
     "## Active Threats and Open Pressures": "What is pressing on the party NOW and from whom. Only things the notes do not show resolved.",
-    "## Resolved Plot Threads": "Every thread the notes show RESOLVED or ABANDONED: one bullet each, saying how it ended, citing the resolution.",
-    "## Active Quests & Open Threads": "Every thread OPENED or ADVANCED whose resolution the notes do not show. One bullet each with its latest state. If it is listed, it is unfinished.",
+    # campaign_state's thread sections (#530): one call each, one entry per thread code gives it
+    "## Resolved Plot Threads": "Each thread's entry: how it ended, citing the resolution. Every thread you are given has ended (the GM marked it resolved or abandoned, or its latest note says so), but if no note in its block shows the ending, say the notes in this range do not show how it ended: never infer one. Use only that thread's own notes.",
+    "## Active Quests & Open Threads": "Each thread's entry as it stands NOW: its latest state, what the party did, what is unresolved. Every thread you are given is unfinished. Use only that thread's own notes.",
     "## Party Current Situation": "Where the party is, what they just did, and what they are about to face, at the very end of the range.",
     # planning (spec 034): one call each; NPC Dossiers has its own system prompt and prompt builder (key_npcs)
     "## Faction States": "Each faction's entry as it stands NOW: goals, leaders, relationship to the party, last known move. Use only that faction's own notes.",
@@ -364,8 +365,6 @@ def route_notes(route: str, results: Sequence[notes.CheckedChunk]) -> list[str]:
     """The checked notes one prose section may see."""
     if route == "party":
         return notes.stitched(results, "party")
-    if route == "threads":
-        return notes.thread_ledger(results)
     return notes.stitched(results, "world", route)
 
 
@@ -592,6 +591,8 @@ def note_tail(note) -> str:
 
 @dataclass
 class ActivePlots:
+    """A thread section as code assembled it: planning's Active Plots, or one of campaign_state's two (#530)."""
+
     text: str
     #: One line per entry replaced by code.
     report: list
@@ -611,43 +612,36 @@ def unratified_reference_md(att: "thread_attach.Attachment") -> str:
     return "\n".join(lines) + "\n"
 
 
-def active_plots_md(
-    att: "thread_attach.Attachment", bodies: Mapping[str, str | None], reasons: Mapping[str, str] | None = None,
-) -> ActivePlots:
-    """``## Active Plots`` as its three layers (data-model "Active Plots section"), assembled by code.
+def _thread_entries(
+    threads: Sequence["thread_attach.ThreadState"], bodies: Mapping[str, str | None], reasons: Mapping[str, str],
+    report: list[str], kept: list[str],
+) -> str:
+    """One ``### title`` entry per thread, in the order given. A thread whose body is missing is its latest
+    attached note, verbatim, and is reported; a body the model wrote is kept and counted."""
+    entries = []
+    for s in threads:
+        body = bodies.get(s.id)
+        if body is None or not body.strip():
+            body = s.latest.text
+            report.append(
+                f"- {s.title}: the latest attached note replaces the model's entry ({reasons.get(s.id, 'no usable entry')})")
+        else:
+            body = body.strip()
+            kept.append(body)
+        entries.append(f"### {s.title}\n{body}\n")
+    return "\n".join(entries).rstrip("\n")
 
-    ``bodies`` maps a thread id to the body the model wrote for it (``None`` or empty: it wrote none).
-    Entries are the *open* ratified threads, newest activity first, as ``att`` orders them; an entry whose
-    body is missing is the thread's latest attached note, verbatim. Then ``### Dormant threads`` (only if
-    a thread is dormant), each as its title and latest note, verbatim, built without a model; then the
-    unratified block (the count and two pointers; the notes are in ``reference/threads_unratified.md``,
-    see ``unratified_reference_md``). With no open thread the ratified part is
-    one code line: ``NO_RATIFIED_THREADS`` when no ratified thread has notes at all, ``NO_OPEN_THREADS``
-    when some have but none is open.
-    """
-    reasons = reasons or {}
-    parts: list[str] = []
-    report: list[str] = []
-    kept: list[str] = []
-    open_threads = att.open_threads
-    if open_threads:
-        entries = []
-        for s in open_threads:
-            body = bodies.get(s.id)
-            if body is None or not body.strip():
-                body = s.latest.text
-                report.append(
-                    f"- {s.title}: the latest attached note replaces the model's entry ({reasons.get(s.id, 'no usable entry')})")
-            else:
-                body = body.strip()
-                kept.append(body)
-            entries.append(f"### {s.title}\n{body}\n")
-        parts.append("\n".join(entries).rstrip("\n"))
-    else:
-        parts.append(schema.NO_RATIFIED_THREADS if not att.threads else schema.NO_OPEN_THREADS)
+
+def _dormant_block(att: "thread_attach.Attachment") -> str | None:
+    """``### Dormant threads``: each dormant thread as its title and latest note, verbatim, built without a model."""
     dormant = att.dormant_threads
-    if dormant:
-        parts.append("\n".join([schema.DORMANT_HEADING, *(f"- **{s.title}** — {note_tail(s.latest)}" for s in dormant)]))
+    if not dormant:
+        return None
+    return "\n".join([schema.DORMANT_HEADING, *(f"- **{s.title}** — {note_tail(s.latest)}" for s in dormant)])
+
+
+def _unratified_block(att: "thread_attach.Attachment") -> str:
+    """The count of unattached thread notes and two pointers; the notes are in ``reference/threads_unratified.md``."""
     n = len(att.unattached)
     head = [
         schema.UNRATIFIED_HEADING,
@@ -661,5 +655,56 @@ def active_plots_md(
         head.append(
             f"_{k} thread name{'s' if k != 1 else ''} below {'are' if k != 1 else 'is'} claimed by more than one "
             f"ratified thread and stay unattached: {', '.join(sorted(att.ambiguous))}._")
-    parts.append("\n".join(head))
+    return "\n".join(head)
+
+
+def active_plots_md(
+    att: "thread_attach.Attachment", bodies: Mapping[str, str | None], reasons: Mapping[str, str] | None = None,
+) -> ActivePlots:
+    """``## Active Plots`` as its three layers (data-model "Active Plots section"), assembled by code.
+
+    ``bodies`` maps a thread id to the body the model wrote for it (``None`` or empty: it wrote none).
+    Entries are the *open* ratified threads, newest activity first, as ``att`` orders them; an entry whose
+    body is missing is the thread's latest attached note, verbatim. Then ``### Dormant threads`` (only if
+    a thread is dormant), each as its title and latest note, verbatim, built without a model; then the
+    unratified block (the count and two pointers; the notes are in ``reference/threads_unratified.md``,
+    see ``unratified_reference_md``). With no open thread the ratified part is
+    one code line: ``NO_RATIFIED_THREADS`` when no ratified thread has notes at all, ``NO_OPEN_THREADS``
+    when some have but none is open.
+
+    campaign_state's ``## Active Quests & Open Threads`` is this same body (#530): the open ratified threads,
+    the dormant block and the unratified pointer.
+    """
+    reasons = reasons or {}
+    report: list[str] = []
+    kept: list[str] = []
+    open_threads = att.open_threads
+    parts = [_thread_entries(open_threads, bodies, reasons, report, kept) if open_threads else
+             (schema.NO_RATIFIED_THREADS if not att.threads else schema.NO_OPEN_THREADS)]
+    if (dormant := _dormant_block(att)) is not None:
+        parts.append(dormant)
+    parts.append(_unratified_block(att))
     return ActivePlots("\n\n".join(parts), report, len(report), len(kept), "\n".join(kept))
+
+
+def resolved_threads_md(
+    att: "thread_attach.Attachment", bodies: Mapping[str, str | None], reasons: Mapping[str, str] | None = None,
+) -> ActivePlots:
+    """campaign_state's ``## Resolved Plot Threads``: the ratified threads that are closed (#530).
+
+    A thread is closed when the GM set it ``resolved`` or ``abandoned`` in the registry, or when its status is
+    ``open`` and its latest attached note is tagged ``RESOLVED`` or ``ABANDONED`` (``Attachment.closed_threads``).
+    Entries are written like Active Plots': one per thread, newest activity first, the model's body or, when it
+    is missing, the thread's latest attached note verbatim. A dormant thread is neither open nor closed and is
+    listed only in Active Quests' dormant block. With no closed thread the body is one code line:
+    ``NO_RATIFIED_THREADS`` when no ratified thread has notes at all, ``NO_RESOLVED_THREADS`` when some have.
+    """
+    reasons = reasons or {}
+    report: list[str] = []
+    kept: list[str] = []
+    closed = att.closed_threads
+    if not closed:
+        text = schema.NO_RATIFIED_THREADS if not att.threads else schema.NO_RESOLVED_THREADS
+        return ActivePlots(text, report, 0, 0, "")
+    text = _thread_entries(closed, bodies, reasons, report, kept)
+    return ActivePlots(text, report, len(report), len(kept), "\n".join(kept))

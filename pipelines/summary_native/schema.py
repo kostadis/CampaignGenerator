@@ -236,6 +236,8 @@ LEVEL_TAG = "LEVEL"
 NO_RATIFIED_THREADS = "_No ratified thread has notes in this range._"
 #: Active Plots, when ratified threads have notes in the range but none of them is open.
 NO_OPEN_THREADS = "_No ratified thread is open in this range._"
+#: campaign_state's Resolved Plot Threads, when ratified threads have notes in the range but none of them is closed.
+NO_RESOLVED_THREADS = "_No ratified thread is resolved in this range._"
 #: Faction States, when no faction is configured and none has notes in the range.
 NO_FACTIONS = "_No faction is configured or has notes in this range._"
 #: Where a party character's checked arc-score candidates go, inside that character's section. Code places
@@ -245,6 +247,8 @@ ARC_HEADING = "#### Candidate Arc Score Events"
 ARC_CALL_SECTION = "## Candidate Arc Score Events"
 DORMANT_HEADING = "### Dormant threads"
 UNRATIFIED_HEADING = "### Unratified thread notes (not yet ruled on)"
+#: campaign_state's account of its thread sections (planning's is ``threads_report.md``), beside the drafts.
+CAMPAIGN_THREADS_REPORT_FILE = "campaign_threads_report.md"
 #: Printed under DM Notes by code, so the section cannot be read as events.
 DM_NOTES_LABEL = "_Suggestions for the GM, not events._"
 #: Everything 033 writes lives under ``<range_dir>/state/``.
