@@ -929,13 +929,14 @@ def test_drafts_lists_the_party_and_planning_reports(campaign):
     root, _, _ = campaign
     dd = _state_dir(root) / "drafts"
     (dd / "reference").mkdir(parents=True)
-    for name in ("party_report.md", "planning_npcs_report.md", "threads_report.md", "arc_report.md"):
+    for name in ("party_report.md", "planning_npcs_report.md", "threads_report.md", "arc_report.md",
+                 "campaign_threads_report.md"):
         (dd / name).write_text("r")
     (dd / "reference" / "party.md").write_text("r")
     (dd / "budget_report.planning.json").write_text("{}")
     rows = {x["doc"]: x for x in client.get(f"{BASE}/drafts", params={"since": 3, "until": 9}).json()}
     assert set(rows) == {"party_report", "planning_npcs_report", "threads_report", "arc_report", "reference/party",
-                         "budget_report_planning"}
+                         "budget_report_planning", "campaign_threads_report"}
     assert rows["reference/party"]["path"].endswith("state/drafts/reference/party.md")
 
 

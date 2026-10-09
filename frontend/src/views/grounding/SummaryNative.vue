@@ -208,7 +208,7 @@ interface Report {
 }
 interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete' | 'report'; bytes: number }
 interface ExtractChunk { index: number; chapters: string; status: string; kept: number; dropped: number; outlier: boolean }
-// The ratified-thread counts of the last planning build (read by the server from state/threads/attach.json).
+// The ratified-thread counts of the last build that read the thread registry (read by the server from state/threads/attach.json).
 interface ThreadCounts {
   present: boolean; ratified_in_range: number | null; open: number | null; dormant: number | null
   unattached: number | null; ambiguous: number | null; pending_groups: number | null
@@ -591,6 +591,12 @@ onMounted(async () => {
           <template v-if="doc === 'world_state'">
             Key NPCs are rendered from the published NPC dossiers: the build refuses when a selected NPC has none.
           </template>
+          <template v-if="doc === 'campaign_state'">
+            Resolved Plot Threads and Active Quests &amp; Open Threads are built from the threads the GM has ratified
+            (<RouterLink to="/grounding/threads">Threads page</RouterLink>): code decides which threads are closed or open, in
+            what order, and lists the dormant and unratified ones; the model writes one entry per thread from that thread&rsquo;s own notes.
+            Until threads are ratified these sections say so and point to the unratified notes.
+          </template>
           <template v-if="doc === 'planning'">
             Code builds the Threat Tracker, picks the NPCs and factions, orders Active Plots by the ratified threads and lists the
             unratified thread notes verbatim. NPC Dossiers are rendered from the published NPC dossiers: the build refuses when a
@@ -676,7 +682,7 @@ onMounted(async () => {
         </div>
         <div v-if="doc === 'planning'" class="panel threads">
           <div class="counts">
-            <span>Ratified threads (last planning build)</span>
+            <span>Ratified threads (last build that read the thread registry)</span>
             <template v-if="threadCounts?.present">
               <span data-test="thread-in-range">{{ threadCounts.ratified_in_range }} with notes in range</span>
               <span data-test="thread-open">{{ threadCounts.open }} open</span>
