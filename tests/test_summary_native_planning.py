@@ -796,6 +796,28 @@ class TestSynthPlanning:
         assert att["kind"] == "thread_attach" and att["counts"]["unattached"] == 0 and "carver-march" in att["threads"]
         assert "# Threads report" in (drafts(root) / "threads_report.md").read_text()
 
+    def test_threads_report_lists_ratified_members_that_no_longer_attach(self, pcamp):
+        """#525: the same line `thread-propose` writes, from the proposals file the planning build only reads."""
+        root, _ = pcamp
+        _, results = notes.load_checked(cp.range_dir(root))
+        member = next(n for n in thread_attach.attach(results, None).notes if n.subject == "Carver march")
+        proposals = root / "docs" / "ensemble" / "thread_proposals.yaml"
+        proposals.parent.mkdir(parents=True, exist_ok=True)
+        entry = {"key": "g-aaaaaaaaaaaa", "kind": "new", "title": "The Carver's march", "status": "ratified",
+                 "ruled_thread": "carver-march", "members": [{"id": member.note_id, "chapter": member.first_chapter}]}
+        proposals.write_text(yaml.safe_dump({"proposals": [entry]}), encoding="utf-8")
+        write_registry(root, registry(CARVER))  # the alias is there: attached, nothing to report
+        assert synth_planning(root)[0] == 0
+        rep = (drafts(root) / "threads_report.md").read_text(encoding="utf-8")
+        assert "## Ratified but no longer attached (alias removed?)\n\n- (none)" in rep
+        write_registry(root, registry(thread("carver-march", "The Carver's march")))  # the GM removed it
+        assert synth_planning(root, "--force")[0] == 0
+        rep = (drafts(root) / "threads_report.md").read_text(encoding="utf-8")
+        line = rep.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
+        assert member.note_id in line and "ratified but no longer attached (alias removed?)" in line and "g-aaaaaaaaaaaa" in line
+        assert "thread-propose" in line  # no pending proposal yet: it says how to get one
+        assert yaml.safe_load(proposals.read_text(encoding="utf-8"))["proposals"] == [entry]  # read-only
+
     def test_the_run_record_has_the_registry_the_config_files_and_the_budgets(self, pcamp):
         root, _ = pcamp
         assert synth_planning(root)[0] == 0

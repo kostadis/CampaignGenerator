@@ -1113,7 +1113,7 @@ and the last chunk.
 |---|---|
 | `drafts/planning.draft.md`, `drafts/reference/{factions,npcs,threads,threads_unratified}.md` | The document and the four reference files its reading contract names. `threads_unratified.md` holds the unattached thread notes verbatim (it exists, saying none, when there are none). |
 | `drafts/planning_npcs_report.md` | Per NPC: model line / substituted by the dossier's sentence / fallback; and the Faction States selection and replacements. |
-| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, the unattached count, and each Active Plots entry code replaced. |
+| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, ratified proposal members that no longer attach (alias removed?), the unattached count, and each Active Plots entry code replaced. |
 | `threads/attach.json` | Code's map: note id → thread id, `"ambiguous"` or `null`. |
 | `drafts/arc_report.md`, `budget_report.planning.json`, `annotations.md`, `missing_dossiers.planning.json` | As described here and in Step 5b. |
 
@@ -1166,17 +1166,19 @@ It prints `threads: 120 notes — 40 attached to 12 ratified threads, 80 unattac
 → 21 group proposals (9 single), 3 dropped (see propose_report.md)` and writes
 `state/threads/propose.NN.{user,out}.md`, `propose_report.md` (what was dropped and
 why, replaced groups with notes outside the range, pending proposals with no note on
-disk, stale
-rulings, ambiguous names) and a run record.
+disk, ratified
+members that no longer attach, stale rulings, ambiguous names) and a run record.
 
 **A proposal is a candidate the GM ratifies.** Grouping notes under one thread name
 is an identity assertion, and it is yours. On the [Threads page](state_projection_howto.md#grouping-proposals-from-summary-native)
 you edit the title, status, members and aliases before anything is written;
 there is no one-click accept. Ratifying adds the thread (or log rows on an existing
 one), and **every member's name becomes an alias**, so the next build attaches those
-notes by exact match. Reject, Defer and splitting are covered there. One known
-gap: notes left unattached after you remove an alias are neither re-proposed nor
-flagged (#525).
+notes by exact match. Reject, Defer and splitting are covered there. If you later
+remove one of those aliases, the notes it attached are unattached again: the next
+`thread-propose` offers them again as pending single-note proposals and lists them
+under "Ratified but no longer attached (alias removed?)" in `propose_report.md`
+(and `threads_report.md`).
 
 ### Arc-score candidates
 

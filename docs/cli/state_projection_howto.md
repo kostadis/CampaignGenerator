@@ -518,8 +518,23 @@ moved or deleted) is **kept untouched** and named in the report and the output o
 every run — "none of its notes is in any range's notes on disk … re-extract that
 range or reject it on the Threads page". If any checked-notes file cannot be read,
 the run warns, names the file in the report, and judges nothing missing.
-Known gap: notes left unattached after you remove an alias are
-neither re-proposed nor flagged (#525).
+
+**An alias you removed after ratifying.** Ratifying adds every member's name as an
+alias; if you later remove one (by hand or with `thread_registry alias`), the notes
+that name attached are unattached again. `thread-propose` compares each ratified
+group's members with this run's attachment. A member whose note is in the run but
+attaches to no thread is not sent to the model; it is offered again, by code, as a
+pending one-note `single` proposal, so it is back on the Threads page. The
+ratified entry stays in the file as it was. `propose_report.md` (and the run's
+output) lists it under "Ratified but no longer attached (alias removed?)" with the
+group it came from and the pending proposal it is in; `threads_report.md`, written
+by `synth planning`, carries the same section (it only reads the proposals file, so
+until the next `thread-propose` it says to run it). A re-offered note whose
+proposal you reject or defer is not offered again. If you put the alias back, the
+note attaches again, the pending single leaves the queue, and the report says
+"pending proposal g-… (title): now attached to <thread>; dropped from the queue".
+A ratified member outside the run's range cannot be judged by that run and is left
+alone.
 
 ### A thread you accepted keeps coming back — on purpose
 

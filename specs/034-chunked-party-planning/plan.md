@@ -207,7 +207,7 @@ No constitution violations to justify.
 - **#530:** campaign_state's thread sections read the thread registry once OOTA's registry is ratified, replacing the model reading the whole ledger.
 - **Thread proposals:**
   - **#524:** a pending group spanning the range edge loses its out-of-range notes.
-  - **#525:** removing an alias leaves notes unattached and unflagged.
+  - **#525 (done):** a ratified member left unattached by a removed alias is reported ("ratified but no longer attached (alias removed?)") and offered again as a pending single.
   - **#529:** a split-off note that shares a ratified name attaches anyway.
 - **#526:** the arc-score "states a value" check is an untuned regex. Tightened with a verdict table (`arc_value_check.md`); measuring it on real Out of the Abyss output is still open.
 - **#527 (done):** subject-less prose in Party Overview and Dynamics now takes the `Party` subject and is stale-checked against the whole-party notes; it is not paired by the cross-section check.

@@ -97,7 +97,7 @@ docs/ensemble/thread_proposals.yaml          # existing path (projections.yaml t
 **State transitions:**
 - `pending` → (GM `ratify --key K --plan P`) → `ratified`. The registry gains the thread or log rows plus aliases. When P covers a subset of the members, the remainder becomes a new `pending` group (split).
 - `pending` → (GM `rule --key K --status rejected|deferred`) → `rejected`/`deferred`. These are one-way doors, as today.
-- A ratified group whose member ids no longer exist after re-extraction is listed as **stale** in `propose_report.md`. Its aliases keep attaching any note that repeats a name.
+- A ratified group whose member ids no longer exist after re-extraction is listed as **stale** in `propose_report.md`. Its aliases keep attaching any note that repeats a name. A ratified member whose note exists but attaches to no thread (an alias was removed) is listed under "Ratified but no longer attached (alias removed?)" in `propose_report.md` and `threads_report.md` and offered again as a pending `single`.
 
 ### Planning NPC entry
 | Part | Built by |
