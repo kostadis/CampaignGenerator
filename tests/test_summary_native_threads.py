@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 import yaml
 
+from campaignlib.thread_registry import group_key
 from pipelines.summary_native import notes, schema, thread_attach, thread_check, thread_propose
 from tests import conftest_party as cp
 from tests import conftest_state as cs
@@ -199,6 +200,10 @@ def new(title: str, *members) -> dict:
 
 def cont(thread: str, *members) -> dict:
     return {"kind": "continues", "thread": thread, "members": list(members)}
+
+
+def _ids(entry) -> list[str]:
+    return [m["id"] for m in entry["members"]]
 
 
 def member_ids(groups) -> list[str]:
@@ -413,6 +418,98 @@ class TestMergeProposals:
         p.write_text(yaml.safe_dump({"proposals": [stale]}), encoding="utf-8")
         thread_check.merge_proposals(p, [], "src", scope_ids={"n-nowattached"})
         assert yaml.safe_load(p.read_text(encoding="utf-8"))["proposals"] == []
+
+    # ── #524: a replaced group never orphans a note outside the run's range ──
+
+    def pending(self, key, title, *members, source="old run"):
+        return {"key": key, "kind": "new", "title": title, "status": "pending", "source": source,
+                "members": [dict(m) if isinstance(m, dict) else {"id": m} for m in members]}
+
+    def proposals_of(self, p):
+        return yaml.safe_load(p.read_text(encoding="utf-8"))["proposals"]
+
+    def test_out_of_range_members_of_a_replaced_group_are_kept_as_pending_singles(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        far = {"id": "n-far0000000", "chapter": 60, "tag": "OPENED", "name": "Far", "text": "far one", "cite": "[ch 060 / 060.01]"}
+        g = self.pending("g-111111111111", "Spans the edge", far, {"id": IDS[0], "chapter": 2})
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(
+            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS), chapter_range=(2, 4))
+        ps = self.proposals_of(p)
+        assert "g-111111111111" not in {e["key"] for e in ps}
+        (single,) = [e for e in ps if far["id"] in _ids(e)]
+        assert single["kind"] == "single" and single["status"] == "pending" and single["members"] == [far]
+        assert single["key"] == group_key([far["id"]]) and single["title"] == "Far"
+        assert single["source"] == "old run"  # provenance of the earlier run is not rewritten
+        assert stats["replaced"] == 1
+        assert stats["kept_out_of_range"] == [{"key": "g-111111111111", "title": "Spans the edge", "members": [far]}]
+
+    def test_a_member_ruled_elsewhere_or_covered_by_another_entry_is_not_duplicated(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", "n-far0000001", "n-far0000002", IDS[0])
+        ruled = {"key": "g-333333333333", "kind": "single", "status": "rejected", "members": [{"id": "n-far0000001"}]}
+        p.write_text(yaml.safe_dump({"proposals": [g, ruled]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS))
+        ps = self.proposals_of(p)
+        assert [e for e in ps if "n-far0000001" in _ids(e)] == [ruled]
+        assert sum("n-far0000002" in _ids(e) for e in ps) == 1
+        assert [m["id"] for r in stats["kept_out_of_range"] for m in r["members"]] == ["n-far0000002"]
+
+    def test_a_member_in_range_that_no_longer_exists_is_dropped_and_reported(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", {"id": "n-vanished00", "chapter": 3}, {"id": IDS[0], "chapter": 2},
+                         {"id": "n-far0000000", "chapter": 60})
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        stats = thread_check.merge_proposals(
+            p, self.groups(new("Alpha", IDS[0], IDS[1])), "src", scope_ids=set(IDS), chapter_range=(2, 4))
+        ids = {i for e in self.proposals_of(p) for i in _ids(e)}
+        assert "n-vanished00" not in ids and "n-far0000000" in ids
+        assert stats["gone"] == [{"key": "g-111111111111", "title": "Spans", "ids": ["n-vanished00"]}]
+
+    def test_merging_after_a_narrower_run_is_a_fixed_point_and_the_wider_run_regroups_the_singles(self, tmp_path):
+        p = tmp_path / "t.yaml"
+        g = self.pending("g-111111111111", "Spans", "n-far0000000", IDS[0])
+        p.write_text(yaml.safe_dump({"proposals": [g]}), encoding="utf-8")
+        gs = self.groups(new("Alpha", IDS[0], IDS[1]))
+        thread_check.merge_proposals(p, gs, "src", scope_ids=set(IDS))
+        first = p.read_bytes()
+        thread_check.merge_proposals(p, gs, "src", scope_ids=set(IDS))
+        assert p.read_bytes() == first
+        # the wider run now has the far note in scope: its single is replaced by whatever that run proposes
+        wide = set(IDS) | {"n-far0000000"}
+        thread_check.merge_proposals(p, [], "src", scope_ids=wide)
+        assert not any("n-far0000000" in _ids(e) for e in self.proposals_of(p))
+
+    def test_invariant_no_pending_note_leaves_the_queue_whatever_the_ranges(self, tmp_path):
+        """Every note in a pending proposal before a run is in some proposal after it, or attached."""
+        p = tmp_path / "t.yaml"
+        wide = [f"n-{i:010x}" for i in range(12)]
+        chapter = {nid: 50 + i for i, nid in enumerate(wide)}
+
+        def member(nid):
+            return {"id": nid, "chapter": chapter[nid], "tag": "OPENED", "name": nid, "text": nid, "cite": ""}
+
+        def grouped(*ids):
+            return {"key": group_key(ids), "kind": "new", "title": "G " + ids[0], "members": [member(i) for i in ids]}
+
+        first = [grouped(*wide[0:4]), grouped(*wide[4:8]), grouped(*wide[8:12])]
+        thread_check.merge_proposals(p, first, "wide", scope_ids=set(wide))
+        queue = {i for e in self.proposals_of(p) for i in _ids(e)}
+        assert queue == set(wide)
+        # a sequence of narrower, overlapping runs; like thread-propose, each proposes every unattached note
+        # of its scope (one group, the rest singles), and one note becomes attached to a ratified thread
+        runs = [(wide[3:6], wide[4:6]), (wide[6:10], wide[7:9]), (wide[0:3], wide[0:3]), (wide[2:9], wide[2:9])]
+        attached_now = {wide[8]}
+        for scope, regroup in runs:
+            before = {i for e in self.proposals_of(p) for i in _ids(e)}
+            offered = [n for n in scope if n not in attached_now]
+            group = [i for i in regroup if i in offered]
+            gs = ([grouped(*group)] if len(group) > 1 else []) + [
+                grouped(i) for i in offered if i not in group or len(group) < 2]
+            thread_check.merge_proposals(p, gs, "narrow", scope_ids=set(scope), chapter_range=None)
+            after = {i for e in self.proposals_of(p) for i in _ids(e)}
+            assert before - after <= attached_now, f"orphaned {sorted((before - after) - attached_now)}"
+            assert len([i for e in self.proposals_of(p) for i in _ids(e)]) == len(after)  # and none twice
 
     def test_merging_twice_is_a_fixed_point(self, tmp_path):
         p = tmp_path / "t.yaml"
@@ -677,6 +774,34 @@ class TestThreadPropose:
         assert len(ps) == 5 and {p["kind"] for p in ps} == {"single"}
         report = (threads_dir(root) / "propose_report.md").read_text(encoding="utf-8")
         assert "batch 1" in report and "not valid" in report.lower()
+
+    def test_a_narrower_overlapping_range_keeps_the_out_of_range_notes_of_a_replaced_group(self, tcamp):
+        """#524: ch002-004 groups the Carver notes; a later ch003-004 run must not lose the ch002 one."""
+        root, tm = tcamp
+        empty_registry(root)
+        assert propose(root)[0] == 0
+        carver = next(p for p in proposals(root) if p["title"] == "The Carver's march")
+        assert [m["chapter"] for m in carver["members"]] == [2, 3, 4]
+        before = {m["id"] for p in proposals(root) for m in p["members"]}
+
+        narrow = ["--config", str(root / "config" / "config.yaml"), "--summaries-dir", str(root / "docs" / "summaries"),
+                  "--since", "3", "--until", "4"]
+        assert cs.run_cli(["build", *narrow])[0] == 0
+        rc, out, err = cs.run_cli(["extract", *narrow[:-4], "--since", "3", "--until", "4", "--chunk-chars", "1", *BACKEND])
+        assert rc == 0, out + err
+        rc, out, err = cs.run_cli(["thread-propose", *narrow, *BACKEND])
+        assert rc == 0, out + err
+
+        ps = proposals(root)
+        after = {m["id"] for p in ps for m in p["members"]}
+        assert before <= after  # nothing that was queued left the queue
+        assert carver["key"] not in {p["key"] for p in ps}  # the group was replaced...
+        (kept,) = [p for p in ps if p["members"][0]["chapter"] == 2 and p["members"][0]["name"] == "The Carver's march"]
+        assert kept["kind"] == "single" and kept["status"] == "pending"  # ...and its ch002 member survives
+        # the run says so, in the report and on the terminal
+        report = (cp.range_dir(root).parent / "ch003-004" / "state" / "threads" / "propose_report.md").read_text(encoding="utf-8")
+        assert carver["key"] in report and kept["members"][0]["id"] in report and "outside the run's range" in report
+        assert carver["key"] in out and kept["members"][0]["id"] in out
 
     def test_a_model_failure_exits_4_and_writes_no_proposal(self, tcamp):
         root, tm = tcamp

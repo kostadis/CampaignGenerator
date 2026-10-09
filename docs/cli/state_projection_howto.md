@@ -499,9 +499,16 @@ The name-keyed harvest and the group proposals share one proposals file
 (`stores.thread_proposals`, default `docs/ensemble/thread_proposals.yaml`); group
 entries carry a `key`, harvest entries a `norm`, and neither touches the other.
 A re-run of `thread-propose` replaces pending groups that share a note with the run
-and keeps every ruling by `key`. Two known gaps: a pending group that spans the
-edge of the range loses its out-of-range notes (#524), and notes left unattached
-after you remove an alias are neither re-proposed nor flagged (#525).
+and keeps every ruling by `key`. A replaced group may hold notes from outside the
+run's range (an earlier, wider run proposed it): those members are never dropped
+from the queue. Each one that no other proposal holds stays as a pending
+one-note `single` proposal, and `propose_report.md` (and the run's output) names the
+replaced group and the notes it kept — "replaced pending group g-… (title): kept N
+member(s) outside the run's range as single proposals". Run the wider range again
+and the singles are regrouped with everything else. A member inside the run's range
+whose id no longer exists (re-extraction reworded the note) is not kept; the report
+lists it as gone. Known gap: notes left unattached after you remove an alias are
+neither re-proposed nor flagged (#525).
 
 ### A thread you accepted keeps coming back — on purpose
 

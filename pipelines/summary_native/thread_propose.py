@@ -128,7 +128,25 @@ def plan_batches(ratified: list[str], rows: list[str], max_chars: int) -> list[l
 # ── Report ──────────────────────────────────────────────────────────────────
 
 
-def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_attach.Attachment, batches: list[dict]) -> str:
+def replaced_lines(merge: dict) -> list[str]:
+    """Report lines for pending groups the merge replaced that held notes outside the run's range.
+
+    Those members are kept as pending single proposals (a note is never orphaned by a narrower run); a
+    member the run's range should hold but whose id no longer exists is named as gone.
+    """
+    out = []
+    for r in merge.get("kept_out_of_range") or ():
+        shown = ", ".join(f"{m['id']} (ch {m['chapter']})" if m.get("chapter") else m["id"] for m in r["members"])
+        out.append(f"replaced pending group {r['key']} ({r['title']}): kept {len(r['members'])} member(s) outside the "
+                   f"run's range as single proposals: {shown}")
+    for r in merge.get("gone") or ():
+        out.append(f"replaced pending group {r['key']} ({r['title']}): member(s) {', '.join(r['ids'])} no longer "
+                   "exist after re-extraction and were not kept")
+    return out
+
+
+def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_attach.Attachment, batches: list[dict],
+              replaced: list[str] | None = None) -> str:
     out = [
         "# Thread proposals report", "",
         f"{counts['notes']} thread notes: {counts['attached']} attached to {counts['threads']} ratified threads by exact "
@@ -140,6 +158,8 @@ def report_md(counts: dict, lines: list[str], stale: list[str], att: thread_atta
         "- (no notes were sent to a model)"]
     out += ["", "## Dropped and changed by the code check", ""]
     out += [f"- {ln}" for ln in lines] or ["- (nothing)"]
+    out += ["", "## Replaced groups with notes outside the range", ""]
+    out += [f"- {ln}" for ln in replaced or ()] or ["- (none)"]
     out += ["", "## Stale rulings", ""]
     out += [f"- {ln}" for ln in stale] or ["- (none)"]
     out += ["", "## Ambiguous names (claimed by more than one thread, never attached)", ""]
@@ -310,18 +330,22 @@ def run_thread_propose(
     lines += check_lines
     stale = thread_check.stale_ratified(prior, {n.note_id for n in att.notes}, since, until)
     source = f"summary_native ch{since:03d}-{until:03d} run {run_dir.name}"
-    thread_check.merge_proposals(proposals_path, groups, source, scope_ids={n.note_id for n in att.notes})
+    merge = thread_check.merge_proposals(
+        proposals_path, groups, source, scope_ids={n.note_id for n in att.notes}, chapter_range=(since, until))
+    replaced = replaced_lines(merge)
 
     singles = sum(1 for g in groups if g["kind"] == "single")
     dropped = sum(1 for ln in lines if ln.startswith(thread_check.DROPPED))
     counts = {**record["counts"], "groups": len(groups), "single": singles, "dropped": dropped}
     record["counts"] = counts
-    atomic_write_text(tdir / REPORT_FILE, report_md(counts, lines, stale, att, record["batches"]))
+    atomic_write_text(tdir / REPORT_FILE, report_md(counts, lines, stale, att, record["batches"], replaced))
     print(
         f"threads: {counts['notes']} notes — {counts['attached']} attached to {counts['threads']} ratified threads, "
         f"{counts['unattached']} unattached → {counts['groups']} group proposals ({singles} single), "
         f"{dropped} dropped (see {REPORT_FILE})"
     )
+    for ln in replaced:
+        print(f"note: {ln}")
     if att.ambiguous:
         print(f"warning: {len(att.ambiguous)} name(s) are claimed by more than one ratified thread and were left "
               f"unattached — see {REPORT_FILE}", file=sys.stderr)
