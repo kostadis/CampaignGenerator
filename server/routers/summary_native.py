@@ -334,6 +334,10 @@ def _read_yaml(path: Path):
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
 
+#: The documents whose chunked build writes a word-budget report (campaign_state has no prose budgets).
+BUDGET_DOCS = ("world_state", "party", "planning")
+
+
 @router.get("/state")
 def get_state(request: Request, since: int | None = None, until: int | None = None):
     """What is on disk for the range, per step (read-only; files only)."""
@@ -341,15 +345,15 @@ def get_state(request: Request, since: int | None = None, until: int | None = No
     lo, hi = _require_range(run, since, until)
     range_dir = _range_dir(run, lo, hi)
     drafts = schema.draft_dir(range_dir, "world_state")
-    budgets = _read_json(drafts / "budget_report.json")
+    budgets = {doc: _read_json(drafts / schema.budget_report_file(doc)) for doc in BUDGET_DOCS}
     missing = _read_json(range_dir / schema.STATE_DIR / schema.missing_dossiers_file("world_state"))
     planning_missing = _read_json(range_dir / schema.STATE_DIR / schema.missing_dossiers_file("planning"))
     return {
         "range": f"{lo}-{hi}",
         "extract": _extract_block(request, run, lo, hi),
         "audit": _audit_block(request, run, lo, hi),
-        # {section: {budget, words, over}} from the last world_state build, or null
-        "world_budgets": budgets if isinstance(budgets, dict) else None,
+        # {doc: {section: {budget, words, over}} | null}: each document's last build, null before one
+        "budgets": {doc: b if isinstance(b, dict) else None for doc, b in budgets.items()},
         # {doc: {later, since, unverified, removed, lines}} from each document's last annotate step
         "annotations": annotate.read_counts(drafts),
         # [{name, state}]: the selected NPCs the latest world_state build found without a usable dossier

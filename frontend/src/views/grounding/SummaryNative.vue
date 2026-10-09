@@ -236,15 +236,15 @@ interface AuditState {
 }
 const extractState = ref<ExtractState | null>(null)
 const auditState = ref<AuditState | null>(null)
-// world_state's last build: words written against each prose section's budget.
+// Each document's last build: words written against each prose section's budget (null before a build).
 interface BudgetRow { budget: number; words: number; over: boolean }
-const worldBudgets = ref<Record<string, BudgetRow> | null>(null)
+const budgets = ref<Record<string, Record<string, BudgetRow> | null>>({})
 const threadCounts = ref<ThreadCounts | null>(null)
 // Each chunked document's last annotate step (written by synth, and again by Annotate).
 interface AnnotationCounts { later: number; since: number; unverified: number; removed: number; lines: number }
 const annotations = ref<Record<string, AnnotationCounts>>({})
 const docAnnotations = computed(() => annotations.value[doc.value] ?? null)
-const budgetRows = computed(() => Object.entries(worldBudgets.value ?? {}))
+const budgetRows = computed(() => Object.entries(budgets.value[doc.value] ?? {}))
 const overBudget = computed(() => budgetRows.value.filter(([, r]) => r.over).length)
 
 const duplicates = computed(() => report.value?.findings.filter(f => f.code === 'possible-duplicate') ?? [])
@@ -255,14 +255,14 @@ async function refreshOutputs() {
   drafts.value = []; draftsNote.value = ''
   extractState.value = null
   auditState.value = null
-  worldBudgets.value = null
+  budgets.value = {}
   threadCounts.value = null
   annotations.value = {}
   if (!rangeChosen.value) return
   const q = `since=${rangeSince.value}&until=${rangeUntil.value}`
   try {
     const state = await apiFetch<{
-      extract: ExtractState; audit: AuditState; world_budgets: Record<string, BudgetRow> | null
+      extract: ExtractState; audit: AuditState; budgets: Record<string, Record<string, BudgetRow> | null>
       annotations: Record<string, AnnotationCounts>
       missing_dossiers: MissingNpc[] | null; missing_dossiers_refused: boolean
       planning_missing_dossiers: MissingNpc[] | null; planning_missing_dossiers_refused: boolean
@@ -274,7 +274,7 @@ async function refreshOutputs() {
     if (!auditTrackText.value.trim() && state.audit?.track_files?.length) {
       auditTrackText.value = state.audit.track_files.join('\n')
     }
-    worldBudgets.value = state.world_budgets
+    budgets.value = state.budgets ?? {}
     annotations.value = state.annotations ?? {}
     // The latest attempt's list for each document, so a refusal is still shown after a reload.
     missingByDoc.value = {
@@ -693,9 +693,9 @@ onMounted(async () => {
             <RouterLink to="/grounding/threads">Threads page</RouterLink>, then build again.
           </span>
         </div>
-        <div v-if="doc === 'world_state' && budgetRows.length" class="panel budgets">
+        <div v-if="budgetRows.length" class="panel budgets">
           <div class="counts">
-            <span>Word budgets (last world_state build; citations not counted)</span>
+            <span>Word budgets (last {{ doc }} build; citations not counted)</span>
             <span :class="overBudget ? 'bad' : 'ok'">
               {{ overBudget ? `${overBudget} over budget` : 'all within budget' }}
             </span>

@@ -23,7 +23,7 @@ const stateBody = {
     present: false, complete: false, stale: false, stale_reason: null, counts: null,
     audit_file: null, track_files: ['docs/tracking/a.md', 'docs/tracking/b.md'],
   },
-  world_budgets: null,
+  budgets: { world_state: null, party: null, planning: null },
   annotations: {},
   missing_dossiers: null,
   missing_dossiers_refused: false,
@@ -380,4 +380,71 @@ test('no document ever sends a retired parameter', async ({ page }) => {
       expect(seen[0].searchParams.has(gone), `${doc}: ${gone}`).toBe(false)
     }
   }
+})
+
+// ── #528: Annotate and the budget panel for party and planning ──────────────
+
+test('Annotate for party runs a dry-run preview and a real run against the party route', async ({ page }) => {
+  await openPage(page)
+  const seen = await mockRun(page, 'annotate/party', 'annotations: 2 later, 0 since, 1 unverified; 0 removed\n')
+  await section(page, /5\. Synthesize a draft/).locator('select').first().selectOption('party')
+  const box = section(page, /6\. Annotate the party draft/)
+  await box.getByRole('button', { name: 'Preview annotations for party (dry run)' }).click()
+  await expect(box.getByText('annotations: 2 later').first()).toBeVisible()
+  expect(seen).toHaveLength(1)
+  expect(seen[0].searchParams.get('dry_run')).toBe('true')
+
+  await box.getByRole('button', { name: 'Annotate party', exact: true }).click()
+  await expect.poll(() => seen.length).toBe(2)
+  expect(seen[1].searchParams.has('dry_run')).toBe(false)
+  expect(seen[1].searchParams.get('since')).toBe('2')
+  expect(seen[1].searchParams.get('until')).toBe('5')
+})
+
+test('party and planning each show their own budget panel with the overrun flagged; world_state stays absent until built', async ({ page }) => {
+  await openPage(page)
+  await page.route(url => url.pathname === `${BASE}/state`, route => route.fulfill({
+    json: {
+      ...stateBody,
+      budgets: {
+        world_state: null,
+        party: {
+          'Party Overview': { budget: 300, words: 241, over: false },
+          'Party Dynamics': { budget: 300, words: 355, over: true },
+        },
+        planning: { 'Active Plots': { budget: 600, words: 640, over: true } },
+      },
+    },
+  }))
+  await page.reload()
+  const box = section(page, /5\. Synthesize a draft/)
+  await expect(box.locator('.budgets')).toHaveCount(0) // world_state has no report yet
+
+  await box.locator('select').first().selectOption('party')
+  const party = box.locator('.budgets')
+  await expect(party.getByText('Word budgets (last party build; citations not counted)')).toBeVisible()
+  await expect(party.getByText('1 over budget')).toBeVisible()
+  await expect(party.getByRole('row', { name: /Party Dynamics\s+355\s+300\s+OVER/ })).toBeVisible()
+  await expect(party.getByRole('row', { name: /Party Overview\s+241\s+300\s+ok/ })).toBeVisible()
+
+  await box.locator('select').first().selectOption('planning')
+  const planning = box.locator('.budgets')
+  await expect(planning.getByText('Word budgets (last planning build; citations not counted)')).toBeVisible()
+  await expect(planning.getByText('1 over budget')).toBeVisible()
+  await expect(planning.getByRole('row', { name: /Active Plots\s+640\s+600\s+OVER/ })).toBeVisible()
+  await expect(planning.getByRole('row', { name: /Party Dynamics/ })).toHaveCount(0)
+
+  await box.locator('select').first().selectOption('campaign_state')
+  await expect(box.locator('.budgets')).toHaveCount(0)
+})
+
+test('the world_state budget panel still reads its own report', async ({ page }) => {
+  await openPage(page)
+  await page.route(url => url.pathname === `${BASE}/state`, route => route.fulfill({
+    json: { ...stateBody, budgets: { world_state: { Locations: { budget: 450, words: 400, over: false } }, party: null, planning: null } },
+  }))
+  await page.reload()
+  const panel = section(page, /5\. Synthesize a draft/).locator('.budgets')
+  await expect(panel.getByText('all within budget')).toBeVisible()
+  await expect(panel.getByRole('row', { name: /Locations\s+400\s+450\s+ok/ })).toBeVisible()
 })

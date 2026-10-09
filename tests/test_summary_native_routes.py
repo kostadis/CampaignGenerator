@@ -322,14 +322,30 @@ def test_drafts_lists_the_timeline_reference_files_and_budget_report(campaign):
     assert rows["reference/factions"]["path"].endswith("state/drafts/reference/factions.md")
 
 
-def test_state_carries_the_last_world_state_budget_report(campaign):
+def test_state_carries_each_documents_last_budget_report(campaign):
     root, _, _ = campaign
-    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["world_budgets"] is None
+    empty = {"world_state": None, "party": None, "planning": None}
+    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["budgets"] == empty
     dd = root / "docs" / "summary_native" / "ch003-009" / "state" / "drafts"
     dd.mkdir(parents=True)
-    rep = {"Locations": {"budget": 450, "words": 500, "over": True}}
-    (dd / "budget_report.json").write_text(json.dumps(rep))
-    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["world_budgets"] == rep
+    world = {"Locations": {"budget": 450, "words": 500, "over": True}}
+    party = {"Party Overview": {"budget": 300, "words": 241, "over": False}}
+    planning = {"Active Plots": {"budget": 600, "words": 700, "over": True}}
+    (dd / "budget_report.json").write_text(json.dumps(world))
+    (dd / "budget_report.party.json").write_text(json.dumps(party))
+    got = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["budgets"]
+    assert got == {"world_state": world, "party": party, "planning": None}
+    (dd / "budget_report.planning.json").write_text(json.dumps(planning))
+    got = client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["budgets"]
+    assert got == {"world_state": world, "party": party, "planning": planning}
+
+
+def test_state_ignores_an_unreadable_budget_report(campaign):
+    root, _, _ = campaign
+    dd = root / "docs" / "summary_native" / "ch003-009" / "state" / "drafts"
+    dd.mkdir(parents=True)
+    (dd / "budget_report.party.json").write_text("{not json")
+    assert client.get(f"{BASE}/state", params={"since": 3, "until": 9}).json()["budgets"]["party"] is None
 
 
 def test_drafts_absent_is_404_and_empty_dir_is_empty(campaign):
@@ -593,7 +609,7 @@ def test_drafts_lists_the_drops_and_status_reports(campaign):
 
 # ── spec 033 US4: annotate, annotations and missing_dossiers ───────────────────
 
-@pytest.mark.parametrize("doc", ["world_state", "campaign_state"])
+@pytest.mark.parametrize("doc", ["world_state", "campaign_state", "party", "planning"])
 def test_annotate_argv_and_dry_run(campaign, doc):
     _, _, captured = campaign
     assert _run(f"/run/annotate/{doc}", RANGE) == 200
