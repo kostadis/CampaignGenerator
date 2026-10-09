@@ -1189,7 +1189,7 @@ and the last chunk.
 |---|---|
 | `drafts/planning.draft.md`, `drafts/reference/{factions,npcs,threads,threads_unratified}.md` | The document and the four reference files its reading contract names. `threads_unratified.md` holds the unattached thread notes verbatim (it exists, saying none, when there are none). |
 | `drafts/planning_npcs_report.md` | Per NPC: model line / substituted by the dossier's sentence / fallback; and the Faction States selection and replacements. |
-| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, ratified proposal members that no longer attach (alias removed?), the unattached count, and each Active Plots entry code replaced. |
+| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, ratified proposal members that no longer attach (alias removed?), split-off notes whose exclusion id is on no disk, the unattached count, and each Active Plots entry code replaced. |
 | `threads/attach.json` | Code's map: note id → thread id, `"ambiguous"` or `null`. |
 | `drafts/arc_report.md`, `budget_report.planning.json`, `annotations.md`, `missing_dossiers.planning.json` | As described here and in Step 5b. |
 
@@ -1255,6 +1255,20 @@ remove one of those aliases, the notes it attached are unattached again: the nex
 `thread-propose` offers them again as pending single-note proposals and lists them
 under "Ratified but no longer attached (alias removed?)" in `propose_report.md`
 (and `threads_report.md`).
+
+**Splitting a group.** Ratify a subset and the rest return to the queue as a new pending
+proposal. The notes you left out are recorded on the ratified thread as `excluded_notes`
+(`docs/thread_registry.yaml`, optional, no migration), and attachment honours that
+**before** the name, so a split-off note that shares a ratified member's bold name stays
+unattached and offered instead of being pulled back in. A ratified member the thread's names
+cannot attach (its name belongs to another thread, or you struck the alias) is pinned by id in
+`included_notes`, which is how a split-off note can be ruled into a different thread. Both lists
+are checked before any name. Ratifying an excluded note into the same thread lifts its exclusion;
+`ratify` refuses a name in `aliases_add` that only a left-out member carries. A re-extraction
+gives a note a new id, so an excluded or pinned id on no disk is named in `propose_report.md`,
+`threads_report.md` and `campaign_threads_report.md`, never removed, and notes held out by an
+exclusion are listed under "Held out of a thread by a split". See
+[Splitting a group](state_projection_howto.md#grouping-proposals-from-summary-native).
 
 ### Arc-score candidates
 

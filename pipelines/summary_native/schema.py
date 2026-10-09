@@ -249,6 +249,9 @@ DORMANT_HEADING = "### Dormant threads"
 UNRATIFIED_HEADING = "### Unratified thread notes (not yet ruled on)"
 #: campaign_state's account of its thread sections (planning's is ``threads_report.md``), beside the drafts.
 CAMPAIGN_THREADS_REPORT_FILE = "campaign_threads_report.md"
+#: Report sections of the thread reports about the GM's by-id rulings (#529): `excluded_notes` / `included_notes`.
+STALE_RULINGS_HEADING = "Excluded and pinned notes no longer on disk (ruling may not hold)"
+HELD_OUT_HEADING = "Held out of a thread by a split (name matches, thread excludes the note)"
 #: Printed under DM Notes by code, so the section cannot be read as events.
 DM_NOTES_LABEL = "_Suggestions for the GM, not events._"
 #: Everything 033 writes lives under ``<range_dir>/state/``.

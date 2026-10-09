@@ -186,6 +186,20 @@ def _detached_lines(proposals_path: Path | None, att: thread_attach.Attachment) 
     return thread_check.detached_lines(entries, thread_check.detached(entries, att.unattached))
 
 
+def _excluded_lines(proposals_path: Path | None, registry: dict, range_dir: Path, root: Path) -> list[str]:
+    """Excluded or pinned notes (a split's rulings, #529) found in no range's notes, for the thread reports.
+    Read-only; an unreadable notes file means nothing is judged, and the line says so. An unreadable proposals
+    file only costs the note names in the lines."""
+    entries: list = []
+    if proposals_path is not None:
+        try:
+            entries = thread_check.load_proposals(proposals_path)
+        except (OSError, ValueError):
+            entries = []
+    known, unreadable = thread_check.scan_note_ids(range_dir)
+    return thread_check.ruling_stale_lines(registry, known, entries, [schema.display_path(f, root) for f in unreadable])
+
+
 # ── world_state and campaign_state from checked notes (spec 033 T019) ───────
 
 #: world_state's sections are written within word budgets; campaign_state's are not.
@@ -1219,6 +1233,8 @@ def run_state_synth(
             key_plan, key_assembled, key_per, kb.get("words", 0), kb.get("budget", 0)))
     # ratified proposal members that no longer attach (#525), for the thread report of either document that reads the registry
     detached_lines = _detached_lines(thread_proposals_path, attachment) if doc in THREAD_DOCS else []
+    # split-off notes whose exclusion id is on no disk (#529), likewise computed once for both reports
+    excluded_lines = _excluded_lines(thread_proposals_path, thread_registry, range_dir, root) if doc in THREAD_DOCS else []
     if doc == "planning":
         # What code replaced in planning, and the thread layers it built (the attach map itself is state/threads/attach.json).
         nb = budget_report.get("NPC Dossiers", {})
@@ -1241,14 +1257,15 @@ def run_state_synth(
                 npc_plan, a, per, nb.get("words", 0), nb.get("budget", 0), faction_lines))
         plots_part = planning_parts.get("## Active Plots")
         atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(
-            attachment, (since, until), detached_lines) + "\n".join([
+            attachment, (since, until), detached_lines, excluded_lines) + "\n".join([
             "", "## Active Plots entries replaced by code", "", *((plots_part.report if plots_part else []) or ["- (none)"]), ""]))
     if doc == "campaign_state":
         # campaign_state's side of threads_report.md, in a file of its own so one document's report never replaces the other's
         lines = [f"## {h[3:]} entries replaced by code\n\n" + "\n".join(planning_parts[h].report or ["- (none)"]) + "\n"
                  for h in ("## Resolved Plot Threads", "## Active Quests & Open Threads") if h in planning_parts]
         atomic_write_text(drafts / schema.CAMPAIGN_THREADS_REPORT_FILE,
-                          thread_attach.threads_report_md(attachment, (since, until), detached_lines) + "\n".join(["", *lines]))
+                          thread_attach.threads_report_md(attachment, (since, until), detached_lines, excluded_lines)
+                          + "\n".join(["", *lines]))
     # The files the sections point to. Written whether or not the draft is complete: they are
     # built by code from the checked notes and do not depend on the model.
     for kind, md in reference.items():

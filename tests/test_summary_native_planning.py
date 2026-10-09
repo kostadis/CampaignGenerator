@@ -818,6 +818,26 @@ class TestSynthPlanning:
         assert "thread-propose" in line  # no pending proposal yet: it says how to get one
         assert yaml.safe_load(proposals.read_text(encoding="utf-8"))["proposals"] == [entry]  # read-only
 
+    def test_threads_report_honours_and_audits_an_excluded_note(self, pcamp):
+        """#529: a split's excluded note stays out of the thread; an id on no disk is named, not removed."""
+        root, _ = pcamp
+        _, results = notes.load_checked(cp.range_dir(root))
+        ch4 = next(n for n in thread_attach.attach(results, None).notes
+                   if n.subject == "The Carver's march" and n.first_chapter == 4)
+        write_registry(root, registry({**CARVER, "excluded_notes": [ch4.note_id]}))
+        assert synth_planning(root)[0] == 0
+        att = json.loads((cp.range_dir(root) / "state" / "threads" / "attach.json").read_text(encoding="utf-8"))
+        assert att["notes"][ch4.note_id] is None and ch4.note_id not in att["threads"]["carver-march"]["notes"]
+        rep = (drafts(root) / "threads_report.md").read_text(encoding="utf-8")
+        assert "## Excluded and pinned notes no longer on disk (ruling may not hold)\n\n- (none)" in rep
+        held = rep.split("## Held out of a thread by a split (name matches, thread excludes the note)")[1].split("\n## ")[0]
+        assert ch4.note_id in held and "which excludes it" in held
+        write_registry(root, registry({**CARVER, "excluded_notes": [ch4.note_id, "n-reextracted"]}))
+        assert synth_planning(root, "--force")[0] == 0
+        rep = (drafts(root) / "threads_report.md").read_text(encoding="utf-8")
+        assert ("thread carver-march: excluded note n-reextracted is in no range's notes on disk (re-extracted?)"
+                in rep.split("## Excluded and pinned notes no longer on disk (ruling may not hold)")[1].split("\n## ")[0])
+
     def test_the_run_record_has_the_registry_the_config_files_and_the_budgets(self, pcamp):
         root, _ = pcamp
         assert synth_planning(root)[0] == 0

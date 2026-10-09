@@ -571,3 +571,38 @@ def test_a_ratified_member_whose_alias_was_removed_is_named_in_campaign_states_t
     section = report.split("## Ratified but no longer attached (alias removed?)")[1].split("\n## ")[0]
     for m in detached:
         assert m["id"] in section and "ratified but no longer attached (alias removed?)" in section
+
+
+# ── #529: a split's exclusion holds in campaign_state too ──
+
+
+def test_a_split_off_note_is_not_attached_in_campaign_state_and_a_stale_exclusion_is_named(tcamp, monkeypatch):
+    from types import SimpleNamespace
+
+    from tests.test_summary_native_threads import TestThreadPropose
+
+    root, tm = tcamp
+    monkeypatch.setattr(cs.synth, "render_part", CampaignModels(SimpleNamespace(prose_calls=[])).render)
+    helper = TestThreadPropose()  # its helpers drive the real thread_registry verbs
+    group = helper.split_carver(root)  # ratify ch002-003 only; ch004 shares "The Carver's march"
+    off = group["members"][2]
+    assert helper.carver_thread(root)["excluded_notes"] == [off["id"]]
+    assert build(root)[0] == 0
+    att = json.loads((cp.range_dir(root) / "state" / "threads" / "attach.json").read_text(encoding="utf-8"))
+    assert att["notes"][off["id"]] is None  # campaign_state uses the same attach
+    assert att["threads"]["the-carvers-march"]["notes"] == [m["id"] for m in group["members"][:2]]
+    report = (drafts(root) / schema.CAMPAIGN_THREADS_REPORT_FILE).read_text(encoding="utf-8")
+    heading = "## Excluded and pinned notes no longer on disk (ruling may not hold)"
+    held = report.split("## Held out of a thread by a split (name matches, thread excludes the note)")[1].split("\n## ")[0]
+    assert off["id"] in held and "thread the-carvers-march, which excludes it" in held
+    assert "- (none)" in report.split(heading)[1].split("\n## ")[0]
+
+    import yaml
+    path = root / "docs" / "thread_registry.yaml"
+    doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+    doc["threads"][0]["excluded_notes"].append("n-reextracted")
+    path.write_text(yaml.safe_dump(doc), encoding="utf-8")
+    assert build(root, "--force")[0] == 0
+    report = (drafts(root) / schema.CAMPAIGN_THREADS_REPORT_FILE).read_text(encoding="utf-8")
+    assert ("thread the-carvers-march: excluded note n-reextracted is in no range's notes on disk (re-extracted?)"
+            in report.split(heading)[1].split("\n## ")[0])
