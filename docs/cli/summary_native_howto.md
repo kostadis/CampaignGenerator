@@ -1211,9 +1211,21 @@ paragraphs as well as bullets**. It skips what code built or what is not a claim
 Two things are **removed** (a rule, not a judgment, listed in `annotations.md`): a
 player character listed as a companion, and a Faction States block named for a
 player character. A line inside a real faction's block that merely mentions a
-player character is a claim and stays. Party Overview and Party Dynamics lines
-usually have no bold subject, so `⚠ later:` rarely fires on them (#527); the
-citation and quotation checks still run.
+player character is a claim and stays.
+
+**Subjects.** `⚠ later:` compares a line with the later notes about its subject: its
+first bold name, else the `###` group it sits under. Party Overview and Party
+Dynamics are free prose with neither, so a line there with no subject of its own is
+about the whole party and gets the subject `Party`, the same token a whole-party
+note carries (`- **Party** — fact [cite]`). It is compared with the later
+whole-party notes only: the newest one, when it is cited after the line, appears
+under it as `⚠ later: **Party** — … [ch NNN / …]`. A line with its own subject (a
+bold character, or a group) keeps it and is compared with that character's notes.
+A mention is never a subject, and a one-character note or a level row is not
+whole-party evidence. The implicit `Party` subject takes part in the stale check
+only: two subject-less lines in different sections are not paired by the
+cross-section check. The citation, quotation and mentioned-NPC checks run on every
+line as before.
 
 ### Incomplete drafts for these two documents
 

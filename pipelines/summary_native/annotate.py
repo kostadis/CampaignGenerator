@@ -17,7 +17,8 @@ dossiers, and the sections code builds from the checked notes, which carry their
 evidence. For party and planning (spec 034) that also means the Threat Tracker, the NPC Dossiers, the
 dormant and unratified blocks of Active Plots, and the ``#### Candidate Arc Score Events`` subsection of a
 character; their model-written sections are scanned line by line, paragraphs as well as bullets, and a
-player character listed in Faction States is removed like one listed as a companion. Guarded by ``tests/test_summary_native_no_llm.py`` and ``tests/test_annotate_never_rewrites.py``.
+player character listed in Faction States is removed like one listed as a companion. A line of party's
+Party Overview / Party Dynamics with no subject of its own is compared with the whole-party notes (#527). Guarded by ``tests/test_summary_native_no_llm.py`` and ``tests/test_annotate_never_rewrites.py``.
 """
 
 from __future__ import annotations
@@ -63,6 +64,10 @@ PROSE_SECTIONS = frozenset({
     "## Faction States", "## Active Plots", "## DM Notes",
 })
 
+#: Party's free-prose sections, which carry no ``###`` groups and rarely a bold name. A line there with no
+#: subject of its own is about the whole party (#527).
+PARTY_PROSE_SECTIONS = frozenset({"## Party Overview", "## Party Dynamics"})
+
 #: The sections where a player character is listed as if an NPC: such a line is removed (a rule, not a
 #: judgment). Party's ``## Characters`` is deliberately absent: player characters belong there.
 NPC_SECTIONS = frozenset({"## Faction States", "## NPC Dossiers"})
@@ -79,6 +84,7 @@ NOT_VERBATIM = "quote-not-verbatim"
 _MARKER_OF = {STALE: LATER, CROSS_SECTION: LATER, MENTIONED: SINCE, INVALID_CITATION: UNVERIFIED, NOT_VERBATIM: UNVERIFIED}
 _BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
 _TAG_RE = re.compile(r"^-\s*\[[A-Z]+\]\s*")
+_BULLET_RE = re.compile(r"^-\s*")
 
 
 # ── Evidence ────────────────────────────────────────────────────────────────
@@ -136,6 +142,10 @@ def _world_text(note: notes.Note) -> str:
     return _TAG_RE.sub("", note.text).strip()
 
 
+def _party_text(note: notes.Note) -> str:
+    return _BULLET_RE.sub("", note.text).strip()
+
+
 def load_evidence(
     results: Sequence[notes.CheckedChunk],
     chapters: Sequence[notes.Chapter],
@@ -155,6 +165,11 @@ def load_evidence(
                 fact = Fact(n.first_chapter, "world", _world_text(n))
             elif n.kind == "status_row" and n.subject:
                 fact = Fact(n.first_chapter, "status_row", _status_text(n), n.status)
+            elif (n.kind == "party" and n.tag != schema.LEVEL_TAG and n.subject
+                  and n.subject.strip().casefold() == schema.PARTY_SUBJECT.casefold()):
+                # A whole-party note (spec 034 grammar): the evidence for a party line with no subject of its own.
+                # A level row is code's line, not a claim; a note about one character is that character's.
+                fact = Fact(n.first_chapter, "party", _party_text(n))
             else:
                 continue
             if (n.kind, n.text) in seen:
@@ -188,6 +203,10 @@ class Entry:
     group: str  # the ### heading or standalone bold label above it, if any
     text: str
     subject: str  # canonical
+    #: The subject was assigned, not written: a line of Party Overview / Party Dynamics with no bold name
+    #: and no group is about the whole party (#527). It is a bucket, not a topic, so it is compared with the
+    #: whole-party notes for staleness but never grouped with other lines for the cross-section check.
+    implicit: bool = False
 
     def cited_chapters(self) -> list[int]:
         return [c for _, c, _ in notes.cites(self.text) if c >= 0]
@@ -209,7 +228,9 @@ def parse_entries(lines: Sequence[str], ev: Evidence) -> list[Entry]:
     model-written sections of party and planning (``PROSE_SECTIONS``), column-0 prose lines too.
 
     An entry's subject is its first bold name, else the group (``### `` heading or standalone bold
-    label) it sits under, resolved to the registry's canonical name. The ``#### `` subsection of
+    label) it sits under, resolved to the registry's canonical name. A line of Party Overview or Party
+    Dynamics with neither is about the whole party and gets ``schema.PARTY_SUBJECT`` (#527); a mention is
+    never a subject. The ``#### `` subsection of
     checked arc-score candidates is never scanned: its triggers are quoted from the mechanic file, not
     from a chapter, and code has already checked every line.
     """
@@ -229,7 +250,11 @@ def parse_entries(lines: Sequence[str], ev: Evidence) -> list[Entry]:
             continue
         elif ln.startswith("- ") or (section in PROSE_SECTIONS and _is_prose_claim(ln)):
             m = _BOLD_RE.search(ln)
-            out.append(Entry(n, section, group, ln, ev.canon(m.group(1) if m else group)))
+            name = m.group(1) if m else group
+            if not name and section in PARTY_PROSE_SECTIONS:
+                out.append(Entry(n, section, group, ln, schema.PARTY_SUBJECT, implicit=True))
+            else:
+                out.append(Entry(n, section, group, ln, ev.canon(name)))
     return out
 
 
@@ -290,7 +315,7 @@ def detect(entries: Sequence[Entry], ev: Evidence) -> list[Flag]:
                               later[-1].text))
     by_subject: dict[str, list[Entry]] = {}
     for e in entries:
-        if e.cited_chapters():
+        if e.cited_chapters() and not e.implicit:
             by_subject.setdefault(e.subject.casefold(), []).append(e)
     for group in by_subject.values():
         for e in group:

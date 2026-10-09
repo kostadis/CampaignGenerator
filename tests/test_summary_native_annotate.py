@@ -504,6 +504,85 @@ class TestPartyDraft:
             assert [a for a in under(r, line) if a.startswith(schema.SINCE) and "**Kalan**" in a], line
 
 
+# ── #527: subject-less party prose is about the whole party ─────────────────
+
+PARTY_CHAPTERS = {2: "The party holds the gate of Brindol.", 4: "The party lost the gate of Brindol.",
+                  5: "Thorin took the gate."}
+
+
+def _party_note(text, ch, subject="Party", tag=None):
+    return notes.Note("party", f"- **{subject}** — {text} [ch {ch:03d} / {ch:03d}.01]", ch, "c", tag=tag, subject=subject)
+
+
+@pytest.fixture
+def evp(tmp_path):
+    (tmp_path / "registry.yaml").write_text(yaml.safe_dump(REGISTRY), encoding="utf-8")
+    (tmp_path / "players.yaml").write_text(yaml.safe_dump(PLAYERS), encoding="utf-8")
+    results = [notes.CheckedChunk("002-005", [
+        _party_note("Hold the gate of Brindol.", 2),
+        _party_note("Lost the gate of Brindol.", 4),
+        _party_note("Thorin took the gate.", 5, subject="Thorin Giantfriend"),  # one character's, not the party's
+        _world("NPC", "Thorin", "Holds the gate alone.", 5),
+    ])]
+    chapters = [notes.Chapter(n, Path(f"{n:03d}-x.md"), t, {f"{n:03d}.01", "end"}) for n, t in PARTY_CHAPTERS.items()]
+    return annotate.load_evidence(results, chapters, tmp_path / "registry.yaml", tmp_path / "players.yaml")
+
+
+class TestPartyProseSubject:
+    OVERVIEW = "The party holds the gate of Brindol. [ch 002 / 002.01]"
+
+    def test_a_subjectless_overview_line_is_stale_against_a_later_whole_party_note(self, evp):
+        doc = f"## Party Overview\n{self.OVERVIEW}\n"
+        r = annotate.annotate_text(doc, evp)
+        assert under(r, self.OVERVIEW) == [f"{schema.LATER} **Party** — Lost the gate of Brindol. [ch 004 / 004.01]"]
+        # the line's text is untouched: dropping the annotation leaves the draft as it was
+        assert annotate.strip_annotations(r.text.split("\n")) == doc.split("\n")
+
+    def test_the_subject_is_the_schemas_party_token_for_overview_and_dynamics(self, evp):
+        doc = "## Party Overview\nOne. [ch 002 / 002.01]\n\n## Party Dynamics\nTwo. [ch 002 / 002.01]\n"
+        es = annotate.parse_entries(doc.split("\n"), evp)
+        assert [(e.section, e.subject) for e in es] == [("## Party Overview", schema.PARTY_SUBJECT),
+                                                        ("## Party Dynamics", schema.PARTY_SUBJECT)]
+
+    def test_a_dynamics_line_with_a_bold_character_keeps_that_character(self, evp):
+        line = "**Thorin Giantfriend** keeps the gate. [ch 002 / 002.01]"
+        (e,) = annotate.parse_entries(["## Party Dynamics", line], evp)
+        assert e.subject == "Thorin" and not e.implicit
+        r = annotate.annotate_text(f"## Party Dynamics\n{line}\n", evp)
+        # compared with Thorin's own note, not the whole party's
+        assert under(r, line) == [f"{schema.LATER} **Thorin** — Holds the gate alone. [ch 005 / 005.01]"]
+
+    def test_a_line_under_a_group_keeps_the_group(self, evp):
+        (e,) = annotate.parse_entries(["## Party Overview", "### Thorin Giantfriend", "He holds. [ch 002 / 002.01]"], evp)
+        assert e.subject == "Thorin" and not e.implicit
+
+    def test_a_mention_is_not_a_subject(self, evp):
+        (e,) = annotate.parse_entries(["## Party Overview", "The party met Thorin Giantfriend. [ch 002 / 002.01]"], evp)
+        assert e.subject == schema.PARTY_SUBJECT  # Thorin is mentioned, the whole party is the subject
+
+    def test_a_party_line_cited_at_or_after_the_latest_party_note_is_not_stale(self, evp):
+        r = annotate.annotate_text("## Party Overview\nThe gate is lost. [ch 004 / 004.01]\n", evp)
+        assert r.hits == []
+
+    def test_a_level_row_and_a_characters_note_are_not_whole_party_evidence(self, evp):
+        assert [f.chapter for f in evp.facts(schema.PARTY_SUBJECT)] == [2, 4]
+        lvl = notes.Note("party", "- [LEVEL] **Party** — 9 [ch 009 / 009.01]", 9, "c", tag=schema.LEVEL_TAG,
+                         subject="Party", level=9)
+        ev = annotate.load_evidence([notes.CheckedChunk("x", [lvl])], [], None, None)
+        assert ev.facts(schema.PARTY_SUBJECT) == []
+
+    def test_two_subjectless_lines_in_different_sections_are_not_cross_section_stale(self, evp):
+        doc = "## Party Overview\nOlder. [ch 002 / 002.01]\n\n## Party Dynamics\nNewer. [ch 004 / 004.01]\n"
+        flags = annotate.detect(annotate.parse_entries(doc.split("\n"), evp), evp)
+        assert [f.kind for f in flags] == [annotate.STALE]  # only the whole-party stale check, no pairing
+
+    def test_other_documents_sections_keep_an_empty_subject(self, evp):
+        doc = "## DM Notes\nAsk about the gate. [ch 002 / 002.01]\n\n## Party\n- A bare bullet. [ch 002 / 002.01]\n"
+        es = annotate.parse_entries(doc.split("\n"), evp)
+        assert [e.subject for e in es] == ["", ""]
+        assert annotate.annotate_text(doc, evp).hits == []
+
+
 class SimpleNamespaceEv:
     @staticmethod
     def canon(name):
