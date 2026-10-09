@@ -226,6 +226,8 @@ class StateCtx:
     planning: object = None
     npc_plan: object = None
     attachment: object = None
+    #: planning and campaign_state: the GM's thread registry as loaded (the chapter a thread was resolved at is read from it).
+    thread_registry: object = None
     status_table: str = ""
 
 
@@ -448,23 +450,42 @@ def _faction_states_job(ctx: StateCtx) -> dict:
     }
 
 
-def _thread_blocks(threads: list, *, why: bool = False) -> str:
-    """Each thread's attached notes, in chapter order, under a ``=== THREAD: title (...) ===`` line. ``why`` adds
-    the reason code closed the thread (``ThreadState.why``), for the call that writes how threads ended."""
+def _thread_blocks(threads: list, *, why=None) -> str:
+    """Each thread's attached notes, in chapter order, under a ``=== THREAD: title (...) ===`` line. ``why`` is a
+    function from a thread to the reason code closed it, for the call that writes how threads ended."""
     return "\n\n".join(
         f"=== THREAD: {s.title} ({len(s.notes)} notes, chapter order, every one already checked by code"
-        + (f"; closed because {s.why}" if why else "") + f") ===\n{_note_lines(s.notes)}"
+        + (f"; closed because {why(s)}" if why else "") + f") ===\n{_note_lines(s.notes)}"
         for s in threads)
 
 
+def _closed_why(ctx: StateCtx):
+    """Why a thread is closed, in words, for the Resolved call. A status the GM set carries the chapter the registry
+    records (``resolved:``), and says so when that chapter lies after the range: the notes then cannot show the ending.
+    ``ThreadState.why`` is not used: ``thread_attach`` words it for the reports and does not know the chapter."""
+    resolved_at = {t.get("id"): t.get("resolved") for t in (ctx.thread_registry or {}).get("threads") or []}
+
+    def why(s) -> str:
+        if s.status not in ("resolved", "abandoned"):
+            return s.why
+        n = resolved_at.get(s.id)
+        if not isinstance(n, int):
+            return f"the GM set it {s.status}"
+        late = f", after the last chapter of this range (ch {ctx.until})" if n > ctx.until else ""
+        return f"the GM set it {s.status} at ch {n}{late}"
+
+    return why
+
+
 def _thread_job(ctx: StateCtx, *, heading: str, file: str, threads: list, build, record, system: str | None = None,
-                why: bool = False) -> dict:
+                why=None, discarded: str = "not an open ratified thread, or repeated") -> dict:
     """One thread section: the threads code chose, in code's order, are written by one call; code checks the entries
     and builds the section around them (``build`` is ``state_sections.active_plots_md`` or ``resolved_threads_md``).
 
     ``record(section)`` is what the run record keeps about the section. The budget is the document's, if it has
-    one (planning's Active Plots; campaign_state has none). The ``why`` and ``system`` parameters are for
-    campaign_state's calls, whose prompt says nothing about a word budget or a planning document.
+    one (planning's Active Plots; campaign_state has none). ``why`` (see ``_closed_why``), ``system`` and
+    ``discarded`` (the wording of the report line for a heading the model added) are per document: campaign_state's
+    calls say nothing about a word budget or a planning document, and planning's output must stay as it was.
     """
     att = ctx.attachment
     budget = ctx.budgets["Active Plots"] if ctx.doc == "planning" else None
@@ -472,7 +493,7 @@ def _thread_job(ctx: StateCtx, *, heading: str, file: str, threads: list, build,
     def finish(out: str | None) -> PlanningPart:
         check = state_sections.check_entries(out, [s.title for s in threads])
         sec = build(att, {s.id: check.bodies.get(s.title) for s in threads}, {s.id: check.bad.get(s.title, "") for s in threads})
-        report = sec.report + [f"- discarded (not a thread given to the model, or repeated): ### {x}" for x in check.extras]
+        report = sec.report + [f"- discarded ({discarded}): ### {x}" for x in check.extras]
         return PlanningPart(sec.text, sec.model_text, report, record(sec))
 
     return {
@@ -558,11 +579,11 @@ def _campaign_jobs(ctx: StateCtx) -> list[dict]:
     resolved = _thread_job(
         ctx, heading=heading, file=_slug(heading), threads=att.closed_threads, build=state_sections.resolved_threads_md,
         record=lambda sec: {"resolved": [s.title for s in att.closed_threads], "replaced": sec.replaced},
-        system=system, why=True)
+        system=system, why=_closed_why(ctx), discarded="not a thread given to the model, or repeated")
     heading = "## Active Quests & Open Threads"
     active = _thread_job(
         ctx, heading=heading, file=_slug(heading), threads=att.open_threads, build=state_sections.active_plots_md,
-        record=_open_record(att), system=system)
+        record=_open_record(att), system=system, discarded="not a thread given to the model, or repeated")
     return [resolved, active]
 
 
@@ -868,6 +889,7 @@ def run_state_synth(
             registry_path=registry_path, players_path=players_path,
             party=party_chars, attributions=attributions, levels=levels,
             planning=planning, npc_plan=npc_plan, attachment=attachment, status_table=table if doc == "planning" else "",
+            thread_registry=thread_registry if doc in THREAD_DOCS else None,
         )
         jobs.extend({"party": _party_jobs, "planning": _planning_jobs, "campaign_state": _campaign_jobs}[doc](ctx))
         if doc != "campaign_state":

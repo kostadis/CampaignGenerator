@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from pathlib import Path
 
 import pytest
 
@@ -380,7 +381,7 @@ class TestRunRecord:
         reg = root / "docs" / "thread_registry.yaml"
         assert last_record(root)["inputs"]["thread_registry_sha256"] == hashlib.sha256(reg.read_bytes()).hexdigest()
 
-    def test_editing_the_registry_changes_the_recorded_digest_so_the_draft_is_stale(self, ccamp):
+    def test_editing_the_registry_changes_the_digest_the_record_holds(self, ccamp):
         root, _ = ccamp
         assert build(root)[0] == 0
         before = last_record(root)["inputs"]["thread_registry_sha256"]
@@ -508,3 +509,37 @@ class TestResolvedThreadsMd:
         ids = lambda ts: {t.id for t in ts}  # noqa: E731
         assert ids(att.closed_threads) | ids(att.open_threads) | ids(att.dormant_threads) == set(att.threads)
         assert not (ids(att.closed_threads) & ids(att.open_threads)) and not (ids(att.dormant_threads) & ids(att.closed_threads))
+
+
+# ── A thread the GM closed whose ending the notes may not show ──────────────
+
+
+class TestEndingNotShown:
+    def test_the_resolved_prompt_says_when_and_by_whom_a_thread_was_closed_and_not_to_invent_an_ending(self, ccamp):
+        root, cm = ccamp
+        assert build(root)[0] == 0
+        user, system = cm.user_of(HEADINGS[0]), next(c["system"] for c in cm.calls if c["heading"] == HEADINGS[0])
+        # the Carver's march: status resolved at ch 4, inside the range (ch 2-4), its notes only OPENED / ADVANCED
+        assert "closed because the GM set it resolved at ch 4)" in user
+        assert "after the last chapter" not in user
+        assert "Never infer, guess or invent an ending" in system
+        assert "only if a note in its block shows the ending" in system
+
+    def test_a_thread_resolved_after_the_range_is_told_so(self, ccamp):
+        root, cm = ccamp
+        write_registry(root, registry(thread("carver-march", "The Carver's march", status="resolved", aliases=["Carver march"], resolved=50)))
+        assert build(root)[0] == 0
+        assert "the GM set it resolved at ch 50, after the last chapter of this range (ch 4)" in cm.user_of(HEADINGS[0])
+
+    def test_the_brief_carries_the_rule(self, ccamp):
+        root, cm = ccamp
+        assert build(root)[0] == 0
+        assert "do not show how it ended: never infer one" in state_sections.BRIEFS[HEADINGS[0]]
+        assert state_sections.BRIEFS[HEADINGS[0]] in cm.user_of(HEADINGS[0])
+
+    def test_plannings_discard_wording_is_unchanged(self, ccamp):
+        root, cm = ccamp
+        cm.override["## Active Plots"] = "### The Gate Oath\nok. [ch 004 / 004.01]\n### An invented plot\nBoo.\n"
+        rc, out, err = cs.run_cli(["synth", "planning", *cp.common(root), *BACKEND, "--fallback-npc-lines", "--recent-chapters", "2"])
+        assert "- discarded (not an open ratified thread, or repeated): ### An invented plot" in out
+        assert "not a thread given to the model" not in out

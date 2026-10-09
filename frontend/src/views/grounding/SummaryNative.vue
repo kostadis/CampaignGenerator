@@ -208,7 +208,7 @@ interface Report {
 }
 interface DraftRow { doc: string; path: string; status: 'draft' | 'incomplete' | 'report'; bytes: number }
 interface ExtractChunk { index: number; chapters: string; status: string; kept: number; dropped: number; outlier: boolean }
-// The ratified-thread counts of the last planning build (read by the server from state/threads/attach.json).
+// The ratified-thread counts of the last build that read the thread registry (read by the server from state/threads/attach.json).
 interface ThreadCounts {
   present: boolean; ratified_in_range: number | null; open: number | null; dormant: number | null
   unattached: number | null; ambiguous: number | null; pending_groups: number | null
@@ -682,7 +682,7 @@ onMounted(async () => {
         </div>
         <div v-if="doc === 'planning'" class="panel threads">
           <div class="counts">
-            <span>Ratified threads (last planning build)</span>
+            <span>Ratified threads (last build that read the thread registry)</span>
             <template v-if="threadCounts?.present">
               <span data-test="thread-in-range">{{ threadCounts.ratified_in_range }} with notes in range</span>
               <span data-test="thread-open">{{ threadCounts.open }} open</span>

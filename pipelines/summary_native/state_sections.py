@@ -153,7 +153,7 @@ UNRATIFIED_KIND = "threads_unratified"
 #: all six kinds; the other documents name only the files they point to.
 CONTRACT_REFERENCES: dict[str, tuple[str, ...]] = {
     "world_state": tuple(REFERENCE_KINDS),
-    "campaign_state": ("threads", UNRATIFIED_KIND),
+    "campaign_state": ("threads",),
     "party": ("party",),
     "planning": ("factions", "npcs", "threads", UNRATIFIED_KIND),
 }
@@ -347,7 +347,7 @@ BRIEFS: dict[str, str] = {
     "## Items and Artifacts": "Significant items NOW: what each does, who holds it, open questions about it.",
     "## Active Threats and Open Pressures": "What is pressing on the party NOW and from whom. Only things the notes do not show resolved.",
     # campaign_state's thread sections (#530): one call each, one entry per thread code gives it
-    "## Resolved Plot Threads": "Each thread's entry: how it ended, citing the resolution. Every thread you are given has ended (the GM marked it resolved or abandoned, or its latest note says so). Use only that thread's own notes.",
+    "## Resolved Plot Threads": "Each thread's entry: how it ended, citing the resolution. Every thread you are given has ended (the GM marked it resolved or abandoned, or its latest note says so), but if no note in its block shows the ending, say the notes in this range do not show how it ended: never infer one. Use only that thread's own notes.",
     "## Active Quests & Open Threads": "Each thread's entry as it stands NOW: its latest state, what the party did, what is unresolved. Every thread you are given is unfinished. Use only that thread's own notes.",
     "## Party Current Situation": "Where the party is, what they just did, and what they are about to face, at the very end of the range.",
     # planning (spec 034): one call each; NPC Dossiers has its own system prompt and prompt builder (key_npcs)

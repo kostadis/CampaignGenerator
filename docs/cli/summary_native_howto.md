@@ -816,7 +816,10 @@ latest attached note, verbatim, and listed in `campaign_threads_report.md` (a
 heading the model added is discarded and listed there too). Each line keeps its
 `[ch NNN / target]` citation, and `annotate` scans these two sections like
 planning's Active Plots (the dormant and unratified blocks are skipped). The
-Resolved call is also told why each thread is closed. There are no word budgets,
+Resolved call is also told why each thread is closed, with the chapter the registry records (`resolved at ch 50, after the last
+chapter of this range`); if no note in a thread's block shows the ending it says the notes in this range do not show how it
+ended, and never infers one. (A thread whose registry `resolved:` chapter lies after the range is still listed as closed: that is
+`thread_attach`'s rule, shared with planning.) There are no word budgets,
 and the last chunk's evidence is no longer attached to Active Quests (Party
 Current Situation keeps it).
 
