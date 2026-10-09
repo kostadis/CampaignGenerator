@@ -704,8 +704,7 @@ call).
 | `--force` | Re-extract every chunk, ignoring cache keys. |
 
 **A chunk must write all six sections.** The prompt requires all
-six sections, and a section with nothing to report is left empty or written
-`- (none)`, so a heading that is *absent* from the output is the model having
+six sections, and a section with nothing to report is written `- (none)`, so a heading that is *absent* from the output is the model having
 skipped it, not an empty answer (#515: a Haiku call returned only
 `## Events` and `## Concluded` and was recorded as `kept 45 dropped 0`). Such a
 chunk is a **failed chunk**, not a kept one: it is retried once like a failed
@@ -715,6 +714,10 @@ named in the run output (`chunk 004-004: output missing outline section(s) ## Wo
 in `state/notes/drops.md` (an *Incomplete chunks* block) and in the run record
 (`missing_sections`). The raw `chunkNN.….out.md` is kept so you can see what the
 model wrote. A present section holding only `- (none)`, or nothing, passes.
+The prompt now says this in so many words, and the prompt is part of the chunk cache key, so the first
+`extract` after upgrading re-reads every chunk. Until then `synth party` and `synth planning` refuse
+with `the party notes predate the subject grammar; run summary_native extract …`: the message is
+worded for the original grammar change, but it fires on any change of the extraction prompt.
 
 A cached chunk is re-checked from its raw output on every run, so one saved before
 this check existed is caught too: the run prints `cached INCOMPLETE: …`, makes **no
