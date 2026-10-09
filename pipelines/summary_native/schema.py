@@ -285,9 +285,17 @@ def missing_dossiers_file(doc: str) -> str:
     return MISSING_DOSSIERS_PLANNING_FILE if doc == "planning" else MISSING_DOSSIERS_FILE
 
 
+#: The documents whose chunked build measures prose against word budgets, and so writes a report.
+#: campaign_state has none: it must neither write nor delete a budget report (its name would collide with world_state's).
+BUDGET_DOCS: tuple[str, ...] = ("world_state", "party", "planning")
+
+
 def budget_report_file(doc: str) -> str:
     """The word-budget report beside ``doc``'s draft. world_state's keeps its name;
-    party and planning write their own (``GET /state`` reads all three), so one document's budgets never replace another's."""
+    party and planning write their own (``GET /state`` reads all three), so one document's budgets never replace another's.
+    Only the documents in ``BUDGET_DOCS`` have one: asking for any other (campaign_state) is a bug, not a path to ``budget_report.json``."""
+    if doc not in BUDGET_DOCS:
+        raise ValueError(f"{doc} has no word budgets, so no budget report (budgeted documents: {', '.join(BUDGET_DOCS)})")
     return f"budget_report.{doc}.json" if doc in ("party", "planning") else "budget_report.json"
 
 

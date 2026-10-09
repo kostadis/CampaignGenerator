@@ -1148,13 +1148,15 @@ def run_state_synth(
         atomic_write_text(drafts / "reference" / f"{kind}.md", md)
     if doc not in ("party", "planning"):
         atomic_write_text(drafts / schema.TIMELINE_FILE, state_sections.timeline_file_md(results))
-    # one file per document: planning's and party's budgets must not replace world_state's
-    budget_file = drafts / schema.budget_report_file(doc)
-    if budget_report:
-        atomic_write_text(budget_file, json.dumps(budget_report, indent=2, ensure_ascii=False) + "\n")
-    else:
-        # a run with nothing to report must not leave the previous build's numbers standing as "the last build"
-        budget_file.unlink(missing_ok=True)
+    # one file per document: planning's and party's budgets must not replace world_state's, and a document
+    # with no budgets (campaign_state) neither writes nor deletes one
+    if doc in schema.BUDGET_DOCS:
+        budget_file = drafts / schema.budget_report_file(doc)
+        if budget_report:
+            atomic_write_text(budget_file, json.dumps(budget_report, indent=2, ensure_ascii=False) + "\n")
+        else:
+            # a run with nothing to report must not leave the previous build's numbers standing as "the last build"
+            budget_file.unlink(missing_ok=True)
     record_ref = f"runs/{run_id}/record.json"
     if problems:
         target = drafts / f"{doc}.incomplete.md"
