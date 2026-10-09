@@ -294,3 +294,56 @@ test('a re-offered note says why it is back and its editor defaults to continuin
   expect(world.ratifies[0].thread).toBe('the-carvers-march')
   expect(world.ratifies[0].aliases_add).toEqual(['Carver march'])
 })
+
+test('unticking a note removes the name only it carries from the alias box; a name a ticked note shares stays (#529)', async ({ page }) => {
+  const world = await openPage(page)
+  // The plan the engine derives lists every member's name, the title's own spelling included.
+  await page.route(url => url.pathname === `${API}/plan`, route => route.fulfill({
+    json: { ...plan, aliases_add: ["The Carver's march", 'Carver march'] },
+  }))
+  await page.getByRole('button', { name: 'Run', exact: true }).click()
+  const c = card(page, CARVER)
+  await c.getByRole('button', { name: 'Ratify…' }).click()
+  const aliases = c.getByLabel('Aliases')
+  await expect(aliases).toHaveValue("The Carver's march\nCarver march")
+
+  // ch3 is the only "Carver march" note: its name leaves the box.
+  await c.getByLabel('Include Carver march ch3').uncheck()
+  await expect(aliases).toHaveValue("The Carver's march")
+  // ch4 shares "The Carver's march" with the still-ticked ch2: the name stays.
+  await c.getByLabel("Include The Carver's march ch4").uncheck()
+  await expect(aliases).toHaveValue("The Carver's march")
+  // ticking ch3 again puts its name back; unticking the last carrier of a name removes it.
+  await c.getByLabel('Include Carver march ch3').check()
+  await expect(aliases).toHaveValue("The Carver's march\nCarver march")
+  await c.getByLabel('Include Carver march ch3').uncheck()
+  await c.getByLabel("Include The Carver's march ch2").uncheck()
+  await c.getByLabel("Include The Carver's march ch4").check()
+  await expect(aliases).toHaveValue("The Carver's march") // ch4 carries it now
+
+  await c.getByRole('button', { name: 'Confirm' }).click()
+  await expect.poll(() => world.ratifies.length).toBe(1)
+  expect(world.ratifies[0].members).toEqual([N3.id])
+  expect(world.ratifies[0].aliases_add).toEqual(["The Carver's march"])
+})
+
+test('a ratified thread lists the notes a split held out of it, by chapter and name when the proposal still has them (#529)', async ({ page }) => {
+  const world = await openPage(page)
+  await page.route(url => url.pathname === `${API}/registry`, route => route.fulfill({
+    json: {
+      version: 1, count: 2,
+      threads: [
+        { id: 'the-carvers-march', title: "The Carver's march", status: 'open', aliases: ['Carver march'], log: [],
+          excluded_notes: [N3.id, 'n-reextracted'] },
+        { id: 'plain', title: 'A plain thread', status: 'open', aliases: [], log: [] },
+      ],
+    },
+  }))
+  world.proposals = [group('g-333333333333', 'single', N3.name, [N3], 'pending')]
+  await page.reload()
+  const held = page.locator('.thread', { hasText: "The Carver's march" }).locator('.excluded')
+  await expect(held).toContainText('Held out by a split')
+  await expect(held).toContainText(`ch4 The Carver's march (${N3.id})`)
+  await expect(held).toContainText('n-reextracted') // no proposal carries it: the bare id
+  await expect(page.locator('.thread', { hasText: 'A plain thread' }).locator('.excluded')).toHaveCount(0)
+})

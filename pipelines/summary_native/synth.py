@@ -186,6 +186,18 @@ def _detached_lines(proposals_path: Path | None, att: thread_attach.Attachment) 
     return thread_check.detached_lines(entries, thread_check.detached(entries, att.unattached))
 
 
+def _excluded_lines(proposals_path: Path | None, registry: dict, range_dir: Path) -> list[str]:
+    """Excluded notes (a split's ruling, #529) found in no range's notes, for ``threads_report.md``. Read-only;
+    an unreadable notes file or proposals file means nothing is judged."""
+    entries: list = []
+    if proposals_path is not None:
+        try:
+            entries = thread_check.load_proposals(proposals_path)
+        except (OSError, ValueError):
+            entries = []  # only the names in the lines come from here
+    return thread_check.excluded_stale_lines(registry, thread_check.known_note_ids(range_dir), entries)
+
+
 # ── world_state and campaign_state from checked notes (spec 033 T019) ───────
 
 #: world_state's sections are written within word budgets; campaign_state's are not.
@@ -1157,7 +1169,8 @@ def run_state_synth(
         plots_part = planning_parts.get("## Active Plots")
         detached_lines = _detached_lines(thread_proposals_path, attachment)
         atomic_write_text(drafts / "threads_report.md", thread_attach.threads_report_md(
-            attachment, (since, until), detached_lines) + "\n".join([
+            attachment, (since, until), detached_lines,
+            _excluded_lines(thread_proposals_path, thread_registry, range_dir)) + "\n".join([
             "", "## Active Plots entries replaced by code", "", *((plots_part.report if plots_part else []) or ["- (none)"]), ""]))
     # The files the sections point to. Written whether or not the draft is complete: they are
     # built by code from the checked notes and do not depend on the model.

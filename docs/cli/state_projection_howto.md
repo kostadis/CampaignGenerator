@@ -478,10 +478,13 @@ and the corpus, `extract` and `build` must be current first.
    the members (`thread_registry ratify --key g-… --emit-plan`; read-only). You can:
    - change the title, id and status (or pick *Continues a ratified thread*);
    - **untick a member to split it off**: it stays behind as a new pending group
-     with its own key, and the card says how many notes stay behind;
+     with its own key, and the card says how many notes stay behind (see "Splitting
+     a group" below for what the split also records on the thread);
    - edit the aliases (one per line). Every member name not already a title or alias
      is pre-filled; **these are what make the next build attach later notes by exact
-     match**, so strike any you do not want;
+     match**, so strike any you do not want. Unticking a member removes its name from
+     the box (unless a still-ticked member has the same name); ticking it again puts
+     it back;
    - edit, add or remove log rows (chapter, change, summary, citation).
    Nothing is written until **Confirm**, and what is written is the plan you posted.
    There is no one-click accept. Confirm is disabled with no member ticked.
@@ -535,6 +538,35 @@ note attaches again, the pending single leaves the queue, and the report says
 "pending proposal g-… (title): now attached to <thread>; dropped from the queue".
 A ratified member outside the run's range cannot be judged by that run and is left
 alone.
+
+**Splitting a group.** Ratify only some of a group's notes and the rest go back to
+the queue as a new pending proposal (`split_from` names the group). Two things keep the
+split true, because attachment is by exact name and a split-off note can carry the same
+bold name as one you ratified (the Drow Pursuit case, #529):
+
+- The ratified thread records the notes you left out as `excluded_notes: [n-…]` in
+  `docs/thread_registry.yaml`. `thread_attach` checks it **before** the name: an
+  excluded note never attaches to that thread, so it stays unattached and is offered
+  again for a ruling (it may still attach to another thread that claims its name). The
+  field is optional and additive: an older registry simply has none, `thread_registry
+  check` accepts it (and flags a value that is not a list of ids), and no migration is
+  needed. A second split of the remainder adds to the list. Ratifying an excluded note
+  **into the same thread** (the remainder's "continues <thread>") removes its id in that
+  same write; ratifying it into another thread leaves the exclusion where it is. The
+  Threads page lists a ratified thread's excluded notes ("Held out by a split").
+- `ratify` refuses (exit 2, nothing written) an `aliases_add` name that **only** a
+  left-out member carries: it would become an alias and attach the note you just split
+  off. The page already does this for you by dropping the name when you untick. A name a
+  ratified member shares is a legitimate alias (the exclusion holds the split-off note
+  out); a name that is already the thread's title or alias is skipped as before.
+
+Note ids belong to one extraction, so re-extracting a changed note gives it a new id and
+the exclusion stops holding for it. `thread-propose` says so, and never removes the id:
+"thread <id>: excluded note n-… is in no range's notes on disk (re-extracted?) — the split
+may no longer hold; re-check notes named <name>" (in the run's output, in
+`propose_report.md` under "Excluded notes no longer on disk (split may not hold)", and in
+`threads_report.md`). Nothing is judged when any checked-notes file is unreadable. Re-check
+the notes with that name; if the new note is not the thread, split it off again.
 
 **Settling a re-offered note.** Either put the alias back (`thread_registry alias
 --id <thread> --alias "<name>"`), or ratify the pending single. The Threads page

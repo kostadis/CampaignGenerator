@@ -30,9 +30,9 @@ from pathlib import Path
 
 import yaml
 
-from campaignlib.thread_registry import group_key
+from campaignlib.thread_registry import excluded_notes, group_key
 from campaignlib.util import atomic_write_text
-from pipelines.summary_native import notes, schema
+from pipelines.summary_native import notes, schema, thread_attach
 
 #: A report line that records something removed from a proposal. ``thread-propose`` counts them.
 DROPPED = "dropped"
@@ -378,6 +378,53 @@ def now_attached_lines(prior: Sequence | None, attached: Mapping[str, str], titl
             names = ", ".join(sorted({titles.get(attached[i]) or attached[i] for i in ids}))
             out.append(f"pending proposal {p['key']} ({p.get('title') or p.get('thread') or 'untitled'}): now attached "
                        f"to {names}; dropped from the queue")
+    return out
+
+
+def scan_note_ids(range_dir: Path) -> tuple[set[str] | None, list[Path]]:
+    """``(ids, unreadable)``: every thread-note id of every range's checked notes under the same output root.
+
+    Same glob as ``extract._range_cache``. An id is per extraction, so a note counts as gone only when its
+    id is in none of these. If any file cannot be read the set is incomplete, so ``ids`` is ``None``
+    (judge nothing gone or stale) and ``unreadable`` names the files.
+    """
+    ids: set[str] = set()
+    bad: list[Path] = []
+    for path in sorted(Path(range_dir).parent.glob("ch*-*/state/notes/*.checked.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            ids.update(n.note_id for n in thread_attach.thread_notes([notes.CheckedChunk.from_dict(data)]))
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            bad.append(path)
+    return (None if bad else ids), bad
+
+
+def known_note_ids(range_dir: Path) -> set[str] | None:
+    """The ids of :func:`scan_note_ids`, or ``None`` when any checked-notes file is unreadable."""
+    return scan_note_ids(range_dir)[0]
+
+
+def excluded_stale_lines(registry: Mapping | None, known: set[str] | None, entries: Sequence | None = None) -> list[str]:
+    """Report lines for a thread's ``excluded_notes`` id that is in no range's notes on disk (#529).
+
+    An id is per extraction (research R6): re-extracting a changed note gives it a new id, and the exclusion
+    stops holding for it, so a name match attaches the note again. Nothing here removes the id; the GM
+    re-checks the notes that carry the name. ``known`` is :func:`scan_note_ids`' set, ``None`` when any notes
+    file was unreadable, and then nothing is judged. ``entries`` (the proposals file) only supplies the note's
+    name; without it the thread's title stands in.
+    """
+    if known is None:
+        return []
+    names = {m["id"]: m.get("name") for p in group_entries(entries) for m in p.get("members") or ()
+             if isinstance(m, Mapping) and m.get("id") and m.get("name")}
+    out = []
+    for t in (registry or {}).get("threads") or ():
+        for nid in excluded_notes(t):
+            if nid not in known:
+                name = names.get(nid) or t.get("title") or t.get("id")
+                out.append(
+                    f"thread {t.get('id')}: excluded note {nid} is in no range's notes on disk (re-extracted?) — "
+                    f"the split may no longer hold; re-check notes named {name}")
     return out
 
 

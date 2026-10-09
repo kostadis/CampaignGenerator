@@ -66,6 +66,16 @@ def match_threads(data: dict, title: str) -> list[dict]:
     return found
 
 
+def excluded_notes(thread: dict) -> list[str]:
+    """The note ids the GM ruled are not this thread (``excluded_notes``, #529); ``[]`` when none.
+
+    Written by ``thread_registry ratify --key`` when a group is split: the notes left out of the ratified
+    subset. An attachment by name never overrides it. Optional and additive, so an older registry has none.
+    """
+    raw = thread.get("excluded_notes")
+    return [x for x in raw if isinstance(x, str)] if isinstance(raw, list) else []
+
+
 def match_thread(data: dict, title: str) -> dict | None:
     """Exact normalised title/alias match against the registry (the first, when several match)."""
     found = match_threads(data, title)
@@ -96,6 +106,9 @@ def check_registry(data: dict) -> list[str]:
                 errors.append(f"{tid}: title/alias {name!r} collides with "
                               f"thread {seen_norms[key]!r}")
             seen_norms[key] = tid
+        ex = t.get("excluded_notes")
+        if ex is not None and (not isinstance(ex, list) or not all(isinstance(x, str) and x for x in ex)):
+            errors.append(f"{tid}: excluded_notes must be a list of note ids ({ex!r})")
         for row in t.get("log") or []:
             if row.get("change") not in CHANGES:
                 errors.append(f"{tid}: bad log change {row.get('change')!r}")

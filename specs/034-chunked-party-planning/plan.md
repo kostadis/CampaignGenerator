@@ -208,7 +208,7 @@ No constitution violations to justify.
 - **Thread proposals:**
   - **#524:** a pending group spanning the range edge loses its out-of-range notes.
   - **#525 (done):** a ratified member left unattached by a removed alias is reported ("ratified but no longer attached (alias removed?)") and offered again as a pending single.
-  - **#529:** a split-off note that shares a ratified name attaches anyway.
+  - **#529 (done):** a split-off note that shares a ratified name attaches anyway. `ratify --key` records the left-out notes as the thread's `excluded_notes`; `thread_attach` honours them before the name; an alias carried only by a left-out member is refused; an excluded id found on no disk is reported, never removed.
 - **#526:** the arc-score "states a value" check is an untuned regex. Tightened with a verdict table (`arc_value_check.md`); measuring it on real Out of the Abyss output is still open.
 - **#527 (done):** subject-less prose in Party Overview and Dynamics now takes the `Party` subject and is stale-checked against the whole-party notes; it is not paired by the cross-section check.
 - **#528 (done):** Annotate follows the document picker, and `GET /state` carries `budgets` for world_state, party and planning, shown in one panel.

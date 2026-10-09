@@ -5,6 +5,10 @@ title or alias equals the note's bold name after ``campaignlib.thread_registry.n
 that key is the whole rule, never similarity. A name that two threads claim is **ambiguous**: reported,
 and the note stays unattached.
 
+A thread's ``excluded_notes`` (note ids the GM split off when ratifying a group, #529) are checked *before*
+the name: an excluded note never attaches to that thread, whatever its name. It may still attach to another
+thread that claims the name; if only the excluding thread does, it stays unattached and is offered again.
+
 Whether an attached thread is open is code's decision too (FR-009a). A registry status the GM set to
 ``dormant``, ``resolved`` or ``abandoned`` wins; a status of ``open`` (the default) defers to the latest
 attached note, open meaning its tag is ``OPENED`` or ``ADVANCED``. The latest note is the one with the
@@ -21,7 +25,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
-from campaignlib.thread_registry import match_threads, norm_title
+from campaignlib.thread_registry import excluded_notes, match_threads, norm_title
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import notes, schema
 
@@ -134,7 +138,8 @@ def attach(results: Sequence[notes.CheckedChunk], registry: dict | None) -> Atta
         by_note[n.note_id] = None
         if not n.subject or not norm_title(n.subject):
             continue
-        found = match_threads(data, n.subject)
+        # The GM's "this note is not this thread" beats name identity (#529).
+        found = [t for t in match_threads(data, n.subject) if n.note_id not in excluded_notes(t)]
         if len(found) == 1:
             tid = found[0].get("id")
             by_note[n.note_id] = tid
@@ -207,10 +212,12 @@ def write_attach(range_dir: Path, att: Attachment, rng) -> Path:
     return path
 
 
-def threads_report_md(att: Attachment, rng, detached: Sequence[str] = ()) -> str:
+def threads_report_md(att: Attachment, rng, detached: Sequence[str] = (), excluded: Sequence[str] = ()) -> str:
     """``threads_report.md``: the ratified threads with notes in the range (open or not, and why), the
     names two threads claim, the ratified proposal members no thread claims any more (``detached``: lines
-    from ``thread_check.detached_lines``) and how many notes no thread claims. Deterministic."""
+    from ``thread_check.detached_lines``), the split-off notes an exclusion holds out of a thread that are in no
+    range's notes any more (``excluded``: ``thread_check.excluded_stale_lines``) and how many notes no thread
+    claims. Deterministic."""
     since, until = _range_of(rng)
     lines = [
         "# Threads report", "",
@@ -232,5 +239,7 @@ def threads_report_md(att: Attachment, rng, detached: Sequence[str] = ()) -> str
         lines.append("- (none)")
     lines += ["", "## Ratified but no longer attached (alias removed?)", ""]
     lines += [f"- {ln}" for ln in detached] or ["- (none)"]
+    lines += ["", "## Excluded notes no longer on disk (split may not hold)", ""]
+    lines += [f"- {ln}" for ln in excluded] or ["- (none)"]
     lines += ["", "## Unattached", "", f"{len(att.unattached)} unattached thread note(s).", ""]
     return "\n".join(lines)

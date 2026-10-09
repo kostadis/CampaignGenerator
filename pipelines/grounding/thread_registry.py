@@ -80,6 +80,7 @@ from campaignlib.thread_registry import (  # noqa: F401  (re-exported: the CLI's
     CHANGES,
     STATUSES,
     check_registry,
+    excluded_notes,
     find_thread,
     group_key,
     load_registry,
@@ -706,6 +707,9 @@ def derive_group_plan(pr: dict, data: dict | None = None) -> dict:
     no title; so does a ``single`` that ``thread-propose`` re-offered (``reoffer.thread``) while that thread
     still exists. ``--plan`` stays required for a write, so this cannot become an "accept as proposed"
     button (SC-004).
+
+    ``aliases_add`` covers *every* member, so a plan whose ``members`` is narrowed to a subset (a split) must
+    narrow it too: ``ratify`` refuses a name carried only by the members left out (#529).
     """
     ms = _members_in_order(pr)
     log = []
@@ -844,6 +848,8 @@ def cmd_ratify_group(args) -> None:
 
     # An alias is a name a later note will attach by: it must not already belong to another thread.
     names = {norm_title(n) for n in [target.get("title") or ""] + list(target.get("aliases") or [])}
+    covered = {norm_title(m.get("name") or "") for m in have if m.get("id") in want}
+    left_out = {norm_title(m.get("name") or ""): m for m in have if m.get("id") not in want}
     added_aliases = 0
     for alias in aliases_add:
         alias = alias.strip()
@@ -854,6 +860,14 @@ def cmd_ratify_group(args) -> None:
                              f"(its title or an alias) — a name belongs to one thread")
         if norm_title(alias) in names:
             continue
+        # A name only a split-off note carries would attach that note next run: the GM just ruled it is not
+        # this thread. A name a ratified member shares is fine; the exclusion below keeps the split-off note out.
+        if norm_title(alias) in left_out and norm_title(alias) not in covered:
+            only = [m["id"] for m in have if m.get("id") not in want and norm_title(m.get("name") or "") == norm_title(alias)]
+            print(f"error: alias {alias!r} is carried only by {', '.join(only)}, which this ratification "
+                  f"leaves out — it would attach {'it' if len(only) == 1 else 'them'} to the thread; "
+                  f"remove it from aliases_add (or include the note)", file=sys.stderr)
+            raise SystemExit(2)  # a refusal of the plan, as summary_native's exit 2; nothing has been written
         names.add(norm_title(alias))
         target.setdefault("aliases", []).append(alias)
         added_aliases += 1
@@ -879,6 +893,16 @@ def cmd_ratify_group(args) -> None:
     if skipped:
         notes_out.append(f"note: already logged on {target['id']!r}, not duplicated: {', '.join(skipped)}")
     target["log"].sort(key=lambda r: (r.get("chapter", 0), r.get("change", "")))
+
+    # The notes left out of this ratification are the GM's ruling "not this thread". A shared name would attach
+    # them anyway, so the ruling lives on the thread (`excluded_notes`, read by `thread_attach` before the name).
+    # A note ratified into the thread now leaves the list: ratifying it is the GM changing their mind.
+    excluded = [x for x in excluded_notes(target) if x not in want]
+    excluded += [m["id"] for m in have if m.get("id") and m["id"] not in want and m["id"] not in excluded]
+    if excluded:
+        target["excluded_notes"] = excluded
+    else:
+        target.pop("excluded_notes", None)
 
     errors = check_registry(data)
     if errors:
@@ -918,7 +942,8 @@ def cmd_ratify_group(args) -> None:
     print(f"ok: ratified {args.key} -> thread {target['id']!r} "
           f"({appended} log row(s) added, {added_aliases} alias(es) added)")
     if remainder:
-        print(f"split: {len(remainder)} note(s) remain pending as {group_key([m['id'] for m in remainder])}")
+        print(f"split: {len(remainder)} note(s) remain pending as {group_key([m['id'] for m in remainder])}; "
+              f"thread {target['id']!r} will not attach them by name (excluded_notes)")
 
 
 # ── read verbs (machine-readable; the server parses nothing) ─────────────

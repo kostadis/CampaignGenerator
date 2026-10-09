@@ -1139,7 +1139,7 @@ and the last chunk.
 |---|---|
 | `drafts/planning.draft.md`, `drafts/reference/{factions,npcs,threads,threads_unratified}.md` | The document and the four reference files its reading contract names. `threads_unratified.md` holds the unattached thread notes verbatim (it exists, saying none, when there are none). |
 | `drafts/planning_npcs_report.md` | Per NPC: model line / substituted by the dossier's sentence / fallback; and the Faction States selection and replacements. |
-| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, ratified proposal members that no longer attach (alias removed?), the unattached count, and each Active Plots entry code replaced. |
+| `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, ratified proposal members that no longer attach (alias removed?), split-off notes whose exclusion id is on no disk, the unattached count, and each Active Plots entry code replaced. |
 | `threads/attach.json` | Code's map: note id → thread id, `"ambiguous"` or `null`. |
 | `drafts/arc_report.md`, `budget_report.planning.json`, `annotations.md`, `missing_dossiers.planning.json` | As described here and in Step 5b. |
 
@@ -1205,6 +1205,17 @@ remove one of those aliases, the notes it attached are unattached again: the nex
 `thread-propose` offers them again as pending single-note proposals and lists them
 under "Ratified but no longer attached (alias removed?)" in `propose_report.md`
 (and `threads_report.md`).
+
+**Splitting a group.** Ratify a subset and the rest return to the queue as a new pending
+proposal. The notes you left out are recorded on the ratified thread as `excluded_notes`
+(`docs/thread_registry.yaml`, optional, no migration), and attachment honours that
+**before** the name, so a split-off note that shares a ratified member's bold name stays
+unattached and offered instead of being pulled back in. Ratifying it into the same thread
+later lifts its exclusion. `ratify` refuses (exit 2) a name in `aliases_add` that only a
+left-out member carries. A re-extraction gives a note a new id, so an exclusion whose id is
+on no disk is named ("excluded note n-… is in no range's notes on disk (re-extracted?)") in
+`propose_report.md` and `threads_report.md`, never removed. See
+[Splitting a group](state_projection_howto.md#grouping-proposals-from-summary-native).
 
 ### Arc-score candidates
 
