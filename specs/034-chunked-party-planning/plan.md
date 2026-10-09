@@ -210,7 +210,7 @@ No constitution violations to justify.
   - **#525:** removing an alias leaves notes unattached and unflagged.
   - **#529:** a split-off note that shares a ratified name attaches anyway.
 - **#526:** the arc-score "states a value" check is an untuned regex.
-- **#527:** subject-less prose in Party Overview and Dynamics escapes the stale and cross-section detectors.
+- **#527 (done):** subject-less prose in Party Overview and Dynamics now takes the `Party` subject and is stale-checked against the whole-party notes; it is not paired by the cross-section check.
 - **#528:** the summary-native page has no Annotate action for party and no budget panels for party and planning.
 - **kostadis/campaigns#385:** drops `parts: 0` from OOTA's `grounding.yaml`. Merge it before or with this feature.
 - **#512:** incremental rebuild (extract cache across ranges). **#515:** a chunk missing a section passes the check. Both are inherited.
