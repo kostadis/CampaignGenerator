@@ -24,12 +24,131 @@ CITE_NOT_IN_NOTES = "cite-not-in-notes"
 TRIGGER_NOT_VERBATIM = "trigger not verbatim"
 STATES_A_VALUE = "states a value"
 
-#: A value, a running total or a threshold crossed (research R10). Applied to the event text only, with its
-#: citations removed: the trigger is the GM's own words from the mechanic file, which may well say "score".
-VALUE_RE = re.compile(
-    r"\b(score|total|value|points?)\b[^.]{0,30}\d|\bnow (?:at )?\d|\bthreshold\b[^.]{0,30}(?:reached|crossed|met)",
+# --- "states a value" (research R10, tuned in #526) -------------------------------------------------------
+#
+# A candidate must never put a current value, a running total or a threshold crossed in front of the GM as if
+# it were decided. A miss does exactly that; a false positive only costs one candidate, which ``arc_report.md``
+# lists with its reason. So every rule below errs towards dropping. Applied to the event text only, with its
+# citations removed: the trigger is the GM's own words from the mechanic file, which may well say "score".
+# ``tests/test_summary_native_arc.py`` carries the table of verdicts; ``specs/034-chunked-party-planning/
+# arc_value_check.md`` records it.
+
+#: Units a bare number is almost always counting (money, distance, time, hit points), never a score.
+_UNITS = (
+    r"(?:gp|sp|cp|pp|ep|gold|silver|copper|platinum|coins?|hp|feet|foot|ft|miles?|yards?|inch(?:es)?|lbs?|"
+    r"pounds?|bells?|o'?clock|a\.?m\.?|p\.?m\.?|seconds?|minutes?|hours?|days?|nights?|weeks?|months?|years?|"
+    r"rounds?|turns?)"
+)
+#: A number that is not an ordinal ("3rd"), not followed by a unit ("500 gp", "2 bells") and not the house number
+#: of an address ("3 Waterdeep Lane": a capital letter follows).
+_NUM = rf"\d+(?:\.\d+)?\b(?!\s*{_UNITS}\b)(?!\s+(?-i:[A-Z]))"
+_WORDNUM = r"(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
+#: What can follow a number for it to be the end of a statement: a stop, a clause break, or a counter noun.
+#: A bare number-word ("to one", "at three") is only read as a value with this behind it.
+_TAIL = (
+    r"(?=\s*(?:$|[,.;:)\]!?/%]|[—–]|\b(?:and|but|of|out|so far|already|points?|strikes?|marks?|ticks?|"
+    r"stages?|steps?|stacks?)\b))"
+)
+#: A digit run anywhere, or a number word only as the end of a clause (a move verb already says "this is a counter").
+_NUM_LOOSE = rf"(?:{_NUM}|{_WORDNUM}\b{_TAIL})"
+_NUM_END = rf"(?:{_NUM}{_TAIL}|{_WORDNUM}\b{_TAIL})"
+#: Verbs that move a counter; "<verb> (it|the score|…) to N" and "<verb> … by N".
+_MOVE = (
+    r"(?:push|rais|bump|drop|lower|increas|decreas|reduc|ris|ros|rise|rose|climb|advanc|jump|fall|fell|"
+    r"tip|grow|grew|shoot|shot|rack)\w*"
+)
+_SET_IT = r"(?:bring|brought|tak|mov|send|sent|put|set|get|got|lift|tick)\w*\s+(?:it|that|this|the (?:score|total|count|tally|number|meter|clock|track))"
+
+_VALUE_PATTERNS = (
+    # "score is now 3", "total reaches 5", "value rises to 2", "gains points, bringing it to 6". A number
+    # inside the window that is an ordinal ("3rd gate"), a unit ("2 bells") or an address does not count.
+    rf"\b(?:score|total|values?|points)\b[^.\d]{{0,30}}\b{_NUM}",
+    rf"\b(?:\d+|{_WORDNUM})\s+points?\b",  # "gains 2 points", "gains one point"
+    # "now at 4", "now 4", "is now at level 3": 'now' + the number as the end of the clause. "now sees 3
+    # banners" and "now at 3 Waterdeep Lane" are not.
+    rf"\bnow\b(?:\s+(?:is|are|at|on|stands?|sits?|reads?|=))*\s+(?:at\s+)?{_NUM_END}",
+    # "stands at 3", "reaches 5", "totals 4", "currently 2", "sits at 3 strikes"
+    rf"\b(?:stands?|sits?|standing|sitting|currently|reach(?:es|ed)?|totals?|totalled|totaled|equals?)\b(?:\s+(?:at|on|is|=))?\s+{_NUM_END}",
+    # "pushes it to 5", "drops to 2", "climbs up to 4": a counter-moving verb a few words before "to N"
+    rf"\b{_MOVE}\b(?:\s+\w+){{0,3}}?\s+(?:up\s+|down\s+)?to\s+(?:a\s+|an\s+)?{_NUM_LOOSE}",
+    rf"\b{_SET_IT}\s+(?:up\s+|down\s+)?to\s+(?:a\s+|an\s+)?{_NUM_LOOSE}",
+    # "rises by 2", "pushes the count up by 1"
+    rf"\b{_MOVE}\b(?:\s+\w+){{0,3}}?\s+by\s+{_NUM_LOOSE}",
+    # a signed delta: "Wrath +2", "a +1", "Wrath -1", "Wrath−2". Plus needs no space before; minus must
+    # stand alone ("level-3" and "Daz-2" are not deltas).
+    r"(?:^|[\s(\w])\+\s?\d+\b",
+    rf"(?:^|\s)[-−–]\d+\b(?!\s*{_UNITS}\b)",
+    # a fraction: "(2/3)", "strike 2/3". "2 of 3 strikes" only when a counter noun carries it.
+    r"\d+\s*/\s*\d+",
+    r"\b(?:strikes?|marks?|ticks?|stages?|steps?|warnings?|stacks?|charges?)\s+(?:is |are |at )?\d+\s+(?:of|out of)\s+\d+",
+    # a threshold crossed: "the threshold is reached", "crosses the threshold", "the threshold of 5"
+    r"\bthreshold\b[^.]{0,30}(?:reached|crossed|met|exceeded|passed|hit|triggered)",
+    r"\b(?:reach|cross|meet|exceed|pass|hit|trip|break)\w*\s+(?:the\s+|his\s+|her\s+|its\s+|their\s+)?(?:\w+\s+)?threshold\b(?!\s+(?:of|to|into)\b)",
+    rf"\bthreshold\b[^.\d]{{0,20}}\b{_NUM}",
+)
+#: What may sit between a score's own name and its number: "Obsession now at 4", "Obsession total reaches 5",
+#: "Obsession: 4", "Obsession is at level 3". Filler is short on purpose; a name alone is not a value.
+_NAME_FILLER = (
+    r"(?:\s*[:=]|\s+(?:'s\s+)?(?:score|total|value|points?|level|stage|rank|tier|tally|count|meter|"
+    r"is|are|was|now|currently|stands?|sits?|rises?|climbs?|reaches|hits|goes|jumps|moves|at|to|by|on|up|down)\b)"
+)
+
+#: Words before "arc/score/…" in a mechanic file that are not the score's name.
+_NOT_A_NAME = frozenset(
+    "the this that each every his her their its our your my a an of for and or but arc score track tracker meter "
+    "counter clock pool tally current running total final new whole entire overall character characters npc faction "
+    "when if per one any all only single same next last first main player party story campaign session long short "
+    "gm dm with without while what which how".split()
+)
+#: ``Obsession arc``, ``the Obsession score``, ``his obsession meter``: the word before the noun, a name when it
+#: is capitalised or follows an article/possessive.
+_NAME_RE = re.compile(
+    r"\b(?:(?-i:(?P<cap>[A-Z][\w'’-]{2,}))|(?:the|his|her|its|their)\s+(?P<low>[a-z][\w'’-]{3,}))\s+"
+    r"(?:arc|score|track|tracker|meter|counter|clock|tally|pool)\b",
     re.I,
 )
+
+_VALUE_RE = re.compile("|".join(f"(?:{p})" for p in _VALUE_PATTERNS), re.I)
+
+
+def score_names(mechanic_text: str) -> frozenset[str]:
+    """The score names a mechanic file uses for itself ("Obsession arc" -> ``obsession``), folded.
+
+    Read from free prose, so it is a hint, not an authority: it only widens what counts as a stated value
+    (``Obsession climbs to 4``), and a wrong name costs a candidate at most.
+    """
+    found = set()
+    for m in _NAME_RE.finditer(mechanic_text or ""):
+        w = (m.group("cap") or m.group("low") or "").strip("'’-").casefold()
+        if len(w) >= 3 and w not in _NOT_A_NAME:
+            found.add(w)
+    return frozenset(found)
+
+
+def _name_re(names: Iterable[str]) -> re.Pattern | None:
+    """``<name> [filler] <number>`` / ``<name> +N`` for the mechanic file's own score names, or None."""
+    alts = "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True))
+    if not alts:
+        return None
+    return re.compile(
+        rf"\b(?:{alts})\b(?:'s|’s)?(?:{_NAME_FILLER}){{0,3}}\s*(?:{_NUM}|{_WORDNUM}\b{_TAIL}|\s*[+−–-]\s?\d)"
+        rf"|\b(?:{alts})\b[^.]{{0,30}}\bthreshold\b",
+        re.I,
+    )
+
+
+def states_a_value(event: str, names: Iterable[str] = ()) -> bool:
+    """Does ``event`` (citations already removed) state a current value, a running total or a threshold crossed?
+
+    ``names`` are the mechanic file's score names (``score_names``); with them, "<name> … N" is a value too.
+    Deliberately over-eager: a false positive costs one listed candidate, a miss puts a number in front of the GM.
+    """
+    if _VALUE_RE.search(event):
+        return True
+    rx = _name_re(names)
+    return bool(rx and rx.search(event))
+
+
 #: ``- <event> [cite] — trigger: "<trigger>"``. The dash may be an em dash, an en dash or hyphens.
 _LINE_RE = re.compile(r"^-\s+(?P<event>.*?)\s*[—–-]+\s*trigger:\s*[\"“](?P<trigger>.*)[\"”]\s*\.?\s*$", re.I)
 #: A trigger shorter than this is not evidence of anything: it would be "verbatim" in almost any file.
@@ -111,6 +230,7 @@ def check_candidates(text: str, subject_cites: Iterable[str], mechanic_text: str
     allowed: set[str] = set()
     for c in subject_cites:
         allowed |= _parts(c)
+    names = score_names(mechanic_text)
     kept: list[str] = []
     drops: list[Drop] = []
     for raw in (text or "").splitlines():
@@ -127,7 +247,7 @@ def check_candidates(text: str, subject_cites: Iterable[str], mechanic_text: str
             reasons.append(CITE_NOT_IN_NOTES)
         if not trigger or len(trigger) < MIN_TRIGGER_CHARS or npc_check._contains(mechanic_text or "", trigger) is None:
             reasons.append(TRIGGER_NOT_VERBATIM)
-        if VALUE_RE.search(schema.STATE_CITE_RE.sub("", event)):
+        if states_a_value(schema.STATE_CITE_RE.sub("", event), names):
             reasons.append(STATES_A_VALUE)
         if reasons:
             drops.append(Drop(ln, tuple(reasons)))
