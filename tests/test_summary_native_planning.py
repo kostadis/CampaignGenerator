@@ -292,17 +292,29 @@ class TestActivePlots:
     def test_no_dormant_heading_without_a_dormant_thread(self):
         assert schema.DORMANT_HEADING not in plots(attach_with(CARVER), {"carver-march": "x [ch 004 / 004.01]"}).text
 
-    def test_the_unratified_block_holds_every_unattached_note_verbatim_in_chapter_order_with_its_count(self):
+    def test_the_unratified_block_is_one_pointer_line_and_the_notes_are_in_the_reference_file(self):
         att = attach_with(CARVER)  # the signet ring's two notes belong to no ratified thread
         out = plots(att, {"carver-march": "x [ch 004 / 004.01]"})
         block = out.text.split(schema.UNRATIFIED_HEADING + "\n", 1)[1]
         assert block.startswith("_2 checked thread notes are not in the thread registry.")
-        assert "/grounding/threads" in block and "thread-propose" in block
-        lines = [ln for ln in block.splitlines() if ln.startswith("- ")]
+        assert "reference/threads_unratified.md" in block
+        assert "/grounding/threads" in block and "thread-propose" in block and "ratify" in block
+        assert len(block.strip().splitlines()) == 1
+        assert "signet" not in block.lower() and "\n- [" not in block
+        ref = state_sections.unratified_reference_md(att)
+        assert ref.startswith("# Reference: ") and "2 checked thread notes" in ref
+        lines = [ln for ln in ref.splitlines() if ln.startswith("- ")]
         assert lines == [
             "- [OPENED] **The signet ring** — Ilvara leaves a signet ring at the fire. [ch 002 / 002.02]",
             "- [RESOLVED] **The signet ring** — Nobody could say what became of the ring. [ch 004 / 004.02]",
         ]
+        assert state_sections.unratified_reference_md(att) == ref
+
+    def test_no_unratified_notes_leaves_a_reference_file_that_says_none(self):
+        att = attach_with(CARVER, RING_DORMANT)
+        ref = state_sections.unratified_reference_md(att)
+        assert ref.startswith("# Reference: ") and "0 checked thread notes" in ref and schema.NONE_VERIFIED in ref
+        assert "_0 checked thread notes are not" in plots(att, {"carver-march": "x [ch 004 / 004.01]"}).text
 
     def test_an_empty_registry_says_no_thread_is_ratified_and_lists_every_note_as_unratified(self):
         att = thread_attach.attach(cp.checked_results(), registry())
@@ -310,7 +322,8 @@ class TestActivePlots:
         assert out.text.startswith(schema.NO_RATIFIED_THREADS)
         assert "### " not in out.text.split(schema.UNRATIFIED_HEADING)[0]
         assert "_5 checked thread notes are not in the thread registry." in out.text
-        assert out.text.count("\n- [") == 5
+        assert out.text.count("\n- [") == 0
+        assert state_sections.unratified_reference_md(att).count("\n- [") == 5
 
     def test_an_absent_registry_is_the_same_as_an_empty_one(self):
         assert plots(thread_attach.attach(cp.checked_results(), None)).text == plots(
@@ -711,7 +724,10 @@ class TestSynthPlanning:
         assert synth_planning(root)[0] == 0
         block = section(draft_text(root), "## Active Plots").split(schema.UNRATIFIED_HEADING + "\n", 1)[1]
         assert block.startswith("_2 checked thread notes are not in the thread registry.")
-        assert "- [OPENED] **The signet ring** — Ilvara leaves a signet ring at the fire. [ch 002 / 002.02]" in block
+        assert "signet" not in block.lower() and "reference/threads_unratified.md" in block
+        ref = (drafts(root) / "reference" / "threads_unratified.md").read_text()
+        assert ref.startswith("# Reference: ") and "2 checked thread notes" in ref
+        assert ref.index("Ilvara leaves a signet ring") < ref.index("Nobody could say what became")
 
     def test_an_empty_registry_builds_and_says_no_thread_is_ratified(self, pcamp):
         root, pm = pcamp
@@ -749,14 +765,29 @@ class TestSynthPlanning:
         assert "| NPC | Status |" in user and "Ilvara Mizzrym" in user  # the status table
         assert "EVIDENCE OF THE LAST CHUNK" in user
 
-    def test_the_references_are_factions_npcs_and_threads_only(self, pcamp):
+    def test_the_references_are_factions_npcs_threads_and_unratified_threads_only(self, pcamp):
         root, _ = pcamp
         assert synth_planning(root)[0] == 0
-        assert sorted(p.name for p in (drafts(root) / "reference").iterdir()) == ["factions.md", "npcs.md", "threads.md"]
+        assert sorted(p.name for p in (drafts(root) / "reference").iterdir()) == [
+            "factions.md", "npcs.md", "threads.md", "threads_unratified.md"]
         text = draft_text(root)
-        for kind in ("npcs", "factions", "threads"):
+        for kind in ("npcs", "factions", "threads", "threads_unratified"):
             assert f"reference/{kind}.md" in text
         assert not (drafts(root) / schema.TIMELINE_FILE).exists()
+
+    def test_a_promoted_planning_bundle_passes_check_pointers_and_names_the_missing_unratified_file(self, pcamp):
+        import shutil
+        from pipelines.summary_native.pointers import check_paths
+        root, _ = pcamp
+        assert synth_planning(root)[0] == 0
+        target = root / "reviewed" / "grounding"
+        shutil.copytree(drafts(root), target)
+        document = target / "planning.draft.md"
+        assert "reference/threads_unratified.md" in document.read_text()
+        assert check_paths(document, root) == []
+        (target / "reference" / "threads_unratified.md").unlink()
+        problems = check_paths(document, root)
+        assert len(problems) == 1 and "threads_unratified.md" in problems[0]
 
     def test_attach_json_and_threads_report_are_written(self, pcamp):
         root, _ = pcamp
@@ -802,7 +833,7 @@ class TestSynthPlanning:
         write_registry(root, registry(CARVER, RING_DORMANT))
         assert synth_planning(root)[0] == 0
         names = ("planning.draft.md", "planning_npcs_report.md", "threads_report.md", "reference/factions.md",
-                 "reference/npcs.md", "reference/threads.md")
+                 "reference/npcs.md", "reference/threads.md", "reference/threads_unratified.md")
         first = {n: (drafts(root) / n).read_bytes() for n in names}
         attach_first = (cp.range_dir(root) / "state" / "threads" / "attach.json").read_bytes()
         assert synth_planning(root, "--force")[0] == 0

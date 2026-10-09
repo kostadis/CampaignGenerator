@@ -492,7 +492,7 @@ and the corpus, `extract` and `build` must be current first.
    and can still be ratified or rejected.
 
 A group ratified once cannot be ruled on again. The next `synth planning` build
-reads the registry, so the notes you ratified move from *Unratified thread notes*
+reads the registry, so the notes you ratified move from *Unratified thread notes* (`reference/threads_unratified.md`)
 into Active Plots (or *Dormant threads*, if you set that status).
 
 The name-keyed harvest and the group proposals share one proposals file

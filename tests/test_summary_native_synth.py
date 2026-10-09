@@ -920,7 +920,7 @@ class TestPromotedBundlesAreCheckedAgainstTheirOwnContract:
         return target, target / f"{doc}.draft.md"
 
     @pytest.mark.parametrize("doc,kinds,timeline", [
-        ("party", ["party"], False), ("planning", ["factions", "npcs", "threads"], False),
+        ("party", ["party"], False), ("planning", ["factions", "npcs", "threads", "threads_unratified"], False),
         ("world_state", ["factions", "items", "locations", "npcs", "threads", "threats"], True),
     ])
     def test_the_contract_names_exactly_the_files_that_document_points_to(self, four, doc, kinds, timeline):

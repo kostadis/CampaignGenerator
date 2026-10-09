@@ -138,4 +138,7 @@ Run on a scratch copy of the campaign (config + docs). Extraction on both Sparks
 | **Secrets canary** | marker added to `alaundo-the-seer.md`'s `## Secrets`; Alaundo is in planning (4 mentions) and the marker is in **no** draft, report or recorded prompt (**SC-003 ✅**) |
 | **SC-007** | party + planning from cached notes ≈ **110 s**, zero extraction calls ✅ |
 
-**Open decisions for the GM:** SC-006 (party over the one-shot's size; planning's unratified block) and SC-002a (proposal recall).
+**GM rulings (2026-10-09):**
+- **Unratified notes:** they move to `reference/threads_unratified.md`. Rebuilt, planning is **20,340** chars and the reference file 53,613. Active Plots keeps the heading with the count (301) and pointers. `check-pointers` resolves every pointer.
+- **Size:** party (22.8K) and planning (20.3K) are both accepted as built; SC-006 is amended to bound each by its budgets.
+- **Proposals:** precision over recall; the one-third target in SC-002a is dropped.

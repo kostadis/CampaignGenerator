@@ -317,7 +317,7 @@ docs/summary_native/ch<since>-<until>/
   disclaimed figure. Companions have no section but are seen by the overview and dynamics.
 - **Thread identity comes from the registry.** `thread_attach` attaches a thread note to a ratified thread of
   `docs/thread_registry.yaml` by exact title or alias, and decides open or dormant; Active Plots is built from
-  that, with the dormant and unratified notes in code-built blocks of their own. The extractor's own thread
+  that, with the dormant notes in a code-built block of their own and the unratified notes in `reference/threads_unratified.md` (Active Plots carries only their count and a pointer). The extractor's own thread
   names are not identity (554 names, 550 seen once, on Out of the Abyss). `thread-propose` (a model step; its
   output is checked by `thread_check`) groups the unattached notes into proposals, and only a GM ratification
   (`thread_registry ratify --key`) writes the registry.

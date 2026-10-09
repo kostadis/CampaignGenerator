@@ -385,7 +385,7 @@ documented:
   is never changed; the only removals are a player character listed as a companion and a Faction States
   block named for a player character. For party and planning it scans the model-written prose lines as
   well as bullets, and skips what code built or what is not a claim: the Threat Tracker, NPC Dossiers,
-  Active Plots' dormant and unratified blocks, and the `#### Candidate Arc Score Events` subsection.
+  Active Plots' dormant and unratified blocks (the latter is one pointer line; the notes are in `reference/threads_unratified.md`), and the `#### Candidate Arc Score Events` subsection.
   `tests/test_annotate_never_rewrites.py` fails the build if a non-removed line's text differs after
   annotation, and `annotate` is AST-guarded no-LLM so a model cannot reword a line after the code check.
 - **A draft is output, not a document.** Everything is written under `<range>/state/`, never to

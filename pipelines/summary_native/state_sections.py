@@ -132,8 +132,9 @@ _DOSSIERS = """\
 _THREADS = """\
 > - `## Active Plots` lists the threads the GM has ratified in `docs/thread_registry.yaml`, newest activity first,
 >   each written from its checked notes. `{dormant}` lists the ones the GM marked dormant, as their latest note,
->   verbatim. `{unratified}` lists checked thread notes that no ratified thread owns, verbatim: evidence, not
->   plots. Rule on them at `/grounding/threads` (the proposals queue is `docs/ensemble/thread_proposals.yaml`).
+>   verbatim. `{unratified}` counts the checked thread notes that no ratified thread owns; the notes themselves,
+>   verbatim and in chapter order, are in `{unratified_file}`: evidence, not plots. Rule on them at
+>   `/grounding/threads` (the proposals queue is `docs/ensemble/thread_proposals.yaml`).
 """
 
 _FILES = "> - Every checked note, by subject: {files}.\n"
@@ -145,13 +146,16 @@ _TAIL = """\
 > - Anything this document does not settle is a decision for the GM, not something to fill in.
 """
 
+#: ``reference/threads_unratified.md``: planning's unattached thread notes (FR-009b), not a World-tag kind.
+UNRATIFIED_KIND = "threads_unratified"
+
 #: The reference files each document's contract lists, in order (research R13). world_state lists
 #: all six kinds; the other documents name only the files they point to.
 CONTRACT_REFERENCES: dict[str, tuple[str, ...]] = {
     "world_state": tuple(REFERENCE_KINDS),
     "campaign_state": ("threads",),
     "party": ("party",),
-    "planning": ("factions", "npcs", "threads"),
+    "planning": ("factions", "npcs", "threads", UNRATIFIED_KIND),
 }
 #: The section whose lines point to a published dossier, for the documents that have one.
 _DOSSIER_SECTION = {"world_state": "## Key NPCs", "planning": "## NPC Dossiers"}
@@ -179,7 +183,8 @@ def reading_contract(rng: tuple[int, int], paths: dict[str, str], doc: str = "wo
     if doc in _DOSSIER_SECTION:
         text += _DOSSIERS.format(section=_DOSSIER_SECTION[doc], fallback=schema.KEY_NPC_FALLBACK_MARK)
     if doc == "planning":
-        text += _THREADS.format(dormant=schema.DORMANT_HEADING, unratified=schema.UNRATIFIED_HEADING)
+        text += _THREADS.format(dormant=schema.DORMANT_HEADING, unratified=schema.UNRATIFIED_HEADING,
+                                unratified_file=f"{ref}/{UNRATIFIED_KIND}.md")
     text += _FILES.format(files=", ".join(f"`{ref}/{kind}.md`" for kind in CONTRACT_REFERENCES[doc]))
     if doc == "world_state":
         text += _TIMELINE.format(timeline=paths["timeline"])
@@ -596,6 +601,16 @@ class ActivePlots:
     model_text: str
 
 
+def unratified_reference_md(att: "thread_attach.Attachment") -> str:
+    """``reference/threads_unratified.md``: every unattached thread note, verbatim, in chapter order (FR-009b)."""
+    ns = sorted(att.unattached, key=lambda n: n.first_chapter)  # stable: extraction order within a chapter
+    lines = ["# Reference: Threads, unratified", "",
+             f"{len(ns)} checked thread notes, no ratified thread owns them, chapter order. "
+             "Built by code from the checked notes; nothing is reworded.", ""]
+    lines += [x.text for x in ns] if ns else [schema.NONE_VERIFIED]
+    return "\n".join(lines) + "\n"
+
+
 def active_plots_md(
     att: "thread_attach.Attachment", bodies: Mapping[str, str | None], reasons: Mapping[str, str] | None = None,
 ) -> ActivePlots:
@@ -605,7 +620,8 @@ def active_plots_md(
     Entries are the *open* ratified threads, newest activity first, as ``att`` orders them; an entry whose
     body is missing is the thread's latest attached note, verbatim. Then ``### Dormant threads`` (only if
     a thread is dormant), each as its title and latest note, verbatim, built without a model; then the
-    unratified notes, verbatim in chapter order, with their count. With no open thread the ratified part is
+    unratified block (the count and two pointers; the notes are in ``reference/threads_unratified.md``,
+    see ``unratified_reference_md``). With no open thread the ratified part is
     one code line: ``NO_RATIFIED_THREADS`` when no ratified thread has notes at all, ``NO_OPEN_THREADS``
     when some have but none is open.
     """
@@ -636,6 +652,7 @@ def active_plots_md(
     head = [
         schema.UNRATIFIED_HEADING,
         f"_{n} checked thread note{'s' if n != 1 else ''} {'are' if n != 1 else 'is'} not in the thread registry. "
+        f"Verbatim, in chapter order, in reference/{UNRATIFIED_KIND}.md. "
         "They are evidence, not plots: rule on them at /grounding/threads "
         "(or `summary_native thread-propose`, then `thread_registry ratify`)._",
     ]
@@ -644,8 +661,5 @@ def active_plots_md(
         head.append(
             f"_{k} thread name{'s' if k != 1 else ''} below {'are' if k != 1 else 'is'} claimed by more than one "
             f"ratified thread and stay unattached: {', '.join(sorted(att.ambiguous))}._")
-    block = "\n".join(head)
-    if att.unattached:
-        block += "\n\n" + "\n".join(x.text for x in att.unattached)
-    parts.append(block)
+    parts.append("\n".join(head))
     return ActivePlots("\n\n".join(parts), report, len(report), len(kept), "\n".join(kept))

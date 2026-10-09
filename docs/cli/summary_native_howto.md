@@ -1089,8 +1089,12 @@ those names is a plot list. Thread identity is the GM's
 2. **`### Dormant threads`**: threads you marked `dormant` that have notes in the
    range, as `- **title** — latest note, verbatim`. A code-built block of its own;
    no model call. *(GM ruling.)*
-3. **`### Unratified thread notes (not yet ruled on)`**: every checked thread
-   note no ratified thread owns, verbatim, with a count. Evidence, not plots.
+3. **`### Unratified thread notes (not yet ruled on)`**: one italic line, built
+   by code: the count of checked thread notes no ratified thread owns, a pointer
+   to `reference/threads_unratified.md`, and a pointer to the proposals queue.
+   The notes themselves (verbatim, chapter order) are in that reference file,
+   not in planning *(GM ruling 2026-10-09: listed in full they made planning 73K
+   characters against the one-shot's 12.5K)*. Evidence, not plots.
 
 With no ratified thread that has notes in the range the first layer is the line
 `_No ratified thread has notes in this range._`; with some but none open it is
@@ -1107,7 +1111,7 @@ and the last chunk.
 
 | File (under `state/`) | Holds |
 |---|---|
-| `drafts/planning.draft.md`, `drafts/reference/{factions,npcs,threads}.md` | The document and the three reference files its reading contract names. |
+| `drafts/planning.draft.md`, `drafts/reference/{factions,npcs,threads,threads_unratified}.md` | The document and the four reference files its reading contract names. `threads_unratified.md` holds the unattached thread notes verbatim (it exists, saying none, when there are none). |
 | `drafts/planning_npcs_report.md` | Per NPC: model line / substituted by the dossier's sentence / fallback; and the Faction States selection and replacements. |
 | `drafts/threads_report.md` | Ratified threads with notes in range (open, dormant or closed, and why), ambiguous names, the unattached count, and each Active Plots entry code replaced. |
 | `threads/attach.json` | Code's map: note id → thread id, `"ambiguous"` or `null`. |
@@ -1115,7 +1119,7 @@ and the last chunk.
 
 ### Thread proposals — grouping the notes nobody owns
 
-The unratified block is the queue of notes that need a decision. Three commands
+The unratified notes (`reference/threads_unratified.md`) are the queue of notes that need a decision. Three commands
 move them into the registry, and the model is only in the first:
 
 ```bash
@@ -1321,7 +1325,7 @@ Two promises are specific to party and planning:
 - **Arc scores are never stated.** The documents list candidate events with a
   quoted trigger; the score, its total and its threshold are the GM's.
   Planning's Active Plots lists only threads the GM has ratified; the rest sit in
-  the unratified block as evidence, and dormant threads in their own block.
+  the unratified notes in `reference/threads_unratified.md` (planning carries only their count), and dormant threads in their own block.
 
 The markers mean: `⚠ later:` is newer information about the same subject (where
 they conflict, the later one wins); `ℹ since:` is the later status of someone the
@@ -1547,7 +1551,7 @@ summary_native synth planning --since 2 --until 70     # needs published dossier
 ```
 
 Before ratifying anything there, `synth planning` still works: with an empty
-registry every thread note lands under "Unratified thread notes".
+registry every thread note lands in `reference/threads_unratified.md`, counted under "Unratified thread notes".
 
 **7. Compare each draft against what is live.**
 

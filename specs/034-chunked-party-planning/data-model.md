@@ -27,6 +27,7 @@ Spec 033's layout and entities (chunk, note, drop record, run record, reference 
 └── drafts/
     ├── party.draft.md                       # reading contract + sections (+ annotations)
     ├── planning.draft.md
+    ├── reference/threads_unratified.md      # NEW (planning): every unattached thread note, verbatim, chapter order; a counts line; says none when empty
     ├── reference/party.md                   # NEW: party notes by attributed character, plus Companions and Unattributed
     ├── party_report.md                      # NEW: attribution (unattributed subjects, companions), level source per character
     ├── planning_npcs_report.md              # NEW: like key_npcs_report.md (model / substituted / fallback per NPC)
@@ -41,6 +42,7 @@ docs/ensemble/thread_proposals.yaml          # existing path (projections.yaml t
 **Promotion** stays manual:
 - `party.draft.md` becomes `docs/party.md`, and `planning.draft.md` becomes `docs/planning.md`.
 - `reference/party.md` joins `docs/reference/`.
+- planning's reading contract lists four reference files (`factions`, `npcs`, `threads`, `threads_unratified`); promote all four beside `planning.md`.
 
 ## Entities
 
@@ -127,8 +129,8 @@ docs/ensemble/thread_proposals.yaml          # existing path (projections.yaml t
 ### Dormant threads
 <code-built, only when a ratified thread with notes in the range has registry status `dormant`: "- **{title}** — {latest attached note text, verbatim, with its citation}", newest first; no model call>
 ### Unratified thread notes (not yet ruled on)
-_{N} checked thread notes are not in the thread registry. They are evidence, not plots: rule on them at /grounding/threads (or `summary_native thread-propose`, then `thread_registry ratify`)._
-<every unattached thread note, verbatim, chapter order>
+_{N} checked thread notes are not in the thread registry. Verbatim, in chapter order, in reference/threads_unratified.md. They are evidence, not plots: rule on them at /grounding/threads (or `summary_native thread-propose`, then `thread_registry ratify`)._
+(no notes are listed here: FR-009b, GM ruling 2026-10-09; they are in reference/threads_unratified.md)
 ```
 When the registry has no thread with notes in the range, the ratified part is the single line `_No ratified thread has notes in this range._`; when ratified threads have notes but none is open, it is the `NO_OPEN_THREADS` line instead
 

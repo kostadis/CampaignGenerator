@@ -781,10 +781,11 @@ def run_state_synth(
         table, status_report = state_sections.npc_status_table(results, forms, pcs, ambiguous)
         reference = state_sections.reference_files(results, forms)
     if doc == "planning":
-        # planning points at three reference files only (its reading contract lists them), and builds its
+        # planning points at four reference files only (its reading contract lists them), and builds its
         # Threat Tracker, the pointers and the thread layers by code; thread identity is the GM's registry.
         reference = {k: v for k, v in reference.items() if k in state_sections.CONTRACT_REFERENCES["planning"]}
         code_body["## Threat Tracker"] = state_sections.threat_tracker_md(planning.entries, None, root=root)
+        reference[state_sections.UNRATIFIED_KIND] = state_sections.unratified_reference_md(attachment)
         thread_attach.write_attach(range_dir, attachment, (since, until))
     elif doc == "world_state":
         code_body[_TIMELINE_HEADING] = state_sections.timeline_pointer(results, since, until)
