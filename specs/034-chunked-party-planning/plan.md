@@ -204,6 +204,14 @@ No constitution violations to justify.
 
 ## Follow-ups (outside this feature)
 
-- campaign_state's thread sections read the thread registry once OOTA's registry is ratified, replacing the model reading the whole ledger.
+- **#530:** campaign_state's thread sections read the thread registry once OOTA's registry is ratified, replacing the model reading the whole ledger.
+- **Thread proposals:**
+  - **#524:** a pending group spanning the range edge loses its out-of-range notes.
+  - **#525:** removing an alias leaves notes unattached and unflagged.
+  - **#529:** a split-off note that shares a ratified name attaches anyway.
+- **#526:** the arc-score "states a value" check is an untuned regex.
+- **#527:** subject-less prose in Party Overview and Dynamics escapes the stale and cross-section detectors.
+- **#528:** the summary-native page has no Annotate action for party and no budget panels for party and planning.
+- **kostadis/campaigns#385:** drops `parts: 0` from OOTA's `grounding.yaml`. Merge it before or with this feature.
 - **#512:** incremental rebuild (extract cache across ranges). **#515:** a chunk missing a section passes the check. Both are inherited.
 - The ensemble-fact harvest (`thread_registry propose --corpus`) stays for campaigns on the ensemble path; retire it when no campaign uses it.
