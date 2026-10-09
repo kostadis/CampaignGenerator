@@ -9,6 +9,7 @@ proposal. Deterministic, no model call; guarded by ``tests/test_summary_native_n
 A proposal is a *group entry* in the proposals file::
 
     key: g-<12 hex>      # campaignlib.thread_registry.group_key of the sorted member ids
+    reoffer: {from_group, thread}   # single only, optional: a ratified member whose alias was removed (#525)
     kind: new | continues | single
     title: ...           # new and single: a suggestion the GM edits
     thread: <id>         # continues only
@@ -143,7 +144,8 @@ def offered(unattached: Sequence[notes.Note], prior: Sequence | None) -> list[no
     """
     rejected, deferred = excluded_ids(prior)
     ratified = ratified_ids(prior)
-    return [n for n in unattached if n.note_id not in rejected | deferred | ratified]
+    excluded = rejected | deferred | ratified
+    return [n for n in unattached if n.note_id not in excluded]
 
 
 # ── The check ───────────────────────────────────────────────────────────────
@@ -183,6 +185,13 @@ def check_groups(
     ratified = ratified_ids(prior)
     # A ratified single's key is the key of the same note offered again, and a key must name one entry.
     taken = {p["key"] for p in group_entries(prior) if p.get("status") == "ratified"}
+    # Where a detached note came from (the latest ratification wins): the Threads page defaults its card to
+    # "continues <thread>" and says why the note is back. Additive: an older reader ignores the field.
+    came_from = {}
+    for p in group_entries(prior):
+        if p.get("status") == "ratified":
+            for i in _member_ids(p):
+                came_from[i] = {"from_group": p["key"], **({"thread": p["ruled_thread"]} if p.get("ruled_thread") else {})}
     can_group = {n.note_id for n in offered(ordered, prior)}
     registry_ids = {t.get("id") for t in (registry or {}).get("threads") or ()}
     attached = attached or {}
@@ -274,21 +283,24 @@ def check_groups(
     for n in ordered:
         if n.note_id in used or n.note_id in deferred:
             continue
-        groups.append(_single(member_of(n), "", taken))
+        groups.append(_single(member_of(n), "", taken, came_from.get(n.note_id)))
 
     groups.sort(key=lambda g: (position[g["members"][0]["id"]], g["key"]))
     return groups, lines
 
 
-def _single(member: dict, title: str, taken=()) -> dict:
+def _single(member: dict, title: str, taken=(), reoffer: dict | None = None) -> dict:
     """A single-note proposal; its key is ``group_key([id])`` unless ``taken`` already holds that key."""
     key, n = group_key([member["id"]]), 1
     while key in taken:
         key, n = group_key([member["id"], f"re-offered-{n}"]), n + 1
-    return {
+    out = {
         "key": key, "kind": "single",
         "title": title or member.get("name") or (member.get("text") or "")[:60] or member["id"], "members": [member],
     }
+    if reoffer:
+        out["reoffer"] = reoffer
+    return out
 
 
 def stale_ratified(prior: Sequence | None, note_ids: set[str], since: int, until: int) -> list[str]:

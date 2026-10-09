@@ -263,3 +263,34 @@ test('Reject and Defer rule by key, one group per act', async ({ page }) => {
   expect(world.rules[1]).toEqual({ key: CARVER, status: 'deferred' })
   expect(world.rules.every(r => !('norm' in r))).toBe(true)
 })
+
+test('a re-offered note says why it is back and its editor defaults to continuing the thread it left (#525)', async ({ page }) => {
+  const world = await openPage(page)
+  const REOFFER = 'g-444444444444'
+  await page.route(url => url.pathname === `${API}/registry`, route => route.fulfill({
+    json: { version: 1, threads: [{ id: 'the-carvers-march', title: "The Carver's march", status: 'open', aliases: [], log: [] }], count: 1 },
+  }))
+  await page.route(url => url.pathname === `${API}/plan`, route => route.fulfill({
+    json: {
+      thread: 'the-carvers-march', aliases_add: ['Carver march'], members: [N2.id],
+      log: [{ chapter: 3, change: 'advanced', summary: N2.text, cite: N2.cite }],
+    },
+  }))
+  world.proposals = [
+    group(REOFFER, 'single', 'Carver march', [N2], 'pending', { reoffer: { from_group: CARVER, thread: 'the-carvers-march' } }),
+    group(RING, 'single', 'The signet ring', [N4]),
+  ]
+  await page.reload()
+  const c = card(page, REOFFER)
+  await expect(c.locator('.reoffer')).toContainText("alias removed from The Carver's march")
+  await expect(card(page, RING).locator('.reoffer')).toHaveCount(0) // an ordinary single says nothing
+
+  await c.getByRole('button', { name: 'Ratify…' }).click()
+  await expect(c.getByLabel('Continues thread')).toHaveValue('the-carvers-march')
+  await expect(c.getByLabel('Thread title')).toHaveCount(0) // not a new thread
+  await expect(c.getByLabel('Aliases')).toHaveValue('Carver march') // the alias that was removed comes back
+  await c.getByRole('button', { name: 'Confirm' }).click()
+  await expect.poll(() => world.ratifies.length).toBe(1)
+  expect(world.ratifies[0].thread).toBe('the-carvers-march')
+  expect(world.ratifies[0].aliases_add).toEqual(['Carver march'])
+})

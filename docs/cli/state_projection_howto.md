@@ -536,6 +536,18 @@ note attaches again, the pending single leaves the queue, and the report says
 A ratified member outside the run's range cannot be judged by that run and is left
 alone.
 
+**Settling a re-offered note.** Either put the alias back (`thread_registry alias
+--id <thread> --alias "<name>"`), or ratify the pending single. The Threads page
+shows why the card is back ("alias removed from <thread>?") and opens its editor on
+"continues <thread>", with the note's name already in the alias box; `ratify --key`
+records every name in the plan's `aliases_add` (the plan now lists *every* member name,
+including one equal to a new thread's title, which ratifying skips), so one
+ratification restores the alias and the note attaches on the next build. If you
+ratify it under a new title or another thread, its name becomes an alias of that
+thread. A re-offered single carries an optional `reoffer: {from_group, thread}` field
+that only the Threads page and `--emit-plan` read; it is additive, an older reader
+ignores it, and no migration is needed.
+
 ### A thread you accepted keeps coming back — on purpose
 
 Accepting a thread at chapter 41 does not silence it. When later chapters

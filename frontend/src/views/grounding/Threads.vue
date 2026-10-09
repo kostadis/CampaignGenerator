@@ -95,6 +95,8 @@ interface GroupProposal {
   source?: string
   note?: string
   ruled_thread?: string
+  /** A ratified member whose alias was removed, offered again by `thread-propose` (#525). Optional. */
+  reoffer?: { from_group?: string; thread?: string }
 }
 /** `GET /threads/plan` — what `thread_registry ratify --key K --emit-plan` prints. */
 interface GroupPlan {
@@ -924,6 +926,11 @@ const addAlias = (t: Thread) => {
           <code>{{ g.key }}</code>
         </div>
         <p v-if="g.ruled_thread" class="muted small">ratified as thread <code>{{ g.ruled_thread }}</code></p>
+        <p v-if="g.reoffer" class="muted small reoffer">
+          Back in the queue: this note was ratified{{ g.reoffer.thread ? ` into ${threadTitle(g.reoffer.thread)}` : '' }}
+          but its name no longer attaches (alias removed{{ g.reoffer.thread ? ` from ${threadTitle(g.reoffer.thread)}` : '' }}?).
+          Ratify it into that thread to restore the alias, or put the alias back with <code>thread_registry alias</code>.
+        </p>
         <ul class="evidence">
           <li v-for="m in g.members" :key="m.id">
             <span class="ev-ch">ch{{ m.chapter ?? '—' }}</span>

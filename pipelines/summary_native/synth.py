@@ -181,7 +181,7 @@ def _detached_lines(proposals_path: Path | None, att: thread_attach.Attachment) 
         return []
     try:
         entries = thread_check.load_proposals(proposals_path)
-    except ValueError as e:
+    except (OSError, ValueError) as e:  # a directory, permissions, or YAML: a warning, never a failed build
         return [f"warning: cannot read the proposals file, so no ratified member was checked: {e}"]
     return thread_check.detached_lines(entries, thread_check.detached(entries, att.unattached))
 
