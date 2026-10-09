@@ -122,3 +122,20 @@ Use a scratch copy of `planning.yaml` / `party.yaml` with one NPC arc score and 
 Each action produces the same files as its CLI equivalent.
 
 Record the results in this file under "Validation", as T061 did for spec 033.
+
+## Validation (2026-10-09, Out of the Abyss copy, ch002–070)
+
+Run on a scratch copy of the campaign (config + docs). Extraction on both Sparks with `qwen3.8-flash-next` (the GM's choice for this run); prose and proposals on `claude-sonnet-5-5` at medium effort through `claude-code`.
+
+| Step | Result |
+|---|---|
+| **S0** one-shot baselines (main @ 1a75c64) | party **9,377** chars (66 s); planning **12,451** chars (43 s) |
+| **S1** extract, two Sparks, qwen3.8 | 60 chunks in **955 s**; kept **2,788**, dropped 231 (uncited 200, malformed-row 24, level-not-in-cited-text 3, quoted-span-not-found 3, outside-chunk 1); **0 missing-party-subject**. Six outlier chunks flagged. Found and fixed: qwen3.8 writes `**[LEVEL] Daz**` (tag inside the bold); now parsed as a level row (b97ae15). Level rows confirmed: Party 2, 4, 7, 8, **9 [ch 063 / 063.06]** and the four PCs at 4 (ch 016) |
+| **S2** party | 67 s; every section within budget; **level 9 cited on all four PCs (SC-001 ✅)**; 452 party notes → 273 to a PC, 139 whole-party, 40 to 13 companions, **0 unattributed**; "Thorin" reaches "Thorin Giantfriend" through the registry; annotations 13 later, 16 since, 2 unverified, 0 removed. Size **22,774** chars — **SC-006 ❌** (2.4× the one-shot) |
+| **S3** thread-propose, empty registry | 16 s; 311 notes, 290 names, 275 seen once; **31 groups, 247 proposals (216 single) — SC-002a ❌** (target ≤ 104); 0 dropped. The groups made were sound (Drow Pursuit, Pudding King, Jimjar's True Nature, Janussi Murder Investigation); the prompt's "leave a note out rather than guess" keeps recall low |
+| **S3** ratify round trip (copy only) | three groups ratified (one retitled, one split + set dormant), `check` 0 problems; re-run: **10 notes attached by exact name, no model**; 205 proposals (165 single). Found: a split-off note sharing a ratified member's name attaches anyway (**#529**) |
+| **S4** planning | default settings **refuse** (6 NPCs without a usable dossier, each named with its state and the fix commands — as world_state); with `--fallback-npc-lines` 41–42 s. Threat Tracker = sentinel (no arc scores configured); 15 NPC entries, 20 factions written; Active Plots: ratified open threads newest first, `### Dormant threads`, then 301 unratified notes verbatim. Annotation flagged Buppido's plan (open from ch 007) with `ℹ since:` Buppido dead ch 018. Size **73,105** chars — **SC-006 ❌**, almost all of it the unratified block; the rest is near the one-shot's size |
+| **Secrets canary** | marker added to `alaundo-the-seer.md`'s `## Secrets`; Alaundo is in planning (4 mentions) and the marker is in **no** draft, report or recorded prompt (**SC-003 ✅**) |
+| **SC-007** | party + planning from cached notes ≈ **110 s**, zero extraction calls ✅ |
+
+**Open decisions for the GM:** SC-006 (party over the one-shot's size; planning's unratified block) and SC-002a (proposal recall).
