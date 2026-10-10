@@ -5,7 +5,6 @@ import { useConfigStore } from '../../stores/config'
 import { useGroundingRun } from '../../composables/useGroundingRun'
 import PathField from '../../components/shared/PathField.vue'
 import RunPanel from '../../components/shared/RunPanel.vue'
-import ReviewLauncher from '../../components/ReviewLauncher.vue'
 import GroundingPromotion from '../../components/GroundingPromotion.vue'
 import GroundingClaims from '../../components/GroundingClaims.vue'
 
@@ -729,13 +728,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ReviewLauncher context="grounding" />
   <div class="page">
     <div class="page-header">
       <h2>Summary-native</h2>
       <p class="subtitle">
         Build grounding-document drafts directly from reviewed session summaries &mdash; no extraction pass.
-        Drafts are written for review. The whole-bundle panel previews publication without changing live documents.
+        Drafts are written for review. Claims review and whole-bundle promotion follow the drafts, below; the
+        review queue, sign-offs and private reviewer links are on the <RouterLink to="/grounding/review">Shared review</RouterLink> page.
       </p>
     </div>
 
@@ -743,16 +742,6 @@ onMounted(async () => {
       Current server-saved claims selection: <code>{{ sharedClaimsSelection }}</code>
     </p>
 
-    <GroundingPromotion
-      :since="typeof rangeSince === 'number' ? rangeSince : null"
-      :until="typeof rangeUntil === 'number' ? rangeUntil : null"
-      :review-id="sharedClaimsReview" :check-report-path="sharedClaimsReport"
-      @review-changed="sharedClaimsReview=$event" />
-    <GroundingClaims
-      :since="typeof rangeSince === 'number' ? rangeSince : null"
-      :until="typeof rangeUntil === 'number' ? rangeUntil : null"
-      :review-id="sharedClaimsReview" @review-changed="sharedClaimsReview=$event"
-      @selection-saved="claimsSelectionSaved" @report-ready="sharedClaimsReport=$event" />
 
     <div class="form-grid">
       <!-- Authority: the CLI owns every decision and mutation.  This panel only
@@ -1396,6 +1385,18 @@ onMounted(async () => {
         </span>
       </div>
     </div>
+
+    <!-- After drafts exist: claims review, then whole-bundle publication. -->
+    <GroundingClaims
+      :since="typeof rangeSince === 'number' ? rangeSince : null"
+      :until="typeof rangeUntil === 'number' ? rangeUntil : null"
+      :review-id="sharedClaimsReview" @review-changed="sharedClaimsReview=$event"
+      @selection-saved="claimsSelectionSaved" @report-ready="sharedClaimsReport=$event" />
+    <GroundingPromotion
+      :since="typeof rangeSince === 'number' ? rangeSince : null"
+      :until="typeof rangeUntil === 'number' ? rangeUntil : null"
+      :review-id="sharedClaimsReview" :check-report-path="sharedClaimsReport"
+      @review-changed="sharedClaimsReview=$event" />
   </div>
 </template>
 

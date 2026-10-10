@@ -82,6 +82,11 @@ const routes = [
         name: 'summary-native',
         component: () => import('./views/grounding/SummaryNative.vue'),
       },
+      {
+        path: 'review',
+        name: 'shared-review',
+        component: () => import('./views/grounding/SharedReview.vue'),
+      },
     ],
   },
   {

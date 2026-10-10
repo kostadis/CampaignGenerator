@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 const props = defineProps<{ context: 'npc' | 'grounding'; selected?: string[] }>()
 const reviewId=ref(''), selection=ref(''), bundle=ref(''), grant=ref(''), transaction=ref(''), plan=ref('')
 const host=ref('127.0.0.1'), port=ref(8766), origin=ref('http://127.0.0.1:8766'), generation=ref(1)
@@ -29,7 +30,9 @@ async function requestStream(path:string, payload:object) {
 }
 const rid=()=>encodeURIComponent(reviewId.value.trim())
 function openCapability(){if(capabilityUrl.value) window.open(capabilityUrl.value,'_blank','noopener,noreferrer')}
-function openWholeBundlePromotion(){document.querySelector('[data-test="grounding-promotion-preview"]')?.scrollIntoView({behavior:'smooth',block:'start'})}
+const router=useRouter()
+// The promotion panel lives on the Summary-native page, not beside this launcher.
+async function openWholeBundlePromotion(){await router.push('/grounding/summary-native');await nextTick();setTimeout(()=>document.querySelector('[data-test="grounding-promotion-preview"]')?.scrollIntoView({behavior:'smooth',block:'start'}),100)}
 </script>
 <template>
   <section class="review-launcher" aria-labelledby="review-launcher-title">
