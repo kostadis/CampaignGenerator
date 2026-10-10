@@ -8,6 +8,11 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:4173',
     viewport: { width: 1280, height: 720 },
     trace: 'retain-on-failure',
+    // Ubuntu 26.04 is not yet served by Playwright's bundled Chromium build;
+    // CI and developers can opt into a system Chrome without changing specs.
+    ...(process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH
+      ? { launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH } }
+      : {}),
   },
   projects: [
     {

@@ -18,6 +18,7 @@ are separate and skip cleanly when ``~/src/campaigns`` is absent.
 from __future__ import annotations
 
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import pytest
@@ -146,3 +147,56 @@ def _dummy_anthropic_key(monkeypatch):
     monkeypatch means a test's own `setenv`/`delenv` runs after this and wins.
     """
     monkeypatch.setenv("ANTHROPIC_API_KEY", DUMMY_ANTHROPIC_KEY)
+
+
+# ── scheduler feature seams (#549) ─────────────────────────────────────────
+
+@dataclass
+class FakeSchedulerEndpoint:
+    """Deterministic in-process endpoint used by scheduler contract tests.
+
+    It deliberately records every dispatch and exposes a mutable failure plan;
+    tests never need a listening HTTP server merely to exercise queue policy.
+    """
+
+    endpoint_id: str
+    responses: dict[str, object] = field(default_factory=dict)
+    calls: list[str] = field(default_factory=list)
+
+    def call(self, item_id: str):
+        self.calls.append(item_id)
+        response = self.responses.get(item_id, item_id)
+        if isinstance(response, BaseException):
+            raise response
+        return response
+
+
+@pytest.fixture
+def scheduler_endpoints():
+    return {
+        "alpha": FakeSchedulerEndpoint("alpha"),
+        "bravo": FakeSchedulerEndpoint("bravo"),
+    }
+
+
+@pytest.fixture
+def scheduler_clock():
+    """A monotonic clock controlled by the test, with no wall-clock sleeps."""
+    now = [0.0]
+
+    def clock() -> float:
+        return now[0]
+
+    def advance(seconds: float) -> None:
+        now[0] += seconds
+
+    clock.advance = advance  # type: ignore[attr-defined]
+    return clock
+
+
+@pytest.fixture
+def no_model_sleep(monkeypatch):
+    """Keep final-call retry classification tests fast and deterministic."""
+    import time
+
+    monkeypatch.setattr(time, "sleep", lambda _seconds: None)

@@ -8,8 +8,10 @@ Config is resolved AFTER ``parse_args`` because ``find_default_config`` raises.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
+import time
 from pathlib import Path
 
 import yaml
@@ -25,7 +27,9 @@ from pipelines.summary_native import annotate, audit, freshness
 from pipelines.summary_native import compare as compare_mod
 from pipelines.summary_native import corpus, duplicates, extract, npc_authored, npc_compose, npc_config, npc_draft, npc_forms, npc_link
 from pipelines.summary_native import npc_publish, npc_verify, parse, resolve, schema, synth, thread_propose
+from pipelines.summary_native.concurrency import resolve_concurrency
 from pipelines.summary_native.freshness import check_fresh
+from pipelines.summary_native.scheduler import EndpointState, Scheduler, WorkItem
 from pipelines.summary_native.validate import ValidationRefusal, scan
 
 SUBCOMMANDS = ("validate", "build", "extract", "audit", "synth", "annotate", "compare", "thread-propose", "npc-link", "npc-draft", "npc-compose", "npc-verify", "npc-publish", "check-pointers")
@@ -121,8 +125,10 @@ def build_parser() -> argparse.ArgumentParser:
                            help="Multiple OpenAI-compatible endpoints sharing one queue of chunks "
                                 "(one worker per endpoint, work-stealing). --backend dgx only; "
                                 "all must serve --model, checked before any call.")
-            p.add_argument("--parallel", type=_positive_int, default=schema.DEFAULT_EXTRACT_PARALLEL, metavar="N",
-                           help="Concurrent in-flight chunk requests per endpoint (default %(default)s; 1 = sequential).")
+            p.add_argument("--parallel", type=_positive_int, default=None, metavar="N",
+                           help="Concurrent in-flight calls per endpoint; omission uses the selected DGX model declaration or fallback 6.")
+            p.add_argument("--resume", nargs="?", const="", default=None, metavar="RUN_ID",
+                           help="resume the only compatible incomplete run, or this explicit run id")
         if name.startswith("npc-") or name == "synth":
             p.add_argument("--npc-root", default=None,
                            help="NPC output root (default: npc_dossiers.yaml npc_root, else "
@@ -152,10 +158,16 @@ def build_parser() -> argparse.ArgumentParser:
             p.add_argument("--chunk-chars", type=int, default=None,
                            help="chunked mode: chunk size limit in characters "
                                 f"(default: npc_dossiers.yaml draft.chunk_chars, else {schema.DEFAULT_CHUNK_CHARS})")
+            p.add_argument("--endpoints", nargs="+", default=None, metavar="URL")
+            p.add_argument("--parallel", type=_positive_int, default=None, metavar="N")
+            p.add_argument("--resume", nargs="?", const="", default=None, metavar="RUN_ID")
             # no parser default: precedence is flag > npc_dossiers.yaml draft.backend > schema
             add_backend_args(p, default_backend=None)
         if name == "npc-verify":
             p.add_argument("--name", nargs="+", default=None, metavar="NAME", help="limit to these NPCs")
+            p.add_argument("--parallel", type=_positive_int, default=None, metavar="N",
+                           help="local deterministic verification workers")
+            p.add_argument("--resume", nargs="?", const="", default=None, metavar="RUN_ID")
         if name == "npc-publish":
             p.add_argument("--name", nargs="+", action="extend", default=None, metavar="NAME", help="publish these NPCs")
             p.add_argument("--all", dest="all_", action="store_true", help="every NPC with a GM dossier in range")
@@ -491,6 +503,9 @@ def _resolve_draft_args(args, config_path: Path) -> None:
     args.chunk_chars = args.chunk_chars if args.chunk_chars is not None else draft.chunk_chars
     if args.chunk_chars < 1:
         raise ValueError("--chunk-chars must be a positive integer")
+    args.concurrency = resolve_concurrency(explicit=args.parallel, backend=args.backend, model=args.model)
+    if args.endpoints and args.backend != "dgx":
+        raise ValueError(f"--endpoints applies to --backend dgx only, not {args.backend}")
 
 
 def _npc_link(args, root: Path, config_path: Path, report, range_dir: Path, summaries_dir: Path,
@@ -592,6 +607,10 @@ def _npc_stage(args, root: Path, config_path: Path, cfg: dict, report, range_dir
         return _npc_publish(args, root, report, npc_range_dir, aliases, registry_npcs)
     if args.command == "npc-verify":
         return _npc_verify(args, root, report, npc_range_dir, aliases)
+    if args.resume is not None and args.force:
+        return _err("--resume cannot be combined with --force")
+    if args.resume is not None and args.dump_only:
+        return _err("--resume cannot be combined with --dump-only")
     try:
         _resolve_draft_args(args, config_path)
     except ValueError as e:
@@ -613,6 +632,28 @@ def _npc_stage(args, root: Path, config_path: Path, cfg: dict, report, range_dir
         default_recent=_npc_config(config_path).recent_chapters,
         default_recurring=_npc_config(config_path).recurring_min,
     )
+
+
+def _verify_inputs(root: Path, report, draft_dir: Path, evidence: dict, stems: list[str]):
+    """Read-only verification inputs, including optional hand-authored manuals."""
+    manuals = {
+        stem: npc_authored.load_manual(
+            npc_compose.authored_path_for(root, evidence[stem].subject), evidence[stem].subject)
+        for stem in stems
+    }
+    ctx = npc_verify.load_context(root, report)
+    keys = {
+        stem: hashlib.sha256(((draft_dir / f"{stem}.md").read_text(encoding="utf-8") + evidence[stem].sha256 + "\n" + "\n".join(manuals[stem])).encode("utf-8")).hexdigest()
+        for stem in stems
+    }
+    return manuals, ctx, keys
+
+
+def _verification_inputs_or_error(root: Path, report, draft_dir: Path, evidence: dict, stems: list[str]):
+    try:
+        return _verify_inputs(root, report, draft_dir, evidence, stems), None
+    except (npc_authored.AuthoredError, ValueError, OSError) as error:
+        return None, str(error)
 
 
 def _npc_verify(args, root: Path, report, npc_range_dir: Path, aliases: dict[str, str]) -> int:
@@ -642,20 +683,88 @@ def _npc_verify(args, root: Path, report, npc_range_dir: Path, aliases: dict[str
                 stems.append(stem)
     if not stems:
         return _err("no draft dossiers in range; run `summary_native npc-draft`")
-    try:
-        manuals = {
-            stem: npc_authored.load_manual(
-                npc_compose.authored_path_for(root, evidence[stem].subject), evidence[stem].subject)
-            for stem in stems
+    input_values, input_error = _verification_inputs_or_error(root, report, draft_dir, evidence, stems)
+    if input_error:
+        return _err(input_error)
+    manuals, ctx, item_keys = input_values
+    verify_root = npc_range_dir / "verify_runs"
+    if args.resume is not None:
+        candidates = []
+        for path in sorted(verify_root.glob("*/record.json"), reverse=True):
+            try:
+                candidate = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            if candidate.get("operation") == "npc-verify":
+                candidates.append((path, candidate))
+        if args.resume:
+            candidates = [(path, candidate) for path, candidate in candidates if candidate.get("run_id") == args.resume]
+        else:
+            candidates = [(path, candidate) for path, candidate in candidates if candidate.get("status") != "completed"]
+        if len(candidates) != 1:
+            return _err("resume requires exactly one compatible NPC verification run; pass --resume RUN_ID")
+        run_path, journal = candidates[0]
+        if journal.get("items") != [{"id": stem, "key": item_keys[stem]} for stem in sorted(stems)]:
+            return _err("resume run selection or verification inputs are stale")
+    else:
+        run_id = f"verify-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}"
+        run_path = verify_root / run_id / "record.json"
+        suffix = 1
+        while run_path.exists():
+            run_id = f"verify-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}-{suffix}"
+            run_path = verify_root / run_id / "record.json"
+            suffix += 1
+        journal = {
+            "schema": 2, "run_id": run_id, "operation": "npc-verify", "status": "running",
+            "items": [{"id": stem, "key": item_keys[stem]} for stem in sorted(stems)], "results": {},
         }
-        ctx = npc_verify.load_context(root, report)
-    except (npc_authored.AuthoredError, ValueError, OSError) as e:
-        return _err(str(e))
+        atomic_write_text(run_path, json.dumps(journal, indent=2, sort_keys=True) + "\n")
+    # A result entry is reusable only with all three pieces of evidence: the
+    # matching item key, the durable result journal, and the verifier artifact.
+    # This makes either side of the write crash race unfinished: a report with
+    # no journal result and a journal result with no report are both rerun.
+    def cached_result(stem: str):
+        entry = journal.get("results", {}).get(stem)
+        if isinstance(entry, dict) and isinstance(entry.get("result"), dict):
+            result, key = entry["result"], entry.get("key")
+        elif isinstance(entry, dict):  # schema-2 journals written before item keys
+            result, key = entry, item_keys[stem]
+        else:
+            return None
+        if key != item_keys[stem] or not (draft_dir / f"{stem}.verify.md").is_file():
+            return None
+        try:
+            return npc_verify.VerificationResult.from_dict(result)
+        except (TypeError, ValueError):
+            return None
+
+    cached = {stem: result for stem in sorted(stems) if (result := cached_result(stem)) is not None}
+
+    # Verification deliberately remains model-free.  Materializing stable local
+    # items gives it the same explicit selection and canonical commit contract
+    # as remote operations without inventing a provider call.
+    items = [WorkItem(stem, ordinal, "npc-verify") for ordinal, stem in enumerate(sorted(stems)) if stem not in cached]
+    scheduler = Scheduler([EndpointState("local", args.parallel or 1)])
+
+    def verify_item(item: WorkItem):
+        ev = evidence[item.item_id]
+        return npc_verify.verify_draft(draft_dir, item.item_id, ev.subject, ev, manuals[item.item_id], ctx)
+
+    checked = scheduler.run_local(items, verify_item) if items else None
+    if checked and checked.failures:
+        return _err("local verification failed: " + "; ".join(
+            f"{item.item_id}: {checked.failures[item.item_id].message}"
+            for item in items if item.item_id in checked.failures
+        ))
+    results = dict(cached)
+    if checked:
+        results.update(checked.values)
     failed = 0
     totals = {k: 0 for k in npc_verify.FAIL_CODES}
-    for stem in stems:
+    for stem in sorted(stems):
         ev = evidence[stem]
-        result = npc_verify.verify_draft(draft_dir, stem, ev.subject, ev, manuals[stem], ctx)
+        result = results[stem]
+        journal["results"][stem] = {"key": item_keys[stem], "result": result.to_dict()}
         print(f"{ev.subject}: {result.summary_line()}")
         for m in result.manual:
             if not m.cited:
@@ -665,7 +774,10 @@ def _npc_verify(args, root: Path, report, npc_range_dir: Path, aliases: dict[str
             totals[k] += result.counts.get(k, 0)
     print(f"verified {len(stems)} drafts: {len(stems) - failed} pass, {failed} fail"
           + ("" if not failed else " (" + ", ".join(f"{k} {n}" for k, n in totals.items() if n) + ")"))
-    return schema.EXIT_VERIFY_FAILED if failed else 0
+    journal["status"] = "completed"
+    journal["exit_code"] = schema.EXIT_VERIFY_FAILED if failed else 0
+    atomic_write_text(run_path, json.dumps(journal, indent=2, sort_keys=True) + "\n")
+    return journal["exit_code"]
 
 
 def _npc_publish(args, root: Path, report, npc_range_dir: Path, aliases: dict[str, str], registry_npcs) -> int:
@@ -729,10 +841,15 @@ def _players_path(config_path: Path) -> Path:
 def _extract(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Path, summaries_dir: Path,
              registry_path) -> int:
     """extract: the map step. flag > grounding.yaml summary_native.extract > schema (contracts/cli.md)."""
+    if args.resume is not None and args.force:
+        return _err("--resume cannot be combined with --force")
+    if args.resume is not None and args.dump_only:
+        return _err("--resume cannot be combined with --dump-only")
     try:
         settings = resolve.resolve_extract(cfg, backend=args.backend, model=args.model, chunk_chars=args.chunk_chars)
         args.backend, args.model = settings.backend, settings.model
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
+        args.concurrency = resolve_concurrency(explicit=args.parallel, backend=args.backend, model=args.model)
     except ValueError as e:  # ConfigRefusal is a ValueError
         return _err(str(e))
     try:
@@ -790,10 +907,15 @@ def _audit(args, root: Path, config_path: Path, cfg: dict, report, range_dir: Pa
            registry_path) -> int:
     """audit: judge each tracking item. Backend family and defaults are extract's (contracts/cli.md);
     track files: --track-file (repeatable) > grounding.yaml campaign_state.track_files."""
+    if args.resume is not None and args.force:
+        return _err("--resume cannot be combined with --force")
+    if args.resume is not None and args.dump_only:
+        return _err("--resume cannot be combined with --dump-only")
     try:
         settings = resolve.resolve_extract(cfg, backend=args.backend, model=args.model)
         args.backend, args.model = settings.backend, settings.model
         args.model = resolve_cli_model(args, legacy_default=DEFAULT_MODEL).effective_model
+        args.concurrency = resolve_concurrency(explicit=args.parallel, backend=args.backend, model=args.model)
     except ValueError as e:
         return _err(str(e))
     given = args.track_file or _grounding_group(config_path.expanduser().resolve(), "campaign_state").get("track_files") or []

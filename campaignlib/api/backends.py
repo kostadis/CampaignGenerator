@@ -193,6 +193,9 @@ class _OpenAICompatClient:
         # Per-model request behavior comes from the dgxlib registry (one source of
         # truth, edited next to the Spark spin-up scripts) — not inline here.
         cfg = dgxlib.resolve_model_config(self.model_override)
+        # Expose the resolved registry value for scheduler consumers without
+        # duplicating dgxlib lookup policy at the transport boundary.
+        self.model_config = cfg
         # Explicit timeouts. A local vLLM box that is wedged, overloaded, or —
         # the case that actually bit us — frozen by a host sleep leaves the TCP
         # socket half-open: the peer is gone, no RST ever arrives, and a blocked

@@ -373,6 +373,30 @@ class TestResolvePrecedence:
             resolve.resolve_extract({"extract": {"chunk_chars": "lots"}})
 
 
+class TestSchedulerFlagFamily:
+    """Shared controls keep one spelling and no parser-owned concurrency default."""
+
+    @pytest.mark.parametrize("command,remote", [
+        ("extract", True), ("audit", True), ("npc-draft", True), ("npc-verify", False),
+    ])
+    def test_parallel_and_resume_have_one_contract_across_operations(self, command, remote):
+        parser = cli.build_parser()
+        args = parser.parse_args([command, "--summaries-dir", "docs/summaries", "--since", "2", "--until", "6"])
+        assert args.parallel is None and args.resume is None
+        if remote:
+            assert args.endpoints is None
+            parsed = parser.parse_args([command, "--summaries-dir", "docs/summaries", "--since", "2", "--until", "6",
+                                        "--endpoints", "http://spark-a/v1", "http://spark-b/v1", "--parallel", "3", "--resume", "run-17"])
+            assert parsed.endpoints == ["http://spark-a/v1", "http://spark-b/v1"]
+        else:
+            parsed = parser.parse_args([command, "--summaries-dir", "docs/summaries", "--since", "2", "--until", "6",
+                                        "--parallel", "3", "--resume", "run-17"])
+            assert not hasattr(parsed, "endpoints")
+        assert parsed.parallel == 3 and parsed.resume == "run-17"
+        bare = parser.parse_args([command, "--summaries-dir", "docs/summaries", "--since", "2", "--until", "6", "--resume"])
+        assert bare.resume == ""
+
+
 class TestNoDriftInTheRouterForSpec033:
     SRC = ROUTER_SRC.read_text(encoding="utf-8")
 

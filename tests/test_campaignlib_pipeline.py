@@ -13,6 +13,13 @@ from campaignlib.api.codex_cli import _CodexCliClient
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
+
+def test_final_failure_classifier_separates_transport_from_model_or_protocol():
+    import httpx
+
+    assert client_mod.classify_final_failure(httpx.ConnectError("offline")) == "transport_failure"
+    assert client_mod.classify_final_failure(ValueError("malformed model output")) == "model_or_protocol_failure"
+
 class FakeStreamAPI:
     """Callable stub that records calls and returns scripted (or auto) responses."""
 

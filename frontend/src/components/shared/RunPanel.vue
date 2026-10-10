@@ -49,12 +49,12 @@ const commandPreview = computed(() => {
   const p = props.params
   // Just show the endpoint and key params for preview
   for (const [k, v] of Object.entries(p)) {
-    if (v === '' || v === false || v === null || v === undefined) continue
+    if ((v === '' && k !== 'resume') || v === false || v === null || v === undefined) continue
     if (Array.isArray(v)) {
       for (const item of v) {
         if (item) parts.push(`--${k} ${item}`)
       }
-    } else if (typeof v === 'boolean') {
+    } else if (typeof v === 'boolean' || (k === 'resume' && v === '')) {
       parts.push(`--${k}`)
     } else {
       parts.push(`--${k} ${v}`)
@@ -74,11 +74,13 @@ function run() {
   // Build query string from params
   const url = new URL(props.endpoint, window.location.origin)
   for (const [k, v] of Object.entries(props.params)) {
-    if (v === '' || v === false || v === null || v === undefined) continue
+    if ((v === '' && k !== 'resume') || v === false || v === null || v === undefined) continue
     if (Array.isArray(v)) {
       for (const item of v) {
         if (item) url.searchParams.append(k, item)
       }
+    } else if (k === 'resume' && v === '') {
+      url.searchParams.set(k, '')
     } else if (typeof v === 'boolean') {
       url.searchParams.set(k, 'true')
     } else {

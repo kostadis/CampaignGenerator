@@ -858,6 +858,12 @@ editor.
 
 ## What it does not do
 
+## Scheduling and verification
+
+`npc-draft` accepts the same `--endpoints`, `--parallel`, and `--resume` spellings
+as the summary-native model operations. `npc-verify --parallel` remains local:
+verification is deterministic and model-free, and never submits an LLM call.
+
 - It never creates or edits a summary, an authored file, a hand-built dossier or
   the registry.
 - It does not draft one-off or local NPCs (a registry scoped by time and place is

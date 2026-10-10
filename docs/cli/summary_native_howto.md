@@ -700,7 +700,8 @@ call).
 |---|---|
 | `--backend --model --endpoint` | As elsewhere. Default: `summary_native.extract.*` in `grounding.yaml`, else `dgx` / `qwen3.8-flash-next`. |
 | `--endpoints URL…` | Several dgx endpoints sharing **one** chunk queue; a slower box simply takes fewer chunks. Refused with `--endpoint`, and for a non-dgx backend. Wiring, never stored in config. |
-| `--parallel N` | In-flight calls **per endpoint**; default **6** (`--endpoints A B --parallel 4` is 8 calls). |
+| `--parallel N` | Positive in-flight calls **per endpoint**. Omit it to use the selected DGX model's declared capacity; if the registry has no declaration, the compatible fallback is 6. An explicit value always wins. |
+| `--resume [RUN_ID]` | Resume the sole compatible incomplete run, or the named compatible run. It preserves the saved explicit selection; it refuses no or ambiguous runs, changed inputs, `--force`, and `--dump-only`. |
 | `--chunk-chars N` | Chunk size; a chapter is never split. |
 | `--max-tokens N` | Per call. |
 | `--dump-only` | Write prompts, chunks and the manifest; no model call. |
@@ -739,11 +740,13 @@ or changed final chunk makes a model call. A hit reports `cached`, copies the ra
 response into the new range, and runs the current checker again. `--force` ignores
 both local and sibling caches. Older builds require no cache migration.
 
-**A bad endpoint stops the run.** Before the first chunk is sent, every endpoint
-is asked for `/models`; one that does not answer, or does not serve `--model`,
-refuses the whole run (exit 2) naming the endpoint and what it serves. No chunk
-is sent, and the run record keeps the refusal. Fix the endpoint or drop it from
-`--endpoints`; there is no silent fall-back to the others.
+**Endpoints are checked independently.** Before the first chunk is sent, each
+endpoint is asked for `/models`. A bad peer is quarantined while healthy peers
+continue; the run refuses only when none are healthy. Transport exhaustion
+quarantines a peer and retries unfinished eligible work on another endpoint;
+model-output rejection remains a content outcome, not a reason to quarantine.
+The run record reports the endpoint state, recovery probes, and the categorized
+outcome for each unfinished item.
 
 ### `synth world_state | campaign_state` — build from the checked notes
 
@@ -1712,3 +1715,15 @@ misspelling as an alias, read a draft you did not name, write a live grounding
 document, or call a model outside `synth`, `extract` and `audit`. Each absence is a requirement with a
 test behind it (`tests/test_summary_native_no_llm.py`, the retrieve/render
 isolation test), not a missing feature.
+
+## DGX scheduling
+
+For `extract` and `audit`, omit `--parallel` to use the selected DGX model's
+declared capacity. An explicit positive `--parallel N` always wins; a registry
+without the optional declaration uses the compatible fallback of 6. Run records
+record both the effective value and its source. Use `--endpoints URL ...` only
+with the DGX backend. `--resume` selects exactly one compatible incomplete run
+when bare, or an exact run ID when supplied; it never turns a resume request
+into a fresh run or broadens the saved explicit selection. Inspect the status
+record for endpoint quarantine, recovery, transport failures, and verifier or
+content outcomes before resuming.

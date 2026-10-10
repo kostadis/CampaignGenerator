@@ -42,6 +42,7 @@ from server.routers.grounding import (
     _sse_response,
 )
 from server.subprocess_runner import BoundedJSONError, console_script, run_bounded_json
+from server.scheduler_status import project_latest
 
 _ENDPOINT_BACKENDS = frozenset({"dgx"})  # the only backend that takes --endpoints
 AUTHORITY_JSON_TIMEOUT_SECONDS = 10
@@ -1163,6 +1164,7 @@ async def run_extract(
     model: str | None = None,
     endpoints: list[str] | None = Query(default=None),
     parallel: int | None = None,
+    resume: str | None = None,
 ):
     run = _run_config(request)
     directory = _require_dir(run, summaries_dir)
@@ -1170,6 +1172,8 @@ async def run_extract(
     urls = [e.strip() for e in (endpoints or []) if e.strip()]
     if parallel is not None and parallel < 1:
         raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
+    if resume is not None and (force or dump_only):
+        raise HTTPException(status_code=400, detail="--resume cannot be combined with --force or --dump-only")
     cmd = _base_cmd("extract", None, directory, lo, hi)
     cmd += ["--chunk-chars", str(_pick_num(chunk_chars, run.extract.chunk_chars))]
     if max_tokens is not None:
@@ -1191,6 +1195,8 @@ async def run_extract(
     cmd += selection_cli_args(resolved)
     if parallel is not None:
         cmd += ["--parallel", str(parallel)]
+    if resume is not None:
+        cmd += ["--resume", resume] if resume else ["--resume"]
     return _sse_response(cmd)
 
 
@@ -1208,6 +1214,7 @@ async def run_audit(
     model: str | None = None,
     endpoints: list[str] | None = Query(default=None),
     parallel: int | None = None,
+    resume: str | None = None,
 ):
     """The tracking audit. Its judge uses the extraction backend family (``summary_native.extract``) and
     the same endpoint wiring as ``/run/extract``; ``track_file`` repeats ``--track-file`` and, when
@@ -1219,6 +1226,8 @@ async def run_audit(
     files = [t.strip() for t in (track_file or []) if t.strip()]
     if parallel is not None and parallel < 1:
         raise HTTPException(status_code=400, detail=f"parallel must be at least 1, got {parallel}")
+    if resume is not None and (force or dump_only):
+        raise HTTPException(status_code=400, detail="--resume cannot be combined with --force or --dump-only")
     if candidates is not None and candidates < 1:
         raise HTTPException(status_code=400, detail=f"candidates must be at least 1, got {candidates}")
     if not files and not _default_track_files(request):
@@ -1248,7 +1257,22 @@ async def run_audit(
     cmd += selection_cli_args(resolved)
     if parallel is not None:
         cmd += ["--parallel", str(parallel)]
+    if resume is not None:
+        cmd += ["--resume", resume] if resume else ["--resume"]
     return _sse_response(cmd)
+
+
+@router.get("/status/{operation}")
+def get_scheduler_status(request: Request, operation: str, since: int | None = None, until: int | None = None):
+    """Project the latest extract/audit journal from disk without scheduler policy."""
+    if operation not in {"extract", "audit"}:
+        raise HTTPException(status_code=400, detail="operation must be extract or audit")
+    run = _run_config(request)
+    lo, hi = _require_range(run, since, until)
+    range_dir = _range_dir(run, lo, hi)
+    runs = (freshness.audience_state_dir(range_dir) / "runs" if operation == "extract"
+            else Path(range_dir) / schema.STATE_DIR / "runs")
+    return project_latest(runs, operation)
 
 
 def _default_track_files(request: Request) -> list[str]:

@@ -64,6 +64,15 @@ def _flag(cmd: list[str], flag: str) -> str | None:
     return cmd[cmd.index(flag) + 1] if flag in cmd else None
 
 
+def _after(cmd: list[str], flag: str) -> list[str]:
+    i = cmd.index(flag) + 1
+    values = []
+    while i < len(cmd) and not cmd[i].startswith("--"):
+        values.append(cmd[i])
+        i += 1
+    return values
+
+
 RANGE = {"summaries_dir": "docs/summaries", "since": 3, "until": 9}
 
 
@@ -946,3 +955,52 @@ def test_planning_fallback_flag_reaches_the_command_and_is_never_stored(campaign
     assert "--fallback-npc-lines" in captured["cmd"]
     assert _run("/run/synth/planning", RANGE) == 200
     assert "--fallback-npc-lines" not in captured["cmd"]
+
+
+@pytest.mark.parametrize("path", ["/run/extract", "/run/audit"])
+def test_scheduler_run_flags_reach_extract_and_audit_and_invalid_combinations_refuse(campaign, monkeypatch, path):
+    _, svc, captured = campaign
+    svc.update_config({
+        "summary_native": {"extract": {"backend": "dgx", "model": "qwen3.8-flash-next"}},
+        "campaign_state": {"track_files": ["docs/tracking.md"]},
+    })
+    from fastapi.responses import JSONResponse
+    monkeypatch.setattr("server.routers.summary_native._sse_response",
+                        lambda cmd: (captured.update(cmd=cmd), JSONResponse({"ok": True}))[1])
+    params = {**RANGE, "endpoints": ["http://spark-a/v1", "http://spark-b/v1"], "parallel": 3,
+              "resume": "run-17"}
+    assert _run(path, params) == 200
+    cmd = captured["cmd"]
+    assert _after(cmd, "--endpoints") == ["http://spark-a/v1", "http://spark-b/v1"]
+    assert _flag(cmd, "--parallel") == "3" and _flag(cmd, "--resume") == "run-17"
+    for extra in ({"parallel": 0}, {"resume": "run-17", "force": True}, {"resume": "run-17", "dump_only": True}):
+        response = client.get(f"{BASE}{path}", params={**RANGE, **extra})
+        assert response.status_code == 400
+
+
+def test_scheduler_status_rebuilds_safe_projection_from_record(campaign):
+    root, svc, _ = campaign
+    svc.update_config({"summary_native": {"out_root": "docs/summary_native"}})
+    record = root / "docs/summary_native/ch003-009/state/runs/run-17/record.json"
+    record.parent.mkdir(parents=True)
+    record.write_text(json.dumps({
+        "schema": 2, "run_id": "run-17", "step": "extract", "status": "incomplete",
+        "concurrency": {"value": 8, "source": "dgxlib", "model": "qwen3.8-flash-next"},
+        "chunks": [{"status": "cached"}, {"status": "completed"}, {"status": "pending"}],
+        "endpoints": [{"id": "spark-a", "state": "quarantined", "active": 0, "limit": 8}],
+        "failures": {"chunk-3": {"category": "transport", "code": "timeout"}},
+    }), encoding="utf-8")
+    response = client.get(f"{BASE}/status/extract", params={"since": 3, "until": 9})
+    assert response.status_code == 200
+    assert response.json() == {
+        "present": True, "run_id": "run-17", "operation": "extract", "status": "incomplete",
+        "concurrency": {"value": 8, "source": "dgxlib", "model": "qwen3.8-flash-next"},
+        "counts": {"total": 3, "cached": 1, "completed": 1, "unfinished": 1, "failed": 1},
+        "endpoints": [{"id": "spark-a", "state": "quarantined", "active": 0, "limit": 8}],
+        "outcomes": {"chunk-3": {"category": "transport", "code": "timeout"}}, "resume_available": True,
+    }
+    # Same persisted journal yields the same reload-safe projection.
+    assert client.get(f"{BASE}/status/extract", params={"since": 3, "until": 9}).json() == response.json()
+    record.write_text("{bad", encoding="utf-8")
+    malformed = client.get(f"{BASE}/status/extract", params={"since": 3, "until": 9}).json()
+    assert malformed["present"] is True and malformed["status"] == "error" and malformed["resume_available"] is False

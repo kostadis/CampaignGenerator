@@ -44,6 +44,7 @@ from server.routers.summary_native import (
     chapter_listing,
 )
 from server.subprocess_runner import console_script
+from server.scheduler_status import project_latest
 
 router = APIRouter()
 
@@ -114,6 +115,9 @@ def _build_draft_cmd(
     dump_only: bool,
     force: bool,
     selection_args: list[str],
+    endpoints: list[str] | None = None,
+    parallel: int | None = None,
+    resume: str | None = None,
 ) -> list[str]:
     cmd = _base_cmd("npc-draft", summaries_dir, since, until)
     if select == "all":
@@ -130,13 +134,25 @@ def _build_draft_cmd(
         cmd.append("--dump-only")
     if force:
         cmd.append("--force")
-    return cmd + selection_args
+    cmd += selection_args
+    if endpoints:
+        cmd += ["--endpoints", *endpoints]
+    if parallel is not None:
+        cmd += ["--parallel", str(parallel)]
+    if resume is not None:
+        cmd += ["--resume", resume] if resume else ["--resume"]
+    return cmd
 
 
-def _build_verify_cmd(summaries_dir: str, since: int, until: int, *, names: list[str]) -> list[str]:
+def _build_verify_cmd(summaries_dir: str, since: int, until: int, *, names: list[str], parallel: int | None = None,
+                      resume: str | None = None) -> list[str]:
     cmd = _base_cmd("npc-verify", summaries_dir, since, until)
     if names:
         cmd += ["--name", *names]
+    if parallel is not None:
+        cmd += ["--parallel", str(parallel)]
+    if resume is not None:
+        cmd += ["--resume", resume] if resume else ["--resume"]
     return cmd
 
 
@@ -415,6 +431,9 @@ async def run_draft(
     force: bool = False,
     model: str | None = None,
     backend: str | None = None,
+    endpoints: list[str] | None = Query(default=None),
+    parallel: int | None = None,
+    resume: str | None = None,
 ):
     run = _run_config(request)
     directory = _require_dir(run, summaries_dir)
@@ -436,6 +455,10 @@ async def run_draft(
         recent, recurring = cfg.recent_chapters, cfg.recurring_min
     if mode and mode not in schema.DRAFT_MODES:
         raise HTTPException(status_code=400, detail=f"unknown mode {mode!r}; choose one of: {', '.join(schema.DRAFT_MODES)}")
+    if parallel is not None and parallel < 1:
+        raise HTTPException(status_code=400, detail="parallel must be at least 1")
+    if resume is not None and (force or dump_only):
+        raise HTTPException(status_code=400, detail="--resume cannot be combined with --force or --dump-only")
     chunk = _pick_num(chunk_chars, cfg.draft.chunk_chars)
     if chunk < 1:
         raise HTTPException(status_code=400, detail="chunk_chars must be a positive integer")
@@ -443,6 +466,9 @@ async def run_draft(
         request, request_model=model, request_backend=backend,
         service=_config_service(request).get_selection(), service_name=_SERVICE_NAME,
     )
+    urls = _names(endpoints)
+    if urls and resolved.backend != schema.DEFAULT_DRAFT_BACKEND:
+        raise HTTPException(status_code=400, detail=f"--endpoints applies to --backend dgx only, not {resolved.backend}")
     cmd = _build_draft_cmd(
         directory, lo, hi,
         select=select, names=names, recent_chapters=recent, recurring_min=recurring,
@@ -450,6 +476,7 @@ async def run_draft(
         mode=mode or cfg.draft.mode, chunk_chars=chunk,
         dump_only=dump_only, force=force,
         selection_args=selection_cli_args(resolved),
+        endpoints=urls, parallel=parallel, resume=resume,
     )
     return _sse_response(cmd)
 
@@ -461,11 +488,24 @@ async def run_verify(
     since: int | None = None,
     until: int | None = None,
     name: list[str] | None = Query(default=None),
+    parallel: int | None = None,
+    resume: str | None = None,
 ):
     run = _run_config(request)
     directory = _require_dir(run, summaries_dir)
     lo, hi = _require_range(run, since, until)
-    return _sse_response(_build_verify_cmd(directory, lo, hi, names=_names(name)))
+    if parallel is not None and parallel < 1:
+        raise HTTPException(status_code=400, detail="parallel must be at least 1")
+    return _sse_response(_build_verify_cmd(directory, lo, hi, names=_names(name), parallel=parallel, resume=resume))
+
+
+@router.get("/status/{operation}")
+def get_scheduler_status(request: Request, operation: str, since: int | None = None, until: int | None = None):
+    if operation not in {"draft", "verify"}:
+        raise HTTPException(status_code=400, detail="operation must be draft or verify")
+    lo, hi = _require_range(_run_config(request), since, until)
+    runs = _range_dir(request, lo, hi) / ("verify_runs" if operation == "verify" else "runs")
+    return project_latest(runs, f"npc-{operation}")
 
 
 @router.get("/run/compose")

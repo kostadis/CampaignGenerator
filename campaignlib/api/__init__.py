@@ -1,7 +1,7 @@
 """API layer: client factory, live calls, and batch orchestration."""
 
 from .client import (
-    make_client, call_api, call_api_with_tools, stream_api,
+    make_client, call_api, call_api_with_tools, stream_api, classify_final_failure,
 )
 from .codex_cli import CodexCliError, _CodexCliClient
 from .batch import (
@@ -15,6 +15,7 @@ __all__ = [
     "call_api",
     "call_api_with_tools",
     "stream_api",
+    "classify_final_failure",
     "CodexCliError",
     "_CodexCliClient",
     "build_batch_request",

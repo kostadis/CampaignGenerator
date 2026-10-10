@@ -81,6 +81,8 @@ const forceExtract = ref(false)
 // same model; blank uses the single endpoint the backend resolves. Workers = in-flight calls per endpoint.
 const extractEndpointsText = ref('')
 const extractParallel = ref<Num>('')
+const extractResume = ref(false)
+const extractResumeId = ref('')
 // Audit (per run, never persisted): track files are prefilled from grounding.yaml campaign_state.track_files and
 // editable here; the judge uses the extraction backend, so a blank model uses summary_native.extract.model.
 const auditTrackText = ref('')
@@ -91,6 +93,8 @@ const forceAudit = ref(false)
 const auditModel = ref('')
 const auditEndpointsText = ref('')
 const auditParallel = ref<Num>('')
+const auditResume = ref(false)
+const auditResumeId = ref('')
 // Prose step (every document): blank uses grounding.yaml summary_native.prose.
 const proseModel = ref('')
 const proseEffort = ref('')
@@ -517,6 +521,7 @@ const extractParams = computed(() => ({
   force: forceExtract.value,
   endpoints: lines(extractEndpointsText.value),
   parallel: num(extractParallel.value),
+  ...(extractResume.value ? { resume: extractResumeId.value.trim() } : {}),
 }))
 const auditParams = computed(() => ({
   ...baseParams.value,
@@ -528,6 +533,7 @@ const auditParams = computed(() => ({
   model: auditModel.value.trim() || undefined,
   endpoints: lines(auditEndpointsText.value),
   parallel: num(auditParallel.value),
+  ...(auditResume.value ? { resume: auditResumeId.value.trim() } : {}),
 }))
 // The prose step takes its backend and model from grounding.yaml summary_native.prose, so the page does not send
 // the app-wide model for any document.
@@ -595,8 +601,17 @@ interface AuditState {
   counts: AuditCounts | null; summary?: string; backend?: string | null; model?: string | null
   candidates?: number | null; audit_file: string | null; track_files: string[]
 }
+interface SchedulerStatus {
+  present: boolean; run_id?: string; operation: string; status: string
+  concurrency: { value?: number; source?: string; model?: string } | null
+  counts: { total: number; cached: number; completed: number; unfinished: number; failed: number }
+  endpoints: Array<{ id: string; state: string; active?: number; limit?: number; reason?: string }>
+  outcomes: Record<string, { category?: string; code?: string; message?: string }>; resume_available: boolean; error?: string
+}
 const extractState = ref<ExtractState | null>(null)
 const auditState = ref<AuditState | null>(null)
+const extractScheduler = ref<SchedulerStatus | null>(null)
+const auditScheduler = ref<SchedulerStatus | null>(null)
 // Each document's last build: words written against each prose section's budget (null before a build).
 interface BudgetRow { budget: number; words: number; over: boolean }
 const budgets = ref<Record<string, Record<string, BudgetRow> | null>>({})
@@ -616,6 +631,8 @@ async function refreshOutputs() {
   drafts.value = []; draftsNote.value = ''
   extractState.value = null
   auditState.value = null
+  extractScheduler.value = null
+  auditScheduler.value = null
   budgets.value = {}
   threadCounts.value = null
   annotations.value = {}
@@ -646,6 +663,8 @@ async function refreshOutputs() {
   } catch {
     extractState.value = null // the Extract panel simply stays empty; the other outputs still load
   }
+  try { extractScheduler.value = await apiFetch<SchedulerStatus>(`${BASE}/status/extract?${q}`) } catch { /* advisory */ }
+  try { auditScheduler.value = await apiFetch<SchedulerStatus>(`${BASE}/status/audit?${q}`) } catch { /* advisory */ }
   try {
     report.value = await apiFetch<Report>(`${BASE}/report?${q}`)
   } catch (e) {
@@ -925,7 +944,7 @@ onMounted(async () => {
           <div class="field">
             <label class="field-label">Workers per endpoint</label>
             <input type="number" min="1" class="field-input" v-model.number="extractParallel" />
-            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 6.</span>
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank resolves from the selected model and is recorded with its source.</span>
           </div>
         </div>
         <div class="field">
@@ -943,8 +962,15 @@ onMounted(async () => {
         <label class="checkbox-label">
           <input type="checkbox" v-model="forceExtract" /> Re-extract every chunk (--force)
         </label>
+        <label class="checkbox-label"><input type="checkbox" v-model="extractResume" /> Resume an interrupted run</label>
+        <div v-if="extractResume" class="field"><label class="field-label">Run ID (blank selects the sole compatible incomplete run)</label><input class="field-input" v-model="extractResumeId" placeholder="optional run id" /></div>
         <RunPanel :endpoint="`${BASE}/run/extract`" :params="extractParams" :disabled="!ready"
-          label="Extract notes" @done="onExtractDone" />
+          :label="extractResume ? 'Resume extract' : 'Extract notes'" @done="onExtractDone" />
+        <div v-if="extractScheduler?.present" class="panel scheduler-status" data-test="extract-scheduler-status">
+          <div class="counts"><span>{{ extractScheduler.status }} · {{ extractScheduler.run_id }}</span><span v-if="extractScheduler.concurrency">parallel {{ extractScheduler.concurrency.value }} ({{ extractScheduler.concurrency.source }})</span><span>{{ extractScheduler.counts.completed + extractScheduler.counts.cached }} complete, {{ extractScheduler.counts.unfinished }} unfinished, {{ extractScheduler.counts.failed }} failed</span></div>
+          <div v-for="endpoint in extractScheduler.endpoints" :key="endpoint.id">{{ endpoint.id }}: {{ endpoint.state }} · {{ endpoint.active ?? 0 }}/{{ endpoint.limit ?? '?' }} active <span v-if="endpoint.reason">· {{ endpoint.reason }}</span></div>
+          <div v-for="(outcome, item) in extractScheduler.outcomes" :key="item" class="field-error">{{ item }}: {{ outcome.category }} {{ outcome.code }} {{ outcome.message }}</div><p v-if="extractScheduler.error" class="field-error">{{ extractScheduler.error }}</p>
+        </div>
         <div v-if="extractState && extractState.present" class="panel extract-state">
           <div class="counts">
             <span :class="extractState.complete ? 'ok' : 'bad'">
@@ -1014,7 +1040,7 @@ onMounted(async () => {
           <div class="field">
             <label class="field-label">Workers per endpoint</label>
             <input type="number" min="1" class="field-input" v-model.number="auditParallel" />
-            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank = 6.</span>
+            <span class="field-help">Calls in flight at once on each endpoint (<code>--parallel</code>). Blank resolves from the selected model and is recorded with its source.</span>
           </div>
         </div>
         <div class="field">
@@ -1036,8 +1062,15 @@ onMounted(async () => {
         <label class="checkbox-label">
           <input type="checkbox" v-model="forceAudit" /> Re-judge every item (--force)
         </label>
+        <label class="checkbox-label"><input type="checkbox" v-model="auditResume" /> Resume an interrupted audit</label>
+        <div v-if="auditResume" class="field"><label class="field-label">Run ID (blank selects the sole compatible incomplete run)</label><input class="field-input" v-model="auditResumeId" placeholder="optional run id" /></div>
         <RunPanel :endpoint="`${BASE}/run/audit`" :params="auditParams" :disabled="!ready"
-          label="Run audit" @done="onAuditDone" />
+          :label="auditResume ? 'Resume audit' : 'Run audit'" @done="onAuditDone" />
+        <div v-if="auditScheduler?.present" class="panel scheduler-status" data-test="audit-scheduler-status">
+          <div class="counts"><span>{{ auditScheduler.status }} · {{ auditScheduler.run_id }}</span><span v-if="auditScheduler.concurrency">parallel {{ auditScheduler.concurrency.value }} ({{ auditScheduler.concurrency.source }})</span><span>{{ auditScheduler.counts.completed + auditScheduler.counts.cached }} complete, {{ auditScheduler.counts.unfinished }} unfinished, {{ auditScheduler.counts.failed }} failed</span></div>
+          <div v-for="endpoint in auditScheduler.endpoints" :key="endpoint.id">{{ endpoint.id }}: {{ endpoint.state }} · {{ endpoint.active ?? 0 }}/{{ endpoint.limit ?? '?' }} active <span v-if="endpoint.reason">· {{ endpoint.reason }}</span></div>
+          <div v-for="(outcome, item) in auditScheduler.outcomes" :key="item" class="field-error">{{ item }}: {{ outcome.category }} {{ outcome.code }} {{ outcome.message }}</div><p v-if="auditScheduler.error" class="field-error">{{ auditScheduler.error }}</p>
+        </div>
         <div v-if="auditState && auditState.present && auditState.counts" class="panel audit-state">
           <div class="counts">
             <span :class="auditState.complete ? 'ok' : 'bad'">{{ auditState.complete ? 'complete' : 'incomplete' }}</span>
@@ -1409,7 +1442,7 @@ onMounted(async () => {
 .drafts { border-collapse: collapse; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 .drafts th, .drafts td { text-align: left; padding: 3px 14px 3px 0; }
 .drafts th { font-weight: 600; color: var(--text); }
-.extract-state, .audit-state, .budgets, .missing-npcs, .annotations { margin-top: 10px; }
+.extract-state, .audit-state, .scheduler-status, .budgets, .missing-npcs, .annotations { margin-top: 10px; }
 .chunks tr.outlier td { background: color-mix(in srgb, var(--red) 14%, transparent); }
 .authority-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 .authority-actions .field { margin-bottom: 0; }

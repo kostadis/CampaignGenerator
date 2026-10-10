@@ -281,6 +281,17 @@ def test_verdicts_are_cached_per_item(camp, fm):
     assert rc == 0 and len(fm.audit_calls) == 2
 
 
+def test_named_resume_of_completed_audit_makes_zero_calls(camp, fm):
+    assert _audit(camp)[0] == 0
+    runs = range_dir(camp) / schema.STATE_DIR / "runs"
+    (run,) = [p for p in runs.iterdir() if p.is_dir()]
+    fm.audit_calls.clear()
+    rc, out, err = _audit(camp, "--resume", run.name)
+    assert rc == 0, err
+    assert fm.audit_calls == []
+    assert f"resuming run {run.name}" in out
+
+
 def test_a_changed_item_re_judges_only_that_item(camp, fm):
     assert _audit(camp)[0] == 0
     fm.audit_calls.clear()
@@ -301,7 +312,7 @@ def test_a_different_model_does_not_reuse_the_cache(camp, fm):
 
 def test_a_failed_item_leaves_the_audit_incomplete_and_the_next_run_judges_only_it(camp, fm):
     fm.audit_answers["A1"] = A1_SHOWN
-    fm.audit_fail["A2"] = 2  # the call and its one retry
+    fm.audit_fail["A2"] = 1  # campaignlib exhausted its transport policy once
     rc, out, err = _audit(camp)
     assert rc == 3 and "A2" in err and "1 NOT JUDGED" in out
     data = json.loads((audit_dir(camp) / "audit.json").read_text())
@@ -344,6 +355,7 @@ def test_the_run_record_names_inputs_endpoint_and_per_item_results(camp, fm):
     rec = json.loads(rec_path.read_text())
     assert rec["step"] == "audit" and rec["backend"] == "dgx" and rec["model"] == "fake-model"
     assert rec["candidates"] == 2 and rec["endpoints"] == ["spark:8001"] and rec["exit_code"] == 0
+    assert rec["concurrency"] == {"value": schema.DEFAULT_EXTRACT_PARALLEL, "source": "fallback", "model": "fake-model", "declared_max": None}
     assert rec["inputs"]["track_files_sha256"][0][0] == "tracking.txt"
     assert [i["candidates"] for i in rec["items"]] == [[2, 3], [2, 4]]
     assert all(i["status"] == "judged" and i["endpoint"] == "spark:8001" for i in rec["items"])
@@ -358,12 +370,22 @@ def test_the_judge_runs_on_the_shared_multi_endpoint_queue(camp, fm):
     assert len(fm.audit_calls) == 2
 
 
-def test_an_unreachable_endpoint_is_refused_before_any_call(camp, fm):
+def test_an_unreachable_endpoint_is_quarantined_before_dispatch(camp, fm):
     fm.unreachable.add("http://spark2:8001/v1")
     args = [a for a in audit_args(camp) if a not in ("--endpoint", "http://spark:8001/v1")]
     rc, _, err = run_cli([*args, "--endpoints", "http://spark:8001/v1", "http://spark2:8001/v1"])
-    assert rc == 2 and "spark2:8001" in err and "no item was sent" in err
-    assert fm.audit_calls == []
+    assert rc == 0 and "spark2:8001" in err and "quarantined" in err
+    assert {call["endpoint"] for call in fm.client_args} == {"http://spark:8001/v1"}
+
+
+def test_audit_model_rejection_does_not_quarantine_other_work(camp, fm):
+    """An invalid verdict is a model/content result, not an endpoint outage."""
+    fm.audit_answers["A1"] = "this is not a verdict"
+    eps = ["http://spark:8001/v1", "http://spark2:8001/v1"]
+    args = [a for a in audit_args(camp) if a not in ("--endpoint", "http://spark:8001/v1")]
+    rc, _, err = run_cli([*args, "--endpoints", *eps, "--parallel", "1"])
+    assert rc == 0, err
+    assert {call["endpoint"] for call in fm.client_args} == set(eps)
 
 
 def test_endpoint_and_endpoints_together_are_refused(camp, fm):

@@ -22,6 +22,7 @@ from pathlib import Path
 
 from campaignlib.util import atomic_write_text
 from pipelines.summary_native import npc_check, npc_link, parse, schema
+from pipelines.summary_native.scheduler import FailureEnvelope
 
 PASS, FAIL = "pass", "fail"
 INVALID = "invalid"
@@ -56,6 +57,46 @@ CHECK_IDS = (
     MANUAL_CHECK,
     STATUS_CHECK,
 )
+
+# The detailed mechanical codes remain the durable evidence vocabulary.  This
+# mapping adds the #523 review axis without flattening distinct diagnostics.
+_VERIFIER_TAXONOMY = {
+    INVALID: "missing_source",
+    OUTSIDE_EVIDENCE: "missing_source",
+    CITATION_MISMATCH: "missing_source",
+    UNCITED: "missing_source",
+    MANUAL_INVALID: "missing_source",
+    NOT_FOUND: "unsupported_or_contradicted",
+    MANUAL_DROPPED: "unsupported_or_contradicted",
+    STATUS_UNSUPPORTED: "citation_non_entailment",
+    TYPOGRAPHY: "presentation_only",
+    PLACEHOLDER: "presentation_only",
+    "superseded-claim": "superseded_claim",
+    "knowledge-leak": "knowledge_leak",
+    "missing-source": "missing_source",
+    "verifier-transport-or-protocol": "verifier_transport_or_protocol",
+}
+
+
+def verifier_category(code: str) -> str:
+    """Return the shared #523 category while retaining ``code`` as detail."""
+    return _VERIFIER_TAXONOMY.get(code, "verifier_transport_or_protocol")
+
+
+def failure_envelopes(result: "VerificationResult") -> list[FailureEnvelope]:
+    """Project deterministic verifier findings onto the shared two-axis report.
+
+    One envelope is retained per existing finding, so callers can group by the
+    shared category while still linking a GM to the original line and code.
+    """
+    envelopes = []
+    for finding in [*result.failures, *result.advisories]:
+        category = verifier_category(finding.code)
+        envelopes.append(FailureEnvelope(
+            "verifier_finding", finding.code, finding.detail or finding.text,
+            verifier_category=category,
+        ))
+    return envelopes
 
 
 @dataclass(frozen=True)
@@ -125,6 +166,36 @@ class VerificationResult:
                 {"n": m.n, "text": m.text, "cited": [list(c) for c in m.cited]} for m in self.manual
             ],
         }
+
+    @classmethod
+    def from_dict(cls, value: dict) -> "VerificationResult":
+        """Rehydrate a journaled deterministic result without rerunning it.
+
+        Verification journals are an observable cache only when the caller has
+        separately established that the corresponding draft and report artifact
+        are current.  Keeping this conversion here lets the resume path retain
+        the normal reporting behaviour while making no local verifier call.
+        """
+        def finding(raw: dict) -> Finding:
+            return Finding(
+                str(raw.get("code", "")), int(raw.get("line", 0)),
+                str(raw.get("text", "")), str(raw.get("detail", "")),
+            )
+
+        def manual(raw: dict) -> ManualUse:
+            return ManualUse(
+                int(raw.get("n", 0)), str(raw.get("text", "")),
+                tuple((int(pair[0]), str(pair[1])) for pair in raw.get("cited", []) if len(pair) == 2),
+            )
+
+        return cls(
+            str(value.get("verdict", FAIL)),
+            [finding(raw) for raw in value.get("failures", []) if isinstance(raw, dict)],
+            [finding(raw) for raw in value.get("advisories", []) if isinstance(raw, dict)],
+            {str(key): int(count) for key, count in value.get("counts", {}).items()},
+            dict(value.get("totals", {})),
+            [manual(raw) for raw in value.get("manual", []) if isinstance(raw, dict)],
+        )
 
     def summary_line(self) -> str:
         c = self.counts

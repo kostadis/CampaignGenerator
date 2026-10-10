@@ -147,6 +147,12 @@ const pickedSubjects = computed(() =>
   npcs.value.filter(n => picked.value.includes(n.stem)).map(n => n.subject))
 const warningCount = computed(() =>
   (state.value?.warnings.ambiguous ?? 0) + (state.value?.warnings.generic_unruled ?? 0))
+interface SchedulerStatus { present: boolean; run_id?: string; status: string
+  counts: { cached: number; completed: number; unfinished: number; failed: number }
+  endpoints?: Array<{ id: string; state: string; active?: number; limit?: number; reason?: string }>
+  outcomes?: Record<string, { category?: string; code?: string; message?: string }> }
+const draftScheduler = ref<SchedulerStatus | null>(null)
+const verifyScheduler = ref<SchedulerStatus | null>(null)
 
 async function refresh() {
   state.value = null; stateNote.value = ''
@@ -168,6 +174,8 @@ async function refresh() {
     reportNote.value = e instanceof Error ? e.message : String(e)
   }
   picked.value = picked.value.filter(s => npcs.value.some(n => n.stem === s))
+  try { draftScheduler.value = await apiFetch<SchedulerStatus>(`${BASE}/status/draft?${q}`) } catch { draftScheduler.value = null }
+  try { verifyScheduler.value = await apiFetch<SchedulerStatus>(`${BASE}/status/verify?${q}`) } catch { verifyScheduler.value = null }
 }
 watch([rangeSince, rangeUntil], refresh)
 
@@ -182,6 +190,10 @@ const draftSelect = ref<'' | 'all' | 'narrowed'>('')
 const draftNames = ref('')
 const dumpOnly = ref(false)
 const forceDraft = ref(false)
+const draftEndpointsText = ref('')
+const draftParallel = ref<Num>('')
+const draftResume = ref(false)
+const draftResumeId = ref('')
 const draftReady = computed(() => ready.value && draftSelect.value !== '')
 const narrowedByName = computed(() => lines(draftNames.value).length > 0)
 // With names, thresholds are sent only when asked for: the CLI drafts the union of both.
@@ -201,11 +213,18 @@ const draftParams = computed(() => ({
   max_tokens: num(maxTokens.value),
   dump_only: dumpOnly.value,
   force: forceDraft.value,
+  endpoints: lines(draftEndpointsText.value),
+  parallel: num(draftParallel.value),
+  ...(draftResume.value ? { resume: draftResumeId.value.trim() } : {}),
 }))
 function onDraftDone() { forceDraft.value = false; refresh() }
 
 // ── 5. Verify ───────────────────────────────────────────────────────────────
-const verifyParams = computed(() => ({ ...baseParams.value, name: pickedSubjects.value }))
+const verifyParallel = ref<Num>('')
+const verifyResume = ref(false)
+const verifyResumeId = ref('')
+const verifyParams = computed(() => ({ ...baseParams.value, name: pickedSubjects.value, parallel: num(verifyParallel.value),
+  ...(verifyResume.value ? { resume: verifyResumeId.value.trim() } : {}) }))
 
 // ── 6. Compose ──────────────────────────────────────────────────────────────
 const composeParams = computed(() => ({ ...baseParams.value, name: pickedSubjects.value }))
@@ -421,9 +440,14 @@ onMounted(async () => {
         <label class="checkbox-label">
           <input type="checkbox" v-model="forceDraft" /> Re-draft even when unchanged (--force)
         </label>
+        <div class="num-grid"><div class="field"><label class="field-label">Workers per endpoint</label><input type="number" min="1" class="field-input" v-model.number="draftParallel" /><span class="field-help">Blank resolves from the selected model.</span></div></div>
+        <div class="field"><label class="field-label">DGX endpoints</label><textarea class="field-textarea" v-model="draftEndpointsText" rows="2" placeholder="One URL per line; dgx backend only" /></div>
+        <label class="checkbox-label"><input type="checkbox" v-model="draftResume" /> Resume an interrupted draft</label>
+        <div v-if="draftResume" class="field"><label class="field-label">Run ID (optional)</label><input class="field-input" v-model="draftResumeId" placeholder="sole compatible run when blank" /></div>
         <span v-if="draftSelect === ''" class="field-help">Choose which NPCs to draft to enable the button.</span>
         <RunPanel :endpoint="`${BASE}/run/draft`" :params="draftParams" :disabled="!draftReady"
-          label="Draft" @done="onDraftDone" />
+          :label="draftResume ? 'Resume draft' : 'Draft'" @done="onDraftDone" />
+        <div v-if="draftScheduler?.present" class="field-help">Last draft {{ draftScheduler.run_id }}: {{ draftScheduler.status }} — {{ draftScheduler.counts.completed + draftScheduler.counts.cached }} complete, {{ draftScheduler.counts.unfinished }} unfinished, {{ draftScheduler.counts.failed }} failed.<div v-for="endpoint in draftScheduler.endpoints ?? []" :key="endpoint.id">{{ endpoint.id }}: {{ endpoint.state }} · {{ endpoint.active ?? 0 }}/{{ endpoint.limit ?? '?' }} active <template v-if="endpoint.reason">· {{ endpoint.reason }}</template></div><div v-for="(outcome, item) in draftScheduler.outcomes ?? {}" :key="item" class="bad">{{ item }}: {{ outcome.category }} {{ outcome.code }} {{ outcome.message }}</div></div>
       </div>
 
       <!-- 4. State table -->
@@ -480,7 +504,11 @@ onMounted(async () => {
           Deterministic, no model, edits nothing. {{ pickedSubjects.length ? `Checks ${pickedSubjects.length} ticked NPC(s).` : 'With none ticked, checks every drafted NPC in range.' }}
           A failing draft exits 5.
         </span>
-        <RunPanel :endpoint="`${BASE}/run/verify`" :params="verifyParams" :disabled="!ready" label="Verify" @done="refresh" />
+        <div class="num-grid"><div class="field"><label class="field-label">Local workers</label><input type="number" min="1" class="field-input" v-model.number="verifyParallel" /><span class="field-help">Verification is deterministic and local.</span></div></div>
+        <label class="checkbox-label"><input type="checkbox" v-model="verifyResume" /> Resume verification</label>
+        <div v-if="verifyResume" class="field"><label class="field-label">Run ID (optional)</label><input class="field-input" v-model="verifyResumeId" placeholder="sole compatible run when blank" /></div>
+        <RunPanel :endpoint="`${BASE}/run/verify`" :params="verifyParams" :disabled="!ready" :label="verifyResume ? 'Resume verification' : 'Verify'" @done="refresh" />
+        <div v-if="verifyScheduler?.present" class="field-help">Last verification {{ verifyScheduler.run_id }}: {{ verifyScheduler.status }} — {{ verifyScheduler.counts.completed + verifyScheduler.counts.cached }} complete, {{ verifyScheduler.counts.unfinished }} unfinished, {{ verifyScheduler.counts.failed }} failed.<div v-for="(outcome, item) in verifyScheduler.outcomes ?? {}" :key="item" class="bad">{{ item }}: {{ outcome.category }} {{ outcome.code }} {{ outcome.message }}</div></div>
       </div>
 
       <!-- 6. Compose -->
