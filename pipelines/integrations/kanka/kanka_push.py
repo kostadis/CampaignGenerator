@@ -49,6 +49,8 @@ import re
 import sys
 from pathlib import Path
 
+from campaignlib.config import load_file
+
 from . import kanka_sync
 from .kanka_client import KankaClient
 
@@ -274,7 +276,7 @@ def main() -> None:
     base_url = args.base_url or os.environ.get("KANKA_BASE_URL", "http://localhost:8081")
     client = KankaClient(token, base_url=base_url)
 
-    parsed = parse_world_state(path.read_text(encoding="utf-8"))
+    parsed = parse_world_state(load_file(str(path), Path.cwd()))
     changes = plan_changes(client, args.campaign, parsed)
 
     mode = "APPLY" if args.apply else "DRY RUN"

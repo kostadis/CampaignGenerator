@@ -64,6 +64,8 @@ import sys
 import warnings
 from collections import defaultdict
 from pathlib import Path
+
+from campaignlib.grounding_bundle import refuse_managed_write
 from typing import NamedTuple
 
 import yaml
@@ -734,6 +736,7 @@ def main() -> None:
         )
 
     output_path = Path(args.output).expanduser().resolve()
+    refuse_managed_write(output_path, Path.cwd(), draft_hint="docs/world_state.generated.md")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(world_state.strip() + "\n", encoding="utf-8")
 

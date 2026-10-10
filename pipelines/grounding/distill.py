@@ -24,6 +24,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from campaignlib.grounding_bundle import refuse_managed_write
+
 from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
@@ -103,6 +105,7 @@ def main() -> None:
         sys.exit(1)
 
     output = Path(args.output).expanduser().resolve()
+    refuse_managed_write(output, Path.cwd(), draft_hint="docs/world_state.generated.md")
     extract_dir = (
         Path(args.extract_dir).expanduser().resolve()
         if args.extract_dir

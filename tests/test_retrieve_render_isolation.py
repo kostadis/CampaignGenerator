@@ -138,3 +138,22 @@ def test_narration_bundle_helpers_are_pure_prompt_and_reconciliation_code():
     calls = _collect_call_names(tree)
     assert not calls & RETRIEVAL_NAMES
     assert not calls & RENDER_NAMES
+
+
+def test_promotion_and_claim_gates_do_not_mix_retrieval_or_rendering():
+    """Release decisions operate only on captured evidence and reviewed artifacts."""
+    roots = (
+        REPO_ROOT / "pipelines" / "summary_native" / "promotion",
+        REPO_ROOT / "pipelines" / "summary_native" / "claims",
+    )
+    checked = 0
+    for root in roots:
+        for path in root.glob("*.py"):
+            if path.name in {"extract.py", "cli.py"}:
+                continue
+            checked += 1
+            tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+            calls = _collect_call_names(tree)
+            assert not calls & RETRIEVAL_NAMES, path
+            assert not calls & RENDER_NAMES, path
+    assert checked >= 15

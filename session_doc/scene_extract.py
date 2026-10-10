@@ -48,6 +48,7 @@ from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
     build_batch_request,
+    load_file,
     build_scene_extraction_system_prompt,
     client_from_args,
     collect_batch,
@@ -495,6 +496,7 @@ def main() -> None:
         if not party_path.exists():
             print(f"Error: party file not found: {party_path}", file=sys.stderr)
             sys.exit(1)
+        load_file(str(party_path), Path.cwd())
         # Display name → label comes from the player entity (feature 009).
         # Every label a recording has used for a person is recorded there, the
         # game master's included, so there is no separate --gm-player to keep

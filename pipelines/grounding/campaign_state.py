@@ -69,6 +69,8 @@ import shutil
 import sys
 from pathlib import Path
 
+from campaignlib.grounding_bundle import refuse_managed_write
+
 from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
@@ -235,6 +237,7 @@ def main() -> None:
         tracked_items = tracked_items + args.track
 
     output = Path(args.output).expanduser().resolve()
+    refuse_managed_write(output, Path.cwd(), draft_hint="docs/campaign_state.generated.md")
     if args.extract_dir:
         extract_dir = Path(args.extract_dir).expanduser().resolve()
     elif args.synthesize_only:

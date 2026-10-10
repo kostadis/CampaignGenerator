@@ -243,6 +243,11 @@ def run_synthesize_pipeline(
     dump_only        — with dump_input: skip the API call and return "".
                        Callers should guard: `if dump_only: return` before writing output.
     """
+    all_files = [f for group in source_groups for f in group[1]]
+    from .config import load_files_snapshot
+
+    all_bodies = load_files_snapshot(all_files, Path.cwd())
+    captured = {Path(f).absolute(): body for f, body in zip(all_files, all_bodies)}
     parts: list[str] = []
     total_files = 0
     for group in source_groups:
@@ -255,7 +260,7 @@ def run_synthesize_pipeline(
             continue
         blocks = []
         for f in files:
-            body = f.read_text(encoding="utf-8").strip()
+            body = captured[Path(f).absolute()].strip()
             if input_normalizer:
                 body = input_normalizer(body)
             blocks.append(f"<!-- {group_label}: {f.name} -->\n\n{body}")

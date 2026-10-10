@@ -39,9 +39,9 @@ continues to read its resulting text.
 `build` and `compare` are deterministic. `synth --dump-only` also makes no
 model call. Only a plain `synth <doc>` spends tokens.
 
-**4. It never writes a live document.** Drafts land under
-`docs/summary_native/ch<since>-<until>/drafts/`. You review one and copy it
-over `docs/<doc>.md` yourself. See [Review and promote](#step-8--review-and-promote-by-hand).
+**4. Generation never writes a live document.** Drafts land under
+`docs/summary_native/ch<since>-<until>/drafts/`. Publish a complete reviewed
+bundle through the [managed promotion workflow](grounding_bundle_promotion.md).
 
 **5. Duplicates are fixed in the summaries, not mapped.** If the tool lists
 `Hand Crossbow` and `Hand Crossbows` as a possible duplicate, you correct the
@@ -971,9 +971,10 @@ Exit codes are the same as everywhere: `0` ok, `1` blocking validation problems,
 
 ### Promotion
 
-The tool never writes `docs/`. To promote a chunked build, copy by hand, and
-note the **timeline and `reference/` files are part of the promotion**, because
-the reading contract at the top of `world_state` points at them:
+Generation never writes `docs/`. The managed promotion command publishes the
+four documents, timeline, and complete `reference/` tree together. Migrate the
+workspace first, then follow [Grounding bundle review and
+promotion](grounding_bundle_promotion.md). The bundle members are:
 
 | From `state/drafts/` | To |
 |---|---|
@@ -984,10 +985,9 @@ the reading contract at the top of `world_state` points at them:
 | `planning.draft.md` | `docs/planning.md` |
 | `reference/` (incl. `party.md`) | `docs/reference/` |
 
-The timeline and `reference/` paths are relative to `world_state`, so the whole
-bundle can instead be copied to another directory. Summaries and NPC dossiers
-remain relative to the campaign root; a summaries directory outside that root
-keeps its absolute path. After copying, verify the actual destination:
+The timeline and `reference/` paths are relative to `world_state`. Summaries and
+NPC dossiers remain relative to the campaign root. For a read-only pointer
+diagnostic on an existing document:
 
 ```bash
 summary_native check-pointers docs/world_state.md
@@ -1003,8 +1003,8 @@ reading contract names: `world_state` lists six reference files and the timeline
 the files it never pointed to. Keep the hidden path record in the reading
 contract so the checker can resolve it; regenerate older drafts without one.
 The first-line HTML provenance comment is optional for this check.
-Prose edits, if any, happen now,
-in `docs/`. `annotations.md`, `npc_status_report.md` and the two Key NPCs reports
+Prose edits happen after publication in
+`docs/grounding/current/`. `annotations.md`, `npc_status_report.md` and the two Key NPCs reports
 are for your review and are not promoted. `summary_native compare` works on these
 documents too (it reads `state/drafts/`).
 
@@ -1382,19 +1382,19 @@ exist.
 
 ---
 
-## Step 8 — review and promote by hand
+## Step 8 — review and promote the whole bundle
 
-The tool never writes `docs/<doc>.md`. (For `world_state` and `campaign_state`,
-promotion also carries the timeline and `reference/`; `party` carries
-`reference/party.md`; see [Promotion](#promotion) in Step 5b.) To promote:
+Generation never writes `docs/<doc>.md`. Promotion carries every document,
+the timeline, and all references as one reviewed generation. To promote:
 
 1. Read `drafts/<doc>.draft.md` against the diff and its reports.
 2. Fix what is wrong at its source (a summary, the registry, a dossier, a thread
    ruling), then `synth --force`. Prose edits happen only after promotion, in
    `docs/`, where the next build cannot overwrite them.
-3. Copy it over the live file yourself, deleting the first-line HTML provenance
-   comment if you do not want it in the live document. `git diff` and the commit
-   are your record.
+3. Complete explicit claim review and the four current document sign-offs, then
+   run the dry-run and digest-bound commit described in [Grounding bundle review
+   and promotion](grounding_bundle_promotion.md). Its immutable receipt is the
+   publication record; Git remains a separate operator action.
 
 ---
 

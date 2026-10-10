@@ -19,6 +19,7 @@ from campaignlib import (
     add_backend_args,
     client_from_args,
     load_agent_prompt,
+    load_file,
     run_single_batch,
     stream_api,
 )
@@ -251,7 +252,7 @@ def main() -> None:
     )
     print(f"[eligibility] evidence: {record}")
 
-    party = Path(args.party).read_text(encoding="utf-8") if args.party else None
+    party = load_file(args.party, Path.cwd()) if args.party else None
     session_summary = (
         Path(args.session_summary).read_text(encoding="utf-8")
         if args.session_summary else ""

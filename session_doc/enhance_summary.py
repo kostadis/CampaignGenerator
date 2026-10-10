@@ -35,6 +35,7 @@ from campaignlib import (
     collect_batch,
     format_batch_progress,
     load_agent_prompt,
+    load_file,
     load_players_config_arg,
     poll_batch,
     read_batch_sidecar,
@@ -368,6 +369,7 @@ def main() -> None:
         if not party_path.exists():
             print(f"Error: party file not found: {party_path}", file=sys.stderr)
             sys.exit(1)
+        load_file(str(party_path), Path.cwd())
     party_config_path = Path(args.party_config).expanduser() if args.party_config else None
     players_config_path = (
         Path(args.players_config).expanduser() if args.players_config else None

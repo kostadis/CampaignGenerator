@@ -54,6 +54,8 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from campaignlib.grounding_bundle import refuse_managed_write
+
 import yaml
 from pathlib import Path
 
@@ -70,6 +72,7 @@ from campaignlib import (
     client_from_args,
     format_npc_roster,
     load_agent_prompt,
+    load_files_snapshot,
     find_alias_registry,
     load_alias_map,
     load_registry,
@@ -261,16 +264,22 @@ def _render_planning_blocks(
 
 
 def _render_flat_section(heading: str, files: list[Path], label: str,
-                         normalize=None) -> str:
+                         normalize=None, captured: dict[Path, str] | None = None) -> str:
     """Render extracts/context the same way run_synthesize does (flat group
     with per-file source comments) so the planning-config path produces an
     equivalent prompt structure for non-bound source material."""
     if not files:
         return ""
-    blocks = [
-        f"<!-- {label}: {f.name} -->\n\n{_read_normalized(f, normalize)}"
-        for f in sorted(files)
-    ]
+    ordered = sorted(files)
+    bodies = (
+        [captured[Path(f).absolute()] for f in ordered]
+        if captured is not None
+        else load_files_snapshot(ordered, Path.cwd())
+    )
+    blocks = []
+    for f, body in zip(ordered, bodies):
+        text = body.strip()
+        blocks.append(f"<!-- {label}: {f.name} -->\n\n{normalize(text) if normalize else text}")
     return f"# {heading}\n\n" + "\n\n---\n\n".join(blocks)
 
 
@@ -577,8 +586,8 @@ def run_synthesize(
 
     if context_files:
         context = "\n\n---\n\n".join(
-            f"<!-- World context: {f.name} -->\n\n{cited_normalize(f.read_text(encoding='utf-8').strip())}"
-            for f in context_files
+            f"<!-- World context: {f.name} -->\n\n{cited_normalize(body.strip())}"
+            for f, body in zip(context_files, load_files_snapshot(context_files, Path.cwd()))
         )
         parts.append(f"# WORLD CONTEXT\n\n{context}")
 
@@ -695,13 +704,20 @@ def run_synthesize_with_config(
     threads_block = _render_threads_block(threads_file, normalize=normalize)
     if threads_block:
         parts.append(threads_block)
+    grouped_files = [*extract_files, *context_files]
+    grouped_bodies = load_files_snapshot(grouped_files, Path.cwd())
+    captured = {
+        Path(path).absolute(): body for path, body in zip(grouped_files, grouped_bodies)
+    }
     extracts_block = _render_flat_section(
-        "SESSION EXTRACTIONS", extract_files, "Session extract", normalize=cited_normalize
+        "SESSION EXTRACTIONS", extract_files, "Session extract", normalize=cited_normalize,
+        captured=captured,
     )
     if extracts_block:
         parts.append(extracts_block)
     context_block = _render_flat_section(
-        "WORLD CONTEXT", context_files, "World context", normalize=cited_normalize
+        "WORLD CONTEXT", context_files, "World context", normalize=cited_normalize,
+        captured=captured,
     )
     if context_block:
         parts.append(context_block)
@@ -948,6 +964,7 @@ def main() -> None:
         return
 
     output = Path(args.output).expanduser().resolve()
+    refuse_managed_write(output, Path.cwd(), draft_hint="docs/planning.generated.md")
     extract_dir = (
         Path(args.extract_dir).expanduser().resolve()
         if args.extract_dir

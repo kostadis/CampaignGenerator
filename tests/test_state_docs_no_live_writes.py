@@ -95,3 +95,13 @@ def test_every_new_or_changed_file_is_under_the_ranges_state_directory(ran):
     outside = [k for k in touched if not k.startswith(state)]
     assert outside == []
     assert [k for k in before if k not in after] == [], "a file was deleted"
+
+
+def test_claims_and_promotion_code_do_not_reintroduce_draft_live_writes():
+    """The new release path may activate generations; draft/model modules still may not."""
+    root = Path(__file__).resolve().parents[1] / "pipelines" / "summary_native"
+    model_modules = ("extract.py", "synth.py", "audit.py")
+    forbidden = ("docs/grounding", "docs/world_state", "docs/campaign_state", "docs/party", "docs/planning")
+    for name in model_modules:
+        text = (root / name).read_text(encoding="utf-8")
+        assert all(fragment not in text for fragment in forbidden), name

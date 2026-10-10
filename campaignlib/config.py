@@ -108,10 +108,63 @@ def load_file(path: str, base_dir: Path | None = None) -> str:
     p = Path(os.path.expandvars(path)).expanduser()
     if not p.is_absolute() and base_dir:
         p = base_dir / p
+    candidate = p.absolute()
+    roots = []
+    if base_dir is not None:
+        base = Path(base_dir).resolve()
+        roots.append(base if (base / "docs").is_dir() else base.parent)
+    roots.extend(parent.parent for parent in candidate.parents if parent.name == "docs")
+    for root in roots:
+        if not (root / "docs/grounding").exists():
+            continue
+        from campaignlib.grounding_bundle import classify_managed_path, open_grounding_snapshot
+
+        member = classify_managed_path(candidate, root)
+        if member is not None:
+            with open_grounding_snapshot(root, [member]) as snapshot:
+                return snapshot.read(member).decode("utf-8")
     if not p.exists():
         print(f"Error: file not found: {p}", file=sys.stderr)
         sys.exit(1)
     return p.read_text(encoding="utf-8")
+
+
+def load_files_snapshot(paths: list[str | Path], campaign_dir: Path) -> list[str]:
+    """Read managed selections from one generation and ordinary files normally."""
+    from campaignlib.grounding_bundle import classify_managed_path, inspect_layout, open_grounding_snapshot
+    from pipelines.summary_native.promotion.errors import PromotionPathError
+
+    default_root = Path(campaign_dir).absolute()
+    normalized = [Path(os.path.abspath(Path(os.path.expandvars(str(value))).expanduser())) for value in paths]
+    selected: dict[int, tuple[Path, str]] = {}
+    layouts = {}
+    for index, path in enumerate(normalized):
+        inferred = [parent.parent for parent in path.parents if parent.name == "docs"]
+        roots = [root for root in inferred if (root / "docs/grounding").exists()]
+        if not roots and (default_root / "docs/grounding").exists():
+            roots = [default_root]
+        for root in roots[:1]:
+            layout = layouts.get(root)
+            member = classify_managed_path(path, root, layout)
+            if member is not None:
+                if layout is None:
+                    layouts[root] = inspect_layout(root)
+                selected[index] = (root, member)
+            break
+    managed_roots = {root for root, _member in selected.values()}
+    if len(managed_roots) > 1:
+        raise PromotionPathError("one operation cannot mix managed grounding from multiple campaigns")
+    captured: dict[int, str] = {}
+    if selected:
+        root = next(iter(managed_roots))
+        members = [member for selected_root, member in selected.values() if selected_root == root]
+        with open_grounding_snapshot(root, list(dict.fromkeys(members))) as snapshot:
+            captured = {
+                index: snapshot.read(member).decode("utf-8")
+                for index, (selected_root, member) in selected.items()
+                if selected_root == root
+            }
+    return [captured[index] if index in captured else path.read_text(encoding="utf-8") for index, path in enumerate(normalized)]
 
 
 def load_file_optional(path: str | Path, label: str = "file") -> str | None:
@@ -241,6 +294,7 @@ def assemble_docs(config: dict, doc_labels: list[str], base_dir: Path | None = N
     """
     available = {d["label"]: d.get("path") for d in config.get("documents", [])}
     parts = []
+    resolved: list[tuple[str, Path]] = []
     for label in doc_labels:
         if label not in available:
             print(
@@ -252,7 +306,32 @@ def assemble_docs(config: dict, doc_labels: list[str], base_dir: Path | None = N
         if not available[label]:
             print(f"Skipping '{label}': no path set in config.", file=sys.stderr)
             continue
-        content = load_file(available[label], base_dir)
+        path = Path(os.path.expandvars(str(available[label]))).expanduser()
+        if not path.is_absolute() and base_dir is not None:
+            path = Path(base_dir) / path
+        # Config paths are intentionally relative to the config directory and
+        # commonly begin with ``../docs``. Normalize that trusted join before
+        # the managed-path boundary rejects lexical traversal from callers.
+        resolved.append((label, Path(os.path.normpath(str(path.absolute())))))
+    managed: dict[str, str] = {}
+    base = Path(base_dir).resolve() if base_dir is not None else None
+    root = (base if base is not None and (base / "docs").is_dir() else base.parent) if base is not None else None
+    if root is not None and (root / "docs/grounding").exists():
+        from campaignlib.grounding_bundle import classify_managed_path, inspect_layout, open_grounding_snapshot
+
+        layout = inspect_layout(root)
+        selected = {
+            label: member
+            for label, path in resolved
+            if (member := classify_managed_path(path, root, layout)) is not None
+        }
+        if selected:
+            with open_grounding_snapshot(root, list(dict.fromkeys(selected.values()))) as snapshot:
+                managed = {label: snapshot.read(member).decode("utf-8") for label, member in selected.items()}
+    for label, path in resolved:
+        content = managed.get(label)
+        if content is None:
+            content = load_file(str(path))
         parts.append(f"## {label}\n\n{content.strip()}")
     if not parts:
         print("Error: no documents with a path to load.", file=sys.stderr)

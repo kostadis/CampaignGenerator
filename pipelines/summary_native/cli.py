@@ -37,6 +37,26 @@ def build_parser() -> argparse.ArgumentParser:
         description="Build grounding-doc drafts directly from reviewed session summaries.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
+    promote = sub.add_parser("promote", help="preview or publish one reviewed grounding bundle")
+    promote.add_argument("--config", required=True)
+    promote.add_argument("--since", type=int, required=True)
+    promote.add_argument("--until", type=int, required=True)
+    promote.add_argument("--out-root", default=None)
+    promote.add_argument("--review", required=True)
+    promote.add_argument("--check-report", required=True)
+    promote.add_argument("--dry-run", action="store_true")
+    promote.add_argument("--preview-sha256", default=None)
+    promote.add_argument("--request-id", default=None)
+    promote.add_argument("--json", action="store_true")
+    promotion = sub.add_parser("promotion", help="inspect or recover grounding publication")
+    promotion_sub = promotion.add_subparsers(dest="promotion_command", required=True)
+    for action in ("status", "receipt", "recover"):
+        command = promotion_sub.add_parser(action)
+        command.add_argument("--config", required=True)
+        command.add_argument("--operation", required=action != "status")
+        command.add_argument("--json", action="store_true")
+    claims = sub.add_parser("claims", help="select, review and check grounded claims")
+    claims.add_argument("claims_args", nargs=argparse.REMAINDER)
     for name in SUBCOMMANDS:
         p = sub.add_parser(name, help=name)
         if name == "check-pointers":
@@ -304,6 +324,15 @@ def _sha_if_file(path: Path | None) -> str | None:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "promote":
+        from pipelines.summary_native.promotion.cli import run as run_promotion
+        return run_promotion(args)
+    if args.command == "promotion":
+        from pipelines.summary_native.promotion.cli import run_inspection
+        return run_inspection(args)
+    if args.command == "claims":
+        from pipelines.summary_native.claims.cli import run as run_claims
+        return run_claims(args.claims_args)
     if args.command == "authority":
         from pipelines.summary_native.authority_cli import run as run_authority
         return run_authority(args)
@@ -871,12 +900,21 @@ def _pick(flag, cfg: dict, key: str, default: int) -> int:
 def _compare(args, root: Path, range_dir: Path) -> int:
     draft = schema.draft_dir(range_dir, args.doc) / f"{args.doc}.draft.md"
     live = _under(root, args.live)
-    for label, p in (("draft", draft), ("live", live)):
-        if not p.is_file():
-            return _err(f"no {label} file at {p}")
+    if not draft.is_file():
+        return _err(f"no draft file at {draft}")
+    from campaignlib.grounding_bundle import classify_managed_path, open_grounding_snapshot
+
+    member = classify_managed_path(live, root)
+    if member is not None:
+        with open_grounding_snapshot(root, [member]) as snapshot:
+            live_text = snapshot.read(member).decode("utf-8")
+    else:
+        if not live.is_file():
+            return _err(f"no live file at {live}")
+        live_text = live.read_text(encoding="utf-8")
     rep = compare_mod.compare(
         draft.read_text(encoding="utf-8"),
-        live.read_text(encoding="utf-8"),
+        live_text,
         draft_name=draft.name,
         live_name=live.name,
     )

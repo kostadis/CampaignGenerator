@@ -40,6 +40,9 @@ Setup:
 import os
 from pathlib import Path
 
+from campaignlib.config import load_file
+from campaignlib.grounding_bundle import refuse_managed_write
+
 from .kanka_client import KankaClient
 from .kanka_push import apply_changes, parse_world_state, plan_changes
 from .kanka_sync import build_world_state
@@ -121,13 +124,15 @@ def build_server():
         return a summary; otherwise return the markdown itself. `include_private`
         folds in GM-secret (is_private) entities — off by default.
         """
+        if output:
+            p = Path(output).expanduser().resolve()
+            refuse_managed_write(p, Path.cwd(), draft_hint="docs/world_state.generated.md")
         try:
             client = make_client()
         except RuntimeError as exc:
             return f"Error: {exc}"
         markdown = pull_world_state(client, campaign, include_private)
         if output:
-            p = Path(output).expanduser().resolve()
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text(markdown, encoding="utf-8")
             return f"Wrote {p} ({len(markdown)} chars)."
@@ -140,7 +145,7 @@ def build_server():
         """
         try:
             client = make_client()
-            markdown = Path(input).expanduser().read_text(encoding="utf-8")
+            markdown = load_file(input, Path.cwd())
         except (RuntimeError, FileNotFoundError) as exc:
             return f"Error: {exc}"
         return push_preview(client, campaign, markdown)
@@ -155,7 +160,7 @@ def build_server():
         """
         try:
             client = make_client()
-            markdown = Path(input).expanduser().read_text(encoding="utf-8")
+            markdown = load_file(input, Path.cwd())
         except (RuntimeError, FileNotFoundError) as exc:
             return f"Error: {exc}"
         return push_apply(client, campaign, markdown)

@@ -14,6 +14,23 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ("viewer.html", "viewer.js", "viewer.css")
 
 
+def test_viewer_renders_and_saves_exact_claim_actions() -> None:
+    root = Path(__file__).resolve().parents[1] / "pipelines/summary_native/review/web"
+    html = (root / "viewer.html").read_text(encoding="utf-8")
+    script = (root / "viewer.js").read_text(encoding="utf-8")
+    assert 'id="claim-fields"' in html
+    for field in ("subject_id", "predicate", "normalized_value", "certainty", "audience"):
+        assert field in script
+    for action, disposition in (
+        ("confirm_claim_mapping", "accept_no_change"),
+        ("dismiss_claim_finding", "dismiss"),
+        ("accept_claim_uncertainty", "accept_uncertainty"),
+        ("signoff_document", "document_signoff"),
+    ):
+        assert action in script and disposition in script
+    assert "Prepare an exact finding disposition before approval" in script
+
+
 @pytest.fixture(scope="module")
 def installed_review(tmp_path_factory: pytest.TempPathFactory) -> InstalledDistribution:
     return build_installed_distribution(tmp_path_factory.mktemp("installed-review-wheel"))

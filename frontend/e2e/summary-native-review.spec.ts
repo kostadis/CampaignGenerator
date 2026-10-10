@@ -65,6 +65,8 @@ type ReviewItem = {
   severity: 'needs_judgment' | 'warning'
   rationale: string
   proposed_action: { action: string }
+  subject_kind?: string
+  subject_identity_resolved?: boolean
   freshness: 'current' | 'stale'
   stale_reason?: string
   rerun?: RerunFeedback
@@ -342,14 +344,27 @@ test.describe('packaged summary-native review viewer', () => {
   })
 
   for (const width of [320, 375]) {
-    test(`the full 25-item queue and evidence remain usable at ${width}px`, async ({ page }) => {
+    test(`the full 25-item queue and paired evidence remain usable at ${width}px`, async ({ page, context }) => {
+      const backend=new ReviewBackend()
+      backend.items[0].subject_kind='entity'
+      backend.items[0].subject_identity_resolved=true
+      backend.items[0].proposed_action={action:'confirm_claim_mapping',details:{subject_id:'entity-1'}} as any
+      backend.items[0].evidence.push({source_id:'authority-1',source_path:'docs/authority/a-very-long-ledger-location-that-must-wrap-without-horizontal-scrolling.yaml',anchor:'records.entity-1.effective-value',exact_excerpt:'Paired authority evidence for the exact normalized meaning.',selected_span_sha256:'f'.repeat(64)})
+      await context.unroute(`${ORIGIN}/**`)
+      await installReview(context,backend)
       await page.setViewportSize({ width, height: 720 })
       await openReview(page)
 
       await expect(page.getByRole('list', { name: 'Review queue' }).getByRole('listitem')).toHaveCount(25)
       await openItem(page, 1)
       await expect(page.getByText('Evidence 1: the exact captured passage.')).toBeVisible()
-      await expect(page.getByText('summaries/001/session-summary.md')).toBeVisible()
+      await expect(page.getByText('summaries/001/session-summary.md',{exact:true})).toBeVisible()
+      await expect(page.getByText('docs/authority/a-very-long-ledger-location-that-must-wrap-without-horizontal-scrolling.yaml')).toBeVisible()
+      await expect(page.getByText('records.entity-1.effective-value')).toBeVisible()
+      await expect(page.getByText('Subject kind')).toBeVisible()
+      await expect(page.getByText('entity', {exact:true})).toBeVisible()
+      await expect(page.getByText('Subject identity resolved')).toBeVisible()
+      await expect(page.getByText('true', {exact:true})).toBeVisible()
       await expect(page.getByText(/Rationale 1:/)).toBeVisible()
       await expect(page.getByText('citation_non_entailment')).toBeVisible()
       await expect(page.getByText('needs_judgment')).toBeVisible()
@@ -647,7 +662,7 @@ test.describe('packaged summary-native review viewer', () => {
     await expect(itemRow(page, 1)).toContainText(/stale approval/i)
     await openItem(page, 1)
     await expect(page.getByText('Relevant evidence changed after approval.')).toBeVisible()
-    await expect(page.getByText(/approval.*no longer current|review again/i)).toBeVisible()
+    await expect(page.locator('#freshness')).toContainText(/approval.*no longer current|review again/i)
     await expect(page.getByRole('button', { name: /^approve$/i })).toBeEnabled()
   })
 
@@ -703,7 +718,7 @@ test.describe('packaged summary-native review viewer', () => {
     await expect(page.getByRole('button', { name: /Select Aeda Stone/ })).toBeDisabled()
     await page.getByRole('button', { name: /Select Ada Stone/ }).click()
     await saveCurrent(page, 'approve', 'Use the exact reviewed global alias proposal.')
-    await expect(page.getByText('Saved')).toBeVisible()
+    await expect(page.locator('#save-state')).toContainText('Saved')
     const body = backend.lastDecisionBody as { decisions: Array<Record<string, unknown>> }
     expect(body.decisions[0]).toMatchObject({ disposition: 'merge', proposal_id: 'identity-item-1-a', proposal_digest: 'a'.repeat(64) })
 

@@ -315,6 +315,99 @@ def read_snapshot(campaign_dir: Path, review_id: str, *, _already_locked: bool =
     return manifest, custody, items
 
 
+def append_review_items(
+    campaign_dir: Path,
+    review_id: str,
+    *,
+    expected_generation: int,
+    items: tuple[ReviewItem, ...],
+    sources: tuple[dict, ...],
+    rule_versions=None,
+) -> dict:
+    """Append a staged set of immutable items to one review identity."""
+    if not items:
+        raise ReviewStoreError("REVIEW_INVALID_SELECTION: staged review requires new items")
+    root = Path(campaign_dir).resolve()
+    with authority_lock(root, exclusive=True):
+        require_no_pending_transaction(root)
+        manifest, custody, current_items = read_snapshot(root, review_id, _already_locked=True)
+        if manifest.generation != expected_generation:
+            raise ReviewStoreError("REVIEW_STALE_GENERATION: review generation changed", "REVIEW_STALE_GENERATION")
+        current_by_id = {item.item_id: item for item in current_items}
+        existing_ids = set(current_by_id)
+        replacement_ids = {item.item_id for item in items if item.item_id in existing_ids}
+        for item in items:
+            prior = current_by_id.get(item.item_id)
+            if prior is not None and (item.revision != prior.revision + 1 or item.review_digest == prior.review_digest):
+                raise ReviewStoreError("REVIEW_ITEM_MISMATCH: staged revision is not the next changed revision")
+        if any(item.campaign_id != manifest.campaign_id or item.review_id != review_id for item in items):
+            raise ReviewStoreError("REVIEW_CAMPAIGN_MISMATCH: staged item identity")
+        source_by_id = {source.source_id: source.model_dump(mode="json") for source in custody.sources}
+        for source in sources:
+            prior = source_by_id.get(source["source_id"])
+            if prior is not None and (prior["path"], prior["sha256"]) != (source["path"], source["sha256"]):
+                raise ReviewStoreError("REVIEW_CUSTODY_MISMATCH: staged source identity changed")
+            source_by_id[source["source_id"]] = source
+        for item in items:
+            for binding in item.input_bindings:
+                source = source_by_id.get(binding.source_id)
+                if source is None or source["path"] != binding.path or source["sha256"] != binding.custody_sha256:
+                    raise ReviewStoreError(f"REVIEW_CUSTODY_MISMATCH: {item.item_id}/{binding.source_id}")
+        generation = manifest.generation + 1
+        now = datetime.now(timezone.utc)
+        new_custody = SourceCustodyGeneration(
+            campaign_id=manifest.campaign_id, review_id=review_id, generation=generation,
+            previous_generation=manifest.generation, recorded_at=now,
+            sources=tuple(sorted(source_by_id.values(), key=lambda source: source["source_id"])),
+        )
+        replacement_by_id = {item.item_id: item for item in items}
+        all_items = tuple(replacement_by_id.get(item.item_id, item) for item in current_items) + tuple(
+            item for item in items if item.item_id not in existing_ids
+        )
+        if rule_versions is None:
+            rules = manifest.rule_versions
+        else:
+            rule_by_id = {rule.rule_id: rule.model_dump(mode="json") for rule in manifest.rule_versions}
+            for rule in rule_versions:
+                payload = rule.model_dump(mode="json") if hasattr(rule, "model_dump") else dict(rule)
+                rule_by_id[payload["rule_id"]] = payload
+            rules = tuple(rule_by_id[key] for key in sorted(rule_by_id))
+        references = tuple({
+            "campaign_id": item.campaign_id, "review_id": review_id, "item_id": item.item_id,
+            "revision": item.revision, "review_digest": item.review_digest,
+        } for item in all_items)
+        new_manifest = ReviewManifest.model_validate({
+            **manifest.model_dump(mode="json"), "generation": generation, "items": references,
+            "selection": [*manifest.model_dump(mode="json")["selection"],
+                          *({"kind": "document", "id": item.item_id} for item in items if item.item_id not in existing_ids)],
+            "source_manifest": {"campaign_id": manifest.campaign_id, "review_id": review_id,
+                                "generation": generation, "digest": new_custody.custody_digest},
+            "rule_versions": rules,
+        })
+        event_id = f"stage-{uuid.uuid4().hex}"
+        event = {
+            "version": 1, "kind": "stage", "event_id": event_id,
+            "campaign_id": str(manifest.campaign_id), "review_id": review_id,
+            "from_generation": manifest.generation, "to_generation": generation,
+            "recorded_at": now.isoformat().replace("+00:00", "Z"),
+            "preserved_item_ids": sorted(existing_ids - replacement_ids),
+            "stale_item_ids": sorted(replacement_ids),
+            "added_item_ids": [item.item_id for item in items if item.item_id not in existing_ids],
+        }
+        directory = _review_dir(root, review_id)
+        targets = [
+            TransactionTarget.replace(directory / "manifest.json", (directory / "manifest.json").read_bytes(), canonical_bytes(new_manifest)),
+            TransactionTarget.create(directory / "sources" / f"{generation}.json", canonical_bytes(new_custody)),
+            TransactionTarget.create(directory / "sources" / f"{generation}-contexts.json", canonical_bytes({"version": 1, "generation": generation, "items": _item_contexts(root, all_items)})),
+            TransactionTarget.create(directory / "events" / f"{event_id}.json", canonical_bytes(event)),
+            *(TransactionTarget.create(directory / "items" / item.item_id / f"{item.revision}.json", canonical_bytes(item)) for item in items),
+        ]
+        digest = sha256_bytes(canonical_bytes(event))
+        journal = _prepare_transaction_locked(root, proposal_id=event_id, proposal_sha256=digest, targets=targets)
+        recover_transaction(root, journal["id"], _already_locked=True)
+    return {"review_id": review_id, "generation": generation, "item_count": len(all_items), "added_item_ids": [item.item_id for item in items]}
+
+
 def _events(root: Path, review_id: str) -> list[dict]:
     directory = _review_dir(root, review_id) / "events"
     result = []
@@ -327,26 +420,89 @@ def _events(root: Path, review_id: str) -> list[dict]:
     return sorted(result, key=lambda event: (event.get("recorded_at", ""), event.get("event_id", "")))
 
 
-def history(campaign_dir: Path, review_id: str, *, item_id: str | None = None) -> list[dict]:
+def history(
+    campaign_dir: Path, review_id: str, *, item_id: str | None = None,
+    _already_locked: bool = False,
+) -> list[dict]:
     root = Path(campaign_dir).resolve()
-    with authority_lock(root, exclusive=False):
+    lock = contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False)
+    with lock:
         require_no_pending_transaction(root)
         events = _events(root, review_id)
     return [event for event in events if item_id is None or event.get("item_id") == item_id]
 
 
-def read_review_state(campaign_dir: Path, review_id: str):
+def read_review_state(campaign_dir: Path, review_id: str, *, _already_locked: bool = False):
     """Read manifest, items, history and semantic staleness under one lock."""
     root=Path(campaign_dir).resolve()
-    with authority_lock(root,exclusive=False):
+    lock = contextlib.nullcontext() if _already_locked else authority_lock(root, exclusive=False)
+    with lock:
         require_no_pending_transaction(root); manifest,_,items=read_snapshot(root,review_id,_already_locked=True); events=_events(root,review_id)
     stale:set[str]=set()
     for event in events:
-        if event.get("kind")=="rebind":
+        if event.get("kind") in {"rebind", "stage"}:
             stale.update(event.get("stale_item_ids",[])); stale.difference_update(event.get("preserved_item_ids",[]))
-        elif event.get("kind")=="decision" and event.get("item_id"):
+        # DecisionEvent predates the explicit ``kind`` discriminator used by
+        # stage/rebind/withdrawal records. A current exact decision clears the
+        # item's semantic-stale marker immediately.
+        elif event.get("item_id") and event.get("decision_revision") is not None and event.get("kind") != "withdrawal":
             stale.discard(event["item_id"])
     return manifest,items,events,stale
+
+
+def _validate_action_decision(item: ReviewItem, *, verdict: str, disposition: str) -> None:
+    """Enforce item-specific meaning at every decision ingestion boundary."""
+    action = item.proposed_action.action
+    if action == "signoff_document":
+        allowed = {
+            ("approve", "document_signoff"),
+            ("reject", "reject_action"),
+            ("discuss", "defer"),
+        }
+    else:
+        if disposition == "document_signoff":
+            raise ReviewStoreError(
+                "REVIEW_ACTION_MISMATCH: only a document sign-off item accepts document_signoff",
+                "REVIEW_ACTION_MISMATCH",
+            )
+        allowed_by_action = {
+            "confirm_claim_mapping": {
+                ("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer"),
+            },
+            "resolve_claim_finding": {
+                ("reject", "reject_action"), ("discuss", "defer"),
+            },
+            "dismiss_claim_finding": {
+                ("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer"),
+            },
+            "accept_claim_uncertainty": {
+                ("approve", "accept_no_change"), ("reject", "reject_action"), ("discuss", "defer"),
+            },
+            "prepare_claim_source_correction": {
+                ("approve", "source_correction"), ("reject", "reject_action"), ("discuss", "defer"),
+            },
+        }
+        allowed = allowed_by_action.get(action)
+        if allowed is None:
+            return
+    if (verdict, disposition) not in allowed:
+        raise ReviewStoreError(
+            "REVIEW_ACTION_MISMATCH: review action and disposition are incompatible",
+            "REVIEW_ACTION_MISMATCH",
+        )
+    if action in {"dismiss_claim_finding", "accept_claim_uncertainty"} and not {
+        "evidence_digest", "rationale_digest"
+    }.issubset(item.proposed_action.details):
+        raise ReviewStoreError(
+            "REVIEW_ACTION_MISMATCH: prepared claim disposition lacks bound evidence/rationale",
+            "REVIEW_ACTION_MISMATCH",
+        )
+    if (item.proposed_action.details.get("basis") in {"mechanical", "gm_confirmed"}
+            and (verdict, disposition) == ("approve", "accept_no_change")):
+        raise ReviewStoreError(
+            "REVIEW_ACTION_MISMATCH: mechanical and GM-confirmed blockers cannot be waived",
+            "REVIEW_ACTION_MISMATCH",
+        )
 
 
 def save_decisions(
@@ -412,6 +568,10 @@ def save_decisions(
             namespace = f"{manifest.campaign_id}:{review_id}:{request['request_id']}"
             event_id = f"decision-{sha256_bytes(namespace.encode())[:16]}-{index:04d}"
             approved = supplied.get("verdict") == "approve"
+            action = item.proposed_action.action
+            disposition = supplied.get("disposition")
+            verdict = supplied.get("verdict")
+            _validate_action_decision(item, verdict=verdict, disposition=disposition)
             authority_id = f"review-decision-{sha256_bytes(event_id.encode())[:16]}" if approved else None
             event = DecisionEvent(
                 event_id=event_id, request_id=request["request_id"], campaign_id=manifest.campaign_id,
@@ -673,9 +833,27 @@ def import_review_bundle(campaign_dir: Path, bundle_path: Path, *, expected_gene
     events = raw.get("events", [])
     if not isinstance(events, list):
         raise ReviewStoreError("REVIEW_INVALID_IMPORT: events must be a list")
+    validated_events: list[dict] = []
     for event in events:
         if not isinstance(event, dict) or not isinstance(event.get("item_id"), str):
             raise ReviewStoreError("REVIEW_INVALID_IMPORT: malformed event")
+        item = local.get(event["item_id"])
+        if item is None:
+            raise ReviewStoreError("REVIEW_STALE_DECISION: imported event names an unknown item", "REVIEW_STALE_DECISION")
+        if event.get("kind") == "withdrawal":
+            validated_events.append(event)
+            continue
+        try:
+            decision = DecisionEvent.model_validate(event)
+        except Exception as exc:
+            raise ReviewStoreError("REVIEW_INVALID_IMPORT: malformed decision event") from exc
+        if decision.item_revision != item.revision or decision.review_digest != item.review_digest:
+            raise ReviewStoreError("REVIEW_STALE_DECISION: imported event differs", "REVIEW_STALE_DECISION")
+        _validate_action_decision(
+            item, verdict=decision.verdict.value, disposition=decision.disposition.value,
+        )
+        validated_events.append(event)
+    events = validated_events
     authority_payloads=raw.get("authority_records",[])
     if not isinstance(authority_payloads,list): raise ReviewStoreError("REVIEW_INVALID_IMPORT: authority_records must be a list")
     imported_records=[ReviewDecisionRecord.model_validate(payload) for payload in authority_payloads]

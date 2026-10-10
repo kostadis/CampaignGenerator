@@ -139,7 +139,7 @@ def _read_doc(label_or_path: str) -> str:
         return f"(no path configured for '{label_or_path}')"
     if not p.exists():
         return f"(file not found: {p})"
-    return p.read_text(encoding="utf-8")
+    return load_file(str(Path(os.path.normpath(str(p)))), campaign_dir)
 
 
 def _safe_notes_path(filename: str) -> Path:
@@ -222,7 +222,7 @@ def get_party() -> str:
     if content.startswith("("):
         fallback = campaign_dir / "docs" / "party.md"
         if fallback.exists():
-            return fallback.read_text(encoding="utf-8")
+            return load_file(str(fallback), campaign_dir)
     return content
 
 

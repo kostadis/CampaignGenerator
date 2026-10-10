@@ -122,9 +122,29 @@ def _journal_dir(campaign_dir: Path) -> Path:
 
 
 @contextlib.contextmanager
-def authority_lock(campaign_dir: Path, *, exclusive: bool) -> Iterator[None]:
-    """A flock-based campaign lock.  Shared readers get a coherent snapshot."""
-    root = str(Path(campaign_dir).resolve())
+def authority_lock(
+    campaign_dir: Path, *, exclusive: bool, create: bool = True
+) -> Iterator[None]:
+    """A flock-based campaign lock. Shared readers get a coherent snapshot.
+
+    ``create=False`` is for pure inspection. It refuses an uninitialized lock
+    instead of creating ``docs/authority`` or ``.lock`` as a side effect.
+    Mutation callers retain the historical creating behavior.
+    """
+    supplied_root = Path(campaign_dir).absolute()
+    # Inspect the caller's path before canonicalization.  Resolving first would
+    # erase evidence that the campaign/docs/authority component was a symlink.
+    for component in (
+        supplied_root,
+        supplied_root / "docs",
+        supplied_root / "docs" / "authority",
+    ):
+        if component.is_symlink():
+            raise AuthorityError(
+                "AUTH_UNSAFE_PATH: authority lock path contains a symlink",
+                "AUTH_UNSAFE_PATH",
+            )
+    root = str(supplied_root.resolve())
     held = getattr(_LOCK_STATE, "held", None)
     if held is None:
         held = _LOCK_STATE.held = {}
@@ -143,10 +163,19 @@ def authority_lock(campaign_dir: Path, *, exclusive: bool) -> Iterator[None]:
     for component in (campaign,docs,directory):
         if component.is_symlink():
             raise AuthorityError("AUTH_UNSAFE_PATH: authority lock path contains a symlink","AUTH_UNSAFE_PATH")
-    docs.mkdir(exist_ok=True); directory.mkdir(exist_ok=True)
+    if create:
+        docs.mkdir(exist_ok=True); directory.mkdir(exist_ok=True)
+    elif not directory.is_dir() or not (directory / ".lock").is_file():
+        raise AuthorityError(
+            "AUTH_LOCK_MISSING: campaign authority lock is not initialized",
+            "AUTH_LOCK_MISSING",
+        )
     directory_fd=os.open(directory,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
     try:
-        fd=os.open(".lock",os.O_CREAT|os.O_RDWR|os.O_NOFOLLOW,0o600,dir_fd=directory_fd)
+        flags = os.O_RDWR | os.O_NOFOLLOW
+        if create:
+            flags |= os.O_CREAT
+        fd=os.open(".lock",flags,0o600,dir_fd=directory_fd)
     except OSError as exc:
         os.close(directory_fd)
         raise AuthorityError("AUTH_UNSAFE_PATH: authority lock is not a safe regular file","AUTH_UNSAFE_PATH") from exc

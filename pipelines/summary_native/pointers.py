@@ -6,9 +6,8 @@ import json
 import re
 from pathlib import Path
 
-from pipelines.summary_native import schema
-
 _CONTRACT_PATHS = re.compile(r'^> <!-- summary_native pointers: (.+) -->$', re.M)
+_SUMMARY_PREFIX = re.compile(r"^(\d+)[-_.]")
 #: The two lines of a reading contract that name files (``state_sections.reading_contract``): the reference
 #: files the document points to, and, for world_state only, the timeline. Each document lists its own.
 _REFERENCE_LINE = re.compile(r'^> - Every checked note, by subject: (.+)$', re.M)
@@ -55,7 +54,7 @@ def check_paths(document: Path, campaign: Path) -> list[str]:
         problems.append(f"missing summaries directory: {summaries}")
     else:
         present = {int(m.group(1)) for p in summaries.glob("*.md")
-                   if (m := schema.PREFIX_RE.match(p.name))}
+                   if (m := _SUMMARY_PREFIX.match(p.name))}
         cited = {int(n) for n in re.findall(r'\bch (\d{3}) / ', text)}
         for chapter in sorted(cited - present):
             problems.append(f"missing chapter {chapter:03d} summary in: {summaries}")

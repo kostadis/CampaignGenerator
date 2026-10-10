@@ -51,6 +51,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from campaignlib.grounding_bundle import refuse_managed_write
+
 from campaignlib import (
     DEFAULT_MODEL,
     add_backend_args,
@@ -64,6 +66,7 @@ from campaignlib import (
     client_from_args,
     format_npc_roster,
     load_agent_prompt,
+    load_files_snapshot,
     find_alias_registry,
     load_alias_map,
     load_alias_map_or_exit,
@@ -169,14 +172,19 @@ def _party_config_synthesize(client, system_prompt: str, user_prompt: str,
 
 
 def _render_source_group(heading: str, files: list[Path], label: str,
-                         input_normalizer=None) -> str:
+                         input_normalizer=None, captured: dict[Path, str] | None = None) -> str:
     """Match run_synthesize_pipeline's rendering so the party-config path
     produces an equivalent user prompt for non-party groups."""
     if not files:
         return ""
     blocks = []
-    for f in files:
-        body = f.read_text(encoding="utf-8").strip()
+    bodies = (
+        [captured[Path(f).absolute()] for f in files]
+        if captured is not None
+        else load_files_snapshot(files, Path.cwd())
+    )
+    for f, raw in zip(files, bodies):
+        body = raw.strip()
         if input_normalizer:
             body = input_normalizer(body)
         blocks.append(f"<!-- {label}: {f.name} -->\n\n{body}")
@@ -276,6 +284,7 @@ def main() -> None:
         sys.exit(1)
 
     output = Path(args.output).expanduser().resolve()
+    refuse_managed_write(output, Path.cwd(), draft_hint="docs/party.generated.md")
     extract_dir = (
         Path(args.extract_dir).expanduser().resolve()
         if args.extract_dir
@@ -367,11 +376,19 @@ def main() -> None:
     cited_normalize = lambda body: id_assigner(normalize(body))
     try:
         if party_config:
+            grouped_files = [*extract_files, *context_files]
+            grouped_bodies = load_files_snapshot(grouped_files, Path.cwd())
+            captured = {
+                Path(path).absolute(): body
+                for path, body in zip(grouped_files, grouped_bodies)
+            }
             party_block = _render_party_block(party_config, input_normalizer=cited_normalize)
             extracts_block = _render_source_group("SESSION EXTRACTIONS", extract_files,
-                                                  "Session extract", input_normalizer=cited_normalize)
+                                                  "Session extract", input_normalizer=cited_normalize,
+                                                  captured=captured)
             context_block = _render_source_group("ADDITIONAL CONTEXT", context_files,
-                                                 "Context", input_normalizer=cited_normalize)
+                                                 "Context", input_normalizer=cited_normalize,
+                                                 captured=captured)
             parts = [p for p in (party_block, extracts_block, context_block) if p]
             if not parts:
                 print("Error: no source material to synthesize.", file=sys.stderr)
