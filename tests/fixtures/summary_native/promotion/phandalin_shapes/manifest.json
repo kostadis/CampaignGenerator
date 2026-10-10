@@ -1,0 +1,233 @@
+{
+  "authorization": "User-approved reconstructed fixtures, 2026-10-10",
+  "cases": [
+    {
+      "id": "earthstone-actor",
+      "negative": "earthstone/negative.md",
+      "positive": "earthstone/positive.md",
+      "provenance": "Surviving campaign summaries described in spike.md; synthetic actor mapping.",
+      "provenance_limit": "These fingerprints identify current surviving evidence only; they do not recover the lost faulty draft.",
+      "surviving_sources": [
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/campaign_state.md",
+          "source_sha256": "0371519520227957ba2b874c9ce05fe82114fa4f0bd8e8b59c9f96e008481eb7",
+          "spike_locator": "323-324"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/projections/campaign_state_draft.md",
+          "source_sha256": "61a84902e2d332856e9f5b04d6c9fdff3faec89c54f5be09de163d191faa3651",
+          "spike_locator": "939"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "summaries/20260414-038-session-2026-04-18/session-summary.md",
+          "source_sha256": "71e4579582caa785ff187c2b8f128c64f98c370c75e9a1c832880d3581b23d5a",
+          "spike_locator": "19-25"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/distill/state_extractions/extract_038.md",
+          "source_sha256": "cc7effb707104e76dc4ad5019995350ee95aa7e70a4a03783231027e4e577193",
+          "spike_locator": "10-11,29,79,96"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/distill/planning_extractions/extract_038.md",
+          "source_sha256": "e3d7c271f7af1c4a3e952f880525aa1aaf2c0ff1d597160490ffb38a8c7e25b0",
+          "spike_locator": "3-7"
+        }
+      ]
+    },
+    {
+      "id": "eastern-heart-posture",
+      "negative": "eastern-heart/negative.md",
+      "positive": "eastern-heart/positive.md",
+      "provenance": "Surviving lodge-orc notes and chapter 043 evidence described in spike.md; synthetic GM mapping.",
+      "provenance_limit": "These fingerprints identify current surviving evidence only; they do not recover the lost faulty draft.",
+      "surviving_sources": [
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/party.candidate.md",
+          "source_sha256": "4da195756b28bfb34a697f0588d4a0e27e8a18ec703f97d88fb871388743bf0e",
+          "spike_locator": "45"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "notes/npcs/lodge_orcs_eastern_heart.md",
+          "source_sha256": "98be7124f84701fcfcac627e416b3a91c3b861222f2788d6e99ac0c767943636",
+          "spike_locator": "3,9-14,20-25"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/summaries/043-session-a-storm-of-bolts-and-orcs.md",
+          "source_sha256": "f39dcba452362da24033df9e268c1f2ba63b500f020543b9c5ac9b69cfe66974",
+          "spike_locator": "93,179-183,201,207,215-216"
+        }
+      ]
+    },
+    {
+      "id": "sridar-certainty",
+      "negative": "sridar/negative.md",
+      "positive": "sridar/positive.md",
+      "provenance": "Surviving suspicion evidence described in spike.md; synthetic GM mapping.",
+      "provenance_limit": "These fingerprints identify current surviving evidence only; they do not recover the lost faulty draft.",
+      "surviving_sources": [
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/chapters/chapter_19_blood_money_clean_gold_and_fine_wine.md",
+          "source_sha256": "e3719e439cf030af9478f2090dd4d1911c4c45a6d27cec4a8403c52a28a593dd",
+          "spike_locator": "25-29"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/distill/npcs/clean/sridar.md",
+          "source_sha256": "98b8ca31ba825cd15820eb90d275fe7f0ebd126e751f2d98643021c1da6523ac",
+          "spike_locator": "4-12"
+        }
+      ]
+    },
+    {
+      "id": "petra-ordering",
+      "negative": "petra/negative.md",
+      "positive": "petra/positive.md",
+      "provenance": "Later erroneous Petra summary shape; reconstructed chronology, not original prose.",
+      "provenance_limit": "These fingerprints identify current surviving evidence only; they do not recover the lost faulty draft.",
+      "surviving_sources": [
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "notes/handouts/brewbarry-20261006-log.md",
+          "source_sha256": "3d429398a2733820044d6c3a9d12085be5cf9eba08a837c775905ec76ba9d128",
+          "spike_locator": "50-56,182-184"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "notes/session_prep/20260907_chapter_51_we_re_famous_why_are_we_famous.md",
+          "source_sha256": "7b25d2e37937be6a241aff313c95eff0a26be9d21190b26d58a7255556cbaa99",
+          "spike_locator": "188-190,206-210"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "summaries/20260902-051-09-01/session-summary.md",
+          "source_sha256": "d30b42050f5892671b8f08a5c6e12beb21ef2cdb1a7c34007938f7380e551e90",
+          "spike_locator": "9"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "summaries/20260825-050-the-broads-of-the-common-chord-and-the-board-laid-bare/session-summary.md",
+          "source_sha256": "36e2d14c38cfd58640ebf5f9e2fc208badde815199a4c3c60af232c5443719b2",
+          "spike_locator": "115-132"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "notes/session_prep/20260907_chapter_51_we_re_famous_why_are_we_famous.md",
+          "source_sha256": "7b25d2e37937be6a241aff313c95eff0a26be9d21190b26d58a7255556cbaa99",
+          "spike_locator": "75,232,251"
+        }
+      ]
+    },
+    {
+      "id": "leilon-status",
+      "negative": "leilon/negative.md",
+      "positive": "leilon/positive.md",
+      "provenance": "Surviving Leilon evidence described in spike.md; synthetic status mapping.",
+      "provenance_limit": "These fingerprints identify current surviving evidence only; they do not recover the lost faulty draft.",
+      "surviving_sources": [
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/campaign_state.md",
+          "source_sha256": "0371519520227957ba2b874c9ce05fe82114fa4f0bd8e8b59c9f96e008481eb7",
+          "spike_locator": "566-568"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/campaign_state.md",
+          "source_sha256": "0371519520227957ba2b874c9ce05fe82114fa4f0bd8e8b59c9f96e008481eb7",
+          "spike_locator": "302-303"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/world_state.md",
+          "source_sha256": "f8ca268a3b621c31f9358ec3056ea39f71da2f9ce752212a7956f298c713fd85",
+          "spike_locator": "425,550-551"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/planning.md",
+          "source_sha256": "bd4ee71a7630f8c9922654b23ace4a83f4a6940c7ff91a778c94828854f1fbf6",
+          "spike_locator": "419-422"
+        },
+        {
+          "exists": true,
+          "fingerprint_kind": "2026-10-10 surviving-source fingerprint",
+          "note": "Read-only fingerprint of current surviving source; not recovered original faulty draft.",
+          "observed_on": "2026-10-10",
+          "source_path": "docs/planning.md",
+          "source_sha256": "bd4ee71a7630f8c9922654b23ace4a83f4a6940c7ff91a778c94828854f1fbf6",
+          "spike_locator": "495-498"
+        }
+      ]
+    }
+  ],
+  "historical_replay": "unavailable",
+  "version": 1,
+  "warning": "Synthetic draft assertions and GM mappings are rule-coverage fixtures, not recovered original generated prose."
+}

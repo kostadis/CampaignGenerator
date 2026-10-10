@@ -29,6 +29,7 @@ from campaignlib import (
     find_default_config,
     load_agent_prompt,
     load_config,
+    load_files_snapshot,
     run_single_batch,
     stream_api,
 )
@@ -157,22 +158,26 @@ def main() -> None:
     canonical_registry_path = registry_path.resolve()
     context_parts.append(canon)
 
+    configured = {entry["label"]: entry.get("path") for entry in config.get("documents", [])}
+    selections: list[tuple[str, Path]] = []
     for label in _DEFAULT_CONFIG_DOCS:
-        text = assemble_docs(config, [label], base_dir)
-        if text.strip():
-            context_parts.append(text)
-
-    if args.context:
-        for ctx in args.context:
-            p = Path(ctx).expanduser()
-            if p.resolve() == canonical_registry_path:
-                print(
-                    f"  Note: skipping --context {p}; already included as "
-                    "authoritative canon.",
-                    file=sys.stderr,
-                )
-                continue
-            context_parts.append(f"## {p.name}\n\n{p.read_text(encoding='utf-8').strip()}")
+        raw = configured.get(label)
+        if raw:
+            path = Path(raw).expanduser()
+            selections.append((label, path if path.is_absolute() else base_dir / path))
+    for ctx in args.context or []:
+        p = Path(ctx).expanduser()
+        if p.resolve() == canonical_registry_path:
+            print(
+                f"  Note: skipping --context {p}; already included as authoritative canon.",
+                file=sys.stderr,
+            )
+            continue
+        selections.append((p.name, p))
+    texts = load_files_snapshot([path for _label, path in selections], campaign_root)
+    context_parts.extend(
+        f"## {label}\n\n{text.strip()}" for (label, _path), text in zip(selections, texts)
+    )
 
     system = load_agent_prompt(
         "session_doc/consistency_grouped" if grouped else "session_doc/consistency"

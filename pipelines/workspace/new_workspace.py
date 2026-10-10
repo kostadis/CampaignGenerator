@@ -82,13 +82,29 @@ _None yet — run `campaign_state summaries.md --output docs/campaign_state.md`_
 
 - **Current location:**
 - **Active obligations:**
+
+## Audit: Tracking Claims
+
+_No tracking claims have been audited yet._
 """
 
 WORLD_STATE_TEMPLATE = """\
 # World State — {name}
 
-_Paste or write your living canon document here._
-_This is the source of truth for all session prep._
+## Party
+_Add established party facts._
+## Factions and Powers
+_Add factions and powers._
+## Key NPCs
+_Add key NPCs._
+## Locations
+_Add established locations._
+## Items and Artifacts
+_Add important items._
+## Active Threats and Open Pressures
+_Add active pressures._
+## Canon Events Timeline
+_Add canonical events._
 """
 
 MECHANICS_TEMPLATE = """\
@@ -100,27 +116,31 @@ _Arc score systems, house rules, and mechanical notes go here._
 PLANNING_TEMPLATE = """\
 # Planning — {name}
 
-_Enemy dossiers, NPC notes, and forward-planning documents go here._
+## Threat Tracker
+_Add current threats._
+## NPC Dossiers
+_Add NPC plans._
+## Faction States
+_Add faction plans._
+## Active Plots
+_Add active plots._
+## DM Notes
+_Add private planning notes._
 """
 
 PARTY_TEMPLATE = """\
 # Party — {name}
 
-_Current party roster. Keep this up to date after each session._
+## Party Overview
+_Add the party's current situation._
 
 ## Characters
-
 | Name | Class / Level | Player | Arc Score Track |
 |---|---|---|---|
 | | | | |
 
-## Arc Scores
-
-_Define each arc score track, its current value, and trigger conditions._
-
-## Party State
-
-_Current location, active quests, key items held, and outstanding obligations._
+## Party Dynamics
+_Add resources, relationships, and character arc tracking._
 """
 
 
@@ -263,6 +283,22 @@ def main() -> None:
         party_path = placeholder(docs_dir, "party.md",
                                  PARTY_TEMPLATE.format(name=name))
         party_note = "← current party roster and arc scores"
+
+    # New workspaces explicitly remain migration-required. They do not
+    # silently present loose files as an active managed generation. External
+    # document arguments remain references and are never copied into members.
+    placeholder(
+        docs_dir,
+        "canon_events_timeline.md",
+        f"# Canon Events Timeline — {name}\n\n_No canonical events recorded yet._\n",
+    )
+    (docs_dir / "reference").mkdir(exist_ok=True)
+    (docs_dir / "grounding-migration-required.md").write_text(
+        "# Grounding bundle migration required\n\n"
+        "Run `migrate_grounding_bundle plan --campaign-dir .`, review the plan, "
+        "then apply it before using managed grounding readers or writers.\n",
+        encoding="utf-8",
+    )
 
     # Write config.yaml (CLI tools)
     config_content = CONFIG_TEMPLATE.format(

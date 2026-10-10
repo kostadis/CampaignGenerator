@@ -26,51 +26,13 @@ from campaignlib.util import atomic_write_text
 from pipelines.summary_native import annotate, arc_check, context, corpus, freshness, key_npcs, notes, npc_check, party_notes, schema, select, state_sections, thread_attach, thread_check, validate
 from pipelines.summary_native.authority import AuthorityError
 from pipelines.summary_native.freshness import check_fresh
+from pipelines.summary_native.outline import check_outline, load_outline
 
 EXIT_REFUSED = 2
 EXIT_INCOMPLETE = 3
 EXIT_MODEL_FAILED = 4
 EXIT_BLOCKING = 1
 EXIT_AUTH_CONFLICT = 5
-
-
-def load_outline(doc: str) -> list[str]:
-    path = context.PROMPT_DIR / f"{doc}.outline.yaml"
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    return [str(h) for h in data["headings"]]
-
-
-def check_outline(text: str, headings: list[str]) -> list[str]:
-    """Problems with ``text`` against the ordered H2 ``headings`` (empty list = complete)."""
-    lines = text.splitlines()
-    wanted = {h.strip(): k for k, h in enumerate(headings)}
-    at: dict[str, int] = {}
-    problems: list[str] = []
-    for n, line in enumerate(lines):
-        if line.startswith("## ") and line.rstrip() in wanted and line.rstrip() not in at:
-            at[line.rstrip()] = n
-    first = min(at.values()) if at else len(lines)
-    pre = "\n".join(lines[:first]).strip()
-    pre = re.sub(r"\A(?:<!--.*?-->\s*)+", "", pre, flags=re.S).strip()
-    if pre and not re.fullmatch(r"(?:>[^\n]*(?:\n|$))+", pre):
-        problems.append("text before the first heading (no preamble allowed)")
-    for h in headings:
-        if h not in at:
-            problems.append(f"missing heading: {h}")
-    present = [h for h in headings if h in at]
-    positions = [at[h] for h in present]
-    if positions != sorted(positions):
-        problems.append("headings out of order (expected: " + " | ".join(present) + ")")
-    h2_lines = sorted(n for n, line in enumerate(lines) if line.startswith("## "))
-    for n in h2_lines:
-        if lines[n].rstrip() not in wanted:
-            problems.append(f"unexpected heading: {lines[n].rstrip()}")
-    for h in present:
-        start = at[h]
-        end = next((n for n in h2_lines if n > start), len(lines))
-        if not "\n".join(lines[start + 1 : end]).strip():
-            problems.append(f"empty body: {h}")
-    return problems
 
 
 def render_part(client, system: str, user: str, model: str, max_tokens: int) -> str:

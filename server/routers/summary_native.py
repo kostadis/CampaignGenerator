@@ -23,10 +23,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from campaignlib.constants import config_path
+from campaignlib.grounding_config import DEFAULT_MAX_REPORT_BYTES
 from campaignlib.players_config import PLAYERS_CONFIG_FILENAME
 from campaignlib.projection_config import PROJECTION_CONFIG_FILENAME, load_projection_config
 from pipelines.summary_native import annotate, audit_select, freshness, notes, resolve, schema, thread_attach
@@ -41,11 +45,129 @@ from server.subprocess_runner import BoundedJSONError, console_script, run_bound
 
 _ENDPOINT_BACKENDS = frozenset({"dgx"})  # the only backend that takes --endpoints
 AUTHORITY_JSON_TIMEOUT_SECONDS = 10
+PROMOTION_PREVIEW_TIMEOUT_SECONDS = 30
+PROMOTION_COMMAND_TIMEOUT_SECONDS = 60
 
 router = APIRouter()
 
 #: ``resolve_selection``'s ``service_name`` and the owner of the override.
 _SERVICE_NAME = "summary_native"
+
+
+class PromotionPreviewRequest(BaseModel):
+    """Explicit selection forwarded unchanged to ``summary_native promote``."""
+
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    since: int = Field(ge=0)
+    until: int = Field(ge=0)
+    review: str
+    check_report: str
+    out_root: str | None = None
+
+    @field_validator("review", "check_report")
+    @classmethod
+    def nonempty_selection(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("must be non-empty")
+        return value
+
+    @field_validator("out_root")
+    @classmethod
+    def nonempty_optional_path(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if not value:
+            raise ValueError("must be non-empty when supplied")
+        return value
+
+    @model_validator(mode="after")
+    def ordered_range(self) -> "PromotionPreviewRequest":
+        if self.until < self.since:
+            raise ValueError("until must be greater than or equal to since")
+        return self
+
+
+class PromotionCommitRequest(PromotionPreviewRequest):
+    preview_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    request_id: str = Field(min_length=1, max_length=96, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+
+
+class PromotionOperationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    operation: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+
+
+class MigrationApplyRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    plan_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
+class ClaimsSelectRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    since: int = Field(ge=0); until: int = Field(ge=0)
+    out_root: str | None = None; sources: str | None = None
+
+    @model_validator(mode="after")
+    def ordered(self):
+        if self.until < self.since: raise ValueError("until must follow since")
+        return self
+
+
+class ClaimsSelectionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    selection: str = Field(min_length=1)
+
+
+class ClaimsSelectionSaveRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    selection: str | dict[str, Any]
+    reviewer: str | None = Field(default=None, min_length=1, max_length=128)
+
+    @model_validator(mode="after")
+    def object_requires_reviewer(self):
+        if isinstance(self.selection, dict) and self.reviewer is None:
+            raise ValueError("selection object requires reviewer")
+        return self
+
+
+class ClaimsChunkSelectionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    selection: dict[str, Any]
+    source_ids: list[str]
+
+
+class ClaimsImportRequest(ClaimsSelectionRequest):
+    candidates: str = Field(min_length=1)
+
+
+class ClaimsExtractRequest(ClaimsSelectionRequest):
+    backend: str | None = Field(default=None, min_length=1); model: str | None = Field(default=None, min_length=1)
+    max_tokens: int | None = Field(default=None, gt=0); chunk_chars: int | None = Field(default=None, gt=0)
+    force: bool = False
+
+
+class ClaimsReviewRequest(ClaimsSelectionRequest):
+    review: str = Field(min_length=1); candidates: str | None = None
+
+
+class ClaimsCheckRequest(ClaimsSelectionRequest):
+    review: str = Field(min_length=1)
+
+
+class ClaimsShowRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    report: str = Field(min_length=1)
+
+
+class ClaimsDispositionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    review: str = Field(min_length=1); item: str = Field(min_length=1)
+    expected_decision_revision: int = Field(ge=0)
+    disposition: str = Field(pattern=r"^(dismiss|accept_uncertainty)$")
+    rationale: str = Field(min_length=1)
 
 
 # ── Resolution helpers ──────────────────────────────────────────────────────
@@ -210,6 +332,262 @@ def _authority_stream(request: Request, *args: str):
     # command itself emits the JSON envelope, so its full digest/receipt data
     # remains visible to the caller rather than being reconstructed by a route.
     return _sse_response(_authority_command(root, *args))
+
+
+# ── Whole-bundle promotion preview (typed CLI adapter) ─────────────────────
+
+def _promotion_preview_command(root: Path, payload: PromotionPreviewRequest) -> list[str]:
+    command = [
+        console_script("summary_native"),
+        "promote",
+        "--config", str(config_path(root, "grounding.yaml")),
+        "--since", str(payload.since),
+        "--until", str(payload.until),
+        "--review", payload.review,
+        "--check-report", payload.check_report,
+        "--dry-run",
+        "--json",
+    ]
+    if payload.out_root is not None:
+        command.extend(("--out-root", payload.out_root))
+    return command
+
+
+def _promotion_preview_error(exc: BoundedJSONError) -> JSONResponse:
+    # A valid preview may be blocked and therefore use the CLI's documented
+    # nonzero exit while still returning the complete manifest and differences.
+    # Preserve that domain envelope byte-for-byte at the HTTP boundary.
+    if isinstance(exc.payload, dict):
+        return JSONResponse(exc.payload, status_code=200)
+    status = 504 if exc.category in {"timeout", "output_limit"} else 503
+    return JSONResponse(
+        {"ok": False, "code": "PROMOTION_COMMAND_FAILED", "message": "Promotion preview failed safely."},
+        status_code=status,
+    )
+
+
+@router.post("/promotion/preview")
+async def promotion_preview(request: Request, payload: PromotionPreviewRequest):
+    """Return the installed CLI's complete dry-run envelope without mutation."""
+    root = _authority_campaign_dir(request)
+    try:
+        return await run_bounded_json(
+            _promotion_preview_command(root, payload),
+            cwd=str(root),
+            timeout_seconds=PROMOTION_PREVIEW_TIMEOUT_SECONDS,
+            max_output_bytes=DEFAULT_MAX_REPORT_BYTES,
+            save_run_log=False,
+        )
+    except BoundedJSONError as exc:
+        return _promotion_preview_error(exc)
+
+
+def _promotion_commit_command(root: Path, payload: PromotionCommitRequest) -> list[str]:
+    command = _promotion_preview_command(root, payload)
+    command.remove("--dry-run")
+    command.extend(("--preview-sha256", payload.preview_sha256, "--request-id", payload.request_id))
+    return command
+
+
+def _promotion_inspection_command(root: Path, action: str, operation: str | None = None) -> list[str]:
+    command = [console_script("summary_native"), "promotion", action,
+               "--config", str(config_path(root, "grounding.yaml"))]
+    if operation is not None:
+        command.extend(("--operation", operation))
+    command.append("--json")
+    return command
+
+
+def _migration_command(root: Path, mode: str, value: str | None = None) -> list[str]:
+    command = [console_script("migrate_grounding_bundle"), "--campaign-dir", str(root)]
+    if mode == "apply":
+        command.extend(("--plan-sha256", value or ""))
+    else:
+        command.append(f"--{mode}")
+    if mode == "recover":
+        command.extend(("--operation", value or ""))
+    command.append("--json")
+    return command
+
+
+async def _promotion_command_json(
+    request: Request, command: list[str], *, mutation: bool = False,
+    operation: str | None = None, request_id: str | None = None,
+):
+    root = _authority_campaign_dir(request)
+    try:
+        return await run_bounded_json(
+            command, cwd=str(root), timeout_seconds=PROMOTION_COMMAND_TIMEOUT_SECONDS,
+            max_output_bytes=DEFAULT_MAX_REPORT_BYTES, save_run_log=False,
+        )
+    except BoundedJSONError as exc:
+        if isinstance(exc.payload, dict):
+            return JSONResponse(exc.payload, status_code=200)
+        if mutation:
+            return JSONResponse({
+                "ok": False,
+                "code": "PROMOTION_COMMIT_UNKNOWN",
+                "message": "The command response was lost. Inspect status and recover explicitly; do not retry automatically.",
+                "artifacts": [],
+                "data": {"operation_id": operation, "request_id": request_id},
+            }, status_code=504 if exc.category in {"timeout", "output_limit"} else 503)
+        return _promotion_preview_error(exc)
+
+
+@router.post("/promotion/commit")
+async def promotion_commit(request: Request, payload: PromotionCommitRequest):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(
+        request, _promotion_commit_command(root, payload), mutation=True,
+        request_id=payload.request_id, operation=f"operation-{payload.request_id[:96]}",
+    )
+
+
+@router.get("/promotion/status")
+async def promotion_status(request: Request, operation: str | None = None):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _promotion_inspection_command(root, "status", operation))
+
+
+@router.post("/promotion/receipt")
+async def promotion_receipt(request: Request, payload: PromotionOperationRequest):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _promotion_inspection_command(root, "receipt", payload.operation))
+
+
+@router.post("/promotion/recover")
+async def promotion_recover(request: Request, payload: PromotionOperationRequest):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _promotion_inspection_command(root, "recover", payload.operation), mutation=True, operation=payload.operation)
+
+
+@router.post("/promotion/migration/preview")
+async def migration_preview(request: Request):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _migration_command(root, "dry-run"))
+
+
+@router.post("/promotion/migration/apply")
+async def migration_apply(request: Request, payload: MigrationApplyRequest):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _migration_command(root, "apply", payload.plan_sha256), mutation=True)
+
+
+@router.get("/promotion/migration/status")
+async def migration_status(request: Request):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _migration_command(root, "status"))
+
+
+@router.post("/promotion/migration/verify")
+async def migration_verify(request: Request):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _migration_command(root, "verify"))
+
+
+@router.post("/promotion/migration/recover")
+async def migration_recover(request: Request, payload: PromotionOperationRequest):
+    root = _authority_campaign_dir(request)
+    return await _promotion_command_json(request, _migration_command(root, "recover", payload.operation), mutation=True, operation=payload.operation)
+
+
+# ── Private claims workflow (installed CLI adapters) ──────────────────────
+
+def _claims_command(root: Path, *args: str) -> list[str]:
+    return [console_script("summary_native"), "claims", *args,
+            "--config", str(config_path(root, "grounding.yaml")), "--json"]
+
+
+async def _claims_json(request: Request, command: list[str], *, mutation: bool = False, stdin_bytes: bytes | None = None):
+    root = _authority_campaign_dir(request)
+    try:
+        return await run_bounded_json(
+            command, cwd=str(root), timeout_seconds=PROMOTION_COMMAND_TIMEOUT_SECONDS,
+            max_output_bytes=DEFAULT_MAX_REPORT_BYTES, save_run_log=False, stdin_bytes=stdin_bytes,
+        )
+    except BoundedJSONError as exc:
+        if isinstance(exc.payload, dict):
+            return JSONResponse(exc.payload, status_code=200)
+        if mutation:
+            return JSONResponse({
+                "ok": False, "code": "CLAIMS_COMMAND_UNKNOWN",
+                "message": "The command response was lost. Inspect current claims state before retrying.",
+                "artifacts": [], "data": {},
+            }, status_code=504 if exc.category in {"timeout", "output_limit"} else 503)
+        return JSONResponse({"ok": False, "code": "CLAIMS_COMMAND_FAILED",
+                             "message": "Claims command failed safely.", "artifacts": [], "data": {}}, status_code=503)
+
+
+@router.post("/claims/select")
+async def claims_select(request: Request, payload: ClaimsSelectRequest):
+    root = _authority_campaign_dir(request); args = ["select", "--since", str(payload.since), "--until", str(payload.until)]
+    if payload.out_root: args += ["--out-root", payload.out_root]
+    if payload.sources: args += ["--sources", _authority_path(root, payload.sources, "sources")]
+    return await _claims_json(request, _claims_command(root, *args))
+
+
+@router.post("/claims/selection/save")
+async def claims_selection_save(request: Request, payload: ClaimsSelectionSaveRequest):
+    root = _authority_campaign_dir(request)
+    if isinstance(payload.selection, str):
+        return await _claims_json(request, _claims_command(root, "selection", "save", "--input", _authority_path(root, payload.selection, "selection")), mutation=True)
+    raw = json.dumps(payload.selection, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return await _claims_json(request, _claims_command(root, "selection", "save", "--input", "-", "--reviewer", payload.reviewer), mutation=True, stdin_bytes=raw)
+
+
+@router.post("/claims/selection/chunks")
+async def claims_selection_chunks(request: Request, payload: ClaimsChunkSelectionRequest):
+    root = _authority_campaign_dir(request)
+    args = ["selection", "chunks", "--input", "-"]
+    for source_id in payload.source_ids: args += ["--source", source_id]
+    raw = json.dumps(payload.selection, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return await _claims_json(request, _claims_command(root, *args), stdin_bytes=raw)
+
+
+@router.post("/claims/extract")
+async def claims_extract(request: Request, payload: ClaimsExtractRequest):
+    root = _authority_campaign_dir(request); args = ["extract", "--selection", _authority_path(root, payload.selection, "selection")]
+    if payload.backend is not None: args += ["--backend", payload.backend]
+    if payload.model is not None: args += ["--model", payload.model]
+    if payload.max_tokens is not None: args += ["--max-tokens", str(payload.max_tokens)]
+    if payload.chunk_chars is not None: args += ["--chunk-chars", str(payload.chunk_chars)]
+    if payload.force: args.append("--force")
+    return await _claims_json(request, _claims_command(root, *args), mutation=True)
+
+
+@router.post("/claims/import")
+async def claims_import(request: Request, payload: ClaimsImportRequest):
+    root = _authority_campaign_dir(request)
+    return await _claims_json(request, _claims_command(root, "import", "--selection", _authority_path(root, payload.selection, "selection"), "--candidates", _authority_path(root, payload.candidates, "candidates")), mutation=True)
+
+
+@router.post("/claims/review")
+async def claims_review(request: Request, payload: ClaimsReviewRequest):
+    root = _authority_campaign_dir(request); args = ["review", "--selection", _authority_path(root, payload.selection, "selection"), "--review", payload.review]
+    if payload.candidates: args += ["--candidates", _authority_path(root, payload.candidates, "candidates")]
+    return await _claims_json(request, _claims_command(root, *args), mutation=True)
+
+
+@router.post("/claims/check")
+async def claims_check(request: Request, payload: ClaimsCheckRequest):
+    root = _authority_campaign_dir(request)
+    return await _claims_json(request, _claims_command(root, "check", "--selection", _authority_path(root, payload.selection, "selection"), "--review", payload.review), mutation=True)
+
+
+@router.post("/claims/show")
+async def claims_show(request: Request, payload: ClaimsShowRequest):
+    root = _authority_campaign_dir(request)
+    return await _claims_json(request, _claims_command(root, "show", "--report", _authority_path(root, payload.report, "report")))
+
+
+@router.post("/claims/disposition")
+async def claims_disposition(request: Request, payload: ClaimsDispositionRequest):
+    root = _authority_campaign_dir(request)
+    return await _claims_json(request, _claims_command(
+        root, "prepare-disposition", "--review", payload.review, "--item", payload.item,
+        "--expected-decision-revision", str(payload.expected_decision_revision),
+        "--disposition", payload.disposition, "--rationale", payload.rationale,
+    ), mutation=True)
 
 
 # ── Authority ledger (CLI-backed JSON / SSE) ───────────────────────────────

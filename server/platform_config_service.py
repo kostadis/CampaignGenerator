@@ -1108,6 +1108,15 @@ class PlatformConfigService:
         docs = cd / "docs"
         result: dict[str, str] = {}
 
+        # A managed layout is one unit.  Validate it before returning any
+        # member path so pending migration/activation is surfaced instead of
+        # being disguised as a collection of independently existing files.
+        managed_layout = None
+        if (docs / "grounding").exists():
+            from campaignlib.grounding_bundle import inspect_layout
+
+            managed_layout = inspect_layout(cd)
+
         # docs/*.md — presence, not content, decides whether a grounding
         # doc "exists yet" for this campaign.
         for name, key in (
@@ -1117,7 +1126,10 @@ class PlatformConfigService:
             ("planning.md", "planning"),
         ):
             p = docs / name
-            result[key] = str(p) if p.exists() else ""
+            if managed_layout is not None:
+                result[key] = str(p)
+            else:
+                result[key] = str(p) if p.exists() else ""
 
         # voice/ and examples/ — single-candidate, but the is_dir() check is
         # a genuine probe, not layout arithmetic, and it is load-bearing:

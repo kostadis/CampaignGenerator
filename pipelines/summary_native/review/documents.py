@@ -4,13 +4,20 @@ import base64, hashlib, json, tempfile, uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from pipelines.summary_native import pointers, state_sections, synth
+from pipelines.summary_native import pointers, schema, state_sections
+from pipelines.summary_native.outline import check_outline, load_outline
 from pipelines.summary_native.authority import AuthorityLedger, ReviewArtifactRef, ReviewDecisionRecord, ledger_bytes, ledger_path, load_ledger, sha256_bytes
 from pipelines.summary_native.authority_apply import TransactionTarget, _prepare_transaction_locked, authority_dir, authority_lock, ledger_tip_path, recover_transaction, require_no_pending_transaction, validate_ledger_tip, _json_bytes, _tip_bytes
 from pipelines.summary_native.review.models import DocumentPromotionProposal, DocumentPromotionReceipt, ReviewItem, ReviewManifest, SourceCustodyGeneration, canonical_bytes, model_from_json
-from pipelines.summary_native.review.store import ReviewStoreError, _events, _reject_symlinks, _review_dir, create_review, history, load_campaign_identity, read_snapshot, save_decisions
+from pipelines.summary_native.review.store import ReviewStoreError, _events, _reject_symlinks, _review_dir, append_review_items, create_review, history, load_campaign_identity, read_review_state, read_snapshot, save_decisions
+from pipelines.summary_native.claims.review import validate_signoff_context
 
 class DocumentReviewError(ReviewStoreError): pass
+
+WHOLE_BUNDLE_INSTRUCTION = (
+    "PROMOTION_WHOLE_BUNDLE_REQUIRED: use `summary_native promote --since N --until N "
+    "--review REVIEW --check-report REPORT --dry-run`"
+)
 
 def _safe(root:Path,value:str)->Path:
     candidate=_reject_symlinks(root,root/value)
@@ -19,7 +26,7 @@ def _safe(root:Path,value:str)->Path:
     if not candidate.is_file(): raise DocumentReviewError("REVIEW_DOCUMENT_POINTER: selected document is missing")
     return candidate
 
-def create_document_review(campaign_dir:Path,review_id:str,selection_path:Path,*,created_by:str)->dict:
+def create_document_review(campaign_dir:Path,review_id:str,selection_path:Path,*,created_by:str,signoff_rule_version:int=1,signoff_context:dict|None=None)->dict:
     root=Path(campaign_dir).resolve(); identity=load_campaign_identity(root); raw=json.loads(Path(selection_path).read_bytes()); selected=raw.get("documents")
     if not isinstance(selected,list) or not selected: raise DocumentReviewError("REVIEW_INVALID_SELECTION: documents required")
     now=datetime.now(timezone.utc); items=[]; sources=[]
@@ -27,14 +34,63 @@ def create_document_review(campaign_dir:Path,review_id:str,selection_path:Path,*
         document=str(entry["id"]); relative=str(entry["path"]); path=_safe(root,relative); data=path.read_bytes(); digest=sha256_bytes(data); source_id=f"document-{document}"
         sources.append({"source_id":source_id,"path":relative,"sha256":digest,"size":len(data)})
         destination=str(Path(relative).parent.parent/"reviewed"/f"{document}.md")
-        items.append(ReviewItem(item_id=f"document-{document}",revision=1,campaign_id=identity.campaign_id,review_id=review_id,domain="grounding_document",subject_ref={"subject_id":uuid.uuid5(identity.campaign_id,f"document:{document}"),"kind":"document"},occurrence_id=uuid.uuid5(identity.campaign_id,f"document-occurrence:{document}"),locator={"source_path":relative,"anchor":"whole-document"},claim_text=f"Approve exact {document} draft for promotion.",evidence=({"source_id":source_id,"source_path":relative,"anchor":"whole-document","exact_excerpt":data.decode("utf-8")[:4096],"selected_span_sha256":sha256_bytes(data.decode("utf-8")[:4096].encode()),"citation_resolved":True},),diagnostics=({"diagnostic_id":f"document-signoff-{document}","legacy_code":"document-signoff-required","message":"Independent exact-document approval is required.","blocking":False},),categories={"citation_non_entailment"},severity="needs_judgment",assignment_basis="gm_confirmed",rationale="Publication requires a separate exact-byte GM signoff.",proposed_action={"action":"signoff_document","details":{"document_id":document,"document_sha256":digest,"destination":destination}},scope={"kind":"document","value":document},rule_versions=({"rule_id":"grounding-document-signoff","version":"1"},),input_bindings=({"source_id":source_id,"path":relative,"custody_sha256":digest,"semantic_sha256":digest},)))
+        details={"document_id":document,"document_sha256":digest,"destination":destination}
+        if signoff_rule_version==2:
+            if signoff_context is None: raise DocumentReviewError("REVIEW_DOCUMENT_CONTEXT: v2 sign-off context is required")
+            try: details["signoff_context"]=validate_signoff_context(dict(signoff_context))
+            except Exception as exc: raise DocumentReviewError(f"REVIEW_DOCUMENT_CONTEXT: {exc}") from exc
+        elif signoff_rule_version!=1: raise DocumentReviewError("REVIEW_DOCUMENT_RULE: unsupported sign-off rule")
+        rule_id="grounding-bundle-signoff" if signoff_rule_version==2 else "grounding-document-signoff"
+        items.append(ReviewItem(item_id=f"document-{document}",revision=1,campaign_id=identity.campaign_id,review_id=review_id,domain="grounding_document",subject_ref={"subject_id":uuid.uuid5(identity.campaign_id,f"document:{document}"),"kind":"document"},occurrence_id=uuid.uuid5(identity.campaign_id,f"document-occurrence:{document}"),locator={"source_path":relative,"anchor":"whole-document"},claim_text=f"Approve exact {document} draft for promotion.",evidence=({"source_id":source_id,"source_path":relative,"anchor":"whole-document","exact_excerpt":data.decode("utf-8")[:4096],"selected_span_sha256":sha256_bytes(data.decode("utf-8")[:4096].encode()),"citation_resolved":True},),diagnostics=({"diagnostic_id":f"document-signoff-{document}","legacy_code":"document-signoff-required","message":"Independent exact-document approval is required.","blocking":False},),categories={"citation_non_entailment"},severity="needs_judgment",assignment_basis="gm_confirmed",rationale="Publication requires a separate exact-byte GM signoff.",proposed_action={"action":"signoff_document","details":details},scope={"kind":"document","value":document},rule_versions=({"rule_id":rule_id,"version":str(signoff_rule_version)},),input_bindings=({"source_id":source_id,"path":relative,"custody_sha256":digest,"semantic_sha256":digest},)))
     custody=SourceCustodyGeneration(campaign_id=identity.campaign_id,review_id=review_id,generation=1,recorded_at=now,sources=tuple(sources))
-    manifest=ReviewManifest(campaign_id=identity.campaign_id,review_id=review_id,kind="grounding_documents",generation=1,created_at=now,created_by=created_by,selection=tuple({"kind":"document","id":str(entry["id"])} for entry in selected),items=tuple({"campaign_id":identity.campaign_id,"review_id":review_id,"item_id":item.item_id,"revision":1,"review_digest":item.review_digest} for item in items),source_manifest={"campaign_id":identity.campaign_id,"review_id":review_id,"generation":1,"digest":custody.custody_digest},rule_versions=({"rule_id":"grounding-document-signoff","version":"1"},))
-    return create_review(root,manifest,custody,items)
+    manifest=ReviewManifest(campaign_id=identity.campaign_id,review_id=review_id,kind="grounding_documents",generation=1,created_at=now,created_by=created_by,selection=tuple({"kind":"document","id":str(entry["id"])} for entry in selected),items=tuple({"campaign_id":identity.campaign_id,"review_id":review_id,"item_id":item.item_id,"revision":1,"review_digest":item.review_digest} for item in items),source_manifest={"campaign_id":identity.campaign_id,"review_id":review_id,"generation":1,"digest":custody.custody_digest},rule_versions=({"rule_id":"grounding-bundle-signoff" if signoff_rule_version==2 else "grounding-document-signoff","version":str(signoff_rule_version)},))
+    try:
+        current_manifest,current_custody,current_items=read_snapshot(root,review_id)
+    except ReviewStoreError:
+        return create_review(root,manifest,custody,items)
+    # One review may already custody a draft as claim evidence. Reuse that
+    # exact path+hash identity for the sign-off item instead of inventing a
+    # second source id for the same file.
+    existing_by_content={(source.path,source.sha256):source.source_id for source in current_custody.sources}
+    normalized=[]
+    for item in items:
+        raw=item.model_dump(mode="python"); replacements={}
+        bindings=[]
+        for binding in item.input_bindings:
+            source_id=existing_by_content.get((binding.path,binding.custody_sha256),binding.source_id)
+            replacements[binding.source_id]=source_id
+            value=binding.model_dump(mode="python"); value["source_id"]=source_id; bindings.append(value)
+        evidence=[]
+        for row in item.evidence:
+            value=row.model_dump(mode="python"); value["source_id"]=replacements.get(row.source_id,row.source_id); evidence.append(value)
+        raw.update(input_bindings=bindings,evidence=evidence,review_digest=None)
+        normalized.append(ReviewItem.model_validate(raw))
+    current_by_id={item.item_id:item for item in current_items}
+    additions=[]
+    for item in normalized:
+        prior=current_by_id.get(item.item_id)
+        if prior is None:
+            additions.append(item); continue
+        prior_value=prior.model_dump(mode="json",exclude={"revision","review_digest"})
+        next_value=item.model_dump(mode="json",exclude={"revision","review_digest"})
+        if prior_value==next_value:
+            continue
+        raw=item.model_dump(mode="python")
+        raw.update(revision=prior.revision+1,review_digest=None)
+        additions.append(ReviewItem.model_validate(raw))
+    additions=tuple(additions)
+    if not additions:
+        return {"review_id":review_id,"generation":current_manifest.generation,"unchanged":True}
+    required={binding.source_id for item in additions for binding in item.input_bindings}
+    return append_review_items(root,review_id,expected_generation=current_manifest.generation,items=additions,sources=tuple(source for source in custody.model_dump(mode="json")["sources"] if source["source_id"] in required),rule_versions=manifest.rule_versions)
 
 def sign_document(campaign_dir:Path,review_id:str,*,document_item_id:str,item_sha256:str,expected_decision_revision:int,reviewer:str)->dict:
     root=Path(campaign_dir); manifest,_,items=read_snapshot(root,review_id); item=next((value for value in items if value.item_id==document_item_id),None)
     if item is None or item.proposed_action.details.get("document_sha256")!=item_sha256: raise DocumentReviewError("REVIEW_DOCUMENT_STALE: exact draft binding differs")
+    context=item.proposed_action.details.get("signoff_context")
+    if context is not None:
+        try: validate_signoff_context(context)
+        except Exception as exc: raise DocumentReviewError(f"REVIEW_DOCUMENT_CONTEXT: {exc}") from exc
     path=_safe(root,item.locator.source_path)
     if sha256_bytes(path.read_bytes())!=item_sha256: raise DocumentReviewError("REVIEW_DOCUMENT_STALE: draft bytes changed")
     return save_decisions(root,review_id,{"version":1,"request_id":f"document-signoff-{document_item_id}-{expected_decision_revision}","review_generation":manifest.generation,"reviewer":reviewer,"decisions":[{"item_id":item.item_id,"item_revision":item.revision,"review_digest":item.review_digest,"expected_decision_revision":expected_decision_revision,"verdict":"approve","disposition":"document_signoff","note":"Approved exact document bytes for promotion."}]})
@@ -43,7 +99,7 @@ def _check_document(root:Path,item:ReviewItem)->tuple[Path,bytes,dict,dict[str,s
     path=_safe(root,item.locator.source_path); data=path.read_bytes(); expected=item.proposed_action.details["document_sha256"]
     if sha256_bytes(data)!=expected: raise DocumentReviewError("REVIEW_DOCUMENT_STALE: draft bytes changed")
     document=item.proposed_action.details["document_id"]; state_dir=path.parent.parent
-    outline=synth.check_outline(data.decode("utf-8"),synth.load_outline(document))
+    outline=check_outline(data.decode("utf-8"),load_outline(document))
     if outline: raise DocumentReviewError(f"REVIEW_DOCUMENT_OUTLINE: {outline[0]}")
     pointer_problems=pointers.check_paths(path,root)
     if pointer_problems: raise DocumentReviewError(f"REVIEW_DOCUMENT_POINTER: {pointer_problems[0]}")
@@ -52,7 +108,7 @@ def _check_document(root:Path,item:ReviewItem)->tuple[Path,bytes,dict,dict[str,s
         reference=path.parent/"reference"/f"{kind}.md"
         if not reference.is_file(): raise DocumentReviewError("REVIEW_DOCUMENT_POINTER: reading-contract input is missing")
         relative=str(reference.relative_to(root)); dependencies[relative]=sha256_bytes(reference.read_bytes())
-    timeline=path.parent/"timeline.md"
+    timeline=path.parent/schema.TIMELINE_FILE
     if timeline.is_file(): dependencies[str(timeline.relative_to(root))]=sha256_bytes(timeline.read_bytes())
     record_match=__import__('re').search(r"record:\s*([^ |]+)",data.decode("utf-8"));
     if not record_match: raise DocumentReviewError("REVIEW_DOCUMENT_POINTER: run record is missing")
@@ -81,6 +137,7 @@ def _check_document(root:Path,item:ReviewItem)->tuple[Path,bytes,dict,dict[str,s
     return path,data,record,dependencies
 
 def prepare_document_promotion(campaign_dir:Path,review_id:str,*,document_ids:list[str]):
+    raise DocumentReviewError(WHOLE_BUNDLE_INSTRUCTION, "PROMOTION_WHOLE_BUNDLE_REQUIRED")
     root=Path(campaign_dir).resolve(); selected=[]
     with authority_lock(root,exclusive=True):
         require_no_pending_transaction(root); validate_ledger_tip(root)
@@ -123,6 +180,7 @@ def prepare_document_promotion(campaign_dir:Path,review_id:str,*,document_ids:li
     return tuple(selected)
 
 def promote_document_bundle(campaign_dir:Path,review_id:str,*,proposals:list[dict]):
+    raise DocumentReviewError(WHOLE_BUNDLE_INSTRUCTION, "PROMOTION_WHOLE_BUNDLE_REQUIRED")
     root=Path(campaign_dir).resolve(); receipts=[]
     with authority_lock(root,exclusive=True):
         require_no_pending_transaction(root); validate_ledger_tip(root); ledger=load_ledger(root); targets=[]; records=list(ledger.records)

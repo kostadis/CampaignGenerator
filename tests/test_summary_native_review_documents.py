@@ -151,9 +151,11 @@ def document_campaign(tmp_path: Path) -> tuple[Path, Path]:
     return root, selection_path
 
 
-def _create(root: Path, selection: Path, *, review_id: str = REVIEW_ID):
+def _create(root: Path, selection: Path, *, review_id: str = REVIEW_ID, signoff_context: dict | None = None):
     result = _call("create_document_review")(
-        root, review_id, selection, created_by="GM"
+        root, review_id, selection, created_by="GM",
+        signoff_rule_version=2 if signoff_context is not None else 1,
+        signoff_context=signoff_context,
     )
     manifest, custody, items = read_snapshot(root, review_id)
     return result, manifest, custody, items
@@ -176,6 +178,27 @@ def _sign(root: Path, review_id: str, item) -> dict:
         expected_decision_revision=0,
         reviewer="GM",
     )
+
+
+def test_v2_signoff_items_revise_when_current_report_context_changes(document_campaign):
+    root, selection = document_campaign
+    first = {
+        "analysis_digest": "1" * 64, "resolution_digest": "2" * 64,
+        "support_digest": "3" * 64, "authority_digest": "4" * 64,
+        "audience_digest": "5" * 64, "rules_digest": "6" * 64,
+    }
+    _, manifest, _, items = _create(root, selection, signoff_context=first)
+    old = _item_by_document(items)["world_state"]
+    _sign(root, REVIEW_ID, old)
+    second = {**first, "analysis_digest": "a" * 64, "resolution_digest": "b" * 64}
+    result, refreshed, _, revised_items = _create(root, selection, signoff_context=second)
+    revised = _item_by_document(revised_items)
+    assert result["generation"] == refreshed.generation == manifest.generation + 1
+    assert {item.revision for item in revised.values()} == {2}
+    assert revised["world_state"].review_digest != old.review_digest
+    event = history(root, REVIEW_ID, item_id=old.item_id)[-1]
+    assert event["item_revision"] == 1
+    assert event["review_digest"] == old.review_digest
 
 
 def _document_error():
@@ -220,128 +243,33 @@ def test_long_document_is_read_in_bounded_sections_with_full_digest(document_cam
     assert section["content"] + second["document_section"]["content"] == draft.read_text(encoding="utf-8")
 
 
-def test_resolved_findings_never_substitute_for_independent_document_signoff(document_campaign):
-    root, selection = document_campaign
-    _create(root, selection)
-
-    with pytest.raises(_document_error(), match="REVIEW_DOCUMENT_SIGNOFF_REQUIRED"):
-        _call("prepare_document_promotion")(
-            root, REVIEW_ID, document_ids=["world_state"]
-        )
-
-
-def test_one_byte_draft_change_stales_exact_document_signoff(document_campaign):
-    root, selection = document_campaign
-    _, _, _, items = _create(root, selection)
-    item = _item_by_document(items)["world_state"]
-    _sign(root, REVIEW_ID, item)
-    draft = root / item.locator.source_path
-    draft.write_bytes(draft.read_bytes() + b" ")
-
-    with pytest.raises(_document_error(), match="REVIEW_DOCUMENT_STALE"):
-        _call("prepare_document_promotion")(
-            root, REVIEW_ID, document_ids=["world_state"]
-        )
-
-
-def test_missing_reading_contract_bundle_pointer_blocks_promotion(document_campaign):
-    root, selection = document_campaign
-    _, _, _, items = _create(root, selection)
-    item = _item_by_document(items)["party"]
-    _sign(root, REVIEW_ID, item)
-    (root / item.locator.source_path).parent.joinpath("reference", "party.md").unlink()
-
-    with pytest.raises(_document_error(), match="REVIEW_DOCUMENT_POINTER"):
-        _call("prepare_document_promotion")(
-            root, REVIEW_ID, document_ids=["party"]
-        )
-
-
-@pytest.mark.parametrize(
-    ("failure", "expected"),
-    [("audience", "REVIEW_DOCUMENT_AUDIENCE"), ("freshness", "REVIEW_DOCUMENT_STALE")],
-)
-def test_existing_audience_and_freshness_gates_still_block_promotion(
-    document_campaign, failure: str, expected: str,
+@pytest.mark.parametrize("entrypoint", ["prepare_document_promotion", "promote_document_bundle"])
+def test_legacy_per_document_publication_entrypoints_refuse_with_whole_bundle_instruction(
+    document_campaign, entrypoint: str,
 ):
     root, selection = document_campaign
-    _, _, _, items = _create(root, selection)
-    item = _item_by_document(items)["campaign_state"]
-    _sign(root, REVIEW_ID, item)
-    if failure == "audience":
-        notes = root / "docs" / "summary_native" / "ch001-001" / "state" / "notes" / "manifest.json"
-        value = json.loads(notes.read_text())
-        value["audience"] = "players"
-        _write_json(notes, value)
-    else:
-        (root / "docs" / "entity_registry.yaml").write_text(
-            "version: 1\ncampaign: document-fixture\nentities: []\n# changed\n",
-            encoding="utf-8",
-        )
+    _create(root, selection)
+    kwargs = {"document_ids": ["world_state"]} if entrypoint.startswith("prepare") else {"proposals": []}
 
-    with pytest.raises(_document_error(), match=expected):
-        _call("prepare_document_promotion")(
-            root, REVIEW_ID, document_ids=["campaign_state"]
-        )
+    with pytest.raises(_document_error(), match="PROMOTION_WHOLE_BUNDLE_REQUIRED") as exc:
+        _call(entrypoint)(root, REVIEW_ID, **kwargs)
 
-
-def test_explicit_selection_promotes_only_selected_exact_bundle(document_campaign):
-    root, full_selection = document_campaign
-    raw = json.loads(full_selection.read_text())
-    selected_ids = {"world_state", "planning"}
-    raw["documents"] = [entry for entry in raw["documents"] if entry["id"] in selected_ids]
-    selected = root / "selections" / "selected-documents.json"
-    _write_json(selected, raw)
-    _, manifest, _, items = _create(root, selected)
-    assert {entry.id for entry in manifest.selection} == selected_ids
-    assert set(_item_by_document(items)) == selected_ids
-    for item in items:
-        _sign(root, REVIEW_ID, item)
-
-    proposals = tuple(_call("prepare_document_promotion")(
-        root, REVIEW_ID, document_ids=["world_state", "planning"]
-    ))
-    assert len(proposals) == 2
-    assert all(isinstance(proposal, DocumentPromotionProposal) for proposal in proposals)
-    assert {proposal.document_item_id for proposal in proposals} == {item.item_id for item in items}
-    receipts = tuple(_call("promote_document_bundle")(
-        root,
-        REVIEW_ID,
-        proposals=[{
-            "proposal_id": proposal.proposal_id,
-            "proposal_digest": proposal.proposal_digest,
-        } for proposal in proposals],
-    ))
-    assert len(receipts) == 2
-    replay = tuple(_call("promote_document_bundle")(
-        root,
-        REVIEW_ID,
-        proposals=[{
-            "proposal_id": proposal.proposal_id,
-            "proposal_digest": proposal.proposal_digest,
-        } for proposal in proposals],
-    ))
-    assert replay == receipts
-    reviewed = root / "docs" / "summary_native" / "ch001-001" / "state" / "reviewed"
-    assert {path.stem for path in reviewed.glob("*.md")} == selected_ids | {"timeline"}
-    for proposal in proposals:
-        assert not pointers.check_paths(reviewed / f"{proposal.document_item_id.removeprefix('document-')}.md", root)
-    for document in selected_ids:
-        source = root / _item_by_document(items)[document].locator.source_path
-        assert (reviewed / f"{document}.md").read_bytes() == source.read_bytes()
-    assert not (reviewed / "party.md").exists()
-    assert not (reviewed / "campaign_state.md").exists()
-    records = [record for record in load_ledger(root).records if isinstance(record, ReviewDecisionRecord)]
-    assert len([record for record in records if record.receipt is not None]) == 2
-    for record in records:
-        validate_record_identity(root, record)
+    assert "summary_native promote --since N --until N" in str(exc.value)
 
 
 def test_imported_exact_signoff_event_is_the_promotion_decision_binding(
     document_campaign, tmp_path: Path,
 ):
     source, selection = document_campaign
-    _, _, _, items = _create(source, selection)
+    context = {
+        "analysis_digest": "1" * 64,
+        "resolution_digest": "2" * 64,
+        "support_digest": "3" * 64,
+        "authority_digest": "4" * 64,
+        "audience_digest": "5" * 64,
+        "rules_digest": "6" * 64,
+    }
+    _, _, _, items = _create(source, selection, signoff_context=context)
     item = _item_by_document(items)["planning"]
 
     replica = tmp_path / "replica"
@@ -362,45 +290,9 @@ def test_imported_exact_signoff_event_is_the_promotion_decision_binding(
 
     events = history(replica, REVIEW_ID, item_id=item.item_id)
     assert len(events) == 1 and events[0]["reviewer"] == "GM"
-    proposals = tuple(_call("prepare_document_promotion")(
-        replica, REVIEW_ID, document_ids=["planning"]
-    ))
-    assert len(proposals) == 1
-    binding = proposals[0].decision_bindings[0]
-    assert binding.event_id == events[0]["event_id"]
-    assert binding.item_id == item.item_id
-    assert binding.item_revision == item.revision
-    assert binding.review_digest == item.review_digest
-    assert binding.decision_revision == events[0]["decision_revision"]
-
-
-@pytest.mark.parametrize("changed", ["summary", "reference"])
-def test_promotion_rechecks_exact_dependencies_after_preview(document_campaign, changed: str):
-    root, selection = document_campaign
-    _, _, _, items = _create(root, selection)
-    item = _item_by_document(items)["world_state"]
-    _sign(root, REVIEW_ID, item)
-    proposal = _call("prepare_document_promotion")(
-        root, REVIEW_ID, document_ids=["world_state"]
-    )[0]
-    if changed == "summary":
-        dependency = root / "summaries" / "001-fixture.md"
-    else:
-        dependency = root / item.locator.source_path
-        dependency = dependency.parent / "reference" / "threats.md"
-    dependency.write_bytes(dependency.read_bytes() + b"changed\n")
-    before = {p.relative_to(root): _sha(p) for p in root.rglob("*") if p.is_file()}
-
-    with pytest.raises(_document_error(), match="REVIEW_DOCUMENT_STALE"):
-        _call("promote_document_bundle")(
-            root,
-            REVIEW_ID,
-            proposals=[{
-                "proposal_id": proposal.proposal_id,
-                "proposal_digest": proposal.proposal_digest,
-            }],
-        )
-
-    after = {p.relative_to(root): _sha(p) for p in root.rglob("*") if p.is_file()}
-    assert after == before
-    assert not (root / proposal.destination).exists()
+    # Import preserves the exact immutable event for the whole-bundle gate; it
+    # does not revive the retired per-document publication mechanism.
+    assert events[0]["item_id"] == item.item_id
+    assert events[0]["review_digest"] == item.review_digest
+    with pytest.raises(_document_error(), match="PROMOTION_WHOLE_BUNDLE_REQUIRED"):
+        _call("prepare_document_promotion")(replica, REVIEW_ID, document_ids=["planning"])

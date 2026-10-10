@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import asyncio
 from pathlib import Path
 import subprocess
 import sys
@@ -331,8 +332,6 @@ def test_us2_through_us4_actions_preserve_every_typed_cli_flag(route_app):
             "item": "document-1", "document_sha256": artifact_digest,
             "expected_decision_revision": 0, "reviewer": "GM",
         }),
-        (f"{BASE}/review-1/document/prepare", {"selection": "operation.json"}),
-        (f"{BASE}/review-1/document/promote", {"selection": "operation.json"}),
         (f"{BASE}/review-1/identity/prepare", {
             "item": "pair-1", "expected_decision_revision": 0, "scope_kind": "global",
         }),
@@ -387,8 +386,6 @@ def test_us2_through_us4_actions_preserve_every_typed_cli_flag(route_app):
             "document", "sign", "review-1", "--item", "document-1", "--document-sha256",
             artifact_digest, "--expected-decision-revision", "0", "--reviewer", "GM",
         ],
-        ["document", "prepare", "review-1", "--documents", str(operation)],
-        ["document", "promote", "review-1", "--proposals", str(operation)],
         [
             "identity", "prepare", "review-1", "--item", "pair-1",
             "--expected-decision-revision", "0", "--scope-kind", "global",
@@ -503,6 +500,19 @@ def test_correction_interruption_remains_visible_until_explicit_recovery(route_a
     assert client.get(f"{BASE}/review-1/status").json()["data"]["pending_transaction"] is None
 
 
+def test_retired_document_publication_routes_preserve_history_guidance(route_app):
+    _app, _campaign, calls = route_app
+    payload = review_routes.FileSelectionRequest(selection="operation.json")
+    for action in ("prepare", "promote"):
+        response = asyncio.run(getattr(review_routes, f"document_{action}")(None, "review-1", payload))
+        assert response.status_code == 410
+        body = json.loads(response.body)
+        assert body["code"] == "DOCUMENT_PROMOTION_RETIRED"
+        assert body["data"]["promotion_path"] == "/api/grounding/summary-native/promotion/preview"
+        assert body["data"]["history_path"] == f"{BASE}/review-1/history"
+    assert calls == []
+
+
 def test_review_launcher_exposes_every_trusted_cli_control_and_binding():
     source = (
         Path(__file__).parents[1] / "frontend" / "src" / "components" / "ReviewLauncher.vue"
@@ -527,8 +537,8 @@ def test_review_launcher_exposes_every_trusted_cli_control_and_binding():
         "correction apply": "/correction/apply`,'POST'",
         "NPC signoff": "/npc/sign`,'POST'",
         "document signoff": "/document/sign`,'POST'",
-        "document prepare": "/document/prepare`,'POST'",
-        "document promote": "/document/promote`,'POST'",
+        "whole-bundle guidance": "Go to whole-bundle promotion",
+        "retired document actions": "per-document prepare and promote actions are retired",
         "identity prepare": "/identity/prepare`,'POST'",
         "identity detail": "/identity/${encodeURIComponent(proposalId)}`,'GET'",
         "identity apply": "/identity/apply`,'POST'",

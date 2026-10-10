@@ -19,6 +19,8 @@ from campaignlib import (
     client_from_args,
     find_registry,
     load_agent_prompt,
+    load_files_snapshot,
+    load_file,
     run_single_batch,
     stream_api,
 )
@@ -71,6 +73,7 @@ def main() -> None:
     if canon:
         context_parts.append(canon)
 
+    selected_context: list[Path] = []
     for c in args.context:
         cp = Path(c).expanduser()
         if not cp.exists():
@@ -83,7 +86,8 @@ def main() -> None:
                 file=sys.stderr,
             )
             continue
-        context_parts.append(cp.read_text(encoding="utf-8"))
+        selected_context.append(cp)
+    context_parts.extend(load_files_snapshot(selected_context, Path.cwd()))
 
     parts = [f"## Session Recap\n\n{recap.strip()}"]
     if args.session_summary:

@@ -290,8 +290,14 @@ def _resolve_ensemble_path(path: str) -> Path:
 
 def _is_live_doc(path: Path) -> bool:
     cwd = Path.cwd().resolve()
-    live = {(cwd / live_rel).resolve() for live_rel in GROUNDING_DOCS.values()}
-    return path.resolve() in live
+    from campaignlib.grounding_bundle import classify_managed_path
+    from pipelines.summary_native.promotion.errors import PromotionMigrationRequired
+
+    try:
+        return classify_managed_path(path, cwd) is not None
+    except PromotionMigrationRequired:
+        live = {(cwd / live_rel).resolve() for live_rel in GROUNDING_DOCS.values()}
+        return path.resolve() in live
 
 
 def _default_party_config() -> Path | None:
@@ -396,12 +402,15 @@ def _default_party_context(drafts_dir: str) -> list[str]:
     absent. Prefers each doc's draft (this workflow's own freshest output)
     over its live counterpart when both exist."""
     cwd = Path.cwd()
+    from campaignlib.grounding_bundle import inspect_layout
+
+    layout = inspect_layout(cwd) if (cwd / "docs/grounding").exists() else None
     found = []
     for key in ("world_state", "campaign_state"):
         draft, live = cwd / _draft_path(key, drafts_dir), cwd / GROUNDING_DOCS[key]
         if draft.exists():
             found.append(str(draft))
-        elif live.exists():
+        elif layout is not None or live.exists():
             found.append(str(live))
     return found
 

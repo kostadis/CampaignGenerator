@@ -71,3 +71,46 @@ def test_module_makes_no_model_call(name, path):
             f = node.func
             called = f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else ""
             assert called not in FORBIDDEN_CALLS, f"{path.name} calls {called}"
+
+
+def test_pure_claims_modules_do_not_import_optional_extractor_or_model_seam():
+    claims = PKG / "claims"
+    for name in ("models", "selection", "packets", "imports", "check", "report", "review"):
+        path = claims / f"{name}.py"
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                module = node.module or ""
+                assert module != "pipelines.summary_native.claims.extract"
+                assert not module.startswith("campaignlib.api")
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    assert alias.name != "pipelines.summary_native.claims.extract"
+                    assert not alias.name.startswith("campaignlib.api")
+
+
+def test_promotion_and_claim_check_modules_have_no_model_call_boundary():
+    """Every release gate stays model-free; only claims/extract.py owns that seam."""
+    paths = [
+        *sorted((PKG / "promotion").glob("*.py")),
+        *(PKG / "claims" / name for name in (
+            "models.py", "selection.py", "packets.py", "imports.py",
+            "check.py", "report.py", "review.py",
+        )),
+    ]
+    assert paths and all(path.is_file() for path in paths)
+    for path in paths:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom):
+                module = node.module or ""
+                assert module != "pipelines.summary_native.claims.extract", path
+                assert not module.startswith("campaignlib.api"), path
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    assert alias.name != "pipelines.summary_native.claims.extract", path
+                    assert not alias.name.startswith("campaignlib.api"), path
+            elif isinstance(node, ast.Call):
+                func = node.func
+                called = func.id if isinstance(func, ast.Name) else func.attr if isinstance(func, ast.Attribute) else ""
+                assert called not in FORBIDDEN_CALLS, f"{path} calls {called}"

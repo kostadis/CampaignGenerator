@@ -45,6 +45,8 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
+from campaignlib.grounding_bundle import refuse_managed_write
+
 from .kanka_client import KankaClient
 
 # Render order mirrors CampaignGenerator's TYPE_HEADINGS so the output is a
@@ -214,6 +216,13 @@ def main() -> None:
                              "http://localhost:8081).")
     args = parser.parse_args()
 
+    output_path = None
+    if not args.stdout:
+        output_path = Path(args.output).expanduser().resolve()
+        refuse_managed_write(
+            output_path, Path.cwd(), draft_hint="docs/world_state.generated.md"
+        )
+
     token = os.environ.get("KANKA_TOKEN")
     if not token:
         print("Error: set KANKA_TOKEN env var to your Kanka API token.", file=sys.stderr)
@@ -232,7 +241,8 @@ def main() -> None:
         print(markdown)
         return
 
-    path = Path(args.output).expanduser().resolve()
+    path = output_path
+    assert path is not None
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(markdown, encoding="utf-8")
     print(f"Wrote world_state: {path}", file=sys.stderr)

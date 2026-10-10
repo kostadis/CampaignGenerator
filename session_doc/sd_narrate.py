@@ -20,6 +20,7 @@ with provider ``--batch`` submits that single exchange as one batch item.
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import uuid
@@ -37,6 +38,7 @@ from campaignlib import (
     find_alias_registry,
     find_registry,
     load_alias_map,
+    load_files_snapshot,
     DossierLayoutError,
     run_single_batch,
     stream_api,
@@ -768,8 +770,20 @@ def main() -> None:
             )
         raise
 
+    grouped_inputs = [Path(args.party).expanduser()] if args.party else []
+    grouped_inputs.extend(
+        Path(value).expanduser() for value in (args.context or []) if Path(value).expanduser().is_file()
+    )
+    grouped_inputs.extend(
+        Path(value).expanduser() for value in (args.known_lore or []) if Path(value).expanduser().is_file()
+    )
     try:
-        party = Path(args.party).expanduser().read_text(encoding="utf-8") if args.party else None
+        grouped_values = load_files_snapshot(grouped_inputs, Path.cwd())
+        grouped_text = {
+            Path(os.path.abspath(path)): value
+            for path, value in zip(grouped_inputs, grouped_values)
+        }
+        party = grouped_text[Path(os.path.abspath(Path(args.party).expanduser()))] if args.party else None
     except (OSError, UnicodeError) as exc:
         if args.batch_scenes:
             refuse_bundle("PARTY_UNREADABLE", f"cannot read --party {args.party}: {exc}")
@@ -869,7 +883,7 @@ def main() -> None:
                     refuse_bundle("CONTEXT_NOT_FOUND", f"--context file not found: {cp}")
                 continue
             try:
-                context_parts.append(cp.read_text(encoding="utf-8"))
+                context_parts.append(grouped_text[Path(os.path.abspath(cp))])
             except (OSError, UnicodeError) as exc:
                 if args.batch_scenes:
                     refuse_bundle("CONTEXT_UNREADABLE",
@@ -913,7 +927,7 @@ def main() -> None:
     for k in (args.known_lore or []):
         kp = Path(k).expanduser()
         if kp.is_file():
-            known_lore_texts.append(kp.read_text(encoding="utf-8"))
+            known_lore_texts.append(grouped_text[Path(os.path.abspath(kp))])
         else:
             print(f"Warning: --known-lore file not found: {kp}", file=sys.stderr)
 

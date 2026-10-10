@@ -353,13 +353,11 @@ async def npc_sign(request:Request,review_id:str,payload:NpcSignRequest):
 
 @router.post("/{review_id}/document/prepare")
 async def document_prepare(request:Request,review_id:str,payload:FileSelectionRequest):
-    root=_root(request); value=_contained_file(root,payload.selection,"documents")
-    return await _run(root,"document","prepare",review_id,"--documents",value)
+    return JSONResponse({"ok":False,"code":"DOCUMENT_PROMOTION_RETIRED","message":"Per-document preparation is retired. Use /api/grounding/summary-native/promotion/preview with the complete reviewed bundle.","data":{"review_id":review_id,"promotion_path":"/api/grounding/summary-native/promotion/preview","history_path":f"/api/reviews/{review_id}/history"}},status_code=410)
 
 @router.post("/{review_id}/document/promote")
 async def document_promote(request:Request,review_id:str,payload:FileSelectionRequest):
-    root=_root(request); value=_contained_file(root,payload.selection,"proposals")
-    return await _run(root,"document","promote",review_id,"--proposals",value)
+    return JSONResponse({"ok":False,"code":"DOCUMENT_PROMOTION_RETIRED","message":"Per-document promotion is retired. Use /api/grounding/summary-native/promotion/preview and commit the exact whole-bundle preview.","data":{"review_id":review_id,"promotion_path":"/api/grounding/summary-native/promotion/preview","history_path":f"/api/reviews/{review_id}/history"}},status_code=410)
 
 @router.post("/{review_id}/identity/prepare")
 async def identity_prepare(request:Request,review_id:str,payload:IdentityPrepareRequest):

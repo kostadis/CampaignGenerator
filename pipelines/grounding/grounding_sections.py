@@ -244,7 +244,9 @@ def render_threads(sec: Section, args) -> str:
 
 def render_copy(sec: Section, args) -> str:
     src = args.source_paths[sec.source]
-    return src.read_text(encoding="utf-8").strip()
+    from campaignlib.config import load_file
+
+    return load_file(str(src), Path.cwd()).strip()
 
 
 def render_emerging(sec: Section, args) -> str:

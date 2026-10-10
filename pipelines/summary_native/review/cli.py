@@ -714,17 +714,11 @@ def run(args: argparse.Namespace) -> int:
             result=_sign_npc_draft(root,args.review,item_id=args.item,draft_sha256=args.draft_sha256,expected_decision_revision=args.expected_decision_revision,reviewer=args.reviewer)
             return _emit(args,ok=True,code="REVIEW_NPC_SIGNED",message="Exact mechanically verified NPC draft signed.",data=result)
         if args.review_command == "document":
-            from pipelines.summary_native.review.documents import create_document_review,prepare_document_promotion,promote_document_bundle,sign_document
+            from pipelines.summary_native.review.documents import WHOLE_BUNDLE_INSTRUCTION, create_document_review,sign_document
             if args.document_command=="create": result=create_document_review(root,args.review,Path(args.selection),created_by="local-cli")
             elif args.document_command=="sign": result=sign_document(root,args.review,document_item_id=args.item,item_sha256=args.document_sha256,expected_decision_revision=args.expected_decision_revision,reviewer=args.reviewer)
-            elif args.document_command=="prepare":
-                payload=parse_json_strict(Path(args.documents).read_bytes()); ids=payload.get("documents") if isinstance(payload,dict) else None
-                if not isinstance(ids,list): raise ReviewStoreError("REVIEW_INVALID_SELECTION: documents list required")
-                result=prepare_document_promotion(root,args.review,document_ids=[str(value) for value in ids])
             else:
-                payload=parse_json_strict(Path(args.proposals).read_bytes()); refs=payload.get("proposals") if isinstance(payload,dict) else None
-                if not isinstance(refs,list): raise ReviewStoreError("REVIEW_INVALID_SELECTION: proposals list required")
-                result=promote_document_bundle(root,args.review,proposals=refs)
+                raise ReviewStoreError(WHOLE_BUNDLE_INSTRUCTION, "PROMOTION_WHOLE_BUNDLE_REQUIRED")
             return _emit(args,ok=True,code=f"REVIEW_DOCUMENT_{args.document_command.upper()}",message="Grounding document operation completed.",data=canonicalize(result))
         if args.review_command == "identity":
             from pipelines.summary_native.review.identity import apply_guard_resolution,apply_identity_proposal,execute_identity_regeneration,identity_resolution_instructions,prepare_guard_resolution,prepare_identity_alternatives,prepare_identity_regeneration

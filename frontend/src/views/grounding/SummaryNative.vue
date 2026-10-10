@@ -6,6 +6,8 @@ import { useGroundingRun } from '../../composables/useGroundingRun'
 import PathField from '../../components/shared/PathField.vue'
 import RunPanel from '../../components/shared/RunPanel.vue'
 import ReviewLauncher from '../../components/ReviewLauncher.vue'
+import GroundingPromotion from '../../components/GroundingPromotion.vue'
+import GroundingClaims from '../../components/GroundingClaims.vue'
 
 // summary_native (feature 031): grounding-doc drafts built straight from
 // reviewed session summaries. This page invokes the `summary_native` CLI and
@@ -63,6 +65,10 @@ const dumpOnly = ref(false)
 const forceBuild = ref(false)
 // Per-run, never persisted: replacing a reviewed draft must be a deliberate act each time.
 const forceSynth = ref(false)
+const sharedClaimsReview = ref('claims-review')
+const sharedClaimsSelection = ref('')
+const sharedClaimsReport = ref('')
+function claimsSelectionSaved(path:string){sharedClaimsSelection.value=path;if(!path)sharedClaimsReport.value=''}
 // Per run, never persisted and unchecked on every load (spec 033 FR-018b): write a code-built Key NPCs line
 // for an NPC with no published dossier instead of refusing. world_state and planning.
 const fallbackNpcLines = ref(false)
@@ -602,8 +608,8 @@ const docAnnotations = computed(() => annotations.value[doc.value] ?? null)
 const budgetRows = computed(() => Object.entries(budgets.value[doc.value] ?? {}))
 const overBudget = computed(() => budgetRows.value.filter(([, r]) => r.over).length)
 
-const duplicates = computed(() => report.value?.findings.filter(f => f.code === 'possible-duplicate') ?? [])
-const otherFindings = computed(() => report.value?.findings.filter(f => f.code !== 'possible-duplicate') ?? [])
+const duplicates = computed(() => report.value?.findings?.filter(f => f.code === 'possible-duplicate') ?? [])
+const otherFindings = computed(() => report.value?.findings?.filter(f => f.code !== 'possible-duplicate') ?? [])
 
 async function refreshOutputs() {
   report.value = null; reportNote.value = ''
@@ -710,9 +716,24 @@ onMounted(async () => {
       <h2>Summary-native</h2>
       <p class="subtitle">
         Build grounding-document drafts directly from reviewed session summaries &mdash; no extraction pass.
-        Drafts are written for review; nothing here promotes one to the live document.
+        Drafts are written for review. The whole-bundle panel previews publication without changing live documents.
       </p>
     </div>
+
+    <p v-if="sharedClaimsSelection" class="subtitle" data-test="shared-claims-selection">
+      Current server-saved claims selection: <code>{{ sharedClaimsSelection }}</code>
+    </p>
+
+    <GroundingPromotion
+      :since="typeof rangeSince === 'number' ? rangeSince : null"
+      :until="typeof rangeUntil === 'number' ? rangeUntil : null"
+      :review-id="sharedClaimsReview" :check-report-path="sharedClaimsReport"
+      @review-changed="sharedClaimsReview=$event" />
+    <GroundingClaims
+      :since="typeof rangeSince === 'number' ? rangeSince : null"
+      :until="typeof rangeUntil === 'number' ? rangeUntil : null"
+      :review-id="sharedClaimsReview" @review-changed="sharedClaimsReview=$event"
+      @selection-saved="claimsSelectionSaved" @report-ready="sharedClaimsReport=$event" />
 
     <div class="form-grid">
       <!-- Authority: the CLI owns every decision and mutation.  This panel only
@@ -836,7 +857,7 @@ onMounted(async () => {
       <!-- Range -->
       <div class="form-section">
         <label class="field-label">Chapter range</label>
-        <div v-if="chapters && chapters.present.length" class="range-row">
+        <div v-if="chapters?.present?.length" class="range-row">
           <select class="field-input narrow" v-model="rangeSince" aria-label="First chapter">
             <option :value="null" disabled>first&hellip;</option>
             <option v-for="c in chapters.present" :key="c" :value="c">{{ c }}</option>
@@ -851,7 +872,7 @@ onMounted(async () => {
         <span v-else class="field-help">
           {{ summariesDir.trim() ? 'No numbered summaries found in that directory.' : 'Set the summaries directory to list its chapters.' }}
         </span>
-        <span v-if="chapters && chapters.duplicate_chapters.length" class="field-error">
+          <span v-if="chapters?.duplicate_chapters?.length" class="field-error">
           More than one file for chapter {{ chapters.duplicate_chapters.join(', ') }} &mdash; Validate will block until one is removed.
         </span>
         <span v-if="rangeInverted" class="field-error">The first chapter is after the last.</span>
@@ -1291,7 +1312,7 @@ onMounted(async () => {
             <span>{{ report.files_in_range }} of {{ report.files_scanned }} files in range</span>
             <span :class="report.blocking_count ? 'bad' : 'ok'">{{ report.blocking_count }} blocking</span>
             <span>{{ report.non_blocking_count }} advisory</span>
-            <span v-if="report.range.gaps.length">gaps: {{ report.range.gaps.join(', ') }}</span>
+            <span v-if="report.range?.gaps?.length">gaps: {{ report.range.gaps.join(', ') }}</span>
             <span v-if="report.existing_corpus">corpus: {{ report.existing_corpus.state }}</span>
           </div>
           <div v-if="duplicates.length" class="findings">
