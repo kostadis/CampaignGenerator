@@ -267,6 +267,7 @@ const navGroups: NavGroup[] = [
         matchPrefixes: ['/npcs'],
         items: [
           { label: 'NPC Dossiers', path: '/npcs/dossiers' },
+          { label: 'Shared review', path: '/npcs/review' },
         ],
       },
     ],
