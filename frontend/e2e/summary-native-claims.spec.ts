@@ -59,7 +59,9 @@ test('claims panel confirms exact scope and renders blocked CLI-shaped coverage'
   await panel.getByRole('button',{name:'Run deterministic checks'}).click()
   await expect(panel.locator('[data-test="claims-report"]')).toContainText('blocked')
   await expect(panel.locator('[data-test="claims-report"]')).toContainText('No reviewed identity')
-  await expect(page.getByRole('heading',{name:'Shared review'})).toBeVisible()
+  // The review queue lives on its own page; this page only links to it.
+  await expect(page.getByRole('heading',{name:'Shared review'})).toHaveCount(0)
+  await expect(page.getByRole('link',{name:'Shared review'}).first()).toHaveAttribute('href','/grounding/review')
   const promotion=page.locator('[data-test="grounding-promotion-preview"]')
   await expect(promotion.locator('[data-test="promotion-review"]')).toHaveValue('claims-review')
   await expect(promotion.locator('[data-test="promotion-report"]')).toHaveValue('docs/summary_native/checks/report.json')
