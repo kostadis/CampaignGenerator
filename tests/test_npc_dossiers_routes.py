@@ -110,6 +110,76 @@ def test_build_verify_compose_publish_cmds():
     assert _flag(named, "--source") == "hand-built" and "--force" in named and "--all" not in named
 
 
+def test_scheduler_builders_carry_resume_parallel_and_endpoints():
+    draft = router_mod._build_draft_cmd("d", 2, 6, select="all", names=[], recent_chapters=None,
+                                        recurring_min=None, max_tokens=100, mode="one-shot", chunk_chars=50,
+                                        dump_only=False, force=False, selection_args=["--backend", "dgx", "--model", "m"],
+                                        endpoints=["http://spark-a/v1"], parallel=3, resume="run-17")
+    assert _after(draft, "--endpoints") == ["http://spark-a/v1"]
+    assert _flag(draft, "--parallel") == "3" and _flag(draft, "--resume") == "run-17"
+    verify = router_mod._build_verify_cmd("d", 2, 6, names=["A"], parallel=2, resume="run-18")
+    assert _flag(verify, "--parallel") == "2" and _flag(verify, "--resume") == "run-18"
+
+
+def test_scheduler_routes_forward_draft_and_local_verify_controls(campaign, monkeypatch):
+    _, captured = campaign
+    from fastapi.responses import JSONResponse
+    monkeypatch.setattr("server.routers.npc_dossiers._sse_response",
+                        lambda cmd: (captured.update(cmd=cmd), JSONResponse({"ok": True}))[1])
+    assert _run("/run/draft", {**RANGE, "select": "all", "backend": "dgx", "model": "qwen3.8-flash-next",
+                                "endpoints": ["http://spark-a/v1", "http://spark-b/v1"], "parallel": 3,
+                                "resume": "draft-17"}) == 200
+    assert _after(captured["cmd"], "--endpoints") == ["http://spark-a/v1", "http://spark-b/v1"]
+    assert _flag(captured["cmd"], "--parallel") == "3" and _flag(captured["cmd"], "--resume") == "draft-17"
+    assert _run("/run/verify", {**RANGE, "name": ["Jimjar"], "parallel": 2, "resume": "verify-17"}) == 200
+    assert "--endpoints" not in captured["cmd"]
+    assert _flag(captured["cmd"], "--parallel") == "2" and _flag(captured["cmd"], "--resume") == "verify-17"
+
+
+@pytest.mark.parametrize("params", [
+    {"select": ""}, {"select": "all", "parallel": 0},
+    {"select": "all", "resume": "draft-17", "force": True},
+    {"select": "all", "resume": "draft-17", "dump_only": True},
+])
+def test_draft_scheduler_refuses_empty_selection_and_invalid_combinations(campaign, params):
+    _, captured = campaign
+    response = client.get(f"{BASE}/run/draft", params={**RANGE, **params})
+    assert response.status_code == 400 and "cmd" not in captured
+
+
+def test_draft_endpoints_refuse_a_non_dgx_backend(campaign):
+    _, captured = campaign
+    response = client.get(f"{BASE}/run/draft", params={**RANGE, "select": "all", "backend": "openrouter",
+                                                         "model": "vendor/model", "endpoints": ["http://spark/v1"]})
+    assert response.status_code == 400 and "--endpoints" in response.json()["detail"] and "cmd" not in captured
+
+
+def test_npc_scheduler_status_reads_draft_and_verify_journals_after_reload(campaign):
+    root, _ = campaign
+    draft_record = root / schema.DEFAULT_NPC_ROOT / f"ch{SINCE:03d}-{UNTIL:03d}" / "runs" / "draft-17" / "record.json"
+    draft_record.parent.mkdir(parents=True)
+    draft_record.write_text(json.dumps({
+        "schema": 2, "run_id": "draft-17", "status": "incomplete", "npcs": {"npc_jimjar": {"status": "cached"}, "npc_eldeth": {"status": "pending"}},
+        "concurrency": {"value": 8, "source": "dgxlib", "model": "qwen3.8-flash-next"},
+        "endpoints": [{"endpoint_id": "spark-a", "state": "quarantined", "active_count": 0, "limit": 8}],
+        "failures": {"npc_eldeth": {"category": "transport", "code": "timeout"}},
+    }), encoding="utf-8")
+    response = client.get(f"{BASE}/status/draft", params={"since": SINCE, "until": UNTIL})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["run_id"] == "draft-17" and body["counts"] == {"total": 2, "cached": 1, "completed": 0, "unfinished": 1, "failed": 1}
+    assert body["endpoints"] == [{"endpoint_id": "spark-a", "state": "quarantined", "active_count": 0, "limit": 8, "id": "spark-a", "active": 0}]
+    # A page reload reconstructs this projection from the journal; no browser
+    # state is needed to retain the explicit run identity or quarantine.
+    assert client.get(f"{BASE}/status/draft", params={"since": SINCE, "until": UNTIL}).json() == body
+    verify_record = root / schema.DEFAULT_NPC_ROOT / f"ch{SINCE:03d}-{UNTIL:03d}" / "verify_runs" / "verify-17" / "record.json"
+    verify_record.parent.mkdir(parents=True)
+    verify_record.write_text(json.dumps({"schema": 2, "run_id": "verify-17", "operation": "npc-verify", "status": "completed",
+                                         "items": [{"id": "npc_jimjar", "key": "x"}], "results": {"npc_jimjar": {"result": {}}}}), encoding="utf-8")
+    verified = client.get(f"{BASE}/status/verify", params={"since": SINCE, "until": UNTIL}).json()
+    assert verified["run_id"] == "verify-17" and verified["counts"]["completed"] == 1
+
+
 # ── run routes: argv through the live route ────────────────────────────────
 
 @pytest.mark.parametrize("path,sub,extra", [

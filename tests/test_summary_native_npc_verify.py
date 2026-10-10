@@ -305,3 +305,86 @@ def test_npc_verify_exits_2_with_no_drafts_or_an_unknown_name(tmp_path, drafted)
         f.unlink()
     rc, _, err = run_cli(_args(root, "npc-verify"))
     assert rc == 2 and "no draft dossiers" in err
+
+
+def test_verify_writes_a_stable_local_journal_and_explicit_resume_accepts_it(drafted):
+    root, _ = drafted
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 0
+    record_path = next((root / OUT / "verify_runs").glob("*/record.json"))
+    record = json.loads(record_path.read_text())
+    assert record["operation"] == "npc-verify" and record["status"] == "completed"
+    assert record["items"] == [{"id": "npc_jimjar", "key": record["items"][0]["key"]}]
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar", "--resume", record["run_id"]))[0] == 0
+
+
+def test_verifier_taxonomy_preserves_legacy_codes_on_the_shared_axis():
+    from pipelines.summary_native import npc_verify
+
+    assert npc_verify.verifier_category(npc_verify.INVALID) == "missing_source"
+    assert npc_verify.verifier_category(npc_verify.NOT_FOUND) == "unsupported_or_contradicted"
+    assert npc_verify.verifier_category(npc_verify.STATUS_UNSUPPORTED) == "citation_non_entailment"
+    assert npc_verify.verifier_category("superseded-claim") == "superseded_claim"
+    assert npc_verify.verifier_category("knowledge-leak") == "knowledge_leak"
+    assert npc_verify.verifier_category(npc_verify.TYPOGRAPHY) == "presentation_only"
+    assert npc_verify.verifier_category("verifier-transport-or-protocol") == "verifier_transport_or_protocol"
+
+
+def test_verifier_failure_envelopes_keep_each_legacy_code_and_two_axes():
+    from pipelines.summary_native import npc_verify
+    result = npc_verify.VerificationResult(
+        "fail", [npc_verify.Finding(npc_verify.INVALID, 7, "bad", "bad pointer")],
+        [npc_verify.Finding(npc_verify.TYPOGRAPHY, 8, "quote", "curly quote")], {},
+    )
+    envelopes = npc_verify.failure_envelopes(result)
+    assert [(e.operational_category, e.code, e.verifier_category) for e in envelopes] == [
+        ("verifier_finding", "invalid", "missing_source"),
+        ("verifier_finding", "typography-normalised", "presentation_only"),
+    ]
+
+
+def test_completed_verify_resume_reuses_current_result_without_local_execution(drafted, monkeypatch):
+    """T031/T034/T035: a completed local result has the same zero-call rule."""
+    root, _ = drafted
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 0
+    record_path = next((root / OUT / "verify_runs").glob("*/record.json"))
+    run_id = json.loads(record_path.read_text())["run_id"]
+    monkeypatch.setattr(npc_verify, "verify_draft", lambda *a, **k: pytest.fail("completed item was recomputed"))
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar", "--resume", run_id))[0] == 0
+
+
+def test_completed_failing_verify_resume_preserves_its_verdict_without_execution(drafted, monkeypatch):
+    root, _ = drafted
+    authored = root / "docs/npcs/authored"
+    authored.mkdir(parents=True)
+    (authored / "jimjar.authored.yaml").write_text("subject: Jimjar\nmanual: [This claim is uncited.]\n")
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 5
+    record_path = next((root / OUT / "verify_runs").glob("*/record.json"))
+    run_id = json.loads(record_path.read_text())["run_id"]
+    monkeypatch.setattr(npc_verify, "verify_draft", lambda *a, **k: pytest.fail("completed item was recomputed"))
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar", "--resume", run_id))[0] == 5
+
+
+def test_verify_resume_recomputes_when_journal_result_has_no_artifact(drafted, monkeypatch):
+    """A journal cannot claim success when the corresponding verify artifact vanished."""
+    root, _ = drafted
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 0
+    record_path = next((root / OUT / "verify_runs").glob("*/record.json"))
+    record = json.loads(record_path.read_text())
+    (root / OUT / "draft/npc_jimjar.verify.md").unlink()
+    calls = []
+    original = npc_verify.verify_draft
+    monkeypatch.setattr(npc_verify, "verify_draft", lambda *a, **k: calls.append(1) or original(*a, **k))
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar", "--resume", record["run_id"]))[0] == 0
+    assert calls == [1]
+
+
+def test_verify_resume_refuses_changed_inputs_without_local_execution(drafted, monkeypatch):
+    root, _ = drafted
+    assert run_cli(_args(root, "npc-verify", "--name", "Jimjar"))[0] == 0
+    record_path = next((root / OUT / "verify_runs").glob("*/record.json"))
+    run_id = json.loads(record_path.read_text())["run_id"]
+    draft = root / OUT / "draft/npc_jimjar.md"
+    draft.write_text(draft.read_text() + "\nChanged after verification.\n")
+    monkeypatch.setattr(npc_verify, "verify_draft", lambda *a, **k: pytest.fail("stale run executed"))
+    rc, _, err = run_cli(_args(root, "npc-verify", "--name", "Jimjar", "--resume", run_id))
+    assert rc == 2 and "inputs are stale" in err

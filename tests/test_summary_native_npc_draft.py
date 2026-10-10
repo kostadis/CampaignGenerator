@@ -44,7 +44,7 @@ def fake(monkeypatch):
     state = {"text": body(), "fail_at": None}
 
     def render_part(client, system, user, model, max_tokens):
-        calls.append({"system": system, "user": user, "model": model, "max_tokens": max_tokens})
+        calls.append({"client": client, "system": system, "user": user, "model": model, "max_tokens": max_tokens})
         if state["fail_at"] is not None and len(calls) == state["fail_at"]:
             raise RuntimeError("boom")
         t = state["text"]
@@ -483,6 +483,169 @@ def test_draft_totals_line_counts_failures(linked, fake):
     state["text"] = body(extra=" [ch 002 / 002.99]")
     rc, so, _ = draft(linked, "--name", "Jimjar")
     assert rc == 0 and so.strip().splitlines()[-1].startswith("verified 1 drafts: 0 pass, 1 fail (invalid ")
+
+
+def test_one_shot_scheduler_materializes_stable_items_and_uses_each_endpoint(linked, fake, monkeypatch):
+    """T022: NPC calls are independent stable items, not a serial draft loop."""
+    calls, _ = fake
+    seen_clients = []
+
+    def client(args, *, endpoint=None):
+        seen_clients.append(endpoint)
+        return endpoint or "default"
+
+    monkeypatch.setattr(npc_draft, "client_from_args", client)
+    monkeypatch.setattr(npc_draft, "_healthy_endpoints", lambda endpoints, model: (endpoints, []))
+    rc, _, err = draft(linked, "--parallel", "1", "--endpoints", "http://one/v1", "http://two/v1")
+    assert rc == 0, err
+    assert seen_clients == ["http://one/v1", "http://two/v1"]
+    record = json.loads((latest_run(linked) / "record.json").read_text())
+    assert [item["item_id"] for item in record["work_items"]] == GLOBALS
+    assert [item["ordinal"] for item in record["work_items"]] == list(range(len(GLOBALS)))
+    assert {call["client"] for call in calls} == {"http://one/v1", "http://two/v1"}
+
+
+def test_chunked_scheduler_materializes_map_and_reduce_item_ids(linked, fake, monkeypatch):
+    """T022: chunked map/reduce identities stay stable across endpoint dispatch."""
+    calls, _ = fake
+    monkeypatch.setattr(npc_draft, "_healthy_endpoints", lambda endpoints, model: (endpoints, []))
+    monkeypatch.setattr(npc_draft, "client_from_args", lambda args, *, endpoint=None: endpoint or "default")
+    rc, _, err = run_cli(_args(linked, "npc-draft", "--name", "Jimjar", "--chunk-chars", "1",
+                                "--endpoints", "http://one/v1", "http://two/v1"))
+    assert rc == 0, err
+    record = json.loads((latest_run(linked) / "record.json").read_text())
+    assert [item["item_id"] for item in record["work_items"]] == [
+        "npc_jimjar:map:001", "npc_jimjar:map:002", "npc_jimjar:map:003", "npc_jimjar:map:004",
+        "npc_jimjar:reduce",
+    ]
+    assert len(calls) == 5
+
+
+def test_one_shot_retries_a_transport_failure_on_the_other_endpoint(linked, fake, monkeypatch):
+    """T022: a final transport failure quarantines its endpoint and fails over once."""
+    calls, _ = fake
+
+    class TransportDown(RuntimeError):
+        retryable_elsewhere = True
+
+    def render(client, system, user, model, max_tokens):
+        calls.append(client)
+        if client == "http://one/v1":
+            raise TransportDown("one is down")
+        return body()
+
+    monkeypatch.setattr(npc_draft, "render_part", render)
+    monkeypatch.setattr(npc_draft, "_healthy_endpoints", lambda endpoints, model: (endpoints, []))
+    monkeypatch.setattr(npc_draft, "client_from_args", lambda args, *, endpoint=None: endpoint or "default")
+    rc, _, err = draft(linked, "--name", "Jimjar", "--parallel", "1",
+                       "--endpoints", "http://one/v1", "http://two/v1")
+    assert rc == 0, err
+    assert calls == ["http://one/v1", "http://two/v1"]
+    record = json.loads((latest_run(linked) / "record.json").read_text())
+    assert [attempt["endpoint_id"] for attempt in record["attempts"]] == ["http://one/v1", "http://two/v1"]
+    assert record["endpoints"][0]["active_count"] <= record["endpoints"][0]["limit"]
+
+
+def test_chunked_map_failure_fails_over_before_canonical_reduce(linked, fake, monkeypatch):
+    """T022: map outputs are committed by item identity after endpoint recovery."""
+    from tests.conftest_npc import REDUCE_BODY, kind_of, map_output
+
+    class TransportDown(RuntimeError):
+        retryable_elsewhere = True
+
+    seen = []
+
+    def render(client, system, user, model, max_tokens):
+        seen.append((client, kind_of(system)))
+        if client == "http://one/v1":
+            raise TransportDown("one is down")
+        return map_output(user) if kind_of(system) == "map" else REDUCE_BODY
+
+    monkeypatch.setattr(npc_draft, "render_part", render)
+    monkeypatch.setattr(npc_draft, "_healthy_endpoints", lambda endpoints, model: (endpoints, []))
+    monkeypatch.setattr(npc_draft, "client_from_args", lambda args, *, endpoint=None: endpoint or "default")
+    rc, _, err = run_cli(_args(linked, "npc-draft", "--name", "Jimjar", "--chunk-chars", "1", "--parallel", "1",
+                                "--endpoints", "http://one/v1", "http://two/v1"))
+    assert rc == 0, err
+    assert seen[0] == ("http://one/v1", "map")
+    # The survivor accepts the reassigned generation; the scheduler may then
+    # rejoin the recovered endpoint for later independent map items.
+    assert ("http://two/v1", "map") in seen
+    assert any(client == "http://one/v1" for client, _kind in seen[1:])
+    record = json.loads((latest_run(linked) / "record.json").read_text())
+    assert record["attempts"][0]["outcome"] == "transport_failure"
+    assert (linked / OUT / "draft/npc_jimjar.md").is_file()
+
+
+@pytest.mark.parametrize("extra", [(), ("--chunk-chars", "1")])
+def test_npc_scheduler_keeps_each_endpoint_within_its_bound_in_both_modes(linked, fake, monkeypatch, extra):
+    """T022: one-shot and chunked dispatch honour independent endpoint caps."""
+    from tests.conftest_npc import REDUCE_BODY, kind_of, map_output
+    import threading
+    import time
+    active = {"http://one/v1": 0, "http://two/v1": 0}
+    peak = dict(active)
+    lock = threading.Lock()
+    def render(client, system, user, model, max_tokens):
+        with lock:
+            active[client] += 1
+            peak[client] = max(peak[client], active[client])
+        time.sleep(0.01)
+        with lock:
+            active[client] -= 1
+        return map_output(user) if kind_of(system) == "map" else REDUCE_BODY if kind_of(system) == "reduce" else body()
+    monkeypatch.setattr(npc_draft, "render_part", render)
+    monkeypatch.setattr(npc_draft, "_healthy_endpoints", lambda endpoints, model: (endpoints, []))
+    monkeypatch.setattr(npc_draft, "client_from_args", lambda args, *, endpoint=None: endpoint or "default")
+    rc, _, err = draft(linked, "--parallel", "1", "--endpoints", "http://one/v1", "http://two/v1", *extra)
+    assert rc == 0, err
+    assert peak == {"http://one/v1": 1, "http://two/v1": 1}
+
+
+def test_explicit_completed_resume_reuses_the_matching_draft_without_a_model_call(linked, fake):
+    """T031/T034: artifacts and matching keys, never the journal alone, suppress calls."""
+    calls, _ = fake
+    assert draft(linked, "--name", "Jimjar")[0] == 0
+    run_id = json.loads((latest_run(linked) / "record.json").read_text())["run_id"]
+    before = len(calls)
+    rc, _, err = draft(linked, "--name", "Jimjar", "--resume", run_id)
+    assert rc == 0, err
+    assert len(calls) == before
+
+
+def test_draft_resume_repairs_record_success_missing_artifact_by_redrafting(linked, fake):
+    """The draft file/key, rather than a succeeded journal row, proves completion."""
+    calls, _ = fake
+    assert draft(linked, "--name", "Jimjar")[0] == 0
+    run_id = json.loads((latest_run(linked) / "record.json").read_text())["run_id"]
+    (out(linked) / "draft/npc_jimjar.md").unlink()
+    before = len(calls)
+    rc, _, err = draft(linked, "--name", "Jimjar", "--resume", run_id)
+    assert rc == 0, err
+    assert len(calls) == before + 1
+    assert (out(linked) / "draft/npc_jimjar.md").is_file()
+
+
+def test_draft_resume_never_accepts_an_incomplete_cache_as_complete(linked, fake):
+    calls, state = fake
+    state["text"] = body(skip=("## Identity",))
+    assert draft(linked, "--name", "Jimjar")[0] == 3
+    run_id = json.loads((latest_run(linked) / "record.json").read_text())["run_id"]
+    state["text"] = body()
+    before = len(calls)
+    rc, _, err = draft(linked, "--name", "Jimjar", "--resume", run_id)
+    assert rc == 0, err
+    assert len(calls) == before + 1
+
+
+def test_resume_refuses_when_the_saved_draft_key_is_stale(linked, fake):
+    calls, _ = fake
+    assert draft(linked, "--name", "Jimjar")[0] == 0
+    run_id = json.loads((latest_run(linked) / "record.json").read_text())["run_id"]
+    before = len(calls)
+    rc, _, err = draft(linked, "--name", "Jimjar", "--model", "different", "--resume", run_id)
+    assert rc == 2 and "different backend or model" in err
+    assert len(calls) == before
 
 
 def test_narrowing_defaults_come_from_npc_dossiers_yaml_not_grounding_yaml(tmp_path, monkeypatch):

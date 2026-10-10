@@ -645,6 +645,15 @@ def _is_retryable(exc) -> bool:
     return False
 
 
+def classify_final_failure(exc) -> str:
+    """Classify an exception after this module has exhausted its own retries.
+
+    Callers use this narrow public seam to decide endpoint failover; retry
+    counts remain solely owned by ``call_api`` and ``stream_api``.
+    """
+    return "transport_failure" if _is_retryable(exc) else "model_or_protocol_failure"
+
+
 def call_api(client, system: str, content, model: str, max_tokens: int = 8096,
              thinking: bool | None = None) -> str:
     """Non-streaming API call. Returns full response text.

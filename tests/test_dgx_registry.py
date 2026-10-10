@@ -6,6 +6,7 @@ but never leaks to the Anthropic / Claude Code clients.
 """
 
 import sys
+from types import SimpleNamespace
 from pathlib import Path
 
 import pytest
@@ -52,6 +53,25 @@ def test_non_reasoning_model_forced_off(monkeypatch):
 def test_read_timeout_from_registry(dgx_client):
     # Qwen3-Next sets read_timeout: 600 in the bundled registry.
     assert dgx_client.oai.timeout.read == 600.0
+
+
+def test_client_retains_resolved_registry_config(dgx_client):
+    # Older installed dgxlib versions remain supported until the companion
+    # registry branch is delivered.
+    assert getattr(dgx_client.model_config, "max_concurrency", None) is None
+
+
+def test_client_exposes_registry_declared_max_concurrency(monkeypatch):
+    cfg = SimpleNamespace(
+        read_timeout=60,
+        max_concurrency=8,
+        extra_body={},
+    )
+    fake_dgxlib = SimpleNamespace(resolve_model_config=lambda *_args, **_kwargs: cfg)
+    monkeypatch.setitem(sys.modules, "dgxlib", fake_dgxlib)
+    monkeypatch.setenv("DGX_MODEL", "qwen3.8-flash-next")
+    client = _OpenAICompatClient("http://127.0.0.1:1")
+    assert client.model_config.max_concurrency == 8
 
 
 def test_dgx_read_timeout_env_overrides_registry(monkeypatch):

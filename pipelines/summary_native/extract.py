@@ -43,6 +43,7 @@ from campaignlib.util import atomic_write_text
 from pipelines.summary_native import context, corpus, freshness, notes, npc_chunked, schema, synth, validate
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.resolve import ExtractSettings
+from pipelines.summary_native.scheduler import EndpointState, Scheduler, WorkItem, atomic_write_record, read_record, select_resume
 
 EXIT_REFUSED = synth.EXIT_REFUSED
 EXIT_INCOMPLETE = synth.EXIT_INCOMPLETE
@@ -180,6 +181,28 @@ def _write_checked(nd: Path, plan: _Plan, cc: notes.CheckedChunk) -> None:
     _write_if_changed(nd / f"{plan.stem}.checked.json", _dumps({**cc.to_dict(), "cache_key": plan.key}))
 
 
+def _resume_run_dir(runs_dir: Path, requested: str | None, identity: dict) -> Path | None:
+    """Return one compatible journal.  Endpoint topology is intentionally absent.
+
+    Artifacts are validated again by the normal cache path below; this only
+    chooses the journal whose attempt history is being continued.
+    """
+    if requested is None:
+        return None
+    records = []
+    for path in sorted(runs_dir.glob("*/record.json")):
+        try:
+            record = read_record(path)
+        except (OSError, ValueError):
+            continue
+        record["_path"] = path
+        records.append(record)
+    def compatible(record: dict) -> bool:
+        return all(record.get(key) == value for key, value in identity.items())
+    selected = select_resume(records, requested or None, compatible=compatible)
+    return selected["_path"].parent
+
+
 def _extract_one(client, plan: _Plan, nd: Path, args, endpoint: str) -> _Outcome:
     """One chunk: the call, the raw output on disk, the code check, the checked file.
 
@@ -190,12 +213,10 @@ def _extract_one(client, plan: _Plan, nd: Path, args, endpoint: str) -> _Outcome
         t0 = time.monotonic()
         try:
             raw = render_part(client, plan.system, plan.user, args.model, args.max_tokens)
-        except Exception as e:  # noqa: BLE001 - any backend error is a failed chunk
-            if attempt == 2:
-                if missing:  # attempt 1 wrote an incomplete out.md; do not leave a result paired with it
-                    (nd / f"{plan.stem}.checked.json").unlink(missing_ok=True)
-                return _Outcome("failed", time.monotonic() - t0, endpoint, None, f"{type(e).__name__}: {e}", missing)
-            continue
+        except Exception:
+            # ``stream_api`` has already exhausted its own transport policy.
+            # Scheduler decides whether a different endpoint may serve it.
+            raise
         secs = time.monotonic() - t0
         atomic_write_text(nd / f"{plan.stem}.out.md", raw)
         cc = notes.check_chunk(raw, plan.chunk, plan.chapters)
@@ -208,6 +229,29 @@ def _extract_one(client, plan: _Plan, nd: Path, args, endpoint: str) -> _Outcome
         _write_checked(nd, plan, cc)
         return _Outcome("extracted", secs, endpoint, cc)
     raise AssertionError("unreachable")  # pragma: no cover
+
+
+def _run_scheduled(todo: list[_Plan], clients: dict[str, object], per_endpoint: int, work, *,
+                   initially_quarantined: set[str] | None = None,
+                   probe=None):
+    """Dispatch plans with per-endpoint bounds and cross-endpoint failover."""
+    scheduler = Scheduler([EndpointState(label, per_endpoint) for label in clients])
+    initially_quarantined = initially_quarantined or set()
+    for endpoint in scheduler.endpoints:
+        if endpoint.endpoint_id in initially_quarantined:
+            endpoint.state = "quarantined"
+    plans = {str(plan.index): plan for plan in todo}
+
+    def call(item: WorkItem, endpoint: str):
+        return work(clients[endpoint], plans[item.item_id], endpoint)
+
+    result = scheduler.run([WorkItem(str(p.index), p.index, "extract", p.key) for p in todo], call, probe=probe)
+    for plan in sorted(todo, key=lambda candidate: candidate.index):
+        outcome = result.values.get(str(plan.index))
+        if outcome is None:
+            failure = result.failures[str(plan.index)]
+            outcome = _Outcome("failed", endpoint="", error=f"{failure.code}: {failure.message}")
+        yield plan, outcome
 
 
 def _missing_error(missing: list[str]) -> str:
@@ -270,6 +314,26 @@ def preflight(endpoints: list[str], model: str | None) -> str | None:
             return (f"endpoint {short(ep)} serves {ids}, not {model}; every endpoint must serve the same "
                     f"model; no chunk was sent")
     return None
+
+
+def healthy_endpoints(endpoints: list[str], model: str | None) -> tuple[list[str], list[str]]:
+    """Independently preflight peers for scheduler-backed runs.
+
+    A bad peer is quarantined before dispatch; only an empty healthy set refuses
+    the operation.  The legacy ``preflight`` helper remains strict for callers
+    that explicitly require every configured endpoint.
+    """
+    healthy, errors = [], []
+    for endpoint in endpoints:
+        try:
+            ids = _served_models(endpoint)
+            if model and model not in ids:
+                raise ValueError(f"serves {ids}, not {model}")
+        except Exception as exc:  # endpoint health is operational, not global
+            errors.append(f"{short(endpoint)}: {type(exc).__name__}: {exc}")
+        else:
+            healthy.append(endpoint)
+    return healthy, errors
 
 
 # ── The run ─────────────────────────────────────────────────────────────────
@@ -342,7 +406,8 @@ def run_extract(
     system = load_system()
     backend = resolve_cli_model(args, legacy_default=None).backend
     endpoints = list(dict.fromkeys(getattr(args, "endpoints", None) or []))
-    parallel = getattr(args, "parallel", None) or 1
+    resolution = getattr(args, "concurrency", None)
+    parallel = resolution.value if resolution is not None else (getattr(args, "parallel", None) or 1)
     if endpoints and backend != "dgx":
         return _refuse(f"--endpoints applies to --backend dgx only, not {backend}")
     if endpoints and getattr(args, "endpoint", None):
@@ -367,6 +432,7 @@ def run_extract(
 
     started = now()
     run_dir = synth._new_run_dir(freshness.audience_state_dir(range_dir, audience) / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
+    created_run_dir = run_dir
     # Non-GM work is staged under its run until the authority manifest is
     # checked again after the final model response.  A source/ledger change
     # must never leave a newly checked chunk in the current audience view.
@@ -376,8 +442,6 @@ def run_extract(
     if staging:
         nd = run_dir / "notes"
     nd.mkdir(parents=True, exist_ok=True)
-    for p in plans:
-        _write_if_changed(nd / f"{p.stem}.user.md", p.user)
 
     if endpoints:
         targets = endpoints
@@ -401,6 +465,10 @@ def run_extract(
         "chunk_chars": chunk_chars,
         "endpoints": labels,
         "parallel": parallel,
+        "concurrency_source": getattr(resolution, "source", "explicit" if getattr(args, "parallel", None) else "fallback"),
+        "concurrency": ({"value": resolution.value, "source": resolution.source,
+                         "model": resolution.model, "declared_max": resolution.declared_max}
+                        if resolution is not None else {"value": parallel, "source": "explicit"}),
         "dump_only": bool(args.dump_only),
         "force": bool(args.force),
         "audience": audience,
@@ -416,11 +484,40 @@ def run_extract(
         "started": started.isoformat(timespec="seconds"),
         "finished": None,
     }
+    if getattr(args, "resume", None) is not None:
+        identity = {
+            "step": "extract", "range": record["range"], "backend": backend,
+            "model": args.model, "max_tokens": max_tokens, "chunk_chars": chunk_chars,
+            "audience": audience, "system_sha256": record["system_sha256"],
+            "inputs": record["inputs"],
+        }
+        try:
+            resumed = _resume_run_dir(run_dir.parent, args.resume, identity)
+        except ValueError as e:
+            return _refuse(f"cannot resume: {e}")
+        if resumed is None:  # defensive; --resume is always non-None here
+            return _refuse("cannot resume without a compatible run")
+        run_dir = resumed
+        if created_run_dir != run_dir:
+            if staging:
+                (created_run_dir / "notes").rmdir()
+            created_run_dir.rmdir()
+        record["run_id"] = run_dir.name
+        if staging:
+            nd = run_dir / "notes"
+            nd.mkdir(parents=True, exist_ok=True)
+        print(f"resuming run {run_dir.name}")
+    for p in plans:
+        _write_if_changed(nd / f"{p.stem}.user.md", p.user)
+    if resolution is not None:
+        print(f"parallel {resolution.value} per endpoint ({resolution.source}" +
+              (f": {resolution.model}" if resolution.model else "") + ")")
 
     def save_record(code: int) -> None:
         record["exit_code"] = code
+        record["status"] = "completed" if code == 0 else "incomplete"
         record["finished"] = now().isoformat(timespec="seconds")
-        atomic_write_text(run_dir / "record.json", _dumps(record))
+        atomic_write_record(run_dir / "record.json", record)
 
     shared = {} if args.force else _range_cache(range_dir)
     outcomes: dict[int, _Outcome] = {}
@@ -432,8 +529,12 @@ def run_extract(
             # Reported from the raw output with no model call. Its checked file is removed so the next
             # run extracts this chunk alone, as it does a chunk whose call failed.
             (published_nd / f"{p.stem}.checked.json").unlink(missing_ok=True)
-            outcomes[p.index] = _Outcome("failed", error=_missing_error(cc.missing), missing=cc.missing)
-            incomplete_cached.append(p)
+            if getattr(args, "resume", None) is not None:
+                outcomes[p.index] = _Outcome("pending")
+                todo.append(p)
+            else:
+                outcomes[p.index] = _Outcome("failed", error=_missing_error(cc.missing), missing=cc.missing)
+                incomplete_cached.append(p)
         elif cc is not None:
             outcomes[p.index] = _Outcome("cached", checked=cc)
         else:
@@ -473,9 +574,12 @@ def run_extract(
             return _refuse(msg)
 
         if targets:
-            problem = preflight(targets, args.model)
-            if problem:
-                return stop(problem)
+            configured_targets = list(targets)
+            targets, quarantined = healthy_endpoints(configured_targets, args.model)
+            if not targets:
+                return stop("no healthy endpoint: " + "; ".join(quarantined))
+            for detail in quarantined:
+                print(f"endpoint quarantined before dispatch: {detail}", file=sys.stderr)
         try:
             if targets:
                 clients = {short(t): client_from_args(args, endpoint=t) for t in targets}
@@ -485,12 +589,16 @@ def run_extract(
             return stop(str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})")
         except (ValueError, RuntimeError, ImportError) as e:
             return stop(str(e))
-        for label, p, o in _run_pool(
-            todo, lambda c, plan, ep: _extract_one(c, plan, nd, args, ep), clients, parallel
+        def probe_endpoint(state):
+            raw = next((candidate for candidate in targets if short(candidate) == state.endpoint_id), None)
+            return bool(raw and healthy_endpoints([raw], args.model)[0])
+        for p, o in _run_scheduled(
+            todo, clients, parallel, lambda c, plan, ep: _extract_one(c, plan, nd, args, ep),
+            probe=probe_endpoint if targets else None,
         ):
             outcomes[p.index] = o
             if o.status == "failed":
-                print(f"chunk {p.index:02d}/{n_total:02d} ch {p.chapters} @{label} FAILED after one retry: {o.error}",
+                print(f"chunk {p.index:02d}/{n_total:02d} ch {p.chapters} @{o.endpoint} FAILED: {o.error}",
                       file=sys.stderr, flush=True)
             else:
                 print(line(p, o), flush=True)

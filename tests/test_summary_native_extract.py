@@ -124,6 +124,17 @@ def test_a_cached_run_makes_zero_calls(camp, fm):
     assert after == before  # the notes (and the manifest) are byte-identical
 
 
+def test_named_resume_of_completed_extract_makes_zero_calls(camp, fm):
+    assert run_cli(extract_args(camp))[0] == 0
+    runs = range_dir(camp) / schema.STATE_DIR / "runs"
+    (run,) = [p for p in runs.iterdir() if p.is_dir()]
+    fm.extract_calls.clear()
+    rc, out, err = run_cli([*extract_args(camp), "--resume", run.name])
+    assert rc == 0, err
+    assert fm.extract_calls == []
+    assert f"resuming run {run.name}" in out
+
+
 def test_a_changed_extraction_prompt_is_never_served_from_cache(camp, fm, monkeypatch):
     """Spec 034 FR-002: the system prompt (here: its ``## Party`` grammar) is part of the cache key,
     so editing it re-extracts every chunk rather than reusing notes written under the old grammar."""
@@ -141,12 +152,12 @@ def test_a_changed_extraction_prompt_is_never_served_from_cache(camp, fm, monkey
 
 
 def test_a_failed_chunk_exits_3_and_the_next_run_extracts_only_it(camp, fm):
-    fm.fail_chunks["004-004"] = 2  # the call and its one retry both fail
+    fm.fail_chunks["004-004"] = 1  # campaignlib exhausted its transport policy once
     rc, out, err = run_cli(extract_args(camp))
     assert rc == 3
     assert "004-004" in err and "failed" in err
-    assert sum(1 for c in fm.extract_calls if c["range"] == "004-004") == 2
-    assert len(fm.extract_calls) == 5
+    assert sum(1 for c in fm.extract_calls if c["range"] == "004-004") == 1
+    assert len(fm.extract_calls) == 4
     nd = notes_dir(camp)
     assert not (nd / "chunk03.004-004.checked.json").exists()
     m = json.loads((nd / "manifest.json").read_text())
@@ -159,11 +170,11 @@ def test_a_failed_chunk_exits_3_and_the_next_run_extracts_only_it(camp, fm):
     assert json.loads((nd / "manifest.json").read_text())["complete"] is True
 
 
-def test_one_transient_failure_is_retried_once(camp, fm):
+def test_final_transport_failure_is_not_retried_by_the_pipeline(camp, fm):
     fm.fail_chunks["003-003"] = 1
     rc, _, err = run_cli(extract_args(camp))
-    assert rc == 0, err
-    assert sum(1 for c in fm.extract_calls if c["range"] == "003-003") == 2
+    assert rc == 3
+    assert sum(1 for c in fm.extract_calls if c["range"] == "003-003") == 1
 
 
 def test_when_nothing_worked_the_backend_was_not_reached_exit_4(camp, fm):
@@ -471,8 +482,8 @@ def test_a_retry_that_raises_after_an_incomplete_answer_keeps_the_missing_sectio
     assert not (nd / "chunk03.004-004.checked.json").exists()
     (run,) = [p for p in (range_dir(camp) / schema.STATE_DIR / "runs").iterdir() if p.is_dir()]
     rec = json.loads((run / "record.json").read_text())
-    assert rec["chunks"][2]["missing_sections"] == ["## World"]
-    assert "004-004: missing ## World" in (nd / "drops.md").read_text()
+    assert rec["chunks"][2]["status"] == "failed"
+    assert "004-004" not in (nd / "drops.md").read_text()
 
 
 def test_a_sibling_ranges_incomplete_output_is_not_reused(camp, fm, monkeypatch, tmp_path):
@@ -519,9 +530,44 @@ def test_every_chunk_runs_once_across_two_endpoints_and_the_record_names_the_end
     (run,) = [p for p in (range_dir(camp) / schema.STATE_DIR / "runs").iterdir() if p.is_dir()]
     rec = json.loads((run / "record.json").read_text())
     assert rec["endpoints"] == ["spark:8001", "spark2:8001"] and rec["parallel"] == schema.DEFAULT_EXTRACT_PARALLEL
+    assert rec["concurrency"] == {"value": schema.DEFAULT_EXTRACT_PARALLEL, "source": "fallback", "model": "fake-model", "declared_max": None}
     assert [c["chapters"] for c in rec["chunks"]] == RANGES
     assert all(c["endpoint"] in ("spark:8001", "spark2:8001") for c in rec["chunks"])
     assert "@spark" in out
+
+
+def test_final_transport_failure_fails_over_to_an_untried_endpoint(camp, fm, monkeypatch):
+    import httpx
+
+    calls = []
+
+    def render(client, system, user, model, max_tokens):
+        calls.append((client, user))
+        if client == EP_A:
+            raise httpx.ConnectError("offline")
+        return _canned_for(user)
+
+    monkeypatch.setattr(extract, "render_part", render)
+    rc, _, err = run_cli(two_endpoint_args(camp, "--parallel", "1"))
+    assert rc == 0, err
+    assert any(endpoint == EP_A for endpoint, _ in calls)
+    assert any(endpoint == EP_B for endpoint, _ in calls)
+
+
+def test_extract_rejoins_a_recovered_endpoint_while_work_remains(camp, fm, monkeypatch):
+    import httpx
+    calls = []
+    failed = {EP_A: False}
+    def render(client, system, user, model, max_tokens):
+        calls.append(client)
+        if client == EP_A and not failed[EP_A]:
+            failed[EP_A] = True
+            raise httpx.ConnectError("brief outage")
+        return _canned_for(user)
+    monkeypatch.setattr(extract, "render_part", render)
+    rc, _, err = run_cli(two_endpoint_args(camp, "--parallel", "1"))
+    assert rc == 0, err
+    assert calls.count(EP_A) >= 2 and EP_B in calls
 
 
 def test_a_slow_endpoint_takes_fewer_chunks(camp, fm, monkeypatch):
@@ -567,21 +613,20 @@ def test_parallel_below_one_is_refused_by_the_parser(camp, fm):
         run_cli(extract_args(camp, "--parallel", "0"))
 
 
-def test_preflight_refuses_an_unreachable_endpoint_before_any_call(camp, fm):
+def test_preflight_quarantines_an_unreachable_peer_and_runs_on_survivor(camp, fm):
     fm.unreachable.add(EP_B)
     rc, _, err = run_cli(two_endpoint_args(camp))
-    assert rc == 2
-    assert "spark2:8001" in err and "not answering" in err
-    assert fm.extract_calls == [] and fm.client_args == []
-    assert not list(notes_dir(camp).glob("*.out.md"))
+    assert rc == 0
+    assert "quarantined" in err and "spark2:8001" in err
+    assert {call["endpoint"] for call in fm.client_args} == {EP_A}
 
 
-def test_preflight_refuses_an_endpoint_serving_another_model_before_any_call(camp, fm):
+def test_preflight_quarantines_a_peer_serving_another_model(camp, fm):
     fm.served[EP_B] = ["some-other-model"]
     rc, _, err = run_cli(two_endpoint_args(camp))
-    assert rc == 2
+    assert rc == 0
     assert "spark2:8001" in err and "some-other-model" in err and "fake-model" in err
-    assert fm.extract_calls == []
+    assert len(fm.extract_calls) == len(RANGES)
 
 
 def test_a_single_endpoint_is_preflighted_too(camp, fm):
@@ -625,3 +670,16 @@ def test_a_failed_chunk_on_two_endpoints_still_finishes_the_others(camp, fm):
     assert rc == 3 and "004-004" in err
     m = json.loads((notes_dir(camp) / "manifest.json").read_text())
     assert [c["status"] for c in m["chunks"]] == ["checked", "checked", "failed", "checked"]
+
+
+def test_extract_content_rejection_is_terminal_and_does_not_quarantine_peer(camp, fm, monkeypatch):
+    """Validation failure is content work, never a transport failover signal."""
+    seen = []
+    def render(client, system, user, model, max_tokens):
+        seen.append(client)
+        return "## Events\n"  # rejected by the chunk checker, but transport succeeded
+    monkeypatch.setattr(extract, "render_part", render)
+    rc, _, _ = run_cli(two_endpoint_args(camp, "--parallel", "1"))
+    assert rc == 3
+    # Both configured endpoints remain usable for independent chunks.
+    assert {EP_A, EP_B}.issubset(set(seen))

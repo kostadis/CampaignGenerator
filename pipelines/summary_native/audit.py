@@ -34,6 +34,7 @@ from campaignlib.util import atomic_write_text
 from pipelines.summary_native import audit_select, context, corpus, extract, freshness, notes, npc_forms, schema, state_sections, synth, validate
 from pipelines.summary_native.freshness import check_fresh
 from pipelines.summary_native.resolve import ExtractSettings
+from pipelines.summary_native.scheduler import EndpointState, Scheduler, WorkItem, atomic_write_record
 
 EXIT_REFUSED = synth.EXIT_REFUSED
 EXIT_INCOMPLETE = synth.EXIT_INCOMPLETE
@@ -115,10 +116,8 @@ def _judge_one(client, plan: _Plan, system: str, args, run_dir: Path, endpoint: 
         try:
             raw = render_part(client, system, plan.user, args.model, args.max_tokens)
             break
-        except Exception as e:  # noqa: BLE001 - any backend error is a failed item
-            error = f"{type(e).__name__}: {e}"
-            if attempt == 2:
-                return _Outcome("failed", time.monotonic() - t0, endpoint, error=error)
+        except Exception:
+            raise
     secs = time.monotonic() - t0
     atomic_write_text(run_dir / f"audit.{plan.item.id}.out.md", raw)
     verdict = audit_select.check_verdict(raw, {c.number: c for c in plan.candidates})
@@ -184,7 +183,8 @@ def run_audit(
 
     backend = resolve_cli_model(args, legacy_default=None).backend
     endpoints = list(dict.fromkeys(getattr(args, "endpoints", None) or []))
-    parallel = getattr(args, "parallel", None) or 1
+    resolution = getattr(args, "concurrency", None)
+    parallel = resolution.value if resolution is not None else (getattr(args, "parallel", None) or 1)
     if endpoints and backend != "dgx":
         return _refuse(f"--endpoints applies to --backend dgx only, not {backend}")
     if endpoints and getattr(args, "endpoint", None):
@@ -214,10 +214,7 @@ def run_audit(
 
     started = now()
     run_dir = synth._new_run_dir(Path(range_dir) / schema.STATE_DIR / "runs", started.strftime("%Y%m%dT%H%M%SZ"))
-    atomic_write_text(run_dir / "audit.system.md", system)
-    for p in plans:
-        if p.candidates:
-            atomic_write_text(run_dir / f"audit.{p.item.id}.user.md", p.user)
+    created_run_dir = run_dir
 
     if endpoints:
         targets = endpoints
@@ -237,6 +234,10 @@ def run_audit(
         "candidates": candidates_n,
         "endpoints": labels,
         "parallel": parallel,
+        "concurrency_source": getattr(resolution, "source", "explicit" if getattr(args, "parallel", None) else "fallback"),
+        "concurrency": ({"value": resolution.value, "source": resolution.source,
+                         "model": resolution.model, "declared_max": resolution.declared_max}
+                        if resolution is not None else {"value": parallel, "source": "explicit"}),
         "dump_only": bool(args.dump_only),
         "force": bool(args.force),
         "inputs": {
@@ -250,11 +251,37 @@ def run_audit(
         "started": started.isoformat(timespec="seconds"),
         "finished": None,
     }
+    if getattr(args, "resume", None) is not None:
+        identity = {
+            "step": "audit", "range": record["range"], "backend": backend,
+            "model": args.model, "max_tokens": args.max_tokens,
+            "candidates": candidates_n, "system_sha256": record["system_sha256"],
+            "inputs": record["inputs"],
+        }
+        try:
+            resumed = extract._resume_run_dir(run_dir.parent, args.resume, identity)
+        except ValueError as e:
+            return _refuse(f"cannot resume: {e}")
+        if resumed is None:
+            return _refuse("cannot resume without a compatible run")
+        run_dir = resumed
+        if created_run_dir != run_dir:
+            created_run_dir.rmdir()
+        record["run_id"] = run_dir.name
+        print(f"resuming run {run_dir.name}")
+    atomic_write_text(run_dir / "audit.system.md", system)
+    for p in plans:
+        if p.candidates:
+            atomic_write_text(run_dir / f"audit.{p.item.id}.user.md", p.user)
+    if resolution is not None:
+        print(f"parallel {resolution.value} per endpoint ({resolution.source}" +
+              (f": {resolution.model}" if resolution.model else "") + ")")
 
     def save_record(code: int) -> None:
         record["exit_code"] = code
+        record["status"] = "completed" if code == 0 else "incomplete"
         record["finished"] = now().isoformat(timespec="seconds")
-        atomic_write_text(run_dir / "record.json", _dumps(record))
+        atomic_write_record(run_dir / "record.json", record)
 
     previous = {} if args.force else _previous(range_dir)
     outcomes: dict[str, _Outcome] = {}
@@ -285,9 +312,11 @@ def run_audit(
             return _refuse(msg)
 
         if targets:
-            problem = extract.preflight(targets, args.model)
-            if problem:
-                return stop(problem.replace("no chunk was sent", "no item was sent"))
+            targets, quarantined = extract.healthy_endpoints(targets, args.model)
+            if not targets:
+                return stop("no healthy endpoint: " + "; ".join(quarantined))
+            for detail in quarantined:
+                print(f"endpoint quarantined before dispatch: {detail}", file=sys.stderr)
         try:
             if targets:
                 clients = {extract.short(t): client_from_args(args, endpoint=t) for t in targets}
@@ -297,17 +326,29 @@ def run_audit(
             return stop(str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})")
         except (ValueError, RuntimeError, ImportError) as e:
             return stop(str(e))
+        scheduler = Scheduler([EndpointState(label, parallel) for label in clients])
+        by_id = {plan.item.id: plan for plan in todo}
+        def probe_endpoint(state):
+            raw = next((candidate for candidate in targets if extract.short(candidate) == state.endpoint_id), None)
+            return bool(raw and extract.healthy_endpoints([raw], args.model)[0])
+        scheduled = scheduler.run(
+            [WorkItem(plan.item.id, n, "audit", plan.key) for n, plan in enumerate(todo)],
+            lambda item, endpoint: _judge_one(clients[endpoint], by_id[item.item_id], system, args, run_dir, endpoint),
+            probe=probe_endpoint if targets else None,
+        )
         done = 0
-        for label, p, o in extract._run_pool(
-            todo, lambda c, plan, ep: _judge_one(c, plan, system, args, run_dir, ep), clients, parallel
-        ):
+        for p in todo:
+            o = scheduled.values.get(p.item.id)
+            if o is None:
+                failure = scheduled.failures[p.item.id]
+                o = _Outcome("failed", endpoint="", error=f"{failure.code}: {failure.message}")
             outcomes[p.item.id] = o
             done += 1
             if o.status == "failed":
-                print(f"item {p.item.id} ({done}/{len(todo)}) @{label} FAILED after one retry: {o.error}",
+                print(f"item {p.item.id} ({done}/{len(todo)}) @{o.endpoint} FAILED: {o.error}",
                       file=sys.stderr, flush=True)
             else:
-                print(f"item {p.item.id} ({done}/{len(todo)}) @{label} {o.secs:.0f}s {o.verdict.verdict}"
+                print(f"item {p.item.id} ({done}/{len(todo)}) @{o.endpoint} {o.secs:.0f}s {o.verdict.verdict}"
                       + (f" ({o.verdict.reason})" if o.verdict.reason else ""), flush=True)
 
     data = _finish(range_dir, plans, outcomes, args, backend, candidates_n, track_facts, record, write=True)

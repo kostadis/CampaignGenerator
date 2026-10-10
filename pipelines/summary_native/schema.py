@@ -202,6 +202,8 @@ STATUSES = ("Alive", "Dead", "Missing", "Imprisoned", "Departed", "Unknown")
 STATE_MAP_SECTIONS = ("## Events", "## Concluded", "## Threads", "## NPC Status", "## World", "## Party")
 
 DEFAULT_EXTRACT_PARALLEL = 6
+OPERATIONAL_FAILURE_CATEGORIES = ("model_response_rejection", "verifier_finding", "transport_failure", "retry_exhausted")
+VERIFIER_FAILURE_CATEGORIES = ("unsupported_or_contradicted", "citation_non_entailment", "superseded_claim", "knowledge_leak", "missing_source", "presentation_only", "verifier_transport_or_protocol")
 DEFAULT_PROSE_BACKEND = "claude-code"
 DEFAULT_PROSE_MODEL = "claude-sonnet-5-5"
 DEFAULT_PROSE_EFFORT = "medium"

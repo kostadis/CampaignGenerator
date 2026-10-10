@@ -21,7 +21,7 @@ import json
 import re
 import sys
 import time
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -31,6 +31,7 @@ from campaignlib.util import atomic_write_text
 from pipelines.summary_native import context, corpus, npc_authored, npc_check, npc_chunked, npc_compose, npc_forms
 from pipelines.summary_native import npc_link, npc_slug, npc_verify, schema, select, synth, validate
 from pipelines.summary_native.freshness import check_fresh, check_link_fresh, manual_sha, sha_file as _sha_file
+from pipelines.summary_native.scheduler import EndpointState, Scheduler, SchedulerResult, WorkItem
 
 EXIT_REFUSED = synth.EXIT_REFUSED
 EXIT_INCOMPLETE = synth.EXIT_INCOMPLETE
@@ -293,8 +294,104 @@ def _dumps(obj) -> str:
     return json.dumps(obj, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
 
 
+def _attempts_json(attempts: list) -> list[dict]:
+    """Make nested scheduler failure envelopes safe for the durable JSON record."""
+    return [asdict(attempt) for attempt in attempts]
+
+
 def _new_run_dir(runs_root: Path, stamp: str) -> Path:
     return synth._new_run_dir(runs_root, stamp)
+
+
+def _healthy_endpoints(endpoints: list[str], model: str | None) -> tuple[list[str], list[str]]:
+    """Late import keeps the NPC model boundary independent of extract internals."""
+    from pipelines.summary_native.extract import healthy_endpoints
+    return healthy_endpoints(endpoints, model)
+
+
+@dataclass
+class _RemoteDispatch:
+    """Operation-owned adapter over the shared endpoint scheduler.
+
+    The scheduler owns endpoint assignment and failover.  This adapter owns the
+    already-resolved clients and deliberately exposes values only by stable work
+    item id, so draft assembly never follows completion order.
+    """
+
+    scheduler: Scheduler
+    clients: dict[str, object]
+    attempts: list = field(default_factory=list)
+    serial: bool = False
+    probe: object | None = None
+
+    def run(self, items: list[WorkItem], render):
+        if self.serial:
+            result = SchedulerResult()
+            for item in items:
+                partial = self.scheduler.run([item], lambda candidate, endpoint: render(candidate, self.clients[endpoint]))
+                result.values.update(partial.values)
+                result.failures.update(partial.failures)
+                result.attempts.extend(partial.attempts)
+                if partial.failures:
+                    break
+        else:
+            result = self.scheduler.run(items, lambda item, endpoint: render(item, self.clients[endpoint]), probe=self.probe)
+        self.attempts.extend(result.attempts)
+        return result
+
+
+def _remote_dispatch(args) -> _RemoteDispatch:
+    configured = list(dict.fromkeys(getattr(args, "endpoints", None) or ()))
+    if configured:
+        healthy, _quarantined = _healthy_endpoints(configured, args.model)
+        if not healthy:
+            raise DraftRefusal("no healthy endpoint")
+        clients = {endpoint: client_from_args(args, endpoint=endpoint) for endpoint in healthy}
+        limit = getattr(getattr(args, "concurrency", None), "value", getattr(args, "parallel", None) or 1)
+    else:
+        # A single implicit backend client retains the historical call order.
+        # Explicit endpoint sets use the resolved independent endpoint bound.
+        clients = {"default": client_from_args(args)}
+        limit = 1
+    def probe(endpoint):
+        raw = endpoint.url or endpoint.endpoint_id
+        return bool(_healthy_endpoints([raw], args.model)[0])
+    return _RemoteDispatch(
+        Scheduler([EndpointState(endpoint, limit, url=endpoint) for endpoint in clients]), clients,
+        serial=not configured, probe=probe if configured else None,
+    )
+
+
+def _resume_draft_record(npc_range_dir: Path, requested: str, selection: DraftSelection, keys: dict[str, str], args) -> tuple[Path, dict]:
+    """Select one compatible NPC draft journal without treating it as completion truth."""
+    records: list[tuple[Path, dict]] = []
+    for path in sorted((npc_range_dir / RUNS_DIR).glob("*/record.json"), reverse=True):
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if value.get("operation", "npc-draft") != "npc-draft":
+            continue
+        records.append((path, value))
+    if requested:
+        records = [(path, value) for path, value in records if value.get("run_id") == requested]
+        if len(records) != 1:
+            raise DraftRefusal(f"no compatible NPC draft run named {requested!r}")
+    else:
+        records = [(path, value) for path, value in records if value.get("status") in {"running", "incomplete", "interrupted"}]
+        if len(records) != 1:
+            raise DraftRefusal("resume requires exactly one compatible incomplete NPC draft run; pass --resume RUN_ID")
+    path, record = records[0]
+    selected = [entry["stem"] for entry in selection.included]
+    if record.get("range") != {"since": int(selection.range.split("-")[0]), "until": int(selection.range.split("-")[1])}:
+        raise DraftRefusal("resume run has a different chapter range")
+    if record.get("backend") != resolve_cli_model(args, legacy_default=None).backend or record.get("model") != args.model:
+        raise DraftRefusal("resume run has a different backend or model")
+    if record.get("mode") != args.mode or record.get("chunk_chars") != (args.chunk_chars if args.mode == "chunked" else None):
+        raise DraftRefusal("resume run has different draft options")
+    if list(record.get("npcs", {})) != selected or any(record["npcs"][stem].get("draft_key") != keys[stem] for stem in selected):
+        raise DraftRefusal("resume run selection or inputs are stale")
+    return path, record
 
 
 # ── The draft loop (T024) ───────────────────────────────────────────────────
@@ -394,19 +491,13 @@ def run_draft(
         keys[s["stem"]] = draft_key(system, user, backend, args.model, args.max_tokens, mode, chunk_chars if chunked else None)
 
     started = now()
-    run_dir = _new_run_dir(npc_range_dir / RUNS_DIR, started.strftime("%Y%m%dT%H%M%SZ"))
-    run_id = run_dir.name
-    atomic_write_text(run_dir / "selection.json", selection.to_json())
-    for stem, (system, user) in prompts.items():
-        atomic_write_text(run_dir / f"{stem}.system.md", system)
-        atomic_write_text(run_dir / f"{stem}.user.md", user)
-    for stem, mps in map_prompts.items():
-        for n, (system, user) in enumerate(mps, 1):
-            atomic_write_text(run_dir / f"{stem}.map{n:02d}.system.md", system)
-            atomic_write_text(run_dir / f"{stem}.map{n:02d}.user.md", user)
+    run_id = started.strftime("%Y%m%dT%H%M%SZ")
+    run_dir = npc_range_dir / RUNS_DIR / run_id
 
     record = {
         "run_id": run_id,
+        "operation": "npc-draft",
+        "status": "running",
         "range": {"since": since, "until": until},
         "backend": backend,
         "model": args.model,
@@ -440,6 +531,25 @@ def run_draft(
         "stopped_at": None,
     }
 
+    if args.resume is not None:
+        try:
+            path, record = _resume_draft_record(npc_range_dir, args.resume, selection, keys, args)
+        except DraftRefusal as e:
+            return _refuse(str(e))
+        run_dir, run_id = path.parent, record["run_id"]
+    else:
+        run_dir = _new_run_dir(npc_range_dir / RUNS_DIR, run_id)
+        run_id = run_dir.name
+        record["run_id"] = run_id
+        atomic_write_text(run_dir / "selection.json", selection.to_json())
+        for stem, (system, user) in prompts.items():
+            atomic_write_text(run_dir / f"{stem}.system.md", system)
+            atomic_write_text(run_dir / f"{stem}.user.md", user)
+        for stem, mps in map_prompts.items():
+            for n, (system, user) in enumerate(mps, 1):
+                atomic_write_text(run_dir / f"{stem}.map{n:02d}.system.md", system)
+                atomic_write_text(run_dir / f"{stem}.map{n:02d}.user.md", user)
+
     def save_record() -> None:
         atomic_write_text(run_dir / "record.json", _dumps(record))
 
@@ -458,10 +568,10 @@ def run_draft(
         if args.force or index.get(s["stem"], {}).get("draft_key") != keys[s["stem"]]
         or not (draft_dir / f"{s['stem']}.md").is_file()
     ]
-    client = None
+    dispatcher = None
     if todo:
         try:
-            client = client_from_args(args)
+            dispatcher = _remote_dispatch(args)
         except SystemExit as e:
             msg = str(e.code) if isinstance(e.code, str) else f"backend setup failed (exit {e.code})"
             record["stopped_at"] = {"error": msg}
@@ -474,10 +584,45 @@ def run_draft(
             save_record()
             return _refuse(str(e))
 
+    # Materialize the entire selected remote operation before any call.  These
+    # identities are persisted as observability data; draft files remain the
+    # authority for completion.
+    work_items: list[WorkItem] = []
+    if chunked:
+        ordinal = 0
+        for s in selected:
+            stem = s["stem"]
+            if stem not in todo:
+                continue
+            for n, _chunk in enumerate(chunk_plan[stem], 1):
+                work_items.append(WorkItem(f"{stem}:map:{n:03d}", ordinal, "npc-draft", keys[stem]))
+                ordinal += 1
+            work_items.append(WorkItem(f"{stem}:reduce", ordinal, "npc-draft", keys[stem]))
+            ordinal += 1
+    else:
+        work_items = [WorkItem(s["stem"], n, "npc-draft", keys[s["stem"]]) for n, s in enumerate(selected) if s["stem"] in todo]
+    record["work_items"] = [
+        {"item_id": item.item_id, "ordinal": item.ordinal, "operation": item.operation,
+         "compatibility_key": item.compatibility_key}
+        for item in work_items
+    ]
+
     outcomes: dict[str, _Outcome] = {}
     verify_ctx = None
     verify_json: dict[str, dict] = {}
     exit_code = 0
+    one_shot_outputs: dict[str, str] = {}
+    one_shot_failures = {}
+    if todo and not chunked:
+        assert dispatcher is not None
+        result = dispatcher.run(
+            work_items,
+            lambda item, client: render_part(client, prompts[item.item_id][0], prompts[item.item_id][1], args.model, args.max_tokens),
+        )
+        record["attempts"] = _attempts_json(dispatcher.attempts)
+        record["endpoints"] = [e.__dict__ for e in dispatcher.scheduler.endpoints]
+        one_shot_outputs = result.values
+        one_shot_failures = result.failures
     for s in selected:
         stem, subject = s["stem"], s["subject"]
         if stem not in todo:
@@ -488,19 +633,25 @@ def run_draft(
             try:
                 if chunked:
                     out, detail = _draft_chunked(
-                        client, subject, stem, by_stem[stem], manuals[stem], chunk_plan[stem], map_prompts[stem],
+                        dispatcher, subject, stem, by_stem[stem], manuals[stem], chunk_plan[stem], map_prompts[stem],
                         reduce_system, headings, args, run_dir,
                     )
                     record["npcs"][stem]["chunked"] = detail
                 else:
-                    system, user = prompts[stem]
-                    out, _ = _timed_call(client, "draft", system, user, args, f"{subject}: draft")
+                    if stem in one_shot_failures:
+                        raise _CallFailed("draft", RuntimeError(one_shot_failures[stem].message))
+                    out = one_shot_outputs[stem]
+                    print(f"{subject}: draft 0.0s", flush=True)
             except Exception as e:
                 stage = getattr(e, "stage", None)
                 record["npcs"][stem]["status"] = "failed"
                 record["stopped_at"] = {"stem": stem, "error": f"{type(e).__name__}: {e}"}
                 if stage:
                     record["stopped_at"] = {"stem": stem, "stage": stage, "error": str(e)}
+                if dispatcher is not None:
+                    record["attempts"] = _attempts_json(dispatcher.attempts)
+                    record["endpoints"] = [endpoint.__dict__ for endpoint in dispatcher.scheduler.endpoints]
+                record["status"] = "incomplete"
                 record["finished"] = now().isoformat(timespec="seconds")
                 save_record()
                 print(f"{subject}: failed", file=sys.stderr)
@@ -564,6 +715,10 @@ def run_draft(
         detail = " (" + ", ".join(f"{k} {n}" for k, n in totals.items() if n) + ")"
     print(f"verified {len(verdicts)} drafts: {len(verdicts) - failed} pass, {failed} fail{detail}")
     record["finished"] = now().isoformat(timespec="seconds")
+    record["status"] = "completed" if exit_code == 0 else "incomplete"
+    if dispatcher is not None:
+        record["attempts"] = _attempts_json(dispatcher.attempts)
+        record["endpoints"] = [e.__dict__ for e in dispatcher.scheduler.endpoints]
     save_record()
     if verify_json:
         atomic_write_text(run_dir / "verify.json", _dumps(verify_json))
@@ -595,7 +750,7 @@ def _timed_call(client, stage: str, system: str, user: str, args, label: str = "
 
 
 def _draft_chunked(
-    client, subject: str, stem: str, ev, manual: list[str], chunks: list, map_prompts: list[tuple[str, str]],
+    dispatcher: _RemoteDispatch, subject: str, stem: str, ev, manual: list[str], chunks: list, map_prompts: list[tuple[str, str]],
     reduce_system: str, headings: list[str], args, run_dir: Path,
 ) -> tuple[str, dict]:
     """Map calls, code check, stitch, reduce call, assembly. Returns ``(assembled body, detail)``.
@@ -603,11 +758,18 @@ def _draft_chunked(
     Run files: ``<stem>.mapNN.out.md``, ``<stem>.reduce.{system,user,out}.md``, ``<stem>.drops.md``.
     """
     results, per_chunk, detail_chunks = [], [], []
-    for n, (chunk, (system, user)) in enumerate(zip(chunks, map_prompts), 1):
-        raw, secs = _timed_call(
-            client, f"map{n:02d}", system, user, args,
-            f"{subject}: map {n}/{len(chunks)} (ch {npc_chunked.chunk_range(chunk)})",
-        )
+    map_items = [WorkItem(f"{stem}:map:{n:03d}", n - 1, "npc-draft") for n in range(1, len(chunks) + 1)]
+    mapped = dispatcher.run(
+        map_items,
+        lambda item, client: render_part(client, *map_prompts[item.ordinal], args.model, args.max_tokens),
+    )
+    if mapped.failures:
+        failed = next(item for item in map_items if item.item_id in mapped.failures)
+        raise _CallFailed(f"map{failed.ordinal + 1:02d}", RuntimeError(mapped.failures[failed.item_id].message))
+    for n, (chunk, _prompt) in enumerate(zip(chunks, map_prompts), 1):
+        raw = mapped.values[f"{stem}:map:{n:03d}"]
+        secs = 0.0
+        print(f"{subject}: map {n}/{len(chunks)} (ch {npc_chunked.chunk_range(chunk)}) {secs:.1f}s", flush=True)
         atomic_write_text(run_dir / f"{stem}.map{n:02d}.out.md", raw)
         res = npc_chunked.check_map(raw, npc_check.EvidenceIndex.of(chunk), len(manual))
         results.append(res)
@@ -622,7 +784,15 @@ def _draft_chunked(
     rsys, ruser = npc_chunked.reduce_prompt(subject, ev.header, npc_chunked.render_notes(stitched), chunks[-1], manual, headings)
     atomic_write_text(run_dir / f"{stem}.reduce.system.md", rsys)
     atomic_write_text(run_dir / f"{stem}.reduce.user.md", ruser)
-    raw, secs = _timed_call(client, "reduce", rsys, ruser, args, f"{subject}: reduce")
+    reduce_item = WorkItem(f"{stem}:reduce", len(chunks), "npc-draft")
+    reduced = dispatcher.run(
+        [reduce_item],
+        lambda _item, client: render_part(client, rsys, ruser, args.model, args.max_tokens),
+    )
+    if reduced.failures:
+        raise _CallFailed("reduce", RuntimeError(reduced.failures[reduce_item.item_id].message))
+    raw, secs = reduced.values[reduce_item.item_id], 0.0
+    print(f"{subject}: reduce {secs:.1f}s", flush=True)
     atomic_write_text(run_dir / f"{stem}.reduce.out.md", raw)
     detail["reduce"] = {"secs": round(secs, 1), "prompt_chars": len(ruser)}
     return npc_chunked.assemble(headings, stitched, raw), detail
