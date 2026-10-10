@@ -5,6 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Iterable
 
+import yaml
+
 from .models import (
     CampaignScope,
     StateError,
@@ -30,14 +32,28 @@ EXPECTED_KINDS = (
 )
 TEXT_SUFFIXES = {".md", ".txt"}
 DATA_SUFFIXES = {".json", ".yaml", ".yml"}
+CORPUS_LAYOUT_PRECEDENCE = (
+    "current-configured",
+    "extractions-smoothed",
+    "extractions-new",
+    "extractions",
+)
 
 
 def _layout_and_kind(relative: Path) -> tuple[str, str] | None:
-    lowered = relative.as_posix().casefold()
     name = relative.name.casefold()
     parts = tuple(part.casefold() for part in relative.parts)
     if "narration_wiki" in parts:
         return None
+    # A current narration directory also carries plans, per-scene settings,
+    # critiques, and fix notes.  Those are useful evidence, but they are not
+    # narration documents and must never enter the measurement corpus.
+    if "critique" in parts[:-1] or "critique" in name or name.startswith("voice_fixes"):
+        return "critique-directory" if "critique" in parts[:-1] else "critique-flat", "critique"
+    if name == "plan.md" or name.endswith(".knobs.json"):
+        return "current-configured", "generation_settings"
+    if "logs" in parts[:-1]:
+        return "current-configured", "source_record"
     if "scene_extractions_smoothed" in parts:
         return "extractions-smoothed", "narration" if relative.suffix.casefold() == ".md" else "scene_extraction"
     if "scene_extractions_new" in parts:
@@ -50,24 +66,45 @@ def _layout_and_kind(relative: Path) -> tuple[str, str] | None:
         return "gm-assistant", "gm_assist"
     if name.startswith("gm_assist") or name.startswith("gm-assist"):
         return "gm-assist-doc", "gm_assist"
-    if "critique" in parts[:-1]:
-        return "critique-directory", "critique"
-    if name.startswith("critique"):
-        return "critique-flat", "critique"
     if "scrub" in name and "manifest" in name:
         return "current-configured", "scrub_manifest"
     if "generation" in name and ("setting" in name or "config" in name):
         return "current-configured", "generation_settings"
     if "source" in name and relative.suffix.casefold() in DATA_SUFFIXES:
         return "current-configured", "source_record"
-    if "narration" in parts or name.startswith("narration"):
+    if ("narration" in parts or name.startswith("narration")) and relative.suffix.casefold() == ".md":
         return "current-configured", "narration"
     return None
 
 
-def _narrator(relative: Path, kind: str) -> str | None:
+def _frontmatter_narrator(raw: bytes) -> str | None:
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return None
+    if not text.startswith("---\n"):
+        return None
+    closing = text.find("\n---\n", 4)
+    if closing < 0:
+        return None
+    try:
+        value = yaml.safe_load(text[4:closing])
+    except yaml.YAMLError:
+        return None
+    if not isinstance(value, dict):
+        return None
+    narrator = value.get("narrator")
+    if not isinstance(narrator, str) or not narrator.strip():
+        return None
+    return narrator.strip()
+
+
+def _narrator(relative: Path, kind: str, raw: bytes) -> str | None:
     if kind != "narration":
         return None
+    declared = _frontmatter_narrator(raw)
+    if declared is not None:
+        return declared
     stem = relative.stem
     for prefix in ("narration-", "narration_", "scene-", "scene_"):
         if stem.casefold().startswith(prefix):
@@ -89,6 +126,27 @@ def _candidates(session_root: Path) -> Iterable[Path]:
         if path.suffix.casefold() not in TEXT_SUFFIXES | DATA_SUFFIXES:
             continue
         yield path
+
+
+def _measurement_corpus(artifacts: list[TraceArtifact]) -> list[TraceArtifact]:
+    artifact_paths = {row.path for row in artifacts}
+    for layout in CORPUS_LAYOUT_PRECEDENCE:
+        rows = [
+            row for row in artifacts if row.kind == "narration" and row.layout == layout
+        ]
+        if layout == "current-configured":
+            # Current renderer outputs have a same-stem knobs sidecar.  When
+            # those canonical outputs are present, omit ad-hoc alternates and
+            # experiments that happen to live beside them in narration/.
+            rendered = [
+                row for row in rows
+                if Path(row.path).with_suffix(".knobs.json").as_posix() in artifact_paths
+            ]
+            if rendered:
+                rows = rendered
+        if rows:
+            return rows
+    return []
 
 
 def build_manifest(scope: CampaignScope) -> TraceManifest:
@@ -113,7 +171,7 @@ def build_manifest(scope: CampaignScope) -> TraceManifest:
             path=relative.as_posix(),
             sha256=sha256_bytes(raw),
             bytes=len(raw),
-            narrator=_narrator(relative, kind),
+            narrator=_narrator(relative, kind, raw),
             layout=layout,
         ))
     artifacts.sort(key=lambda row: (row.path, row.kind, row.narrator or ""))
@@ -122,9 +180,10 @@ def build_manifest(scope: CampaignScope) -> TraceManifest:
         {"kind": kind, "pattern": kind, "reason": "no allowlisted artifact found"}
         for kind in EXPECTED_KINDS if kind not in present
     ]
+    corpus_artifacts = _measurement_corpus(artifacts)
     corpus_rows = [
         {"path": row.path, "sha256": row.sha256, "narrator": row.narrator}
-        for row in artifacts if row.kind == "narration"
+        for row in corpus_artifacts
     ]
     corpus = [row["path"] for row in corpus_rows]
     return TraceManifest(
