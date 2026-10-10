@@ -147,7 +147,7 @@ def _source_apply_fixture(root: Path):
         "source": {"path": "docs/summaries/054-earthstone.md", "anchor": "earthstone"},
         "rejected_claim": "false steward", "replacement_fact": "correct actor",
     })
-    initialize_ledger(root, AuthorityLedger(version=1, campaign="fixture", revision=1, records=[ruling]), actor="GM")
+    initialize_ledger(root, AuthorityLedger(version=2, campaign="fixture", revision=1, records=[ruling]), actor="GM")
     proposal = create_proposal(root, ruling.id, summaries_dir=source.parent)
     return source, proposal
 

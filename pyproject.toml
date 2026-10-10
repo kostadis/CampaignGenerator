@@ -116,3 +116,8 @@ build-backend = "hatchling.build"
 # under campaignlib/resources and the review page under session_doc/review.
 # The checkout-only frontend/dist is outside these selected package trees.
 packages = ["campaignlib", "session_doc", "server", "pipelines", "entity_registry", "scabard_sdk", "provenance"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"pipelines/summary_native/review/web/viewer.html" = "pipelines/summary_native/review/web/viewer.html"
+"pipelines/summary_native/review/web/viewer.js" = "pipelines/summary_native/review/web/viewer.js"
+"pipelines/summary_native/review/web/viewer.css" = "pipelines/summary_native/review/web/viewer.css"

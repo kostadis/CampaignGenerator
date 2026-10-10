@@ -34,7 +34,7 @@ def test_note_model_rejects_unknown_fields_and_empty_audience():
 def test_ledger_refuses_duplicate_records_and_bad_intervals():
     note = _note()
     with pytest.raises(Exception, match="duplicate authority record"):
-        AuthorityLedger(version=1, campaign="fixture", revision=1, records=[note, note])
+        AuthorityLedger(version=2, campaign="fixture", revision=1, records=[note, note])
     with pytest.raises(Exception, match="before"):
         EffectiveInterval(from_chapter=4, through_chapter=3)
 

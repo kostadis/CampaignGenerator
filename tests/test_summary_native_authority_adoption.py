@@ -12,7 +12,7 @@ from pipelines.summary_native.freshness import (
 
 def _current_manifest() -> dict:
     return {
-        "authority_schema": 1,
+        "authority_schema": 2,
         "authority_policy": 1,
         "ledger_sha256": "a" * 64,
         "ledger_revision": 1,
@@ -54,7 +54,7 @@ def test_unsupported_authority_version_refuses_without_lazy_migration_or_narrow_
     docs = tmp_path / "docs"
     docs.mkdir()
     ledger = docs / "authority.yaml"
-    original_ledger = b"version: 2\ncampaign: fixture\nrevision: 1\nrecords: []\nconflicts: []\n"
+    original_ledger = b"version: 3\ncampaign: fixture\nrevision: 1\nrecords: []\nconflicts: []\n"
     ledger.write_bytes(original_ledger)
     narrow = {
         docs / "summary_native" / "canon.yaml": b"version: 1\nlinks: []\n",

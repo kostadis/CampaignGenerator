@@ -36,6 +36,153 @@ ENSEMBLE_DIRS = ("state_dossiers", "merged_dossiers")
 CATEGORY_TITLES = {cat: sec for sec, cat in schema.ENTITY_CATEGORIES.items()}
 CATEGORIES = tuple(schema.ENTITY_CATEGORIES.values())
 
+DEPENDENCY_CONSUMERS = frozenset({
+    "summary_native.duplicates", "summary_native.validation", "summary_native.build",
+    "summary_native.npc_selection", "summary_native.npc_forms", "summary_native.npc_link",
+    "summary_native.annotate", "summary_native.state_sections", "summary_native.key_npcs",
+    "entity_registry.resolve", "entity_registry.mcp", "provenance.identity",
+    "provenance.expansion", "ensemble.facts_to_state", "ensemble.synthesise_facts",
+    "ensemble.synthesise_world_state", "ensemble.synthesise_polish", "ensemble.known_names",
+    "campaignlib.npc", "campaignlib.grounding_planning", "normalize_bible_headings",
+})
+
+
+def _dependency_registry(registry: dict) -> dict:
+    entities = sorted(
+        registry.get("entities", []),
+        key=lambda value: (value.get("type", ""), value.get("name", "").casefold()),
+    )
+    known = {"version", "campaign", "entities", "distinct", "rejected_aliases"}
+    return {
+        "known": {
+            "version": registry.get("version"),
+            "campaign": registry.get("campaign"),
+            "entities": entities,
+            "distinct": sorted(registry.get("distinct", [])),
+            "rejected_aliases": sorted(registry.get("rejected_aliases", [])),
+        },
+        "opaque": {key: registry[key] for key in sorted(set(registry) - known)},
+    }
+
+
+def build_dependency_manifest(
+    *,
+    registry: dict | None,
+    artifacts: list[dict],
+    previous_manifest: dict | None = None,
+    registry_sha256: str | None = None,
+    precision: str = "subject",
+) -> dict:
+    """Build a complete deterministic v2 identity dependency inventory.
+
+    A normal corpus build only receives the historical coarse registry digest,
+    so it records the real artifact graph with ``precision=coarse``.  Explicit
+    adoption may pass the exact registry payload and select subject precision
+    after proving that payload is the one which built the corpus.  Callers must
+    never infer selective freshness from artifact paths alone.
+    """
+    del previous_manifest  # A rebuild is a complete inventory, never a union.
+    if precision not in {"coarse", "subject"}:
+        raise CorpusError(f"unknown dependency precision {precision!r}")
+    if precision == "subject" and not isinstance(registry, dict):
+        raise CorpusError("subject dependency precision requires exact registry data")
+    materialized = []
+    reverse: dict[str, list[str]] = {}
+    for raw in sorted(artifacts, key=lambda value: value["path"]):
+        consumer = raw.get("consumer")
+        if consumer not in DEPENDENCY_CONSUMERS:
+            raise CorpusError(f"unknown dependency consumer {consumer!r}")
+        entry = {
+            "consumer": consumer,
+            "path": raw["path"],
+            "sha256": raw["sha256"],
+            "subject_ids": sorted(set(raw.get("subject_ids", []))),
+            "ownership": raw.get("ownership", "generated"),
+        }
+        materialized.append(entry)
+        for subject in entry["subject_ids"]:
+            reverse.setdefault(subject, []).append(entry["path"])
+    reverse = {subject: sorted(paths) for subject, paths in sorted(reverse.items())}
+    subjects = {subject: {"paths": paths} for subject, paths in reverse.items()}
+    manifest = {
+        "version": 2,
+        "precision": precision,
+        "inventory_complete": True,
+        "registry_sha256": registry_sha256,
+        "registry": _dependency_registry(registry or {}) if precision == "subject" else None,
+        "artifacts": materialized,
+        "reverse_dependencies": reverse,
+        "subjects": subjects,
+    }
+    validate_dependency_manifest(manifest)
+    return manifest
+
+
+def validate_dependency_manifest(manifest: object) -> dict:
+    """Return one strict v2 dependency manifest or refuse its freshness claim."""
+    if not isinstance(manifest, dict) or manifest.get("version") != 2:
+        raise CorpusError("identity dependency manifest must use version 2")
+    precision = manifest.get("precision")
+    if precision not in {"coarse", "subject"} or manifest.get("inventory_complete") is not True:
+        raise CorpusError("identity dependency manifest does not prove a complete inventory")
+    registry_sha256 = manifest.get("registry_sha256")
+    if registry_sha256 is not None and not re.fullmatch(r"[0-9a-f]{64}", registry_sha256):
+        raise CorpusError("identity dependency registry digest is invalid")
+    if precision == "subject" and not isinstance(manifest.get("registry"), dict):
+        raise CorpusError("subject dependency manifest has no exact registry snapshot")
+    if precision == "coarse" and manifest.get("registry") is not None:
+        raise CorpusError("coarse dependency manifest must not claim a registry snapshot")
+
+    artifacts = manifest.get("artifacts")
+    if not isinstance(artifacts, list):
+        raise CorpusError("identity dependency artifacts must be a list")
+    materialized: dict[str, dict] = {}
+    expected_reverse: dict[str, list[str]] = {}
+    for entry in artifacts:
+        if not isinstance(entry, dict) or set(entry) != {
+            "consumer", "path", "sha256", "subject_ids", "ownership"
+        }:
+            raise CorpusError("identity dependency artifact has an invalid shape")
+        path = entry["path"]
+        relative = Path(path) if isinstance(path, str) else Path("/")
+        if (
+            not isinstance(path, str)
+            or not path
+            or relative.is_absolute()
+            or ".." in relative.parts
+            or path in materialized
+        ):
+            raise CorpusError("identity dependency artifact path is invalid or duplicated")
+        if entry["consumer"] not in DEPENDENCY_CONSUMERS:
+            raise CorpusError(f"unknown dependency consumer {entry['consumer']!r}")
+        if not isinstance(entry["sha256"], str) or not re.fullmatch(
+            r"[0-9a-f]{64}", entry["sha256"]
+        ):
+            raise CorpusError("identity dependency artifact digest is invalid")
+        if entry["ownership"] not in {"generated", "authored", "source"}:
+            raise CorpusError("identity dependency artifact ownership is invalid")
+        subject_ids = entry["subject_ids"]
+        if (
+            not isinstance(subject_ids, list)
+            or subject_ids != sorted(set(subject_ids))
+            or not all(isinstance(subject, str) and subject for subject in subject_ids)
+        ):
+            raise CorpusError("identity dependency subjects are invalid")
+        materialized[path] = entry
+        for subject in subject_ids:
+            expected_reverse.setdefault(subject, []).append(path)
+    expected_reverse = {
+        subject: sorted(paths) for subject, paths in sorted(expected_reverse.items())
+    }
+    if manifest.get("reverse_dependencies") != expected_reverse:
+        raise CorpusError("identity dependency reverse index differs from its artifacts")
+    expected_subjects = {
+        subject: {"paths": paths} for subject, paths in expected_reverse.items()
+    }
+    if manifest.get("subjects") != expected_subjects:
+        raise CorpusError("identity dependency subject index differs from its artifacts")
+    return manifest
+
 
 class CorpusError(Exception):
     """A refusal to read or write a corpus location (CLI exit 2)."""
@@ -393,6 +540,91 @@ def build_manifest(
     }
 
 
+def _dependency_subject(category: str, name: str) -> str:
+    kind = schema.CATEGORY_REGISTRY_TYPE.get(category, category)
+    slug = re.sub(r"[^a-z0-9]+", "-", name.casefold()).strip("-")
+    return f"{kind}:{slug}"
+
+
+def _corpus_dependency_artifacts(
+    *,
+    campaign_root: Path,
+    range_dir: Path,
+    manifest: dict,
+    observations: list[Observation],
+) -> list[dict]:
+    """Inventory the files the corpus writer actually read and wrote."""
+    root = Path(campaign_root).resolve()
+    output = Path(range_dir).resolve()
+    output.relative_to(root)  # Production output is campaign-local by contract.
+
+    artifacts: list[dict] = []
+    for source in manifest["files"]:
+        source_path = Path(source["path"])
+        candidate = source_path if source_path.is_absolute() else root / source_path
+        try:
+            relative = candidate.resolve().relative_to(root)
+        except ValueError:
+            # Legacy CLI support permits summaries-dir to be a read-only tree
+            # outside the campaign.  The corpus manifest retains that exact
+            # source path and digest for freshness, but dependency artifacts
+            # are the mutation inventory and may only name campaign-local
+            # targets.
+            continue
+        artifacts.append(
+            {
+                "consumer": "summary_native.build",
+                "path": relative.as_posix(),
+                "sha256": source["sha256"],
+                "subject_ids": [],
+                "ownership": "source",
+            }
+        )
+
+    for name in ("chronology.md", "memorable_moments.md", "other_sections.md"):
+        path = output / name
+        if path.is_file():
+            artifacts.append(
+                {
+                    "consumer": "summary_native.build",
+                    "path": path.relative_to(root).as_posix(),
+                    "sha256": sha256_file(path),
+                    "subject_ids": [],
+                    "ownership": "generated",
+                }
+            )
+
+    groups = _group_dossiers(observations)
+    for (category, subject, _members), filename in zip(groups, dossier_filenames(groups)):
+        path = output / "dossiers" / filename
+        artifacts.append(
+            {
+                "consumer": "summary_native.build",
+                "path": path.relative_to(root).as_posix(),
+                "sha256": sha256_file(path),
+                "subject_ids": [_dependency_subject(category, subject)],
+                "ownership": "generated",
+            }
+        )
+
+    all_subjects = sorted(
+        {_dependency_subject(item.category, item.canonical) for item in observations}
+    )
+    for name in REPORT_FILES:
+        path = output / name
+        if path.is_file():
+            artifacts.append(
+                {
+                    "consumer": "summary_native.validation",
+                    "path": path.relative_to(root).as_posix(),
+                    "sha256": sha256_file(path),
+                    "subject_ids": all_subjects,
+                    "ownership": "generated",
+                }
+            )
+    return artifacts
+
+
 def build_corpus(
     summaries_dir: Path,
     campaign_root: Path,
@@ -438,6 +670,26 @@ def build_corpus(
     manifest = build_manifest(
         files, campaign_root, report, obs, n_dossiers, registry_sha256, canon_sha256
     )
+    try:
+        dependency_artifacts = _corpus_dependency_artifacts(
+            campaign_root=campaign_root,
+            range_dir=range_dir,
+            manifest=manifest,
+            observations=obs,
+        )
+    except ValueError:
+        # Some library tests deliberately write to a disposable directory
+        # outside the campaign. The installed CLI always resolves output under
+        # the campaign root, which is the only location where a campaign-bound
+        # dependency manifest is meaningful.
+        dependency_artifacts = []
+    if dependency_artifacts:
+        manifest["identity_dependencies"] = build_dependency_manifest(
+            registry=None,
+            registry_sha256=registry_sha256,
+            artifacts=dependency_artifacts,
+            precision="coarse",
+        )
     manifest["complete"] = True
     atomic_write_text(range_dir / "manifest.json", json.dumps(manifest, indent=2, sort_keys=True) + "\n")
     return manifest

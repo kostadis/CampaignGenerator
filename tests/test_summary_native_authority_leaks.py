@@ -34,7 +34,7 @@ def test_adjacent_mixed_audience_sections_are_materialized_without_the_neighbour
     players = b"<!-- anchor: players -->\n- [NPC] **Subject:** Mara sees the bridge. [ch 001 / npcs]\n"
     secret = b"<!-- anchor: gm -->\n- [NPC] **Subject:** SECRET_SENTINEL vault route. [ch 001 / npcs]\n"
     source.write_bytes(players + b"### Split\n" + secret)
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[
         _record("players-bridge", "players", {"players"}, players),
         _record("gm-vault", "gm", {"gm"}, secret),
     ])
@@ -57,7 +57,7 @@ def test_historical_effective_ranges_filter_extraction_and_planning_views(tmp_pa
     outside = _record("outside", "out-of-scope", {"players"}, out_of_scope, "notes/history.md").model_copy(
         update={"effective": EffectiveInterval(from_chapter=10, through_chapter=10), "projections": {Projection.PLANNING}},
     )
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[inside, outside])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[inside, outside])
     write_ledger(tmp_path, ledger)
     evidence = filtered_evidence(tmp_path, ledger, audience="players", since=2, until=5)
     assert evidence.text == in_scope and b"GM_SECRET_SENTINEL" not in evidence.text
@@ -78,7 +78,7 @@ def test_filtered_snapshot_accepts_an_applied_ruling_without_note_content_digest
         source={"path": "notes/mixed.md", "anchor": "public"}, rejected_claim="old", replacement_fact="new",
         proposal_id="proposal-1", applied_receipt="receipt-1",
     )
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[ruling])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[ruling])
     write_ledger(tmp_path, ledger)
     assert filtered_evidence(tmp_path, ledger, audience="players").text == content
 
@@ -88,7 +88,7 @@ def test_structured_summary_anchor_preserves_citeable_section_for_player_extract
     public = b"<!-- anchor: public-npcs -->\n## NPCs\n- Mara keeps watch.\n## Items\n- SECRET_SENTINEL key.\n"
     source.write_bytes(public)
     record = _record("public-npcs", "public-npcs", {"players"}, b"<!-- anchor: public-npcs -->\n## NPCs\n- Mara keeps watch.\n", "notes/001-summary.md")
-    ledger = AuthorityLedger(version=1, campaign="x", revision=1, records=[record])
+    ledger = AuthorityLedger(version=2, campaign="x", revision=1, records=[record])
     evidence = filtered_evidence(tmp_path, ledger, audience="players")
     # Only the anchored H2 block survives, and the normal citation resolver
     # can validate an extracted `[ch 001 / npcs]` note against it.
@@ -111,7 +111,7 @@ def test_real_filtered_extract_succeeds_for_players_and_named_character(tmp_path
     common = dict(source="docs/summaries/" + chapter.name)
     player = _record("player-npcs", "public-npcs", {"players"}, public, **common)
     character = _record("ara-npcs", "public-npcs", {"character:Thorin Giantfriend"}, public, **common)
-    write_ledger(root, AuthorityLedger(version=1, campaign="state", revision=1, records=[player, character]))
+    write_ledger(root, AuthorityLedger(version=2, campaign="state", revision=1, records=[player, character]))
     models = cs.fake_models(monkeypatch)
     for audience in ("players", "character:Thorin Giantfriend"):
         rc, _, err = cs.run_cli([*cs.extract_args(root), "--audience", audience])
@@ -132,7 +132,7 @@ def test_real_filtered_extract_succeeds_for_players_and_named_character(tmp_path
 
 def test_non_gm_extract_refuses_incomplete_authorized_coverage(tmp_path: Path, monkeypatch):
     root = cs.state_campaign(tmp_path)
-    write_ledger(root, AuthorityLedger(version=1, campaign="state", revision=1, records=[]))
+    write_ledger(root, AuthorityLedger(version=2, campaign="state", revision=1, records=[]))
     cs.fake_models(monkeypatch)
     rc, _, err = cs.run_cli([*cs.extract_args(root), "--audience", "players"])
     assert rc == 2 and "complete authorized support" in err
@@ -142,7 +142,7 @@ def test_non_gm_extract_refuses_incomplete_authorized_coverage(tmp_path: Path, m
 def test_non_gm_blocking_validation_never_renders_ungranted_summary_details(tmp_path: Path, monkeypatch, command: str):
     root = cs.state_campaign(tmp_path)
     support = (root / "config" / "players.yaml").read_bytes()
-    write_ledger(root, AuthorityLedger(version=1, campaign="state", revision=1, records=[
+    write_ledger(root, AuthorityLedger(version=2, campaign="state", revision=1, records=[
         _record("players-support", DOCUMENT_ANCHOR, {"players"}, support, source="config/players.yaml"),
     ]))
     # This duplicate in-range chapter makes validation blocking. Its filename
@@ -204,7 +204,7 @@ def test_non_gm_extract_stages_checked_notes_until_post_model_authority_recheck(
     public = data[data.index(b"<!-- anchor: public-npcs -->"):data.index(b"## Locations")]
     record = _record("player-npcs", "public-npcs", {"players"}, public,
                      source="docs/summaries/" + chapter.name)
-    ledger = AuthorityLedger(version=1, campaign="state", revision=1, records=[record])
+    ledger = AuthorityLedger(version=2, campaign="state", revision=1, records=[record])
     write_ledger(root, ledger)
     models = cs.fake_models(monkeypatch)
     original = models.extract_render
@@ -245,7 +245,7 @@ def test_non_gm_world_synth_uses_complete_snapshot_support(tmp_path: Path, monke
         _record("registry", "registry", grants, (root / "docs" / "entity_registry.yaml").read_bytes(), source="docs/entity_registry.yaml"),
         _record("players", "players", grants, (root / "config" / "players.yaml").read_bytes(), source="config/players.yaml"),
     ]
-    write_ledger(root, AuthorityLedger(version=1, campaign="state", revision=1, records=records))
+    write_ledger(root, AuthorityLedger(version=2, campaign="state", revision=1, records=records))
     models = cs.fake_models(monkeypatch)
     rc, _, err = cs.run_cli([*cs.extract_args(root), "--audience", audience])
     assert rc == 0, err
@@ -313,7 +313,7 @@ def test_all_four_non_gm_documents_use_only_complete_classified_support(tmp_path
                                source="notes/planning.md").model_copy(update={"id": f"public-plan-{tag}", "projections": {Projection.PLANNING}}))
         records.extend(support_record(f"support-{index}-{tag}", path, audience)
                        for index, path in enumerate(support_paths, start=1))
-    write_ledger(root, AuthorityLedger(version=1, campaign="state", revision=1, records=records))
+    write_ledger(root, AuthorityLedger(version=2, campaign="state", revision=1, records=records))
     models = cs.fake_models(monkeypatch)
 
     selection = resolve_selection(root, [PlanningNoteSelector(id="public-plan", path="notes/planning.md")])
@@ -346,7 +346,7 @@ def test_all_four_non_gm_documents_use_only_complete_classified_support(tmp_path
     # Removing one required support grant remains a generic audience refusal
     # and must not name the missing source or surface its neighbouring bytes.
     reduced = [record for record in records if record.id != "support-4-players"]
-    write_ledger(root, AuthorityLedger(version=1, campaign="state", revision=2, records=reduced))
+    write_ledger(root, AuthorityLedger(version=2, campaign="state", revision=2, records=reduced))
     rc, _, err = cs.run_cli([
         "synth", "party", *cs.common(root), "--backend", "dgx", "--model", "fake-model",
         "--endpoint", "http://spark:8001/v1", "--force", "--audience", "players",

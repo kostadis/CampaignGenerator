@@ -18,7 +18,7 @@ def _campaign(tmp_path: Path) -> Path:
     source = tmp_path / "docs/summaries/054-earthstone.md"
     source.parent.mkdir(parents=True)
     source.write_text("# Chapter 54\n\n## Scenes\n\n### 054.01 Earthstone\n<!-- anchor: earthstone -->\nThe false steward acted.\n")
-    write_ledger(tmp_path, AuthorityLedger(version=1, campaign="fixture", revision=1, records=[_ruling()]))
+    write_ledger(tmp_path, AuthorityLedger(version=2, campaign="fixture", revision=1, records=[_ruling()]))
     return source
 
 

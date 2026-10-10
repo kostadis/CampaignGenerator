@@ -239,7 +239,7 @@ def test_conflict_routes_run_the_real_cli_lifecycle(client):
             "source": {"path": f"notes/{identifier}.md", "anchor": identifier},
             "content_digest": "0" * 64, "selection_label": identifier,
         })
-    ledger = AuthorityLedger(version=1, campaign=campaign.name, revision=2, records=[record("gate-left"), record("gate-right")])
+    ledger = AuthorityLedger(version=2, campaign=campaign.name, revision=2, records=[record("gate-left"), record("gate-right")])
     write_ledger(campaign, ledger); write_ledger_tip(campaign, event_id="route-seed", after=ledger_bytes(ledger))
     assert http.get(f"{BASE}/conflicts").json()["data"]["conflicts"] == []
     digest = http.get(f"{BASE}/status").json()["data"]["sha256"]

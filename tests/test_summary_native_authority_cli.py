@@ -241,7 +241,7 @@ def test_conflicts_json_resolution_and_history_use_exact_event_references(tmp_pa
         "replacement_fact": "open", "proposal_id": "proposal-gate", "applied_receipt": "receipt-gate",
     })
     plan = note("plan", "open")
-    ledger = AuthorityLedger(version=1, campaign="fixture", revision=1,
+    ledger = AuthorityLedger(version=2, campaign="fixture", revision=1,
                              records=[plan, note("gate-open", "open"), note("gate-closed", "closed"), resolution])
     write_ledger(tmp_path, ledger)
     write_ledger_tip(tmp_path, event_id="seed", after=ledger_bytes(ledger))

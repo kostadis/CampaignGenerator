@@ -61,7 +61,7 @@ def _campaign_with_ledger(tmp_path: Path, record: NoteRecord | None = None) -> A
     registry = tmp_path / "docs" / "thread_registry.yaml"
     registry.parent.mkdir()
     registry.write_text("threads:\n  - id: neverwinter-commission\n")
-    ledger = AuthorityLedger(version=1, campaign="fixture", revision=1, records=[] if record is None else [record])
+    ledger = AuthorityLedger(version=2, campaign="fixture", revision=1, records=[] if record is None else [record])
     write_ledger(tmp_path, ledger)
     return ledger
 
@@ -152,7 +152,7 @@ def test_manifest_hashes_current_source_bytes_and_filtered_payload(tmp_path: Pat
     source = tmp_path / "notes" / "plan.md"
     source.write_bytes(b"<!-- anchor: current-plan -->\nGM ONLY PLAN, REVISED\n")
     ledger = AuthorityLedger(
-        version=1,
+        version=2,
         campaign="fixture",
         revision=2,
         records=[

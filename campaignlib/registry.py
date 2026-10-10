@@ -35,6 +35,7 @@ On-disk contract::
 from __future__ import annotations
 
 import re
+import contextlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -329,10 +330,36 @@ def validate(reg: Registry) -> None:
 _validate = validate
 
 
+def _registry_campaign(path: Path) -> Path | None:
+    """Return a review-enabled campaign root for the canonical registry path."""
+    path = path.expanduser().resolve()
+    if path.name != "entity_registry.yaml" or path.parent.name != "docs":
+        return None
+    root = path.parent.parent
+    return root if (root / "docs" / "authority").exists() else None
+
+
+def _registry_lock(path: Path, *, exclusive: bool):
+    root = _registry_campaign(path)
+    if root is None:
+        return contextlib.nullcontext()
+    from pipelines.summary_native.authority_apply import authority_lock
+    return authority_lock(root, exclusive=exclusive)
+
+
 def load_registry(path) -> Registry:
     """Parse and validate an entity_registry.yaml file; raise ValueError on any
     invariant violation (see module docstring for the on-disk contract)."""
     path = Path(path)
+    with _registry_lock(path, exclusive=False):
+        root = _registry_campaign(path)
+        if root is not None:
+            from pipelines.summary_native.authority_apply import require_no_pending_transaction
+            require_no_pending_transaction(root)
+        return _load_registry_unlocked(path)
+
+
+def _load_registry_unlocked(path: Path) -> Registry:
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
     entities = [
@@ -462,5 +489,12 @@ def save_registry(reg: Registry, path) -> None:
     invariant — no importer or CLI subcommand can ever persist a broken
     registry through this function.
     """
-    validate(reg)
-    Path(path).write_text(dump_registry(reg), encoding="utf-8")
+    path = Path(path)
+    with _registry_lock(path, exclusive=True):
+        root = _registry_campaign(path)
+        if root is not None:
+            from pipelines.summary_native.authority_apply import require_no_pending_transaction
+            require_no_pending_transaction(root)
+        validate(reg)
+        from campaignlib.util import atomic_write_text
+        atomic_write_text(path, dump_registry(reg))

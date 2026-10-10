@@ -1,0 +1,454 @@
+{
+  "findings": [
+    {
+      "category": "unsupported_or_contradicted",
+      "claim": "Fixture claim 1",
+      "diagnostic": {
+        "blocking": false,
+        "code": "unsupported_or_contradicted",
+        "detail": "Prepared unsupported_or_contradicted diagnostic 1"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_01.md",
+      "evidence": "Fixture evidence 1",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-01",
+      "npc": "Fixture NPC 01",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-1"
+    },
+    {
+      "category": "citation_non_entailment",
+      "claim": "Fixture claim 2",
+      "diagnostic": {
+        "blocking": false,
+        "code": "citation_non_entailment",
+        "detail": "Prepared citation_non_entailment diagnostic 2"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_02.md",
+      "evidence": "Fixture evidence 2",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-02",
+      "npc": "Fixture NPC 02",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-2"
+    },
+    {
+      "category": "later_source_supersedes",
+      "claim": "Fixture claim 3",
+      "diagnostic": {
+        "blocking": false,
+        "code": "later_source_supersedes",
+        "detail": "Prepared later_source_supersedes diagnostic 3"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_03.md",
+      "evidence": "Fixture evidence 3",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-03",
+      "npc": "Fixture NPC 03",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-3"
+    },
+    {
+      "category": "knowledge_leak",
+      "claim": "Fixture claim 4",
+      "diagnostic": {
+        "blocking": false,
+        "code": "knowledge_leak",
+        "detail": "Prepared knowledge_leak diagnostic 4"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_04.md",
+      "evidence": "Fixture evidence 4",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-04",
+      "npc": "Fixture NPC 04",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-4"
+    },
+    {
+      "category": "missing_source_or_pointer",
+      "claim": "Fixture claim 5",
+      "diagnostic": {
+        "blocking": false,
+        "code": "missing_source_or_pointer",
+        "detail": "Prepared missing_source_or_pointer diagnostic 5"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_05.md",
+      "evidence": "Fixture evidence 5",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-05",
+      "npc": "Fixture NPC 05",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-5"
+    },
+    {
+      "category": "typography_presentation",
+      "claim": "Fixture claim 6",
+      "diagnostic": {
+        "blocking": false,
+        "code": "typography_presentation",
+        "detail": "Prepared typography_presentation diagnostic 6"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_06.md",
+      "evidence": "Fixture evidence 6",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-06",
+      "npc": "Fixture NPC 06",
+      "severity": "advisory",
+      "source": "summaries/001-fixture.md#fixture-6"
+    },
+    {
+      "category": "verifier_transport_protocol",
+      "claim": "Fixture claim 7",
+      "diagnostic": {
+        "blocking": true,
+        "code": "verifier_transport_protocol",
+        "detail": "Prepared verifier_transport_protocol diagnostic 7"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_07.md",
+      "evidence": null,
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-07",
+      "npc": "Fixture NPC 07",
+      "severity": "blocking",
+      "source": "summaries/001-fixture.md#fixture-7"
+    },
+    {
+      "category": "unsupported_or_contradicted",
+      "claim": "Fixture claim 8",
+      "diagnostic": {
+        "blocking": false,
+        "code": "unsupported_or_contradicted",
+        "detail": "Prepared unsupported_or_contradicted diagnostic 8"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_08.md",
+      "evidence": "Fixture evidence 8",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-08",
+      "npc": "Fixture NPC 08",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-8"
+    },
+    {
+      "category": "citation_non_entailment",
+      "claim": "Fixture claim 9",
+      "diagnostic": {
+        "blocking": false,
+        "code": "citation_non_entailment",
+        "detail": "Prepared citation_non_entailment diagnostic 9"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_09.md",
+      "evidence": "Fixture evidence 9",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-09",
+      "npc": "Fixture NPC 09",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-9"
+    },
+    {
+      "category": "later_source_supersedes",
+      "claim": "Fixture claim 10",
+      "diagnostic": {
+        "blocking": false,
+        "code": "later_source_supersedes",
+        "detail": "Prepared later_source_supersedes diagnostic 10"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_10.md",
+      "evidence": "Fixture evidence 10",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-10",
+      "npc": "Fixture NPC 10",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-10"
+    },
+    {
+      "category": "knowledge_leak",
+      "claim": "Fixture claim 11",
+      "diagnostic": {
+        "blocking": false,
+        "code": "knowledge_leak",
+        "detail": "Prepared knowledge_leak diagnostic 11"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_11.md",
+      "evidence": "Fixture evidence 11",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-11",
+      "npc": "Fixture NPC 11",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-11"
+    },
+    {
+      "category": "missing_source_or_pointer",
+      "claim": "Fixture claim 12",
+      "diagnostic": {
+        "blocking": false,
+        "code": "missing_source_or_pointer",
+        "detail": "Prepared missing_source_or_pointer diagnostic 12"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_12.md",
+      "evidence": "Fixture evidence 12",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-12",
+      "npc": "Fixture NPC 12",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-12"
+    },
+    {
+      "category": "typography_presentation",
+      "claim": "Fixture claim 13",
+      "diagnostic": {
+        "blocking": false,
+        "code": "typography_presentation",
+        "detail": "Prepared typography_presentation diagnostic 13"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_13.md",
+      "evidence": "Fixture evidence 13",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-13",
+      "npc": "Fixture NPC 13",
+      "severity": "advisory",
+      "source": "summaries/001-fixture.md#fixture-13"
+    },
+    {
+      "category": "verifier_transport_protocol",
+      "claim": "Fixture claim 14",
+      "diagnostic": {
+        "blocking": true,
+        "code": "verifier_transport_protocol",
+        "detail": "Prepared verifier_transport_protocol diagnostic 14"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_14.md",
+      "evidence": null,
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-14",
+      "npc": "Fixture NPC 14",
+      "severity": "blocking",
+      "source": "summaries/001-fixture.md#fixture-14"
+    },
+    {
+      "category": "unsupported_or_contradicted",
+      "claim": "Fixture claim 15",
+      "diagnostic": {
+        "blocking": false,
+        "code": "unsupported_or_contradicted",
+        "detail": "Prepared unsupported_or_contradicted diagnostic 15"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_15.md",
+      "evidence": "Fixture evidence 15",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-15",
+      "npc": "Fixture NPC 15",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-15"
+    },
+    {
+      "category": "citation_non_entailment",
+      "claim": "Fixture claim 16",
+      "diagnostic": {
+        "blocking": false,
+        "code": "citation_non_entailment",
+        "detail": "Prepared citation_non_entailment diagnostic 16"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_16.md",
+      "evidence": "Fixture evidence 16",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-16",
+      "npc": "Fixture NPC 16",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-16"
+    },
+    {
+      "category": "later_source_supersedes",
+      "claim": "Fixture claim 17",
+      "diagnostic": {
+        "blocking": false,
+        "code": "later_source_supersedes",
+        "detail": "Prepared later_source_supersedes diagnostic 17"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_17.md",
+      "evidence": "Fixture evidence 17",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-17",
+      "npc": "Fixture NPC 17",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-17"
+    },
+    {
+      "category": "knowledge_leak",
+      "claim": "Fixture claim 18",
+      "diagnostic": {
+        "blocking": false,
+        "code": "knowledge_leak",
+        "detail": "Prepared knowledge_leak diagnostic 18"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_18.md",
+      "evidence": "Fixture evidence 18",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-18",
+      "npc": "Fixture NPC 18",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-18"
+    },
+    {
+      "category": "missing_source_or_pointer",
+      "claim": "Fixture claim 19",
+      "diagnostic": {
+        "blocking": false,
+        "code": "missing_source_or_pointer",
+        "detail": "Prepared missing_source_or_pointer diagnostic 19"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_19.md",
+      "evidence": "Fixture evidence 19",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-19",
+      "npc": "Fixture NPC 19",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-19"
+    },
+    {
+      "category": "typography_presentation",
+      "claim": "Fixture claim 20",
+      "diagnostic": {
+        "blocking": false,
+        "code": "typography_presentation",
+        "detail": "Prepared typography_presentation diagnostic 20"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_20.md",
+      "evidence": "Fixture evidence 20",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-20",
+      "npc": "Fixture NPC 20",
+      "severity": "advisory",
+      "source": "summaries/001-fixture.md#fixture-20"
+    },
+    {
+      "category": "verifier_transport_protocol",
+      "claim": "Fixture claim 21",
+      "diagnostic": {
+        "blocking": true,
+        "code": "verifier_transport_protocol",
+        "detail": "Prepared verifier_transport_protocol diagnostic 21"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_21.md",
+      "evidence": null,
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-21",
+      "npc": "Fixture NPC 21",
+      "severity": "blocking",
+      "source": "summaries/001-fixture.md#fixture-21"
+    },
+    {
+      "category": "unsupported_or_contradicted",
+      "claim": "Fixture claim 22",
+      "diagnostic": {
+        "blocking": false,
+        "code": "unsupported_or_contradicted",
+        "detail": "Prepared unsupported_or_contradicted diagnostic 22"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_22.md",
+      "evidence": "Fixture evidence 22",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-22",
+      "npc": "Fixture NPC 22",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-22"
+    },
+    {
+      "category": "citation_non_entailment",
+      "claim": "Fixture claim 23",
+      "diagnostic": {
+        "blocking": false,
+        "code": "citation_non_entailment",
+        "detail": "Prepared citation_non_entailment diagnostic 23"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_23.md",
+      "evidence": "Fixture evidence 23",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-23",
+      "npc": "Fixture NPC 23",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-23"
+    },
+    {
+      "category": "later_source_supersedes",
+      "claim": "Fixture claim 24",
+      "diagnostic": {
+        "blocking": false,
+        "code": "later_source_supersedes",
+        "detail": "Prepared later_source_supersedes diagnostic 24"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_24.md",
+      "evidence": "Fixture evidence 24",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-24",
+      "npc": "Fixture NPC 24",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-24"
+    },
+    {
+      "category": "knowledge_leak",
+      "claim": "Fixture claim 25",
+      "diagnostic": {
+        "blocking": false,
+        "code": "knowledge_leak",
+        "detail": "Prepared knowledge_leak diagnostic 25"
+      },
+      "draft_line": 3,
+      "draft_path": "docs/npcs/fixture_npc_25.md",
+      "evidence": "Fixture evidence 25",
+      "evidence_path": "summaries/001-fixture.md",
+      "expected": "pending",
+      "id": "npc-25",
+      "npc": "Fixture NPC 25",
+      "severity": "needs_judgment",
+      "source": "summaries/001-fixture.md#fixture-25"
+    }
+  ]
+}

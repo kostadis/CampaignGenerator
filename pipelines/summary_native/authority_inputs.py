@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from pipelines.summary_native.authority import AuthorityError, AuthorityLedger, AuthorityRecord, Classification, DOCUMENT_ANCHOR, NoteRecord, POLICY_VERSION, Projection, SCHEMA_VERSION, canonicalize, detect_conflicts, ledger_digest, load_ledger, record_metadata_digest, validate_audience_target, validate_record_identity
+from pipelines.summary_native.authority import AuthorityError, AuthorityLedger, AuthorityRecord, Classification, DOCUMENT_ANCHOR, NoteRecord, POLICY_VERSION, Projection, RulingRecord, SCHEMA_VERSION, canonicalize, detect_conflicts, ledger_digest, load_ledger, record_metadata_digest, validate_audience_target, validate_record_identity
 from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
 
 
@@ -316,7 +316,8 @@ def resolve_anchored_records(ledger: AuthorityLedger, *, audience: str, since: i
                              until: int | None = None) -> list[AuthorityRecord]:
     if audience not in {"gm", "players", "characters"} and not audience.startswith("character:"):
         raise AuthorityError(f"invalid audience target {audience!r}")
-    return [r for r in ledger.records if r.audience.allows(audience)
+    return [r for r in ledger.records if isinstance(r, (RulingRecord, NoteRecord))
+            and r.audience.allows(audience)
             and getattr(r, "status", None) in {"active", "applied"}
             and _effective_for_range(r.effective, since, until)]
 
@@ -358,6 +359,8 @@ def resolve_planning_precedence(records: list[AuthorityRecord]) -> tuple[list[Au
     groups: dict[tuple[str, str, str], list[AuthorityRecord]] = {}
     warnings: list[str] = []
     for record in records:
+        if not isinstance(record, (RulingRecord, NoteRecord)):
+            continue
         if Projection.PLANNING not in record.projections:
             continue
         key = (record.subject.kind, record.subject.id, record.claim_key or record.id)

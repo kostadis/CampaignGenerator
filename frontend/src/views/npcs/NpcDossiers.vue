@@ -5,6 +5,7 @@ import { useConfigStore } from '../../stores/config'
 import { useGroundingRun } from '../../composables/useGroundingRun'
 import PathField from '../../components/shared/PathField.vue'
 import RunPanel from '../../components/shared/RunPanel.vue'
+import ReviewLauncher from '../../components/ReviewLauncher.vue'
 
 // NPC dossiers (spec 032, US5). This page only mechanises `summary_native npc-*`
 // runs with explicit arguments (Principle IX): every file it shows is read-only,
@@ -269,6 +270,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <ReviewLauncher context="npc" :selected="pickedSubjects" />
   <div class="page">
     <div class="page-header">
       <h2>NPC dossiers</h2>

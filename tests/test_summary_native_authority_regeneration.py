@@ -83,7 +83,7 @@ def test_reviewed_source_correction_force_regenerates_all_projection_drafts(tmp_
         "The Carver's march broke against the gate.",
         "<!-- anchor: earthstone-responsible-actor -->\nThe Carver's march broke against the gate.",
     ), encoding="utf-8")
-    write_ledger(root, AuthorityLedger(version=1, campaign="party-fixture", revision=1, records=[_ruling(source)]))
+    write_ledger(root, AuthorityLedger(version=2, campaign="party-fixture", revision=1, records=[_ruling(source)]))
 
     generated = cp.range_dir(root) / "state" / "drafts" / "world_state.md"
     generated.parent.mkdir(parents=True)
@@ -168,7 +168,7 @@ def test_source_correction_requires_a_reviewed_note_digest_refresh_before_regene
         content_digest=sha256_bytes(resolve_anchor_span(source.read_bytes(), anchor)),
         selection_label="Earthstone source classification",
     )
-    write_ledger(root, AuthorityLedger(version=1, campaign="party-fixture", revision=1,
+    write_ledger(root, AuthorityLedger(version=2, campaign="party-fixture", revision=1,
                                       records=[_ruling(source), classification]))
     proposal = create_proposal(root, "earthstone-ruling", summaries_dir=root / "docs" / "summaries")
     apply_proposal(root, "earthstone-ruling", proposal_sha256=proposal["proposal_sha256"])

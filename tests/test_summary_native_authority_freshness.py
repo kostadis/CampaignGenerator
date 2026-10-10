@@ -69,7 +69,7 @@ def test_planning_uses_reviewed_selection_and_refuses_drift_stale_and_legacy_run
         _planning_note("gate-open", Classification.OPEN, "open", opened, claim="seal", value="unknown"),
         _planning_note("unselected-note", Classification.CANON, "prep", prep, claim="other", value="unused"),
     ]
-    write_ledger(root, AuthorityLedger(version=1, campaign="party-fixture", revision=1, records=records))
+    write_ledger(root, AuthorityLedger(version=2, campaign="party-fixture", revision=1, records=records))
     planning = root / "config" / "planning.yaml"
     planning.write_text(planning.read_text(encoding="utf-8") + "notes:\n  - id: gate-authority\n    path: notes/authority-plan.md\n    record_ids: [gate-prep, gate-overlay, gate-open]\n", encoding="utf-8")
 
@@ -135,7 +135,7 @@ def test_planning_synth_blocks_only_selected_overlapping_structured_conflicts_be
     # is distinct from a current overlapping contradiction.
     left = left.model_copy(update={"effective": {"from_chapter": 1, "through_chapter": 5}})
     right = right.model_copy(update={"effective": {"from_chapter": 1, "through_chapter": 5}})
-    write_ledger(root, AuthorityLedger(version=1, campaign="party-fixture", revision=1, records=[left, right, third]))
+    write_ledger(root, AuthorityLedger(version=2, campaign="party-fixture", revision=1, records=[left, right, third]))
     planning = root / "config" / "planning.yaml"
     planning.write_text(planning.read_text(encoding="utf-8") + "notes:\n  - id: selected\n    path: notes/authority-plan.md\n    record_ids: [gate-closed, gate-open]\n", encoding="utf-8")
     capture = __import__("io").StringIO()
@@ -150,7 +150,7 @@ def test_planning_synth_blocks_only_selected_overlapping_structured_conflicts_be
 
     # Disjoint intervals represent evolution and do not block the same synth.
     right = right.model_copy(update={"effective": {"from_chapter": 9, "through_chapter": 10}})
-    write_ledger(root, AuthorityLedger(version=1, campaign="party-fixture", revision=2, records=[left, right, third]))
+    write_ledger(root, AuthorityLedger(version=2, campaign="party-fixture", revision=2, records=[left, right, third]))
     with contextlib.redirect_stdout(capture := __import__("io").StringIO()):
         assert main(["authority", "notes", "preview", "--campaign-dir", str(root), "--audience", "gm", "--json"]) == 0
     selection = json.loads(capture.getvalue())["data"]["selection_sha256"]
@@ -158,7 +158,7 @@ def test_planning_synth_blocks_only_selected_overlapping_structured_conflicts_be
     assert rc == 0, err
 
     # A conflicting pair outside the reviewed selector never blocks its scope.
-    write_ledger(root, AuthorityLedger(version=1, campaign="party-fixture", revision=3, records=[left, left.model_copy(update={"id": "gate-open", "normalized_value": "open"}), third]))
+    write_ledger(root, AuthorityLedger(version=2, campaign="party-fixture", revision=3, records=[left, left.model_copy(update={"id": "gate-open", "normalized_value": "open"}), third]))
     planning.write_text(planning.read_text(encoding="utf-8").replace("[gate-closed, gate-open]", "[selected-plan]"), encoding="utf-8")
     with contextlib.redirect_stdout(capture := __import__("io").StringIO()):
         assert main(["authority", "notes", "preview", "--campaign-dir", str(root), "--audience", "gm", "--json"]) == 0

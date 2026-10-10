@@ -5,6 +5,7 @@ import { useConfigStore } from '../../stores/config'
 import { useGroundingRun } from '../../composables/useGroundingRun'
 import PathField from '../../components/shared/PathField.vue'
 import RunPanel from '../../components/shared/RunPanel.vue'
+import ReviewLauncher from '../../components/ReviewLauncher.vue'
 
 // summary_native (feature 031): grounding-doc drafts built straight from
 // reviewed session summaries. This page invokes the `summary_native` CLI and
@@ -703,6 +704,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <ReviewLauncher context="grounding" />
   <div class="page">
     <div class="page-header">
       <h2>Summary-native</h2>

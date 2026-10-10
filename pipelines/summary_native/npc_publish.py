@@ -46,8 +46,6 @@ SOURCE_HB = "hand-built"
 SOURCES = (SOURCE_SN, SOURCE_HB)
 
 VERIFY_PASS = "pass"
-VERIFY_FORCED = "fail(forced)"
-VERIFY_UNVERIFIED_FORCED = "unverified(forced)"
 VERIFY_NA = "not applicable"
 
 LOG_NAME = "publish_log.json"
@@ -219,12 +217,93 @@ def read_verdict(npc_range_dir: Path, stem: str) -> str | None:
     return None
 
 
+def _current_draft_signoff(root: Path, draft_path: Path, draft_sha256: str) -> bool:
+    """Whether authority contains a current signoff for these exact draft bytes.
+
+    The review item carries the verifier outcome as well as the digest.  A human
+    approval of a mechanically failing item therefore cannot become publication
+    authority, and a custody refresh that marks the item stale reopens the gate.
+    """
+
+    from pipelines.summary_native.authority import ReviewDecisionRecord, load_ledger
+    from pipelines.summary_native.review.store import _reject_symlinks, read_review_state, read_snapshot
+
+    root = Path(root).resolve()
+    try:
+        relative = Path(draft_path).resolve().relative_to(root).as_posix()
+        ledger = load_ledger(root)
+    except (OSError, ValueError):
+        return False
+    states: dict[str, tuple[tuple, list[dict], set[str], bool]] = {}
+    for record in ledger.records:
+        if (
+            not isinstance(record, ReviewDecisionRecord)
+            or record.status != "accepted"
+            or record.domain != "npc_finding"
+            or record.disposition != "document_signoff"
+        ):
+            continue
+        try:
+            if record.review_id not in states:
+                _manifest, items, events, stale = read_review_state(root, record.review_id)
+                _manifest, custody, _items = read_snapshot(root, record.review_id)
+                custody_current = all(
+                    (path := _reject_symlinks(root, root / source.path)).is_file()
+                    and sha256_text(path.read_bytes()) == source.sha256
+                    for source in custody.sources
+                )
+                states[record.review_id] = (items, events, stale, custody_current)
+            items, events, stale, custody_current = states[record.review_id]
+        except (OSError, ValueError):
+            continue
+        if record.item_id in stale or not custody_current:
+            continue
+        item = next(
+            (
+                candidate
+                for candidate in items
+                if candidate.item_id == record.item_id
+                and candidate.revision == record.item_revision
+                and candidate.review_digest == record.review_digest
+            ),
+            None,
+        )
+        if item is None:
+            continue
+        current = next(
+            (
+                event
+                for event in reversed(events)
+                if event.get("item_id") == item.item_id
+                and event.get("kind") != "rebind"
+            ),
+            None,
+        )
+        details = item.proposed_action.details
+        binding = next((value for value in item.input_bindings if value.path == relative), None)
+        if (
+            current is not None
+            and current.get("event_id") == record.event_id
+            and current.get("verdict") == "approve"
+            and current.get("disposition") == "document_signoff"
+            and item.proposed_action.action == "signoff_npc_draft"
+            and details.get("draft_path") == relative
+            and details.get("draft_sha256") == draft_sha256
+            and details.get("verification_complete") is True
+            and details.get("mechanical_verdict") == "pass"
+            and binding is not None
+            and binding.custody_sha256 == draft_sha256
+        ):
+            return True
+    return False
+
+
 def _range_name(npc_range_dir: Path) -> str:
     return Path(npc_range_dir).name
 
 
 def _plan_summary_native(root: Path, npc_range_dir: Path, stem: str, subject: str, item: PublishItem,
-                         force: bool) -> None:
+                         signoff_checker: Callable[[Path, str], bool]) -> None:
     gm_path = Path(npc_range_dir) / npc_compose.GM_DIR / f"{stem}.md"
     text = gm_path.read_text(encoding="utf-8")
     m = _GM_HEADER_RE.match(text)
@@ -237,23 +316,30 @@ def _plan_summary_native(root: Path, npc_range_dir: Path, stem: str, subject: st
         item.refusal = f"{schema.display_path(gm_path, root)} has no draft dossier behind it (not yet drafted)"
         return
     draft_path = Path(npc_range_dir) / npc_compose.DRAFT_DIR / f"{stem}.md"
-    dm = _DRAFT_HEADER_RE.match(draft_path.read_text(encoding="utf-8")) if draft_path.is_file() else None
+    draft_bytes = draft_path.read_bytes() if draft_path.is_file() else None
+    dm = _DRAFT_HEADER_RE.match(draft_bytes.decode("utf-8")) if draft_bytes is not None else None
     if dm is None:
         item.refusal = f"{schema.display_path(draft_path, root)}: draft header missing or unreadable; re-run npc-draft"
         return
+    draft_sha256 = sha256_text(draft_bytes)
+    if m.group("draft") != draft_sha256:
+        item.refusal = "draft changed after composition; run `summary_native npc-compose` and recheck it"
+        return
     verdict = read_verdict(npc_range_dir, stem)
-    if verdict == "pass":
-        verify = VERIFY_PASS
-    else:
+    if verdict != "pass":
         why = "verification failed" if verdict == "fail" else "not verified"
         report = schema.display_path(Path(npc_range_dir) / npc_compose.DRAFT_DIR / f"{stem}.verify.md", root)
-        if not force:
-            item.refusal = (
-                f"{why}; see {report}" if verdict == "fail" else f"{why}; run `summary_native npc-verify` (or --force)"
-            )
-            return
-        item.forced.append(why)
-        verify = VERIFY_FORCED if verdict == "fail" else VERIFY_UNVERIFIED_FORCED
+        item.refusal = (
+            f"{why}; see {report}" if verdict == "fail" else f"{why}; run `summary_native npc-verify`"
+        )
+        return
+    if not signoff_checker(draft_path, draft_sha256):
+        item.refusal = (
+            "NPC_DRAFT_SIGNOFF_REQUIRED: exact draft approval is missing or stale; "
+            "create a real NPC verification review and run `summary_native review npc sign`"
+        )
+        return
+    verify = VERIFY_PASS
     item.source = SOURCE_SN
     item.body = rewrite_manual_citations(text[m.end():])
     item.facts = PublishFacts(
@@ -327,6 +413,7 @@ def plan_publish(
     force: bool = False,
     aliases: dict[str, str] | None = None,
     registry_npcs: Iterable[str] = (),
+    _signoff_checker: Callable[[Path, str], bool] | None = None,
 ) -> list[PublishItem]:
     """Resolve the selection into one ``PublishItem`` per NPC (refusal or ready to write).
 
@@ -334,6 +421,9 @@ def plan_publish(
     Writes nothing.
     """
     root, npc_range_dir = Path(root), Path(npc_range_dir)
+    signoff_checker = _signoff_checker or (
+        lambda path, digest: _current_draft_signoff(root, path, digest)
+    )
     names = [n for n in names if n and n.strip()]
     if not (names or all_ or authored_all):
         raise PublishRefusal("no selection: give --name NAME, --all or --authored-all (publishing is always explicit)")
@@ -402,7 +492,7 @@ def plan_publish(
             if stem is None or not gm_exists(stem):
                 item.refusal = f"no GM dossier in {_range_name(npc_range_dir)}; run `summary_native npc-draft`"
                 continue
-            _plan_summary_native(root, npc_range_dir, stem, display, item, force)
+            _plan_summary_native(root, npc_range_dir, stem, display, item, signoff_checker)
         if item.refusal is None:
             _target_check(root, item.target, slug, log, item, force)
     return items
@@ -423,6 +513,7 @@ def publish(
     aliases: dict[str, str] | None = None,
     registry_npcs: Iterable[str] = (),
     now: Callable[[], datetime] | None = None,
+    _signoff_checker: Callable[[Path, str], bool] | None = None,
 ) -> list[PublishResult]:
     """Publish every selected NPC that passes its checks; return one result per NPC.
 
@@ -431,26 +522,37 @@ def publish(
     whole is refused. Nothing is ever deleted.
     """
     root, npc_range_dir = Path(root), Path(npc_range_dir)
-    items = plan_publish(
-        root, npc_range_dir, names=names, all_=all_, authored_all=authored_all, source=source,
-        force=force, aliases=aliases, registry_npcs=registry_npcs,
-    )
-    log = read_publish_log(root, npc_range_dir.parent)
-    results = []
-    for it in items:
-        if it.refusal is not None:
-            results.append(PublishResult(it.name, it.slug, it.source, False, it.refusal))
-            continue
-        text = render_published(it.source, it.body, it.facts)
-        _put(it.target, text)
-        stamp = (now or (lambda: datetime.now(timezone.utc)))().isoformat(timespec="seconds")
-        log[it.slug] = {
-            "source": it.source,
-            "range": it.facts.range,
-            "run": it.facts.run,
-            "published_sha256": sha256_text(it.body),
-            "published_at": stamp,
-        }
-        write_publish_log(npc_range_dir.parent, log)  # after each NPC: a later crash cannot make this one look hand-edited
-        results.append(PublishResult(it.name, it.slug, it.source, True, None, tuple(it.forced)))
-    return results
+
+    def write() -> list[PublishResult]:
+        items = plan_publish(
+            root, npc_range_dir, names=names, all_=all_, authored_all=authored_all, source=source,
+            force=force, aliases=aliases, registry_npcs=registry_npcs,
+            _signoff_checker=_signoff_checker,
+        )
+        log = read_publish_log(root, npc_range_dir.parent)
+        results = []
+        for it in items:
+            if it.refusal is not None:
+                results.append(PublishResult(it.name, it.slug, it.source, False, it.refusal))
+                continue
+            text = render_published(it.source, it.body, it.facts)
+            _put(it.target, text)
+            stamp = (now or (lambda: datetime.now(timezone.utc)))().isoformat(timespec="seconds")
+            log[it.slug] = {
+                "source": it.source,
+                "range": it.facts.range,
+                "run": it.facts.run,
+                "published_sha256": sha256_text(it.body),
+                "published_at": stamp,
+            }
+            write_publish_log(npc_range_dir.parent, log)
+            results.append(PublishResult(it.name, it.slug, it.source, True, None, tuple(it.forced)))
+        return results
+
+    if _signoff_checker is not None:
+        return write()
+    from pipelines.summary_native.authority_apply import authority_lock, require_no_pending_transaction
+
+    with authority_lock(root, exclusive=True):
+        require_no_pending_transaction(root)
+        return write()

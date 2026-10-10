@@ -292,6 +292,7 @@ async def run_bounded_json(
     *,
     cwd: str | None = None,
     env_extra: dict[str, str] | None = None,
+    stdin_bytes: bytes | None = None,
     timeout_seconds: float = 10.0,
     max_output_bytes: int = 1_048_576,
     redact_env_keys: set[str] | frozenset[str] | None = None,
@@ -334,18 +335,35 @@ async def run_bounded_json(
                     category="output_limit",
                 )
 
+    async def write_stdin() -> None:
+        if stdin_bytes is None or proc is None or proc.stdin is None:
+            return
+        try:
+            proc.stdin.write(stdin_bytes)
+            await proc.stdin.drain()
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+        finally:
+            proc.stdin.close()
+
     try:
         proc = await asyncio.create_subprocess_exec(
             *cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
+            stdin=asyncio.subprocess.PIPE if stdin_bytes is not None else asyncio.subprocess.DEVNULL,
             cwd=cwd,
             env=env,
             start_new_session=True,
         )
         try:
-            stdout, stderr, _ = await asyncio.wait_for(
-                asyncio.gather(read_limited(proc.stdout), read_limited(proc.stderr), proc.wait()),
+            stdout, stderr, _, _ = await asyncio.wait_for(
+                asyncio.gather(
+                    read_limited(proc.stdout),
+                    read_limited(proc.stderr),
+                    proc.wait(),
+                    write_stdin(),
+                ),
                 timeout=timeout_seconds,
             )
         except asyncio.TimeoutError as exc:
